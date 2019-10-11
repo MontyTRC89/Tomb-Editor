@@ -43,9 +43,6 @@ namespace TombEditor.Forms
             AddFrames
         }
 
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-        private readonly PopUpInfo popup = new PopUpInfo();
-
         private class TransparentBindingList<T> : BindingList<T>
         {
             public TransparentBindingList(IList<T> list) : base(list) { }
@@ -77,9 +74,14 @@ namespace TombEditor.Forms
             }
         }
 
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private readonly PopUpInfo popup = new PopUpInfo();
+
         private readonly Editor _editor;
         private readonly Cache<CachedImageInfo, Bitmap> _imageCache;
         private readonly static ImageC transparentBackground = ImageC.FromSystemDrawingImage(Properties.Resources.misc_TransparentBackground);
+        
+        private readonly bool _isNg;
 
         private readonly Timer _previewTimer = new Timer();
         private AnimatedTextureFrame _previewCurrentFrame;
@@ -89,7 +91,8 @@ namespace TombEditor.Forms
         private const string animNameCombineString = " (with ";
         private int _lastY;
 
-        private readonly bool _isNg;
+        private List<AnimatedTextureSet> _backupSets = new List<AnimatedTextureSet>();
+
 
         public FormAnimatedTextures(Editor editor, LevelTexture levelTextureToOpen)
         {
@@ -132,6 +135,10 @@ namespace TombEditor.Forms
                 textureMap.ResetVisibleTexture(_editor.Level.Settings.Textures.Count > 0 ? _editor.Level.Settings.Textures[0] : null);
             else
                 textureMap.ShowTexture(_editor.SelectedTexture);
+
+            // Backup existing animated texture sets
+            foreach (var set in editor.Level.Settings.AnimatedTextureSets)
+                _backupSets.Add(set.Clone());
         }
 
         protected override void Dispose(bool disposing)
@@ -1158,6 +1165,15 @@ namespace TombEditor.Forms
         private void butAddProcAnim_Click(object sender, EventArgs e)
         {
             GenerateProceduralAnimation((ProceduralAnimationType)comboProcPresets.SelectedIndex, (int)numFrames.Value, (float)numStrength.Value / 100.0f, cbSmooth.Checked, cbLoop.Checked, AnimGenerationType.AddFrames);
+        }
+
+        private void butCancel_Click(object sender, EventArgs e)
+        {
+            _editor.Level.Settings.AnimatedTextureSets.Clear();
+            foreach (var set in _backupSets)
+                _editor.Level.Settings.AnimatedTextureSets.Add(set);
+            _editor.AnimatedTexturesChange();
+            Close();
         }
     }
 }
