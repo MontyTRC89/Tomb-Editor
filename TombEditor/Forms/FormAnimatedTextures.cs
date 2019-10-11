@@ -228,6 +228,9 @@ namespace TombEditor.Forms
                 selectedSet.Frames.Add(frame);
                 _editor.AnimatedTexturesChange();
             }
+
+            texturesDataGridView.ClearSelection();
+            texturesDataGridView.CurrentCell = texturesDataGridView.Rows[texturesDataGridView.Rows.Count - 1].Cells[0];
         }
 
         private void SetupControls()
