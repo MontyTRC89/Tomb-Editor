@@ -88,11 +88,11 @@ namespace TombLib.LevelData.Compilers
 
             _vertexColors = new Dictionary<VectorInt3, ushort>();
             var rooms = _tempRooms.Values.ToList();
-            for (int flipped = 0; flipped <= 1; flipped++)
+            for (int flipped = -1; flipped <= 12; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
                 {
                     var room = rooms[i];
-                    MatchDoorShades(room, (flipped == 1));
+                    MatchDoorShades(room, flipped);
                 }
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
@@ -1344,7 +1344,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void MatchDoorShades(tr_room room, bool flipped)
+        private void MatchDoorShades(tr_room room, int alternateGroup)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
@@ -1363,7 +1363,7 @@ namespace TombLib.LevelData.Compilers
                 // Here we must decide if match or not, basing on flipped flag.
                 // In winroomedit.exe, all flipped rooms were swapped with their counterparts,
                 // here instead we'll decide per portal
-                if (!flipped)
+                if (alternateGroup == -1)
                 {
                     // We allow here normal vs normal or base room vs base room
                     if (room.AlternateKind == AlternateKind.AlternateRoom || otherRoom.AlternateKind == AlternateKind.AlternateRoom)
@@ -1375,7 +1375,7 @@ namespace TombLib.LevelData.Compilers
                     if (otherRoom.AlternateKind == AlternateKind.BaseRoom)
                         otherRoom = rooms[otherRoom.AlternateRoom];
 
-                    if (room.AlternateKind != AlternateKind.AlternateRoom)
+                    if (room.AlternateKind != AlternateKind.AlternateRoom || room.AlternateGroup != otherRoom.AlternateGroup || room.AlternateGroup != alternateGroup)
                         continue;
                 }
 
