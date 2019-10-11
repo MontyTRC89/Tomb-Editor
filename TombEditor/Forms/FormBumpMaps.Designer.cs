@@ -67,7 +67,6 @@ namespace TombEditor.Forms
             // 
             this.cbUseCustomFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbUseCustomFile.AutoCheck = false;
-            this.cbUseCustomFile.AutoSize = true;
             this.cbUseCustomFile.Location = new System.Drawing.Point(8, 510);
             this.cbUseCustomFile.Name = "cbUseCustomFile";
             this.cbUseCustomFile.Size = new System.Drawing.Size(107, 17);
@@ -81,10 +80,11 @@ namespace TombEditor.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCustomMapPath.AutoEllipsis = true;
             this.lblCustomMapPath.ForeColor = System.Drawing.Color.Gray;
-            this.lblCustomMapPath.Location = new System.Drawing.Point(108, 512);
+            this.lblCustomMapPath.Location = new System.Drawing.Point(108, 511);
             this.lblCustomMapPath.Name = "lblCustomMapPath";
             this.lblCustomMapPath.Size = new System.Drawing.Size(304, 13);
             this.lblCustomMapPath.TabIndex = 16;
+            this.lblCustomMapPath.Text = "path to custom file";
             this.lblCustomMapPath.Click += new System.EventHandler(this.lblCustomMapPath_Click);
             // 
             // FormBumpMaps
@@ -109,7 +109,6 @@ namespace TombEditor.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Bumpmaps";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
