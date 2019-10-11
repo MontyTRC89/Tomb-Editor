@@ -32,6 +32,7 @@ namespace WadTool
         public int Log_ArchiveN { get; set; } = 0;
 
         public bool Tool_MakeEmptyWadAtStartup { get; set; } = false;
+        public string Tool_ReferenceProject { get; set; } = string.Empty;
 
         public int AnimationEditor_UndoDepth { get; set; } = 30;
         public bool AnimationEditor_RewindAfterChainPlayback { get; set; } = true;
