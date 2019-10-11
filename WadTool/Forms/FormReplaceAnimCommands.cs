@@ -79,7 +79,7 @@ namespace WadTool
 
             UpdateUI();
             if (newSearch)
-                statusLabel.Text = "Search finished. Found " + dgvResults.Rows.Count + " matches in " + collectedAnims.Count + " animations.";
+                statusLabel.Text = "Search finished. Found " + dgvResults.Rows.Count + " match" + (dgvResults.Rows.Count == 1 ? "" : "es") + " in " + collectedAnims.Count + " animation" + (collectedAnims.Count <= 1 ? "" : "s") + ".";
         }
 
         private void ReplaceOrDelete(bool delete = false)
@@ -154,9 +154,9 @@ namespace WadTool
             animsToUndo.ForEach(anim => _editor.Tool.AnimationEditorAnimationChanged(anim, false));
 
             if (delete)
-                statusLabel.Text = "Deleted " + actionCount + " animcommands in " + animCount + " animations.";
+                statusLabel.Text = "Deleted " + actionCount + " animcommand" + (actionCount == 1 ? "" : "s") + " in " + animCount + " animation" + (animCount == 1 ? "" : "s") + ".";
             else
-                statusLabel.Text = "Replacement finished. Made " + actionCount + " replacements in " + animCount + " animations.";
+                statusLabel.Text = "Replacement finished. Made " + actionCount + " replacement" + (actionCount == 1 ? "" : "s") + " in " + animCount + " animation" + (animCount == 1 ? "" : "s") + ".";
 
             // Run one more extra pass to show deselected results
             Search(false);
