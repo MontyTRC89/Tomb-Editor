@@ -102,8 +102,6 @@ namespace WadTool
         {
             if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
             {
-                DiscardChanges();
-
                 var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
                 if (e != null && e.Animation != _animation)
                     Initialize(e.Animation, null);
