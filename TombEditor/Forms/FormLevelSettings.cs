@@ -1385,6 +1385,9 @@ namespace TombEditor.Forms
 
         private void selectedSoundsDataGridView_HighlightRow(DataGridViewRow row, bool missing = false)
         {
+            if (row.DefaultCellStyle.BackColor == _columnMessageWrongColor)
+                return; // Don't overwrite errors
+
             bool selected = (bool)row.Cells[0].Value;
             if (missing)
                 row.DefaultCellStyle.BackColor = _columnMessageWrongColor;
