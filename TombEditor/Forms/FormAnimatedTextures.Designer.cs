@@ -50,6 +50,14 @@ namespace TombEditor.Forms
             this.tooManyFramesWarning = new DarkUI.Controls.DarkLabel();
             this.previewProgressBar = new DarkUI.Controls.DarkProgressBar();
             this.texturesDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.texturesDataGridViewColumnImage = new System.Windows.Forms.DataGridViewImageColumn();
+            this.texturesDataGridViewColumnRepeat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexture = new DarkUI.Controls.DarkDataGridViewComboBoxColumn();
+            this.texturesDataGridViewColumnArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord0 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.texturesDataGridViewColumnTexCoord3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblHeaderNgSettings = new DarkUI.Controls.DarkLabel();
             this.lblPreview = new DarkUI.Controls.DarkLabel();
             this.previewImage = new System.Windows.Forms.PictureBox();
@@ -59,14 +67,7 @@ namespace TombEditor.Forms
             this.comboAnimatedTextureSets = new DarkUI.Controls.DarkComboBox();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.texturesDataGridViewColumnImage = new System.Windows.Forms.DataGridViewImageColumn();
-            this.texturesDataGridViewColumnRepeat = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.texturesDataGridViewColumnTexture = new DarkUI.Controls.DarkDataGridViewComboBoxColumn();
-            this.texturesDataGridViewColumnArea = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.texturesDataGridViewColumnTexCoord0 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.texturesDataGridViewColumnTexCoord1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.texturesDataGridViewColumnTexCoord2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.texturesDataGridViewColumnTexCoord3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.butCancel = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -525,13 +526,14 @@ namespace TombEditor.Forms
             // 
             this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butUpdate.Enabled = false;
-            this.butUpdate.Image = global::TombEditor.Properties.Resources.general_undo_16;
+            this.butUpdate.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
             this.butUpdate.ImagePadding = 4;
             this.butUpdate.Location = new System.Drawing.Point(457, 115);
             this.butUpdate.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.butUpdate.Name = "butUpdate";
             this.butUpdate.Size = new System.Drawing.Size(24, 24);
             this.butUpdate.TabIndex = 2;
+            this.toolTip.SetToolTip(this.butUpdate, "Replace frame with selected texture");
             this.butUpdate.Click += new System.EventHandler(this.butUpdate_Click);
             // 
             // label1
@@ -602,6 +604,66 @@ namespace TombEditor.Forms
             this.texturesDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.texturesDataGridView_CellFormatting);
             this.texturesDataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.texturesDataGridView_CellParsing);
             this.texturesDataGridView.SelectionChanged += new System.EventHandler(this.texturesDataGridView_SelectionChanged);
+            // 
+            // texturesDataGridViewColumnImage
+            // 
+            this.texturesDataGridViewColumnImage.HeaderText = "Image";
+            this.texturesDataGridViewColumnImage.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.texturesDataGridViewColumnImage.Name = "texturesDataGridViewColumnImage";
+            this.texturesDataGridViewColumnImage.ReadOnly = true;
+            this.texturesDataGridViewColumnImage.Width = 48;
+            // 
+            // texturesDataGridViewColumnRepeat
+            // 
+            this.texturesDataGridViewColumnRepeat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.texturesDataGridViewColumnRepeat.DataPropertyName = "Repeat";
+            this.texturesDataGridViewColumnRepeat.HeaderText = "Repeat";
+            this.texturesDataGridViewColumnRepeat.Name = "texturesDataGridViewColumnRepeat";
+            this.texturesDataGridViewColumnRepeat.Width = 67;
+            // 
+            // texturesDataGridViewColumnTexture
+            // 
+            this.texturesDataGridViewColumnTexture.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.texturesDataGridViewColumnTexture.DataPropertyName = "Texture";
+            this.texturesDataGridViewColumnTexture.HeaderText = "Texture";
+            this.texturesDataGridViewColumnTexture.Name = "texturesDataGridViewColumnTexture";
+            this.texturesDataGridViewColumnTexture.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // texturesDataGridViewColumnArea
+            // 
+            this.texturesDataGridViewColumnArea.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.texturesDataGridViewColumnArea.HeaderText = "Area";
+            this.texturesDataGridViewColumnArea.Name = "texturesDataGridViewColumnArea";
+            this.texturesDataGridViewColumnArea.ReadOnly = true;
+            this.texturesDataGridViewColumnArea.Width = 54;
+            // 
+            // texturesDataGridViewColumnTexCoord0
+            // 
+            this.texturesDataGridViewColumnTexCoord0.DataPropertyName = "TexCoord0";
+            this.texturesDataGridViewColumnTexCoord0.HeaderText = "Edge 0";
+            this.texturesDataGridViewColumnTexCoord0.Name = "texturesDataGridViewColumnTexCoord0";
+            this.texturesDataGridViewColumnTexCoord0.Width = 70;
+            // 
+            // texturesDataGridViewColumnTexCoord1
+            // 
+            this.texturesDataGridViewColumnTexCoord1.DataPropertyName = "TexCoord1";
+            this.texturesDataGridViewColumnTexCoord1.HeaderText = "Edge 1";
+            this.texturesDataGridViewColumnTexCoord1.Name = "texturesDataGridViewColumnTexCoord1";
+            this.texturesDataGridViewColumnTexCoord1.Width = 70;
+            // 
+            // texturesDataGridViewColumnTexCoord2
+            // 
+            this.texturesDataGridViewColumnTexCoord2.DataPropertyName = "TexCoord2";
+            this.texturesDataGridViewColumnTexCoord2.HeaderText = "Edge 2";
+            this.texturesDataGridViewColumnTexCoord2.Name = "texturesDataGridViewColumnTexCoord2";
+            this.texturesDataGridViewColumnTexCoord2.Width = 70;
+            // 
+            // texturesDataGridViewColumnTexCoord3
+            // 
+            this.texturesDataGridViewColumnTexCoord3.DataPropertyName = "TexCoord3";
+            this.texturesDataGridViewColumnTexCoord3.HeaderText = "Edge 3";
+            this.texturesDataGridViewColumnTexCoord3.Name = "texturesDataGridViewColumnTexCoord3";
+            this.texturesDataGridViewColumnTexCoord3.Width = 70;
             // 
             // lblHeaderNgSettings
             // 
@@ -687,7 +749,7 @@ namespace TombEditor.Forms
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butOk.Location = new System.Drawing.Point(777, 625);
+            this.butOk.Location = new System.Drawing.Point(691, 625);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 8;
@@ -702,73 +764,26 @@ namespace TombEditor.Forms
             this.toolTip.InitialDelay = 100;
             this.toolTip.ReshowDelay = 20;
             // 
-            // texturesDataGridViewColumnImage
+            // butCancel
             // 
-            this.texturesDataGridViewColumnImage.HeaderText = "Image";
-            this.texturesDataGridViewColumnImage.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.texturesDataGridViewColumnImage.Name = "texturesDataGridViewColumnImage";
-            this.texturesDataGridViewColumnImage.ReadOnly = true;
-            this.texturesDataGridViewColumnImage.Width = 48;
-            // 
-            // texturesDataGridViewColumnRepeat
-            // 
-            this.texturesDataGridViewColumnRepeat.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.texturesDataGridViewColumnRepeat.DataPropertyName = "Repeat";
-            this.texturesDataGridViewColumnRepeat.HeaderText = "Repeat";
-            this.texturesDataGridViewColumnRepeat.Name = "texturesDataGridViewColumnRepeat";
-            this.texturesDataGridViewColumnRepeat.Width = 67;
-            // 
-            // texturesDataGridViewColumnTexture
-            // 
-            this.texturesDataGridViewColumnTexture.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.texturesDataGridViewColumnTexture.DataPropertyName = "Texture";
-            this.texturesDataGridViewColumnTexture.HeaderText = "Texture";
-            this.texturesDataGridViewColumnTexture.Name = "texturesDataGridViewColumnTexture";
-            this.texturesDataGridViewColumnTexture.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // texturesDataGridViewColumnArea
-            // 
-            this.texturesDataGridViewColumnArea.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.texturesDataGridViewColumnArea.HeaderText = "Area";
-            this.texturesDataGridViewColumnArea.Name = "texturesDataGridViewColumnArea";
-            this.texturesDataGridViewColumnArea.ReadOnly = true;
-            this.texturesDataGridViewColumnArea.Width = 54;
-            // 
-            // texturesDataGridViewColumnTexCoord0
-            // 
-            this.texturesDataGridViewColumnTexCoord0.DataPropertyName = "TexCoord0";
-            this.texturesDataGridViewColumnTexCoord0.HeaderText = "Edge 0";
-            this.texturesDataGridViewColumnTexCoord0.Name = "texturesDataGridViewColumnTexCoord0";
-            this.texturesDataGridViewColumnTexCoord0.Width = 70;
-            // 
-            // texturesDataGridViewColumnTexCoord1
-            // 
-            this.texturesDataGridViewColumnTexCoord1.DataPropertyName = "TexCoord1";
-            this.texturesDataGridViewColumnTexCoord1.HeaderText = "Edge 1";
-            this.texturesDataGridViewColumnTexCoord1.Name = "texturesDataGridViewColumnTexCoord1";
-            this.texturesDataGridViewColumnTexCoord1.Width = 70;
-            // 
-            // texturesDataGridViewColumnTexCoord2
-            // 
-            this.texturesDataGridViewColumnTexCoord2.DataPropertyName = "TexCoord2";
-            this.texturesDataGridViewColumnTexCoord2.HeaderText = "Edge 2";
-            this.texturesDataGridViewColumnTexCoord2.Name = "texturesDataGridViewColumnTexCoord2";
-            this.texturesDataGridViewColumnTexCoord2.Width = 70;
-            // 
-            // texturesDataGridViewColumnTexCoord3
-            // 
-            this.texturesDataGridViewColumnTexCoord3.DataPropertyName = "TexCoord3";
-            this.texturesDataGridViewColumnTexCoord3.HeaderText = "Edge 3";
-            this.texturesDataGridViewColumnTexCoord3.Name = "texturesDataGridViewColumnTexCoord3";
-            this.texturesDataGridViewColumnTexCoord3.Width = 70;
+            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butCancel.Location = new System.Drawing.Point(777, 625);
+            this.butCancel.Name = "butCancel";
+            this.butCancel.Size = new System.Drawing.Size(80, 23);
+            this.butCancel.TabIndex = 44;
+            this.butCancel.Text = "Cancel";
+            this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // FormAnimatedTextures
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.butOk;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(869, 656);
+            this.Controls.Add(this.butCancel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.butOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -851,5 +866,6 @@ namespace TombEditor.Forms
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord1;
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord2;
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord3;
+        private DarkButton butCancel;
     }
 }
