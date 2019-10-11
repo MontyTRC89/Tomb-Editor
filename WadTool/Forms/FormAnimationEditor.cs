@@ -28,13 +28,6 @@ namespace WadTool
             StateName
         }
 
-        private enum SoundPreviewType
-        {
-            Land,
-            LandWithMaterial,
-            Water
-        }
-
         private bool _saved = false;
         private bool Saved
         {
@@ -55,13 +48,8 @@ namespace WadTool
         // Player
         private Timer _timerPlayAnimation;
         private int _frameCount;
-        private bool _smooth = true;
-        private bool _scrollGrid = true;
-        private bool _recoverGridHeight = false; // Disabled by default for now
-        private bool _previewSounds;
         private int _overallPlaybackCount = _materialIndexSwitchInterval; // To reset 1st time on playback
         private int _currentMaterialIndex;
-        private SoundPreviewType _soundPreviewType = SoundPreviewType.Land;
 
         private static readonly int _materialIndexSwitchInterval = 30 * 3; // 3 seconds, 30 game frames
         private static readonly int _gridRecoveryWaitInterval = 30 * 2;    // 2 seconds
@@ -70,14 +58,13 @@ namespace WadTool
         private float _gridRecoveryCount;
 
         // Chained playback vars
-        private bool _chainedPlayback;
         private int _chainedPlaybackSetPosRecoveryCount;
         private int _chainedPlaybackInitialAnim;
         private int _chainedPlaybackInitialCursorPos;
         private VectorInt2 _chainedPlaybackInitialSelection;
         // State change vars
         private int _chainedPlaybackIncomingAnimation = -1;
-        private int _chainedPlaybackIncomingFrame     = -1;
+        private int _chainedPlaybackIncomingFrame = -1;
         private VectorInt2 _chainedPlaybackIncomingFrameRange = -VectorInt2.One;
 
         // Live update flag, used when transform is updated during playback or scrubbling
@@ -96,6 +83,7 @@ namespace WadTool
             panelRendering.Configuration = _editor.Tool.Configuration;
 
             // Update UI
+            UpdateUIControls();
             UpdateReferenceLevelControls();
             PopulateComboStateID();
 
@@ -106,7 +94,6 @@ namespace WadTool
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
             _timerPlayAnimation.Tick += timerPlayAnimation_Tick;
-            _previewSounds = false;
 
             // Add custom event handler for direct editing of animcommands
             timeline.AnimCommandDoubleClick += new EventHandler<WadAnimCommand>(timeline_AnimCommandDoubleClick);
@@ -230,12 +217,12 @@ namespace WadTool
 
             if (obj is WadToolClass.AnimationEditorStateChangeEvent)
             {
-                if (_timerPlayAnimation.Enabled && _chainedPlayback)
+                if (_timerPlayAnimation.Enabled && _editor.Tool.Configuration.AnimationEditor_ChainPlayback)
                 {
                     var e = (WadToolClass.AnimationEditorStateChangeEvent)obj;
 
-                    _chainedPlaybackIncomingAnimation  = e.NextAnimation;
-                    _chainedPlaybackIncomingFrame      = e.NextFrame;
+                    _chainedPlaybackIncomingAnimation = e.NextAnimation;
+                    _chainedPlaybackIncomingFrame = e.NextFrame;
                     _chainedPlaybackIncomingFrameRange = e.FrameRange;
                 }
             }
@@ -255,6 +242,39 @@ namespace WadTool
                 _editor.Tool.EditorEventRaised -= Tool_EditorEventRaised;
             }
             base.Dispose(disposing);
+        }
+
+        private void UpdateUIControls()
+        {
+            scrollGridToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ScrollGrid;
+            restoreGridHeightToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange;
+            smoothAnimationsToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_SmoothAnimation;
+            drawGizmoToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowGizmo;
+            drawGridToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowGrid;
+            drawCollisionBoxToolStripMenuItem.Checked = _editor.Tool.Configuration.AnimationEditor_ShowCollisionBox;
+
+            if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback)
+                butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
+            else
+                butTransportChained.Image = Properties.Resources.transport_chain_disabled_24;
+
+            if (_editor.Tool.Configuration.AnimationEditor_SoundPreview)
+                butTransportSound.Image = Properties.Resources.transport_audio_24;
+            else
+                butTransportSound.Image = Properties.Resources.transport_mute_24;
+
+            switch (_editor.Tool.Configuration.AnimationEditor_SoundPreviewType)
+            {
+                case SoundPreviewType.Land:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
+                    break;
+                case SoundPreviewType.LandWithMaterial:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
+                    break;
+                case SoundPreviewType.Water:
+                    butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
+                    break;
+            }
         }
 
         private void UpdateReferenceLevelControls()
@@ -429,7 +449,7 @@ namespace WadTool
 
         private void SelectAnimation(AnimationNode node)
         {
-            bool sameAnimSameSize = _editor.CurrentAnim != null && _editor.CurrentAnim.Index == node.Index && 
+            bool sameAnimSameSize = _editor.CurrentAnim != null && _editor.CurrentAnim.Index == node.Index &&
                 _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == node.DirectXAnimation.KeyFrames.Count;
 
             _editor.CurrentAnim = node;
@@ -467,7 +487,7 @@ namespace WadTool
                 panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
 
             // Continue scrolling the grid if we're in chain playback mode
-            if (!(_chainedPlayback && _timerPlayAnimation.Enabled))
+            if (!(_editor.Tool.Configuration.AnimationEditor_ChainPlayback && _timerPlayAnimation.Enabled))
                 panelRendering.GridPosition = Vector3.Zero;
 
             panelRendering.Invalidate();
@@ -573,14 +593,14 @@ namespace WadTool
         {
             if (!_editor.ValidAnimationAndFrames) return;
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-            
+
             int start = 0;
-            int end   = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+            int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
 
             if (!timeline.SelectionIsEmpty)
             {
                 start = timeline.Selection.X;
-                end   = timeline.Selection.Y + 1;
+                end = timeline.Selection.Y + 1;
             }
 
             for (int i = start; i < end; i++)
@@ -603,7 +623,7 @@ namespace WadTool
         {
             if (!_editor.ValidAnimationAndFrames) return;
             if (undo) _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-            
+
             var meshList = GetSelectedMeshList();
             var keyFrame = _editor.CurrentAnim.DirectXAnimation.KeyFrames[index];
             panelRendering.Model.BuildAnimationPose(keyFrame);
@@ -643,14 +663,14 @@ namespace WadTool
             if (value.Length() == 0f) return;
 
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
-            
+
             int start = 0;
-            int end   = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+            int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
 
             if (!timeline.SelectionIsEmpty)
             {
                 start = timeline.Selection.X;
-                end   = timeline.Selection.Y + 1;
+                end = timeline.Selection.Y + 1;
             }
 
             for (int i = start; i < end; i++)
@@ -1007,9 +1027,9 @@ namespace WadTool
                 // Just update timeline if animation is invisible in the list
                 timeline.ResetSelection();
                 timeline.Value = 0;
-                timeline.Invalidate(); 
+                timeline.Invalidate();
             }
-            
+
             Saved = false;
         }
 
@@ -1371,12 +1391,12 @@ namespace WadTool
             _editor.Tool.UndoManager.PushAnimationChanged(_editor, _editor.CurrentAnim);
 
             int start = 0;
-            int end   = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
+            int end = _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
 
             if (!_editor.SelectionIsEmpty)
             {
                 start = _editor.Selection.X;
-                end   = _editor.Selection.Y;
+                end = _editor.Selection.Y;
             }
 
             _editor.CurrentAnim.DirectXAnimation.KeyFrames.Reverse(start, end - start);
@@ -1572,7 +1592,7 @@ namespace WadTool
 
             UpdateAnimLabel(_editor.CurrentAnim);
             UpdateAnimListSelection(_editor.CurrentAnim.Index);
-            
+
             timeline.Value = 0;
             panelRendering.Invalidate();
         }
@@ -1612,20 +1632,26 @@ namespace WadTool
                             // Restore selection and cursor
                             timeline.Value = _chainedPlaybackInitialCursorPos;
                             timeline.SelectionStart = _chainedPlaybackInitialSelection.X;
-                            timeline.SelectionEnd   = _chainedPlaybackInitialSelection.Y;
+                            timeline.SelectionEnd = _chainedPlaybackInitialSelection.Y;
                         }
+                    }
+                    else if (origNode == _editor.CurrentAnim &&
+                            _editor.CurrentFrameIndex * _editor.CurrentAnim.WadAnimation.FrameRate >= _editor.CurrentAnim.WadAnimation.NextFrame)
+                    {
+                        // Just restore frame number so the timeline doesn't look stuck
+                        timeline.Value = _chainedPlaybackInitialCursorPos;
                     }
                 }
 
                 butTransportPlay.Image = Properties.Resources.transport_play_24;
             }
-            
+
             // Reset grid position and refresh view
             panelRendering.GridPosition = Vector3.Zero;
             panelRendering.Invalidate();
 
             // Translate global event
-            _editor.Tool.TogglePlayback(_timerPlayAnimation.Enabled, _chainedPlayback);
+            _editor.Tool.TogglePlayback(_timerPlayAnimation.Enabled, _editor.Tool.Configuration.AnimationEditor_ChainPlayback);
         }
 
         private int UpdateAnimListSelection(int index)
@@ -1700,19 +1726,19 @@ namespace WadTool
 
         private void drawGridToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panelRendering.DrawGrid = !panelRendering.DrawGrid;
+            _editor.Tool.Configuration.AnimationEditor_ShowGrid = !_editor.Tool.Configuration.AnimationEditor_ShowGrid;
             panelRendering.Invalidate();
         }
 
         private void drawGizmoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panelRendering.DrawGizmo = !panelRendering.DrawGizmo;
+            _editor.Tool.Configuration.AnimationEditor_ShowGizmo = !_editor.Tool.Configuration.AnimationEditor_ShowGizmo;
             panelRendering.Invalidate();
         }
 
         private void drawCollisionBoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            panelRendering.DrawCollisionBox = !panelRendering.DrawCollisionBox;
+            _editor.Tool.Configuration.AnimationEditor_ShowCollisionBox = !_editor.Tool.Configuration.AnimationEditor_ShowCollisionBox;
             panelRendering.Invalidate();
         }
 
@@ -1749,6 +1775,7 @@ namespace WadTool
         private void pasteAnimationToolStripMenuItem_Click(object sender, EventArgs e) => PasteAnimation();
         private void splitAnimationToolStripMenuItem_Click(object sender, EventArgs e) => SplitAnimation();
         private void reverseAnimationToolStripMenuItem_Click(object sender, EventArgs e) => ReverseAnimation();
+        private void mirrorAnimationToolStripMenuItem_Click(object sender, EventArgs e) => MirrorAnimation();
         private void calculateBoundingBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, false);
         private void deleteCollisionBoxForCurrentFrameToolStripMenuItem_Click(object sender, EventArgs e) => CalculateKeyframeBoundingBox(timeline.Value, true, true);
         private void interpolateFramesToolStripMenuItem_Click(object sender, EventArgs e) => InterpolateFrames();
@@ -1757,8 +1784,9 @@ namespace WadTool
         private void undoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Undo();
         private void redoToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.UndoManager.Redo();
         private void closeToolStripMenuItem_Click(object sender, EventArgs e) => Close();
-        private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => _smooth = !_smooth;
-        private void scrollGridToolStripMenuItem_Click(object sender, EventArgs e) => _scrollGrid = !_scrollGrid;
+        private void smoothAnimationsToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.Configuration.AnimationEditor_SmoothAnimation = !_editor.Tool.Configuration.AnimationEditor_SmoothAnimation;
+        private void scrollGridToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.Configuration.AnimationEditor_ScrollGrid = !_editor.Tool.Configuration.AnimationEditor_ScrollGrid;
+        private void restoreGridHeightToolStripMenuItem_Click(object sender, EventArgs e) => _editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange = !_editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange;
 
         // Toolbox controls one-liners
 
@@ -1888,12 +1916,12 @@ namespace WadTool
 
             // If state change data is present, make sure it complies to current animation params.
 
-            if (_chainedPlayback &&
-                _chainedPlaybackIncomingAnimation    >= 0)
+            if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback &&
+                _chainedPlaybackIncomingAnimation >= 0)
             {
-                if (_chainedPlaybackIncomingAnimation    < _editor.Animations.Count &&
-                    _chainedPlaybackIncomingFrame        >= 0 &&
-                    _chainedPlaybackIncomingFrame        < _editor.RealNumberOfFrames(_chainedPlaybackIncomingAnimation) &&
+                if (_chainedPlaybackIncomingAnimation < _editor.Animations.Count &&
+                    _chainedPlaybackIncomingFrame >= 0 &&
+                    _chainedPlaybackIncomingFrame < _editor.RealNumberOfFrames(_chainedPlaybackIncomingAnimation) &&
                     _chainedPlaybackIncomingFrameRange.X >= 0 &&
                     _chainedPlaybackIncomingFrameRange.Y >= _chainedPlaybackIncomingFrameRange.X &&
                     _chainedPlaybackIncomingFrameRange.Y <= realFrameNumber) // Some single-frame state changes refer to out-of-bounds frame 1
@@ -1912,16 +1940,16 @@ namespace WadTool
             if (_frameCount >= nextRange.X && _frameCount <= nextRange.Y)
             {
                 // Chain playback handling
-                if (_chainedPlayback)
+                if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback)
                 {
                     // Clear state change anim, as we don't need it anymore
-                    _chainedPlaybackIncomingAnimation  = -1;
+                    _chainedPlaybackIncomingAnimation = -1;
 
-                    var nextNode  = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
+                    var nextNode = _editor.Animations.FirstOrDefault(item => item.Index == nextIndex);
                     if (nextNode != null)
                     {
                         // Take SetPosition animcommands into account
-                        if (_scrollGrid && _editor.CurrentAnim.WadAnimation.AnimCommands.Count > 0)
+                        if (_editor.Tool.Configuration.AnimationEditor_ScrollGrid && _editor.CurrentAnim.WadAnimation.AnimCommands.Count > 0)
                         {
                             var setPosCommands = _editor.CurrentAnim.WadAnimation.AnimCommands.Where(cmd => cmd.Type == WadAnimCommandType.SetPosition);
                             if (setPosCommands.Count() > 0)
@@ -1929,11 +1957,11 @@ namespace WadTool
                                 _chainedPlaybackSetPosRecoveryCount = 0; // Reset pending grid recovery
                             }
                         }
-                            _editor.CurrentAnim.WadAnimation.AnimCommands
-                                .Where(cmd => cmd.Type == WadAnimCommandType.SetPosition)
-                                .ToList()
-                                .ForEach(cmd =>
-                                panelRendering.GridPosition += new Vector3(cmd.Parameter1, cmd.Parameter2, cmd.Parameter3));
+                        _editor.CurrentAnim.WadAnimation.AnimCommands
+                            .Where(cmd => cmd.Type == WadAnimCommandType.SetPosition)
+                            .ToList()
+                            .ForEach(cmd =>
+                            panelRendering.GridPosition += new Vector3(cmd.Parameter1, cmd.Parameter2, cmd.Parameter3));
 
                         // Only try to update if next anim is different
                         if (nextNode != _editor.CurrentAnim && UpdateAnimListSelection(nextIndex) < 0)
@@ -1956,7 +1984,7 @@ namespace WadTool
             }
 
             // Scroll the grid
-            if (_scrollGrid)
+            if (_editor.Tool.Configuration.AnimationEditor_ScrollGrid)
             {
                 Vector3 startVel = new Vector3(_editor.CurrentAnim.WadAnimation.StartLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.StartVelocity);
                 Vector3 endVel = new Vector3(_editor.CurrentAnim.WadAnimation.EndLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.EndVelocity);
@@ -1999,7 +2027,7 @@ namespace WadTool
                 var shiftX = Vector3.Lerp(startVel, endVel, (float)_frameCount / (float)realFrameNumber);
                 panelRendering.GridPosition += shiftX;
 
-                if (_recoverGridHeight)
+                if (_editor.Tool.Configuration.AnimationEditor_RecoverGridAfterPositionChange)
                 {
                     // Count recovery interval if we have shifted Y position.
                     if (panelRendering.GridPosition.Y != 0 &&
@@ -2014,7 +2042,7 @@ namespace WadTool
                     {
                         _gridRecoveryCount += _gridRecoveryStep;
 
-                        Vector3 shiftY = new Vector3(panelRendering.GridPosition.X, 0.0f, panelRendering.GridPosition.Y);
+                        Vector3 shiftY = new Vector3(panelRendering.GridPosition.X, 0.0f, panelRendering.GridPosition.Z);
                         if (_gridRecoveryCount < 1.0f)
                             shiftY.Y = (float)MathC.SmoothStep(panelRendering.GridPosition.Y, 0.0f, _gridRecoveryCount);
                         else
@@ -2041,11 +2069,11 @@ namespace WadTool
                     timeline.Value = newFrameNumber;
 
                 // Reset grid position if animation isn't looped
-                if (!_chainedPlayback && newFrameNumber == timeline.Maximum &&
+                if (!_editor.Tool.Configuration.AnimationEditor_ChainPlayback && newFrameNumber == timeline.Maximum &&
                     _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
                     panelRendering.GridPosition = Vector3.Zero;
             }
-            else if(_smooth)
+            else if (_editor.Tool.Configuration.AnimationEditor_SmoothAnimation)
             {
                 float k = (float)_frameCount / (float)(_editor.CurrentAnim.WadAnimation.FrameRate == 0 ? 1 : _editor.CurrentAnim.WadAnimation.FrameRate);
                 k = _frameCount == realFrameNumber - 1 ? 1.0f : k - (float)Math.Floor(k);
@@ -2055,7 +2083,7 @@ namespace WadTool
             UpdateStatusLabel();
 
             // Preview sounds
-            if (_previewSounds && _editor.Tool.ReferenceLevel != null && 
+            if (_editor.Tool.Configuration.AnimationEditor_SoundPreview && _editor.Tool.ReferenceLevel != null &&
                 _editor.Tool.ReferenceLevel.Settings.SoundSystem == SoundSystem.Xml)
             {
                 // This additional counter is used to randomize material index every 3 seconds of playback
@@ -2080,10 +2108,11 @@ namespace WadTool
                 foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
                 {
                     int idToPlay = -1;
+                    var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
 
                     if (ac.Type == WadAnimCommandType.PlaySound)
                         idToPlay = ac.Parameter2 & 0x3FFF;
-                    else if (_soundPreviewType == SoundPreviewType.LandWithMaterial && ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
+                    else if (previewType == SoundPreviewType.LandWithMaterial && ac.Type == WadAnimCommandType.FlipEffect && (ac.Parameter2 & 0x3FFF) == 32)
                         idToPlay = _currentMaterialIndex;
 
                     if (idToPlay != -1 && ac.Parameter1 == _frameCount)
@@ -2091,11 +2120,11 @@ namespace WadTool
                         int sfx_type = ac.Type == WadAnimCommandType.FlipEffect ? 0x4000 : ac.Parameter2 & 0xC000;
 
                         // Don't play footprint FX sounds in water
-                        if (ac.Type == WadAnimCommandType.FlipEffect && _soundPreviewType == SoundPreviewType.Water) continue;
+                        if (ac.Type == WadAnimCommandType.FlipEffect && previewType == SoundPreviewType.Water) continue;
 
                         // Don't play water sounds not in water and vice versa
-                        if (sfx_type == 0x8000 && _soundPreviewType != SoundPreviewType.Water) continue;
-                        if (sfx_type == 0x4000 && _soundPreviewType == SoundPreviewType.Water) continue;
+                        if (sfx_type == 0x8000 && previewType != SoundPreviewType.Water) continue;
+                        if (sfx_type == 0x4000 && previewType == SoundPreviewType.Water) continue;
 
                         var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == idToPlay);
                         if (soundInfo != null)
@@ -2127,7 +2156,7 @@ namespace WadTool
 
             string path = LevelFileDialog.BrowseFile(this, "Specify file to save animation",
                 new List<FileFormat>() { new FileFormat("TombEditor XML", "anim") }, true);
-            
+
             if (path == null)
                 return;
 
@@ -2188,7 +2217,7 @@ namespace WadTool
             _editor.Tool.UndoManager.ClearAll();
         }
 
-        
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input
@@ -2237,34 +2266,21 @@ namespace WadTool
         {
             if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this)) return;
 
-            _previewSounds = !_previewSounds;
-
-            if (_previewSounds)
-                butTransportSound.Image = Properties.Resources.transport_audio_24;
-            else
-                butTransportSound.Image = Properties.Resources.transport_mute_24;
+            _editor.Tool.Configuration.AnimationEditor_SoundPreview = !_editor.Tool.Configuration.AnimationEditor_SoundPreview;
+            UpdateUIControls();
         }
 
         private void butTransportLandWater_Click(object sender, EventArgs e)
         {
             if (_editor.Tool.ReferenceLevel == null && !WadActions.LoadReferenceLevel(_editor.Tool, this)) return;
 
-            if (_soundPreviewType == SoundPreviewType.Land) _soundPreviewType = SoundPreviewType.LandWithMaterial;
-            else if (_soundPreviewType == SoundPreviewType.LandWithMaterial) _soundPreviewType = SoundPreviewType.Water;
-            else if (_soundPreviewType == SoundPreviewType.Water) _soundPreviewType = SoundPreviewType.Land;
+            var previewType = _editor.Tool.Configuration.AnimationEditor_SoundPreviewType;
 
-            switch (_soundPreviewType)
-            {
-                case SoundPreviewType.Land:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_nothing_24;
-                    break;
-                case SoundPreviewType.LandWithMaterial:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_land_24;
-                    break;
-                case SoundPreviewType.Water:
-                    butTransportLandWater.Image = Properties.Resources.transport_on_water_24;
-                    break;
-            }
+            if (previewType == SoundPreviewType.Land) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.LandWithMaterial;
+            else if (previewType == SoundPreviewType.LandWithMaterial) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Water;
+            else if (previewType == SoundPreviewType.Water) _editor.Tool.Configuration.AnimationEditor_SoundPreviewType = SoundPreviewType.Land;
+
+            UpdateUIControls();
         }
 
         private void tbSearchByStateID_KeyDown(object sender, KeyEventArgs e)
@@ -2308,7 +2324,7 @@ namespace WadTool
                 popup.ShowError(panelRendering, "Animation is already at framerate 1. You need other framerate to resample.");
                 return;
             }
-            
+
             InterpolateAnimation(_editor.CurrentAnim.WadAnimation.FrameRate - 1, false, false);
             _editor.CurrentAnim.WadAnimation.FrameRate = 1;
 
@@ -2320,15 +2336,11 @@ namespace WadTool
 
         private void transportChained_Click(object sender, EventArgs e)
         {
-            _chainedPlayback = !_chainedPlayback;
-
-            if (_chainedPlayback)
-                butTransportChained.Image = Properties.Resources.transport_chain_enabled_24;
-            else
-                butTransportChained.Image = Properties.Resources.transport_chain_disabled_24;
+            _editor.Tool.Configuration.AnimationEditor_ChainPlayback = !_editor.Tool.Configuration.AnimationEditor_ChainPlayback;
+            UpdateUIControls();
 
             // Translate global event
-            _editor.Tool.TogglePlayback(_timerPlayAnimation.Enabled, _chainedPlayback);
+            _editor.Tool.TogglePlayback(_timerPlayAnimation.Enabled, _editor.Tool.Configuration.AnimationEditor_ChainPlayback);
         }
 
         private void lstAnimations_Click(object sender, EventArgs e)
@@ -2461,7 +2473,5 @@ namespace WadTool
             if (e.RowIndex < 0) return;
             dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value = !(bool)dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value;
         }
-
-        private void mirrorAnimationToolStripMenuItem_Click(object sender, EventArgs e) => MirrorAnimation();
     }
 }

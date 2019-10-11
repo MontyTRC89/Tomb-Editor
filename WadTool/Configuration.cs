@@ -35,6 +35,15 @@ namespace WadTool
 
         public int AnimationEditor_UndoDepth { get; set; } = 30;
         public bool AnimationEditor_RewindAfterChainPlayback { get; set; } = true;
+        public bool AnimationEditor_ScrollGrid { get; set; } = true;
+        public bool AnimationEditor_RecoverGridAfterPositionChange { get; set; } = false;
+        public bool AnimationEditor_ShowGrid { get; set; } = true;
+        public bool AnimationEditor_ShowCollisionBox { get; set; } = true;
+        public bool AnimationEditor_ShowGizmo { get; set; } = true;
+        public bool AnimationEditor_SmoothAnimation { get; set; } = true;
+        public bool AnimationEditor_ChainPlayback { get; set; } = false;
+        public bool AnimationEditor_SoundPreview { get; set; } = false;
+        public SoundPreviewType AnimationEditor_SoundPreviewType { get; set; } = SoundPreviewType.Land;
 
         public float RenderingItem_NavigationSpeedMouseWheelZoom { get; set; } = 6.0f;
         public float RenderingItem_NavigationSpeedMouseZoom { get; set; } = 800.0f;
