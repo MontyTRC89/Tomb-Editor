@@ -211,6 +211,20 @@ namespace DarkUI.Controls
                 return;
             }
 
+            if (cell is DarkDataGridViewComboBoxCell)
+            {
+                var buttonRect = new Rectangle(cell.Size.Width - SystemInformation.VerticalScrollBarWidth - 1,
+                                               0, SystemInformation.VerticalScrollBarWidth, cell.Size.Height - 1);
+
+                // Immediately start edit, if user clicked on a button.
+                if (buttonRect.Contains(e.Location))
+                {
+                    _base.CurrentCell = cell;
+                    _base.BeginEdit(true);
+                    return;
+                }
+            }
+
             if (ToggleCheckBoxOnClick)
                 ToggleFirstCheckbox(e);
         }
@@ -1327,6 +1341,92 @@ namespace DarkUI.Controls
                 _enabled = value;
                 DataGridView?.InvalidateColumn(Index);
             }
+        }
+    }
+
+    public class DarkDataGridViewComboBoxCell : DataGridViewComboBoxCell
+    {
+        private static readonly Padding _padding = new Padding(1, 1, 2, 2);
+        private static readonly StringFormat _stringFormat = new StringFormat
+        {
+            LineAlignment = StringAlignment.Center,
+            Alignment = StringAlignment.Near,
+            Trimming = StringTrimming.EllipsisCharacter
+        };
+
+        protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex,
+            DataGridViewElementStates elementState, object value, object formattedValue, string errorText,
+            DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
+        {
+            if (FlatStyle != FlatStyle.Flat)
+            {
+                base.Paint(graphics, clipBounds, cellBounds, rowIndex, elementState, value,
+                    formattedValue, errorText, cellStyle, advancedBorderStyle, paintParts);
+                return;
+            }
+
+            var buttonIcon  = Icons.ComboBoxIcons.combobox_arrow;
+            var buttonColor = Colors.LightBackground;
+            var borderColor = Colors.GreySelection;
+            var textColor   = cellStyle.ForeColor;
+
+            Rectangle contentBounds = new Rectangle(cellBounds.X + _padding.Left, cellBounds.Y + _padding.Top,
+                                                    cellBounds.Width - _padding.Horizontal, cellBounds.Height - _padding.Vertical);
+
+            Rectangle buttonRect = new Rectangle(cellBounds.X + cellBounds.Width - SystemInformation.VerticalScrollBarWidth - 1, 
+                                                 cellBounds.Y, SystemInformation.VerticalScrollBarWidth, cellBounds.Height - 1);
+
+            Rectangle buttonIconRect = new Rectangle(buttonRect.Left + (buttonRect.Width - buttonIcon.Width) / 2, 
+                                                     buttonRect.Top + (buttonRect.Height / 2 - buttonIcon.Height / 2), 
+                                                     buttonIcon.Width, buttonIcon.Height);
+            // Paint background
+            if (paintParts.HasFlag(DataGridViewPaintParts.Background))
+            {
+                Color backColor = elementState.HasFlag(DataGridViewElementStates.Selected) ?
+                cellStyle.SelectionBackColor : cellStyle.BackColor;
+                using (var brush = new SolidBrush(backColor))
+                    graphics.FillRectangle(brush, cellBounds);
+            }
+
+            // Draw border
+            if (paintParts.HasFlag(DataGridViewPaintParts.Border))
+                PaintBorder(graphics, clipBounds, cellBounds, cellStyle, advancedBorderStyle);
+
+            // Draw text
+            if (paintParts.HasFlag(DataGridViewPaintParts.ContentForeground))
+                using (var brush = new SolidBrush(textColor))
+                    graphics.DrawString(formattedValue?.ToString() ?? "", cellStyle.Font, brush, contentBounds, _stringFormat);
+
+            // Draw button
+            using (var buttonBrush = new SolidBrush(buttonColor))
+                graphics.FillRectangle(buttonBrush, buttonRect);
+            graphics.DrawImage(buttonIcon, buttonIconRect);
+            ControlPaint.DrawBorder(graphics, buttonRect, borderColor, ButtonBorderStyle.Solid);
+
+            // Paint error
+            if (DataGridView.ShowCellErrors && paintParts.HasFlag(DataGridViewPaintParts.ErrorIcon))
+                PaintErrorIcon(graphics, clipBounds, contentBounds, errorText);
+        }
+    }
+
+    public class DarkDataGridViewComboBoxColumn : DataGridViewComboBoxColumn
+    {
+        public DarkDataGridViewComboBoxColumn()
+        {
+            CellTemplate = new DarkDataGridViewComboBoxCell();
+            base.FlatStyle = FlatStyle.Flat;
+        }
+
+        [DefaultValue(FlatStyle.Flat)]
+        public new FlatStyle FlatStyle
+        {
+            get { return FlatStyle.Flat; }
+        }
+
+        public sealed override DataGridViewCell CellTemplate
+        {
+            get { return base.CellTemplate; }
+            set { base.CellTemplate = value; }
         }
     }
 
