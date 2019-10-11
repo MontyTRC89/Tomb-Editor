@@ -1371,7 +1371,7 @@ namespace DarkUI.Controls
             var textColor   = cellStyle.ForeColor;
 
             Rectangle contentBounds = new Rectangle(cellBounds.X + _padding.Left, cellBounds.Y + _padding.Top,
-                                                    cellBounds.Width - _padding.Horizontal, cellBounds.Height - _padding.Vertical);
+                                                    cellBounds.Width - _padding.Horizontal - SystemInformation.VerticalScrollBarWidth, cellBounds.Height - _padding.Vertical);
 
             Rectangle buttonRect = new Rectangle(cellBounds.X + cellBounds.Width - SystemInformation.VerticalScrollBarWidth - 1, 
                                                  cellBounds.Y, SystemInformation.VerticalScrollBarWidth, cellBounds.Height - 1);
