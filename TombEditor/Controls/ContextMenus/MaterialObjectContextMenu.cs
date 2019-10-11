@@ -17,9 +17,7 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripSeparator());
             }
 
-            if (!(targetObject is LightInstance || 
-                  targetObject is GhostBlockInstance || 
-                 (targetObject is StaticInstance && editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)))
+            if (!(targetObject is LightInstance ||  targetObject is GhostBlockInstance))
             { 
                 Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
                 {

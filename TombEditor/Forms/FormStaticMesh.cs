@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -9,6 +11,7 @@ namespace TombEditor.Forms
     {
         private readonly StaticInstance _staticMesh;
         private short newOCB;
+        private Vector3 oldColor;
         private bool locked;
 
         public FormStaticMesh(StaticInstance staticMesh)
@@ -22,6 +25,8 @@ namespace TombEditor.Forms
         {
             locked = true;
             tbOCB.Text = _staticMesh.Ocb.ToString();
+            panelColor.BackColor = (_staticMesh.Color * 0.5f).ToWinFormsColor();
+            oldColor = _staticMesh.Color;
             DecodeOCB();
             locked = false;
         }
@@ -38,6 +43,7 @@ namespace TombEditor.Forms
 
         private void butCancel_Click(object sender, EventArgs e)
         {
+            _staticMesh.Color = oldColor; 
             DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -168,5 +174,7 @@ namespace TombEditor.Forms
             newOCB = ocb;
             return true;
         }
+
+        private void panelColor_Click(object sender, EventArgs e) => EditorActions.EditStaticMeshColor(this, _staticMesh);
     }
 }

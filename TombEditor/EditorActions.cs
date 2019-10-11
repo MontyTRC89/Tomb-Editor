@@ -340,6 +340,25 @@ namespace TombEditor
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
+        public static void EditStaticMeshColor(IWin32Window owner, StaticInstance obj)
+        {
+            using (var colorDialog = new RealtimeColorDialog(c =>
+            {
+                obj.Color = c.ToFloat3Color() * 2.0f;
+                _editor.ObjectChange(obj, ObjectChangeType.Change);
+            }, _editor.Configuration.UI_ColorScheme))
+            {
+                colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
+
+                if (colorDialog.ShowDialog(owner) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
+
+                obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
+                _editor.ObjectChange(obj, ObjectChangeType.Change);
+            }
+        }
+
         public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false)
         {
             var currBlock = room.GetBlockTryThroughPortal(x, z);
@@ -748,11 +767,14 @@ namespace TombEditor
             {
                 // Use static editing dialog only for NG levels for now
                 if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
-                    return;
+                    EditStaticMeshColor(owner, (StaticInstance)instance);
+                else
+                {
+                    using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
+                        if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
+                            return;
+                }
 
-                using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
-                    if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
-                        return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is FlybyCameraInstance)
