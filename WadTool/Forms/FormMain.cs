@@ -33,6 +33,11 @@ namespace WadTool
             tool.EditorEventRaised += Tool_EditorEventRaised;
 
             Tool_EditorEventRaised(new InitEvent());
+
+            // Try to load reference project on start-up, if specified in config
+            if ((!string.IsNullOrEmpty(tool.Configuration.Tool_ReferenceProject) &&
+                File.Exists(tool.Configuration.Tool_ReferenceProject)))
+                WadActions.LoadReferenceLevel(tool, this, tool.Configuration.Tool_ReferenceProject);
         }
 
         private class InitEvent : IEditorEvent { };
@@ -546,7 +551,7 @@ namespace WadTool
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if(e.CloseReason == CloseReason.UserClosing ||
-                e.CloseReason == CloseReason.None)
+               e.CloseReason == CloseReason.None)
             {
                 var result = CheckIfSaved();
                 if (result == DialogResult.Yes)
@@ -558,6 +563,8 @@ namespace WadTool
                     e.Cancel = true;
                     return;
                 }
+
+                _tool.Configuration.SaveTry();
             }
 
             base.OnFormClosing(e);

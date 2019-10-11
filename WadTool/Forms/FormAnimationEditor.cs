@@ -258,7 +258,8 @@ namespace WadTool
             else
                 butTransportChained.Image = Properties.Resources.transport_chain_disabled_24;
 
-            if (_editor.Tool.Configuration.AnimationEditor_SoundPreview)
+            if (_editor.Tool.ReferenceLevel != null &&
+                _editor.Tool.Configuration.AnimationEditor_SoundPreview)
                 butTransportSound.Image = Properties.Resources.transport_audio_24;
             else
                 butTransportSound.Image = Properties.Resources.transport_mute_24;

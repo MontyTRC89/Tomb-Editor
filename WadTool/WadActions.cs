@@ -176,19 +176,30 @@ namespace WadTool
             }
         }
 
-        public static bool LoadReferenceLevel(WadToolClass tool, IWin32Window owner)
+        public static bool LoadReferenceLevel(WadToolClass tool, IWin32Window owner, string path = null)
         {
-            var fileName = LevelFileDialog.BrowseFile(owner, null, null, "Open Tomb Editor reference level", LevelSettings.FileFormatsLevel, null, false);
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(path))
+                path = LevelFileDialog.BrowseFile(owner, null, null, "Open Tomb Editor reference level", LevelSettings.FileFormatsLevel, null, false);
+           
+            if (string.IsNullOrEmpty(path))
                 return false;
 
-            tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
-            return true;
+            tool.ReferenceLevel = Prj2Loader.LoadFromPrj2(path, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+
+            if (tool.ReferenceLevel != null)
+            {
+                tool.Configuration.Tool_ReferenceProject = path;
+                return true;
+            }
+            else
+                return false;
+
         }
 
         public static void UnloadReferenceLevel(WadToolClass tool)
         {
             tool.ReferenceLevel = null;
+            tool.Configuration.Tool_ReferenceProject = string.Empty;
         }
 
         public static void ChangeSlot(WadToolClass tool, IWin32Window owner)
