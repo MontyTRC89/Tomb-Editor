@@ -1,11 +1,9 @@
 ﻿using DarkUI.Docking;
 using System;
 using System.Windows.Forms;
-using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
-using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombEditor.ToolWindows
@@ -92,29 +90,6 @@ namespace TombEditor.ToolWindows
                 }
             }
 
-            // Update item color control
-            if (obj is Editor.SelectedObjectChangedEvent)
-            {
-                StaticInstance itemInstance = ((Editor.SelectedObjectChangedEvent)obj).Current as StaticInstance;
-                if(itemInstance != null)
-                {
-                    panelStaticMeshColor.BackColor = (itemInstance.Color * 0.5f).ToWinFormsColor();
-                    lblStaticMeshColor.Visible = true;
-                    panelStaticMeshColor.Visible = true;
-                }
-                else
-                {
-                    lblStaticMeshColor.Visible = false;
-                    panelStaticMeshColor.Visible = false;
-                }
-            }
-            if (obj is Editor.ObjectChangedEvent)
-            {
-                var instance = ((Editor.ObjectChangedEvent)obj).Object;
-                if (instance == _editor.SelectedObject && instance is StaticInstance)
-                    panelStaticMeshColor.BackColor = (((StaticInstance)instance).Color * 0.5f).ToWinFormsColor();
-            }
-
             // Update tooltip texts
             if(obj is Editor.ConfigurationChangedEvent)
             {
@@ -127,29 +102,6 @@ namespace TombEditor.ToolWindows
         {
             var searchPopUp = new PopUpSearch(comboItems);
             searchPopUp.Show(this);
-        }
-
-        private void panelStaticMeshColor_Click(object sender, EventArgs e)
-        {
-            var instance = _editor.SelectedObject as StaticInstance;
-            if (instance == null)
-                return;
-
-            using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
-            {
-                instance.Color = c.ToFloat3Color() * 2.0f;
-                _editor.ObjectChange(instance, ObjectChangeType.Change);
-            }, _editor.Configuration.UI_ColorScheme))
-            {
-                colorDialog.Color = (instance.Color * 0.5f).ToWinFormsColor();
-                var oldLightColor = colorDialog.Color;
-
-                if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                    colorDialog.Color = oldLightColor;
-
-                instance.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
-                _editor.ObjectChange(instance, ObjectChangeType.Change);
-            }
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
