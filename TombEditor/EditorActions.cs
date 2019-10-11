@@ -1717,8 +1717,8 @@ namespace TombEditor
         public static void MakeNewRoom(int index)
         {
             Room newRoom = new Room(_editor.Level,
-                        Room.DefaultRoomDimensions,
-                        Room.DefaultRoomDimensions,
+                        _editor.Configuration.Editor_DefaultNewRoomSize,
+                        _editor.Configuration.Editor_DefaultNewRoomSize,
                         _editor.Level.Settings.DefaultAmbientLight,
                         "Room " + index);
 
