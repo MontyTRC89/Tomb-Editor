@@ -17,6 +17,13 @@ namespace WadTool
         Destination
     }
 
+    public enum SoundPreviewType
+    {
+        Land,
+        LandWithMaterial,
+        Water
+    }
+
     public struct MainSelection
     {
         public WadArea WadArea;

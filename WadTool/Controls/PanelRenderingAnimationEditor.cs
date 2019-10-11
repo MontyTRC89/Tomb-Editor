@@ -26,18 +26,6 @@ namespace WadTool.Controls
         public AnimatedModel Model { get { return _model; } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public AnimatedModel Skin { get { return _skinModel; } }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawVisibilityBox { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawCollisionBox { get; set; } = true;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGrid { get; set; } = true;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGizmo { get; set; } = true;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawLights { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawRoom { get; set; }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Level Level { get; set; }
@@ -94,12 +82,14 @@ namespace WadTool.Controls
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
 
-            base.InitializeRendering(deviceManager.Device, editor.Tool.Configuration.RenderingItem_Antialias);
+            base.InitializeRendering(deviceManager.Device, Configuration.RenderingItem_Antialias);
             ResetCamera();
 
             _editor = editor;
             _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
             _model = _wadRenderer.GetMoveable(editor.Moveable);
+
+            Configuration = _editor.Tool.Configuration;
 
             if (skin != null)
                 _skinModel = _wadRenderer.GetMoveable(skin);
@@ -297,7 +287,7 @@ namespace WadTool.Controls
                     }
 
                     // Draw collision box
-                    if (DrawCollisionBox)
+                    if (Configuration.AnimationEditor_ShowCollisionBox)
                     {
                         if (_vertexBufferVisibility != null)
                             _vertexBufferVisibility.Dispose();
@@ -316,7 +306,7 @@ namespace WadTool.Controls
                 }
             }
 
-            if (DrawGrid)
+            if (Configuration.AnimationEditor_ShowGrid)
             {
                 // Draw the grid
                 _device.SetVertexBuffer(0, _plane.VertexBuffer);
@@ -332,14 +322,16 @@ namespace WadTool.Controls
                 _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
             }
 
-            if (DrawGizmo && SelectedMesh != null && _editor.ValidAnimationAndFrames)
+            if (Configuration.AnimationEditor_ShowGizmo && 
+                SelectedMesh != null && _editor.ValidAnimationAndFrames)
             {
                 // Draw the gizmo
                 SwapChain.ClearDepth();
                 _gizmo.Draw(viewProjection);
             }
 
-            if (_editor.CurrentAnim != null && _editor.Tool.Configuration.RenderingItem_ShowDebugInfo)
+            if (_editor.CurrentAnim != null && 
+                Configuration.RenderingItem_ShowDebugInfo)
             {
                 ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState(); // To make sure SharpDx.Toolkit didn't change settings.
                 string debugMessage = "Frame: " + (_editor.CurrentFrameIndex + 1) + "/" + _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count;
@@ -372,7 +364,7 @@ namespace WadTool.Controls
         {
             base.OnMouseWheel(e);
 
-            Camera.Zoom(-e.Delta * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
+            Camera.Zoom(-e.Delta * Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
             Invalidate();
         }
 
@@ -390,7 +382,7 @@ namespace WadTool.Controls
                 if (_editor.ValidAnimationAndFrames)
                 {
                     // Try to do gizmo picking
-                    if (DrawGizmo)
+                    if (Configuration.AnimationEditor_ShowGizmo)
                     {
                         var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
                         if (result != null)
@@ -463,14 +455,14 @@ namespace WadTool.Controls
                 if (e.Button == MouseButtons.Right)
                 {
                     if ((ModifierKeys & Keys.Control) == Keys.Control)
-                        Camera.Zoom(-deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseZoom);
+                        Camera.Zoom(-deltaY * Configuration.RenderingItem_NavigationSpeedMouseZoom);
                     else if ((ModifierKeys & Keys.Shift) != Keys.Shift)
-                        Camera.Rotate(deltaX * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate,
-                                     -deltaY * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseRotate);
+                        Camera.Rotate(deltaX * Configuration.RenderingItem_NavigationSpeedMouseRotate,
+                                     -deltaY * Configuration.RenderingItem_NavigationSpeedMouseRotate);
                 }
                 if ((e.Button == MouseButtons.Right && (ModifierKeys & Keys.Shift) == Keys.Shift) ||
                      e.Button == MouseButtons.Middle)
-                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * _editor.Tool.Configuration.RenderingItem_NavigationSpeedMouseTranslate);
+                    Camera.MoveCameraPlane(new Vector3(deltaX, deltaY, 0) * Configuration.RenderingItem_NavigationSpeedMouseTranslate);
 
                 Invalidate();
             }

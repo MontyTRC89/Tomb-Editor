@@ -66,6 +66,7 @@ namespace WadTool
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restoreGridHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
@@ -647,7 +648,8 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem,
             this.toolStripSeparator9,
             this.smoothAnimationsToolStripMenuItem,
-            this.scrollGridToolStripMenuItem});
+            this.scrollGridToolStripMenuItem,
+            this.restoreGridHeightToolStripMenuItem});
             this.renderingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.renderingToolStripMenuItem.Name = "renderingToolStripMenuItem";
             this.renderingToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
@@ -661,7 +663,7 @@ namespace WadTool
             this.drawGizmoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGizmoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGizmoToolStripMenuItem.Name = "drawGizmoToolStripMenuItem";
-            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.drawGizmoToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.drawGizmoToolStripMenuItem.Text = "Draw gizmo";
             this.drawGizmoToolStripMenuItem.Click += new System.EventHandler(this.drawGizmoToolStripMenuItem_Click);
             // 
@@ -673,7 +675,7 @@ namespace WadTool
             this.drawGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawGridToolStripMenuItem.Name = "drawGridToolStripMenuItem";
-            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.drawGridToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.drawGridToolStripMenuItem.Text = "Draw grid";
             this.drawGridToolStripMenuItem.Click += new System.EventHandler(this.drawGridToolStripMenuItem_Click);
             // 
@@ -685,7 +687,7 @@ namespace WadTool
             this.drawCollisionBoxToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.drawCollisionBoxToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.drawCollisionBoxToolStripMenuItem.Name = "drawCollisionBoxToolStripMenuItem";
-            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.drawCollisionBoxToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.drawCollisionBoxToolStripMenuItem.Text = "Draw collision box";
             this.drawCollisionBoxToolStripMenuItem.Click += new System.EventHandler(this.drawCollisionBoxToolStripMenuItem_Click);
             // 
@@ -695,7 +697,7 @@ namespace WadTool
             this.toolStripSeparator9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripSeparator9.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(170, 6);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(171, 6);
             // 
             // smoothAnimationsToolStripMenuItem
             // 
@@ -705,7 +707,7 @@ namespace WadTool
             this.smoothAnimationsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.smoothAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.smoothAnimationsToolStripMenuItem.Name = "smoothAnimationsToolStripMenuItem";
-            this.smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.smoothAnimationsToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.smoothAnimationsToolStripMenuItem.Text = "Smooth animation";
             this.smoothAnimationsToolStripMenuItem.Click += new System.EventHandler(this.smoothAnimationsToolStripMenuItem_Click);
             // 
@@ -717,9 +719,19 @@ namespace WadTool
             this.scrollGridToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.scrollGridToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.scrollGridToolStripMenuItem.Name = "scrollGridToolStripMenuItem";
-            this.scrollGridToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.scrollGridToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.scrollGridToolStripMenuItem.Text = "Scroll grid";
             this.scrollGridToolStripMenuItem.Click += new System.EventHandler(this.scrollGridToolStripMenuItem_Click);
+            // 
+            // restoreGridHeightToolStripMenuItem
+            // 
+            this.restoreGridHeightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.restoreGridHeightToolStripMenuItem.CheckOnClick = true;
+            this.restoreGridHeightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.restoreGridHeightToolStripMenuItem.Name = "restoreGridHeightToolStripMenuItem";
+            this.restoreGridHeightToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.restoreGridHeightToolStripMenuItem.Text = "Restore grid height";
+            this.restoreGridHeightToolStripMenuItem.Click += new System.EventHandler(this.restoreGridHeightToolStripMenuItem_Click);
             // 
             // darkStatusStrip1
             // 
@@ -2741,5 +2753,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem reverseAnimationToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem mirrorAnimationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem restoreGridHeightToolStripMenuItem;
     }
 }
