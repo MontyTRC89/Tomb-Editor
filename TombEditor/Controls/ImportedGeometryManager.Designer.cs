@@ -102,11 +102,11 @@
             // 
             // pathColumn
             // 
-            this.pathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.pathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.pathColumn.DataPropertyName = "Path";
+            this.pathColumn.FillWeight = 50F;
             this.pathColumn.HeaderText = "Path";
             this.pathColumn.Name = "pathColumn";
-            this.pathColumn.Width = 54;
             // 
             // searchButtonColumn
             // 
@@ -136,6 +136,7 @@
             this.swapXYColumn.HeaderText = "X↔Y";
             this.swapXYColumn.Name = "swapXYColumn";
             this.swapXYColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.swapXYColumn.ToolTipText = "Swap X-Y axis";
             this.swapXYColumn.Width = 34;
             // 
             // swapXZColumn
@@ -145,6 +146,7 @@
             this.swapXZColumn.Name = "swapXZColumn";
             this.swapXZColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.swapXZColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.swapXZColumn.ToolTipText = "Swap X-Z axis";
             this.swapXZColumn.Width = 34;
             // 
             // swapYZColumn
@@ -154,6 +156,7 @@
             this.swapYZColumn.Name = "swapYZColumn";
             this.swapYZColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.swapYZColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.swapYZColumn.ToolTipText = "Swap Y-Z axis";
             this.swapYZColumn.Width = 34;
             // 
             // flipXColumn
@@ -162,6 +165,7 @@
             this.flipXColumn.HeaderText = "-X";
             this.flipXColumn.Name = "flipXColumn";
             this.flipXColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.flipXColumn.ToolTipText = "Invert X axis";
             this.flipXColumn.Width = 22;
             // 
             // flipYColumn
@@ -170,6 +174,7 @@
             this.flipYColumn.HeaderText = "-Y";
             this.flipYColumn.Name = "flipYColumn";
             this.flipYColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.flipYColumn.ToolTipText = "Invert Y axis";
             this.flipYColumn.Width = 22;
             // 
             // flipZColumn
@@ -178,6 +183,7 @@
             this.flipZColumn.HeaderText = "-Z";
             this.flipZColumn.Name = "flipZColumn";
             this.flipZColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.flipZColumn.ToolTipText = "Invert Z axis";
             this.flipZColumn.Width = 22;
             // 
             // flipUV_Vcolumn
@@ -186,6 +192,7 @@
             this.flipUV_Vcolumn.HeaderText = "UV: -V";
             this.flipUV_Vcolumn.Name = "flipUV_Vcolumn";
             this.flipUV_Vcolumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.flipUV_Vcolumn.ToolTipText = "Invert V texture coordinate";
             this.flipUV_Vcolumn.Width = 44;
             // 
             // invertFacesColumn
@@ -194,6 +201,7 @@
             this.invertFacesColumn.HeaderText = "Inv. F.";
             this.invertFacesColumn.Name = "invertFacesColumn";
             this.invertFacesColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.invertFacesColumn.ToolTipText = "Invert faces";
             this.invertFacesColumn.Width = 44;
             // 
             // ImportedGeometryManager

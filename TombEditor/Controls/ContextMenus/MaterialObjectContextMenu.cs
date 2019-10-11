@@ -17,7 +17,9 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripSeparator());
             }
 
-            if (!(targetObject is LightInstance || targetObject is GhostBlockInstance))
+            if (!(targetObject is LightInstance || 
+                  targetObject is GhostBlockInstance || 
+                 (targetObject is StaticInstance && editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)))
             { 
                 Items.Add(new ToolStripMenuItem("Edit object", Properties.Resources.general_edit_16, (o, e) =>
                 {
@@ -45,6 +47,24 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.BookmarkObject(targetObject);
             }));
 
+            if (Items.Count > 2 && !(Items[Items.Count - 2] is ToolStripSeparator))
+                Items.Add(new ToolStripSeparator());
+
+            if (targetObject is StaticInstance)
+            {
+                var stat = (StaticInstance)targetObject;
+                bool isMerged = editor.Level.Settings.AutoStaticMeshMergeContainsStaticMesh(editor.Level.Settings.WadTryGetStatic(stat.WadObjectId));
+
+                Items.Add(new ToolStripMenuItem("Merge into room geometry", null, (o, e) =>
+                {
+                    if (!isMerged)
+                        editor.Level.Settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(stat.WadObjectId.TypeId, true, false, editor.Level.Settings));
+                    else
+                        editor.Level.Settings.AutoStaticMeshMerges.RemoveAll(item => item.meshId == stat.WadObjectId.TypeId);
+                })
+                { Checked = isMerged });
+            }
+
             if (targetObject is ImportedGeometryInstance)
             {
                 Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.actions_refresh_16, (o, e) =>
@@ -64,21 +84,18 @@ namespace TombEditor.Controls.ContextMenus
                 }));
             }
 
-            if (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll)
+            if (targetObject is PositionBasedObjectInstance && (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll))
             {
-                if (!(Items[Items.Count - 2] is ToolStripSeparator))
-                    Items.Add(new ToolStripSeparator());
-
                 Items.Add(new ToolStripMenuItem("Reset rotation (all axes)", Properties.Resources.actions_center_direction_16, (o, e) =>
                 {
-                    EditorActions.ResetObjectRotation();
+                    EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject);
                 }));
 
                 if (targetObject is IRotateableYX)
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (X axis)", null, (o, e) =>
                     {
-                        EditorActions.ResetObjectRotation(RotationAxis.X);
+                        EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject, RotationAxis.X);
                     }));
                 }
 
@@ -86,7 +103,7 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Y axis)", null, (o, e) =>
                     {
-                        EditorActions.ResetObjectRotation(RotationAxis.Y);
+                        EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject, RotationAxis.Y);
                     }));
                 }
 
@@ -94,9 +111,17 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     Items.Add(new ToolStripMenuItem("Reset rotation (Roll axis)", null, (o, e) =>
                     {
-                        EditorActions.ResetObjectRotation(RotationAxis.Roll);
+                        EditorActions.ResetObjectRotation((PositionBasedObjectInstance)targetObject, RotationAxis.Roll);
                     }));
                 }
+            }
+
+            if (targetObject is PositionBasedObjectInstance && (targetObject is IScaleable))
+            {
+                Items.Add(new ToolStripMenuItem("Reset scale", null, (o, e) =>
+                {
+                    EditorActions.ResetObjectScale((PositionBasedObjectInstance)targetObject);
+                }));
             }
 
             // Get all triggers pointing to target object
@@ -116,6 +141,9 @@ namespace TombEditor.Controls.ContextMenus
                     Items.Add(triggerItem);
                 }
             }
+
+            if (Items[Items.Count - 1] is ToolStripSeparator)
+                Items.RemoveAt(Items.Count - 1);
         }
     }
 }
