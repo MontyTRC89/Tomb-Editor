@@ -110,9 +110,9 @@
             // 
             // searchButtonColumn
             // 
-            this.searchButtonColumn.HeaderText = "Search";
+            this.searchButtonColumn.HeaderText = "Browse";
             this.searchButtonColumn.Name = "searchButtonColumn";
-            this.searchButtonColumn.Text = "Search";
+            this.searchButtonColumn.Text = "Browse";
             this.searchButtonColumn.Width = 50;
             // 
             // scaleColumn
