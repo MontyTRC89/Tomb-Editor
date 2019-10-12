@@ -1623,7 +1623,8 @@ namespace WadTool
             }
             else
             {
-                if (_editor.Tool.Configuration.AnimationEditor_RewindAfterChainPlayback)
+                if (_editor.Tool.Configuration.AnimationEditor_ChainPlayback &&
+                    _editor.Tool.Configuration.AnimationEditor_RewindAfterChainPlayback)
                 {
                     var origNode = _editor.Animations.FirstOrDefault(item => item.Index == _chainedPlaybackInitialAnim);
 
@@ -1641,7 +1642,8 @@ namespace WadTool
                         }
                     }
                     else if (origNode == _editor.CurrentAnim &&
-                            _editor.CurrentFrameIndex * _editor.CurrentAnim.WadAnimation.FrameRate >= _editor.CurrentAnim.WadAnimation.NextFrame)
+                            _editor.CurrentAnim.WadAnimation.NextFrame >= _editor.GetRealNumberOfFrames() &&
+                            _editor.GetRealFrameNumber() >= _editor.CurrentAnim.WadAnimation.NextFrame)
                     {
                         // Just restore frame number so the timeline doesn't look stuck
                         timeline.Value = _chainedPlaybackInitialCursorPos;
@@ -1694,7 +1696,7 @@ namespace WadTool
         private void UpdateStatusLabel()
         {
             string newLabel =
-                "Frame: " + (_frameCount) + " / " + (_editor.CurrentAnim.WadAnimation.FrameRate * (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1)) + "   " +
+                "Frame: " + (_frameCount) + " / " + (_editor.GetRealNumberOfFrames() - 1) + "   " +
                 "Keyframe: " + timeline.Value + " / " + (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1);
 
             if (!timeline.SelectionIsEmpty)
@@ -1911,7 +1913,7 @@ namespace WadTool
             if (_editor.CurrentAnim?.WadAnimation == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count < 1)
                 return;
 
-            int realFrameNumber = _editor.RealNumberOfFrames();
+            int realFrameNumber = _editor.GetRealNumberOfFrames();
 
             _frameCount++;
 
@@ -1926,7 +1928,7 @@ namespace WadTool
             {
                 if (_chainedPlaybackIncomingAnimation < _editor.Animations.Count &&
                     _chainedPlaybackIncomingFrame >= 0 &&
-                    _chainedPlaybackIncomingFrame < _editor.RealNumberOfFrames(_chainedPlaybackIncomingAnimation) &&
+                    _chainedPlaybackIncomingFrame < _editor.GetRealNumberOfFrames(_chainedPlaybackIncomingAnimation) &&
                     _chainedPlaybackIncomingFrameRange.X >= 0 &&
                     _chainedPlaybackIncomingFrameRange.Y >= _chainedPlaybackIncomingFrameRange.X &&
                     _chainedPlaybackIncomingFrameRange.Y <= realFrameNumber) // Some single-frame state changes refer to out-of-bounds frame 1
@@ -1972,7 +1974,7 @@ namespace WadTool
                         if (nextNode != _editor.CurrentAnim && UpdateAnimListSelection(nextIndex) < 0)
                             SelectAnimation(nextNode); // Update in UI failed, directly jump to anim
 
-                        var maxFrameNumber = nextNode.WadAnimation.FrameRate * (nextNode.DirectXAnimation.KeyFrames.Count - 1) + 1;
+                        var maxFrameNumber = _editor.GetRealNumberOfFrames(nextIndex);
                         if (nextFrame > maxFrameNumber)
                         {
                             _frameCount = 0;
