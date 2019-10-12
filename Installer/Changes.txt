@@ -1,15 +1,188 @@
-Version 1.2.4 - 25/12/2018
-==========================
+Version 1.2.8 - 10/2019
+=======================
+GENERAL:
 
-1. Make installer distribution.
-2. Open last used project on startup option.
-3. Fixed flyby dialog exception.
-4. Highlight current flyby camera.
-5. Fix NG meshswap flipeffect parameters.
-6. Add room autoswitch feature.
-7. Make dark rectangular text overlay optional.
-8. Ability to move objects from one room to another (context menu or hotkey).
-9. Make move/rotation gizmo modifier keys consistent.
+1. New TombIDE project, which serves as much more advanced and intuitive replacement for NG center.
+2. Completely reworked sound system, which mimics original TRLE workflow, with XML files being natively used instead of sounds.txt and sfx/sam.
+3. New overhauled SoundTool application which allows to import .sfx, .txt files and edit XML files used with new sound system.
+ 
+TE:
+New features:
+
+1. Ability to merge statics into room geometry, with optional conversion of vertex shades to vertex effects.
+2. New object type - ghost block. Used to create "ghost collision" without any visible geometry.
+3. Added room tags and tag-specific functions (search, select, set ambient light, move).
+4. Ability to change light interpolation mode (portal shade) between rooms - sharp-cut or smooth.
+5. Added previously missing mist light effect.
+6. An option to switch on/off room lights for imported geometry.
+7. "Make new room" command and option.
+8. Room multiselection and ability to move selected rooms at once in 3D mode and in depth bar.
+9. Ability to set all unmerged static mesh ambient colours to room ambient colour.
+10. Dedicated triggers search scope in search window.
+11. New PRJ import dialog with project-specific options moved out of editor options (flyby mousepatch, texture correction).
+12. Added dedicated shortcut keys for all blending modes.
+13. Menu option to create itemgroups to use within TRNG scripts.
+14. An option to automatically switch skybox on if transparent texture is applied in the room.
+15. Optional single-instance mode.
+ 
+Bugfixes:
+ 
+1. Fixed serious pathfinding issues which caused weird AI behaviour.
+2. Fixed portal room flickering.
+3. Fixed light interpolation between flipped rooms.
+4. Fixed sinks behaviour.
+5. Fixed Lara start position behaviour.
+6. Restored ability to set FPS for TRNG anim textures.
+7. Fixed several room vertex effect bugs, including water waves.
+8. Enabled real font/sky preview in level settings.
+9. Properly remap TRNG extended soundmap sounds (e.g. boat sounds).
+10. Fixed potential crashes while horizontally moving rooms with portals.
+11. Fixed flyby cameras roll inversion.
+12. Proper enumeration for NG flipeffect #71 onwards.
+13. Editing wall portal geometry on flipped room is now possible.
+14. Don't select invisible room parts in 2D map.
+15. Workaround to properly parse prjs with renamed objects, like FISH->LOCUST_EMITTER or NEW_ITEM5->CLASSIC_ROLLINGBALL.
+16. Filter out fake collisional TRNG triggers on prj import.
+17. Properly populate initial trigger parameters with ConditionNg trigger type.
+18. Properly import ConditionNg triggers in prjs.
+19. Don't autoswitch to selected item in trigger target combobox.
+20. Don't select broken degenerate texture area while clicking outside of texture map.
+21. Texture sounds of NGLE "BigTexture" projects are properly assigned on import.
+ 
+WT:
+
+1. Import animations in FBX and COLLADA formats.
+2. Completely overhauled main window
+3. Completely overhauled animation editor:
+ 1)  New timeline with selection, dynamic highlight, mouse warping and transport controls.
+ 2)  Undo and redo.
+ 3)  Realtime sound previews with 3 modes: land, land + material footsteps, water.
+ 4)  Realtime animcommand editing.
+ 5)  Live preview for in-game animation speed.
+ 6)  Selection-based position and translation controls.
+ 7)  Simple animation modes to create basic animations: linear, smooth and symmetric.
+ 8)  Batch find & replace animcommands.
+ 9)  Chain playback mode (loop through NextAnimation/NextFrame values).
+ 10) Human-readable animation names and state ID names with ability to search and filter by name.
+ 11) Ability to resample animation.
+ 12) Extensive bounding box controls, including mesh-based autogeneration and inflation/deflation.
+4. Added options window.
+5. Fix TR1 levels animation import.
+6. Fix TR1-3 colored faces import.
+
+Version 1.2.7 - 26/06/2019
+==========================
+Fixed movement effect for water surfaces
+Fixed alternate rooms drawing in editor
+Better imported geometry support
+Fixed texture file remove/reload
+Fixed triangles texture coordinates
+Added multiselection to trigger list
+Added object delete to undoable actions
+Better handling of errors on PRJ2 save, for not having corrupted projecs anymore
+Added popup info for flymode
+Fixed merge rooms bug
+Fixed copy and paste of imported geometry
+Better UI for grid paint tool
+Added normals importing in MQO importer
+Fixed NG animated textures for quads. Finally UVRotate works.
+Added polygon counter and warnings in level compiler for avoiding crashes in game
+Fixed sinks
+Fixed water/mist/reflections strength value
+Added new NG chunks
+Changed flyby flags descriptions
+Fixed empty slots in Wad Tool
+Fixed TR4/NG soundmap size bug
+Minor GUI fixes
+
+Version 1.2.6 - 02/05/2019
+==========================
+**** Tomb Editor fixes and features ****
+Fixed serious crashes of the renderer
+Added a new command for erasing all textures
+Automatically assign Script ID to items
+Faster normals recalculation
+Added fly mode camera with room automatic switch (SHIFT + Z) :)
+Cursors warping (like Blender)
+Better geometry import in static editor (BETA) (use OBJ file format for 99% compatibility)
+Allow choosing of light model to apply to imported geometry (no light, vertex colors, dynamic from lights in room)
+Fixed many texture out of bounds situations
+Fixed bug with oversized textures
+Added light calculations for imported geometry (BETA)
+Default 16 FPS for animated textures
+Fixed normals for imported geometry
+Fixed point lights calculations
+Fixed bug on saving Prj2 with imported geometry
+Fixed crash when you tried to copy an object without having selecting one
+Fixed Script ID allocation
+GUI improvements
+Added quick item switch buttons
+Report a warning instead of an error if a portal is created with a room > 255
+Fixed NgCatalog.xml
+Fixed game version in Extra of trigger window
+Fixed for texturing bugs
+Fixed browsing of missing Wad2 and texture files
+Always pick textures as quads and no as triangles
+Draw imported geometry menu item working again
+Fixed UI scaling with Windows 10
+Added Script ID in items list in trigger window
+Always insert new wads in top of the list
+Fixed normals in level compiler
+Added walls grid only quads (before it followed the floor and the ceiling)
+Added 3x3 and 4x4 grid paint
+Fixed group texturing
+Fixed bugs with config files
+**** Wad Tool fixes and features ****
+Fixed light calculation in static editor
+Better geometry import in static editor (use OBJ file format for 99% compatibility)
+Context menus in dest treeview
+GUI fixes
+Background color of panels is gray like Tomb Editor
+Fixed collision box calculation for keyframes
+Tweaked a bit the size of the gizmo
+Added support for both static and dynamic lights for static meshes (dynamic is limited by engine)
+Allow selecting the light model in static editor
+Precise position editor (x, y, z) in static editor
+Fixed copy and copy to different slot buttons
+Skeleton editor doesn't crash anymore on empty moveables (a fake transparent cube is added as root mesh)
+Fixed WAD130 support
+Rewritten skeleton editor for working with pop/push/move up/down like Wad Reorganizer
+
+Version 1.2.5 - 10/02/2019
+==========================
+Fixed the Fix UV tool
+Fixed Eraser not being enabled by default.
+Fixed Room Resizer resizing wrong walls.
+Fixed flipon/off greater than 0
+Fixed group texturing
+Fixed horizon rendering
+Allow deselect object when clicking away
+Fixed 45° rotation of objects
+Merged Selected block and Selected geometry context menus (now you can add objects also on selected areas)
+Added debug texture "out of bounds" when parent area in group texturing is invalid (EXPERIMENTAL)
+Fixed Color dialog position (now it's located at top-left corner of screen instead of middle of 3D area)
+Fixed minor issues
+
+Version 1.2.4 - 20/01/2019
+==========================
+Automatic object bookmark so the trigger window now shows the selectd object automatically
+Fixed transparent objects rendering
+Improved a bit the compiler performances
+Fixed handling of magenta color
+Fixed stamp action
+Cone drawn only for selected flyby camera
+Updated NgCatalog.xml
+Fixed flyby dialog X rotation limit
+Added option for opening last project
+Added some missing actions for undo/redo
+Fixed wrong quicksand flag
+Minor bug fixes
+Room auto-switch double clicking in 3D view
+Wad Tool: Now lights can be deleted in static editor
+Wad Tool: Added button for recalculating normals in static editor
+Wad Tool: Added nice error message when mesh import fails instead of exception
+Wad Tool: Fixed visibility and collision box calculation in static editor
+Wad Tool: Minor bug fixes
 
 Version 1.2.3 - 02/12/2018
 ==========================
