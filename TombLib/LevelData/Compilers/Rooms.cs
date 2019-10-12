@@ -10,19 +10,12 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData.Compilers
 {
-    public enum AlternateKind
-    {
-        NotAlternated,
-        BaseRoom,
-        AlternateRoom
-    }
-
     public sealed partial class LevelCompilerClassicTR
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
-        private Dictionary<KeyValuePair<int, Vector3>, ushort> _vertexColors;
+        private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
 
         private void BuildRooms()
         {
@@ -86,7 +79,7 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
-            _vertexColors = new Dictionary<KeyValuePair<int, Vector3>, ushort>();
+            _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
             var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
@@ -99,14 +92,17 @@ namespace TombLib.LevelData.Compilers
             {
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {
-                    int lookupKey = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1;
                     var v = trRoom.Vertices[i];
-                    var absolutePosition = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z);
-                    var pair = new KeyValuePair<int, Vector3>(lookupKey, absolutePosition);
+                    var sig = new ShadeMatchSignature() 
+                    { 
+                        IsWater = ((trRoom.Flags & 1) == 1), 
+                        AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1, 
+                        Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
+                    };
 
-                    if (_vertexColors.ContainsKey(pair))
+                    if (_vertexColors.ContainsKey(sig))
                     {
-                        v.Lighting2 = _vertexColors[pair];
+                        v.Lighting2 = _vertexColors[sig];
                         trRoom.Vertices[i] = v;
                     }
                 }
@@ -1421,9 +1417,12 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < room.Vertices.Count; i++)
                     {
                         var v1 = room.Vertices[i];
-                        var absolutePosition = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z);
-                        var pair = new KeyValuePair<int, Vector3>(room.AlternateKind == AlternateKind.AlternateRoom ? room.AlternateGroup : -1, absolutePosition);
-                        var isPresentInLookup = _vertexColors.ContainsKey(pair);
+                        var sig = new ShadeMatchSignature() 
+                        { 
+                            IsWater = (room.Flags & 1) == 1,
+                            AlternateGroup = room.AlternateKind == AlternateKind.AlternateRoom ? room.AlternateGroup : -1,
+                            Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z)
+                        };
 
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
                             if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
@@ -1435,9 +1434,10 @@ namespace TombLib.LevelData.Compilers
 
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
                                     { 
-                                           var v2 = otherRoom.Vertices[j];
-
-                                        ushort refColor = (isPresentInLookup ? _vertexColors[pair] : v1.Lighting2);
+                                        var v2 = otherRoom.Vertices[j];
+                                        ushort refColor;
+                                        var isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
+                                        if (!isPresentInLookup) refColor = v1.Lighting2;
 
                                         if (otherX == v2.Position.X && otherY == v2.Position.Y && otherZ == v2.Position.Z)
                                         {
@@ -1456,14 +1456,13 @@ namespace TombLib.LevelData.Compilers
                                                                         32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
                                             }
 
-                                            // NOTE: We keep alternate group in dictionary as well, this way we only apply vertex colour to appropriate room, 
-                                            // and not all rooms at once.
+                                            // NOTE: We keep alternate group and water flag in dictionary as well, this way we only apply vertex colour to
+                                            // appropriate rooms, and not all rooms at once.
 
                                             if (!isPresentInLookup)
-                                                //_vertexColors.Add(absolutePosition, newColor); //Dirty Hack!!!
-                                                _vertexColors.TryAdd(pair, newColor);
+                                                _vertexColors.TryAdd(sig, newColor);
                                             else
-                                                _vertexColors[pair] = newColor;
+                                                _vertexColors[sig] = newColor;
                                         }
                                     }
                                 }
