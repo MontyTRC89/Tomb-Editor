@@ -44,6 +44,8 @@ namespace SoundTool
             // If no args, create new catalog
             if (archive == null || !OpenArchive(archive))
                 CreateNewArchive();
+
+            UpdateUI();
         }
         public FormMain(Level level, string archive) : this(archive) { ReferenceLevel = level; }
 
@@ -211,15 +213,19 @@ namespace SoundTool
 
         private void UpdateUI()
         {
+            var refLoaded = ReferenceLevel != null;
+
             string winTitle = "SoundTool - " + (_currentArchive == null ? "Untitled" : _currentArchive);
             if (!_saved) winTitle += "*";
             Text = winTitle;
 
             string message = "Sound Infos: " + dgvSoundInfos.Rows.Count;
 
-            if (ReferenceLevel != null)
+            if (refLoaded)
                 message += " | Reference level: " + ReferenceLevel.Settings.MakeAbsolute(ReferenceLevel.Settings.LevelFilePath);
             labelStatus.Text = message;
+
+            unloadReferenceProjectToolStripMenuItem.Enabled = refLoaded;
         }
 
         private bool CheckForSavedChanges()
@@ -243,11 +249,18 @@ namespace SoundTool
             if (string.IsNullOrEmpty(fileName))
                 fileName = LevelFileDialog.BrowseFile(this, "Open Tomb Editor reference project", LevelSettings.FileFormatsLevel, false);
 
-            if (string.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName))
                 return;
 
-            soundInfoEditor.ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
             _configuration.SoundTool_ReferenceProject = fileName;
+            UpdateUI();
+        }
+
+        private void UnloadReferenceLevel()
+        {
+            ReferenceLevel = null;
+            _configuration.SoundTool_ReferenceProject = string.Empty;
             UpdateUI();
         }
 
@@ -288,6 +301,7 @@ namespace SoundTool
         private void saveToolStripMenuItem_Click(object sender, EventArgs e) => SaveArchive(_currentArchive);
         private void saveXMLAsToolStripMenuItem_Click(object sender, EventArgs e) => SaveArchive();
         private void loadReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e) => LoadReferenceLevel();
+        private void unloadReferenceProjectToolStripMenuItem_Click(object sender, EventArgs e) => UnloadReferenceLevel();
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         private void butAddNewSoundInfo_Click(object sender, EventArgs e) => AddSoundInfo();
