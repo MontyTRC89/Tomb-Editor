@@ -22,7 +22,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
-        private Dictionary<VectorInt3, ushort> _vertexColors;
+        private Dictionary<KeyValuePair<int, Vector3>, ushort> _vertexColors;
 
         private void BuildRooms()
         {
@@ -86,24 +86,27 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
-            _vertexColors = new Dictionary<VectorInt3, ushort>();
+            _vertexColors = new Dictionary<KeyValuePair<int, Vector3>, ushort>();
             var rooms = _tempRooms.Values.ToList();
-            for (int flipped = -1; flipped <= 12; flipped++)
+            for (int flipped = 0; flipped <= 1; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
                 {
                     var room = rooms[i];
-                    MatchDoorShades(room, flipped);
+                    MatchDoorShades(room, flipped == 1);
                 }
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {
+                    int lookupKey = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1;
                     var v = trRoom.Vertices[i];
                     var absolutePosition = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z);
-                    if (_vertexColors.ContainsKey(absolutePosition))
+                    var pair = new KeyValuePair<int, Vector3>(lookupKey, absolutePosition);
+
+                    if (_vertexColors.ContainsKey(pair))
                     {
-                        v.Lighting2 = _vertexColors[absolutePosition];
+                        v.Lighting2 = _vertexColors[pair];
                         trRoom.Vertices[i] = v;
                     }
                 }
@@ -1344,7 +1347,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void MatchDoorShades(tr_room room, int alternateGroup)
+        private void MatchDoorShades(tr_room room, bool flipped)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
@@ -1363,7 +1366,7 @@ namespace TombLib.LevelData.Compilers
                 // Here we must decide if match or not, basing on flipped flag.
                 // In winroomedit.exe, all flipped rooms were swapped with their counterparts,
                 // here instead we'll decide per portal
-                if (alternateGroup == -1)
+                if (!flipped)
                 {
                     // We allow here normal vs normal or base room vs base room
                     if (room.AlternateKind == AlternateKind.AlternateRoom || otherRoom.AlternateKind == AlternateKind.AlternateRoom)
@@ -1371,11 +1374,13 @@ namespace TombLib.LevelData.Compilers
                 }
                 else
                 {
-                    // We allow here flipped vs flipped, flipped vs normal and flipped vs base room
-                    if (otherRoom.AlternateKind == AlternateKind.BaseRoom)
+                    // We allow here flipped vs flipped, flipped vs normal and flipped vs base room.
+                    // NOTICE: We only take other flipped room into account if it belongs to SAME ALTERNATE GROUP.
+                    if (otherRoom.AlternateKind == AlternateKind.BaseRoom && rooms[otherRoom.AlternateRoom].AlternateGroup == room.AlternateGroup)
                         otherRoom = rooms[otherRoom.AlternateRoom];
 
-                    if (room.AlternateKind != AlternateKind.AlternateRoom || room.AlternateGroup != otherRoom.AlternateGroup || room.AlternateGroup != alternateGroup)
+                    // Don't proceed if current room isn't alternate or if alternate group don't match (paranoidal foolproof in case previous check failed).
+                    if (room.AlternateKind != AlternateKind.AlternateRoom || (otherRoom.AlternateKind == AlternateKind.AlternateRoom && room.AlternateGroup != otherRoom.AlternateGroup))
                         continue;
                 }
 
@@ -1417,7 +1422,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         var v1 = room.Vertices[i];
                         var absolutePosition = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z);
-                        var isPresentInLookup = _vertexColors.ContainsKey(absolutePosition);
+                        var pair = new KeyValuePair<int, Vector3>(room.AlternateKind == AlternateKind.AlternateRoom ? room.AlternateGroup : -1, absolutePosition);
+                        var isPresentInLookup = _vertexColors.ContainsKey(pair);
 
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
                             if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
@@ -1431,19 +1437,33 @@ namespace TombLib.LevelData.Compilers
                                     { 
                                            var v2 = otherRoom.Vertices[j];
 
-                                        ushort refColor = (isPresentInLookup ? _vertexColors[absolutePosition] : v1.Lighting2);
+                                        ushort refColor = (isPresentInLookup ? _vertexColors[pair] : v1.Lighting2);
 
                                         if (otherX == v2.Position.X && otherY == v2.Position.Y && otherZ == v2.Position.Z)
                                         {
-                                            var newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
+                                            ushort newColor;
+
+                                            // NOTE: We DON'T INTERPOLATE colours of both rooms in case we're dealing with alternate room and matched room
+                                            // isn't alternate room itself. Instead, we simply copy vertex colour from matched base room.
+                                            // This way we don't get sharp-cut half-transitioned vertex colour.
+
+                                            if (flipped && otherRoom.AlternateKind != AlternateKind.AlternateRoom)
+                                                newColor = v2.Lighting2;
+                                            else
+                                            {
+                                                newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
                                                                     32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
                                                                         32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
+                                            }
+
+                                            // NOTE: We keep alternate group in dictionary as well, this way we only apply vertex colour to appropriate room, 
+                                            // and not all rooms at once.
 
                                             if (!isPresentInLookup)
                                                 //_vertexColors.Add(absolutePosition, newColor); //Dirty Hack!!!
-                                                _vertexColors.TryAdd(absolutePosition, newColor);
+                                                _vertexColors.TryAdd(pair, newColor);
                                             else
-                                                _vertexColors[absolutePosition] = newColor;
+                                                _vertexColors[pair] = newColor;
                                         }
                                     }
                                 }
