@@ -195,6 +195,7 @@ namespace TombLib.Utils
                 newWatcher._watcher.Changed += newWatcher.NotificationReceived;
                 newWatcher._watcher.Renamed += newWatcher.NotificationReceivedRenamed;
                 newWatcher._watcher.EnableRaisingEvents = true;
+                newWatcher._watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName | NotifyFilters.DirectoryName;
                 _directoryWatchers.Add(newWatcher);
                 return newWatcher;
             }
