@@ -1359,10 +1359,6 @@ namespace TombLib.LevelData.Compilers
             {
                 var otherRoom = rooms[p.AdjoiningRoom];
 
-                // Check if the other room must be interpolated
-                if (otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
-                    continue;
-
                 // Here we must decide if match or not, basing on flipped flag.
                 // In winroomedit.exe, all flipped rooms were swapped with their counterparts,
                 // here instead we'll decide per portal
@@ -1383,6 +1379,10 @@ namespace TombLib.LevelData.Compilers
                     if (room.AlternateKind != AlternateKind.AlternateRoom || (otherRoom.AlternateKind == AlternateKind.AlternateRoom && room.AlternateGroup != otherRoom.AlternateGroup))
                         continue;
                 }
+
+                // Check if the other room must be interpolated
+                if (otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
+                    continue;
 
                 // If we have a pair of water room and dry room, orginal behaviour of TRLE was to not interpolate,
                 // but now we have flags
