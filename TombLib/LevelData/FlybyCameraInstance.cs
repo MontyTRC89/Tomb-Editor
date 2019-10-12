@@ -13,7 +13,7 @@ namespace TombLib.LevelData
         public string LuaScript { get; set; }
 
         private float _speed { get; set; } = 1;
-        private float _fov { get; set; } = 45;
+        private float _fov { get; set; } = 80;
         private float _roll { get; set; }
         private float _rotationX { get; set; }
         private float _rotationY { get; set; }

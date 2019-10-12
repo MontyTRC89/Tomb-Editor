@@ -54,7 +54,7 @@ namespace TombEditor
                     SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
                     if (!File.Exists(Application.StartupPath + "\\Catalogs\\TrCatalog.xml") ||
-                       !File.Exists(Application.StartupPath + "\\Catalogs\\NgCatalog.xml"))
+                        !File.Exists(Application.StartupPath + "\\Catalogs\\NgCatalog.xml"))
                     {
                         MessageBox.Show("One of the catalog files is missing.\nMake sure you have TrCatalog.xml and NgCatalog.xml in /Catalogs/ subfolder.");
                         Environment.Exit(1);
