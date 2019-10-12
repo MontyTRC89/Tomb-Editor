@@ -70,6 +70,7 @@ Section "Tomb Editor" Section1
   /x "install_script.nsi" \
   /x "TombEditorInstall.exe" \
   /x "TombEditorConfiguration.xml" \
+  /x "SoundToolConfiguration.xml" \
   /x "WadToolConfiguration.xml" \
   /x "TombIDE*.xml" \
   *.*
@@ -1335,6 +1336,7 @@ Section "Uninstall"
   
   ; Remove configs
   Delete "$INSTDIR\TombEditorConfiguration.xml"
+  Delete "$INSTDIR\SoundToolConfiguration.xml"
   Delete "$INSTDIR\WadToolConfiguration.xml"
   Delete "$INSTDIR\TombIDE*.xml"
 
