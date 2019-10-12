@@ -20,7 +20,7 @@ namespace TombLib.LevelData.Compilers
         public int AlternateGroup;
         public Vector3 Position;
 
-        public override int GetHashCode() => (Position.GetHashCode() * 17 + AlternateGroup.GetHashCode()) * 17 + IsWater.GetHashCode();
+        public override int GetHashCode() => (Position.GetHashCode().ToString() + "A" + AlternateGroup.ToString() + IsWater.ToString()).GetHashCode();
         public override bool Equals(object obj) => GetHashCode() == obj.GetHashCode();
     }
 
