@@ -54,7 +54,7 @@ namespace TombEditor.Forms
             numRotationX.Value = (decimal)_flyByCamera.RotationX;
             numRotationY.Value = (decimal)_flyByCamera.RotationY;
 
-            if(_editor.Level.Settings.GameVersion >= TRVersion.Game.TR5)
+            if(_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR5)
             {
                 cbBit1.Text = "Vignette";
                 cbBit4.Text = "Hide Lara";

@@ -30,7 +30,7 @@ namespace TombLib.NG
             {
                 if (levelSettings.GameVersion >= TRVersion.Game.TR4)
                     yield return TriggerType.Monkey;
-                if (levelSettings.GameVersion >= TRVersion.Game.TR5)
+                if (levelSettings.GameVersion.Legacy() == TRVersion.Game.TR5)
                 {
                     yield return TriggerType.Skeleton;
                     yield return TriggerType.TightRope;
