@@ -14,6 +14,7 @@ namespace SoundTool
     public partial class FormMain : DarkForm
     {
         private PopUpInfo popup = new PopUpInfo();
+        private Configuration _configuration;
 
         public Level ReferenceLevel
         {
@@ -32,6 +33,15 @@ namespace SoundTool
         public FormMain(string archive = null)
         {
             InitializeComponent();
+
+            // Load config
+            _configuration = new Configuration().LoadOrUseDefault<Configuration>();
+            Configuration.LoadWindowProperties(this, _configuration);
+
+            if (!string.IsNullOrEmpty(_configuration.SoundTool_ReferenceProject))
+                LoadReferenceLevel(_configuration.SoundTool_ReferenceProject);
+
+            // If no args, create new catalog
             if (archive == null || !OpenArchive(archive))
                 CreateNewArchive();
         }
@@ -228,13 +238,16 @@ namespace SoundTool
             return true;
         }
 
-        private void LoadReferenceLevel()
+        private void LoadReferenceLevel(string fileName = null)
         {
-            var fileName = LevelFileDialog.BrowseFile(this, "Open Tomb Editor reference project", LevelSettings.FileFormatsLevel, false);
+            if (string.IsNullOrEmpty(fileName))
+                fileName = LevelFileDialog.BrowseFile(this, "Open Tomb Editor reference project", LevelSettings.FileFormatsLevel, false);
+
             if (string.IsNullOrEmpty(fileName))
                 return;
 
             soundInfoEditor.ReferenceLevel = Prj2Loader.LoadFromPrj2(fileName, null, new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
+            _configuration.SoundTool_ReferenceProject = fileName;
             UpdateUI();
         }
 
@@ -317,6 +330,8 @@ namespace SoundTool
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             CheckForSavedChanges();
+            Configuration.SaveWindowProperties(this, _configuration);
+            _configuration.SaveTry();
             WadSoundPlayer.StopSample();
             base.OnFormClosing(e);
         }
