@@ -1,11 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
 
 namespace TombLib.LevelData.Compilers
 {
+    public enum AlternateKind
+    {
+        NotAlternated,
+        BaseRoom,
+        AlternateRoom
+    }
+
+    public struct ShadeMatchSignature
+    {
+        public bool IsWater;
+        public int AlternateGroup;
+        public Vector3 Position;
+
+        public override int GetHashCode() => (Position.GetHashCode() * 17 + AlternateGroup.GetHashCode()) * 17 + IsWater.GetHashCode();
+        public override bool Equals(object obj) => GetHashCode() == obj.GetHashCode();
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_color
     {
