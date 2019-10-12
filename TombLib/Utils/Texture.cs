@@ -295,28 +295,43 @@ namespace TombLib.Utils
                 return this;
 
             var area = GetRect(true);
-            var triangleCoords = TexCoords;
-            var corners = new bool[4];
             var restoredTexture = this;
-            var shape = (int)TextureExtensions.GetTextureShapeType(triangleCoords, true);
 
-            restoredTexture.TexCoord3 = restoredTexture.TexCoord2; // Just in case...
-            var coords = new Vector2[4]
+            Vector2[] restoredCoords = new Vector2[4];
+            restoredCoords[0] = new Vector2(area.X0, area.Y0);
+            restoredCoords[1] = new Vector2(area.X1, area.Y0);
+            restoredCoords[2] = new Vector2(area.X1, area.Y1);
+            restoredCoords[3] = new Vector2(area.X0, area.Y1);
+
+            Vector2[] originalCoords = new Vector2[4];
+            originalCoords[0] = TexCoord0;
+            originalCoords[1] = TexCoord1;
+            originalCoords[2] = TexCoord2;
+            originalCoords[3] = TexCoord1 + TexCoord2;
+
+            // Get closest vertex to zero coord
+
+            int closest = 0;
+            var length = float.MaxValue;
+
+            for (int i = 0; i < 4; i++)
             {
-                area.Start,
-                new Vector2(area.X1, area.Y0),
-                new Vector2(area.X0, area.Y1),
-                area.End
-            };
+                var newLength = Vector2.Distance(restoredCoords[i], originalCoords[0]);
+                if (newLength <= length)
+                {
+                    closest = i;
+                    length = newLength;
+                }
+            }
 
-            for(int i = 0; i < 4; i++)
-                for(int j = 0; j < 3; j++)
-                    if (triangleCoords[j] == coords[i])
-                        corners[i] = true;
+            for (int i = closest, j = 0; i <= closest + 3; i++, j++)
+                originalCoords[i % 4] = restoredCoords[j];
 
-            int coord = Array.FindIndex(corners, corner => !corner);
-            if (coord == -1) return this;
-            restoredTexture.TexCoord3 = coords[coord];
+            restoredTexture.TexCoord0 = originalCoords[0];
+            restoredTexture.TexCoord1 = originalCoords[1];
+            restoredTexture.TexCoord2 = originalCoords[2];
+            restoredTexture.TexCoord3 = originalCoords[3];
+
             return restoredTexture;
         }
 
