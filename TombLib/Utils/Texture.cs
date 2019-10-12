@@ -366,6 +366,31 @@ namespace TombLib.Utils
             return restoredTexture;
         }
 
+        // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
+        public void ClampToBounds()
+        {
+            TexCoord0.X = Math.Max(0.0f, TexCoord0.X);
+            TexCoord0.Y = Math.Max(0.0f, TexCoord0.Y);
+            TexCoord1.X = Math.Max(0.0f, TexCoord1.X);
+            TexCoord1.Y = Math.Max(0.0f, TexCoord1.Y);
+            TexCoord2.X = Math.Max(0.0f, TexCoord2.X);
+            TexCoord2.Y = Math.Max(0.0f, TexCoord2.Y);
+            TexCoord3.X = Math.Max(0.0f, TexCoord3.X);
+            TexCoord3.Y = Math.Max(0.0f, TexCoord3.Y);
+
+            if (!TextureIsInvisible && !TextureIsUnavailable)
+            {                                                
+                TexCoord0.X = Math.Min(Texture.Image.Width,  TexCoord0.X);
+                TexCoord0.Y = Math.Min(Texture.Image.Height, TexCoord0.Y);
+                TexCoord1.X = Math.Min(Texture.Image.Width,  TexCoord1.X);
+                TexCoord1.Y = Math.Min(Texture.Image.Height, TexCoord1.Y);
+                TexCoord2.X = Math.Min(Texture.Image.Width,  TexCoord2.X);
+                TexCoord2.Y = Math.Min(Texture.Image.Height, TexCoord2.Y);
+                TexCoord3.X = Math.Min(Texture.Image.Width,  TexCoord3.X);
+                TexCoord3.Y = Math.Min(Texture.Image.Height, TexCoord3.Y);
+            }
+        }
+
         public Vector2 GetTexCoord(int index)
         {
             switch (index)
