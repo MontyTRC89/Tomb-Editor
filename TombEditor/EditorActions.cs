@@ -941,7 +941,7 @@ namespace TombEditor
         
             if(fullFace && isTriangle && face >= BlockFace.Floor)
             {
-                if(newTexture.TextureIsTriangle) newTexture = newTexture.RestoreQuad();
+                if(newTexture.TextureIsTriangle) newTexture = newTexture.RestoreQuadWithRotation();
                 BlockFace opposite = BlockFace.Floor;
                 int rotation = 1;
 
