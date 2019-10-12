@@ -1005,7 +1005,7 @@ namespace TombEditor
                 _editor.SelectedTexture = TextureArea.Invisible;
             else
             {
-                if (face >= BlockFace.Ceiling) area.Mirror();
+                if (face >= BlockFace.Ceiling) area.Mirror(area.TextureIsTriangle);
                 _editor.SelectTextureAndCenterView(area.RestoreQuad());
             }
         }
@@ -1024,11 +1024,23 @@ namespace TombEditor
             var shape = room.GetFaceShape(pos.X, pos.Y, face);
 
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
-            texture.ClampToBounds(); 
+            texture.ClampToBounds();
+
+            // HACK: Ceiling vertex order is hardly messed up, we need to do some transforms.
+            if (face >= BlockFace.Ceiling) texture.Mirror();
 
             if (!_editor.Tool.TextureUVFixer ||
                 (shape == BlockFaceShape.Triangle && texture.TextureIsTriangle))
+            {
+                if (shape == BlockFaceShape.Triangle)
+                {
+                    if (face >= BlockFace.Ceiling)
+                        texture.Rotate(3); // WTF? But it works!
+                    texture.TexCoord3 = texture.TexCoord2;
+                }
+
                 return block.SetFaceTexture(face, texture);
+            }
 
             TextureArea processedTexture = texture;
             switch (face)
@@ -1205,7 +1217,6 @@ namespace TombEditor
 
             texture.ParentArea = new Rectangle2();
 
-            if (face >= BlockFace.Ceiling) texture.Mirror();
             var textureApplied = ApplyTextureWithoutUpdate(room, pos, face, texture);
             if (textureApplied)
             {
