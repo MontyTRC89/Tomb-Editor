@@ -37,20 +37,21 @@
             this.saveXMLAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.loadReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unloadReferenceProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.dgvSoundInfos = new DarkUI.Controls.DarkDataGridView();
-            this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
-            this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
+            this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -81,6 +82,7 @@
             this.saveXMLAsToolStripMenuItem,
             this.toolStripMenuItem1,
             this.loadReferenceLevelToolStripMenuItem,
+            this.unloadReferenceProjectToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -145,6 +147,15 @@
             this.loadReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.loadReferenceLevelToolStripMenuItem.Text = "Load reference project...";
             this.loadReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.loadReferenceLevelToolStripMenuItem_Click);
+            // 
+            // unloadReferenceProjectToolStripMenuItem
+            // 
+            this.unloadReferenceProjectToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.unloadReferenceProjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.unloadReferenceProjectToolStripMenuItem.Name = "unloadReferenceProjectToolStripMenuItem";
+            this.unloadReferenceProjectToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.unloadReferenceProjectToolStripMenuItem.Text = "Unload reference project";
+            this.unloadReferenceProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadReferenceProjectToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -212,20 +223,6 @@
             this.dgvSoundInfos.TabIndex = 2;
             this.dgvSoundInfos.SelectionChanged += new System.EventHandler(this.dgvSoundInfos_SelectionChanged);
             // 
-            // colID
-            // 
-            this.colID.HeaderText = "ID";
-            this.colID.Name = "colID";
-            this.colID.ReadOnly = true;
-            this.colID.Width = 50;
-            // 
-            // colName
-            // 
-            this.colName.HeaderText = "Name";
-            this.colName.Name = "colName";
-            this.colName.ReadOnly = true;
-            this.colName.Width = 200;
-            // 
             // darkGroupBox1
             // 
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -237,6 +234,21 @@
             this.darkGroupBox1.Size = new System.Drawing.Size(497, 415);
             this.darkGroupBox1.TabIndex = 96;
             this.darkGroupBox1.TabStop = false;
+            // 
+            // soundInfoEditor
+            // 
+            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.soundInfoEditor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
+            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
+            this.soundInfoEditor.Name = "soundInfoEditor";
+            this.soundInfoEditor.Size = new System.Drawing.Size(485, 401);
+            this.soundInfoEditor.TabIndex = 5;
+            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
             // 
             // butSearch
             // 
@@ -281,20 +293,19 @@
             this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteSoundInfo.Click += new System.EventHandler(this.butDeleteSoundInfo_Click);
             // 
-            // soundInfoEditor
+            // colID
             // 
-            this.soundInfoEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.soundInfoEditor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
-            this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
-            this.soundInfoEditor.Name = "soundInfoEditor";
-            this.soundInfoEditor.Size = new System.Drawing.Size(485, 401);
-            this.soundInfoEditor.TabIndex = 5;
-            this.soundInfoEditor.SoundInfoChanged += new System.EventHandler(this.soundInfoEditor_SoundInfoChanged);
+            this.colID.HeaderText = "ID";
+            this.colID.Name = "colID";
+            this.colID.ReadOnly = true;
+            this.colID.Width = 50;
+            // 
+            // colName
+            // 
+            this.colName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colName.HeaderText = "Name";
+            this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
             // 
             // FormMain
             // 
@@ -345,12 +356,13 @@
         private DarkUI.Controls.DarkButton butAddNewSoundInfo;
         private DarkUI.Controls.DarkButton butDeleteSoundInfo;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.ToolStripMenuItem saveXMLAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadReferenceLevelToolStripMenuItem;
         private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkTextBox tbSearch;
+        private System.Windows.Forms.ToolStripMenuItem unloadReferenceProjectToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colName;
     }
 }
 
