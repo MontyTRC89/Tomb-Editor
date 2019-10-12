@@ -247,7 +247,7 @@ namespace WadTool
                 {
                     Int16 limitNew = 0;
                     if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
-                        limit = (Int16)(_editor.RealNumberOfFrames(limitNew));
+                        limit = (Int16)(_editor.GetRealNumberOfFrames(limitNew));
                 }
                 else if (name == columnLowFrame.Name)
                 {
@@ -257,7 +257,7 @@ namespace WadTool
                 }
                 else if (name == columnHighFrame.Name)
                 {
-                    limit = (Int16)(_editor.RealNumberOfFrames());
+                    limit = (Int16)(_editor.GetRealNumberOfFrames());
                 }
 
                 if (parsedValue > limit)
