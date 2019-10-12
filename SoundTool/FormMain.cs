@@ -226,6 +226,7 @@ namespace SoundTool
             labelStatus.Text = message;
 
             unloadReferenceProjectToolStripMenuItem.Enabled = refLoaded;
+            saveToolStripMenuItem.Enabled = _currentArchive == null || !Saved;
         }
 
         private bool CheckForSavedChanges()
