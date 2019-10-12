@@ -117,9 +117,23 @@
             this.tbFilterSounds = new DarkUI.Controls.DarkTextBox();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogReloadButton = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogEditColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
+            this.SoundsCatalogsSoundCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundsCatalogsDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.darkLabel50 = new DarkUI.Controls.DarkLabel();
             this.selectedSoundsDataGridView = new DarkUI.Controls.DarkDataGridView();
+            this.colSoundsEnabled = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colSoundID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabSamples = new System.Windows.Forms.TabPage();
             this.soundDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
@@ -159,20 +173,6 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoundsEnabled = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.colSoundID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogReloadButton = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogEditColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogsAssignColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.SoundsCatalogsSoundCountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SoundsCatalogMessageColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -478,7 +478,7 @@
             this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
             this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameExecutableFilePathBut.TabIndex = 3;
-            this.gameExecutableFilePathBut.Text = "Search";
+            this.gameExecutableFilePathBut.Text = "Browse";
             this.gameExecutableFilePathBut.Click += new System.EventHandler(this.gameExecutableFilePathBut_Click);
             // 
             // darkLabel3
@@ -518,7 +518,7 @@
             this.gameLevelFilePathBut.Name = "gameLevelFilePathBut";
             this.gameLevelFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameLevelFilePathBut.TabIndex = 3;
-            this.gameLevelFilePathBut.Text = "Search";
+            this.gameLevelFilePathBut.Text = "Browse";
             this.gameLevelFilePathBut.Click += new System.EventHandler(this.gameLevelFilePathBut_Click);
             // 
             // gameLevelFilePathTxt
@@ -558,7 +558,7 @@
             this.gameDirectoryBut.Name = "gameDirectoryBut";
             this.gameDirectoryBut.Size = new System.Drawing.Size(92, 22);
             this.gameDirectoryBut.TabIndex = 3;
-            this.gameDirectoryBut.Text = "Search";
+            this.gameDirectoryBut.Text = "Browse";
             this.gameDirectoryBut.Click += new System.EventHandler(this.GameDirectoryBut_Click);
             // 
             // darkLabel7
@@ -686,7 +686,7 @@
             this.textureFileDataGridViewSearchColumn.HeaderText = "";
             this.textureFileDataGridViewSearchColumn.Name = "textureFileDataGridViewSearchColumn";
             this.textureFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.textureFileDataGridViewSearchColumn.Text = "Search";
+            this.textureFileDataGridViewSearchColumn.Text = "Browse";
             this.textureFileDataGridViewSearchColumn.Width = 60;
             // 
             // textureFileDataGridViewShowColumn
@@ -807,7 +807,7 @@
             this.objectFileDataGridViewSearchColumn.HeaderText = "";
             this.objectFileDataGridViewSearchColumn.Name = "objectFileDataGridViewSearchColumn";
             this.objectFileDataGridViewSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.objectFileDataGridViewSearchColumn.Text = "Search";
+            this.objectFileDataGridViewSearchColumn.Text = "Browse";
             this.objectFileDataGridViewSearchColumn.Width = 80;
             // 
             // objectFileDataGridViewShowColumn
@@ -1051,7 +1051,7 @@
             this.tr5SpritesTextureFilePathBut.Name = "tr5SpritesTextureFilePathBut";
             this.tr5SpritesTextureFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.tr5SpritesTextureFilePathBut.TabIndex = 3;
-            this.tr5SpritesTextureFilePathBut.Text = "Search";
+            this.tr5SpritesTextureFilePathBut.Text = "Browse";
             this.tr5SpritesTextureFilePathBut.Click += new System.EventHandler(this.tr5SpritesTextureFilePathBut_Click);
             // 
             // tr5SpritesFilePathOptCustom
@@ -1128,7 +1128,7 @@
             this.fontTextureFilePathBut.Name = "fontTextureFilePathBut";
             this.fontTextureFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.fontTextureFilePathBut.TabIndex = 3;
-            this.fontTextureFilePathBut.Text = "Search";
+            this.fontTextureFilePathBut.Text = "Browse";
             this.fontTextureFilePathBut.Click += new System.EventHandler(this.fontTextureFilePathBut_Click);
             // 
             // fontTextureFilePathOptCustom
@@ -1205,7 +1205,7 @@
             this.skyTextureFilePathBut.Name = "skyTextureFilePathBut";
             this.skyTextureFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.skyTextureFilePathBut.TabIndex = 3;
-            this.skyTextureFilePathBut.Text = "Search";
+            this.skyTextureFilePathBut.Text = "Browse";
             this.skyTextureFilePathBut.Click += new System.EventHandler(this.skyTextureFilePathBut_Click);
             // 
             // skyTextureFilePathOptCustom
@@ -1355,6 +1355,71 @@
             this.soundsCatalogsDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.soundsCatalogsDataGridView_RowsRemoved);
             this.soundsCatalogsDataGridView.Sorted += new System.EventHandler(this.soundsCatalogsDataGridView_Sorted);
             // 
+            // SoundsCatalogPathColumn
+            // 
+            this.SoundsCatalogPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogPathColumn.DataPropertyName = "Path";
+            this.SoundsCatalogPathColumn.FillWeight = 60F;
+            this.SoundsCatalogPathColumn.HeaderText = "Path";
+            this.SoundsCatalogPathColumn.Name = "SoundsCatalogPathColumn";
+            this.SoundsCatalogPathColumn.ReadOnly = true;
+            // 
+            // SoundsCatalogSearchColumn
+            // 
+            this.SoundsCatalogSearchColumn.HeaderText = "";
+            this.SoundsCatalogSearchColumn.Name = "SoundsCatalogSearchColumn";
+            this.SoundsCatalogSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogSearchColumn.Text = "";
+            this.SoundsCatalogSearchColumn.ToolTipText = "Browse";
+            this.SoundsCatalogSearchColumn.Width = 24;
+            // 
+            // SoundsCatalogReloadButton
+            // 
+            this.SoundsCatalogReloadButton.HeaderText = "";
+            this.SoundsCatalogReloadButton.Name = "SoundsCatalogReloadButton";
+            this.SoundsCatalogReloadButton.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogReloadButton.Text = "";
+            this.SoundsCatalogReloadButton.ToolTipText = "Reload this catalog from disk";
+            this.SoundsCatalogReloadButton.Width = 24;
+            // 
+            // SoundsCatalogEditColumn
+            // 
+            this.SoundsCatalogEditColumn.HeaderText = "";
+            this.SoundsCatalogEditColumn.Name = "SoundsCatalogEditColumn";
+            this.SoundsCatalogEditColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogEditColumn.Text = "";
+            this.SoundsCatalogEditColumn.ToolTipText = "Edit in SoundTool";
+            this.SoundsCatalogEditColumn.Width = 24;
+            // 
+            // SoundsCatalogsAssignColumn
+            // 
+            this.SoundsCatalogsAssignColumn.HeaderText = "";
+            this.SoundsCatalogsAssignColumn.Name = "SoundsCatalogsAssignColumn";
+            this.SoundsCatalogsAssignColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.SoundsCatalogsAssignColumn.Text = "Include all";
+            this.SoundsCatalogsAssignColumn.ToolTipText = "Include all sounds from this catalog";
+            this.SoundsCatalogsAssignColumn.Width = 60;
+            // 
+            // SoundsCatalogsSoundCountColumn
+            // 
+            this.SoundsCatalogsSoundCountColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogsSoundCountColumn.DataPropertyName = "SoundsCount";
+            this.SoundsCatalogsSoundCountColumn.FillWeight = 20F;
+            this.SoundsCatalogsSoundCountColumn.HeaderText = "Num. sounds";
+            this.SoundsCatalogsSoundCountColumn.Name = "SoundsCatalogsSoundCountColumn";
+            this.SoundsCatalogsSoundCountColumn.ReadOnly = true;
+            this.SoundsCatalogsSoundCountColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
+            // SoundsCatalogMessageColumn
+            // 
+            this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SoundsCatalogMessageColumn.DataPropertyName = "Message";
+            this.SoundsCatalogMessageColumn.FillWeight = 40F;
+            this.SoundsCatalogMessageColumn.HeaderText = "Message";
+            this.SoundsCatalogMessageColumn.Name = "SoundsCatalogMessageColumn";
+            this.SoundsCatalogMessageColumn.ReadOnly = true;
+            this.SoundsCatalogMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
             // soundsCatalogsDataGridViewControls
             // 
             this.soundsCatalogsDataGridViewControls.AllowUserDelete = false;
@@ -1412,6 +1477,58 @@
             this.selectedSoundsDataGridView.ToggleCheckBoxOnClick = true;
             this.selectedSoundsDataGridView.ToggleCheckBoxOnDoubleClick = true;
             this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
+            // 
+            // colSoundsEnabled
+            // 
+            this.colSoundsEnabled.HeaderText = "";
+            this.colSoundsEnabled.Name = "colSoundsEnabled";
+            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colSoundsEnabled.Width = 40;
+            // 
+            // colSoundID
+            // 
+            this.colSoundID.HeaderText = "ID";
+            this.colSoundID.Name = "colSoundID";
+            this.colSoundID.ReadOnly = true;
+            this.colSoundID.Width = 40;
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.HeaderText = "Name";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.Width = 180;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn3.HeaderText = "From catalog";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            this.dataGridViewTextBoxColumn6.HeaderText = "Samples";
+            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            this.dataGridViewTextBoxColumn6.ReadOnly = true;
+            this.dataGridViewTextBoxColumn6.Width = 70;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.HeaderText = "Range";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.ToolTipText = "Range name of TRNG extended soundmap";
+            this.dataGridViewTextBoxColumn4.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.HeaderText = "Orig. ID";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.ReadOnly = true;
+            this.dataGridViewTextBoxColumn5.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
+            this.dataGridViewTextBoxColumn5.Width = 80;
             // 
             // tabSamples
             // 
@@ -1472,7 +1589,7 @@
             // 
             this.soundDataGridViewColumnSearch.HeaderText = "";
             this.soundDataGridViewColumnSearch.Name = "soundDataGridViewColumnSearch";
-            this.soundDataGridViewColumnSearch.Text = "Search";
+            this.soundDataGridViewColumnSearch.Text = "Browse";
             // 
             // darkLabel10
             // 
@@ -1577,7 +1694,7 @@
             this.scriptPathBut.Name = "scriptPathBut";
             this.scriptPathBut.Size = new System.Drawing.Size(92, 22);
             this.scriptPathBut.TabIndex = 3;
-            this.scriptPathBut.Text = "Search";
+            this.scriptPathBut.Text = "Browse";
             this.scriptPathBut.Click += new System.EventHandler(this.scriptPathBut_Click);
             // 
             // darkLabel15
@@ -1617,7 +1734,7 @@
             this.levelFilePathBut.Name = "levelFilePathBut";
             this.levelFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.levelFilePathBut.TabIndex = 3;
-            this.levelFilePathBut.Text = "Search";
+            this.levelFilePathBut.Text = "Browse";
             this.levelFilePathBut.Click += new System.EventHandler(this.levelFilePathBut_Click);
             // 
             // darkLabel6
@@ -1825,123 +1942,6 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // colSoundsEnabled
-            // 
-            this.colSoundsEnabled.HeaderText = "";
-            this.colSoundsEnabled.Name = "colSoundsEnabled";
-            this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.colSoundsEnabled.Width = 40;
-            // 
-            // colSoundID
-            // 
-            this.colSoundID.HeaderText = "ID";
-            this.colSoundID.Name = "colSoundID";
-            this.colSoundID.ReadOnly = true;
-            this.colSoundID.Width = 40;
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.HeaderText = "Name";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 180;
-            // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn3.HeaderText = "From catalog";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            this.dataGridViewTextBoxColumn6.HeaderText = "Samples";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            this.dataGridViewTextBoxColumn6.Width = 70;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "Range";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.ToolTipText = "Range name of TRNG extended soundmap";
-            this.dataGridViewTextBoxColumn4.Width = 80;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.HeaderText = "Orig. ID";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.ReadOnly = true;
-            this.dataGridViewTextBoxColumn5.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
-            this.dataGridViewTextBoxColumn5.Width = 80;
-            // 
-            // SoundsCatalogPathColumn
-            // 
-            this.SoundsCatalogPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogPathColumn.DataPropertyName = "Path";
-            this.SoundsCatalogPathColumn.FillWeight = 60F;
-            this.SoundsCatalogPathColumn.HeaderText = "Path";
-            this.SoundsCatalogPathColumn.Name = "SoundsCatalogPathColumn";
-            this.SoundsCatalogPathColumn.ReadOnly = true;
-            // 
-            // SoundsCatalogSearchColumn
-            // 
-            this.SoundsCatalogSearchColumn.HeaderText = "";
-            this.SoundsCatalogSearchColumn.Name = "SoundsCatalogSearchColumn";
-            this.SoundsCatalogSearchColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogSearchColumn.Text = "";
-            this.SoundsCatalogSearchColumn.ToolTipText = "Browse";
-            this.SoundsCatalogSearchColumn.Width = 24;
-            // 
-            // SoundsCatalogReloadButton
-            // 
-            this.SoundsCatalogReloadButton.HeaderText = "";
-            this.SoundsCatalogReloadButton.Name = "SoundsCatalogReloadButton";
-            this.SoundsCatalogReloadButton.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogReloadButton.Text = "";
-            this.SoundsCatalogReloadButton.ToolTipText = "Reload this catalog from disk";
-            this.SoundsCatalogReloadButton.Width = 24;
-            // 
-            // SoundsCatalogEditColumn
-            // 
-            this.SoundsCatalogEditColumn.HeaderText = "";
-            this.SoundsCatalogEditColumn.Name = "SoundsCatalogEditColumn";
-            this.SoundsCatalogEditColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogEditColumn.Text = "";
-            this.SoundsCatalogEditColumn.ToolTipText = "Edit in SoundTool";
-            this.SoundsCatalogEditColumn.Width = 24;
-            // 
-            // SoundsCatalogsAssignColumn
-            // 
-            this.SoundsCatalogsAssignColumn.HeaderText = "";
-            this.SoundsCatalogsAssignColumn.Name = "SoundsCatalogsAssignColumn";
-            this.SoundsCatalogsAssignColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.SoundsCatalogsAssignColumn.Text = "Include all";
-            this.SoundsCatalogsAssignColumn.ToolTipText = "Include all sounds from this catalog";
-            this.SoundsCatalogsAssignColumn.Width = 60;
-            // 
-            // SoundsCatalogsSoundCountColumn
-            // 
-            this.SoundsCatalogsSoundCountColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogsSoundCountColumn.DataPropertyName = "SoundsCount";
-            this.SoundsCatalogsSoundCountColumn.FillWeight = 20F;
-            this.SoundsCatalogsSoundCountColumn.HeaderText = "Num. sounds";
-            this.SoundsCatalogsSoundCountColumn.Name = "SoundsCatalogsSoundCountColumn";
-            this.SoundsCatalogsSoundCountColumn.ReadOnly = true;
-            this.SoundsCatalogsSoundCountColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
-            // SoundsCatalogMessageColumn
-            // 
-            this.SoundsCatalogMessageColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SoundsCatalogMessageColumn.DataPropertyName = "Message";
-            this.SoundsCatalogMessageColumn.FillWeight = 40F;
-            this.SoundsCatalogMessageColumn.HeaderText = "Message";
-            this.SoundsCatalogMessageColumn.Name = "SoundsCatalogMessageColumn";
-            this.SoundsCatalogMessageColumn.ReadOnly = true;
-            this.SoundsCatalogMessageColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
             // FormLevelSettings
             // 
