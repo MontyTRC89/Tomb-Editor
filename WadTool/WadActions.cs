@@ -775,21 +775,6 @@ namespace WadTool
             return animation;
         }
 
-        public static void EditAnimations(WadToolClass tool, IWin32Window owner)
-        {
-            if (tool.MainSelection?.WadArea == WadArea.Source)
-                return;
-
-            var wad = tool.GetWad(tool.MainSelection.Value.WadArea);
-            var moveableId = (WadMoveableId)tool.MainSelection.Value.Id;
-            using (var form = new FormAnimationEditor(tool, DeviceManager.DefaultDeviceManager, wad, moveableId))
-            {
-                if (form.ShowDialog(owner) != DialogResult.OK)
-                    return;
-                tool.DestinationWadChanged();
-            }
-        }
-
         public static void EditSkeletion(WadToolClass tool, IWin32Window owner)
         {
             if (tool.MainSelection?.WadArea == WadArea.Source)

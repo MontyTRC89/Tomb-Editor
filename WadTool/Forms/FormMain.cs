@@ -458,7 +458,7 @@ namespace WadTool
 
         private void butEditAnimations_Click(object sender, EventArgs e)
         {
-            WadActions.EditAnimations(_tool, this);
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void editSkeletonToolStripMenuItem_Click(object sender, EventArgs e)
@@ -468,7 +468,7 @@ namespace WadTool
 
         private void editAnimationsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.EditAnimations(_tool, this);
+            WadActions.EditObject(_tool, this, DeviceManager.DefaultDeviceManager);
         }
 
         private void butEditStaticModel_Click(object sender, EventArgs e)

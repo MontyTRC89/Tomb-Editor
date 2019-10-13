@@ -55,6 +55,8 @@ namespace WadTool
 
         public int GetRealNumberOfFrames(int animNumber = -1)
         {
+            if (CurrentAnim == null) return 0;
+
             if (animNumber < 0) animNumber = CurrentAnim.Index;
 
             if (Animations.Count <= animNumber)
@@ -65,6 +67,8 @@ namespace WadTool
 
         public int GetRealFrameNumber(int keyFrameNumber = -1, int animNumber = -1)
         {
+            if (CurrentAnim == null) return 0;
+
             if (animNumber < 0) animNumber = CurrentAnim.Index;
             if (keyFrameNumber < 0) keyFrameNumber = CurrentFrameIndex;
 
@@ -173,6 +177,8 @@ namespace WadTool
 
         public void UpdateTransform(int meshIndex, Vector3 newRot, Vector3 newPos)
         {
+            if (CurrentAnim == null || CurrentKeyFrame == null) return;
+
             // Backup everything and push undo on first occurence of editing
             if (!MadeChanges)
             {

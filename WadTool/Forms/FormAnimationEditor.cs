@@ -444,34 +444,43 @@ namespace WadTool
             }
 
             // Try to restore selection, if failed, select first visible one
-            if (_editor.CurrentAnim == null ||
-                (lstAnimations.Items.Count > 0 && UpdateAnimListSelection(_editor.CurrentAnim.Index) < 0))
+            if (lstAnimations.Items.Count > 0)
             {
-                lstAnimations.SelectItem(0);
-                lstAnimations.EnsureVisible();
+                if (_editor.CurrentAnim == null || UpdateAnimListSelection(_editor.CurrentAnim.Index) < 0)
+                {
+                    lstAnimations.SelectItem(0);
+                    lstAnimations.EnsureVisible();
+                }
             }
+            else
+                SelectAnimation(null); // No animations left in list, free last one remaining
+
+            UpdateStatusLabel();
         }
 
         private void SelectAnimation(AnimationNode node)
         {
-            bool sameAnimSameSize = _editor.CurrentAnim != null && _editor.CurrentAnim.Index == node.Index &&
+            bool sameAnimSameSize = _editor.CurrentAnim != null && node != null && _editor.CurrentAnim.Index == node.Index &&
                 _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == node.DirectXAnimation.KeyFrames.Count;
 
             _editor.CurrentAnim = node;
 
             _allowUpdate = false;
             {
-                tbName.Text = node.WadAnimation.Name;
-                nudFramerate.Value = node.WadAnimation.FrameRate;
-                nudNextAnim.Value = node.WadAnimation.NextAnimation;
-                nudNextFrame.Value = node.WadAnimation.NextFrame;
-                tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
-                tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
-                tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
-                tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
+                if (node != null)
+                {
+                    tbName.Text = node.WadAnimation.Name;
+                    nudFramerate.Value = node.WadAnimation.FrameRate;
+                    nudNextAnim.Value = node.WadAnimation.NextAnimation;
+                    nudNextFrame.Value = node.WadAnimation.NextFrame;
+                    tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
+                    tbEndVertVel.Text = node.WadAnimation.EndVelocity.ToString();
+                    tbStartHorVel.Text = node.WadAnimation.StartLateralVelocity.ToString();
+                    tbEndHorVel.Text = node.WadAnimation.EndLateralVelocity.ToString();
 
-                tbStateId.Text = node.WadAnimation.StateId.ToString();
-                UpdateStateChange();
+                    tbStateId.Text = node.WadAnimation.StateId.ToString();
+                    UpdateStateChange();
+                }
 
                 timeline.Animation = node;
 
@@ -488,7 +497,7 @@ namespace WadTool
             }
             _allowUpdate = true;
 
-            if (node.DirectXAnimation.KeyFrames.Count > 0)
+            if (node?.DirectXAnimation.KeyFrames.Count > 0)
                 panelRendering.Model.BuildAnimationPose(_editor.CurrentKeyFrame);
 
             // Continue scrolling the grid if we're in chain playback mode
@@ -684,7 +693,7 @@ namespace WadTool
 
         public void UpdateTransform()
         {
-            if (!_allowUpdate) return;
+            if (!_allowUpdate || _editor.CurrentKeyFrame == null) return;
 
             var meshIndex = panelRendering.SelectedMesh == null ? 0 : panelRendering.Model.Meshes.IndexOf(panelRendering.SelectedMesh);
 
@@ -1695,6 +1704,12 @@ namespace WadTool
 
         private void UpdateStatusLabel()
         {
+            if (_editor.CurrentAnim == null)
+            {
+                statusFrame.Text = "No current animation!";
+                return;
+            }
+
             string newLabel =
                 "Frame: " + (_frameCount) + " / " + (_editor.GetRealNumberOfFrames() - 1) + "   " +
                 "Keyframe: " + timeline.Value + " / " + (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1);
