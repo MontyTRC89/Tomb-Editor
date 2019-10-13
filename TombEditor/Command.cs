@@ -310,6 +310,16 @@ namespace TombEditor
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -1024, 0), new Vector3(), true);
             });
 
+            AddCommand("SelectPreviousRoom", "Select previous room", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                var prevRoom = args.Editor.PreviousRoom;
+
+                if (args.Editor.PreviousRoom != null)
+                    args.Editor.SelectRoom(prevRoom);
+                else
+                    args.Editor.SendMessage("There is no previous room specified or previous room was deleted.", PopupType.Info);
+            });
+
             AddCommand("MoveRoomLeft", "Move room left", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRooms != null) {

@@ -218,6 +218,19 @@ namespace TombEditor
                 var roomSet = new HashSet<Room>(new Room[] { null });
                 if (value.Any(room => !roomSet.Add(room)))
                     throw new ArgumentNullException(nameof(value), "The selected room list may not contain duplicates.");
+
+                // Backup first selected room index into previous room variable.
+                // Using TRTomb's SelectedRoomChangedEvent is unreliable, because directly referencing Room
+                // object may break if a couple of rooms were deleted in a row in 2D map.
+
+                if (Level != null && Level.Rooms != null && _selectedRooms != null)
+                {
+                    _previousRoom = Array.FindIndex(Level.Rooms, item => item == _selectedRooms[0]);
+                    if (_previousRoom == -1) _previousRoom = 0; // Always jump to first room in case something went wrong
+                }
+                else
+                    _previousRoom = 0; // Always jump to first room in case something went wrong
+
                 var previous = _selectedRooms;
                 _selectedRooms = value.ToArray();
                 if (previous == null || previous[0] != _selectedRooms[0])
@@ -239,6 +252,7 @@ namespace TombEditor
                 base.Previous = previous;
             }
         }
+
         public Room SelectedRoom
         {
             get { return _selectedRooms[0]; }
@@ -249,6 +263,9 @@ namespace TombEditor
                 SelectedRooms = new[] { value };
             }
         }
+
+        public Room PreviousRoom { get { return Level?.Rooms?[_previousRoom] ?? null; } }
+        private int _previousRoom;
 
         public bool IsSelectedRoomEvent(IEditorEvent eventObj)
         {
