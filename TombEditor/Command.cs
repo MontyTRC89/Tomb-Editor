@@ -314,7 +314,7 @@ namespace TombEditor
             {
                 var prevRoom = args.Editor.PreviousRoom;
 
-                if (args.Editor.PreviousRoom != null)
+                if (prevRoom != null)
                     args.Editor.SelectRoom(prevRoom);
                 else
                     args.Editor.SendMessage("There is no previous room specified or previous room was deleted.", PopupType.Info);
