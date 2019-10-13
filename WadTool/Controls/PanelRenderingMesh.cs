@@ -127,6 +127,8 @@ namespace WadTool.Controls
 
             if (DrawGrid)
             {
+                _device.SetRasterizerState(_rasterizerWireframe);
+
                 // Draw the grid
                 _device.SetVertexBuffer(0, _plane.VertexBuffer);
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));

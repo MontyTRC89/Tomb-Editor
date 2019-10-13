@@ -222,6 +222,8 @@ namespace WadTool.Controls
                     //    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
 
+                _device.SetRasterizerState(_rasterizerWireframe);
+
                 // Draw boxes
                 if (DrawVisibilityBox || DrawCollisionBox)
                 {
@@ -295,6 +297,8 @@ namespace WadTool.Controls
 
             if (DrawGrid)
             {
+                _device.SetRasterizerState(_rasterizerWireframe);
+
                 // Draw the grid
                 _device.SetVertexBuffer(0, _plane.VertexBuffer);
                 _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
