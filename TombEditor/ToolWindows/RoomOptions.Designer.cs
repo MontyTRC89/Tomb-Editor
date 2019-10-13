@@ -49,6 +49,7 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.butNewRoom = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.butSelectPreviousRoom = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -237,12 +238,12 @@
             0,
             65536});
             this.numLightEffectStrength.Location = new System.Drawing.Point(246, 194);
+            this.numLightEffectStrength.LoopValues = false;
             this.numLightEffectStrength.Maximum = new decimal(new int[] {
             3,
             0,
             0,
             0});
-            this.numLightEffectStrength.LoopValues = false;
             this.numLightEffectStrength.Name = "numLightEffectStrength";
             this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
             this.numLightEffectStrength.TabIndex = 15;
@@ -284,9 +285,9 @@
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butLocked.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.butLocked.Image = global::TombEditor.Properties.Resources.general_Lock_16;
-            this.butLocked.Location = new System.Drawing.Point(228, 86);
+            this.butLocked.Location = new System.Drawing.Point(258, 86);
             this.butLocked.Name = "butLocked";
-            this.butLocked.Size = new System.Drawing.Size(54, 22);
+            this.butLocked.Size = new System.Drawing.Size(24, 22);
             this.butLocked.TabIndex = 20;
             this.butLocked.Tag = "LockRoom";
             // 
@@ -471,10 +472,22 @@
             this.darkLabel1.TabIndex = 112;
             this.darkLabel1.Text = "Portal shade";
             // 
+            // butSelectPreviousRoom
+            // 
+            this.butSelectPreviousRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectPreviousRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.butSelectPreviousRoom.Image = global::TombEditor.Properties.Resources.general_undo_16;
+            this.butSelectPreviousRoom.Location = new System.Drawing.Point(228, 86);
+            this.butSelectPreviousRoom.Name = "butSelectPreviousRoom";
+            this.butSelectPreviousRoom.Size = new System.Drawing.Size(24, 22);
+            this.butSelectPreviousRoom.TabIndex = 113;
+            this.butSelectPreviousRoom.Tag = "SelectPreviousRoom";
+            // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.butSelectPreviousRoom);
             this.Controls.Add(this.comboPortalShade);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butNewRoom);
@@ -554,5 +567,6 @@
         private DarkUI.Controls.DarkButton butNewRoom;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkComboBox comboPortalShade;
+        private DarkUI.Controls.DarkButton butSelectPreviousRoom;
     }
 }

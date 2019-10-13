@@ -280,6 +280,7 @@ namespace TombEditor
             this["MoveObjectBack"] = new SortedSet<Hotkey> { Keys.Down | Keys.Control };
             this["MoveObjectUp"] = new SortedSet<Hotkey> { Keys.PageUp | Keys.Control };
             this["MoveObjectDown"] = new SortedSet<Hotkey> { Keys.PageDown | Keys.Control };
+            this["SelectPreviousRoom"] = new SortedSet<Hotkey> { Keys.Control | Keys.Tab };
             this["MoveRoomLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Alt };
             this["MoveRoomRight"] = new SortedSet<Hotkey> { Keys.Right | Keys.Alt };
             this["MoveRoomForward"] = new SortedSet<Hotkey> { Keys.Up | Keys.Alt };
