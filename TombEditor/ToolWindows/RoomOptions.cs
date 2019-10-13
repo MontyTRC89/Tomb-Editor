@@ -207,12 +207,15 @@ namespace TombEditor.ToolWindows
         {
             Room room = _editor.SelectedRoom;
 
-            using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
-            {
-                room.AmbientLight = c.ToFloat3Color() * 2.0f;
-                _editor.SelectedRoom.BuildGeometry();
-                _editor.RoomPropertiesChange(room);
-            }, _editor.Configuration.UI_ColorScheme))
+            using (var colorDialog = new RealtimeColorDialog(
+                _editor.Configuration.ColorDialog_Position.X,
+                _editor.Configuration.ColorDialog_Position.Y, 
+                c =>
+                {
+                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                    _editor.SelectedRoom.BuildGeometry();
+                    _editor.RoomPropertiesChange(room);
+                }, _editor.Configuration.UI_ColorScheme))
             {
                 colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
@@ -222,6 +225,8 @@ namespace TombEditor.ToolWindows
 
                 panelRoomAmbientLight.BackColor = colorDialog.Color;
                 room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+
+                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
 
             _editor.SelectedRoom.BuildGeometry();

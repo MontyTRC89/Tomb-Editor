@@ -342,11 +342,14 @@ namespace TombEditor
 
         public static void EditStaticMeshColor(IWin32Window owner, StaticInstance obj)
         {
-            using (var colorDialog = new RealtimeColorDialog(c =>
-            {
-                obj.Color = c.ToFloat3Color() * 2.0f;
-                _editor.ObjectChange(obj, ObjectChangeType.Change);
-            }, _editor.Configuration.UI_ColorScheme))
+            using (var colorDialog = new RealtimeColorDialog(
+                _editor.Configuration.ColorDialog_Position.X,
+                _editor.Configuration.ColorDialog_Position.Y,
+                c =>
+                {
+                    obj.Color = c.ToFloat3Color() * 2.0f;
+                    _editor.ObjectChange(obj, ObjectChangeType.Change);
+                }, _editor.Configuration.UI_ColorScheme))
             {
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
@@ -356,6 +359,8 @@ namespace TombEditor
 
                 obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
+
+                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
         }
 
@@ -3113,19 +3118,24 @@ namespace TombEditor
         public static void ApplyAmbientLightToSelectedRooms(IWin32Window owner)
         {
             IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
-            using (var colorDialog = new RealtimeColorDialog(c =>
-            {
-                foreach (Room room in SelectedRooms)
+            using (var colorDialog = new RealtimeColorDialog(
+                _editor.Configuration.ColorDialog_Position.X,
+                _editor.Configuration.ColorDialog_Position.Y,
+                c =>
                 {
-                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
-                    room.BuildGeometry();
-                    _editor.RoomPropertiesChange(room);
-                }
-            }, _editor.Configuration.UI_ColorScheme))
+                    foreach (Room room in SelectedRooms)
+                    {
+                        room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                        room.BuildGeometry();
+                        _editor.RoomPropertiesChange(room);
+                    }
+                }, _editor.Configuration.UI_ColorScheme))
             {
                 if (colorDialog.ShowDialog(owner) == DialogResult.OK)
                     foreach (Room room in SelectedRooms)
                         room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+
+                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
 
             foreach (Room room in SelectedRooms)
@@ -3165,11 +3175,14 @@ namespace TombEditor
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 light =>
                 {
-                    using (var colorDialog = new RealtimeColorDialog(0, 0, c =>
-                    {
-                        UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
-                        l => { return c.ToFloat3Color() * 2.0f; });
-                    }, _editor.Configuration.UI_ColorScheme))
+                    using (var colorDialog = new RealtimeColorDialog(
+                        _editor.Configuration.ColorDialog_Position.X,
+                        _editor.Configuration.ColorDialog_Position.Y,
+                        c =>
+                        {
+                            UpdateLight<Vector3>((l, v) => l.Color == v, (l, v) => l.Color = v,
+                            l => { return c.ToFloat3Color() * 2.0f; });
+                        }, _editor.Configuration.UI_ColorScheme))
                     {
                         colorDialog.Color = new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor();
 
@@ -3177,6 +3190,7 @@ namespace TombEditor
                         if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                             colorDialog.Color = oldLightColor;
 
+                        _editor.Configuration.ColorDialog_Position = colorDialog.Position;
                         return colorDialog.Color.ToFloat3Color() * 2.0f;
                     }
                 });
