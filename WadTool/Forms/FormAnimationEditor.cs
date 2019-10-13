@@ -444,11 +444,12 @@ namespace WadTool
             }
 
             // Try to restore selection, if failed, select first visible one
-            if (lstAnimations.Items.Count > 0)
+            if (_editor.Moveable.Animations.Count > 0)
             {
-                if (_editor.CurrentAnim == null || UpdateAnimListSelection(_editor.CurrentAnim.Index) < 0)
+                if (_editor.CurrentAnim == null || 
+                    (lstAnimations.Items.Count > 0 && UpdateAnimListSelection(_editor.CurrentAnim.Index) < 0))
                 {
-                    lstAnimations.SelectItem(0);
+                    lstAnimations.SelectItem(0); 
                     lstAnimations.EnsureVisible();
                 }
             }
