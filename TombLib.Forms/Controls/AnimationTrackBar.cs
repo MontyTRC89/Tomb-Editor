@@ -335,7 +335,7 @@ namespace TombLib.Controls
 
             // Any messages in case of any errors
             string errorMessage = null;
-            if (Animation == null) errorMessage = "No animation! Select animation to start editing.";
+            if (Animation == null) errorMessage = "No animation! Create or select animation to start editing.";
             else if (Animation.DirectXAnimation.KeyFrames.Count == 0) errorMessage = "No frames! Add some frames to start editing.";
             
             if(!string.IsNullOrEmpty(errorMessage))

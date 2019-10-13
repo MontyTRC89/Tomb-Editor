@@ -96,7 +96,7 @@ namespace TombLib.Controls
             _colorScheme = colorScheme;
             _position = new Point(x, y);
         }
-        public RealtimeColorDialog(ColorScheme colorScheme = null) : this(-1, -1, null, colorScheme) { }
+        public RealtimeColorDialog(ColorScheme colorScheme) : this(-1, -1, null, colorScheme) { }
         public RealtimeColorDialog(Action<Color> onColorChange, ColorScheme colorScheme) : this(-1, -1, onColorChange, colorScheme) { }
 
         protected override bool RunDialog(IntPtr hwndOwner)
