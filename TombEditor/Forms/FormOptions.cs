@@ -56,7 +56,7 @@ namespace TombEditor.Forms
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
-                    using (var colorDialog = new RealtimeColorDialog(null, _editor.Configuration.UI_ColorScheme))
+                    using (var colorDialog = new RealtimeColorDialog(_editor.Configuration.UI_ColorScheme))
                     {
                         colorDialog.Color = panel.BackColor;
                         colorDialog.FullOpen = true;

@@ -46,7 +46,7 @@ namespace WadTool
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
-                    using (var colorDialog = new RealtimeColorDialog(null))
+                    using (var colorDialog = new RealtimeColorDialog())
                     {
                         colorDialog.Color = panel.BackColor;
                         colorDialog.FullOpen = true;

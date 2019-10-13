@@ -140,7 +140,8 @@ namespace TombEditor
 
         // Window options
 
-        public Point Window_FormMain_Position { get; set; } = new Point(0);
+        public Point ColorDialog_Position { get; set; } = new Point(-1); // Center by default
+        public Point Window_FormMain_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormMain_Size { get; set; } = Window_SizeDefault;
         public bool  Window_FormMain_Maximized { get; set; } = true;
         public Point Window_FormAnimatedTextures_Position { get; set; } = new Point(-1); // Center by default
