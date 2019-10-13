@@ -11762,7 +11762,7 @@
     </Subtrigger>
     <Subtrigger K="21" V="Creature. Current animation of &lt;#&gt;creature is (E)animation (0-31)">
       <Extra>
-        <LinearModel Start="0" End="30">
+        <LinearModel Start="0" End="31">
           <Fixed>Animation=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -11778,7 +11778,7 @@
     </Subtrigger>
     <Subtrigger K="23" V="Creature. Current animation of &lt;#&gt;creature is (E)animation (32-63)">
       <Extra>
-        <LinearModel Start="32" End="62">
+        <LinearModel Start="32" End="63">
           <Fixed>Animation=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -11786,7 +11786,7 @@
     </Subtrigger>
     <Subtrigger K="24" V="Creature. Current animation of &lt;#&gt;creature is (E)animation (64-95)">
       <Extra>
-        <LinearModel Start="64" End="94">
+        <LinearModel Start="64" End="95">
           <Fixed>Animation=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
