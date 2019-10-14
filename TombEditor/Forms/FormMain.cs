@@ -64,6 +64,7 @@ namespace TombEditor.Forms
             Configuration.LoadWindowProperties(this, _editor.Configuration);
             LoadWindowLayout(_editor.Configuration);
             GenerateMenusRecursive(menuStrip.Items);
+            UpdateUIColours();
 
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
@@ -221,15 +222,7 @@ namespace TombEditor.Forms
                     GenerateMenusRecursive(menuStrip.Items, true);
                 if (e.UpdateLayout)
                     LoadWindowLayout(_editor.Configuration);
-
-                // Refresh all forms if UI colours were changed
-                var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
-                if (Colors.MenuItemToggledOnBorder != newButtonHighlightColour)
-                {
-                    Colors.MenuItemToggledOnBorder = newButtonHighlightColour;
-                    foreach (var form in Application.OpenForms)
-                        if (form is DarkForm) ((DarkForm)form).Refresh();
-                }
+                UpdateUIColours();
             }
 
             // Update texture controls
@@ -261,6 +254,18 @@ namespace TombEditor.Forms
             // Quit editor
             if (obj is Editor.EditorQuitEvent)
                 Close();
+        }
+
+        private void UpdateUIColours()
+        {
+            // Refresh all forms if UI colours were changed
+            var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
+            if (Colors.MenuItemToggledOnBorder != newButtonHighlightColour)
+            {
+                Colors.MenuItemToggledOnBorder = newButtonHighlightColour;
+                foreach (var form in Application.OpenForms)
+                    if (form is DarkForm) ((DarkForm)form).Refresh();
+            }
         }
 
         private void RefreshRecentProjectsList()
