@@ -2,6 +2,7 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Wad;
@@ -11,17 +12,23 @@ namespace WadTool
 {
     public partial class FormSelectSlot : DarkForm
     {
-        public Type TypeClass { get; }
-        public TRVersion.Game GameVersion { get; }
-        public IWadObjectId NewId { get; set; }
+        public Type TypeClass { get; internal set; }
+        public TRVersion.Game GameVersion { get; internal set; }
+        public IWadObjectId NewId { get; internal set; }
 
-        public FormSelectSlot(IWadObjectId currentId, TRVersion.Game gameVersion)
+        private Wad2 _wad;
+        private List<uint> _additionalObjectsToHide;
+
+        public FormSelectSlot(Wad2 wad, IWadObjectId currentId, List<uint> additionalObjectsToHide = null)
         {
             InitializeComponent();
 
             NewId = currentId;
             TypeClass = currentId.GetType();
-            GameVersion = gameVersion.Native();
+            GameVersion = wad.GameVersion.Native();
+
+            _wad = wad;
+            _additionalObjectsToHide = additionalObjectsToHide;
 
             if (TypeClass == typeof(WadMoveableId))
                 chosenId.Value = ((WadMoveableId)currentId).TypeId;
@@ -45,17 +52,19 @@ namespace WadTool
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
             ReloadSlots();
+            if (lstSlots.Items.Count > 0)
+                chosenId.Value = (decimal)(uint)lstSlots.Items.First().Tag;
         }
 
         private void ReloadSlots()
         {
             // Decide on ID type
             if (TypeClass == typeof(WadMoveableId))
-                PopulateSlots(TrCatalog.GetAllMoveables(GameVersion));
+                PopulateSlots(TrCatalog.GetAllMoveables(GameVersion).Where(item => !_wad.Moveables.Any(moveable => moveable.Key.TypeId == item.Key) && !(_additionalObjectsToHide?.Any(add => add == item.Key) ?? false)).ToList());
             else if (TypeClass == typeof(WadStaticId))
-                PopulateSlots(TrCatalog.GetAllStatics(GameVersion));
+                PopulateSlots(TrCatalog.GetAllStatics(GameVersion).Where(item => !_wad.Statics.Any(stat => stat.Key.TypeId == item.Key) && !(_additionalObjectsToHide?.Any(add => add == item.Key) ?? false)).ToList());
             else if (TypeClass == typeof(WadSpriteSequenceId))
-                PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion));
+                PopulateSlots(TrCatalog.GetAllSpriteSequences(GameVersion).Where(item => !_wad.SpriteSequences.Any(sprite => sprite.Key.TypeId == item.Key) && !(_additionalObjectsToHide?.Any(add => add == item.Key) ?? false)).ToList());
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
@@ -63,7 +72,7 @@ namespace WadTool
             lstSlots.Invalidate();
         }
 
-        private void PopulateSlots(IDictionary<uint, string> objectSlotSuggestions)
+        private void PopulateSlots(List<KeyValuePair<uint, string>> objectSlotSuggestions)
         {
             lstSlots.Items.Clear();
 
@@ -87,20 +96,31 @@ namespace WadTool
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (TypeClass == typeof(WadMoveableId))
-                NewId = new WadMoveableId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadStaticId))
-                NewId = new WadStaticId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadSpriteSequenceId))
-                NewId = new WadSpriteSequenceId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadFixedSoundInfoId))
-                NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
-                NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
+            if (lstSlots.Items.Count == 0 || lstSlots.SelectedItems.Count == 0)
+                DialogResult = DialogResult.Cancel;
             else
-                throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
+            {
+                uint newId = (uint)lstSlots.SelectedItems[0].Tag;
 
-            DialogResult = DialogResult.OK;
+                if (TypeClass == typeof(WadMoveableId))
+                    NewId = new WadMoveableId(newId);
+                else if (TypeClass == typeof(WadStaticId))
+                    NewId = new WadStaticId(newId);
+                else if (TypeClass == typeof(WadSpriteSequenceId))
+                    NewId = new WadSpriteSequenceId(newId);
+
+                // FIXME: Are we still handling copying/moving/etc of deprecated sound info objects?
+
+                else if (TypeClass == typeof(WadFixedSoundInfoId))
+                    NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
+                else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+                    NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
+                else
+                    throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
+
+                DialogResult = DialogResult.OK;
+            }
+
             Close();
         }
 
@@ -113,6 +133,8 @@ namespace WadTool
                         lstSlots.SelectItem(i);
                         return;
                     }
+
+            lstSlots.ClearSelection();
         }
 
         private void lstSlots_SelectedIndicesChanged(object sender, EventArgs e)

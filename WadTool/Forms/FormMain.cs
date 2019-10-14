@@ -242,10 +242,11 @@ namespace WadTool
 
         private void CopyObject(bool otherSlot)
         {
-            var objectsToCopy = treeSourceWad.SelectedWadObjectIds.ToList();
-
-            if (WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), otherSlot))
-                treeDestWad.Select(objectsToCopy);
+            var result = WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), otherSlot);
+            if (result != null && result.Count > 0)
+                treeDestWad.Select(result);
+            else
+                _tool.SendMessage("No objects were copied.", PopupType.Info);
         }
 
         private void openSourceWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -337,7 +338,9 @@ namespace WadTool
 
         private void butChangeSlot_Click(object sender, EventArgs e)
         {
-            WadActions.ChangeSlot(_tool, this);
+            var result = WadActions.ChangeSlot(_tool, this);
+            if (result != null)
+                treeDestWad.Select(result);
         }
 
         private void importModelAsStaticMeshToolStripMenuItem_Click(object sender, EventArgs e)
@@ -385,17 +388,23 @@ namespace WadTool
 
         private void newMoveableToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.CreateObject(_tool, this, new WadMoveable(new WadMoveableId()));
+            var result = WadActions.CreateObject(_tool, this, new WadMoveable(new WadMoveableId()));
+            if (result != null)
+                treeDestWad.Select(result);
         }
 
         private void newStaticToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.CreateObject(_tool, this, new WadStatic(new WadStaticId()));
+            var result = WadActions.CreateObject(_tool, this, new WadStatic(new WadStaticId()));
+            if (result != null)
+                treeDestWad.Select(result);
         }
 
         private void newSpriteSequenceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
+            var result = WadActions.CreateObject(_tool, this, new WadSpriteSequence(new WadSpriteSequenceId()));
+            if (result != null)
+                treeDestWad.Select(result);
         }
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)

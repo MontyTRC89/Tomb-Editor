@@ -202,34 +202,35 @@ namespace WadTool
             tool.Configuration.Tool_ReferenceProject = string.Empty;
         }
 
-        public static void ChangeSlot(WadToolClass tool, IWin32Window owner)
+        public static IWadObjectId ChangeSlot(WadToolClass tool, IWin32Window owner)
         {
             if (tool.MainSelection?.WadArea == WadArea.Source)
-                return;
+                return null;
 
             Wad2 wad = tool.GetWad(tool.MainSelection?.WadArea);
             IWadObject wadObject = wad?.TryGet(tool.MainSelection?.Id);
             if (wad == null || wadObject == null)
             {
                 tool.SendMessage("You must have an object selected", PopupType.Error);
-                return;
+                return null;
             }
 
             // Ask for the new slot
-            using (var form = new FormSelectSlot(wadObject.Id, wad.GameVersion))
+            using (var form = new FormSelectSlot(tool.DestinationWad, wadObject.Id))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
-                    return;
+                    return null;
                 if (form.NewId == wadObject.Id)
-                    return;
+                    return null;
                 if (wad.Contains(form.NewId))
                 {
                     tool.SendMessage("The slot " + form.NewId.ToString(wad.GameVersion) + " is already occupied.", PopupType.Error);
-                    return;
+                    return null;
                 }
                 wad.AssignNewId(wadObject.Id, form.NewId);
             }
             tool.WadChanged(tool.MainSelection.Value.WadArea);
+            return wadObject.Id;
         }
 
         public static void ExportMesh(WadToolClass tool, IWin32Window owner, WadMesh m)
@@ -363,7 +364,7 @@ namespace WadTool
             }
         }
 
-        public static bool CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
+        public static List<IWadObjectId> CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
         {
             Wad2 sourceWad = tool.SourceWad;
             Wad2 destinationWad = tool.DestinationWad;
@@ -371,8 +372,10 @@ namespace WadTool
             if (destinationWad == null || sourceWad == null || objectIdsToMove.Count == 0)
             {
                 tool.SendMessage("You must have two wads loaded and at least one source object selected.", PopupType.Error);
-                return false;
+                return null;
             }
+
+            var listInProgress = new List<uint>();
 
             // Figure out the new ids if there are any id collisions
             IWadObjectId[] newIds = objectIdsToMove.ToArray();
@@ -392,37 +395,40 @@ namespace WadTool
                 // Ask for the new slot
                 do
                 {
-
-                    var result = DialogResult.None;
-
+                    DialogResult dialogResult;
                     if (askConfirm)
                     {
-                        result = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.GameVersion) + " is already occupied in the destination wad.\n" +
+                        dialogResult = DarkMessageBox.Show(owner, "The id " + newIds[i].ToString(destinationWad.GameVersion) + " is already occupied in the destination wad.\n" +
                                                          "Do you want to replace it (Yes) or to select another Id (No)?",
                                                          "Occupied slot", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     }
                     else
                     {
-                        result = DialogResult.No;
+                        dialogResult = DialogResult.No;
                     }
 
                     // From this time, always ask for confirm
                     askConfirm = true;
 
-                    if (result == DialogResult.Cancel)
-                        return false;
-                    else if (result == DialogResult.No)
+                    if (dialogResult == DialogResult.Cancel)
+                        return null;
+                    else if (dialogResult == DialogResult.No)
                     {
-                        using (var form = new FormSelectSlot(newIds[i], destinationWad.GameVersion))
+                        using (var form = new FormSelectSlot(destinationWad, newIds[i], listInProgress))
                         {
                             if (form.ShowDialog(owner) != DialogResult.OK)
-                                return false;
+                                return null;
                             if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
                             {
                                 destinationWad.Remove(form.NewId);
                                 tool.DestinationWadChanged();
                             }
                             newIds[i] = form.NewId;
+
+                            if (form.NewId is WadStaticId) listInProgress.Add(((WadStaticId)form.NewId).TypeId);
+                            if (form.NewId is WadMoveableId) listInProgress.Add(((WadMoveableId)form.NewId).TypeId);
+                            if (form.NewId is WadSpriteSequenceId) listInProgress.Add(((WadSpriteSequenceId)form.NewId).TypeId);
+
                             break;
                         }
                     }
@@ -450,7 +456,7 @@ namespace WadTool
             // Indicate that object is copied
             tool.SendMessage((objectIdsToMove.Count == 1 ? "Object" : "Objects") + " successfully copied.", PopupType.Info);
 
-            return true;
+            return newIds.ToList();
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
@@ -507,23 +513,25 @@ namespace WadTool
             tool.WadChanged(wadArea);
         }
 
-        public static void CreateObject(WadToolClass tool, IWin32Window owner, IWadObject initialWadObject)
+        public static IWadObjectId CreateObject(WadToolClass tool, IWin32Window owner, IWadObject initialWadObject)
         {
             Wad2 destinationWad = tool.DestinationWad;
             if (destinationWad == null)
             {
                 tool.SendMessage("You must have a destination wad opened.", PopupType.Error);
-                return;
+                return null;
             }
 
-            using (var form = new FormSelectSlot(initialWadObject.Id, destinationWad.GameVersion))
+            IWadObjectId result;
+
+            using (var form = new FormSelectSlot(tool.DestinationWad, initialWadObject.Id))
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
-                    return;
+                    return null;
                 if (destinationWad.Contains(form.NewId))
                 {
                     tool.SendMessage("The slot " + form.NewId.ToString(destinationWad.GameVersion) + " is already occupied.", PopupType.Error);
-                    return;
+                    return null;
                 }
 
                 if (initialWadObject is WadMoveable)
@@ -536,10 +544,13 @@ namespace WadTool
                 }
 
                 destinationWad.Add(form.NewId, initialWadObject);
+                result = form.NewId;
             }
 
             tool.DestinationWadChanged();
             tool.ToggleUnsavedChanges();
+
+            return result;
         }
 
         public static WadMesh CreateFakeMesh(string name)
