@@ -10,7 +10,6 @@ using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombEditor
 {

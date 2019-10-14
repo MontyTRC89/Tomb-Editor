@@ -120,12 +120,12 @@ namespace TombEditor.ToolWindows
                 if (room.AlternateBaseRoom != null)
                 {
                     butLocked.Enabled = false;
-                    butLocked.BackColorUseGeneric = !room.AlternateBaseRoom.Locked;
+                    butLocked.Checked = !room.AlternateBaseRoom.Locked;
                 }
                 else
                 {
                     butLocked.Enabled = true;
-                    butLocked.BackColorUseGeneric = !room.Locked;
+                    butLocked.Checked = !room.Locked;
                 }
 
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;

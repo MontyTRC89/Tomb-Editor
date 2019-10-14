@@ -347,7 +347,6 @@
             // butLocked
             // 
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butLocked.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.butLocked.Image = global::TombEditor.Properties.Resources.general_Lock_16;
             this.butLocked.Location = new System.Drawing.Point(258, 86);
             this.butLocked.Name = "butLocked";
