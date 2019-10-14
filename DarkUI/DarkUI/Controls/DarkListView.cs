@@ -244,6 +244,17 @@ namespace DarkUI.Controls
             return Items.IndexOf(item);
         }
 
+        public void ClearSelection()
+        {
+            _selectedIndices.Clear();
+            Invalidate();
+
+            SelectedIndicesChanged?.Invoke(this, null);
+
+            _anchoredItemStart = -1;
+            _anchoredItemEnd = -1;
+        }
+
         public void SelectItem(int index)
         {
             if (index < 0 || index > Items.Count - 1)
