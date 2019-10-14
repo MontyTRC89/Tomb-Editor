@@ -88,13 +88,7 @@ namespace WadTool
             }
         }
 
-        private void butCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
-        private void butOK_Click(object sender, EventArgs e)
+        private void ConfirmAndClose()
         {
             if (lstSlots.Items.Count == 0 || lstSlots.SelectedItems.Count == 0)
                 DialogResult = DialogResult.Cancel;
@@ -112,7 +106,7 @@ namespace WadTool
                 // FIXME: Are we still handling copying/moving/etc of deprecated sound info objects?
 
                 else if (TypeClass == typeof(WadFixedSoundInfoId))
-                    NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
+                    NewId = new WadFixedSoundInfoId((uint) chosenId.Value);
                 else if (TypeClass == typeof(WadAdditionalSoundInfoId))
                     NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
                 else
@@ -148,5 +142,14 @@ namespace WadTool
         {
             ReloadSlots();
         }
+
+        private void butCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void butOK_Click(object sender, EventArgs e) => ConfirmAndClose();
+        private void lstSlots_MouseDoubleClick(object sender, MouseEventArgs e) => ConfirmAndClose();
     }
 }

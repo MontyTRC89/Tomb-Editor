@@ -29,27 +29,27 @@
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
+            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
+            this.comboPortalShade = new DarkUI.Controls.DarkComboBox();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.comboLightEffect = new DarkUI.Controls.DarkComboBox();
-            this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
-            this.comboPortalShade = new DarkUI.Controls.DarkComboBox();
-            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
+            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.butSelectPreviousRoom = new DarkUI.Controls.DarkButton();
+            this.butNewRoom = new DarkUI.Controls.DarkButton();
+            this.butDeleteRoom = new DarkUI.Controls.DarkButton();
+            this.butDublicateRoom = new DarkUI.Controls.DarkButton();
             this.butLocked = new DarkUI.Controls.DarkButton();
-            this.butSplitRoom = new DarkUI.Controls.DarkButton();
-            this.butRoomUp = new DarkUI.Controls.DarkButton();
-            this.butRoomDown = new DarkUI.Controls.DarkButton();
-            this.butEditRoomName = new DarkUI.Controls.DarkButton();
-            this.butCropRoom = new DarkUI.Controls.DarkButton();
             this.comboFlipMap = new DarkUI.Controls.DarkComboBox();
+            this.butRoomUp = new DarkUI.Controls.DarkButton();
             this.comboReverberation = new DarkUI.Controls.DarkComboBox();
             this.comboRoomType = new DarkUI.Controls.DarkComboBox();
             this.comboRoom = new DarkUI.Controls.DarkComboBox();
-            this.butDublicateRoom = new DarkUI.Controls.DarkButton();
-            this.butDeleteRoom = new DarkUI.Controls.DarkButton();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.butNewRoom = new DarkUI.Controls.DarkButton();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.butSelectPreviousRoom = new DarkUI.Controls.DarkButton();
+            this.butRoomDown = new DarkUI.Controls.DarkButton();
+            this.butEditRoomName = new DarkUI.Controls.DarkButton();
+            this.butCropRoom = new DarkUI.Controls.DarkButton();
+            this.butSplitRoom = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -194,6 +194,60 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
+            // numLightEffectStrength
+            // 
+            this.numLightEffectStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.numLightEffectStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
+            this.numLightEffectStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numLightEffectStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numLightEffectStrength.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numLightEffectStrength.Location = new System.Drawing.Point(246, 194);
+            this.numLightEffectStrength.LoopValues = false;
+            this.numLightEffectStrength.Maximum = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            this.numLightEffectStrength.Name = "numLightEffectStrength";
+            this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
+            this.numLightEffectStrength.TabIndex = 15;
+            this.numLightEffectStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.toolTip.SetToolTip(this.numLightEffectStrength, "Light / transform effect strength");
+            this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
+            // 
+            // tbRoomTags
+            // 
+            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
+            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
+            this.tbRoomTags.Name = "tbRoomTags";
+            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
+            this.tbRoomTags.TabIndex = 2;
+            this.tbRoomTags.Tag = "SetRoomTags";
+            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
+            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
+            // 
+            // comboPortalShade
+            // 
+            this.comboPortalShade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboPortalShade.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboPortalShade.Items.AddRange(new object[] {
+            "Default",
+            "Smooth",
+            "Sharp"});
+            this.comboPortalShade.Location = new System.Drawing.Point(68, 194);
+            this.comboPortalShade.Name = "comboPortalShade";
+            this.comboPortalShade.Size = new System.Drawing.Size(69, 23);
+            this.comboPortalShade.TabIndex = 13;
+            this.toolTip.SetToolTip(this.comboPortalShade, "Smoothing on room edges");
+            this.comboPortalShade.SelectedIndexChanged += new System.EventHandler(this.comboPortalShade_SelectedIndexChanged);
+            // 
             // butSearch
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -226,59 +280,69 @@
             this.toolTip.SetToolTip(this.comboLightEffect, "Light / transform effect on room vertices");
             this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
             // 
-            // numLightEffectStrength
+            // darkLabel2
             // 
-            this.numLightEffectStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numLightEffectStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numLightEffectStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numLightEffectStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numLightEffectStrength.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numLightEffectStrength.Location = new System.Drawing.Point(246, 194);
-            this.numLightEffectStrength.LoopValues = false;
-            this.numLightEffectStrength.Maximum = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            this.numLightEffectStrength.Name = "numLightEffectStrength";
-            this.numLightEffectStrength.Size = new System.Drawing.Size(36, 23);
-            this.numLightEffectStrength.TabIndex = 15;
-            this.numLightEffectStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.toolTip.SetToolTip(this.numLightEffectStrength, "Light / transform effect strength");
-            this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
+            this.darkLabel2.AutoSize = true;
+            this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel2.Location = new System.Drawing.Point(1, 59);
+            this.darkLabel2.Name = "darkLabel2";
+            this.darkLabel2.Size = new System.Drawing.Size(32, 13);
+            this.darkLabel2.TabIndex = 110;
+            this.darkLabel2.Text = "Tags:";
             // 
-            // comboPortalShade
+            // darkLabel1
             // 
-            this.comboPortalShade.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboPortalShade.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboPortalShade.Items.AddRange(new object[] {
-            "Default",
-            "Smooth",
-            "Sharp"});
-            this.comboPortalShade.Location = new System.Drawing.Point(68, 194);
-            this.comboPortalShade.Name = "comboPortalShade";
-            this.comboPortalShade.Size = new System.Drawing.Size(69, 23);
-            this.comboPortalShade.TabIndex = 13;
-            this.toolTip.SetToolTip(this.comboPortalShade, "Smoothing on room edges");
-            this.comboPortalShade.SelectedIndexChanged += new System.EventHandler(this.comboPortalShade_SelectedIndexChanged);
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(65, 178);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(71, 13);
+            this.darkLabel1.TabIndex = 112;
+            this.darkLabel1.Text = "Portal shade";
             // 
-            // tbRoomTags
+            // butSelectPreviousRoom
             // 
-            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
-            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
-            this.tbRoomTags.Name = "tbRoomTags";
-            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
-            this.tbRoomTags.TabIndex = 2;
-            this.tbRoomTags.Tag = "SetRoomTags";
-            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
-            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
+            this.butSelectPreviousRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectPreviousRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.butSelectPreviousRoom.Image = global::TombEditor.Properties.Resources.actions_back_16;
+            this.butSelectPreviousRoom.Location = new System.Drawing.Point(228, 86);
+            this.butSelectPreviousRoom.Name = "butSelectPreviousRoom";
+            this.butSelectPreviousRoom.Size = new System.Drawing.Size(24, 22);
+            this.butSelectPreviousRoom.TabIndex = 113;
+            this.butSelectPreviousRoom.Tag = "SelectPreviousRoom";
+            // 
+            // butNewRoom
+            // 
+            this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_create_new_16;
+            this.butNewRoom.Location = new System.Drawing.Point(258, 28);
+            this.butNewRoom.Name = "butNewRoom";
+            this.butNewRoom.Size = new System.Drawing.Size(24, 23);
+            this.butNewRoom.TabIndex = 17;
+            this.butNewRoom.Tag = "AddNewRoom";
+            // 
+            // butDeleteRoom
+            // 
+            this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDeleteRoom.Location = new System.Drawing.Point(258, 57);
+            this.butDeleteRoom.Name = "butDeleteRoom";
+            this.butDeleteRoom.Size = new System.Drawing.Size(24, 23);
+            this.butDeleteRoom.TabIndex = 19;
+            this.butDeleteRoom.Tag = "DeleteRooms";
+            // 
+            // butDublicateRoom
+            // 
+            this.butDublicateRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDublicateRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
+            this.butDublicateRoom.Location = new System.Drawing.Point(228, 57);
+            this.butDublicateRoom.Name = "butDublicateRoom";
+            this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
+            this.butDublicateRoom.TabIndex = 18;
+            this.butDublicateRoom.Tag = "DuplicateRoom";
             // 
             // butLocked
             // 
@@ -290,56 +354,6 @@
             this.butLocked.Size = new System.Drawing.Size(24, 22);
             this.butLocked.TabIndex = 20;
             this.butLocked.Tag = "LockRoom";
-            // 
-            // butSplitRoom
-            // 
-            this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.actions_Split_16;
-            this.butSplitRoom.Location = new System.Drawing.Point(228, 143);
-            this.butSplitRoom.Name = "butSplitRoom";
-            this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
-            this.butSplitRoom.TabIndex = 23;
-            this.butSplitRoom.Tag = "SplitRoom";
-            // 
-            // butRoomUp
-            // 
-            this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
-            this.butRoomUp.Location = new System.Drawing.Point(258, 114);
-            this.butRoomUp.Name = "butRoomUp";
-            this.butRoomUp.Size = new System.Drawing.Size(24, 23);
-            this.butRoomUp.TabIndex = 22;
-            this.butRoomUp.Tag = "MoveRoomUp";
-            // 
-            // butRoomDown
-            // 
-            this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
-            this.butRoomDown.Location = new System.Drawing.Point(258, 143);
-            this.butRoomDown.Name = "butRoomDown";
-            this.butRoomDown.Size = new System.Drawing.Size(24, 23);
-            this.butRoomDown.TabIndex = 24;
-            this.butRoomDown.Tag = "MoveRoomDown";
-            // 
-            // butEditRoomName
-            // 
-            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
-            this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
-            this.butEditRoomName.Name = "butEditRoomName";
-            this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
-            this.butEditRoomName.TabIndex = 16;
-            this.butEditRoomName.Tag = "EditRoomName";
-            // 
-            // butCropRoom
-            // 
-            this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(228, 114);
-            this.butCropRoom.Name = "butCropRoom";
-            this.butCropRoom.Size = new System.Drawing.Size(24, 23);
-            this.butCropRoom.TabIndex = 21;
-            this.butCropRoom.Tag = "CropRoom";
             // 
             // comboFlipMap
             // 
@@ -367,6 +381,16 @@
             this.comboFlipMap.Size = new System.Drawing.Size(55, 23);
             this.comboFlipMap.TabIndex = 4;
             this.comboFlipMap.SelectedIndexChanged += new System.EventHandler(this.comboFlipMap_SelectedIndexChanged);
+            // 
+            // butRoomUp
+            // 
+            this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
+            this.butRoomUp.Location = new System.Drawing.Point(258, 114);
+            this.butRoomUp.Name = "butRoomUp";
+            this.butRoomUp.Size = new System.Drawing.Size(24, 23);
+            this.butRoomUp.TabIndex = 22;
+            this.butRoomUp.Tag = "MoveRoomUp";
             // 
             // comboReverberation
             // 
@@ -419,69 +443,45 @@
             this.comboRoom.TabIndex = 0;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
-            // butDublicateRoom
+            // butRoomDown
             // 
-            this.butDublicateRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDublicateRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butDublicateRoom.Location = new System.Drawing.Point(228, 57);
-            this.butDublicateRoom.Name = "butDublicateRoom";
-            this.butDublicateRoom.Size = new System.Drawing.Size(24, 23);
-            this.butDublicateRoom.TabIndex = 18;
-            this.butDublicateRoom.Tag = "DuplicateRoom";
+            this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
+            this.butRoomDown.Location = new System.Drawing.Point(258, 143);
+            this.butRoomDown.Name = "butRoomDown";
+            this.butRoomDown.Size = new System.Drawing.Size(24, 23);
+            this.butRoomDown.TabIndex = 24;
+            this.butRoomDown.Tag = "MoveRoomDown";
             // 
-            // butDeleteRoom
+            // butEditRoomName
             // 
-            this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDeleteRoom.Location = new System.Drawing.Point(258, 57);
-            this.butDeleteRoom.Name = "butDeleteRoom";
-            this.butDeleteRoom.Size = new System.Drawing.Size(24, 23);
-            this.butDeleteRoom.TabIndex = 19;
-            this.butDeleteRoom.Tag = "DeleteRooms";
+            this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
+            this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
+            this.butEditRoomName.Name = "butEditRoomName";
+            this.butEditRoomName.Size = new System.Drawing.Size(24, 23);
+            this.butEditRoomName.TabIndex = 16;
+            this.butEditRoomName.Tag = "EditRoomName";
             // 
-            // darkLabel2
+            // butCropRoom
             // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(0, 59);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(32, 13);
-            this.darkLabel2.TabIndex = 110;
-            this.darkLabel2.Text = "Tags:";
+            this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
+            this.butCropRoom.Location = new System.Drawing.Point(228, 114);
+            this.butCropRoom.Name = "butCropRoom";
+            this.butCropRoom.Size = new System.Drawing.Size(24, 23);
+            this.butCropRoom.TabIndex = 21;
+            this.butCropRoom.Tag = "CropRoom";
             // 
-            // butNewRoom
+            // butSplitRoom
             // 
-            this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_create_new_16;
-            this.butNewRoom.Location = new System.Drawing.Point(258, 28);
-            this.butNewRoom.Name = "butNewRoom";
-            this.butNewRoom.Size = new System.Drawing.Size(24, 23);
-            this.butNewRoom.TabIndex = 17;
-            this.butNewRoom.Tag = "AddNewRoom";
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(65, 178);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(71, 13);
-            this.darkLabel1.TabIndex = 112;
-            this.darkLabel1.Text = "Portal shade";
-            // 
-            // butSelectPreviousRoom
-            // 
-            this.butSelectPreviousRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectPreviousRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.butSelectPreviousRoom.Image = global::TombEditor.Properties.Resources.general_undo_16;
-            this.butSelectPreviousRoom.Location = new System.Drawing.Point(228, 86);
-            this.butSelectPreviousRoom.Name = "butSelectPreviousRoom";
-            this.butSelectPreviousRoom.Size = new System.Drawing.Size(24, 22);
-            this.butSelectPreviousRoom.TabIndex = 113;
-            this.butSelectPreviousRoom.Tag = "SelectPreviousRoom";
+            this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSplitRoom.Image = global::TombEditor.Properties.Resources.actions_Split_16;
+            this.butSplitRoom.Location = new System.Drawing.Point(228, 143);
+            this.butSplitRoom.Name = "butSplitRoom";
+            this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
+            this.butSplitRoom.TabIndex = 23;
+            this.butSplitRoom.Tag = "SplitRoom";
             // 
             // RoomOptions
             // 

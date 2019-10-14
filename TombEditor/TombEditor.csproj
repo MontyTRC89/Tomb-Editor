@@ -570,6 +570,7 @@
     <None Include="Resources\icons_general\general_filter-16.png" />
     <None Include="Resources\general_filter-16.png" />
     <None Include="Resources\icons_objects\objects_geometry-override-16.png" />
+    <None Include="Resources\icons_actions\actions_back-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">

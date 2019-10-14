@@ -107,12 +107,12 @@
             0,
             0});
             this.chosenId.Location = new System.Drawing.Point(104, 12);
+            this.chosenId.LoopValues = false;
             this.chosenId.Maximum = new decimal(new int[] {
             -1,
             0,
             0,
             0});
-            this.chosenId.LoopValues = false;
             this.chosenId.Name = "chosenId";
             this.chosenId.Size = new System.Drawing.Size(81, 22);
             this.chosenId.TabIndex = 1;
@@ -139,6 +139,7 @@
             this.lstSlots.Size = new System.Drawing.Size(398, 335);
             this.lstSlots.TabIndex = 22;
             this.lstSlots.SelectedIndicesChanged += new System.EventHandler(this.lstSlots_SelectedIndicesChanged);
+            this.lstSlots.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstSlots_MouseDoubleClick);
             // 
             // FormSelectSlot
             // 
