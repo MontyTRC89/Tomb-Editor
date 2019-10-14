@@ -26,6 +26,22 @@ namespace DarkUI.Controls
 
         #region Designer Property Region
 
+        public bool Checked
+        {
+            get { return _checked; }
+            set 
+            {
+                if (value == _checked)
+                    return;
+
+                _checked = value;
+                CheckedChanged?.Invoke(this, new EventArgs());
+                Invalidate();
+            }
+        }
+        private bool _checked;
+        public EventHandler CheckedChanged;
+
         public new string Text
         {
             get { return base.Text; }
@@ -348,36 +364,54 @@ namespace DarkUI.Controls
 
             if (Enabled)
             {
-                switch (ButtonStyle)
+                if (Checked)
                 {
-                    case DarkButtonStyle.Normal:
-                        if (Focused && TabStop)
-                            borderColor = Colors.BlueHighlight;
+                    fillColor = Colors.MenuItemToggledOnFill;
 
-                        switch (ButtonState)
-                        {
-                            case DarkControlState.Hover:
-                                fillColor = hoverColor;
-                                break;
-                            case DarkControlState.Pressed:
-                                fillColor = Colors.DarkBackground;
-                                break;
-                        }
-                        break;
-                    case DarkButtonStyle.Flat:
-                        switch (ButtonState)
-                        {
-                            case DarkControlState.Normal:
-                                fillColor = Colors.GreyBackground;
-                                break;
-                            case DarkControlState.Hover:
-                                fillColor = Colors.MediumBackground;
-                                break;
-                            case DarkControlState.Pressed:
-                                fillColor = Colors.DarkBackground;
-                                break;
-                        }
-                        break;
+                    switch (ButtonState)
+                    {
+                        case DarkControlState.Hover:
+                            borderColor = Colors.GreyHighlight;
+                            break;
+
+                        case DarkControlState.Normal:
+                            borderColor = Colors.MenuItemToggledOnBorder;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (ButtonStyle)
+                    {
+                        case DarkButtonStyle.Normal:
+                            if (Focused && TabStop)
+                                borderColor = Colors.BlueHighlight;
+
+                            switch (ButtonState)
+                            {
+                                case DarkControlState.Hover:
+                                    fillColor = hoverColor;
+                                    break;
+                                case DarkControlState.Pressed:
+                                    fillColor = Colors.DarkBackground;
+                                    break;
+                            }
+                            break;
+                        case DarkButtonStyle.Flat:
+                            switch (ButtonState)
+                            {
+                                case DarkControlState.Normal:
+                                    fillColor = Colors.GreyBackground;
+                                    break;
+                                case DarkControlState.Hover:
+                                    fillColor = Colors.MediumBackground;
+                                    break;
+                                case DarkControlState.Pressed:
+                                    fillColor = Colors.DarkBackground;
+                                    break;
+                            }
+                            break;
+                    }
                 }
             }
             else
