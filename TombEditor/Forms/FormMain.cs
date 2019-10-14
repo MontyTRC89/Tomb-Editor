@@ -3,20 +3,15 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using DarkUI.Controls;
 using DarkUI.Docking;
 using DarkUI.Forms;
 using NLog;
 using TombLib.Forms;
 using TombLib.LevelData;
-using TombLib.Script;
 using TombLib.Utils;
-using System.Collections.Generic;
-using TombLib.Wad.TrLevels;
-using TombLib.Wad;
 using System.IO;
 using System.Xml;
-using TombLib;
+using DarkUI.Config;
 
 namespace TombEditor.Forms
 {
@@ -226,6 +221,15 @@ namespace TombEditor.Forms
                     GenerateMenusRecursive(menuStrip.Items, true);
                 if (e.UpdateLayout)
                     LoadWindowLayout(_editor.Configuration);
+
+                // Refresh all forms if UI colours were changed
+                var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
+                if (Colors.MenuItemToggledOnBorder != newButtonHighlightColour)
+                {
+                    Colors.MenuItemToggledOnBorder = newButtonHighlightColour;
+                    foreach (var form in Application.OpenForms)
+                        if (form is DarkForm) ((DarkForm)form).Refresh();
+                }
             }
 
             // Update texture controls

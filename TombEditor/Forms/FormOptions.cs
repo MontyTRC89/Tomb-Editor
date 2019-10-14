@@ -127,11 +127,14 @@ namespace TombEditor.Forms
                     }
                     else if (control is DarkNumericUpDown)
                     {
-                             if(option is float) ((DarkNumericUpDown)control).Value = (decimal)(float)option;
-                        else if(option is int)   ((DarkNumericUpDown)control).Value = (decimal)(int)option;
+                             if (option is float) ((DarkNumericUpDown)control).Value = (decimal)(float)option;
+                        else if (option is int)   ((DarkNumericUpDown)control).Value = (decimal)(int)option;
                     }
-                    else if (control is Panel && option is Vector4)
-                        ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
+                    else if (control is Panel)
+                    {
+                             if (option is Vector4) ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
+                        else if (option is string)  ((Panel)control).BackColor = ColorTranslator.FromHtml((string)option);
+                    }
                 }
             }
         }
@@ -164,11 +167,15 @@ namespace TombEditor.Forms
                              if (option is int)   SetOptionValue(name, config,   (int)((DarkNumericUpDown)control).Value);
                         else if (option is float) SetOptionValue(name, config, (float)((DarkNumericUpDown)control).Value);
                     }
-                    else if (control is Panel && option is Vector4)
+                    else if (control is Panel)
                     {
-                        var newColor = ((Panel)control).BackColor.ToFloat4Color();
-                        newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
-                        SetOptionValue(name, config.UI_ColorScheme, newColor);
+                        if (option is Vector4)
+                        {
+                            var newColor = ((Panel)control).BackColor.ToFloat4Color();
+                            newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
+                            SetOptionValue(name, config.UI_ColorScheme, newColor);
+                        }
+                        else if (option is string) SetOptionValue(name, config, ColorTranslator.ToHtml(((Panel)control).BackColor));
                     }
                 }
             }

@@ -177,7 +177,7 @@ namespace TombEditor.ToolWindows
 
         private void UpdateTextureControls(TextureArea texture)
         {
-            butDoubleSide.BackColorUseGeneric = !texture.DoubleSided;
+            butDoubleSide.Checked = texture.DoubleSided;
 
             switch (texture.BlendMode)
             {

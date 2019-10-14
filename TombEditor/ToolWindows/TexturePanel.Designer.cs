@@ -79,7 +79,6 @@ namespace TombEditor.ToolWindows
             // butDoubleSide
             // 
             this.butDoubleSide.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.butDoubleSide.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.butDoubleSide.Image = global::TombEditor.Properties.Resources.texture_DoubleSided_1_16;
             this.butDoubleSide.Location = new System.Drawing.Point(3, 3);
             this.butDoubleSide.Name = "butDoubleSide";

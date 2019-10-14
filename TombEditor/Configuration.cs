@@ -135,6 +135,7 @@ namespace TombEditor
         public bool UI_SetAttributesAtOnce { get; set; } = true;
         public bool UI_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
         public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
+        public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
         public ColorScheme UI_ColorScheme { get; set; } = new ColorScheme();
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
