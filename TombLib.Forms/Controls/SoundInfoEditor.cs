@@ -223,6 +223,7 @@ namespace TombLib.Controls
         {
             using (var form = new FormInputBox("New sample", "Insert the filename of the new sample without .wav extension:"))
             {
+                form.StartPosition = FormStartPosition.CenterParent;
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
                 dgvSamples.Rows.Add(form.Result + ".wav");
@@ -241,18 +242,32 @@ namespace TombLib.Controls
         {
             var files = LevelFileDialog.BrowseFiles(FindForm(), ReferenceLevel?.Settings, null, "Choose samples", FileExtensions, null);
             if (files != null)
+            {
+                bool samplesAreMisplaced = false;
+
                 foreach (var file in files)
                 {
                     bool alreadyInList = false;
+                    var fileName = Path.GetFileName(file).ToLower();
+
                     foreach (DataGridViewRow row in dgvSamples.Rows)
                     {
-                        if (row.Cells[0].Value.ToString().Equals(file, StringComparison.InvariantCultureIgnoreCase))
-                            { alreadyInList = true; break; }
+                        if (row.Cells[0].Value.ToString().ToLower().Equals(fileName, StringComparison.InvariantCultureIgnoreCase))
+                        { alreadyInList = true; break; }
                     }
                     if (alreadyInList) break;
 
-                    dgvSamples.Rows.Add(Path.GetFileName(file).ToLower());
+                    dgvSamples.Rows.Add(fileName);
+
+                    if (ReferenceLevel != null && string.IsNullOrEmpty(WadSounds.TryGetSamplePath(ReferenceLevel.Settings, fileName)))
+                        samplesAreMisplaced = true;
                 }
+
+                if (samplesAreMisplaced)
+                    DarkMessageBox.Show(this, 
+                        "Selected samples aren't placed in any of your reference level's sample paths.\nPlease copy samples to one of the sample paths or add specified path to path list.", 
+                        "Wrong folder", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void dgvSamples_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e) => OnSoundInfoChanged(null, null);

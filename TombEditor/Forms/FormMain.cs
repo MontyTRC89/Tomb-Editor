@@ -228,15 +228,15 @@ namespace TombEditor.Forms
             // Update texture controls
             if (obj is Editor.LoadedTexturesChangedEvent)
                 remapTextureToolStripMenuItem.Enabled =
-                    removeTexturesToolStripMenuItem.Enabled =
-                    unloadTexturesToolStripMenuItem.Enabled =
-                    reloadTexturesToolStripMenuItem.Enabled =
-                    importConvertTexturesToPng.Enabled = _editor.Level.Settings.Textures.Count > 0;
+                removeTexturesToolStripMenuItem.Enabled =
+                unloadTexturesToolStripMenuItem.Enabled =
+                reloadTexturesToolStripMenuItem.Enabled =
+                importConvertTexturesToPng.Enabled = _editor.Level.Settings.Textures.Count > 0;
 
             // Update wad controls
             if (obj is Editor.LoadedWadsChangedEvent)
                 removeWadsToolStripMenuItem.Enabled =
-                    reloadWadsToolStripMenuItem.Enabled = _editor.Level.Settings.Wads.Count > 0;
+                reloadWadsToolStripMenuItem.Enabled = _editor.Level.Settings.Wads.Count > 0;
 
             if (obj is Editor.LoadedSoundsCatalogsChangedEvent)
                 reloadSoundsToolStripMenuItem.Enabled = _editor.Level.Settings.SoundsCatalogs.Count > 0;

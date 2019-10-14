@@ -141,6 +141,7 @@ namespace SoundTool
         {
             using (var form = new FormInputBox("Add new sound info", "Insert the ID of the new sound:", FindFreeSoundID().ToString()))
             {
+                form.StartPosition = FormStartPosition.CenterParent;
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
 
