@@ -77,32 +77,25 @@ namespace DarkUI.Renderers
 
             if (e.Item.ImageIndex == -1 && String.IsNullOrEmpty(e.Item.ImageKey) && e.Item.Image == null)
             {
-                g.DrawImage(MenuIcons.tick, new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
+                g.DrawImage(MenuIcons.tick.SetOpacity(Colors.Brightness), new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
             }
-
-            if (Colors.BrightnessChanged)
-                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
-                    g.FillRectangle(b, e.ImageRectangle);
         }
 
         protected override void OnRenderItemImage(ToolStripItemImageRenderEventArgs e)
         {
-            base.OnRenderItemImage(e);
+            var g = e.Graphics;
 
-            if (Colors.BrightnessChanged)
-                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
-                    e.Graphics.FillRectangle(b, e.ImageRectangle);
+            if (e.Image == null)
+                return;
+
+            g.DrawImage(e.Image.SetOpacity(Colors.Brightness), new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
         }
 
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
-            base.OnRenderItemText(e);
-
-            if (!(e.Item is ToolStripLabel)) return; // Only do overlay for simple labels
-
-            if (Colors.BrightnessChanged)
-                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
-                    e.Graphics.FillRectangle(b, e.TextRectangle);
+            var textColor = e.Item.Enabled ? Colors.LightText : Colors.DisabledText;
+            using (var b = new SolidBrush(textColor))
+                e.Graphics.DrawString(e.Item.Text, e.Item.Font, b, e.TextRectangle, new StringFormat(StringFormatFlags.NoClip) { HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show });
         }
 
         protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)

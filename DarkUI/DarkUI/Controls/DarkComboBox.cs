@@ -239,12 +239,7 @@ namespace DarkUI.Controls
                 e.Graphics.FillRectangle(buttonBrush, buttonRect);
 
             // Draw arrow
-            e.Graphics.DrawImage(_buttonIcon, buttonIconRect);
-
-            // Overlay arrow with brightness
-            if (Colors.BrightnessChanged)
-                using (var b = new SolidBrush(_buttonColor.MultiplyAlpha(Colors.AlphaBrightness)))
-                e.Graphics.FillRectangle(b, buttonIconRect);
+            e.Graphics.DrawImage(_buttonIcon.SetOpacity(Colors.Brightness), buttonIconRect);
 
             // Draw borders
             ControlPaint.DrawBorder(e.Graphics, buttonRect, _borderColor, ButtonBorderStyle.Solid);
