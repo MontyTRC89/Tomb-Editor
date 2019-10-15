@@ -1,4 +1,6 @@
-﻿using DarkUI.Controls;
+﻿using DarkUI.Config;
+using DarkUI.Controls;
+using DarkUI.Extensions;
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
@@ -2312,13 +2314,6 @@ namespace WadTool
                 RebuildAnimationsList();
         }
 
-        private void butTbInterpolateFrames_Click(object sender, EventArgs e)
-        {
-            int frameCount = 3;
-            int.TryParse(tbInterpolateFrameCount.Text, out frameCount);
-            InterpolateFrames(frameCount);
-        }
-
         private void resampleAnimationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var form = new FormInputBox("Resample animation", "Enter resample multiplier (speed)", "2"))
@@ -2459,25 +2454,25 @@ namespace WadTool
             switch (_editor.TransformMode)
             {
                 case AnimTransformMode.Smooth:
-                    picTransformPreview.Image = Properties.Resources.transform_smooth;
+                    picTransformPreview.Image = Properties.Resources.transform_smooth.SetOpacity(Colors.Brightness);
                     break;
                 case AnimTransformMode.SmoothReverse:
-                    picTransformPreview.Image = Properties.Resources.transform_smooth_reverse;
+                    picTransformPreview.Image = Properties.Resources.transform_smooth_reverse.SetOpacity(Colors.Brightness);
                     break;
                 case AnimTransformMode.Linear:
-                    picTransformPreview.Image = Properties.Resources.transform_linear;
+                    picTransformPreview.Image = Properties.Resources.transform_linear.SetOpacity(Colors.Brightness);
                     break;
                 case AnimTransformMode.LinearReverse:
-                    picTransformPreview.Image = Properties.Resources.transform_linear_reverse;
+                    picTransformPreview.Image = Properties.Resources.transform_linear_reverse.SetOpacity(Colors.Brightness);
                     break;
                 case AnimTransformMode.Symmetric:
-                    picTransformPreview.Image = Properties.Resources.transform_symmetric;
+                    picTransformPreview.Image = Properties.Resources.transform_symmetric.SetOpacity(Colors.Brightness);
                     break;
                 case AnimTransformMode.SymmetricLinear:
-                    picTransformPreview.Image = Properties.Resources.transform_symmetric_linear;
+                    picTransformPreview.Image = Properties.Resources.transform_symmetric_linear.SetOpacity(Colors.Brightness);
                     break;
                 default:
-                    picTransformPreview.Image = Properties.Resources.transform_simple;
+                    picTransformPreview.Image = Properties.Resources.transform_simple.SetOpacity(Colors.Brightness);
                     break;
             }
 

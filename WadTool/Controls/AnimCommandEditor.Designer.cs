@@ -60,6 +60,7 @@
             this.tbPlaySoundFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.comboPlaySoundConditions = new DarkUI.Controls.DarkComboBox();
+            this.panelView = new System.Windows.Forms.Panel();
             this.commandControls.SuspendLayout();
             this.tabSetPosition.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbPosX)).BeginInit();
@@ -74,15 +75,16 @@
             this.tabPlaySound.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSoundId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).BeginInit();
+            this.panelView.SuspendLayout();
             this.SuspendLayout();
             // 
             // darkLabel8
             // 
             this.darkLabel8.AutoSize = true;
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel8.Location = new System.Drawing.Point(3, 6);
+            this.darkLabel8.Location = new System.Drawing.Point(4, 6);
             this.darkLabel8.Name = "darkLabel8";
-            this.darkLabel8.Size = new System.Drawing.Size(33, 13);
+            this.darkLabel8.Size = new System.Drawing.Size(32, 13);
             this.darkLabel8.TabIndex = 1;
             this.darkLabel8.Text = "Type:";
             // 
@@ -99,9 +101,9 @@
             "Kill entity",
             "Play sound",
             "Flipeffect"});
-            this.comboCommandType.Location = new System.Drawing.Point(44, 3);
+            this.comboCommandType.Location = new System.Drawing.Point(42, 3);
             this.comboCommandType.Name = "comboCommandType";
-            this.comboCommandType.Size = new System.Drawing.Size(326, 23);
+            this.comboCommandType.Size = new System.Drawing.Size(328, 23);
             this.comboCommandType.TabIndex = 53;
             this.comboCommandType.SelectedIndexChanged += new System.EventHandler(this.comboCommandType_SelectedIndexChanged);
             // 
@@ -114,10 +116,10 @@
             this.commandControls.Controls.Add(this.tabSetJumpDistance);
             this.commandControls.Controls.Add(this.tabFlipeffect);
             this.commandControls.Controls.Add(this.tabPlaySound);
-            this.commandControls.Location = new System.Drawing.Point(0, 30);
+            this.commandControls.Location = new System.Drawing.Point(0, 29);
             this.commandControls.Name = "commandControls";
             this.commandControls.SelectedIndex = 0;
-            this.commandControls.Size = new System.Drawing.Size(370, 127);
+            this.commandControls.Size = new System.Drawing.Size(370, 128);
             this.commandControls.TabIndex = 0;
             this.commandControls.Visible = false;
             // 
@@ -133,7 +135,7 @@
             this.tabSetPosition.Location = new System.Drawing.Point(4, 22);
             this.tabSetPosition.Name = "tabSetPosition";
             this.tabSetPosition.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSetPosition.Size = new System.Drawing.Size(362, 101);
+            this.tabSetPosition.Size = new System.Drawing.Size(362, 102);
             this.tabSetPosition.TabIndex = 0;
             this.tabSetPosition.Text = "setPosition";
             // 
@@ -149,14 +151,13 @@
             // 
             // tbPosX
             // 
-            this.tbPosX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbPosX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbPosX.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbPosX.Location = new System.Drawing.Point(9, 24);
+            this.tbPosX.LoopValues = false;
             this.tbPosX.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -167,7 +168,6 @@
             0,
             0,
             -2147483648});
-            this.tbPosX.LoopValues = false;
             this.tbPosX.Name = "tbPosX";
             this.tbPosX.Size = new System.Drawing.Size(73, 22);
             this.tbPosX.TabIndex = 0;
@@ -176,14 +176,13 @@
             // 
             // tbPosZ
             // 
-            this.tbPosZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbPosZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbPosZ.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbPosZ.Location = new System.Drawing.Point(167, 24);
+            this.tbPosZ.LoopValues = false;
             this.tbPosZ.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -194,7 +193,6 @@
             0,
             0,
             -2147483648});
-            this.tbPosZ.LoopValues = false;
             this.tbPosZ.Name = "tbPosZ";
             this.tbPosZ.Size = new System.Drawing.Size(73, 22);
             this.tbPosZ.TabIndex = 4;
@@ -223,14 +221,13 @@
             // 
             // tbPosY
             // 
-            this.tbPosY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbPosY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbPosY.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbPosY.Location = new System.Drawing.Point(88, 24);
+            this.tbPosY.LoopValues = false;
             this.tbPosY.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -241,7 +238,6 @@
             0,
             0,
             -2147483648});
-            this.tbPosY.LoopValues = false;
             this.tbPosY.Name = "tbPosY";
             this.tbPosY.Size = new System.Drawing.Size(73, 22);
             this.tbPosY.TabIndex = 2;
@@ -268,7 +264,7 @@
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(85, 8);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(48, 13);
+            this.darkLabel5.Size = new System.Drawing.Size(47, 13);
             this.darkLabel5.TabIndex = 3;
             this.darkLabel5.Text = "Vertical:";
             // 
@@ -284,14 +280,13 @@
             // 
             // tbVertical
             // 
-            this.tbVertical.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbVertical.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbVertical.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbVertical.Location = new System.Drawing.Point(88, 24);
+            this.tbVertical.LoopValues = false;
             this.tbVertical.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -302,7 +297,6 @@
             0,
             0,
             -2147483648});
-            this.tbVertical.LoopValues = false;
             this.tbVertical.Name = "tbVertical";
             this.tbVertical.Size = new System.Drawing.Size(73, 22);
             this.tbVertical.TabIndex = 2;
@@ -310,14 +304,13 @@
             // 
             // tbHorizontal
             // 
-            this.tbHorizontal.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.tbHorizontal.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbHorizontal.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbHorizontal.Location = new System.Drawing.Point(9, 24);
+            this.tbHorizontal.LoopValues = false;
             this.tbHorizontal.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -328,7 +321,6 @@
             0,
             0,
             -2147483648});
-            this.tbHorizontal.LoopValues = false;
             this.tbHorizontal.Name = "tbHorizontal";
             this.tbHorizontal.Size = new System.Drawing.Size(73, 22);
             this.tbHorizontal.TabIndex = 0;
@@ -397,21 +389,19 @@
             // 
             // tbFlipEffectFrame
             // 
-            this.tbFlipEffectFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbFlipEffectFrame.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbFlipEffectFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbFlipEffectFrame.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbFlipEffectFrame.Location = new System.Drawing.Point(9, 24);
+            this.tbFlipEffectFrame.LoopValues = false;
             this.tbFlipEffectFrame.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
-            this.tbFlipEffectFrame.LoopValues = false;
             this.tbFlipEffectFrame.Name = "tbFlipEffectFrame";
             this.tbFlipEffectFrame.Size = new System.Drawing.Size(73, 23);
             this.tbFlipEffectFrame.TabIndex = 0;
@@ -419,15 +409,14 @@
             // 
             // tbFlipEffect
             // 
-            this.tbFlipEffect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbFlipEffect.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbFlipEffect.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbFlipEffect.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbFlipEffect.Location = new System.Drawing.Point(88, 24);
+            this.tbFlipEffect.LoopValues = false;
             this.tbFlipEffect.Maximum = new decimal(new int[] {
             32767,
             0,
@@ -438,7 +427,6 @@
             0,
             0,
             -2147483648});
-            this.tbFlipEffect.LoopValues = false;
             this.tbFlipEffect.Name = "tbFlipEffect";
             this.tbFlipEffect.Size = new System.Drawing.Size(73, 23);
             this.tbFlipEffect.TabIndex = 2;
@@ -466,21 +454,19 @@
             // nudSoundId
             // 
             this.nudSoundId.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudSoundId.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudSoundId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.nudSoundId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudSoundId.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.nudSoundId.Location = new System.Drawing.Point(268, 53);
+            this.nudSoundId.LoopValues = false;
             this.nudSoundId.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
-            this.nudSoundId.LoopValues = false;
             this.nudSoundId.Name = "nudSoundId";
             this.nudSoundId.Size = new System.Drawing.Size(59, 23);
             this.nudSoundId.TabIndex = 105;
@@ -490,6 +476,7 @@
             // butPlaySound
             // 
             this.butPlaySound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPlaySound.Checked = false;
             this.butPlaySound.Image = global::WadTool.Properties.Resources.actions_play_16;
             this.butPlaySound.Location = new System.Drawing.Point(333, 53);
             this.butPlaySound.Name = "butPlaySound";
@@ -500,6 +487,7 @@
             // butSearchSounds
             // 
             this.butSearchSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearchSounds.Checked = false;
             this.butSearchSounds.Image = global::WadTool.Properties.Resources.general_search_16;
             this.butSearchSounds.Location = new System.Drawing.Point(239, 53);
             this.butSearchSounds.Name = "butSearchSounds";
@@ -539,21 +527,19 @@
             // 
             // tbPlaySoundFrame
             // 
-            this.tbPlaySoundFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.tbPlaySoundFrame.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbPlaySoundFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.tbPlaySoundFrame.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.tbPlaySoundFrame.Location = new System.Drawing.Point(9, 24);
+            this.tbPlaySoundFrame.LoopValues = false;
             this.tbPlaySoundFrame.Maximum = new decimal(new int[] {
             32767,
             0,
             0,
             0});
-            this.tbPlaySoundFrame.LoopValues = false;
             this.tbPlaySoundFrame.Name = "tbPlaySoundFrame";
             this.tbPlaySoundFrame.Size = new System.Drawing.Size(73, 23);
             this.tbPlaySoundFrame.TabIndex = 0;
@@ -584,14 +570,23 @@
             this.comboPlaySoundConditions.TabIndex = 53;
             this.comboPlaySoundConditions.SelectedIndexChanged += new System.EventHandler(this.comboPlaySoundConditions_SelectedIndexChanged);
             // 
+            // panelView
+            // 
+            this.panelView.Controls.Add(this.commandControls);
+            this.panelView.Controls.Add(this.darkLabel8);
+            this.panelView.Controls.Add(this.comboCommandType);
+            this.panelView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelView.Location = new System.Drawing.Point(0, 0);
+            this.panelView.Name = "panelView";
+            this.panelView.Size = new System.Drawing.Size(370, 157);
+            this.panelView.TabIndex = 54;
+            // 
             // AnimCommandEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.Controls.Add(this.commandControls);
-            this.Controls.Add(this.darkLabel8);
-            this.Controls.Add(this.comboCommandType);
+            this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Controls.Add(this.panelView);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "AnimCommandEditor";
             this.Size = new System.Drawing.Size(370, 157);
@@ -613,8 +608,9 @@
             this.tabPlaySound.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSoundId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbPlaySoundFrame)).EndInit();
+            this.panelView.ResumeLayout(false);
+            this.panelView.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -651,5 +647,6 @@
         private DarkUI.Controls.DarkNumericUpDown tbPlaySoundFrame;
         private DarkUI.Controls.DarkLabel darkLabel9;
         private DarkUI.Controls.DarkComboBox comboPlaySoundConditions;
+        private System.Windows.Forms.Panel panelView;
     }
 }

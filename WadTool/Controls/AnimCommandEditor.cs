@@ -5,6 +5,7 @@ using TombLib.Wad;
 using TombLib.Forms;
 using TombLib.Wad.Catalog;
 using System.ComponentModel;
+using DarkUI.Config;
 
 namespace WadTool
 {
@@ -29,7 +30,7 @@ namespace WadTool
         public event EventHandler<AnimCommandEventArgs> AnimCommandChanged;
         private void InvokeChanged() { if (!_currentlyDoingCommandSelection) AnimCommandChanged?.Invoke(this, new AnimCommandEventArgs() { Command = _command }); }
 
-        public AnimCommandEditor() { InitializeComponent(); }
+        public AnimCommandEditor() { InitializeComponent(); panelView.BackColor = Colors.GreyBackground; }
         public void Initialize(AnimationEditor editor, bool disableFrameControls = false)
         {
             _editor = editor;
