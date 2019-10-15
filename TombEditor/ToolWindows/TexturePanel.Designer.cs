@@ -57,6 +57,7 @@ namespace TombEditor.ToolWindows
             // butBumpMaps
             // 
             this.butBumpMaps.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.butBumpMaps.Checked = false;
             this.butBumpMaps.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butBumpMaps.Location = new System.Drawing.Point(193, 30);
             this.butBumpMaps.Name = "butBumpMaps";
@@ -69,6 +70,7 @@ namespace TombEditor.ToolWindows
             // butMirror
             // 
             this.butMirror.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.butMirror.Checked = false;
             this.butMirror.Image = global::TombEditor.Properties.Resources.texture_Mirror;
             this.butMirror.Location = new System.Drawing.Point(173, 3);
             this.butMirror.Name = "butMirror";
@@ -79,6 +81,7 @@ namespace TombEditor.ToolWindows
             // butDoubleSide
             // 
             this.butDoubleSide.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.butDoubleSide.Checked = false;
             this.butDoubleSide.Image = global::TombEditor.Properties.Resources.texture_DoubleSided_1_16;
             this.butDoubleSide.Location = new System.Drawing.Point(3, 3);
             this.butDoubleSide.Name = "butDoubleSide";
@@ -89,6 +92,7 @@ namespace TombEditor.ToolWindows
             // butTextureSounds
             // 
             this.butTextureSounds.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.butTextureSounds.Checked = false;
             this.butTextureSounds.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butTextureSounds.Location = new System.Drawing.Point(98, 30);
             this.butTextureSounds.Name = "butTextureSounds";
@@ -112,6 +116,7 @@ namespace TombEditor.ToolWindows
             // butAnimationRanges
             // 
             this.butAnimationRanges.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.butAnimationRanges.Checked = false;
             this.butAnimationRanges.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAnimationRanges.Location = new System.Drawing.Point(3, 30);
             this.butAnimationRanges.Name = "butAnimationRanges";
@@ -123,6 +128,7 @@ namespace TombEditor.ToolWindows
             // butRotate
             // 
             this.butRotate.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.butRotate.Checked = false;
             this.butRotate.Image = global::TombEditor.Properties.Resources.texture_Rotate;
             this.butRotate.Location = new System.Drawing.Point(146, 3);
             this.butRotate.Name = "butRotate";
@@ -157,6 +163,7 @@ namespace TombEditor.ToolWindows
             // butBrowseTexture
             // 
             this.butBrowseTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butBrowseTexture.Checked = false;
             this.butBrowseTexture.Enabled = false;
             this.butBrowseTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butBrowseTexture.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
@@ -170,6 +177,7 @@ namespace TombEditor.ToolWindows
             // butDeleteTexture
             // 
             this.butDeleteTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteTexture.Checked = false;
             this.butDeleteTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDeleteTexture.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteTexture.Location = new System.Drawing.Point(258, 3);
@@ -194,6 +202,7 @@ namespace TombEditor.ToolWindows
             // butAddTexture
             // 
             this.butAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddTexture.Checked = false;
             this.butAddTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddTexture.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddTexture.Location = new System.Drawing.Point(200, 3);

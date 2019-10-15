@@ -114,6 +114,7 @@ namespace TombEditor.Forms
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.setStaticMeshColorToRoomLightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setStaticMeshesColorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeQuickItemGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -195,7 +196,6 @@ namespace TombEditor.Forms
             this.statusLastCompilation = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
-            this.makeQuickItemGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1204,6 +1204,15 @@ namespace TombEditor.Forms
             this.setStaticMeshesColorToolStripMenuItem.Tag = "SetStaticMeshesColor";
             this.setStaticMeshesColorToolStripMenuItem.Text = "SetStaticMeshesColor";
             // 
+            // makeQuickItemGroupToolStripMenuItem
+            // 
+            this.makeQuickItemGroupToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.makeQuickItemGroupToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.makeQuickItemGroupToolStripMenuItem.Name = "makeQuickItemGroupToolStripMenuItem";
+            this.makeQuickItemGroupToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.makeQuickItemGroupToolStripMenuItem.Tag = "MakeQuickItemGroup";
+            this.makeQuickItemGroupToolStripMenuItem.Text = "MakeQuickItemGroup";
+            // 
             // texturesToolStripMenuItem
             // 
             this.texturesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1921,6 +1930,7 @@ namespace TombEditor.Forms
             // 
             // butRoomDown
             // 
+            this.butRoomDown.Checked = false;
             this.butRoomDown.Location = new System.Drawing.Point(0, 0);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(75, 23);
@@ -1928,6 +1938,7 @@ namespace TombEditor.Forms
             // 
             // butEditRoomName
             // 
+            this.butEditRoomName.Checked = false;
             this.butEditRoomName.Location = new System.Drawing.Point(0, 0);
             this.butEditRoomName.Name = "butEditRoomName";
             this.butEditRoomName.Size = new System.Drawing.Size(75, 23);
@@ -1935,6 +1946,7 @@ namespace TombEditor.Forms
             // 
             // butDeleteRoom
             // 
+            this.butDeleteRoom.Checked = false;
             this.butDeleteRoom.Location = new System.Drawing.Point(0, 0);
             this.butDeleteRoom.Name = "butDeleteRoom";
             this.butDeleteRoom.Size = new System.Drawing.Size(75, 23);
@@ -1995,7 +2007,6 @@ namespace TombEditor.Forms
             // 
             // dockArea
             // 
-            this.dockArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.dockArea.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dockArea.Location = new System.Drawing.Point(0, 0);
             this.dockArea.MinimumSize = new System.Drawing.Size(274, 274);
@@ -2014,15 +2025,6 @@ namespace TombEditor.Forms
             this.panelDockArea.Name = "panelDockArea";
             this.panelDockArea.Size = new System.Drawing.Size(913, 416);
             this.panelDockArea.TabIndex = 26;
-            // 
-            // makeQuickItemGroupToolStripMenuItem
-            // 
-            this.makeQuickItemGroupToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.makeQuickItemGroupToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.makeQuickItemGroupToolStripMenuItem.Name = "makeQuickItemGroupToolStripMenuItem";
-            this.makeQuickItemGroupToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.makeQuickItemGroupToolStripMenuItem.Tag = "MakeQuickItemGroup";
-            this.makeQuickItemGroupToolStripMenuItem.Text = "MakeQuickItemGroup";
             // 
             // FormMain
             // 

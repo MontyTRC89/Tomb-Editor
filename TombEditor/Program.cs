@@ -8,9 +8,9 @@ using System.Threading;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib.NG;
-using TombLib;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
+using DarkUI.Config;
 
 namespace TombEditor
 {
@@ -29,6 +29,9 @@ namespace TombEditor
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
             var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
+
+            // Update DarkUI configuration
+            Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 
             if (configuration.Editor_AllowMultipleInstances ||
                 mutex.WaitOne(TimeSpan.Zero, true))

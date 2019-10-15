@@ -11,6 +11,7 @@ using System.Drawing.Design;
 using System.Reflection;
 using System.Drawing.Drawing2D;
 using DarkUI.Config;
+using DarkUI.Extensions;
 
 namespace DarkUI.Controls
 {
@@ -488,10 +489,18 @@ namespace DarkUI.Controls
         public void PaintCell(DataGridViewCellPaintingEventArgs e, Image image)
         {
             e.Paint(e.CellBounds, DataGridViewPaintParts.All);
-            e.Graphics.DrawImage(image,
-                e.CellBounds.Left + (e.CellBounds.Width - image.Width) / 2 - 1,
-                e.CellBounds.Top + (e.CellBounds.Height - image.Height) / 2,
-                image.Width, image.Height);
+
+            var imgRect = new Rectangle(e.CellBounds.Left + (e.CellBounds.Width - image.Width) / 2 - 1,
+                                        e.CellBounds.Top + (e.CellBounds.Height - image.Height) / 2,
+                                        image.Width, image.Height);
+
+            e.Graphics.DrawImage(image, imgRect.X, imgRect.Y, imgRect.Width, imgRect.Height);
+
+            // Overlay with brightness
+            if (Colors.Brightness < Colors.MaxBrightness)
+                using (var b = new SolidBrush(e.CellStyle.BackColor.MultiplyAlpha(Colors.AlphaBrightness)))
+                e.Graphics.FillRectangle(b, imgRect);
+
             e.Handled = true;
         }
 

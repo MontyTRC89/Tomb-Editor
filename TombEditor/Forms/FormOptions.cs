@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Windows.Forms;
 using TombLib.Controls;
 using TombLib.LevelData;
+using TombLib.Rendering;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
@@ -41,6 +43,7 @@ namespace TombEditor.Forms
 
         private void InitializeDialog()
         {
+            // Link listview to tabbed container
             tabbedContainer.LinkedControl = optionsList;
 
 			// Filter out non-TrueType fonts by catching an exception on font creation
@@ -52,6 +55,14 @@ namespace TombEditor.Forms
             // Populate versions
             cmbGameVersion.Items.AddRange(TRVersion.CompilableVersions.Cast<object>().ToArray());
 
+            // Populate color scheme presets
+            typeof(ColorScheme)
+                .GetFields()
+                .Where(f => f.FieldType == typeof(ColorScheme))
+                .ToList()
+                .ForEach(item => cmbColorScheme.Items.Add(item.Name));
+
+            // Assign event for every color panel
             var panels = AllOptionControls(this).Where(c => c is Panel).ToList();
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
@@ -62,7 +73,12 @@ namespace TombEditor.Forms
                         colorDialog.FullOpen = true;
                         if (colorDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        panel.BackColor = colorDialog.Color;
+
+                        if (panel.BackColor != colorDialog.Color)
+                        {
+                            panel.BackColor = colorDialog.Color;
+                            if (panel.Parent.Text == "Color scheme") cmbColorScheme.SelectedIndex = -1;
+                        }
                     }
                 };
         }
@@ -104,13 +120,16 @@ namespace TombEditor.Forms
             }
         }
 
-        private void ReadConfigIntoControls(Control parent, bool resetToDefault = false)
+        private void ReadConfigIntoControls(Control parent, bool resetToDefault = false, Type onlyType = null)
         {
             var controls    = AllOptionControls(parent);
             var configToUse = resetToDefault ? new Configuration() : _editor.Configuration;
 
             foreach (var control in controls)
             {
+                if (onlyType != null && control.GetType() != onlyType)
+                    continue;
+
                 var option = GetOptionObject(control, configToUse);
                 if(option != null)
                 {
@@ -189,6 +208,22 @@ namespace TombEditor.Forms
         {
             WriteConfigFromControls();
             Close();
+        }
+
+        private void cmbColorScheme_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbColorScheme.SelectedIndex == -1) return;
+            var config = _editor.Configuration;
+
+            foreach (FieldInfo prop in typeof(ColorScheme).GetFields())
+                if (prop.FieldType == typeof(ColorScheme) && prop.Name == cmbColorScheme.SelectedItem.ToString())
+                {
+                    var preset = (ColorScheme)prop.GetValue(config.UI_ColorScheme);
+                    foreach (FieldInfo field in typeof(ColorScheme).GetFields().Where(f => f.FieldType == typeof(Vector4)))
+                        SetOptionValue(field.Name, config.UI_ColorScheme, (Vector4)field.GetValue(preset));
+                    ReadConfigIntoControls(tabbedContainer.SelectedTab, false, typeof(Panel));
+                    break;
+                }
         }
     }
 }

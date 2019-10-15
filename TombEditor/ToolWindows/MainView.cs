@@ -8,6 +8,7 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Forms;
 using TombLib.Utils;
+using System.Reflection;
 
 namespace TombEditor.ToolWindows
 {

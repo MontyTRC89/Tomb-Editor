@@ -1,4 +1,5 @@
 ﻿using DarkUI.Config;
+using DarkUI.Extensions;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -46,6 +47,19 @@ namespace DarkUI.Controls
                     AutoUpdateHeight = false;
             }
         }
+
+        public new Color BackColor
+        {
+            get { return base.BackColor.Multiply(Colors.InvertedBrightness); }
+            set { base.BackColor = value.Multiply(Colors.Brightness); }
+        }
+
+        public new Color ForeColor
+        {
+            get { return base.ForeColor.Multiply(Colors.InvertedBrightness); }
+            set { base.ForeColor = value.Multiply(Colors.Brightness); }
+        }
+
 
         #endregion
 

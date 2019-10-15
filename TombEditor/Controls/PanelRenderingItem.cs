@@ -1,4 +1,5 @@
-﻿using SharpDX.Toolkit.Graphics;
+﻿using DarkUI.Config;
+using SharpDX.Toolkit.Graphics;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -80,8 +81,11 @@ namespace TombEditor.Controls
                 }
 
                 e.Graphics.Clear(Parent.BackColor);
-                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, ClientRectangle,
-                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                using (var b = new SolidBrush(Colors.DisabledText))
+                    e.Graphics.DrawString(notifyMessage, Font, b, ClientRectangle,
+                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
+                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Colors.GreySelection, ButtonBorderStyle.Solid);
             }
             else
                 base.OnPaint(e);

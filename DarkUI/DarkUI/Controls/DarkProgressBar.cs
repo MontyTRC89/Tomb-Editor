@@ -74,7 +74,7 @@ namespace DarkUI.Controls
         {
             base.WndProc(ref m);
 
-            if (m.Msg == 0x000F)
+            if (m.HWnd == Handle && m.Msg == 0x000F)
             {
                 // Prevent progressbar from going back
                 if (_lockGoingBack)
