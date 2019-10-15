@@ -94,6 +94,12 @@ namespace DarkUI.Renderers
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
             var textColor = e.Item.Enabled ? Colors.LightText : Colors.DisabledText;
+
+            if (e.Item.IsOnDropDown)
+                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            else
+                e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit; 
+
             using (var b = new SolidBrush(textColor))
                 e.Graphics.DrawString(e.Item.Text, e.Item.Font, b, e.TextRectangle, new StringFormat(StringFormatFlags.NoClip) { HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Show });
         }

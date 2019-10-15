@@ -17,7 +17,7 @@ namespace DarkUI.Controls
             BackColor = Colors.GreyBackground;
             ForeColor = Colors.LightText;
             Padding = new Padding(2, 5, 0, 3);
-            Renderer = new DarkToolStripRenderer();
+            Renderer = new DarkStatusStripRenderer();
             Size = new Size(Size.Width, 24);
             SizingGrip = false;
         }
