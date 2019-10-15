@@ -260,11 +260,18 @@ namespace TombEditor.Forms
         {
             // Refresh all forms if UI colours were changed
             var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
-            if (Colors.MenuItemToggledOnBorder != newButtonHighlightColour)
+            if (Colors.HighlightBase != newButtonHighlightColour)
             {
-                Colors.MenuItemToggledOnBorder = newButtonHighlightColour;
+                Colors.HighlightBase = newButtonHighlightColour;
                 foreach (var form in Application.OpenForms)
                     if (form is DarkForm) ((DarkForm)form).Refresh();
+            }
+
+            // Refresh status strip labels as it seems there's no other easy method to override it
+            foreach (ToolStripItem item in statusStrip.Items)
+            {
+                item.BackColor = Colors.GreyBackground;
+                item.ForeColor = Colors.LightText;
             }
         }
 

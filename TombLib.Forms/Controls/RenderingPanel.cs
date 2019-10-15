@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DarkUI.Config;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Numerics;
@@ -16,6 +16,11 @@ namespace TombLib.Controls
         public RenderingSwapChain SwapChain { get; private set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public RenderingDevice Device { get; private set; }
+
+        public RenderingPanel()
+        {
+            BorderStyle = BorderStyle.None;
+        }
 
         public virtual void InitializeRendering(RenderingDevice device, bool antialias = false)
         {

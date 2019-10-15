@@ -74,12 +74,12 @@ namespace DarkUI.Renderers
 
                 if (castItem.Checked && e.ToolStrip.Enabled)
                 {
-                    using (var b = new SolidBrush(Colors.MenuItemToggledOnFill))
+                    using (var b = new SolidBrush(Colors.HighlightFill))
                     {
                         g.FillRectangle(b, rect);
                     }
 
-                    using (var p = new Pen(Colors.MenuItemToggledOnBorder))
+                    using (var p = new Pen(Colors.HighlightBase))
                     {
                         var modRect = new Rectangle(rect.Left, rect.Top, rect.Width - 1, rect.Height - 1);
                         g.DrawRectangle(p, modRect);
@@ -174,12 +174,20 @@ namespace DarkUI.Renderers
                 return;
 
             g.DrawImage(e.Image, new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
-            if (!e.Item.Enabled)
-                using (var b = new SolidBrush(Color.FromArgb(180, e.Item.BackColor.R, e.Item.BackColor.G, e.Item.BackColor.B)))
-                    g.FillRectangle(b, e.ImageRectangle);
 
-            // Doesn't work well
-            // ControlPaint.DrawImageDisabled(g, e.Image, e.ImageRectangle.Left, e.ImageRectangle.Top, Color.Transparent);
+            var overlayColor = Colors.GreyBackground;
+            if (e.Item is ToolStripButton && ((ToolStripButton)e.Item).Checked)
+                overlayColor = Colors.HighlightFill;
+
+            // Dim brightness according to config
+            if (Colors.Brightness < Colors.MaxBrightness)
+                using (var b = new SolidBrush(overlayColor.MultiplyAlpha(Colors.AlphaBrightness)))
+                g.FillRectangle(b, e.ImageRectangle);
+
+            // Dim more if disabled
+            if (!e.Item.Enabled)
+                using (var b = new SolidBrush(overlayColor.MultiplyAlpha(0.7f)))
+                    g.FillRectangle(b, e.ImageRectangle);
         }
 
         protected override void OnRenderOverflowButtonBackground(ToolStripItemRenderEventArgs e)

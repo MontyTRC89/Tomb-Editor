@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Config;
 using System.Windows.Forms.Design;
+using DarkUI.Extensions;
 
 namespace DarkUI.Controls
 {
@@ -236,7 +237,16 @@ namespace DarkUI.Controls
             // Draw background
             using (var buttonBrush = new SolidBrush(_buttonColor))
                 e.Graphics.FillRectangle(buttonBrush, buttonRect);
+
+            // Draw arrow
             e.Graphics.DrawImage(_buttonIcon, buttonIconRect);
+
+            // Overlay arrow with brightness
+            if (Colors.Brightness < Colors.MaxBrightness)
+                using (var b = new SolidBrush(_buttonColor.MultiplyAlpha(Colors.AlphaBrightness)))
+                e.Graphics.FillRectangle(b, buttonIconRect);
+
+            // Draw borders
             ControlPaint.DrawBorder(e.Graphics, buttonRect, _borderColor, ButtonBorderStyle.Solid);
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, _borderColor, ButtonBorderStyle.Solid);
 
