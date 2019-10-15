@@ -497,7 +497,7 @@ namespace DarkUI.Controls
             e.Graphics.DrawImage(image, imgRect.X, imgRect.Y, imgRect.Width, imgRect.Height);
 
             // Overlay with brightness
-            if (Colors.Brightness < Colors.MaxBrightness)
+            if (Colors.BrightnessChanged)
                 using (var b = new SolidBrush(e.CellStyle.BackColor.MultiplyAlpha(Colors.AlphaBrightness)))
                 e.Graphics.FillRectangle(b, imgRect);
 

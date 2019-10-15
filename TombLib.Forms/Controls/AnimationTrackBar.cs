@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using TombLib.Wad;
 using TombLib.Graphics;
 using System.Drawing.Drawing2D;
+using DarkUI.Config;
 
 namespace TombLib.Controls
 {
@@ -210,6 +211,7 @@ namespace TombLib.Controls
             _highlightTimer.Tick += highlightTimer_Tick;
 
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
+            BackColor = Colors.GreyBackground;
         }
 
         protected override void OnInvalidated(InvalidateEventArgs e)
