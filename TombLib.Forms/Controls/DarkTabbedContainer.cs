@@ -125,7 +125,7 @@ namespace TombLib.Controls
         protected override void OnParentBackColorChanged(EventArgs e)
         {
             foreach (var tab in TabPages)
-                ((TabPage)tab).BackColor = Parent.BackColor;
+                ((TabPage)tab).BackColor = Colors.GreyBackground;
 
             base.OnParentBackColorChanged(e);
         }

@@ -173,16 +173,11 @@ namespace DarkUI.Renderers
             if (e.Image == null)
                 return;
 
-            g.DrawImage(e.Image, new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
+            g.DrawImage(e.Image.SetOpacity(Colors.Brightness), new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
 
             var overlayColor = Colors.GreyBackground;
             if (e.Item is ToolStripButton && ((ToolStripButton)e.Item).Checked)
                 overlayColor = Colors.HighlightFill;
-
-            // Dim brightness according to config
-            if (Colors.BrightnessChanged)
-                using (var b = new SolidBrush(overlayColor.MultiplyAlpha(Colors.AlphaBrightness)))
-                g.FillRectangle(b, e.ImageRectangle);
 
             // Dim more if disabled
             if (!e.Item.Enabled)

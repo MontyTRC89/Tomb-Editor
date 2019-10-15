@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 
 namespace DarkUI.Extensions
 {
-    internal static class BitmapExtensions
+    public static class BitmapExtensions
     {
         internal static Bitmap SetColor(this Bitmap bitmap, Color color)
         {
@@ -20,7 +20,7 @@ namespace DarkUI.Extensions
             return newBitmap;
         }
 
-        internal static Bitmap ChangeColor(this Bitmap bitmap, Color oldColor, Color newColor)
+        public static Bitmap ChangeColor(this Bitmap bitmap, Color oldColor, Color newColor)
         {
             var newBitmap = new Bitmap(bitmap.Width, bitmap.Height);
             for (int i = 0; i < bitmap.Width; i++)
@@ -35,7 +35,7 @@ namespace DarkUI.Extensions
             return newBitmap;
         }
 
-        internal static Bitmap SetOpacity(this Bitmap image, float opacity)
+        public static Bitmap SetOpacity(this Bitmap image, float opacity)
         {
             try
             {
@@ -68,5 +68,6 @@ namespace DarkUI.Extensions
                 return null;
             }
         }
+        internal static Image SetOpacity(this Image image, float opacity) => ((Bitmap)image).SetOpacity(opacity);
     }
 }

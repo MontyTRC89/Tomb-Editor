@@ -6,20 +6,24 @@ using TombLib.Wad;
 using TombLib.Graphics;
 using System.Drawing.Drawing2D;
 using DarkUI.Config;
+using DarkUI.Extensions;
 
 namespace TombLib.Controls
 {
     public partial class AnimationTrackBar : UserControl
     {
-        private static readonly Pen _frameBorderPen = new Pen(Color.FromArgb(140, 140, 140), 1);
-        private static readonly Pen _keyFrameBorderPen = new Pen(Color.FromArgb(170, 160, 160), 2);
-        private static readonly Pen _selectionPen = new Pen(Color.FromArgb(190, 140, 140, 250), 1);
-        private static readonly Brush _selectionBrush = new SolidBrush(Color.FromArgb(80, 170, 170, 250));
-        private static readonly Brush _highlightBrush = new SolidBrush(Color.FromArgb(160, 200, 200, 200));
-        private static readonly Brush _cursorBrush = new SolidBrush(Color.FromArgb(170, 170, 170, 170));
+        private static readonly Pen _frameBorderPen = new Pen(Colors.LightestBackground.Multiply(0.7f), 1);
+        private static readonly Pen _keyFrameBorderPen = new Pen(Colors.LightestBackground, 2);
+        private static readonly Pen _selectionPen = new Pen(Colors.HighlightBase.MultiplyAlpha(0.8f), 1);
+        private static readonly Brush _selectionBrush = new SolidBrush(Colors.HighlightBase.MultiplyAlpha(0.4f));
+        private static readonly Brush _highlightBrush = new SolidBrush(Colors.GreyHighlight.MultiplyAlpha(0.7f));
+        private static readonly Brush _cursorBrush = new SolidBrush(Colors.LightestBackground.MultiplyAlpha(0.6f));
         private static readonly Brush _stateChangeBrush = new SolidBrush(Color.FromArgb(30, 220, 160, 180));
         private static readonly Brush _animCommandSoundBrush = new SolidBrush(Color.FromArgb(220, 100, 170, 255));
         private static readonly Brush _animCommandFlipeffectBrush = new SolidBrush(Color.FromArgb(220, 230, 110, 110));
+
+        private static readonly Brush _lblKeyframeBrush = new SolidBrush(Colors.LightText);
+        private static readonly Brush _lblFrameBrush = new SolidBrush(Colors.LightText.MultiplyAlpha(0.3f));
 
         private static readonly int _cursorWidth = 6;
         private static readonly int _animCommandMarkerRadius = 14;
@@ -342,8 +346,9 @@ namespace TombLib.Controls
             
             if(!string.IsNullOrEmpty(errorMessage))
             {
-                e.Graphics.DrawString(errorMessage, Font, Brushes.DarkGray, ClientRectangle,
-                                      new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                using (var b = new SolidBrush(Colors.DisabledText))
+                    e.Graphics.DrawString(errorMessage, Font, b, ClientRectangle,
+                                          new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
                 return;
             }
 
@@ -508,8 +513,8 @@ namespace TombLib.Controls
                             }
 
                             // Finally draw it after all these tests
-                            e.Graphics.DrawString(i.ToString(), Font, (isKeyFrame ? Brushes.White : Brushes.DimGray), currX + shift, picSlider.Height,
-                                                  new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
+                            e.Graphics.DrawString(i.ToString(), Font, (isKeyFrame ? _lblKeyframeBrush : _lblFrameBrush), currX + shift, picSlider.Height,
+                                                    new StringFormat { Alignment = align, LineAlignment = StringAlignment.Far });
                         }
                     }
             }

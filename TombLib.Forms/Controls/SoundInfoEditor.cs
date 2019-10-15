@@ -1,4 +1,5 @@
-﻿using DarkUI.Controls;
+﻿using DarkUI.Config;
+using DarkUI.Controls;
 using DarkUI.Forms;
 using NLog;
 using System;
@@ -110,6 +111,7 @@ namespace TombLib.Controls
             InitializeComponent();
 
             picDisabledOverlay.Dock = DockStyle.Fill;
+            BackColor = Colors.GreyBackground;
 
             toolTip.SetToolTip(numericVolumeLabel, toolTip.GetToolTip(numericVolume));
             toolTip.SetToolTip(numericPitchLabel, toolTip.GetToolTip(numericPitch));

@@ -494,12 +494,7 @@ namespace DarkUI.Controls
                                         e.CellBounds.Top + (e.CellBounds.Height - image.Height) / 2,
                                         image.Width, image.Height);
 
-            e.Graphics.DrawImage(image, imgRect.X, imgRect.Y, imgRect.Width, imgRect.Height);
-
-            // Overlay with brightness
-            if (Colors.BrightnessChanged)
-                using (var b = new SolidBrush(e.CellStyle.BackColor.MultiplyAlpha(Colors.AlphaBrightness)))
-                e.Graphics.FillRectangle(b, imgRect);
+            e.Graphics.DrawImage(image.SetOpacity(Colors.Brightness), imgRect.X, imgRect.Y, imgRect.Width, imgRect.Height);
 
             e.Handled = true;
         }
