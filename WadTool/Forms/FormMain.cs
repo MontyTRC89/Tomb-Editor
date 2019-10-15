@@ -10,7 +10,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using System.IO;
-using TombLib;
+using DarkUI.Config;
 
 namespace WadTool
 {

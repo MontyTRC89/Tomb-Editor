@@ -16,7 +16,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
+            this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
             this.labelStatistics = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkMenuStrip1 = new DarkUI.Controls.DarkMenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,7 +96,7 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.changeSlorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.darkStatusStrip1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -113,18 +113,18 @@
             this.cmStatics.SuspendLayout();
             this.SuspendLayout();
             // 
-            // darkStatusStrip1
+            // statusStrip
             // 
-            this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelStatistics});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 711);
-            this.darkStatusStrip1.Name = "darkStatusStrip1";
-            this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1244, 31);
-            this.darkStatusStrip1.TabIndex = 1;
-            this.darkStatusStrip1.Text = "darkStatusStrip1";
+            this.statusStrip.Location = new System.Drawing.Point(0, 711);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
+            this.statusStrip.Size = new System.Drawing.Size(1244, 31);
+            this.statusStrip.TabIndex = 1;
+            this.statusStrip.Text = "darkStatusStrip1";
             // 
             // labelStatistics
             // 
@@ -1013,7 +1013,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1244, 742);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Controls.Add(this.darkStatusStrip1);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.darkToolStrip1);
             this.Controls.Add(this.darkMenuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
@@ -1023,8 +1023,8 @@
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WadTool";
-            this.darkStatusStrip1.ResumeLayout(false);
-            this.darkStatusStrip1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.darkMenuStrip1.ResumeLayout(false);
             this.darkMenuStrip1.PerformLayout();
             this.darkToolStrip1.ResumeLayout(false);
@@ -1050,7 +1050,7 @@
         }
 
         #endregion
-        private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
+        private DarkUI.Controls.DarkStatusStrip statusStrip;
         private DarkUI.Controls.DarkMenuStrip darkMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openSourceWADToolStripMenuItem;

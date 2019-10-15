@@ -14,6 +14,8 @@ namespace WadTool
         public bool Tool_MakeEmptyWadAtStartup { get; set; } = false;
         public string Tool_ReferenceProject { get; set; } = string.Empty;
 
+        public float UI_FormColor_Brightness { get; set; } = 100.0f;
+
         public int AnimationEditor_UndoDepth { get; set; } = 30;
         public bool AnimationEditor_RewindAfterChainPlayback { get; set; } = true;
         public bool AnimationEditor_ScrollGrid { get; set; } = true;

@@ -1,4 +1,5 @@
-﻿using DarkUI.Win32;
+﻿using DarkUI.Config;
+using DarkUI.Win32;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ namespace WadTool
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
             var configuration = new Configuration().LoadOrUseDefault<Configuration>(initialEvents);
+
+            // Update DarkUI configuration
+            Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 
             // Setup logging
             using (var log = new Logging(configuration.Log_MinLevel, configuration.Log_WriteToFile, configuration.Log_ArchiveN, initialEvents))

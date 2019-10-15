@@ -67,7 +67,7 @@ namespace WadTool
             this.smoothAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.scrollGridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreGridHeightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
+            this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
             this.statusFrame = new System.Windows.Forms.ToolStripStatusLabel();
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
@@ -103,9 +103,6 @@ namespace WadTool
             this.butTbCutFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbCopyFrame = new System.Windows.Forms.ToolStripButton();
             this.butTbPasteFrame = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTbInterpolateFrames = new System.Windows.Forms.ToolStripButton();
-            this.tbInterpolateFrameCount = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.labelRoom = new System.Windows.Forms.ToolStripLabel();
             this.comboRoomList = new DarkUI.Controls.ToolStripDarkComboBox();
@@ -197,7 +194,7 @@ namespace WadTool
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
-            this.darkStatusStrip1.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.topBar.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -446,6 +443,7 @@ namespace WadTool
             // 
             this.resampleAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.resampleAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.resampleAnimationToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_interpolate_16;
             this.resampleAnimationToolStripMenuItem.Name = "resampleAnimationToolStripMenuItem";
             this.resampleAnimationToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
             this.resampleAnimationToolStripMenuItem.Text = "Resample animation";
@@ -607,6 +605,7 @@ namespace WadTool
             // 
             this.interpolateFramesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.interpolateFramesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.interpolateFramesToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_interpolate_16;
             this.interpolateFramesToolStripMenuItem.Name = "interpolateFramesToolStripMenuItem";
             this.interpolateFramesToolStripMenuItem.Size = new System.Drawing.Size(251, 22);
             this.interpolateFramesToolStripMenuItem.Text = "Interpolate frames";
@@ -733,18 +732,18 @@ namespace WadTool
             this.restoreGridHeightToolStripMenuItem.Text = "Restore grid height";
             this.restoreGridHeightToolStripMenuItem.Click += new System.EventHandler(this.restoreGridHeightToolStripMenuItem_Click);
             // 
-            // darkStatusStrip1
+            // statusStrip
             // 
-            this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusFrame});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 643);
-            this.darkStatusStrip1.Name = "darkStatusStrip1";
-            this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1039, 25);
-            this.darkStatusStrip1.TabIndex = 1;
-            this.darkStatusStrip1.Text = "darkStatusStrip1";
+            this.statusStrip.Location = new System.Drawing.Point(0, 643);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
+            this.statusStrip.Size = new System.Drawing.Size(1039, 25);
+            this.statusStrip.TabIndex = 1;
+            this.statusStrip.Text = "darkStatusStrip1";
             // 
             // statusFrame
             // 
@@ -896,9 +895,6 @@ namespace WadTool
             this.butTbCutFrame,
             this.butTbCopyFrame,
             this.butTbPasteFrame,
-            this.toolStripSeparator5,
-            this.butTbInterpolateFrames,
-            this.tbInterpolateFrameCount,
             this.toolStripSeparator4,
             this.labelRoom,
             this.comboRoomList});
@@ -1159,35 +1155,6 @@ namespace WadTool
             this.butTbPasteFrame.ToolTipText = "Paste frames";
             this.butTbPasteFrame.Click += new System.EventHandler(this.butTbPasteFrame_Click);
             // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butTbInterpolateFrames
-            // 
-            this.butTbInterpolateFrames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbInterpolateFrames.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbInterpolateFrames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbInterpolateFrames.Image = ((System.Drawing.Image)(resources.GetObject("butTbInterpolateFrames.Image")));
-            this.butTbInterpolateFrames.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbInterpolateFrames.Name = "butTbInterpolateFrames";
-            this.butTbInterpolateFrames.Size = new System.Drawing.Size(23, 25);
-            this.butTbInterpolateFrames.ToolTipText = "Interpolate frames";
-            this.butTbInterpolateFrames.Click += new System.EventHandler(this.butTbInterpolateFrames_Click);
-            // 
-            // tbInterpolateFrameCount
-            // 
-            this.tbInterpolateFrameCount.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tbInterpolateFrameCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbInterpolateFrameCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.tbInterpolateFrameCount.Name = "tbInterpolateFrameCount";
-            this.tbInterpolateFrameCount.Size = new System.Drawing.Size(28, 28);
-            this.tbInterpolateFrameCount.Text = "3";
-            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1250,6 +1217,7 @@ namespace WadTool
             // butShowAll
             // 
             this.butShowAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butShowAll.Checked = false;
             this.butShowAll.Image = global::WadTool.Properties.Resources.actions_delete_16;
             this.butShowAll.Location = new System.Drawing.Point(253, 28);
             this.butShowAll.Name = "butShowAll";
@@ -1261,6 +1229,7 @@ namespace WadTool
             // butDeleteAnimation
             // 
             this.butDeleteAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteAnimation.Checked = false;
             this.butDeleteAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butDeleteAnimation.Image")));
             this.butDeleteAnimation.Location = new System.Drawing.Point(252, 208);
             this.butDeleteAnimation.Name = "butDeleteAnimation";
@@ -1272,6 +1241,7 @@ namespace WadTool
             // darkButton1
             // 
             this.darkButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkButton1.Checked = false;
             this.darkButton1.Image = ((System.Drawing.Image)(resources.GetObject("darkButton1.Image")));
             this.darkButton1.Location = new System.Drawing.Point(228, 28);
             this.darkButton1.Name = "darkButton1";
@@ -1284,6 +1254,7 @@ namespace WadTool
             // butAddNewAnimation
             // 
             this.butAddNewAnimation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddNewAnimation.Checked = false;
             this.butAddNewAnimation.Image = ((System.Drawing.Image)(resources.GetObject("butAddNewAnimation.Image")));
             this.butAddNewAnimation.Location = new System.Drawing.Point(225, 208);
             this.butAddNewAnimation.Name = "butAddNewAnimation";
@@ -1333,6 +1304,7 @@ namespace WadTool
             // butSelectNoMeshes
             // 
             this.butSelectNoMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butSelectNoMeshes.Checked = false;
             this.butSelectNoMeshes.Location = new System.Drawing.Point(102, 348);
             this.butSelectNoMeshes.Name = "butSelectNoMeshes";
             this.butSelectNoMeshes.Size = new System.Drawing.Size(94, 22);
@@ -1344,6 +1316,7 @@ namespace WadTool
             // butSelectAllMeshes
             // 
             this.butSelectAllMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butSelectAllMeshes.Checked = false;
             this.butSelectAllMeshes.Location = new System.Drawing.Point(4, 348);
             this.butSelectAllMeshes.Name = "butSelectAllMeshes";
             this.butSelectAllMeshes.Size = new System.Drawing.Size(93, 22);
@@ -1355,8 +1328,6 @@ namespace WadTool
             // nudBBoxMaxY
             // 
             this.nudBBoxMaxY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudBBoxMaxY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudBBoxMaxY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudBBoxMaxY.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1394,8 +1365,6 @@ namespace WadTool
             // nudBBoxMaxZ
             // 
             this.nudBBoxMaxZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudBBoxMaxZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudBBoxMaxZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudBBoxMaxZ.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1433,8 +1402,6 @@ namespace WadTool
             // nudBBoxMaxX
             // 
             this.nudBBoxMaxX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudBBoxMaxX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudBBoxMaxX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudBBoxMaxX.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1461,8 +1428,6 @@ namespace WadTool
             // nudBBoxMinY
             // 
             this.nudBBoxMinY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudBBoxMinY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudBBoxMinY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudBBoxMinY.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1489,8 +1454,6 @@ namespace WadTool
             // nudBBoxMinZ
             // 
             this.nudBBoxMinZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudBBoxMinZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudBBoxMinZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudBBoxMinZ.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1517,6 +1480,7 @@ namespace WadTool
             // butShrinkBBox
             // 
             this.butShrinkBBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butShrinkBBox.Checked = false;
             this.butShrinkBBox.Location = new System.Drawing.Point(103, 446);
             this.butShrinkBBox.Name = "butShrinkBBox";
             this.butShrinkBBox.Size = new System.Drawing.Size(93, 23);
@@ -1528,8 +1492,6 @@ namespace WadTool
             // nudBBoxMinX
             // 
             this.nudBBoxMinX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudBBoxMinX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudBBoxMinX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudBBoxMinX.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1556,6 +1518,7 @@ namespace WadTool
             // butResetBBoxAnim
             // 
             this.butResetBBoxAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butResetBBoxAnim.Checked = false;
             this.butResetBBoxAnim.Location = new System.Drawing.Point(102, 376);
             this.butResetBBoxAnim.Name = "butResetBBoxAnim";
             this.butResetBBoxAnim.Size = new System.Drawing.Size(94, 23);
@@ -1567,6 +1530,7 @@ namespace WadTool
             // butCalcBBoxAnim
             // 
             this.butCalcBBoxAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butCalcBBoxAnim.Checked = false;
             this.butCalcBBoxAnim.Location = new System.Drawing.Point(4, 376);
             this.butCalcBBoxAnim.Name = "butCalcBBoxAnim";
             this.butCalcBBoxAnim.Size = new System.Drawing.Size(93, 23);
@@ -1578,8 +1542,6 @@ namespace WadTool
             // nudGrowY
             // 
             this.nudGrowY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudGrowY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudGrowY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudGrowY.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1638,8 +1600,6 @@ namespace WadTool
             // nudGrowX
             // 
             this.nudGrowX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudGrowX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudGrowX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudGrowX.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1659,6 +1619,7 @@ namespace WadTool
             // butGrowBBox
             // 
             this.butGrowBBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butGrowBBox.Checked = false;
             this.butGrowBBox.Location = new System.Drawing.Point(4, 446);
             this.butGrowBBox.Name = "butGrowBBox";
             this.butGrowBBox.Size = new System.Drawing.Size(94, 23);
@@ -1670,8 +1631,6 @@ namespace WadTool
             // nudGrowZ
             // 
             this.nudGrowZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.nudGrowZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudGrowZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudGrowZ.IncrementAlternate = new decimal(new int[] {
             5,
             0,
@@ -1690,7 +1649,6 @@ namespace WadTool
             // 
             // panelTimeline
             // 
-            this.panelTimeline.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.panelTimeline.Controls.Add(this.timeline);
             this.panelTimeline.Controls.Add(this.panelTransport);
             this.panelTimeline.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -1949,8 +1907,6 @@ namespace WadTool
             // 
             // nudNextFrame
             // 
-            this.nudNextFrame.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudNextFrame.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudNextFrame.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1971,8 +1927,6 @@ namespace WadTool
             // 
             // nudNextAnim
             // 
-            this.nudNextAnim.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudNextAnim.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudNextAnim.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1993,8 +1947,6 @@ namespace WadTool
             // 
             // nudFramerate
             // 
-            this.nudFramerate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.nudFramerate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudFramerate.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2025,6 +1977,7 @@ namespace WadTool
             // 
             // butSearchStateID
             // 
+            this.butSearchStateID.Checked = false;
             this.butSearchStateID.Image = ((System.Drawing.Image)(resources.GetObject("butSearchStateID.Image")));
             this.butSearchStateID.Location = new System.Drawing.Point(252, 56);
             this.butSearchStateID.Name = "butSearchStateID";
@@ -2044,6 +1997,7 @@ namespace WadTool
             // 
             // darkButton3
             // 
+            this.darkButton3.Checked = false;
             this.darkButton3.Location = new System.Drawing.Point(142, 169);
             this.darkButton3.Name = "darkButton3";
             this.darkButton3.Size = new System.Drawing.Size(133, 23);
@@ -2053,6 +2007,7 @@ namespace WadTool
             // 
             // butEditStateChanges
             // 
+            this.butEditStateChanges.Checked = false;
             this.butEditStateChanges.Location = new System.Drawing.Point(4, 169);
             this.butEditStateChanges.Name = "butEditStateChanges";
             this.butEditStateChanges.Size = new System.Drawing.Size(133, 23);
@@ -2190,7 +2145,7 @@ namespace WadTool
             this.darkLabel21.AutoSize = true;
             this.darkLabel21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel21.ForeColor = System.Drawing.Color.LightGray;
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
             this.darkLabel21.Location = new System.Drawing.Point(195, 58);
             this.darkLabel21.Name = "darkLabel21";
             this.darkLabel21.Size = new System.Drawing.Size(14, 13);
@@ -2202,7 +2157,7 @@ namespace WadTool
             this.darkLabel26.AutoSize = true;
             this.darkLabel26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkLabel26.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel26.ForeColor = System.Drawing.Color.LightGray;
+            this.darkLabel26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
             this.darkLabel26.Location = new System.Drawing.Point(112, 58);
             this.darkLabel26.Name = "darkLabel26";
             this.darkLabel26.Size = new System.Drawing.Size(14, 13);
@@ -2211,9 +2166,7 @@ namespace WadTool
             // 
             // nudTransX
             // 
-            this.nudTransX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudTransX.DecimalPlaces = 4;
-            this.nudTransX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudTransX.IncrementAlternate = new decimal(new int[] {
             160,
             0,
@@ -2241,7 +2194,7 @@ namespace WadTool
             this.darkLabel27.AutoSize = true;
             this.darkLabel27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkLabel27.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel27.ForeColor = System.Drawing.Color.LightGray;
+            this.darkLabel27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
             this.darkLabel27.Location = new System.Drawing.Point(28, 58);
             this.darkLabel27.Name = "darkLabel27";
             this.darkLabel27.Size = new System.Drawing.Size(14, 13);
@@ -2250,9 +2203,7 @@ namespace WadTool
             // 
             // nudTransY
             // 
-            this.nudTransY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudTransY.DecimalPlaces = 4;
-            this.nudTransY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudTransY.IncrementAlternate = new decimal(new int[] {
             160,
             0,
@@ -2277,9 +2228,7 @@ namespace WadTool
             // 
             // nudTransZ
             // 
-            this.nudTransZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudTransZ.DecimalPlaces = 4;
-            this.nudTransZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudTransZ.IncrementAlternate = new decimal(new int[] {
             160,
             0,
@@ -2307,7 +2256,7 @@ namespace WadTool
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel1.ForeColor = System.Drawing.Color.LightGray;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
             this.darkLabel1.Location = new System.Drawing.Point(195, 30);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(14, 13);
@@ -2319,7 +2268,7 @@ namespace WadTool
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel18.ForeColor = System.Drawing.Color.LightGray;
+            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
             this.darkLabel18.Location = new System.Drawing.Point(112, 30);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(14, 13);
@@ -2328,9 +2277,7 @@ namespace WadTool
             // 
             // nudRotX
             // 
-            this.nudRotX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudRotX.DecimalPlaces = 4;
-            this.nudRotX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudRotX.IncrementAlternate = new decimal(new int[] {
             50,
             0,
@@ -2353,7 +2300,7 @@ namespace WadTool
             this.darkLabel19.AutoSize = true;
             this.darkLabel19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkLabel19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkLabel19.ForeColor = System.Drawing.Color.LightGray;
+            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
             this.darkLabel19.Location = new System.Drawing.Point(28, 30);
             this.darkLabel19.Name = "darkLabel19";
             this.darkLabel19.Size = new System.Drawing.Size(14, 13);
@@ -2362,9 +2309,7 @@ namespace WadTool
             // 
             // nudRotY
             // 
-            this.nudRotY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudRotY.DecimalPlaces = 4;
-            this.nudRotY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudRotY.IncrementAlternate = new decimal(new int[] {
             50,
             0,
@@ -2384,9 +2329,7 @@ namespace WadTool
             // 
             // nudRotZ
             // 
-            this.nudRotZ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nudRotZ.DecimalPlaces = 4;
-            this.nudRotZ.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nudRotZ.IncrementAlternate = new decimal(new int[] {
             50,
             0,
@@ -2506,7 +2449,7 @@ namespace WadTool
             this.ClientSize = new System.Drawing.Size(1039, 668);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.topBar);
-            this.Controls.Add(this.darkStatusStrip1);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.topMenu);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -2520,8 +2463,8 @@ namespace WadTool
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formAnimationEditor_FormClosing);
             this.topMenu.ResumeLayout(false);
             this.topMenu.PerformLayout();
-            this.darkStatusStrip1.ResumeLayout(false);
-            this.darkStatusStrip1.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.topBar.ResumeLayout(false);
             this.topBar.PerformLayout();
             this.darkSectionPanel1.ResumeLayout(false);
@@ -2594,7 +2537,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem drawGridToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem drawGizmoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem drawCollisionBoxToolStripMenuItem;
-        private DarkUI.Controls.DarkStatusStrip darkStatusStrip1;
+        private DarkUI.Controls.DarkStatusStrip statusStrip;
         private DarkUI.Controls.DarkButton butDeleteAnimation;
         private System.Windows.Forms.ToolStripStatusLabel statusFrame;
         private DarkUI.Controls.DarkButton butAddNewAnimation;
@@ -2670,9 +2613,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripButton butTbSaveAllChanges;
-        private System.Windows.Forms.ToolStripButton butTbInterpolateFrames;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripTextBox tbInterpolateFrameCount;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripButton butTransportLandWater;
