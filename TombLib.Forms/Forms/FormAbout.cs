@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DarkUI.Config;
 using DarkUI.Forms;
 
 namespace TombLib.Forms
@@ -14,8 +15,14 @@ namespace TombLib.Forms
             InitializeComponent();
 
             pictureBox.BackgroundImage = image;
-            versionLabel.Text = "Version " + Application.ProductVersion;
-            versionLabel.Location = new Point(ClientSize.Width - versionLabel.Width, versionLabel.Location.Y);
+            pictureBox.Paint += PictureBox_Paint;
+        }
+
+        private void PictureBox_Paint(object sender, PaintEventArgs e)
+        {
+            var font = new Font(Font.FontFamily, 10.0f);
+            using (var b = new SolidBrush(Colors.LightText))
+                e.Graphics.DrawString("Version " + Application.ProductVersion, font, b, pictureBox.Width, pictureBox.Height, new StringFormat { Alignment = StringAlignment.Far, LineAlignment = StringAlignment.Far });
         }
 
         private void btnLink_Click(object sender, EventArgs e)
