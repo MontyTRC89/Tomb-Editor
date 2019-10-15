@@ -1,4 +1,5 @@
 ﻿using DarkUI.Config;
+using DarkUI.Renderers;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -15,7 +16,8 @@ namespace DarkUI.Controls
             AutoSize = false;
             BackColor = Colors.GreyBackground;
             ForeColor = Colors.LightText;
-            Padding = new Padding(0, 5, 0, 3);
+            Padding = new Padding(2, 5, 0, 3);
+            Renderer = new DarkToolStripRenderer();
             Size = new Size(Size.Width, 24);
             SizingGrip = false;
         }

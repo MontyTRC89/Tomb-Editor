@@ -54,6 +54,13 @@ namespace DarkUI.Renderers
                 base.OnRenderToolStripBorder(e);
         }
 
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            var textColor = e.Item.Enabled ? Colors.LightText : Colors.DisabledText;
+            using (var b = new SolidBrush(textColor))
+                e.Graphics.DrawString(e.Item.Text, e.Item.Font, b, e.TextRectangle, new StringFormat(StringFormatFlags.NoClip) { LineAlignment = StringAlignment.Center, HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Hide });
+        }
+
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
         {
             var g = e.Graphics;
