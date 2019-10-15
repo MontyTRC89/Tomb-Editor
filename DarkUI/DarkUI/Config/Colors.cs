@@ -56,9 +56,6 @@ namespace DarkUI.Config
         // over image controls (e.g. buttons with pictures, arrows in comboboxes etc.).
         public static float AlphaBrightness => MaxBrightness - Brightness;
 
-        // Quick shortcut to know if brightness was changed or not.
-        public static bool BrightnessChanged { get; private set; }
-
         // Every time brightness is changed, all UI colours are automatically recalculated against DarkBase.
 
         public static float Brightness
@@ -67,7 +64,6 @@ namespace DarkUI.Config
             set
             {
                 _brightness = Math.Min(Math.Max(value, MinBrightness), MaxBrightness);
-                BrightnessChanged = _brightness != MaxBrightness;
 
                 GreyBackground  	= DarkBase.Multiply(_brightness * 1.000f, _brightness * 1.000f, _brightness * 1.000f);
 				HeaderBackground  	= DarkBase.Multiply(_brightness * 0.950f, _brightness * 0.952f, _brightness * 0.954f);
@@ -80,8 +76,6 @@ namespace DarkUI.Config
 				LightestBackground  = DarkBase.Multiply(_brightness * 2.967f, _brightness * 2.825f, _brightness * 2.738f);
 				LightBorder  		= DarkBase.Multiply(_brightness * 1.350f, _brightness * 1.286f, _brightness * 1.246f);
 				DarkBorder  		= DarkBase.Multiply(_brightness * 0.850f, _brightness * 0.810f, _brightness * 0.785f);
-				LightText  		 	= DarkBase.Multiply(_brightness * 3.667f, _brightness * 3.492f, _brightness * 3.385f);
-				DisabledText  		= DarkBase.Multiply(_brightness * 2.550f, _brightness * 2.429f, _brightness * 2.354f);
 				BlueHighlight  	 	= DarkBase.Multiply(_brightness * 1.733f, _brightness * 2.397f, _brightness * 2.877f);
 				BlueSelection  	 	= DarkBase.Multiply(_brightness * 1.250f, _brightness * 1.746f, _brightness * 2.692f);
 				GreyHighlight  	 	= DarkBase.Multiply(_brightness * 2.033f, _brightness * 2.032f, _brightness * 2.031f);
@@ -90,6 +84,12 @@ namespace DarkUI.Config
 				DarkBlueBorder  	= DarkBase.Multiply(_brightness * 0.850f, _brightness * 0.968f, _brightness * 1.200f);
 				LightBlueBorder  	= DarkBase.Multiply(_brightness * 1.433f, _brightness * 1.540f, _brightness * 1.754f);
 				ActiveControl  	 	= DarkBase.Multiply(_brightness * 2.650f, _brightness * 2.825f, _brightness * 3.015f);
+
+                // Text is multiplied by lesser value to preserve contrast
+
+                var texMult = _brightness + (MaxBrightness - _brightness) * 0.35f;
+                LightText           = DarkBase.Multiply(texMult * 3.667f, texMult * 3.492f, texMult * 3.385f);
+                DisabledText        = DarkBase.Multiply(texMult * 2.550f, texMult * 2.429f, texMult * 2.354f);
             }
         }
         private static float _brightness = 1.0f; // Set it here by default, so designer will correctly show controls which use brightness natively.
