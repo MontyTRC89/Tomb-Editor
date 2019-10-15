@@ -65,6 +65,8 @@
             this.tabSubPanel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.darkGroupBox8 = new DarkUI.Controls.DarkGroupBox();
+            this.cmbColorScheme = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel74 = new DarkUI.Controls.DarkLabel();
             this.darkLabel73 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown42 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel72 = new DarkUI.Controls.DarkLabel();
@@ -241,9 +243,6 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkLabel74 = new DarkUI.Controls.DarkLabel();
-            this.cmbColorScheme = new DarkUI.Controls.DarkComboBox();
-            this.butResetColorScheme = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -778,7 +777,6 @@
             // 
             // darkGroupBox8
             // 
-            this.darkGroupBox8.Controls.Add(this.butResetColorScheme);
             this.darkGroupBox8.Controls.Add(this.cmbColorScheme);
             this.darkGroupBox8.Controls.Add(this.darkLabel74);
             this.darkGroupBox8.Controls.Add(this.darkLabel73);
@@ -844,6 +842,25 @@
             this.darkGroupBox8.TabStop = false;
             this.darkGroupBox8.Tag = "";
             this.darkGroupBox8.Text = "Color scheme";
+            // 
+            // cmbColorScheme
+            // 
+            this.cmbColorScheme.FormattingEnabled = true;
+            this.cmbColorScheme.Location = new System.Drawing.Point(196, 24);
+            this.cmbColorScheme.Name = "cmbColorScheme";
+            this.cmbColorScheme.Size = new System.Drawing.Size(129, 23);
+            this.cmbColorScheme.TabIndex = 76;
+            this.cmbColorScheme.SelectedIndexChanged += new System.EventHandler(this.cmbColorScheme_SelectedIndexChanged);
+            // 
+            // darkLabel74
+            // 
+            this.darkLabel74.AutoSize = true;
+            this.darkLabel74.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel74.Location = new System.Drawing.Point(12, 27);
+            this.darkLabel74.Name = "darkLabel74";
+            this.darkLabel74.Size = new System.Drawing.Size(157, 13);
+            this.darkLabel74.TabIndex = 75;
+            this.darkLabel74.Text = "Reset color scheme to preset:";
             // 
             // darkLabel73
             // 
@@ -1055,7 +1072,7 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 640);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(121, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
@@ -1195,7 +1212,7 @@
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel52.Location = new System.Drawing.Point(12, 437);
             this.darkLabel52.Name = "darkLabel52";
-            this.darkLabel52.Size = new System.Drawing.Size(45, 13);
+            this.darkLabel52.Size = new System.Drawing.Size(46, 13);
             this.darkLabel52.TabIndex = 48;
             this.darkLabel52.Text = "Trigger:";
             // 
@@ -2283,7 +2300,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
@@ -3102,38 +3119,6 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkLabel74
-            // 
-            this.darkLabel74.AutoSize = true;
-            this.darkLabel74.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel74.Location = new System.Drawing.Point(12, 27);
-            this.darkLabel74.Name = "darkLabel74";
-            this.darkLabel74.Size = new System.Drawing.Size(157, 13);
-            this.darkLabel74.TabIndex = 75;
-            this.darkLabel74.Text = "Reset color scheme to preset:";
-            // 
-            // cmbColorScheme
-            // 
-            this.cmbColorScheme.FormattingEnabled = true;
-            this.cmbColorScheme.Items.AddRange(new object[] {
-            "Default",
-            "Grayscale",
-            "Pastel"});
-            this.cmbColorScheme.Location = new System.Drawing.Point(196, 24);
-            this.cmbColorScheme.Name = "cmbColorScheme";
-            this.cmbColorScheme.Size = new System.Drawing.Size(109, 23);
-            this.cmbColorScheme.TabIndex = 76;
-            // 
-            // butResetColorScheme
-            // 
-            this.butResetColorScheme.Checked = false;
-            this.butResetColorScheme.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
-            this.butResetColorScheme.Location = new System.Drawing.Point(311, 24);
-            this.butResetColorScheme.Name = "butResetColorScheme";
-            this.butResetColorScheme.Size = new System.Drawing.Size(22, 23);
-            this.butResetColorScheme.TabIndex = 77;
-            this.butResetColorScheme.Click += new System.EventHandler(this.butResetColorScheme_Click);
-            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -3461,6 +3446,5 @@
         private DarkUI.Controls.DarkLabel darkLabel73;
         private DarkUI.Controls.DarkComboBox cmbColorScheme;
         private DarkUI.Controls.DarkLabel darkLabel74;
-        private DarkUI.Controls.DarkButton butResetColorScheme;
     }
 }

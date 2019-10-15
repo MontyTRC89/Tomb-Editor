@@ -2,6 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Icons;
+using DarkUI.Config;
+using DarkUI.Extensions;
 
 namespace DarkUI.Forms
 {
@@ -34,16 +36,16 @@ namespace DarkUI.Forms
                         lblText.Left = 10;
                         break;
                     case MessageBoxIcon.Question:
-                        picIcon.Image = MessageBoxIcons.question;
+                        picIcon.Image = MessageBoxIcons.question.SetOpacity(Colors.AlphaBrightness);
                         break;
                     case MessageBoxIcon.Information:
-                        picIcon.Image = MessageBoxIcons.info;
+                        picIcon.Image = MessageBoxIcons.info.SetOpacity(Colors.AlphaBrightness);
                         break;
                     case MessageBoxIcon.Warning:
-                        picIcon.Image = MessageBoxIcons.warning;
+                        picIcon.Image = MessageBoxIcons.warning.SetOpacity(Colors.AlphaBrightness);
                         break;
                     case MessageBoxIcon.Error:
-                        picIcon.Image = MessageBoxIcons.error;
+                        picIcon.Image = MessageBoxIcons.error.SetOpacity(Colors.AlphaBrightness);
                         break;
                     default:
                         throw new NotImplementedException("MessageBoxIcon " + value + " unavailable.");

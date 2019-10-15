@@ -236,23 +236,5 @@ namespace TombEditor.ToolWindows
                 }
             }
         }
-
-        private void darkButton1_Click(object sender, EventArgs e)
-        {
-            darkTextBox1.Text = "";
-
-            var config = _editor.Configuration;
-            foreach (FieldInfo prop in typeof(ColorScheme).GetFields())
-            {
-                darkTextBox1.Text += System.Environment.NewLine + " = ";
-                
-                var vctor = prop.GetValue(_editor.Configuration.UI_ColorScheme);
-                if (vctor is Vector4)
-                {
-                    var vec3 = (Vector4)vctor;
-                    darkTextBox1.Text += " new Vector4(" + vec3.X * 255.0f + ", " + vec3.Y * 255.0f + ", " + vec3.Z * 255.0f + ", 255) / 255.0f,";
-                }
-            }
-        }
     }
 }

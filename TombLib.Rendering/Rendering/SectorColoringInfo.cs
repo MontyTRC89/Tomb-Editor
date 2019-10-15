@@ -161,6 +161,35 @@ namespace TombLib.Rendering
             Color2DRoomsBelow      =  new Vector4(85, 85, 85, 255) / 255.0f,
             Color2DRoomsMoved      =  new Vector4(230, 230, 20, 255) / 255.0f
         };
+
+        public static readonly ColorScheme Dark = new ColorScheme()
+        {
+            ColorSelection         = new Vector4(102, 38, 38, 255) / 255.0f,
+            ColorIllegalSlope      = new Vector4(122, 86, 18, 255) / 255.0f,
+            ColorSlideDirection    = new Vector4(88, 35, 105, 255) / 255.0f,
+            Color3DBackground      = new Vector4(72, 72, 72, 255) / 255.0f,
+            Color2DBackground      = new Vector4(82, 82, 82, 255) / 255.0f,
+            ColorFlipRoom          = new Vector4(31, 31, 31, 255) / 255.0f,
+            ColorPortal            = new Vector4(0, 0, 0, 255) / 255.0f,
+            ColorPortalFace        = new Vector4(125, 115, 72, 255) / 255.0f,
+            ColorFloor             = new Vector4(0, 66, 66, 255) / 255.0f,
+            ColorBorderWall        = new Vector4(78, 78, 78, 255) / 255.0f,
+            ColorWall              = new Vector4(52, 88, 37, 255) / 255.0f,
+            ColorWallLower         = new Vector4(58, 79, 53, 255) / 255.0f,
+            ColorWallUpper         = new Vector4(40, 67, 35, 255) / 255.0f,
+            ColorTrigger           = new Vector4(79, 54, 84, 255) / 255.0f,
+            ColorMonkey            = new Vector4(126, 56, 56, 255) / 255.0f,
+            ColorClimb             = new Vector4(132, 34, 34, 255) / 255.0f,
+            ColorBox               = new Vector4(69, 69, 69, 255) / 255.0f,
+            ColorDeath             = new Vector4(69, 120, 7, 255) / 255.0f,
+            ColorNotWalkable       = new Vector4(38, 30, 68, 255) / 255.0f,
+            ColorBeetle            = new Vector4(87, 87, 87, 255) / 255.0f,
+            ColorTriggerTriggerer  = new Vector4(83, 79, 138, 255) / 255.0f,
+            ColorForceSolidFloor   = new Vector4(0, 121, 121, 255) / 255.0f,
+            Color2DRoomsAbove      = new Vector4(41, 41, 88, 255) / 255.0f,
+            Color2DRoomsBelow      = new Vector4(44, 44, 44, 255) / 255.0f,
+            Color2DRoomsMoved      = new Vector4(94, 92, 57, 255) / 255.0f,
+        };
     }
 
     public class SectorColoringInfo
