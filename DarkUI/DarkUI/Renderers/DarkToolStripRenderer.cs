@@ -180,7 +180,7 @@ namespace DarkUI.Renderers
                 overlayColor = Colors.HighlightFill;
 
             // Dim brightness according to config
-            if (Colors.Brightness < Colors.MaxBrightness)
+            if (Colors.BrightnessChanged)
                 using (var b = new SolidBrush(overlayColor.MultiplyAlpha(Colors.AlphaBrightness)))
                 g.FillRectangle(b, e.ImageRectangle);
 

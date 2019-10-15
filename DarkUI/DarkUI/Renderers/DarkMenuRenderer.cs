@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Icons;
+using DarkUI.Extensions;
 
 namespace DarkUI.Renderers
 {
@@ -78,6 +79,30 @@ namespace DarkUI.Renderers
             {
                 g.DrawImage(MenuIcons.tick, new Point(e.ImageRectangle.Left, e.ImageRectangle.Top));
             }
+
+            if (Colors.BrightnessChanged)
+                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
+                    g.FillRectangle(b, e.ImageRectangle);
+        }
+
+        protected override void OnRenderItemImage(ToolStripItemImageRenderEventArgs e)
+        {
+            base.OnRenderItemImage(e);
+
+            if (Colors.BrightnessChanged)
+                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
+                    e.Graphics.FillRectangle(b, e.ImageRectangle);
+        }
+
+        protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
+        {
+            base.OnRenderItemText(e);
+
+            if (!(e.Item is ToolStripLabel)) return; // Only do overlay for simple labels
+
+            if (Colors.BrightnessChanged)
+                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
+                    e.Graphics.FillRectangle(b, e.TextRectangle);
         }
 
         protected override void OnRenderSeparator(ToolStripSeparatorRenderEventArgs e)

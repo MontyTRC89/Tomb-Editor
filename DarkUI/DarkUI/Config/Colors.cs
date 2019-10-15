@@ -56,6 +56,9 @@ namespace DarkUI.Config
         // over image controls (e.g. buttons with pictures, arrows in comboboxes etc.).
         public static float AlphaBrightness => MaxBrightness - Brightness;
 
+        // Quick shortcut to know if brightness was changed or not.
+        public static bool BrightnessChanged { get; private set; }
+
         // Every time brightness is changed, all UI colours are automatically recalculated against DarkBase.
 
         public static float Brightness
@@ -64,6 +67,7 @@ namespace DarkUI.Config
             set
             {
                 _brightness = Math.Min(Math.Max(value, MinBrightness), MaxBrightness);
+                BrightnessChanged = _brightness != MaxBrightness;
 
                 GreyBackground  	= DarkBase.Multiply(_brightness * 1.000f, _brightness * 1.000f, _brightness * 1.000f);
 				HeaderBackground  	= DarkBase.Multiply(_brightness * 0.950f, _brightness * 0.952f, _brightness * 0.954f);
