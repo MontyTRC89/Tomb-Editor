@@ -156,7 +156,6 @@ namespace TombLib.Controls
                     if (ParameterRange.IsEmpty)
                     {
                         label.Text = "-";
-                        label.BackColor = Colors.GreyBackground;
                         combo.Visible = false;
                         butSearch.Visible = false;
                         numericUpDown.Visible = false;
@@ -165,7 +164,6 @@ namespace TombLib.Controls
                     }
                     else if (listOfThings == null || _rawMode && !ParameterRange.IsObject && !ParameterRange.IsRoom)
                     {
-                        label.BackColor = numericUpDown.BackColor;
                         label.Text = "";
                         combo.Visible = false;
                         butSearch.Visible = false;
@@ -210,7 +208,6 @@ namespace TombLib.Controls
                 }
                 else
                 {
-                    label.BackColor = Colors.GreyBackground;
                     label.Text = "Wrong parameter: " + (Parameter?.ToString() ?? "<null>");
                     combo.Visible = false;
                     butSearch.Visible = false;
