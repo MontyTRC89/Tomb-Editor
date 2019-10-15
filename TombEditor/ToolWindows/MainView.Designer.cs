@@ -62,7 +62,10 @@
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.darkTextBox1 = new DarkUI.Controls.DarkTextBox();
+            this.darkButton1 = new DarkUI.Controls.DarkButton();
             this.toolStrip.SuspendLayout();
+            this.panel3D.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -339,7 +342,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -351,7 +354,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -363,7 +366,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -375,7 +378,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -387,7 +390,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -613,6 +616,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Controls.Add(this.darkButton1);
+            this.panel3D.Controls.Add(this.darkTextBox1);
             this.panel3D.Location = new System.Drawing.Point(3, 31);
             this.panel3D.Name = "panel3D";
             this.panel3D.Size = new System.Drawing.Size(833, 255);
@@ -630,6 +635,24 @@
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
+            // darkTextBox1
+            // 
+            this.darkTextBox1.Location = new System.Drawing.Point(104, 31);
+            this.darkTextBox1.Multiline = true;
+            this.darkTextBox1.Name = "darkTextBox1";
+            this.darkTextBox1.Size = new System.Drawing.Size(493, 193);
+            this.darkTextBox1.TabIndex = 0;
+            // 
+            // darkButton1
+            // 
+            this.darkButton1.Checked = false;
+            this.darkButton1.Location = new System.Drawing.Point(603, 31);
+            this.darkButton1.Name = "darkButton1";
+            this.darkButton1.Size = new System.Drawing.Size(75, 23);
+            this.darkButton1.TabIndex = 1;
+            this.darkButton1.Text = "darkButton1";
+            this.darkButton1.Click += new System.EventHandler(this.darkButton1_Click);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -644,6 +667,8 @@
             this.Size = new System.Drawing.Size(839, 289);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
+            this.panel3D.ResumeLayout(false);
+            this.panel3D.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -696,5 +721,7 @@
         private System.Windows.Forms.ToolStripButton butDrawAllRooms;
         private System.Windows.Forms.ToolStripMenuItem butDrawGhostBlocks;
         private System.Windows.Forms.ToolStripButton toolStripButton1;
+        private DarkUI.Controls.DarkButton darkButton1;
+        private DarkUI.Controls.DarkTextBox darkTextBox1;
     }
 }

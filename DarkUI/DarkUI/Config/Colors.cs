@@ -6,6 +6,8 @@ namespace DarkUI.Config
 {
     public static class Colors
     {
+        // Default color values. Will be always used if brightness is unmodified.
+
         public static Color GreyBackground { get; private set; } = Color.FromArgb(60, 63, 65);
         public static Color HeaderBackground { get; private set; } = Color.FromArgb(57, 60, 62);
         public static Color BlueBackground { get; private set; } = Color.FromArgb(66, 77, 95);
@@ -28,14 +30,34 @@ namespace DarkUI.Config
         public static Color LightBlueBorder { get; private set; } = Color.FromArgb(86, 97, 114);
         public static Color ActiveControl { get; private set; } = Color.FromArgb(159, 178, 196);
 
+        // Button/toolbar control highlight color is specified independently to allow
+        // high-contrast color schemes.
+
         public static Color HighlightBase { get; set; } = Color.FromArgb(104, 151, 187);
         public static Color HighlightFill => HighlightBase.Multiply(0.66f, 0.45f, 0.56f);
 
+        // DarkBase is base colour on which all other colours are recalculated if brightness
+        // is changed.
+
         private static Color DarkBase { get; } = Color.FromArgb(60, 63, 65);
+
+        // MaxBrightness should be 1.0f at all times!
+        // MinBrightness can go down up to 0.1, but almost nothing will be visible...
+        // So let's clamp it to 0.5 at least.
 
         public const float MaxBrightness = 1.0f;
         public const float MinBrightness = 0.5f;
-        public static float InvertedBrightness => MaxBrightness - Brightness;
+
+        // InvertedBrightness is a helper value which can be useful to restore original colour
+        // value passed to parent controls in designer. E.g. it is used in DarkLabel.
+        public static float InvertedBrightness => MaxBrightness + (MaxBrightness - Brightness);
+
+        // AlphaBrightness is a helper value which is used in filling overlay rectangles
+        // over image controls (e.g. buttons with pictures, arrows in comboboxes etc.).
+        public static float AlphaBrightness => MaxBrightness - Brightness;
+
+        // Every time brightness is changed, all UI colours are automatically recalculated against DarkBase.
+
         public static float Brightness
         {
             get { return _brightness; }
@@ -43,29 +65,29 @@ namespace DarkUI.Config
             {
                 _brightness = Math.Min(Math.Max(value, MinBrightness), MaxBrightness);
 
-                GreyBackground  	= DarkBase.Multiply(value * 1.000f, value * 1.000f, value * 1.000f);
-				HeaderBackground  	= DarkBase.Multiply(value * 0.950f, value * 0.952f, value * 0.954f);
-				BlueBackground  	= DarkBase.Multiply(value * 1.100f, value * 1.222f, value * 1.462f);
-				DarkBlueBackground 	= DarkBase.Multiply(value * 0.867f, value * 0.905f, value * 1.015f);
-				DarkBackground  	= DarkBase.Multiply(value * 0.717f, value * 0.683f, value * 0.662f);
-				MediumBackground  	= DarkBase.Multiply(value * 0.817f, value * 0.810f, value * 0.815f);
-				LightBackground  	= DarkBase.Multiply(value * 1.150f, value * 1.159f, value * 1.138f);
-				LighterBackground   = DarkBase.Multiply(value * 1.583f, value * 1.603f, value * 1.569f);
-				LightestBackground  = DarkBase.Multiply(value * 2.967f, value * 2.825f, value * 2.738f);
-				LightBorder  		= DarkBase.Multiply(value * 1.350f, value * 1.286f, value * 1.246f);
-				DarkBorder  		= DarkBase.Multiply(value * 0.850f, value * 0.810f, value * 0.785f);
-				LightText  		 	= DarkBase.Multiply(value * 3.667f, value * 3.492f, value * 3.385f);
-				DisabledText  		= DarkBase.Multiply(value * 2.550f, value * 2.429f, value * 2.354f);
-				BlueHighlight  	 	= DarkBase.Multiply(value * 1.733f, value * 2.397f, value * 2.877f);
-				BlueSelection  	 	= DarkBase.Multiply(value * 1.250f, value * 1.746f, value * 2.692f);
-				GreyHighlight  	 	= DarkBase.Multiply(value * 2.033f, value * 2.032f, value * 2.031f);
-				GreySelection  	 	= DarkBase.Multiply(value * 1.533f, value * 1.460f, value * 1.415f);
-				DarkGreySelection   = DarkBase.Multiply(value * 1.367f, value * 1.302f, value * 1.262f);
-				DarkBlueBorder  	= DarkBase.Multiply(value * 0.850f, value * 0.968f, value * 1.200f);
-				LightBlueBorder  	= DarkBase.Multiply(value * 1.433f, value * 1.540f, value * 1.754f);
-				ActiveControl  	 	= DarkBase.Multiply(value * 2.650f, value * 2.825f, value * 3.015f);
+                GreyBackground  	= DarkBase.Multiply(_brightness * 1.000f, _brightness * 1.000f, _brightness * 1.000f);
+				HeaderBackground  	= DarkBase.Multiply(_brightness * 0.950f, _brightness * 0.952f, _brightness * 0.954f);
+				BlueBackground  	= DarkBase.Multiply(_brightness * 1.100f, _brightness * 1.222f, _brightness * 1.462f);
+				DarkBlueBackground 	= DarkBase.Multiply(_brightness * 0.867f, _brightness * 0.905f, _brightness * 1.015f);
+				DarkBackground  	= DarkBase.Multiply(_brightness * 0.717f, _brightness * 0.683f, _brightness * 0.662f);
+				MediumBackground  	= DarkBase.Multiply(_brightness * 0.817f, _brightness * 0.810f, _brightness * 0.815f);
+				LightBackground  	= DarkBase.Multiply(_brightness * 1.150f, _brightness * 1.159f, _brightness * 1.138f);
+				LighterBackground   = DarkBase.Multiply(_brightness * 1.583f, _brightness * 1.603f, _brightness * 1.569f);
+				LightestBackground  = DarkBase.Multiply(_brightness * 2.967f, _brightness * 2.825f, _brightness * 2.738f);
+				LightBorder  		= DarkBase.Multiply(_brightness * 1.350f, _brightness * 1.286f, _brightness * 1.246f);
+				DarkBorder  		= DarkBase.Multiply(_brightness * 0.850f, _brightness * 0.810f, _brightness * 0.785f);
+				LightText  		 	= DarkBase.Multiply(_brightness * 3.667f, _brightness * 3.492f, _brightness * 3.385f);
+				DisabledText  		= DarkBase.Multiply(_brightness * 2.550f, _brightness * 2.429f, _brightness * 2.354f);
+				BlueHighlight  	 	= DarkBase.Multiply(_brightness * 1.733f, _brightness * 2.397f, _brightness * 2.877f);
+				BlueSelection  	 	= DarkBase.Multiply(_brightness * 1.250f, _brightness * 1.746f, _brightness * 2.692f);
+				GreyHighlight  	 	= DarkBase.Multiply(_brightness * 2.033f, _brightness * 2.032f, _brightness * 2.031f);
+				GreySelection  	 	= DarkBase.Multiply(_brightness * 1.533f, _brightness * 1.460f, _brightness * 1.415f);
+				DarkGreySelection   = DarkBase.Multiply(_brightness * 1.367f, _brightness * 1.302f, _brightness * 1.262f);
+				DarkBlueBorder  	= DarkBase.Multiply(_brightness * 0.850f, _brightness * 0.968f, _brightness * 1.200f);
+				LightBlueBorder  	= DarkBase.Multiply(_brightness * 1.433f, _brightness * 1.540f, _brightness * 1.754f);
+				ActiveControl  	 	= DarkBase.Multiply(_brightness * 2.650f, _brightness * 2.825f, _brightness * 3.015f);
             }
         }
-        private static float _brightness;
+        private static float _brightness = 1.0f; // Set it here by default, so designer will correctly show controls which use brightness natively.
     }
 }

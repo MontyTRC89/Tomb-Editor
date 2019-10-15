@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Security;
 using System.Windows.Forms;
 using DarkUI.Config;
+using DarkUI.Extensions;
 
 namespace DarkUI.Controls
 {
@@ -109,6 +110,11 @@ namespace DarkUI.Controls
             using (Brush brush = new SolidBrush(backColor))
                 e.Graphics.FillRectangle(brush, area);
             e.Graphics.DrawImage(image, new Point(area.X + (area.Width - image.Width) / 2, area.Y + (area.Height - image.Height) / 2));
+
+            // Overlay arrow with brightness
+            using (var b = new SolidBrush(backColor.MultiplyAlpha(Colors.AlphaBrightness)))
+                e.Graphics.FillRectangle(b, area);
+
             ControlPaint.DrawBorder(e.Graphics, area, Colors.GreySelection, ButtonBorderStyle.Solid);
         }
 

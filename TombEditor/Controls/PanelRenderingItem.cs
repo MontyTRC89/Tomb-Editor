@@ -81,9 +81,11 @@ namespace TombEditor.Controls
                 }
 
                 e.Graphics.Clear(Parent.BackColor);
-                using (var b = new SolidBrush(Colors.LightText))
+                using (var b = new SolidBrush(Colors.DisabledText))
                     e.Graphics.DrawString(notifyMessage, Font, b, ClientRectangle,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
+                ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Colors.GreySelection, ButtonBorderStyle.Solid);
             }
             else
                 base.OnPaint(e);

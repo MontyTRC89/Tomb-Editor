@@ -51,7 +51,7 @@ namespace TombEditor.Controls
         {
             // Change default state
             SetStyle(ControlStyles.Selectable, true);
-            BorderStyle = BorderStyle.FixedSingle;
+            BorderStyle = BorderStyle.None;
             DoubleBuffered = true;
 
             // Scroll bars
@@ -502,14 +502,20 @@ namespace TombEditor.Controls
                 RectangleF textArea = ClientRectangle;
                 textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
 
-                using (var b = new SolidBrush(Colors.LightText))
+                using (var b = new SolidBrush(Colors.DisabledText))
                     e.Graphics.DrawString(notifyMessage, Font, b, textArea,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
 
-            // Draw border next to scroll bars
+            // Draw borders
             using (Pen pen = new Pen(Colors.GreySelection, 1.0f))
+            {
                 e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, ClientSize.Width - _scrollSizeTotal, ClientSize.Height - _scrollSizeTotal));
+                e.Graphics.DrawRectangle(pen, ClientRectangle);
+            }
+
+            // Draw all border
+            
         }
 
         protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)

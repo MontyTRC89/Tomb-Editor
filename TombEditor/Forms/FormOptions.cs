@@ -190,5 +190,14 @@ namespace TombEditor.Forms
             WriteConfigFromControls();
             Close();
         }
+
+        private void butResetColorScheme_Click(object sender, EventArgs e)
+        {
+            var config = _editor.Configuration;
+            var name   = cmbColorScheme.SelectedItem.ToString();
+
+
+            SetOptionValue(name, config.UI_ColorScheme, newColor);
+        }
     }
 }

@@ -11,6 +11,8 @@ using TombLib.Utils;
 using TombLib.Wad;
 using RateType = System.UInt64;
 using ObjectType = System.Object;
+using DarkUI.Config;
+using DarkUI.Extensions;
 
 namespace TombEditor.Forms
 {
@@ -28,9 +30,9 @@ namespace TombEditor.Forms
 
         private const int _trueRateBitCount = 16;
         private const int _matchBitShift = 64 - _trueRateBitCount;
-        private static readonly Color _noTypoColor = Color.FromArgb(255, 255, 255);
-        private static readonly Color _smallTypoColor = Color.FromArgb(199, 189, 189);
-        private static readonly Color _bigTypoColor = Color.FromArgb(130, 110, 110);
+        private static readonly Color _noTypoColor = Colors.LightText;
+        private static readonly Color _smallTypoColor = Colors.LightText.Multiply(0.7f);
+        private static readonly Color _bigTypoColor = Colors.LightText.Multiply(0.45f);
         private static readonly RateType _smallTypoThreshold = ((RateType)1 * 256) << _matchBitShift;
         private static readonly RateType _bigTypoThreshold = ((RateType)3 * 256) << _matchBitShift;
 

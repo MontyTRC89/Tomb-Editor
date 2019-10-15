@@ -65,6 +65,9 @@
             this.tabSubPanel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.darkGroupBox8 = new DarkUI.Controls.DarkGroupBox();
+            this.darkLabel73 = new DarkUI.Controls.DarkLabel();
+            this.darkNumericUpDown42 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel72 = new DarkUI.Controls.DarkLabel();
             this.darkLabel71 = new DarkUI.Controls.DarkLabel();
             this.darkLabel66 = new DarkUI.Controls.DarkLabel();
             this.panel11 = new System.Windows.Forms.Panel();
@@ -238,8 +241,9 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new System.Windows.Forms.Panel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.darkLabel72 = new DarkUI.Controls.DarkLabel();
-            this.darkNumericUpDown42 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel74 = new DarkUI.Controls.DarkLabel();
+            this.cmbColorScheme = new DarkUI.Controls.DarkComboBox();
+            this.butResetColorScheme = new DarkUI.Controls.DarkButton();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -259,6 +263,7 @@
             this.tabSubPanel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.darkGroupBox8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown42)).BeginInit();
             this.darkGroupBox6.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabSubPanel1.SuspendLayout();
@@ -310,7 +315,6 @@
             this.darkSectionPanel1.SuspendLayout();
             this.panel5.SuspendLayout();
             this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown42)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -411,8 +415,6 @@
             // 
             // darkNumericUpDown1
             // 
-            this.darkNumericUpDown1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown1.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -463,8 +465,6 @@
             // 
             // darkNumericUpDown41
             // 
-            this.darkNumericUpDown41.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown41.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown41.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -578,8 +578,6 @@
             // 
             // darkNumericUpDown39
             // 
-            this.darkNumericUpDown39.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown39.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown39.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -657,8 +655,6 @@
             // 
             // darkNumericUpDown38
             // 
-            this.darkNumericUpDown38.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown38.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown38.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -701,8 +697,6 @@
             // 
             // darkNumericUpDown37
             // 
-            this.darkNumericUpDown37.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown37.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown37.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -779,11 +773,15 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(363, 992);
+            this.panel2.Size = new System.Drawing.Size(363, 1034);
             this.panel2.TabIndex = 4;
             // 
             // darkGroupBox8
             // 
+            this.darkGroupBox8.Controls.Add(this.butResetColorScheme);
+            this.darkGroupBox8.Controls.Add(this.cmbColorScheme);
+            this.darkGroupBox8.Controls.Add(this.darkLabel74);
+            this.darkGroupBox8.Controls.Add(this.darkLabel73);
             this.darkGroupBox8.Controls.Add(this.darkNumericUpDown42);
             this.darkGroupBox8.Controls.Add(this.darkLabel72);
             this.darkGroupBox8.Controls.Add(this.darkLabel71);
@@ -841,17 +839,61 @@
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox8.Location = new System.Drawing.Point(3, 185);
             this.darkGroupBox8.Name = "darkGroupBox8";
-            this.darkGroupBox8.Size = new System.Drawing.Size(357, 804);
+            this.darkGroupBox8.Size = new System.Drawing.Size(357, 846);
             this.darkGroupBox8.TabIndex = 3;
             this.darkGroupBox8.TabStop = false;
             this.darkGroupBox8.Tag = "";
             this.darkGroupBox8.Text = "Color scheme";
             // 
+            // darkLabel73
+            // 
+            this.darkLabel73.AutoSize = true;
+            this.darkLabel73.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel73.Location = new System.Drawing.Point(269, 59);
+            this.darkLabel73.Name = "darkLabel73";
+            this.darkLabel73.Size = new System.Drawing.Size(16, 13);
+            this.darkLabel73.TabIndex = 74;
+            this.darkLabel73.Text = "%";
+            // 
+            // darkNumericUpDown42
+            // 
+            this.darkNumericUpDown42.IncrementAlternate = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown42.Location = new System.Drawing.Point(196, 57);
+            this.darkNumericUpDown42.LoopValues = false;
+            this.darkNumericUpDown42.Minimum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.darkNumericUpDown42.Name = "darkNumericUpDown42";
+            this.darkNumericUpDown42.Size = new System.Drawing.Size(67, 22);
+            this.darkNumericUpDown42.TabIndex = 73;
+            this.darkNumericUpDown42.Tag = "UI_FormColor_Brightness";
+            this.darkNumericUpDown42.Value = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            // 
+            // darkLabel72
+            // 
+            this.darkLabel72.AutoSize = true;
+            this.darkLabel72.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel72.Location = new System.Drawing.Point(12, 59);
+            this.darkLabel72.Name = "darkLabel72";
+            this.darkLabel72.Size = new System.Drawing.Size(166, 13);
+            this.darkLabel72.TabIndex = 72;
+            this.darkLabel72.Text = "UI brightness (requires restart):";
+            // 
             // darkLabel71
             // 
             this.darkLabel71.AutoSize = true;
             this.darkLabel71.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel71.Location = new System.Drawing.Point(12, 59);
+            this.darkLabel71.Location = new System.Drawing.Point(12, 89);
             this.darkLabel71.Name = "darkLabel71";
             this.darkLabel71.Size = new System.Drawing.Size(111, 13);
             this.darkLabel71.TabIndex = 32;
@@ -861,7 +903,7 @@
             // 
             this.darkLabel66.AutoSize = true;
             this.darkLabel66.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel66.Location = new System.Drawing.Point(12, 784);
+            this.darkLabel66.Location = new System.Drawing.Point(12, 814);
             this.darkLabel66.Name = "darkLabel66";
             this.darkLabel66.Size = new System.Drawing.Size(128, 13);
             this.darkLabel66.TabIndex = 70;
@@ -871,7 +913,7 @@
             // 
             this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel11.Location = new System.Drawing.Point(196, 55);
+            this.panel11.Location = new System.Drawing.Point(196, 85);
             this.panel11.Name = "panel11";
             this.panel11.Size = new System.Drawing.Size(67, 23);
             this.panel11.TabIndex = 31;
@@ -881,7 +923,7 @@
             // 
             this.darkLabel65.AutoSize = true;
             this.darkLabel65.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel65.Location = new System.Drawing.Point(12, 755);
+            this.darkLabel65.Location = new System.Drawing.Point(12, 785);
             this.darkLabel65.Name = "darkLabel65";
             this.darkLabel65.Size = new System.Drawing.Size(166, 13);
             this.darkLabel65.TabIndex = 70;
@@ -891,7 +933,7 @@
             // 
             this.darkLabel64.AutoSize = true;
             this.darkLabel64.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel64.Location = new System.Drawing.Point(12, 726);
+            this.darkLabel64.Location = new System.Drawing.Point(12, 756);
             this.darkLabel64.Name = "darkLabel64";
             this.darkLabel64.Size = new System.Drawing.Size(165, 13);
             this.darkLabel64.TabIndex = 70;
@@ -901,7 +943,7 @@
             // 
             this.darkLabel63.AutoSize = true;
             this.darkLabel63.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel63.Location = new System.Drawing.Point(12, 697);
+            this.darkLabel63.Location = new System.Drawing.Point(12, 727);
             this.darkLabel63.Name = "darkLabel63";
             this.darkLabel63.Size = new System.Drawing.Size(84, 13);
             this.darkLabel63.TabIndex = 68;
@@ -911,7 +953,7 @@
             // 
             this.panel10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel10.Location = new System.Drawing.Point(196, 780);
+            this.panel10.Location = new System.Drawing.Point(196, 810);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(67, 23);
             this.panel10.TabIndex = 69;
@@ -921,7 +963,7 @@
             // 
             this.panel9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel9.Location = new System.Drawing.Point(196, 751);
+            this.panel9.Location = new System.Drawing.Point(196, 781);
             this.panel9.Name = "panel9";
             this.panel9.Size = new System.Drawing.Size(67, 23);
             this.panel9.TabIndex = 69;
@@ -931,7 +973,7 @@
             // 
             this.panel8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel8.Location = new System.Drawing.Point(196, 722);
+            this.panel8.Location = new System.Drawing.Point(196, 752);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(67, 23);
             this.panel8.TabIndex = 69;
@@ -941,7 +983,7 @@
             // 
             this.darkLabel62.AutoSize = true;
             this.darkLabel62.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel62.Location = new System.Drawing.Point(12, 668);
+            this.darkLabel62.Location = new System.Drawing.Point(12, 698);
             this.darkLabel62.Name = "darkLabel62";
             this.darkLabel62.Size = new System.Drawing.Size(72, 13);
             this.darkLabel62.TabIndex = 66;
@@ -951,7 +993,7 @@
             // 
             this.panel7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel7.Location = new System.Drawing.Point(196, 693);
+            this.panel7.Location = new System.Drawing.Point(196, 723);
             this.panel7.Name = "panel7";
             this.panel7.Size = new System.Drawing.Size(67, 23);
             this.panel7.TabIndex = 67;
@@ -961,7 +1003,7 @@
             // 
             this.darkLabel61.AutoSize = true;
             this.darkLabel61.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel61.Location = new System.Drawing.Point(12, 88);
+            this.darkLabel61.Location = new System.Drawing.Point(12, 118);
             this.darkLabel61.Name = "darkLabel61";
             this.darkLabel61.Size = new System.Drawing.Size(57, 13);
             this.darkLabel61.TabIndex = 30;
@@ -971,7 +1013,7 @@
             // 
             this.panel6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panel6.Location = new System.Drawing.Point(196, 664);
+            this.panel6.Location = new System.Drawing.Point(196, 694);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(67, 23);
             this.panel6.TabIndex = 65;
@@ -981,7 +1023,7 @@
             // 
             this.darkLabel60.AutoSize = true;
             this.darkLabel60.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel60.Location = new System.Drawing.Point(12, 639);
+            this.darkLabel60.Location = new System.Drawing.Point(12, 669);
             this.darkLabel60.Name = "darkLabel60";
             this.darkLabel60.Size = new System.Drawing.Size(94, 13);
             this.darkLabel60.TabIndex = 64;
@@ -991,7 +1033,7 @@
             // 
             this.panelColorSelector0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector0.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector0.Location = new System.Drawing.Point(196, 84);
+            this.panelColorSelector0.Location = new System.Drawing.Point(196, 114);
             this.panelColorSelector0.Name = "panelColorSelector0";
             this.panelColorSelector0.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector0.TabIndex = 29;
@@ -1001,7 +1043,7 @@
             // 
             this.panelColorSelector19.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector19.Location = new System.Drawing.Point(196, 635);
+            this.panelColorSelector19.Location = new System.Drawing.Point(196, 665);
             this.panelColorSelector19.Name = "panelColorSelector19";
             this.panelColorSelector19.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector19.TabIndex = 63;
@@ -1011,7 +1053,7 @@
             // 
             this.darkLabel59.AutoSize = true;
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel59.Location = new System.Drawing.Point(12, 610);
+            this.darkLabel59.Location = new System.Drawing.Point(12, 640);
             this.darkLabel59.Name = "darkLabel59";
             this.darkLabel59.Size = new System.Drawing.Size(121, 13);
             this.darkLabel59.TabIndex = 62;
@@ -1021,7 +1063,7 @@
             // 
             this.panelColorSelector18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector18.Location = new System.Drawing.Point(196, 606);
+            this.panelColorSelector18.Location = new System.Drawing.Point(196, 636);
             this.panelColorSelector18.Name = "panelColorSelector18";
             this.panelColorSelector18.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector18.TabIndex = 61;
@@ -1031,7 +1073,7 @@
             // 
             this.darkLabel58.AutoSize = true;
             this.darkLabel58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel58.Location = new System.Drawing.Point(12, 581);
+            this.darkLabel58.Location = new System.Drawing.Point(12, 611);
             this.darkLabel58.Name = "darkLabel58";
             this.darkLabel58.Size = new System.Drawing.Size(70, 13);
             this.darkLabel58.TabIndex = 60;
@@ -1041,7 +1083,7 @@
             // 
             this.panelColorSelector17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector17.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector17.Location = new System.Drawing.Point(196, 577);
+            this.panelColorSelector17.Location = new System.Drawing.Point(196, 607);
             this.panelColorSelector17.Name = "panelColorSelector17";
             this.panelColorSelector17.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector17.TabIndex = 59;
@@ -1051,7 +1093,7 @@
             // 
             this.darkLabel57.AutoSize = true;
             this.darkLabel57.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel57.Location = new System.Drawing.Point(12, 552);
+            this.darkLabel57.Location = new System.Drawing.Point(12, 582);
             this.darkLabel57.Name = "darkLabel57";
             this.darkLabel57.Size = new System.Drawing.Size(78, 13);
             this.darkLabel57.TabIndex = 58;
@@ -1061,7 +1103,7 @@
             // 
             this.darkLabel56.AutoSize = true;
             this.darkLabel56.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel56.Location = new System.Drawing.Point(12, 523);
+            this.darkLabel56.Location = new System.Drawing.Point(12, 553);
             this.darkLabel56.Name = "darkLabel56";
             this.darkLabel56.Size = new System.Drawing.Size(41, 13);
             this.darkLabel56.TabIndex = 56;
@@ -1071,7 +1113,7 @@
             // 
             this.panelColorSelector16.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector16.Location = new System.Drawing.Point(196, 548);
+            this.panelColorSelector16.Location = new System.Drawing.Point(196, 578);
             this.panelColorSelector16.Name = "panelColorSelector16";
             this.panelColorSelector16.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector16.TabIndex = 57;
@@ -1081,7 +1123,7 @@
             // 
             this.panelColorSelector15.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector15.Location = new System.Drawing.Point(196, 519);
+            this.panelColorSelector15.Location = new System.Drawing.Point(196, 549);
             this.panelColorSelector15.Name = "panelColorSelector15";
             this.panelColorSelector15.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector15.TabIndex = 55;
@@ -1091,7 +1133,7 @@
             // 
             this.darkLabel55.AutoSize = true;
             this.darkLabel55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel55.Location = new System.Drawing.Point(12, 494);
+            this.darkLabel55.Location = new System.Drawing.Point(12, 524);
             this.darkLabel55.Name = "darkLabel55";
             this.darkLabel55.Size = new System.Drawing.Size(29, 13);
             this.darkLabel55.TabIndex = 54;
@@ -1101,7 +1143,7 @@
             // 
             this.panelColorSelector14.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector14.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector14.Location = new System.Drawing.Point(196, 490);
+            this.panelColorSelector14.Location = new System.Drawing.Point(196, 520);
             this.panelColorSelector14.Name = "panelColorSelector14";
             this.panelColorSelector14.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector14.TabIndex = 53;
@@ -1111,7 +1153,7 @@
             // 
             this.darkLabel54.AutoSize = true;
             this.darkLabel54.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel54.Location = new System.Drawing.Point(12, 465);
+            this.darkLabel54.Location = new System.Drawing.Point(12, 495);
             this.darkLabel54.Name = "darkLabel54";
             this.darkLabel54.Size = new System.Drawing.Size(39, 13);
             this.darkLabel54.TabIndex = 52;
@@ -1121,7 +1163,7 @@
             // 
             this.panelColorSelector13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector13.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector13.Location = new System.Drawing.Point(196, 461);
+            this.panelColorSelector13.Location = new System.Drawing.Point(196, 491);
             this.panelColorSelector13.Name = "panelColorSelector13";
             this.panelColorSelector13.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector13.TabIndex = 51;
@@ -1131,7 +1173,7 @@
             // 
             this.darkLabel53.AutoSize = true;
             this.darkLabel53.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel53.Location = new System.Drawing.Point(12, 436);
+            this.darkLabel53.Location = new System.Drawing.Point(12, 466);
             this.darkLabel53.Name = "darkLabel53";
             this.darkLabel53.Size = new System.Drawing.Size(82, 13);
             this.darkLabel53.TabIndex = 50;
@@ -1141,7 +1183,7 @@
             // 
             this.panelColorSelector12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector12.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector12.Location = new System.Drawing.Point(196, 432);
+            this.panelColorSelector12.Location = new System.Drawing.Point(196, 462);
             this.panelColorSelector12.Name = "panelColorSelector12";
             this.panelColorSelector12.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector12.TabIndex = 49;
@@ -1151,7 +1193,7 @@
             // 
             this.darkLabel52.AutoSize = true;
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel52.Location = new System.Drawing.Point(12, 407);
+            this.darkLabel52.Location = new System.Drawing.Point(12, 437);
             this.darkLabel52.Name = "darkLabel52";
             this.darkLabel52.Size = new System.Drawing.Size(45, 13);
             this.darkLabel52.TabIndex = 48;
@@ -1161,7 +1203,7 @@
             // 
             this.panelColorSelector11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector11.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector11.Location = new System.Drawing.Point(196, 403);
+            this.panelColorSelector11.Location = new System.Drawing.Point(196, 433);
             this.panelColorSelector11.Name = "panelColorSelector11";
             this.panelColorSelector11.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector11.TabIndex = 47;
@@ -1171,7 +1213,7 @@
             // 
             this.darkLabel51.AutoSize = true;
             this.darkLabel51.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel51.Location = new System.Drawing.Point(12, 378);
+            this.darkLabel51.Location = new System.Drawing.Point(12, 408);
             this.darkLabel51.Name = "darkLabel51";
             this.darkLabel51.Size = new System.Drawing.Size(106, 13);
             this.darkLabel51.TabIndex = 46;
@@ -1181,7 +1223,7 @@
             // 
             this.darkLabel50.AutoSize = true;
             this.darkLabel50.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel50.Location = new System.Drawing.Point(12, 349);
+            this.darkLabel50.Location = new System.Drawing.Point(12, 379);
             this.darkLabel50.Name = "darkLabel50";
             this.darkLabel50.Size = new System.Drawing.Size(105, 13);
             this.darkLabel50.TabIndex = 44;
@@ -1191,7 +1233,7 @@
             // 
             this.panelColorSelector10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector10.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector10.Location = new System.Drawing.Point(196, 374);
+            this.panelColorSelector10.Location = new System.Drawing.Point(196, 404);
             this.panelColorSelector10.Name = "panelColorSelector10";
             this.panelColorSelector10.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector10.TabIndex = 45;
@@ -1201,7 +1243,7 @@
             // 
             this.panelColorSelector9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector9.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector9.Location = new System.Drawing.Point(196, 345);
+            this.panelColorSelector9.Location = new System.Drawing.Point(196, 375);
             this.panelColorSelector9.Name = "panelColorSelector9";
             this.panelColorSelector9.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector9.TabIndex = 43;
@@ -1211,7 +1253,7 @@
             // 
             this.darkLabel49.AutoSize = true;
             this.darkLabel49.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel49.Location = new System.Drawing.Point(12, 320);
+            this.darkLabel49.Location = new System.Drawing.Point(12, 350);
             this.darkLabel49.Name = "darkLabel49";
             this.darkLabel49.Size = new System.Drawing.Size(108, 13);
             this.darkLabel49.TabIndex = 42;
@@ -1221,7 +1263,7 @@
             // 
             this.panelColorSelector8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector8.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector8.Location = new System.Drawing.Point(196, 316);
+            this.panelColorSelector8.Location = new System.Drawing.Point(196, 346);
             this.panelColorSelector8.Name = "panelColorSelector8";
             this.panelColorSelector8.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector8.TabIndex = 41;
@@ -1231,7 +1273,7 @@
             // 
             this.darkLabel48.AutoSize = true;
             this.darkLabel48.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel48.Location = new System.Drawing.Point(12, 291);
+            this.darkLabel48.Location = new System.Drawing.Point(12, 321);
             this.darkLabel48.Name = "darkLabel48";
             this.darkLabel48.Size = new System.Drawing.Size(69, 13);
             this.darkLabel48.TabIndex = 40;
@@ -1241,7 +1283,7 @@
             // 
             this.panelColorSelector7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector7.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector7.Location = new System.Drawing.Point(196, 287);
+            this.panelColorSelector7.Location = new System.Drawing.Point(196, 317);
             this.panelColorSelector7.Name = "panelColorSelector7";
             this.panelColorSelector7.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector7.TabIndex = 39;
@@ -1251,7 +1293,7 @@
             // 
             this.darkLabel47.AutoSize = true;
             this.darkLabel47.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel47.Location = new System.Drawing.Point(12, 262);
+            this.darkLabel47.Location = new System.Drawing.Point(12, 292);
             this.darkLabel47.Name = "darkLabel47";
             this.darkLabel47.Size = new System.Drawing.Size(37, 13);
             this.darkLabel47.TabIndex = 38;
@@ -1261,7 +1303,7 @@
             // 
             this.panelColorSelector6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector6.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector6.Location = new System.Drawing.Point(196, 258);
+            this.panelColorSelector6.Location = new System.Drawing.Point(196, 288);
             this.panelColorSelector6.Name = "panelColorSelector6";
             this.panelColorSelector6.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector6.TabIndex = 37;
@@ -1271,7 +1313,7 @@
             // 
             this.darkLabel46.AutoSize = true;
             this.darkLabel46.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel46.Location = new System.Drawing.Point(12, 233);
+            this.darkLabel46.Location = new System.Drawing.Point(12, 263);
             this.darkLabel46.Name = "darkLabel46";
             this.darkLabel46.Size = new System.Drawing.Size(133, 13);
             this.darkLabel46.TabIndex = 36;
@@ -1281,7 +1323,7 @@
             // 
             this.panelColorSelector5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector5.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector5.Location = new System.Drawing.Point(196, 229);
+            this.panelColorSelector5.Location = new System.Drawing.Point(196, 259);
             this.panelColorSelector5.Name = "panelColorSelector5";
             this.panelColorSelector5.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector5.TabIndex = 35;
@@ -1291,7 +1333,7 @@
             // 
             this.darkLabel45.AutoSize = true;
             this.darkLabel45.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel45.Location = new System.Drawing.Point(12, 204);
+            this.darkLabel45.Location = new System.Drawing.Point(12, 234);
             this.darkLabel45.Name = "darkLabel45";
             this.darkLabel45.Size = new System.Drawing.Size(109, 13);
             this.darkLabel45.TabIndex = 34;
@@ -1301,7 +1343,7 @@
             // 
             this.panelColorSelector4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector4.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector4.Location = new System.Drawing.Point(196, 200);
+            this.panelColorSelector4.Location = new System.Drawing.Point(196, 230);
             this.panelColorSelector4.Name = "panelColorSelector4";
             this.panelColorSelector4.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector4.TabIndex = 33;
@@ -1311,7 +1353,7 @@
             // 
             this.darkLabel44.AutoSize = true;
             this.darkLabel44.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel44.Location = new System.Drawing.Point(12, 175);
+            this.darkLabel44.Location = new System.Drawing.Point(12, 205);
             this.darkLabel44.Name = "darkLabel44";
             this.darkLabel44.Size = new System.Drawing.Size(145, 13);
             this.darkLabel44.TabIndex = 32;
@@ -1321,7 +1363,7 @@
             // 
             this.panelColorSelector3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector3.Location = new System.Drawing.Point(196, 171);
+            this.panelColorSelector3.Location = new System.Drawing.Point(196, 201);
             this.panelColorSelector3.Name = "panelColorSelector3";
             this.panelColorSelector3.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector3.TabIndex = 31;
@@ -1331,7 +1373,7 @@
             // 
             this.darkLabel43.AutoSize = true;
             this.darkLabel43.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel43.Location = new System.Drawing.Point(12, 146);
+            this.darkLabel43.Location = new System.Drawing.Point(12, 176);
             this.darkLabel43.Name = "darkLabel43";
             this.darkLabel43.Size = new System.Drawing.Size(90, 13);
             this.darkLabel43.TabIndex = 30;
@@ -1341,7 +1383,7 @@
             // 
             this.panelColorSelector2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector2.Location = new System.Drawing.Point(196, 142);
+            this.panelColorSelector2.Location = new System.Drawing.Point(196, 172);
             this.panelColorSelector2.Name = "panelColorSelector2";
             this.panelColorSelector2.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector2.TabIndex = 29;
@@ -1351,7 +1393,7 @@
             // 
             this.darkLabel42.AutoSize = true;
             this.darkLabel42.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel42.Location = new System.Drawing.Point(12, 117);
+            this.darkLabel42.Location = new System.Drawing.Point(12, 147);
             this.darkLabel42.Name = "darkLabel42";
             this.darkLabel42.Size = new System.Drawing.Size(90, 13);
             this.darkLabel42.TabIndex = 28;
@@ -1361,7 +1403,7 @@
             // 
             this.panelColorSelector1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColorSelector1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColorSelector1.Location = new System.Drawing.Point(196, 113);
+            this.panelColorSelector1.Location = new System.Drawing.Point(196, 143);
             this.panelColorSelector1.Name = "panelColorSelector1";
             this.panelColorSelector1.Size = new System.Drawing.Size(67, 23);
             this.panelColorSelector1.TabIndex = 16;
@@ -1503,8 +1545,6 @@
             // 
             // darkNumericUpDown40
             // 
-            this.darkNumericUpDown40.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown40.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown40.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1563,8 +1603,6 @@
             // 
             // darkNumericUpDown22
             // 
-            this.darkNumericUpDown22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown22.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1599,9 +1637,7 @@
             // 
             // darkNumericUpDown14
             // 
-            this.darkNumericUpDown14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown14.DecimalPlaces = 2;
-            this.darkNumericUpDown14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown14.Increment = new decimal(new int[] {
             1,
             0,
@@ -1656,8 +1692,6 @@
             // 
             // darkNumericUpDown11
             // 
-            this.darkNumericUpDown11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown11.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1672,8 +1706,6 @@
             // 
             // darkNumericUpDown8
             // 
-            this.darkNumericUpDown8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown8.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1688,8 +1720,6 @@
             // 
             // darkNumericUpDown10
             // 
-            this.darkNumericUpDown10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown10.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1729,8 +1759,6 @@
             // 
             // darkNumericUpDown9
             // 
-            this.darkNumericUpDown9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown9.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1774,8 +1802,6 @@
             // 
             // darkNumericUpDown20
             // 
-            this.darkNumericUpDown20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown20.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -1805,9 +1831,7 @@
             // 
             // darkNumericUpDown21
             // 
-            this.darkNumericUpDown21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown21.DecimalPlaces = 2;
-            this.darkNumericUpDown21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown21.Increment = new decimal(new int[] {
             1,
             0,
@@ -1987,9 +2011,7 @@
             // 
             // darkNumericUpDown15
             // 
-            this.darkNumericUpDown15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown15.DecimalPlaces = 2;
-            this.darkNumericUpDown15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown15.IncrementAlternate = new decimal(new int[] {
             25,
             0,
@@ -2063,8 +2085,6 @@
             // 
             // darkNumericUpDown13
             // 
-            this.darkNumericUpDown13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown13.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2089,8 +2109,6 @@
             // 
             // darkNumericUpDown12
             // 
-            this.darkNumericUpDown12.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown12.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2115,8 +2133,6 @@
             // 
             // darkNumericUpDown7
             // 
-            this.darkNumericUpDown7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown7.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2186,8 +2202,6 @@
             // 
             // darkNumericUpDown36
             // 
-            this.darkNumericUpDown36.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown36.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2217,8 +2231,6 @@
             // 
             // darkNumericUpDown35
             // 
-            this.darkNumericUpDown35.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown35.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown35.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2248,8 +2260,6 @@
             // 
             // darkNumericUpDown34
             // 
-            this.darkNumericUpDown34.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown34.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown34.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2279,8 +2289,6 @@
             // 
             // darkNumericUpDown33
             // 
-            this.darkNumericUpDown33.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown33.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown33.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2310,8 +2318,6 @@
             // 
             // darkNumericUpDown32
             // 
-            this.darkNumericUpDown32.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown32.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown32.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2362,8 +2368,6 @@
             // 
             // darkNumericUpDown6
             // 
-            this.darkNumericUpDown6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown6.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2403,8 +2407,6 @@
             // 
             // darkNumericUpDown5
             // 
-            this.darkNumericUpDown5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown5.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2429,8 +2431,6 @@
             // 
             // darkNumericUpDown4
             // 
-            this.darkNumericUpDown4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown4.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2460,8 +2460,6 @@
             // 
             // darkNumericUpDown3
             // 
-            this.darkNumericUpDown3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown3.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2481,8 +2479,6 @@
             // 
             // darkNumericUpDown2
             // 
-            this.darkNumericUpDown2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown2.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2549,9 +2545,7 @@
             // 
             // darkNumericUpDown23
             // 
-            this.darkNumericUpDown23.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown23.DecimalPlaces = 2;
-            this.darkNumericUpDown23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown23.Increment = new decimal(new int[] {
             5,
             0,
@@ -2596,8 +2590,6 @@
             // 
             // darkNumericUpDown24
             // 
-            this.darkNumericUpDown24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown24.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2617,9 +2609,7 @@
             // 
             // darkNumericUpDown16
             // 
-            this.darkNumericUpDown16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown16.DecimalPlaces = 2;
-            this.darkNumericUpDown16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown16.Increment = new decimal(new int[] {
             5,
             0,
@@ -2659,9 +2649,7 @@
             // 
             // darkNumericUpDown17
             // 
-            this.darkNumericUpDown17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown17.DecimalPlaces = 4;
-            this.darkNumericUpDown17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown17.Increment = new decimal(new int[] {
             1,
             0,
@@ -2696,9 +2684,7 @@
             // 
             // darkNumericUpDown18
             // 
-            this.darkNumericUpDown18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown18.DecimalPlaces = 2;
-            this.darkNumericUpDown18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown18.Increment = new decimal(new int[] {
             5,
             0,
@@ -2748,8 +2734,6 @@
             // 
             // darkNumericUpDown19
             // 
-            this.darkNumericUpDown19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown19.IncrementAlternate = new decimal(new int[] {
             1,
             0,
@@ -2825,9 +2809,7 @@
             // 
             // darkNumericUpDown31
             // 
-            this.darkNumericUpDown31.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown31.DecimalPlaces = 2;
-            this.darkNumericUpDown31.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown31.Increment = new decimal(new int[] {
             5,
             0,
@@ -2857,9 +2839,7 @@
             // 
             // darkNumericUpDown25
             // 
-            this.darkNumericUpDown25.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown25.DecimalPlaces = 2;
-            this.darkNumericUpDown25.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown25.Increment = new decimal(new int[] {
             5,
             0,
@@ -2889,8 +2869,6 @@
             // 
             // darkNumericUpDown26
             // 
-            this.darkNumericUpDown26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown26.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -2910,9 +2888,7 @@
             // 
             // darkNumericUpDown27
             // 
-            this.darkNumericUpDown27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown27.DecimalPlaces = 2;
-            this.darkNumericUpDown27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown27.Increment = new decimal(new int[] {
             5,
             0,
@@ -2952,9 +2928,7 @@
             // 
             // darkNumericUpDown28
             // 
-            this.darkNumericUpDown28.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown28.DecimalPlaces = 4;
-            this.darkNumericUpDown28.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown28.Increment = new decimal(new int[] {
             5,
             0,
@@ -2974,9 +2948,7 @@
             // 
             // darkNumericUpDown29
             // 
-            this.darkNumericUpDown29.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.darkNumericUpDown29.DecimalPlaces = 2;
-            this.darkNumericUpDown29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown29.Increment = new decimal(new int[] {
             5,
             0,
@@ -3026,8 +2998,6 @@
             // 
             // darkNumericUpDown30
             // 
-            this.darkNumericUpDown30.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown30.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkNumericUpDown30.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -3132,52 +3102,37 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
-            // darkLabel72
+            // darkLabel74
             // 
-            this.darkLabel72.AutoSize = true;
-            this.darkLabel72.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel72.Location = new System.Drawing.Point(12, 29);
-            this.darkLabel72.Name = "darkLabel72";
-            this.darkLabel72.Size = new System.Drawing.Size(166, 13);
-            this.darkLabel72.TabIndex = 72;
-            this.darkLabel72.Text = "UI brightness (requires restart):";
+            this.darkLabel74.AutoSize = true;
+            this.darkLabel74.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel74.Location = new System.Drawing.Point(12, 27);
+            this.darkLabel74.Name = "darkLabel74";
+            this.darkLabel74.Size = new System.Drawing.Size(157, 13);
+            this.darkLabel74.TabIndex = 75;
+            this.darkLabel74.Text = "Reset color scheme to preset:";
             // 
-            // darkNumericUpDown42
+            // cmbColorScheme
             // 
-            this.darkNumericUpDown42.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.darkNumericUpDown42.DecimalPlaces = 3;
-            this.darkNumericUpDown42.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkNumericUpDown42.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.darkNumericUpDown42.IncrementAlternate = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.darkNumericUpDown42.Location = new System.Drawing.Point(196, 27);
-            this.darkNumericUpDown42.LoopValues = false;
-            this.darkNumericUpDown42.Maximum = new decimal(new int[] {
-            15,
-            0,
-            0,
-            65536});
-            this.darkNumericUpDown42.Minimum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.darkNumericUpDown42.Name = "darkNumericUpDown42";
-            this.darkNumericUpDown42.Size = new System.Drawing.Size(67, 22);
-            this.darkNumericUpDown42.TabIndex = 73;
-            this.darkNumericUpDown42.Tag = "UI_FormColor_Brightness";
-            this.darkNumericUpDown42.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
+            this.cmbColorScheme.FormattingEnabled = true;
+            this.cmbColorScheme.Items.AddRange(new object[] {
+            "Default",
+            "Grayscale",
+            "Pastel"});
+            this.cmbColorScheme.Location = new System.Drawing.Point(196, 24);
+            this.cmbColorScheme.Name = "cmbColorScheme";
+            this.cmbColorScheme.Size = new System.Drawing.Size(109, 23);
+            this.cmbColorScheme.TabIndex = 76;
+            // 
+            // butResetColorScheme
+            // 
+            this.butResetColorScheme.Checked = false;
+            this.butResetColorScheme.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
+            this.butResetColorScheme.Location = new System.Drawing.Point(311, 24);
+            this.butResetColorScheme.Name = "butResetColorScheme";
+            this.butResetColorScheme.Size = new System.Drawing.Size(22, 23);
+            this.butResetColorScheme.TabIndex = 77;
+            this.butResetColorScheme.Click += new System.EventHandler(this.butResetColorScheme_Click);
             // 
             // FormOptions
             // 
@@ -3223,6 +3178,7 @@
             this.panel2.ResumeLayout(false);
             this.darkGroupBox8.ResumeLayout(false);
             this.darkGroupBox8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown42)).EndInit();
             this.darkGroupBox6.ResumeLayout(false);
             this.darkGroupBox6.PerformLayout();
             this.tabPage1.ResumeLayout(false);
@@ -3284,7 +3240,6 @@
             this.darkSectionPanel1.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown42)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -3503,5 +3458,9 @@
         private System.Windows.Forms.Panel panel11;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown42;
         private DarkUI.Controls.DarkLabel darkLabel72;
+        private DarkUI.Controls.DarkLabel darkLabel73;
+        private DarkUI.Controls.DarkComboBox cmbColorScheme;
+        private DarkUI.Controls.DarkLabel darkLabel74;
+        private DarkUI.Controls.DarkButton butResetColorScheme;
     }
 }

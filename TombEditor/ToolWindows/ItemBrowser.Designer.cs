@@ -38,7 +38,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelItem.AutoSize = true;
-            this.panelItem.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelItem.Location = new System.Drawing.Point(3, 2);
             this.panelItem.Name = "panelItem";
             this.panelItem.Size = new System.Drawing.Size(279, 165);
@@ -59,6 +58,7 @@
             // butAddItem
             // 
             this.butAddItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddItem.Checked = false;
             this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddItem.Location = new System.Drawing.Point(258, 2);
             this.butAddItem.Name = "butAddItem";
@@ -69,6 +69,7 @@
             // butSearch
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
             this.butSearch.Location = new System.Drawing.Point(228, 2);
             this.butSearch.Name = "butSearch";
@@ -95,6 +96,7 @@
             // butFindItem
             // 
             this.butFindItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butFindItem.Checked = false;
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butFindItem.Image = global::TombEditor.Properties.Resources.general_target_16;
             this.butFindItem.Location = new System.Drawing.Point(190, 6);
@@ -119,6 +121,7 @@
             // butItemDown
             // 
             this.butItemDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butItemDown.Checked = false;
             this.butItemDown.Location = new System.Drawing.Point(164, 6);
             this.butItemDown.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.butItemDown.Name = "butItemDown";
@@ -131,6 +134,7 @@
             // butItemUp
             // 
             this.butItemUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butItemUp.Checked = false;
             this.butItemUp.Location = new System.Drawing.Point(138, 6);
             this.butItemUp.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.butItemUp.Name = "butItemUp";
