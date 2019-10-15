@@ -31,7 +31,6 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.versionLabel = new DarkUI.Controls.DarkLabel();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
@@ -94,6 +93,7 @@
             // 
             // butOk
             // 
+            this.butOk.Checked = false;
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butOk.Location = new System.Drawing.Point(508, 3);
@@ -114,20 +114,6 @@
             this.darkLabel1.Size = new System.Drawing.Size(191, 28);
             this.darkLabel1.TabIndex = 29;
             this.darkLabel1.Text = "This tool is part of the Tomb Editor toolchain.";
-            // 
-            // versionLabel
-            // 
-            this.versionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.versionLabel.AutoSize = true;
-            this.versionLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
-            this.versionLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.versionLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.versionLabel.Location = new System.Drawing.Point(542, 44);
-            this.versionLabel.Name = "versionLabel";
-            this.versionLabel.Size = new System.Drawing.Size(69, 17);
-            this.versionLabel.TabIndex = 0;
-            this.versionLabel.Text = "[VERSION]";
-            this.versionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // pictureBox
             // 
@@ -616,7 +602,7 @@
             this.darkLabel3.Size = new System.Drawing.Size(419, 60);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte, Nickelony, Raild" +
-    "ex\r\nteme9, Lwmte\r\nDustie, Titak, Gemini, Caesum, Lore";
+    "ex\r\nteme9, Lwmte\r\nDustie, Titak, Gemini, Caesum, Lore, Joey79100";
             // 
             // darkLabel2
             // 
@@ -637,7 +623,6 @@
             this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(614, 453);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -665,7 +650,6 @@
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private DarkUI.Controls.DarkButton butOk;
-        private DarkUI.Controls.DarkLabel versionLabel;
         private System.Windows.Forms.PictureBox pictureBox;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
