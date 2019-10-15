@@ -260,9 +260,9 @@ namespace TombEditor.Forms
         {
             // Refresh all forms if UI colours were changed
             var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
-            if (Colors.MenuItemToggledOnBorder != newButtonHighlightColour)
+            if (Colors.HighlightBase != newButtonHighlightColour)
             {
-                Colors.MenuItemToggledOnBorder = newButtonHighlightColour;
+                Colors.HighlightBase = newButtonHighlightColour;
                 foreach (var form in Application.OpenForms)
                     if (form is DarkForm) ((DarkForm)form).Refresh();
             }

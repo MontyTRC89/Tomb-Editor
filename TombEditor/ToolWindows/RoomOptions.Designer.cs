@@ -79,7 +79,6 @@
             // 
             this.darkLabel19.AutoSize = true;
             this.darkLabel19.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel19.Location = new System.Drawing.Point(87, 85);
             this.darkLabel19.Name = "darkLabel19";
             this.darkLabel19.Size = new System.Drawing.Size(48, 13);
@@ -90,7 +89,6 @@
             // 
             this.darkLabel18.AutoSize = true;
             this.darkLabel18.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel18.Location = new System.Drawing.Point(148, 84);
             this.darkLabel18.Name = "darkLabel18";
             this.darkLabel18.Size = new System.Drawing.Size(42, 13);
@@ -102,7 +100,6 @@
             this.darkLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel16.AutoSize = true;
             this.darkLabel16.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(140, 178);
             this.darkLabel16.Name = "darkLabel16";
             this.darkLabel16.Size = new System.Drawing.Size(36, 13);
@@ -147,7 +144,6 @@
             // 
             this.darkLabel15.AutoSize = true;
             this.darkLabel15.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel15.Location = new System.Drawing.Point(0, 85);
             this.darkLabel15.Name = "darkLabel15";
             this.darkLabel15.Size = new System.Drawing.Size(62, 13);
@@ -170,7 +166,6 @@
             this.darkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel3.Location = new System.Drawing.Point(0, 178);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(50, 13);
@@ -197,9 +192,7 @@
             // numLightEffectStrength
             // 
             this.numLightEffectStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.numLightEffectStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numLightEffectStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numLightEffectStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numLightEffectStrength.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -251,6 +244,7 @@
             // butSearch
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
             this.butSearch.Location = new System.Drawing.Point(198, 28);
             this.butSearch.Name = "butSearch";
@@ -284,7 +278,6 @@
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(1, 59);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(32, 13);
@@ -296,7 +289,6 @@
             this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(65, 178);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(71, 13);
@@ -307,6 +299,7 @@
             // 
             this.butSelectPreviousRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSelectPreviousRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.butSelectPreviousRoom.Checked = false;
             this.butSelectPreviousRoom.Image = global::TombEditor.Properties.Resources.actions_back_16;
             this.butSelectPreviousRoom.Location = new System.Drawing.Point(228, 86);
             this.butSelectPreviousRoom.Name = "butSelectPreviousRoom";
@@ -317,6 +310,7 @@
             // butNewRoom
             // 
             this.butNewRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butNewRoom.Checked = false;
             this.butNewRoom.Image = global::TombEditor.Properties.Resources.general_create_new_16;
             this.butNewRoom.Location = new System.Drawing.Point(258, 28);
             this.butNewRoom.Name = "butNewRoom";
@@ -327,6 +321,7 @@
             // butDeleteRoom
             // 
             this.butDeleteRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteRoom.Checked = false;
             this.butDeleteRoom.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteRoom.Location = new System.Drawing.Point(258, 57);
             this.butDeleteRoom.Name = "butDeleteRoom";
@@ -337,6 +332,7 @@
             // butDublicateRoom
             // 
             this.butDublicateRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDublicateRoom.Checked = false;
             this.butDublicateRoom.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butDublicateRoom.Location = new System.Drawing.Point(228, 57);
             this.butDublicateRoom.Name = "butDublicateRoom";
@@ -347,6 +343,7 @@
             // butLocked
             // 
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butLocked.Checked = false;
             this.butLocked.Image = global::TombEditor.Properties.Resources.general_Lock_16;
             this.butLocked.Location = new System.Drawing.Point(258, 86);
             this.butLocked.Name = "butLocked";
@@ -384,6 +381,7 @@
             // butRoomUp
             // 
             this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRoomUp.Checked = false;
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
             this.butRoomUp.Location = new System.Drawing.Point(258, 114);
             this.butRoomUp.Name = "butRoomUp";
@@ -445,6 +443,7 @@
             // butRoomDown
             // 
             this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRoomDown.Checked = false;
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
             this.butRoomDown.Location = new System.Drawing.Point(258, 143);
             this.butRoomDown.Name = "butRoomDown";
@@ -455,6 +454,7 @@
             // butEditRoomName
             // 
             this.butEditRoomName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditRoomName.Checked = false;
             this.butEditRoomName.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditRoomName.Location = new System.Drawing.Point(228, 28);
             this.butEditRoomName.Name = "butEditRoomName";
@@ -465,6 +465,7 @@
             // butCropRoom
             // 
             this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCropRoom.Checked = false;
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
             this.butCropRoom.Location = new System.Drawing.Point(228, 114);
             this.butCropRoom.Name = "butCropRoom";
@@ -475,6 +476,7 @@
             // butSplitRoom
             // 
             this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSplitRoom.Checked = false;
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.actions_Split_16;
             this.butSplitRoom.Location = new System.Drawing.Point(228, 143);
             this.butSplitRoom.Name = "butSplitRoom";

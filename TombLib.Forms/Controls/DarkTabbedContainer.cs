@@ -121,5 +121,13 @@ namespace TombLib.Controls
             using (var b = new SolidBrush(Colors.GreyBackground))
                 e.Graphics.FillRectangle(b, ClientRectangle);
         }
+
+        protected override void OnParentBackColorChanged(EventArgs e)
+        {
+            foreach (var tab in TabPages)
+                ((TabPage)tab).BackColor = Parent.BackColor;
+
+            base.OnParentBackColorChanged(e);
+        }
     }
 }

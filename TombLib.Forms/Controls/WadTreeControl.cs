@@ -7,6 +7,7 @@ using DarkUI.Controls;
 using TombLib.LevelData;
 using TombLib.Wad;
 using System.Drawing;
+using DarkUI.Config;
 
 namespace TombLib.Controls
 {
@@ -317,8 +318,9 @@ namespace TombLib.Controls
 
                 string notifyMessage = "Click here to load a new wad file.";
 
-                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, ClientRectangle,
-                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                using (var b = new SolidBrush(Colors.LightText))
+                    e.Graphics.DrawString(notifyMessage, Font, b, ClientRectangle,
+                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
         }
 

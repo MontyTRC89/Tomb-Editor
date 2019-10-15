@@ -1,4 +1,5 @@
-﻿using DarkUI.Controls;
+﻿using DarkUI.Config;
+using DarkUI.Controls;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -500,12 +501,14 @@ namespace TombEditor.Controls
 
                 RectangleF textArea = ClientRectangle;
                 textArea.Size -= new SizeF(_scrollSizeTotal, _scrollSizeTotal);
-                e.Graphics.DrawString(notifyMessage, Font, Brushes.DarkGray, textArea,
-                    new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
+                using (var b = new SolidBrush(Colors.LightText))
+                    e.Graphics.DrawString(notifyMessage, Font, b, textArea,
+                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }
 
             // Draw border next to scroll bars
-            using (Pen pen = new Pen(DarkUI.Config.Colors.LighterBackground, 1.0f))
+            using (Pen pen = new Pen(Colors.GreySelection, 1.0f))
                 e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, ClientSize.Width - _scrollSizeTotal, ClientSize.Height - _scrollSizeTotal));
         }
 

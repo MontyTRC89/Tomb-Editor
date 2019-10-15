@@ -1,3 +1,4 @@
+using DarkUI.Config;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -793,6 +794,12 @@ namespace TombEditor
 
         private void Editor_EditorEventRaised(IEditorEvent obj)
         {
+            // Update internal brightness for all UI elements.
+            // We must do it here because doing it on form init will be too late.
+            if (obj is InitEvent)
+            {
+            }
+
             // Update configuration watcher
             if (obj is ConfigurationChangedEvent)
             {
@@ -821,6 +828,10 @@ namespace TombEditor
 
                 // Update coloring info
                 SectorColoringManager.ColoringInfo.SectorColorScheme = Configuration.UI_ColorScheme;
+
+                // Update UI colors
+                if (Colors.Brightness != Configuration.UI_FormColor_Brightness)
+                    Colors.Brightness = Configuration.UI_FormColor_Brightness;
 
                 // Resize undo stack if needed
                 UndoManager.Resize(Configuration.Editor_UndoDepth);
