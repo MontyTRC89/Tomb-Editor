@@ -3,6 +3,7 @@ using DarkUI.Extensions;
 using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Icons;
+using DarkUI.Controls;
 
 namespace DarkUI.Renderers
 {
@@ -56,9 +57,76 @@ namespace DarkUI.Renderers
 
         protected override void OnRenderItemText(ToolStripItemTextRenderEventArgs e)
         {
-            var textColor = e.Item.Enabled ? Colors.LightText : Colors.DisabledText;
+            var textColor = e.Item.Enabled ? e.Item.ForeColor.Multiply(Colors.Brightness) : e.Item.ForeColor.Multiply(Colors.Brightness * 0.5f);
+
+            StringAlignment ver;
+            StringAlignment hor;
+
+            switch (e.Item.TextAlign)
+            {
+                default:
+                case ContentAlignment.TopLeft:
+                    ver = StringAlignment.Near;
+                    hor = StringAlignment.Near;
+                    break;
+
+                case ContentAlignment.BottomLeft:
+                    ver = StringAlignment.Far;
+                    hor = StringAlignment.Near;
+                    break;
+
+                case ContentAlignment.MiddleLeft:
+                    ver = StringAlignment.Center;
+                    hor = StringAlignment.Near;
+                    break;
+
+                case ContentAlignment.BottomRight:
+                    ver = StringAlignment.Far;
+                    hor = StringAlignment.Far;
+                    break;
+
+                case ContentAlignment.TopRight:
+                    ver = StringAlignment.Near;
+                    hor = StringAlignment.Far;
+                    break;
+
+                case ContentAlignment.MiddleRight:
+                    ver = StringAlignment.Center;
+                    hor = StringAlignment.Far;
+                    break;
+
+                case ContentAlignment.BottomCenter:
+                    ver = StringAlignment.Far;
+                    hor = StringAlignment.Center;
+                    break;
+
+                case ContentAlignment.TopCenter:
+                    ver = StringAlignment.Near;
+                    hor = StringAlignment.Center;
+                    break;
+
+                case ContentAlignment.MiddleCenter:
+                    ver = StringAlignment.Center;
+                    hor = StringAlignment.Center;
+                    break;
+            }
+
+            var textSize = e.Graphics.MeasureString(e.Item.Text, e.Item.Font);
+            var rect = new Rectangle(e.TextRectangle.Left, e.TextRectangle.Top, (int)textSize.Width, (int)textSize.Height);
+
+            var sf = new StringFormat()
+            {
+                HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Hide,
+                Trimming = StringTrimming.None,
+                FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.MeasureTrailingSpaces,
+                Alignment = hor,
+                LineAlignment = ver
+            };
+
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
             using (var b = new SolidBrush(textColor))
-                e.Graphics.DrawString(e.Item.Text, e.Item.Font, b, e.TextRectangle, new StringFormat(StringFormatFlags.NoClip) { LineAlignment = StringAlignment.Center, HotkeyPrefix = System.Drawing.Text.HotkeyPrefix.Hide });
+                e.Graphics.DrawString(e.Item.Text, e.Item.Font, b, rect, sf);
         }
 
         protected override void OnRenderButtonBackground(ToolStripItemRenderEventArgs e)
