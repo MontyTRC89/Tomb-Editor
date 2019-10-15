@@ -518,7 +518,8 @@ namespace DarkUI.Controls
             g.DrawImage(upIcon, upIconRect);
 
             // Overlay arrow with brightness
-            using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
+            if (Colors.Brightness < Colors.MaxBrightness)
+                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
                 e.Graphics.FillRectangle(b, upIconRect);
             
             // Down arrow
@@ -539,7 +540,8 @@ namespace DarkUI.Controls
             g.DrawImage(downIcon, downIconRect);
 
             // Overlay arrow with brightness
-            using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
+            if (Colors.Brightness < Colors.MaxBrightness)
+                using (var b = new SolidBrush(Colors.GreyBackground.MultiplyAlpha(Colors.AlphaBrightness)))
                 e.Graphics.FillRectangle(b, downIconRect);
 
             // Draw thumb

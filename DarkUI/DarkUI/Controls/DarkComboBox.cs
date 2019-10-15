@@ -242,7 +242,8 @@ namespace DarkUI.Controls
             e.Graphics.DrawImage(_buttonIcon, buttonIconRect);
 
             // Overlay arrow with brightness
-            using (var b = new SolidBrush(_buttonColor.MultiplyAlpha(Colors.AlphaBrightness)))
+            if (Colors.Brightness < Colors.MaxBrightness)
+                using (var b = new SolidBrush(_buttonColor.MultiplyAlpha(Colors.AlphaBrightness)))
                 e.Graphics.FillRectangle(b, buttonIconRect);
 
             // Draw borders

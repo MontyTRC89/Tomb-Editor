@@ -36,16 +36,16 @@ namespace DarkUI.Forms
                         lblText.Left = 10;
                         break;
                     case MessageBoxIcon.Question:
-                        picIcon.Image = MessageBoxIcons.question.SetOpacity(Colors.AlphaBrightness);
+                        picIcon.Image = MessageBoxIcons.question.SetOpacity(Colors.Brightness);
                         break;
                     case MessageBoxIcon.Information:
-                        picIcon.Image = MessageBoxIcons.info.SetOpacity(Colors.AlphaBrightness);
+                        picIcon.Image = MessageBoxIcons.info.SetOpacity(Colors.Brightness);
                         break;
                     case MessageBoxIcon.Warning:
-                        picIcon.Image = MessageBoxIcons.warning.SetOpacity(Colors.AlphaBrightness);
+                        picIcon.Image = MessageBoxIcons.warning.SetOpacity(Colors.Brightness);
                         break;
                     case MessageBoxIcon.Error:
-                        picIcon.Image = MessageBoxIcons.error.SetOpacity(Colors.AlphaBrightness);
+                        picIcon.Image = MessageBoxIcons.error.SetOpacity(Colors.Brightness);
                         break;
                     default:
                         throw new NotImplementedException("MessageBoxIcon " + value + " unavailable.");

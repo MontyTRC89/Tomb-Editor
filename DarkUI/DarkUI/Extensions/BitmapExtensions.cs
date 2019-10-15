@@ -35,11 +35,13 @@ namespace DarkUI.Extensions
             return newBitmap;
         }
 
-        internal static Bitmap SetOpacity(this Bitmap bmp, float opacity)
+        internal static Bitmap SetOpacity(this Bitmap image, float opacity)
         {
             try
             {
-                var result = (Bitmap)bmp.Clone();
+                //create a Bitmap the size of the image provided  
+                Bitmap bmp = new Bitmap(image.Width, image.Height);
+
                 //create a graphics object from the image  
                 using (Graphics gfx = Graphics.FromImage(bmp))
                 {
@@ -57,9 +59,8 @@ namespace DarkUI.Extensions
                     attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
                     //now draw the image  
-                    gfx.DrawImage(result, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, result.Width, result.Height, GraphicsUnit.Pixel, attributes);
+                    gfx.DrawImage(image, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, attributes);
                 }
-
                 return bmp;
             }
             catch
@@ -67,7 +68,5 @@ namespace DarkUI.Extensions
                 return null;
             }
         }
-
-        internal static Image SetOpacity(this Image img, float opacity) => SetOpacity(new Bitmap(img), opacity);
     }
 }

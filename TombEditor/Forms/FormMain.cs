@@ -266,6 +266,13 @@ namespace TombEditor.Forms
                 foreach (var form in Application.OpenForms)
                     if (form is DarkForm) ((DarkForm)form).Refresh();
             }
+
+            // Refresh status strip labels as it seems there's no other easy method to override it
+            foreach (ToolStripItem item in statusStrip.Items)
+            {
+                item.BackColor = Colors.GreyBackground;
+                item.ForeColor = Colors.LightText;
+            }
         }
 
         private void RefreshRecentProjectsList()

@@ -846,9 +846,9 @@
             // cmbColorScheme
             // 
             this.cmbColorScheme.FormattingEnabled = true;
-            this.cmbColorScheme.Location = new System.Drawing.Point(196, 24);
+            this.cmbColorScheme.Location = new System.Drawing.Point(196, 56);
             this.cmbColorScheme.Name = "cmbColorScheme";
-            this.cmbColorScheme.Size = new System.Drawing.Size(129, 23);
+            this.cmbColorScheme.Size = new System.Drawing.Size(67, 23);
             this.cmbColorScheme.TabIndex = 76;
             this.cmbColorScheme.SelectedIndexChanged += new System.EventHandler(this.cmbColorScheme_SelectedIndexChanged);
             // 
@@ -856,17 +856,17 @@
             // 
             this.darkLabel74.AutoSize = true;
             this.darkLabel74.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel74.Location = new System.Drawing.Point(12, 27);
+            this.darkLabel74.Location = new System.Drawing.Point(12, 59);
             this.darkLabel74.Name = "darkLabel74";
-            this.darkLabel74.Size = new System.Drawing.Size(157, 13);
+            this.darkLabel74.Size = new System.Drawing.Size(114, 13);
             this.darkLabel74.TabIndex = 75;
-            this.darkLabel74.Text = "Reset color scheme to preset:";
+            this.darkLabel74.Text = "Color scheme preset:";
             // 
             // darkLabel73
             // 
             this.darkLabel73.AutoSize = true;
             this.darkLabel73.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel73.Location = new System.Drawing.Point(269, 59);
+            this.darkLabel73.Location = new System.Drawing.Point(269, 30);
             this.darkLabel73.Name = "darkLabel73";
             this.darkLabel73.Size = new System.Drawing.Size(16, 13);
             this.darkLabel73.TabIndex = 74;
@@ -874,12 +874,13 @@
             // 
             // darkNumericUpDown42
             // 
+            this.darkNumericUpDown42.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkNumericUpDown42.IncrementAlternate = new decimal(new int[] {
             5,
             0,
             0,
             0});
-            this.darkNumericUpDown42.Location = new System.Drawing.Point(196, 57);
+            this.darkNumericUpDown42.Location = new System.Drawing.Point(196, 27);
             this.darkNumericUpDown42.LoopValues = false;
             this.darkNumericUpDown42.Minimum = new decimal(new int[] {
             50,
@@ -887,7 +888,7 @@
             0,
             0});
             this.darkNumericUpDown42.Name = "darkNumericUpDown42";
-            this.darkNumericUpDown42.Size = new System.Drawing.Size(67, 22);
+            this.darkNumericUpDown42.Size = new System.Drawing.Size(67, 23);
             this.darkNumericUpDown42.TabIndex = 73;
             this.darkNumericUpDown42.Tag = "UI_FormColor_Brightness";
             this.darkNumericUpDown42.Value = new decimal(new int[] {
@@ -900,7 +901,7 @@
             // 
             this.darkLabel72.AutoSize = true;
             this.darkLabel72.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel72.Location = new System.Drawing.Point(12, 59);
+            this.darkLabel72.Location = new System.Drawing.Point(12, 29);
             this.darkLabel72.Name = "darkLabel72";
             this.darkLabel72.Size = new System.Drawing.Size(166, 13);
             this.darkLabel72.TabIndex = 72;
@@ -1072,7 +1073,7 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 640);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(121, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
@@ -1212,7 +1213,7 @@
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel52.Location = new System.Drawing.Point(12, 437);
             this.darkLabel52.Name = "darkLabel52";
-            this.darkLabel52.Size = new System.Drawing.Size(46, 13);
+            this.darkLabel52.Size = new System.Drawing.Size(45, 13);
             this.darkLabel52.TabIndex = 48;
             this.darkLabel52.Text = "Trigger:";
             // 
@@ -2300,7 +2301,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 

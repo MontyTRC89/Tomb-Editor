@@ -104,7 +104,7 @@ namespace TombLib.Rendering
             Color2DRoomsMoved     = new Vector4(230, 230, 20, 255) / 255.0f,
         };
 
-        public static readonly ColorScheme Grayscale = new ColorScheme()
+        public static readonly ColorScheme Gray = new ColorScheme()
         {
             ColorSelection        =  new Vector4(201, 173, 173, 255) / 255.0f,
             ColorIllegalSlope     =  new Vector4(157, 150, 145, 255) / 255.0f,
