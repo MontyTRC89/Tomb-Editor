@@ -75,8 +75,9 @@ namespace DarkUI.Controls
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);
+            if (IsDisposed || Disposing) return;
 
-            if (m.HWnd == Handle && m.Msg == 0x000F && BorderStyle == BorderStyle.FixedSingle)
+            if (m.Msg == 0x000F && BorderStyle == BorderStyle.FixedSingle)
             {
                 var hdc = GetWindowDC(Handle);
                 using (var g = Graphics.FromHdcInternal(hdc))
