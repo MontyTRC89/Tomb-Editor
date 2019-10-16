@@ -76,6 +76,9 @@
     <Compile Include="Controls\DarkNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\DarkPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkProgressBar.cs">
       <SubType>Component</SubType>
     </Compile>

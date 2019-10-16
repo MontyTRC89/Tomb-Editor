@@ -20,7 +20,9 @@ namespace TombEditor.Forms
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.textureMap = new TombEditor.Forms.FormAnimatedTextures.PanelTextureMapForAnimations();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.darkPanel1 = new DarkUI.Controls.DarkPanel();
+            this.previewImage = new System.Windows.Forms.PictureBox();
+            this.panel4 = new DarkUI.Controls.DarkPanel();
             this.settingsPanel = new System.Windows.Forms.Panel();
             this.comboUvRotate = new DarkUI.Controls.DarkComboBox();
             this.comboEffect = new DarkUI.Controls.DarkComboBox();
@@ -31,7 +33,7 @@ namespace TombEditor.Forms
             this.lblFps = new DarkUI.Controls.DarkLabel();
             this.butEditSetName = new DarkUI.Controls.DarkButton();
             this.lblProcAnim = new DarkUI.Controls.DarkLabel();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel3 = new DarkUI.Controls.DarkPanel();
             this.butAddProcAnim = new DarkUI.Controls.DarkButton();
             this.butReplaceProcAnim = new DarkUI.Controls.DarkButton();
             this.butMergeProcAnim = new DarkUI.Controls.DarkButton();
@@ -60,7 +62,6 @@ namespace TombEditor.Forms
             this.texturesDataGridViewColumnTexCoord3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblHeaderNgSettings = new DarkUI.Controls.DarkLabel();
             this.lblPreview = new DarkUI.Controls.DarkLabel();
-            this.previewImage = new System.Windows.Forms.PictureBox();
             this.texturesDataGridViewControls = new TombLib.Controls.DarkDataGridViewControls();
             this.butAnimatedTextureSetDelete = new DarkUI.Controls.DarkButton();
             this.butAnimatedTextureSetNew = new DarkUI.Controls.DarkButton();
@@ -71,6 +72,8 @@ namespace TombEditor.Forms
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.darkPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
             this.panel4.SuspendLayout();
             this.settingsPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).BeginInit();
@@ -78,7 +81,6 @@ namespace TombEditor.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numFrames)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStrength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.previewImage)).BeginInit();
             this.SuspendLayout();
             // 
             // darkLabel1
@@ -144,6 +146,7 @@ namespace TombEditor.Forms
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.darkPanel1);
             this.panel1.Controls.Add(this.panel4);
             this.panel1.Controls.Add(this.butEditSetName);
             this.panel1.Controls.Add(this.lblProcAnim);
@@ -155,7 +158,6 @@ namespace TombEditor.Forms
             this.panel1.Controls.Add(this.texturesDataGridView);
             this.panel1.Controls.Add(this.lblHeaderNgSettings);
             this.panel1.Controls.Add(this.lblPreview);
-            this.panel1.Controls.Add(this.previewImage);
             this.panel1.Controls.Add(this.texturesDataGridViewControls);
             this.panel1.Controls.Add(this.butAnimatedTextureSetDelete);
             this.panel1.Controls.Add(this.butAnimatedTextureSetNew);
@@ -167,6 +169,25 @@ namespace TombEditor.Forms
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(481, 613);
             this.panel1.TabIndex = 0;
+            // 
+            // darkPanel1
+            // 
+            this.darkPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.darkPanel1.Controls.Add(this.previewImage);
+            this.darkPanel1.Location = new System.Drawing.Point(346, 452);
+            this.darkPanel1.Name = "darkPanel1";
+            this.darkPanel1.Size = new System.Drawing.Size(135, 135);
+            this.darkPanel1.TabIndex = 24;
+            // 
+            // previewImage
+            // 
+            this.previewImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.previewImage.Location = new System.Drawing.Point(1, 1);
+            this.previewImage.Name = "previewImage";
+            this.previewImage.Size = new System.Drawing.Size(133, 133);
+            this.previewImage.TabIndex = 13;
+            this.previewImage.TabStop = false;
             // 
             // panel4
             // 
@@ -218,10 +239,8 @@ namespace TombEditor.Forms
             // numericUpDownFPS
             // 
             this.numericUpDownFPS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDownFPS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numericUpDownFPS.DecimalPlaces = 2;
             this.numericUpDownFPS.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericUpDownFPS.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numericUpDownFPS.IncrementAlternate = new decimal(new int[] {
             25,
             0,
@@ -285,6 +304,7 @@ namespace TombEditor.Forms
             // butEditSetName
             // 
             this.butEditSetName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditSetName.Checked = false;
             this.butEditSetName.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditSetName.Location = new System.Drawing.Point(399, 5);
             this.butEditSetName.Name = "butEditSetName";
@@ -330,6 +350,7 @@ namespace TombEditor.Forms
             // butAddProcAnim
             // 
             this.butAddProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddProcAnim.Checked = false;
             this.butAddProcAnim.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddProcAnim.Location = new System.Drawing.Point(276, 52);
             this.butAddProcAnim.Name = "butAddProcAnim";
@@ -342,6 +363,7 @@ namespace TombEditor.Forms
             // butReplaceProcAnim
             // 
             this.butReplaceProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceProcAnim.Checked = false;
             this.butReplaceProcAnim.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
             this.butReplaceProcAnim.Location = new System.Drawing.Point(305, 52);
             this.butReplaceProcAnim.Name = "butReplaceProcAnim";
@@ -354,6 +376,7 @@ namespace TombEditor.Forms
             // butMergeProcAnim
             // 
             this.butMergeProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butMergeProcAnim.Checked = false;
             this.butMergeProcAnim.Image = global::TombEditor.Properties.Resources.actions_Merge_16;
             this.butMergeProcAnim.Location = new System.Drawing.Point(247, 52);
             this.butMergeProcAnim.Name = "butMergeProcAnim";
@@ -366,6 +389,7 @@ namespace TombEditor.Forms
             // butCloneProcAnim
             // 
             this.butCloneProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCloneProcAnim.Checked = false;
             this.butCloneProcAnim.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCloneProcAnim.Location = new System.Drawing.Point(218, 52);
             this.butCloneProcAnim.Name = "butCloneProcAnim";
@@ -398,9 +422,7 @@ namespace TombEditor.Forms
             // numFrames
             // 
             this.numFrames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numFrames.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numFrames.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numFrames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numFrames.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -463,9 +485,7 @@ namespace TombEditor.Forms
             // numStrength
             // 
             this.numStrength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numStrength.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numStrength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numStrength.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -491,6 +511,7 @@ namespace TombEditor.Forms
             // butGenerateProcAnim
             // 
             this.butGenerateProcAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butGenerateProcAnim.Checked = false;
             this.butGenerateProcAnim.Image = global::TombEditor.Properties.Resources.general_create_new_16;
             this.butGenerateProcAnim.Location = new System.Drawing.Point(189, 52);
             this.butGenerateProcAnim.Name = "butGenerateProcAnim";
@@ -525,6 +546,7 @@ namespace TombEditor.Forms
             // butUpdate
             // 
             this.butUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butUpdate.Checked = false;
             this.butUpdate.Enabled = false;
             this.butUpdate.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
             this.butUpdate.ImagePadding = 4;
@@ -687,16 +709,6 @@ namespace TombEditor.Forms
             this.lblPreview.Text = "Preview";
             this.lblPreview.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
-            // previewImage
-            // 
-            this.previewImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.previewImage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.previewImage.Location = new System.Drawing.Point(346, 452);
-            this.previewImage.Name = "previewImage";
-            this.previewImage.Size = new System.Drawing.Size(135, 135);
-            this.previewImage.TabIndex = 13;
-            this.previewImage.TabStop = false;
-            // 
             // texturesDataGridViewControls
             // 
             this.texturesDataGridViewControls.AlwaysInsertAtZero = false;
@@ -712,6 +724,7 @@ namespace TombEditor.Forms
             // butAnimatedTextureSetDelete
             // 
             this.butAnimatedTextureSetDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAnimatedTextureSetDelete.Checked = false;
             this.butAnimatedTextureSetDelete.Enabled = false;
             this.butAnimatedTextureSetDelete.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butAnimatedTextureSetDelete.ImagePadding = 3;
@@ -725,6 +738,7 @@ namespace TombEditor.Forms
             // butAnimatedTextureSetNew
             // 
             this.butAnimatedTextureSetNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAnimatedTextureSetNew.Checked = false;
             this.butAnimatedTextureSetNew.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAnimatedTextureSetNew.ImagePadding = 4;
             this.butAnimatedTextureSetNew.Location = new System.Drawing.Point(428, 5);
@@ -748,6 +762,7 @@ namespace TombEditor.Forms
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(691, 625);
             this.butOk.Name = "butOk";
@@ -767,6 +782,7 @@ namespace TombEditor.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(777, 625);
             this.butCancel.Name = "butCancel";
@@ -786,6 +802,7 @@ namespace TombEditor.Forms
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.butOk);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(691, 500);
@@ -798,6 +815,8 @@ namespace TombEditor.Forms
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.darkPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
             this.panel4.ResumeLayout(false);
             this.settingsPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFPS)).EndInit();
@@ -806,7 +825,6 @@ namespace TombEditor.Forms
             ((System.ComponentModel.ISupportInitialize)(this.numFrames)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStrength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.texturesDataGridView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.previewImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -840,7 +858,7 @@ namespace TombEditor.Forms
         private DarkComboBox comboCurrentTexture;
         private FormAnimatedTextures.PanelTextureMapForAnimations textureMap;
         private DarkLabel lblProcAnim;
-        private Panel panel3;
+        private DarkPanel panel3;
         private DarkComboBox comboProcPresets;
         private DarkButton butGenerateProcAnim;
         private DarkNumericUpDown numStrength;
@@ -857,7 +875,7 @@ namespace TombEditor.Forms
         private DarkButton butReplaceProcAnim;
         private DarkButton butAddProcAnim;
         private DarkNumericUpDown numericUpDownFPS;
-        private Panel panel4;
+        private DarkPanel panel4;
         private DataGridViewImageColumn texturesDataGridViewColumnImage;
         private DataGridViewTextBoxColumn texturesDataGridViewColumnRepeat;
         private DarkDataGridViewComboBoxColumn texturesDataGridViewColumnTexture;
@@ -867,5 +885,6 @@ namespace TombEditor.Forms
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord2;
         private DataGridViewTextBoxColumn texturesDataGridViewColumnTexCoord3;
         private DarkButton butCancel;
+        private DarkPanel darkPanel1;
     }
 }
