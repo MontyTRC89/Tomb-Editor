@@ -1654,7 +1654,7 @@ namespace WadTool
                         }
                     }
                     else if (origNode == _editor.CurrentAnim &&
-                            _editor.CurrentAnim.WadAnimation.NextFrame >= _editor.GetRealNumberOfFrames() &&
+                            _editor.CurrentAnim.WadAnimation.NextFrame >= (_editor.GetRealNumberOfFrames() - 1) &&
                             _editor.GetRealFrameNumber() >= _editor.CurrentAnim.WadAnimation.NextFrame)
                     {
                         // Just restore frame number so the timeline doesn't look stuck
