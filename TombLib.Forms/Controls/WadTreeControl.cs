@@ -318,7 +318,7 @@ namespace TombLib.Controls
 
                 string notifyMessage = "Click here to load a new wad file.";
 
-                using (var b = new SolidBrush(Colors.LightText))
+                using (var b = new SolidBrush(Colors.DisabledText))
                     e.Graphics.DrawString(notifyMessage, Font, b, ClientRectangle,
                         new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
             }

@@ -44,14 +44,15 @@
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.labelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.dgvSoundInfos = new DarkUI.Controls.DarkDataGridView();
+            this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.soundInfoEditor = new TombLib.Controls.SoundInfoEditor();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.tbSearch = new DarkUI.Controls.DarkTextBox();
             this.butAddNewSoundInfo = new DarkUI.Controls.DarkButton();
             this.butDeleteSoundInfo = new DarkUI.Controls.DarkButton();
-            this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkMenuStrip1.SuspendLayout();
             this.darkStatusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
@@ -64,6 +65,7 @@
             this.darkMenuStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.optionToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
             this.darkMenuStrip1.Name = "darkMenuStrip1";
@@ -182,7 +184,7 @@
             this.aboutSoundToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutSoundToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutSoundToolToolStripMenuItem.Name = "aboutSoundToolToolStripMenuItem";
-            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.aboutSoundToolToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutSoundToolToolStripMenuItem.Text = "About Sound Tool";
             this.aboutSoundToolToolStripMenuItem.Click += new System.EventHandler(this.AboutSoundToolToolStripMenuItem_Click);
             // 
@@ -201,6 +203,7 @@
             // 
             // labelStatus
             // 
+            this.labelStatus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(0, 0);
             // 
@@ -223,6 +226,20 @@
             this.dgvSoundInfos.TabIndex = 2;
             this.dgvSoundInfos.SelectionChanged += new System.EventHandler(this.dgvSoundInfos_SelectionChanged);
             // 
+            // colID
+            // 
+            this.colID.HeaderText = "ID";
+            this.colID.Name = "colID";
+            this.colID.ReadOnly = true;
+            this.colID.Width = 50;
+            // 
+            // colName
+            // 
+            this.colName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colName.HeaderText = "Name";
+            this.colName.Name = "colName";
+            this.colName.ReadOnly = true;
+            // 
             // darkGroupBox1
             // 
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -241,7 +258,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.soundInfoEditor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.soundInfoEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.soundInfoEditor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.soundInfoEditor.Location = new System.Drawing.Point(6, 8);
             this.soundInfoEditor.MinimumSize = new System.Drawing.Size(400, 346);
@@ -252,6 +268,7 @@
             // 
             // butSearch
             // 
+            this.butSearch.Checked = false;
             this.butSearch.Image = global::SoundTool.Properties.Resources.general_search_16;
             this.butSearch.Location = new System.Drawing.Point(252, 28);
             this.butSearch.Name = "butSearch";
@@ -272,6 +289,7 @@
             // butAddNewSoundInfo
             // 
             this.butAddNewSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butAddNewSoundInfo.Checked = false;
             this.butAddNewSoundInfo.Image = global::SoundTool.Properties.Resources.general_plus_math_16;
             this.butAddNewSoundInfo.Location = new System.Drawing.Point(8, 419);
             this.butAddNewSoundInfo.Name = "butAddNewSoundInfo";
@@ -284,6 +302,7 @@
             // butDeleteSoundInfo
             // 
             this.butDeleteSoundInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butDeleteSoundInfo.Checked = false;
             this.butDeleteSoundInfo.Image = global::SoundTool.Properties.Resources.general_trash_16;
             this.butDeleteSoundInfo.Location = new System.Drawing.Point(145, 419);
             this.butDeleteSoundInfo.Name = "butDeleteSoundInfo";
@@ -293,19 +312,14 @@
             this.butDeleteSoundInfo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteSoundInfo.Click += new System.EventHandler(this.butDeleteSoundInfo_Click);
             // 
-            // colID
+            // optionToolStripMenuItem
             // 
-            this.colID.HeaderText = "ID";
-            this.colID.Name = "colID";
-            this.colID.ReadOnly = true;
-            this.colID.Width = 50;
-            // 
-            // colName
-            // 
-            this.colName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colName.HeaderText = "Name";
-            this.colName.Name = "colName";
-            this.colName.ReadOnly = true;
+            this.optionToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.optionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.optionToolStripMenuItem.Text = "Option";
+            this.optionToolStripMenuItem.Click += new System.EventHandler(this.optionToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -363,6 +377,7 @@
         private System.Windows.Forms.ToolStripMenuItem unloadReferenceProjectToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn colID;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
+        private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
     }
 }
 

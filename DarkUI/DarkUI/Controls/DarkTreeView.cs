@@ -53,7 +53,7 @@ namespace DarkUI.Controls
         private List<DarkTreeNode> _dragNodes;
         private Point _dragPos;
 
-        private readonly Color _borderColor = Color.FromArgb(255, 80, 81, 85);
+        private readonly Color _borderColor = Colors.LightBorder;
 
         #endregion
 
