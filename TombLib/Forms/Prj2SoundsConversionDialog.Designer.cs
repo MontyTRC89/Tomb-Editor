@@ -42,9 +42,10 @@ namespace TombLib.Forms
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.statusSamples = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.butSearchSampelsPaths = new DarkUI.Controls.DarkButton();
+            this.darkLabel3 = new DarkUI.Controls.DarkLabel();
+            this.butSearchSoundsCatalogPath = new DarkUI.Controls.DarkButton();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.tbSamplesPath = new DarkUI.Controls.DarkTextBox();
+            this.tbSoundsCatalogPath = new DarkUI.Controls.DarkTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSoundInfos)).BeginInit();
             this.darkStatusStrip1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -54,7 +55,7 @@ namespace TombLib.Forms
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(562, 589);
+            this.butCancel.Location = new System.Drawing.Point(562, 606);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 3;
@@ -64,7 +65,7 @@ namespace TombLib.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(476, 589);
+            this.butOK.Location = new System.Drawing.Point(476, 606);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 2;
@@ -131,7 +132,7 @@ namespace TombLib.Forms
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkStatusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusSamples});
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 619);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 636);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(654, 28);
@@ -147,22 +148,34 @@ namespace TombLib.Forms
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.butSearchSampelsPaths);
+            this.panel2.Controls.Add(this.darkLabel3);
+            this.panel2.Controls.Add(this.butSearchSoundsCatalogPath);
             this.panel2.Controls.Add(this.darkLabel7);
-            this.panel2.Controls.Add(this.tbSamplesPath);
+            this.panel2.Controls.Add(this.tbSoundsCatalogPath);
             this.panel2.Location = new System.Drawing.Point(12, 524);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(630, 50);
+            this.panel2.Size = new System.Drawing.Size(630, 76);
             this.panel2.TabIndex = 13;
             // 
-            // butSearchSampelsPaths
+            // darkLabel3
             // 
-            this.butSearchSampelsPaths.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearchSampelsPaths.Location = new System.Drawing.Point(535, 23);
-            this.butSearchSampelsPaths.Name = "butSearchSampelsPaths";
-            this.butSearchSampelsPaths.Size = new System.Drawing.Size(92, 22);
-            this.butSearchSampelsPaths.TabIndex = 3;
-            this.butSearchSampelsPaths.Text = "Search";
+            this.darkLabel3.ForeColor = System.Drawing.Color.Silver;
+            this.darkLabel3.Location = new System.Drawing.Point(0, 48);
+            this.darkLabel3.Name = "darkLabel3";
+            this.darkLabel3.Size = new System.Drawing.Size(627, 28);
+            this.darkLabel3.TabIndex = 11;
+            this.darkLabel3.Text = "Specifiy sound catalog (sounds.txt or xml file). If not specified, TrCatalog.xml " +
+    "will be used.";
+            // 
+            // butSearchSoundsCatalogPath
+            // 
+            this.butSearchSoundsCatalogPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearchSoundsCatalogPath.Location = new System.Drawing.Point(535, 23);
+            this.butSearchSoundsCatalogPath.Name = "butSearchSoundsCatalogPath";
+            this.butSearchSoundsCatalogPath.Size = new System.Drawing.Size(92, 22);
+            this.butSearchSoundsCatalogPath.TabIndex = 3;
+            this.butSearchSoundsCatalogPath.Text = "Search";
+            this.butSearchSoundsCatalogPath.Click += new System.EventHandler(this.butSearchSoundsCatalogPath_Click);
             // 
             // darkLabel7
             // 
@@ -171,16 +184,16 @@ namespace TombLib.Forms
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(439, 17);
             this.darkLabel7.TabIndex = 1;
-            this.darkLabel7.Text = "Folder in which all runtime game components reside:";
+            this.darkLabel7.Text = "Optional sounds catalog file (TXT, XML or SFX):";
             // 
-            // tbSamplesPath
+            // tbSoundsCatalogPath
             // 
-            this.tbSamplesPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbSoundsCatalogPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSamplesPath.Location = new System.Drawing.Point(0, 23);
-            this.tbSamplesPath.Name = "tbSamplesPath";
-            this.tbSamplesPath.Size = new System.Drawing.Size(529, 22);
-            this.tbSamplesPath.TabIndex = 2;
+            this.tbSoundsCatalogPath.Location = new System.Drawing.Point(0, 23);
+            this.tbSoundsCatalogPath.Name = "tbSoundsCatalogPath";
+            this.tbSoundsCatalogPath.Size = new System.Drawing.Size(529, 22);
+            this.tbSoundsCatalogPath.TabIndex = 2;
             // 
             // Prj2SoundsConversionDialog
             // 
@@ -188,7 +201,7 @@ namespace TombLib.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(654, 647);
+            this.ClientSize = new System.Drawing.Size(654, 664);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.dgvSoundInfos);
@@ -226,8 +239,9 @@ namespace TombLib.Forms
         private System.Windows.Forms.DataGridViewTextBoxColumn newIdColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn newNameColumn;
         private System.Windows.Forms.Panel panel2;
-        private DarkUI.Controls.DarkButton butSearchSampelsPaths;
+        private DarkUI.Controls.DarkButton butSearchSoundsCatalogPath;
         private DarkUI.Controls.DarkLabel darkLabel7;
-        private DarkUI.Controls.DarkTextBox tbSamplesPath;
+        private DarkUI.Controls.DarkTextBox tbSoundsCatalogPath;
+        private DarkUI.Controls.DarkLabel darkLabel3;
     }
 }

@@ -5,12 +5,15 @@ using System.Drawing;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.Forms
 {
     public partial class Wad2SoundsConversionDialog : DarkForm
     {
+        public WadSounds Sounds { get; set; }
+
         private readonly TRVersion.Game _version;
         private readonly List<FileFormatConversions.SoundInfoConversionRow> _conversionRows;
 
@@ -85,6 +88,26 @@ namespace TombLib.Forms
                     return;
                 }
             }
+
+            bool continueProcedure = true;
+            foreach (DataGridViewRow row in dgvSoundInfos.Rows)
+            {
+                bool exportToXml = (bool)row.Cells[3].Value;
+                bool exportSamples = (bool)row.Cells[4].Value;
+
+                if (exportToXml && !exportSamples && Sounds == null)
+                {
+                    if (DarkMessageBox.Show(this, "Are you trying to export sound info '" + row.Cells[2].Value + "' to Xml " +
+                        "without having a valid sounds catalog loaded. You will lose your samples names if you don't load " +
+                        "a catalog. Do you want to continue?", "Confirm",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                        continueProcedure = false;
+                    break;
+                }
+            }
+
+            if (!continueProcedure)
+                return;
 
             for (int i = 0; i < _conversionRows.Count; i++)
             {
@@ -172,7 +195,19 @@ namespace TombLib.Forms
                     }
                 }
 
-                string name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
+                // If additional catalog is loaded, this has the priority
+                string name = "";
+                if (Sounds != null)
+                {
+                    var info = Sounds.TryGetSoundInfo(id);
+                    if (info != null)
+                        name = info.Name;
+                    else
+                        name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
+                }
+                else
+                    name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
+
                 if (name == null || name == "")
                 {
                     row.DefaultCellStyle.BackColor = dgvSoundInfos.BackColor;
@@ -188,6 +223,20 @@ namespace TombLib.Forms
 
             dgvSoundInfos.InvalidateRow(e.RowIndex);
             UpdateStatus();
+        }
+
+        private void butSearchSoundsCatalogPath_Click(object sender, EventArgs e)
+        {
+            string result = LevelFileDialog.BrowseFile(this, "Select sounds catalog to import",
+                                                       LevelSettings.FileFormatsSoundsCatalogs,
+                                                       false);
+            if (result != null)
+            {
+                var sounds = WadSounds.ReadFromFile(result);
+                if (sounds == null) return;
+                Sounds = sounds;
+                tbSoundsCatalogPath.Text = result;
+            }
         }
     }
 }
