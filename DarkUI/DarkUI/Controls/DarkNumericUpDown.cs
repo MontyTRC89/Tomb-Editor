@@ -32,8 +32,8 @@ namespace DarkUI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new Color BackColor
         {
-            get { return Colors.GreyBackground; }
-            set { base.BackColor = Colors.GreyBackground; }
+            get { return Colors.LightBackground; }
+            set { base.BackColor = Colors.LightBackground; }
         }
 
         [ReadOnly(true)]
