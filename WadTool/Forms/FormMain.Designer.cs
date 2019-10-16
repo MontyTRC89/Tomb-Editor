@@ -823,7 +823,6 @@
             // 
             // panel3D
             // 
-            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3D.Location = new System.Drawing.Point(1, 1);
             this.panel3D.Name = "panel3D";
