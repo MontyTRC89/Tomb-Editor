@@ -10,7 +10,6 @@ namespace TombLib.Rendering.DirectX11
     public class Dx11RenderingSwapChain : RenderingSwapChain
     {
         public readonly Dx11RenderingDevice Device;
-        public readonly Factory Factory;
         public readonly SwapChain SwapChain;
         public Texture2D BackBuffer;
         public RenderTargetView BackBufferView;
@@ -26,8 +25,7 @@ namespace TombLib.Rendering.DirectX11
         {
             Device = device;
             Size = description.Size;
-            Factory = new Factory1();
-            SwapChain = new SwapChain(Factory, device.Device,
+            SwapChain = new SwapChain(device.Factory, device.Device,
                 new SwapChainDescription
                 {
                     BufferCount = BufferCount,
@@ -38,7 +36,7 @@ namespace TombLib.Rendering.DirectX11
                     SwapEffect = SwapEffect.Sequential,
                     Usage = Usage.RenderTargetOutput
                 });
-            Factory.MakeWindowAssociation(description.WindowHandle, WindowAssociationFlags.IgnoreAll);
+            device.Factory.MakeWindowAssociation(description.WindowHandle, WindowAssociationFlags.IgnoreAll);
             CreateBuffersAndViews();
         }
 
@@ -83,7 +81,6 @@ namespace TombLib.Rendering.DirectX11
             DepthBufferView.Dispose();
             DepthBuffer.Dispose();
             SwapChain.Dispose();
-            Factory.Dispose();
         }
 
         public void Bind()

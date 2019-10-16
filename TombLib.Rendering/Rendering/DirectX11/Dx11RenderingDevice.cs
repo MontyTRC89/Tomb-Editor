@@ -12,6 +12,7 @@ using System.Text;
 using System.Windows.Forms;
 using TombLib.Utils;
 using Buffer = SharpDX.Direct3D11.Buffer;
+using Factory = SharpDX.DXGI.Factory;
 using Format = SharpDX.DXGI.Format;
 using SampleDescription = SharpDX.DXGI.SampleDescription;
 using Vector2 = System.Numerics.Vector2;
@@ -28,6 +29,7 @@ namespace TombLib.Rendering.DirectX11
         public static ImageC TextureUnavailable = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_unavailable.png"));
         public static ImageC TextureCoordOutOfBounds = ImageC.FromStream(ThisAssembly.GetManifestResourceStream(nameof(TombLib) + "." + nameof(Rendering) + ".SectorTextures.texture_coord_out_of_bounds.png"));
         public readonly Device Device;
+        public readonly Factory Factory;
         public readonly DeviceContext Context;
         //public readonly Dx11PipelineState TestShader;
         public readonly Dx11PipelineState TextShader;
@@ -54,29 +56,50 @@ namespace TombLib.Rendering.DirectX11
 #endif
             try
             {
-                Device = new Device(DriverType.Hardware, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
+                Factory = new Factory();
+                if (Factory.Adapters.Count() == 0)
+                {
+                    MessageBox.Show("Your system have no video adapters. Try to install video adapter.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    throw new Exception("There are no valid video adapters in system.");
+                }
+
+                var adapter = Factory.GetAdapter(0);
+                if (adapter == null)
+                {
+                    MessageBox.Show("DirectX wasn't able to acquire video adapter. Try to restart your system.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    throw new Exception("DirectX wasn't able to acquire video adapter.");
+                }
+
+                if (adapter.Outputs == null || adapter.Outputs.Count() == 0)
+                {
+                    MessageBox.Show("There are no video displays connected to your system. Try to connect a display.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    throw new Exception("No connected displays found.");
+                }
+
+                Device = new Device(adapter, DebugFlags | DeviceCreationFlags.SingleThreaded, FeatureLevel.Level_10_0);
             }
             catch (Exception exc)
             {
                 switch((uint)exc.HResult)
                 {
                     case 0x887A0004:
-                        MessageBox.Show("Your DirectX version, videocard or drivers are out of date.\nDirectX 11 installation and videocard with DirectX 10 support is required.");
+                        MessageBox.Show("Your DirectX version, videocard or drivers are out of date.\nDirectX 11 installation and videocard with DirectX 10 support is required.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     case 0x887A002D:
-                        MessageBox.Show("Warning: provided build is a debug build.\nPlease install DirectX SDK or request release build from QA team.");
+                        MessageBox.Show("Warning: provided build is a debug build.\nPlease install DirectX SDK or request release build from QA team.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     case 0x887A0005:
                     case 0x887A0020:
-                        MessageBox.Show("There was a serious video system error while initializing Direct3D device.\nShutting down now.");
+                        MessageBox.Show("There was a serious video system error while initializing Direct3D device.\nTry to restart your system.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     default:
-                        MessageBox.Show("Unknown error while creating Direct3D device!\nShutting down now.");
+                        MessageBox.Show("Unknown error while creating Direct3D device!\nShutting down now.", "DirectX error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                 }
                     
                 throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
             }
+
 #if DEBUG
             using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
             {
@@ -258,6 +281,7 @@ namespace TombLib.Rendering.DirectX11
                 RoomShader.Dispose();
                 Context.Dispose();
                 Device.Dispose();
+                Factory.Dispose();
             }
         }
 
