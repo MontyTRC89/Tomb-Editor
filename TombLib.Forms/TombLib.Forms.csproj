@@ -188,7 +188,6 @@
       <DependentUpon>PopUpSearch.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\BrowseFolderDialog.cs" />
     <Compile Include="Utils\ClipboardEvents.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -196,7 +195,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utils\ISynchronizeInvokeExtensions.cs" />
-    <Compile Include="Utils\LevelFileDialog.cs" />
     <Compile Include="Utils\SingleInstanceManagement.cs" />
     <Compile Include="Utils\SynchronizationCallback.cs" />
     <Compile Include="Utils\WinFormsUtils.cs" />

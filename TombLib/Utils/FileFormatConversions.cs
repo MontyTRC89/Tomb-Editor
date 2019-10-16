@@ -35,13 +35,10 @@ namespace TombLib.Utils
             }
         }
 
-        public static bool ConvertWad2ToNewSoundFormat(string src, string dest, string soundsCatalog)
+        public static bool ConvertWad2ToNewSoundFormat(string src, string dest)
         {
             try
             {
-                // Load sounds catalog
-                WadSounds sounds = WadSounds.ReadFromFile(soundsCatalog);
-
                 // Load Wad2
                 Wad2 wad = Wad2Loader.LoadFromFile(src, false);
 
@@ -70,11 +67,15 @@ namespace TombLib.Utils
                 }
 
                 // Now we'll show a dialog with all conversion rows and the user will need to make some choices
+                WadSounds sounds = null;
                 using (var form = new Wad2SoundsConversionDialog(wad.GameVersion, conversionList))
                 {
                     if (form.ShowDialog() == DialogResult.Cancel)
                         return false;
-                }
+
+                    if (form.Sounds != null)
+                        sounds = form.Sounds;
+                }                
 
                 // Assign new Id and name
                 foreach (var row in conversionList)
@@ -100,34 +101,28 @@ namespace TombLib.Utils
                     }
 
                 // Bind samples
-                foreach (var row in conversionList)
-                    if (row.SaveToXml)
-                    {
-                        if (row.ExportSamples)
+                if (sounds != null)
+                    foreach (var row in conversionList)
+                        if (row.SaveToXml)
                         {
-                            var samples = new List<string>();
-                            foreach (var sample in row.SoundInfo.Samples)
+                            if (row.ExportSamples)
                             {
-                                if (sample.IsLoaded)
+                                var samples = new List<string>();
+                                foreach (var sample in row.SoundInfo.Samples)
                                 {
-                                    string sampleName = row.NewName.ToLower() + "_" + row.SoundInfo.Samples.IndexOf(sample) + ".wav";
-                                    samples.Add(sampleName);
-                                    File.WriteAllBytes(Path.GetDirectoryName(dest) + "\\" + sampleName, sample.Data);
+                                    if (sample.IsLoaded)
+                                    {
+                                        string sampleName = row.NewName.ToLower() + "_" + row.SoundInfo.Samples.IndexOf(sample) + ".wav";
+                                        samples.Add(sampleName);
+                                        File.WriteAllBytes(Path.GetDirectoryName(dest) + "\\" + sampleName, sample.Data);
+                                    }
                                 }
-                            }
 
-                            row.SoundInfo.Samples.Clear();
-                            foreach (var sample in samples)
-                                row.SoundInfo.Samples.Add(new WadSample(sample));
+                                row.SoundInfo.Samples.Clear();
+                                foreach (var sample in samples)
+                                    row.SoundInfo.Samples.Add(new WadSample(sample));
+                            }
                         }
-                        else
-                        {
-                            row.SoundInfo.Samples.Clear();
-                            var refInfo = sounds.TryGetSoundInfo(row.SoundInfo.Id);
-                            if (refInfo != null)
-                                row.SoundInfo.Samples.AddRange(refInfo.Samples);
-                        }
-                    }
 
                 // Create the new sounds archive
                 foreach (var row in conversionList)
@@ -170,9 +165,6 @@ namespace TombLib.Utils
         {
             try
             {
-                // Load sounds catalog
-                //WadSounds sounds = WadSounds.ReadFromFile(soundsCatalog);
-
                 // Check for sound system
                 if (level.Settings.SoundSystem == SoundSystem.Xml)
                     return true;
@@ -251,11 +243,16 @@ namespace TombLib.Utils
                                         row.NewId = newId;
                                     }
 
+                                    // This flag is handle by Tomb Editor and set only for embedded sound sources
+                                    row.ExportSamples = true;
+
                                     conversionList.Add(row);
                                 }
                             }
                         }
                 }
+
+                WadSounds sounds = null;
 
                 // Now we'll show a dialog with all conversion rows and the user will need to make some choices
                 if (conversionList.Count != 0)
@@ -263,6 +260,9 @@ namespace TombLib.Utils
                     {
                         if (form.ShowDialog() == DialogResult.Cancel)
                             return false;
+
+                        if (form.Sounds != null)
+                            sounds = form.Sounds;
                     }
 
                 // Assign new Id and name
@@ -311,6 +311,21 @@ namespace TombLib.Utils
                                         if (row.SoundInfo == soundSource.EmbeddedSoundInfo && row.NewId != -1)
                                         {
                                             soundSource.SoundId = row.NewId;
+
+                                            // Try to bind samples from additional catalog, if loaded
+                                            if (sounds != null)
+                                            {
+                                                WadSoundInfo catalogInfo = sounds.TryGetSoundInfo(row.NewId);
+                                                if (catalogInfo != null && catalogInfo.Samples.Count > 0)
+                                                {
+                                                    soundSource.EmbeddedSoundInfo.Samples.Clear();
+                                                    soundSource.EmbeddedSoundInfo.Samples.AddRange(catalogInfo.Samples);
+                                                    // TODO: in theory if valid samples are found in catalog, we shouldn't need to
+                                                    // export them
+                                                    row.ExportSamples = false;
+                                                }
+                                            }
+
                                             break;
                                         }
 
@@ -323,7 +338,7 @@ namespace TombLib.Utils
 
                 // Export samples
                 foreach (var row in conversionList)
-                    if (row.SoundInfo != null)
+                    if (row.SoundInfo != null && row.ExportSamples)
                     {
                         var samples = new List<string>();
                         foreach (var sample in row.SoundInfo.Samples)
@@ -385,7 +400,7 @@ namespace TombLib.Utils
                             string sfxPath = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx";
                             if (File.Exists(sfxPath))
                             {
-                                var sounds = WadSounds.ReadFromFile(sfxPath);
+                                sounds = WadSounds.ReadFromFile(sfxPath);
                                 if (sounds != null)
                                     level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
                                         level.Settings.MakeRelative(sfxPath, VariableType.LevelDirectory)));
@@ -397,7 +412,7 @@ namespace TombLib.Utils
                             string xmlPath = Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".xml";
                             if (File.Exists(xmlPath))
                             {
-                                var sounds = WadSounds.ReadFromFile(xmlPath);
+                                sounds = WadSounds.ReadFromFile(xmlPath);
                                 if (sounds != null)
                                     level.Settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(level.Settings,
                                         level.Settings.MakeRelative(xmlPath, VariableType.LevelDirectory)));
