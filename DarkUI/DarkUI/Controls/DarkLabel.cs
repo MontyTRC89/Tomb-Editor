@@ -57,7 +57,7 @@ namespace DarkUI.Controls
 
         public new Color BackColor
         {
-            get { return _backColor.HasValue ? _backColor.Value : base.ForeColor; }
+            get { return _backColor.HasValue ? _backColor.Value : base.BackColor; }
             set { base.BackColor = value.Multiply(Colors.FontBrightness); _backColor = value; }
         }
         private Color? _backColor;
