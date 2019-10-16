@@ -61,18 +61,24 @@ Section "Tomb Editor" Section1
   
   SetOutPath $INSTDIR
   File /r \
+  /x "NGC" \
+  /x "References" \
+  /x "Templates" \
+  /x "runtimes/osx-x64" \
+  /x "runtimes/linux-x64" \
   /x "TombEditorLog*.txt" \
   /x "WadToolLog*.txt" \
   /x "TombIDELog*.txt" \
   /x "*.prj2" \
   /x "*.pdb" \
+  /x "*.config" \
   /x "*.so" \
   /x "install_script.nsi" \
   /x "TombEditorInstall.exe" \
   /x "TombEditorConfiguration.xml" \
   /x "SoundToolConfiguration.xml" \
   /x "WadToolConfiguration.xml" \
-  /x "TombIDE*.xml" \
+  /x "TombIDE*.*" \
   *.*
   
   ; Add readme from installer folder
@@ -81,11 +87,14 @@ Section "Tomb Editor" Section1
   ; Choose 32-bit or 64-bit d3dcompiler dll based on system version
   ${If} ${RunningX64}
       Rename "$INSTDIR\Native\64 bit\d3dcompiler_43.dll" "$INSTDIR\d3dcompiler_43.dll"
+      Rename "$INSTDIR\runtimes\win-x64\native\assimp.dll" "$INSTDIR\assimp.dll"
   ${Else}
       Rename "$INSTDIR\Native\32 bit\d3dcompiler_43.dll" "$INSTDIR\d3dcompiler_43.dll"
+      Rename "$INSTDIR\runtimes\win-x86\native\assimp.dll" "$INSTDIR\assimp.dll"
   ${EndIf}
   
   RMDir /r "$INSTDIR\Native"
+  RMDir /r "$INSTDIR\runtimes"
   
   ; Write the uninstall keys
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TombEditor" "DisplayName" "Tomb Editor"
@@ -103,7 +112,13 @@ Section "TombIDE" Section2
   SectionIn 1
   
   SetOutPath $INSTDIR
-  File TombIDE*.*
+  File /r \
+  /x "runtimes" \
+  /x "*.pdb" \
+  /x "*.config" \
+  /x "TombIDE*.xml" \
+  TombIDE*.* 
+  
   File /r "NGC"
   File /r "References"
   File /r "Templates"
@@ -1244,31 +1259,20 @@ Section "Uninstall"
 	Delete "$INSTDIR\Editor\Shaders\Model.fx"
 	Delete "$INSTDIR\Catalogs\TrCatalog.xml"
 	Delete "$INSTDIR\Catalogs\NgCatalog.xml"
-	Delete "$INSTDIR\WadTool.exe.config"
 	Delete "$INSTDIR\WadTool.exe"
 	Delete "$INSTDIR\TombLib.Rendering.dll"
 	Delete "$INSTDIR\TombLib.Forms.dll"
 	Delete "$INSTDIR\TombLib.dll"
-	Delete "$INSTDIR\TombIDE.Shared.pdb"
 	Delete "$INSTDIR\TombIDE.Shared.dll"
-	Delete "$INSTDIR\TombIDE.ScriptEditor.pdb"
 	Delete "$INSTDIR\TombIDE.ScriptEditor.dll"
-	Delete "$INSTDIR\TombIDE.ProjectMaster.pdb"
 	Delete "$INSTDIR\TombIDE.ProjectMaster.dll"
-	Delete "$INSTDIR\TombIDE.pdb"
-	Delete "$INSTDIR\TombIDE.exe.config"
 	Delete "$INSTDIR\TombIDE.exe"
-	Delete "$INSTDIR\TombIDE Library Registration.pdb"
-	Delete "$INSTDIR\TombIDE Library Registration.exe.config"
 	Delete "$INSTDIR\TombIDE Library Registration.exe"
-	Delete "$INSTDIR\TombEditor.exe.config"
 	Delete "$INSTDIR\TombEditor.exe"
 	Delete "$INSTDIR\TestStack.White.xml"
-	Delete "$INSTDIR\TestStack.White.pdb"
 	Delete "$INSTDIR\TestStack.White.dll"
 	Delete "$INSTDIR\System.Numerics.Vectors.dll"
 	Delete "$INSTDIR\System.Drawing.PSD.dll"
-	Delete "$INSTDIR\SoundTool.exe.config"
 	Delete "$INSTDIR\SoundTool.exe"
 	Delete "$INSTDIR\SharpDX.Toolkit.Graphics.dll"
 	Delete "$INSTDIR\SharpDX.Toolkit.dll"
@@ -1290,9 +1294,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\MiniZ.Net.dll"
 	Delete "$INSTDIR\FastColoredTextBox.dll"
 	Delete "$INSTDIR\DotNetZip.xml"
-	Delete "$INSTDIR\DotNetZip.pdb"
 	Delete "$INSTDIR\DotNetZip.dll"
-	Delete "$INSTDIR\DarkUI.pdb"
 	Delete "$INSTDIR\DarkUI.dll"
 	Delete "$INSTDIR\CustomTabControl.dll"
 	Delete "$INSTDIR\CH.SipHash.dll"
@@ -1343,8 +1345,9 @@ Section "Uninstall"
   ; Remove readme
   Delete "$INSTDIR\Changes.txt"
   
-  ; Remove d3dcompiler.dll which was externally copied
+  ; Remove dlls which were externally copied
   Delete "$INSTDIR\d3dcompiler_43.dll"
+  Delete "$INSTDIR\assimp.dll"
   
   ; Remove uninstaller
   Delete "$INSTDIR\uninstall.exe"

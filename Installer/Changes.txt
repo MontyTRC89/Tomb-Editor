@@ -5,6 +5,7 @@ GENERAL:
 1. New TombIDE project, which serves as much more advanced and intuitive replacement for NG center.
 2. Completely reworked sound system, which mimics original TRLE workflow, with XML files being natively used instead of sounds.txt and sfx/sam.
 3. New overhauled SoundTool application which allows to import .sfx, .txt files and edit XML files used with new sound system.
+4. Ability to change UI brightness in Tomb Editor, WadTool and SoundTool.
  
 TE:
 New features:
@@ -16,15 +17,18 @@ New features:
 5. Added previously missing mist light effect.
 6. An option to switch on/off room lights for imported geometry.
 7. "Make new room" command and option.
-8. Room multiselection and ability to move selected rooms at once in 3D mode and in depth bar.
-9. Ability to set all unmerged static mesh ambient colours to room ambient colour.
-10. Dedicated triggers search scope in search window.
-11. New PRJ import dialog with project-specific options moved out of editor options (flyby mousepatch, texture correction).
-12. Added dedicated shortcut keys for all blending modes.
-13. Menu option to create itemgroups to use within TRNG scripts.
-14. An option to automatically switch skybox on if transparent texture is applied in the room.
-15. Optional single-instance mode.
- 
+8. "Select previous room" command and option (similar to NGLE "Go back old room").
+9. Room multiselection and ability to move selected rooms at once in 3D mode and in depth bar.
+10. Ability to set all unmerged static mesh ambient colours to room ambient colour.
+11. Dedicated triggers search scope in search window.
+12. New PRJ import dialog with project-specific options moved out of editor options (flyby mousepatch, texture correction).
+13. Added dedicated shortcut keys for all blending modes.
+14. Menu option to create itemgroups to use within TRNG scripts.
+15. An option to automatically switch skybox on if transparent texture is applied in the room.
+16. Optional single-instance mode.
+17. Ability to specify button highlight colour.
+18. Ready-to-use color scheme presets.
+
 Bugfixes:
  
 1. Fixed serious pathfinding issues which caused weird AI behaviour.
