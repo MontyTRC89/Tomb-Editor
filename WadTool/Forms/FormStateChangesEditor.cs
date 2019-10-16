@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DarkUI.Config;
+using DarkUI.Extensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -201,7 +203,7 @@ namespace WadTool
                 return;
 
             if (e.ColumnIndex == 0)
-                e.CellStyle.ForeColor = Color.Gray;
+                e.CellStyle.ForeColor = Colors.DisabledText.Multiply(0.8f);
             else if (e.ColumnIndex == 4)
             {
                 var item = (WadStateChangeRow)e.Row.DataBoundItem;
@@ -216,9 +218,9 @@ namespace WadTool
             Close();
         }
 
-        private void dgvStateChanges_CellMouseDoubleClick(object sender, System.Windows.Forms.DataGridViewCellMouseEventArgs e) => ChangeState();
+        private void dgvStateChanges_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) => ChangeState();
 
-        private void dgvStateChanges_CellValidating(object sender, System.Windows.Forms.DataGridViewCellValidatingEventArgs e)
+        private void dgvStateChanges_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (e.ColumnIndex == 0) return;
 

@@ -48,13 +48,12 @@ namespace DarkUI.Config
         public const float MaxBrightness = 1.0f;
         public const float MinBrightness = 0.5f;
 
-        // InvertedBrightness is a helper value which can be useful to restore original colour
-        // value passed to parent controls in designer. E.g. it is used in DarkLabel.
-        public static float InvertedBrightness => MaxBrightness + (MaxBrightness - Brightness);
-
         // AlphaBrightness is a helper value which is used in filling overlay rectangles
         // over image controls (e.g. buttons with pictures, arrows in comboboxes etc.).
         public static float AlphaBrightness => MaxBrightness - Brightness;
+
+        // Fonts should use different brightness formula to provide enough contrast.
+        public static float FontBrightness => Brightness + (MaxBrightness - Brightness) * 0.35f;
 
         // Every time brightness is changed, all UI colours are automatically recalculated against DarkBase.
 
@@ -86,10 +85,8 @@ namespace DarkUI.Config
 				ActiveControl  	 	= DarkBase.Multiply(_brightness * 2.650f, _brightness * 2.825f, _brightness * 3.015f);
 
                 // Text is multiplied by lesser value to preserve contrast
-
-                var texMult = _brightness + (MaxBrightness - _brightness) * 0.35f;
-                LightText           = DarkBase.Multiply(texMult * 3.667f, texMult * 3.492f, texMult * 3.385f);
-                DisabledText        = DarkBase.Multiply(texMult * 2.550f, texMult * 2.429f, texMult * 2.354f);
+                LightText           = DarkBase.Multiply(FontBrightness * 3.667f, FontBrightness * 3.492f, FontBrightness * 3.385f);
+                DisabledText        = DarkBase.Multiply(FontBrightness * 2.550f, FontBrightness * 2.429f, FontBrightness * 2.354f);
             }
         }
         private static float _brightness = 1.0f; // Set it here by default, so designer will correctly show controls which use brightness natively.

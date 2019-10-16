@@ -50,15 +50,18 @@ namespace DarkUI.Controls
 
         public new Color BackColor
         {
-            get { return base.BackColor.Multiply(Colors.InvertedBrightness); }
-            set { base.BackColor = value.Multiply(Colors.Brightness); }
+            get { return _backColor.HasValue ? _backColor.Value : base.ForeColor; }
+            set { base.BackColor = value.Multiply(Colors.FontBrightness); _backColor = value; }
         }
+        private Color? _backColor;
+
 
         public new Color ForeColor
         {
-            get { return base.ForeColor.Multiply(Colors.InvertedBrightness); }
-            set { base.ForeColor = value.Multiply(Colors.Brightness); }
+            get { return _foreColor.HasValue ? _foreColor.Value : base.ForeColor; }
+            set { base.ForeColor = value.Multiply(Colors.FontBrightness); _foreColor = value; }
         }
+        private Color? _foreColor;
 
 
         #endregion
