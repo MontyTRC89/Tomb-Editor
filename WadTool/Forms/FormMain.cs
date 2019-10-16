@@ -243,8 +243,13 @@ namespace WadTool
         private void CopyObject(bool otherSlot)
         {
             var result = WadActions.CopyObject(_tool, this, treeSourceWad.SelectedWadObjectIds.ToList(), otherSlot);
-            if (result != null && result.Count > 0)
-                treeDestWad.Select(result);
+            if (result != null)
+            {
+                if (result.Count > 0)
+                    treeDestWad.Select(result);
+                else
+                    _tool.SendMessage("No objects were copied because they are already in different slots.", PopupType.Warning);
+            }
             else
                 _tool.SendMessage("No objects were copied.", PopupType.Info);
         }
