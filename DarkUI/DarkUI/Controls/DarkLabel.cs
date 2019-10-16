@@ -11,6 +11,7 @@ namespace DarkUI.Controls
     {
         #region Field Region
 
+        private BorderStyle _borderStyle;
         private bool _autoUpdateHeight;
         private bool _isGrowing;
 
@@ -34,6 +35,12 @@ namespace DarkUI.Controls
                     ResizeLabel();
                 }
             }
+        }
+
+        public new BorderStyle BorderStyle 
+        { 
+            get { return _borderStyle; }
+            set { _borderStyle = value; Invalidate(); }
         }
 
         public new bool AutoSize
@@ -71,6 +78,7 @@ namespace DarkUI.Controls
         public DarkLabel()
         {
             ForeColor = Colors.LightText;
+            base.BorderStyle = BorderStyle.None;
         }
 
         #endregion
@@ -115,6 +123,18 @@ namespace DarkUI.Controls
         {
             base.OnSizeChanged(e);
             ResizeLabel();
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            base.OnPaintBackground(e);
+
+            if (BorderStyle != BorderStyle.None)
+            {
+                var rect = new Rectangle(0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
+                using (var p = new Pen(Colors.GreySelection))
+                    e.Graphics.DrawRectangle(p, rect);
+            }
         }
 
         #endregion
