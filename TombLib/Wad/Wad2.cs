@@ -154,7 +154,6 @@ namespace TombLib.Wad
                 return SpriteSequences.TryGetOrDefault((WadSpriteSequenceId)wadObjectId);
             else
                 throw new ArgumentException("Argument not of a valid type.");
-
         }
 
         public void Remove(IWadObjectId wadObjectId)
@@ -192,6 +191,18 @@ namespace TombLib.Wad
         public bool Contains(IWadObjectId wadObjectId)
         {
             return TryGet(wadObjectId) != null;
+        }
+
+        public bool Contains(IWadObject wadObject)
+        {
+            if (wadObject is WadMoveable)
+                return Moveables.Any(obj => obj.Value == (WadMoveable)wadObject);
+            else if (wadObject is WadStatic)
+                return Statics.Any(obj => obj.Value == (WadStatic)wadObject);
+            else if (wadObject is WadSpriteSequence)
+                return SpriteSequences.Any(obj => obj.Value == (WadSpriteSequence)wadObject);
+            else
+                throw new ArgumentException("Argument not of a valid type.");
         }
 
         public void AssignNewId(IWadObjectId oldId, IWadObjectId newId)
