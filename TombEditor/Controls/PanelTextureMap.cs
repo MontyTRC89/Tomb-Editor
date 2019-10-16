@@ -509,7 +509,7 @@ namespace TombEditor.Controls
 
             // Draw borders
             using (Pen pen = new Pen(Colors.GreySelection, 1.0f))
-                e.Graphics.DrawRectangle(pen, new RectangleF(-1, -1, ClientSize.Width - _scrollSizeTotal, ClientSize.Height - _scrollSizeTotal));
+                e.Graphics.DrawRectangle(pen, new RectangleF(0, 0, ClientSize.Width - _scrollSizeTotal - 1, ClientSize.Height - _scrollSizeTotal - 1));
 
         }
 
