@@ -592,7 +592,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Generate new parent with incoming texture and immediately add incoming texture as a child
 
-        public void AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, int frameIndex = -1)
+        private void AddParent(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, int frameIndex = -1)
         {
             var newParent = new ParentTextureArea(texture, isForRoom);
             parentList.Add(newParent);

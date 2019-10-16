@@ -34,7 +34,6 @@ namespace TombEditor.Forms
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cbDisableCollision = new DarkUI.Controls.DarkCheckBox();
             this.cbIceTrasparency = new DarkUI.Controls.DarkCheckBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.cbHeavyTriggerOnCollision = new DarkUI.Controls.DarkCheckBox();
             this.cbHardShatter = new DarkUI.Controls.DarkCheckBox();
             this.cbHugeCollision = new DarkUI.Controls.DarkCheckBox();
@@ -49,13 +48,14 @@ namespace TombEditor.Forms
             this.label1 = new DarkUI.Controls.DarkLabel();
             this.cbSpecificShatter = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.panelColor = new System.Windows.Forms.Panel();
+            this.panelColor = new DarkUI.Controls.DarkPanel();
             ((System.ComponentModel.ISupportInitialize)(this.numScalable)).BeginInit();
             this.SuspendLayout();
             // 
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOK.Checked = false;
             this.butOK.Location = new System.Drawing.Point(45, 346);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
@@ -67,6 +67,7 @@ namespace TombEditor.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(131, 346);
             this.butCancel.Name = "butCancel";
@@ -189,8 +190,6 @@ namespace TombEditor.Forms
             // numScalable
             // 
             this.numScalable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.numScalable.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numScalable.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numScalable.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -308,7 +307,6 @@ namespace TombEditor.Forms
         private DarkButton butCancel;
         private DarkCheckBox cbDisableCollision;
         private DarkCheckBox cbIceTrasparency;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private DarkCheckBox cbHeavyTriggerOnCollision;
         private DarkCheckBox cbHardShatter;
         private DarkCheckBox cbHugeCollision;
@@ -323,6 +321,6 @@ namespace TombEditor.Forms
         private DarkLabel label1;
         private DarkCheckBox cbSpecificShatter;
         private DarkLabel darkLabel1;
-        private System.Windows.Forms.Panel panelColor;
+        private DarkUI.Controls.DarkPanel panelColor;
     }
 }

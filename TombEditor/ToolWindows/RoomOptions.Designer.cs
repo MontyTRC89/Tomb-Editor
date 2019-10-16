@@ -25,7 +25,7 @@
             this.cbFlagCold = new DarkUI.Controls.DarkCheckBox();
             this.cbFlagDamage = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
-            this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
+            this.panelRoomAmbientLight = new DarkUI.Controls.DarkPanel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
             this.cbNoLensflare = new DarkUI.Controls.DarkCheckBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -557,7 +557,7 @@
         private DarkUI.Controls.DarkComboBox comboRoomType;
         private DarkUI.Controls.DarkLabel darkLabel15;
         private DarkUI.Controls.DarkComboBox comboRoom;
-        private System.Windows.Forms.Panel panelRoomAmbientLight;
+        private DarkUI.Controls.DarkPanel panelRoomAmbientLight;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkButton butRoomDown;
         private DarkUI.Controls.DarkButton butEditRoomName;

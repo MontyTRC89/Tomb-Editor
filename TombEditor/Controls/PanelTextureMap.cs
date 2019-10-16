@@ -14,7 +14,7 @@ using RectangleF = System.Drawing.RectangleF;
 
 namespace TombEditor.Controls
 {
-    public class PanelTextureMap : Panel
+    public class PanelTextureMap : DarkPanel
     {
         private readonly Editor _editor;
 
@@ -42,7 +42,7 @@ namespace TombEditor.Controls
         private readonly DarkScrollBarC _hScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Horizontal };
         private readonly DarkScrollBarC _vScrollBar = new DarkScrollBarC { ScrollOrientation = DarkScrollOrientation.Vertical };
 
-        private int _scrollSize => DarkUI.Config.Consts.ScrollBarSize;
+        private int _scrollSize => Consts.ScrollBarSize;
         private int _scrollSizeTotal => _scrollSize + 1;
 
         protected bool _allowFreeCornerEdit = true;
@@ -55,13 +55,13 @@ namespace TombEditor.Controls
             DoubleBuffered = true;
 
             // Scroll bars
-            _hScrollBar.Size = new Size(Width - _scrollSize, _scrollSize);
-            _hScrollBar.Location = new Point(0, Height - _scrollSize);
+            _hScrollBar.Size = new Size(Width - _scrollSize - 2, _scrollSize);
+            _hScrollBar.Location = new Point(1, Height - _scrollSize - 1);
             _hScrollBar.Anchor = AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
             _hScrollBar.ValueChanged += (sender, e) => { ViewPosition = new Vector2((float)_hScrollBar.ValueCentered, ViewPosition.Y); };
 
-            _vScrollBar.Size = new Size(_scrollSize, Height - _scrollSize);
-            _vScrollBar.Location = new Point(Width - _scrollSize, 0);
+            _vScrollBar.Size = new Size(_scrollSize, Height - _scrollSize - 2);
+            _vScrollBar.Location = new Point(Width - _scrollSize - 1, 1);
             _vScrollBar.Anchor = AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
             _vScrollBar.ValueChanged += (sender, e) => { ViewPosition = new Vector2(ViewPosition.X, (float)_vScrollBar.ValueCentered); };
 

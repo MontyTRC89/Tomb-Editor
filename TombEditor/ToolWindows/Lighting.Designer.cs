@@ -20,7 +20,7 @@
             this.cbLightIsStaticallyUsed = new DarkUI.Controls.DarkCheckBox();
             this.cbLightIsObstructedByRoomGeometry = new DarkUI.Controls.DarkCheckBox();
             this.cbLightEnabled = new DarkUI.Controls.DarkCheckBox();
-            this.panelLightColor = new System.Windows.Forms.Panel();
+            this.panelLightColor = new DarkUI.Controls.DarkPanel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
@@ -568,7 +568,7 @@
         private DarkUI.Controls.DarkCheckBox cbLightIsStaticallyUsed;
         private DarkUI.Controls.DarkCheckBox cbLightIsObstructedByRoomGeometry;
         private DarkUI.Controls.DarkCheckBox cbLightEnabled;
-        private System.Windows.Forms.Panel panelLightColor;
+        private DarkUI.Controls.DarkPanel panelLightColor;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkLabel darkLabel13;
         private DarkUI.Controls.DarkLabel darkLabel11;

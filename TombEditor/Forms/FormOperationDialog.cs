@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DarkUI.Extensions;
+using DarkUI.Config;
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -35,6 +37,8 @@ namespace TombEditor.Forms
             panelProgressBar.Visible = !noProgressBar;
             if(!noProgressBar)
                 TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Normal);
+
+            lstLog.BackColor = lstLog.BackColor.Multiply(Colors.Brightness);
         }
 
         private void FormOperationDialog_Shown(object sender, EventArgs e)
@@ -79,7 +83,7 @@ namespace TombEditor.Forms
                             DialogResult = DialogResult.OK;
                             Close();
                         }
-                        lstLog.BackColor = Color.LightGreen;
+                        lstLog.BackColor = Color.LightGreen.Multiply(Colors.Brightness);
                     });
 #if !DEBUG
             }
@@ -124,7 +128,7 @@ namespace TombEditor.Forms
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    lstLog.SelectionBackColor = isWarning ? Color.Yellow : Color.Empty;
+                    lstLog.SelectionBackColor = isWarning ? Color.Yellow.Multiply(Colors.Brightness) : Color.Empty;
                     lstLog.AppendText(message + "\n");
                     lstLog.ScrollToCaret();
                 }
