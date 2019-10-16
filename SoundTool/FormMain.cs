@@ -8,6 +8,7 @@ using TombLib.Utils;
 using System.IO;
 using TombLib.LevelData.IO;
 using System.Collections.Generic;
+using DarkUI.Config;
 
 namespace SoundTool
 {
@@ -32,10 +33,16 @@ namespace SoundTool
 
         public FormMain(string archive = null)
         {
-            InitializeComponent();
-
             // Load config
             _configuration = new Configuration().LoadOrUseDefault<Configuration>();
+
+            // Account for brightness loaded from config
+            Colors.Brightness = _configuration.UI_FormColor_Brightness / 100.0f;
+            BackColor = Colors.GreyBackground;
+
+            // Do Designer stuff only now, when color config is loaded
+            InitializeComponent();
+
             Configuration.LoadWindowProperties(this, _configuration);
 
             if (!string.IsNullOrEmpty(_configuration.SoundTool_ReferenceProject))
@@ -372,6 +379,23 @@ namespace SoundTool
                 default:
                     base.WndProc(ref message);
                     break;
+            }
+        }
+
+        private void optionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var formInput = new FormInputBox("UI brightness", "Specify UI brightness (50-100, requires restart):", _configuration.UI_FormColor_Brightness.ToString()))
+            {
+                formInput.StartPosition = FormStartPosition.CenterParent;
+                if (formInput.ShowDialog(this) != DialogResult.Cancel)
+                {
+                    float newBrightness = _configuration.UI_FormColor_Brightness;
+                    if (float.TryParse(formInput.Result, out newBrightness))
+                    {
+                        newBrightness = Math.Max(Math.Min(newBrightness, 100), 50);
+                        _configuration.UI_FormColor_Brightness = newBrightness;
+                    }
+                }
             }
         }
     }

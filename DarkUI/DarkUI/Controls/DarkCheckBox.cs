@@ -284,7 +284,7 @@ namespace DarkUI.Controls
             const int size = Consts.CheckBoxSize;
 
             var textColor = Colors.LightText;
-            var borderColor = Colors.LightText;
+            var borderColor = Colors.LightestBackground;
             var fillColor = Colors.LightestBackground;
 
             Rectangle boxRect, checkBoxRect, labelRect;

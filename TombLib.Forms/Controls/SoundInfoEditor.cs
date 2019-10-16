@@ -5,6 +5,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -103,6 +104,9 @@ namespace TombLib.Controls
                 comboLoop.Enabled = !value;
             }
         }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public override Color BackColor { get { return Colors.GreyBackground; } }
 
         public event EventHandler SoundInfoChanged;
 
