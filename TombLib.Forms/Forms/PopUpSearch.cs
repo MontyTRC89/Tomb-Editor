@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using DarkUI.Config;
 using DarkUI.Forms;
 using TombLib.Utils;
 
@@ -42,6 +43,9 @@ namespace TombLib.Forms
 
             // Set pop-up width to parent control width
             Size = new Size(_callbackControl.Size.Width, MinimumSize.Height);
+
+            // Set backcolor
+            BackColor = Colors.DarkBackground;
 
             // In case we invoke pop-up from another text control, we can pass existing string here
             if(startText.Length != 0)
