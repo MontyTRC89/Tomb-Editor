@@ -137,6 +137,21 @@ namespace TombLib.Utils
                                 foreach (var sample in samples)
                                     row.SoundInfo.Samples.Add(new WadSample(sample));
                             }
+                            else
+                            {
+                                // If samples count is the same then use samples from catalog
+                                var refInfo = sounds.TryGetSoundInfo(row.NewId);
+
+                                if (refInfo != null && row.SoundInfo.Samples.Count == refInfo.Samples.Count)
+                                {
+                                    row.SoundInfo.Samples.Clear();
+                                    row.SoundInfo.Samples.AddRange(refInfo.Samples);
+                                }
+                                else
+                                {
+                                    row.SoundInfo.Samples.Clear();
+                                }
+                            }
                         }
 
                 // Create the new sounds archive
