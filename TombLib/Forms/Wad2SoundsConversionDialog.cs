@@ -17,6 +17,8 @@ namespace TombLib.Forms
         private readonly TRVersion.Game _version;
         private readonly List<FileFormatConversions.SoundInfoConversionRow> _conversionRows;
 
+        private bool _validateRow = true;
+
         public Wad2SoundsConversionDialog(TRVersion.Game version, List<FileFormatConversions.SoundInfoConversionRow> conversionRows)
         {
             _version = version.Native();
@@ -90,21 +92,23 @@ namespace TombLib.Forms
             }
 
             bool continueProcedure = true;
-            foreach (DataGridViewRow row in dgvSoundInfos.Rows)
-            {
-                bool exportToXml = (bool)row.Cells[3].Value;
-                bool exportSamples = (bool)row.Cells[4].Value;
-
-                if (exportToXml && !exportSamples && Sounds == null)
+            if (Sounds == null)
+                foreach (DataGridViewRow row in dgvSoundInfos.Rows)
                 {
-                    if (DarkMessageBox.Show(this, "Are you trying to export sound info '" + row.Cells[2].Value + "' to Xml " +
-                        "without having a valid sounds catalog loaded. You will lose your samples names if you don't load " +
-                        "a catalog. Do you want to continue?", "Confirm",
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                        continueProcedure = false;
-                    break;
+                    bool exportToXml = (bool)row.Cells[3].Value;
+                    bool exportSamples = (bool)row.Cells[4].Value;
+
+                    if (exportToXml && !exportSamples)
+                    {
+                        if (DarkMessageBox.Show(this, "Are you trying to export sound info '" + row.Cells[2].Value + 
+                                                "' to Xml " +
+                                                "without having a valid sounds catalog loaded. You will lose your samples names if you don't load " +
+                                                "a catalog. Do you want to continue?", "Confirm",
+                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                            continueProcedure = false;
+                        break;
+                    }
                 }
-            }
 
             if (!continueProcedure)
                 return;
@@ -155,70 +159,98 @@ namespace TombLib.Forms
 
         private void DgvSoundInfos_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex != 1)
-                return;
-
             DataGridViewRow row = dgvSoundInfos.Rows[e.RowIndex];
 
-            int id;
-            if (!int.TryParse(row.Cells[1].Value.ToString(), out id))
+            if (e.ColumnIndex == 1)
             {
-                row.DefaultCellStyle.BackColor = dgvSoundInfos.BackColor;
-                row.Cells[1].Value = "";
-                row.Cells[2].Value = "";
-            }
-            else
-            {
-                // Search if this Id was already assigned
-                foreach (DataGridViewRow row2 in dgvSoundInfos.Rows)
-                {
-                    // Ignore the same row
-                    if (row2.Index == row.Index)
-                        continue;
-
-                    // Ignore empty values
-                    int id2;
-                    if (!int.TryParse(row2.Cells[1].Value.ToString(), out id2))
-                        continue;
-
-                    // If is the same then warn the user
-                    if (id == id2)
-                    {
-                        row.DefaultCellStyle.BackColor = dgvSoundInfos.BackColor;
-                        row.Cells[1].Value = "";
-                        row.Cells[2].Value = "";
-
-                        DarkMessageBox.Show(this, "The selected Id " + id + " was already assigned to sound '" +
-                                            row2.Cells[0].Value + "'", "Error",
-                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
-
-                // If additional catalog is loaded, this has the priority
-                string name = "";
-                if (Sounds != null)
-                {
-                    var info = Sounds.TryGetSoundInfo(id);
-                    if (info != null)
-                        name = info.Name;
-                    else
-                        name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
-                }
-                else
-                    name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
-
-                if (name == null || name == "")
+                int id;
+                if (!int.TryParse(row.Cells[1].Value.ToString(), out id))
                 {
                     row.DefaultCellStyle.BackColor = dgvSoundInfos.BackColor;
                     row.Cells[1].Value = "";
                     row.Cells[2].Value = "";
+                    row.Cells[3].Value = false;
+                    row.Cells[4].Value = false;
                 }
                 else
                 {
-                    row.DefaultCellStyle.BackColor = Color.DarkGreen;
-                    row.Cells[2].Value = name;
+                    // Search if this Id was already assigned
+                    foreach (DataGridViewRow row2 in dgvSoundInfos.Rows)
+                    {
+                        // Ignore the same row
+                        if (row2.Index == row.Index)
+                            continue;
+
+                        // Ignore empty values
+                        int id2;
+                        if (!int.TryParse(row2.Cells[1].Value.ToString(), out id2))
+                            continue;
+
+                        // If is the same then warn the user
+                        if (id == id2)
+                        {
+                            row.DefaultCellStyle.BackColor = dgvSoundInfos.BackColor;
+                            row.Cells[1].Value = "";
+                            row.Cells[2].Value = "";
+                            row.Cells[3].Value = false;
+                            row.Cells[4].Value = false;
+
+                            DarkMessageBox.Show(this, "The selected Id " + id + " was already assigned to sound '" +
+                                                row2.Cells[0].Value + "'", "Error",
+                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+
+                    // If additional catalog is loaded, this has the priority
+                    string name = "";
+                    if (Sounds != null)
+                    {
+                        var info = Sounds.TryGetSoundInfo(id);
+                        if (info != null)
+                            name = info.Name;
+                        else
+                            name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
+                    }
+                    else
+                        name = TrCatalog.GetOriginalSoundName(_version, (uint)id);
+
+                    if (name == null || name == "")
+                    {
+                        row.DefaultCellStyle.BackColor = dgvSoundInfos.BackColor;
+                        row.Cells[1].Value = "";
+                        row.Cells[2].Value = "";
+                        row.Cells[3].Value = false;
+                        row.Cells[4].Value = false;
+                    }
+                    else
+                    {
+                        row.DefaultCellStyle.BackColor = Color.DarkGreen;
+                        row.Cells[2].Value = name;
+                    }
                 }
+            }
+            else if (e.ColumnIndex == 3)
+            {
+                if (!_validateRow)
+                    return;
+                _validateRow = false;
+
+                if ((bool)row.Cells[3].Value == false)
+                    row.Cells[4].Value = false;
+
+                _validateRow = true;
+            }
+            else if (e.ColumnIndex == 4)
+            {
+                if (!_validateRow)
+                    return;
+                _validateRow = false;
+
+                if ((bool)row.Cells[4].Value == true)
+                    row.Cells[3].Value = true;
+
+                _validateRow = true;
             }
 
             dgvSoundInfos.InvalidateRow(e.RowIndex);

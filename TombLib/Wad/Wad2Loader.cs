@@ -64,6 +64,8 @@ namespace TombLib.Wad
             Dictionary<long, WadSoundInfo> soundInfos = null;
             Dictionary<long, WadSprite> sprites = null;
 
+            wad.SoundSystem = SoundSystem.Dynamic;
+
             chunkIO.ReadChunks((id, chunkSize) =>
             {
                 if (id == Wad2Chunks.GameVersion)
