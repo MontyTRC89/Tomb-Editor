@@ -63,7 +63,7 @@ namespace TombEditor.Forms
                 .ForEach(item => cmbColorScheme.Items.Add(item.Name));
 
             // Assign event for every color panel
-            var panels = AllOptionControls(this).Where(c => c is Panel).ToList();
+            var panels = AllOptionControls(this).Where(c => c is DarkPanel).ToList();
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
@@ -88,7 +88,7 @@ namespace TombEditor.Forms
                                                               c is DarkTextBox ||
                                                               c is DarkComboBox ||
                                                               c is DarkNumericUpDown ||
-                                                              c is Panel) && c.Tag != null).ToList();
+                                                              c is DarkPanel) && c.Tag != null).ToList();
 
         private Object GetOptionObject(Control control, Configuration configuration)
         {
@@ -149,10 +149,10 @@ namespace TombEditor.Forms
                              if (option is float) ((DarkNumericUpDown)control).Value = (decimal)(float)option;
                         else if (option is int)   ((DarkNumericUpDown)control).Value = (decimal)(int)option;
                     }
-                    else if (control is Panel)
+                    else if (control is DarkPanel)
                     {
-                             if (option is Vector4) ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
-                        else if (option is string)  ((Panel)control).BackColor = ColorTranslator.FromHtml((string)option);
+                             if (option is Vector4) ((DarkPanel)control).BackColor = ((Vector4)option).ToWinFormsColor();
+                        else if (option is string)  ((DarkPanel)control).BackColor = ColorTranslator.FromHtml((string)option);
                     }
                 }
             }
@@ -186,15 +186,15 @@ namespace TombEditor.Forms
                              if (option is int)   SetOptionValue(name, config,   (int)((DarkNumericUpDown)control).Value);
                         else if (option is float) SetOptionValue(name, config, (float)((DarkNumericUpDown)control).Value);
                     }
-                    else if (control is Panel)
+                    else if (control is DarkPanel)
                     {
                         if (option is Vector4)
                         {
-                            var newColor = ((Panel)control).BackColor.ToFloat4Color();
+                            var newColor = ((DarkPanel)control).BackColor.ToFloat4Color();
                             newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
                             SetOptionValue(name, config.UI_ColorScheme, newColor);
                         }
-                        else if (option is string) SetOptionValue(name, config, ColorTranslator.ToHtml(((Panel)control).BackColor));
+                        else if (option is string) SetOptionValue(name, config, ColorTranslator.ToHtml(((DarkPanel)control).BackColor));
                     }
                 }
             }
@@ -221,7 +221,7 @@ namespace TombEditor.Forms
                     var preset = (ColorScheme)prop.GetValue(config.UI_ColorScheme);
                     foreach (FieldInfo field in typeof(ColorScheme).GetFields().Where(f => f.FieldType == typeof(Vector4)))
                         SetOptionValue(field.Name, config.UI_ColorScheme, (Vector4)field.GetValue(preset));
-                    ReadConfigIntoControls(tabbedContainer.SelectedTab, false, typeof(Panel));
+                    ReadConfigIntoControls(tabbedContainer.SelectedTab, false, typeof(DarkPanel));
                     break;
                 }
         }
