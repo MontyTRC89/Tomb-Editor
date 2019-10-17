@@ -11761,6 +11761,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="21" V="Creature. Current animation of &lt;#&gt;creature is (E)animation (0-31)">
+      <Target>
+        <MoveablesInLevel />
+      </Target>
       <Extra>
         <LinearModel Start="0" End="31">
           <Fixed>Animation=</Fixed>
@@ -11769,6 +11772,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="22" V="Creature. Current State Id of &lt;#&gt;creature is (E)State Id">
+      <Target>
+        <MoveablesInLevel />
+      </Target>
       <Extra>
         <LinearModel Start="0" End="30">
           <Fixed>StateId=</Fixed>
@@ -11777,6 +11783,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="23" V="Creature. Current animation of &lt;#&gt;creature is (E)animation (32-63)">
+      <Target>
+        <MoveablesInLevel />
+      </Target>
       <Extra>
         <LinearModel Start="32" End="63">
           <Fixed>Animation=</Fixed>
@@ -11785,6 +11794,9 @@
       </Extra>
     </Subtrigger>
     <Subtrigger K="24" V="Creature. Current animation of &lt;#&gt;creature is (E)animation (64-95)">
+      <Target>
+        <MoveablesInLevel />
+      </Target>
       <Extra>
         <LinearModel Start="64" End="95">
           <Fixed>Animation=</Fixed>
@@ -11810,7 +11822,11 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="26" V="Collision. Lara is touching &lt;#&gt;Moveable" />
+    <Subtrigger K="26" V="Collision. Lara is touching &lt;#&gt;Moveable">
+      <Target>
+        <MoveablesInLevel />
+      </Target>
+	</Subtrigger>
     <Subtrigger K="27" V="Collision. Lara is touching some moveable of &lt;#&gt;Slot type">
       <Target>
         <WadSlots />
@@ -13316,7 +13332,7 @@
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="80" V="Fragmented trigger">
+    <Subtrigger K="80" V="Fragmented trigger: Check in (E) way if lara is in the custom Circle defined in the &lt;#&gt;Parameter command">
       <Target>
         <LinearModel Start="1" End="254">
           <Fixed>Parameters=PARAM_CIRCLE,</Fixed>
