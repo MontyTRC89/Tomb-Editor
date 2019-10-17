@@ -709,7 +709,10 @@ namespace TombLib.LevelData.Compilers
                         index = unchecked((int)@object.ScriptId.Value);
                 }
                 else
-                    throw new ArgumentException("Triggering an object of type " + parameter.GetType().Name + " is not supported ('" + triggerDiagnostic + "').");
+                {
+                    _progressReporter.ReportWarn("Triggering an object of type " + parameter.GetType().Name + " is not supported ('" + triggerDiagnostic + "'). Game version mismatch?");
+                    return 0;
+                }
             }
             else if (parameter is TriggerParameterUshort)
                 index = ((TriggerParameterUshort)parameter).Key;
@@ -717,7 +720,10 @@ namespace TombLib.LevelData.Compilers
                 throw new Exception("Trigger has unrecognized parameter! ('" + triggerDiagnostic + "')");
 
             if (index > upperBound)
-                throw new ArgumentException("Trigger parameter is too big ('" + triggerDiagnostic + "').");
+            {
+                _progressReporter.ReportWarn("Trigger parameter is too big ('" + triggerDiagnostic + "'). Game version mismatch?");
+                return 0;
+            }
             return (ushort)index;
         }
 
