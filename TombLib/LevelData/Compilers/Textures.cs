@@ -207,14 +207,43 @@ namespace TombLib.LevelData.Compilers
                 ushort g1 = textureData[i * 4 + 1];
                 ushort b1 = textureData[i * 4 + 0];
 
-                ushort r = (ushort)((r1 + 4) >> 3);
-                ushort g = (ushort)((g1 + 4) >> 3);
-                ushort b = (ushort)((b1 + 4) >> 3);
+                var r = (ushort)(r1 / 8);
+                var g = (ushort)(g1 / 8);
+                var b = (ushort)(b1 / 8);
+                ushort a;
 
-                ushort tmp = a1 > 127 ? (ushort)0x8000 : (ushort)0;
-                tmp |= (ushort)(r << 10);
-                tmp |= (ushort)(g << 5);
-                tmp |= b;
+                if (a1 == 0)
+                {
+                    r = 0;
+                    g = 0;
+                    b = 0;
+                    a = 0;
+                }
+                else
+                {
+                    a = 0x8000;
+                }
+
+                if (r1 < 8)
+                    r = 0;
+                if (g1 < 8)
+                    g = 0;
+                if (b1 < 8)
+                    b = 0;
+
+                ushort tmp = 0;
+
+                if (r1 == 255 && g1 == 255 && b1 == 255)
+                {
+                    tmp = 0xffff;
+                }
+                else
+                {
+                    tmp |= a;
+                    tmp |= (ushort)(r << 10);
+                    tmp |= (ushort)(g << 5);
+                    tmp |= b;
+                }
 
                 newTextureData[i * 2] = (byte)(tmp & 0xff);
                 newTextureData[i * 2 + 1] = (byte)((tmp & 0xff00) >> 8);
