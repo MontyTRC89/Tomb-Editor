@@ -103,6 +103,7 @@ namespace TombEditor.Forms
             this.addSinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addSoundSourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addImportedGeometryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addGhostBlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.addPortalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTriggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -994,6 +995,7 @@ namespace TombEditor.Forms
             this.addSinkToolStripMenuItem,
             this.addSoundSourceToolStripMenuItem,
             this.addImportedGeometryToolStripMenuItem,
+            this.addGhostBlockToolStripMenuItem,
             this.toolStripMenuSeparator7,
             this.addPortalToolStripMenuItem,
             this.addTriggerToolStripMenuItem,
@@ -1108,6 +1110,16 @@ namespace TombEditor.Forms
             this.addImportedGeometryToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
             this.addImportedGeometryToolStripMenuItem.Tag = "AddImportedGeometry";
             this.addImportedGeometryToolStripMenuItem.Text = "AddImportedGeometry";
+            // 
+            // addGhostBlockToolStripMenuItem
+            // 
+            this.addGhostBlockToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.addGhostBlockToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.addGhostBlockToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_geometry_override_16;
+            this.addGhostBlockToolStripMenuItem.Name = "addGhostBlockToolStripMenuItem";
+            this.addGhostBlockToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.addGhostBlockToolStripMenuItem.Tag = "AddGhostBlock";
+            this.addGhostBlockToolStripMenuItem.Text = "AddGhostBlock";
             // 
             // toolStripMenuSeparator7
             // 
@@ -2136,7 +2148,7 @@ namespace TombEditor.Forms
         private System.Windows.Forms.ToolStripMenuItem lightingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem texturePanelToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem addImportedGeometryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addGhostBlockToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator7;
         private System.Windows.Forms.ToolStripMenuItem addPortalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTriggerToolStripMenuItem;
@@ -2227,9 +2239,10 @@ namespace TombEditor.Forms
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem setStaticMeshColorToRoomLightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setStaticMeshesColorToolStripMenuItem;
-        private ToolStripSeparator toolStripSeparator5;
-        private ToolStripMenuItem toolStripMenuItem7;
-        private ToolStripMenuItem reloadSoundsToolStripMenuItem;
-        private ToolStripMenuItem makeQuickItemGroupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
+        private System.Windows.Forms.ToolStripMenuItem reloadSoundsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeQuickItemGroupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addImportedGeometryToolStripMenuItem;
     }
 }
