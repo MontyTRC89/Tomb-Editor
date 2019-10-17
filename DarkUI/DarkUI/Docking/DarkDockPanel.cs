@@ -3,6 +3,7 @@ using DarkUI.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -108,6 +109,14 @@ namespace DarkUI.Docking
             }
         }
 
+        [ReadOnly(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new Color BackColor
+        {
+            get { return Colors.GreyBackground; }
+            set { base.BackColor = Colors.GreyBackground; }
+        }
+
         #endregion
 
         #region Constructor Region
@@ -121,9 +130,9 @@ namespace DarkUI.Docking
             _regions = new Dictionary<DarkDockArea, DarkDockRegion>();
             _contents = new List<DarkDockContent>();
 
-            BackColor = Colors.GreyBackground;
-
-            CreateRegions();
+            CreateRegions(); 
+            
+            base.BackColor = Colors.GreyBackground;
         }
 
         #endregion
