@@ -1417,8 +1417,10 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < room.Vertices.Count; i++)
                     {
                         var v1 = room.Vertices[i];
-                        var sig = new ShadeMatchSignature() 
-                        { 
+                        var sig = new ShadeMatchSignature()
+                        {
+                            // NOTE: We keep alternate group and water flag in dictionary as well, this way we only apply vertex colour to
+                            // appropriate rooms, and not all rooms at once.
                             IsWater = (room.Flags & 1) == 1,
                             AlternateGroup = room.AlternateKind == AlternateKind.AlternateRoom ? room.AlternateGroup : -1,
                             Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y + room.Info.YBottom, v1.Position.Z + room.Info.Z)
@@ -1455,9 +1457,6 @@ namespace TombLib.LevelData.Compilers
                                                                     32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
                                                                         32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
                                             }
-
-                                            // NOTE: We keep alternate group and water flag in dictionary as well, this way we only apply vertex colour to
-                                            // appropriate rooms, and not all rooms at once.
 
                                             if (!isPresentInLookup)
                                                 _vertexColors.TryAdd(sig, newColor);
