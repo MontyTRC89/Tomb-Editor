@@ -42,7 +42,7 @@ namespace WadTool
         {
             tabbedContainer.LinkedControl = optionsList;
 
-            var panels = AllOptionControls(this).Where(c => c is Panel).ToList();
+            var panels = AllOptionControls(this).Where(c => c is DarkPanel).ToList();
             foreach(var panel in panels)
                 panel.Click += (sender, e) =>
                 {
@@ -62,7 +62,7 @@ namespace WadTool
                                                               c is DarkTextBox ||
                                                               c is DarkComboBox ||
                                                               c is DarkNumericUpDown ||
-                                                              c is Panel) && c.Tag != null).ToList();
+                                                              c is DarkPanel) && c.Tag != null).ToList();
 
         private Object GetOptionObject(Control control, Configuration configuration)
         {
@@ -109,8 +109,8 @@ namespace WadTool
                              if(option is float) ((DarkNumericUpDown)control).Value = (decimal)(float)option;
                         else if(option is int)   ((DarkNumericUpDown)control).Value = (decimal)(int)option;
                     }
-                    else if (control is Panel && option is Vector4)
-                        ((Panel)control).BackColor = ((Vector4)option).ToWinFormsColor();
+                    else if (control is DarkPanel && option is Vector4)
+                        ((DarkPanel)control).BackColor = ((Vector4)option).ToWinFormsColor();
                 }
             }
         }
@@ -142,9 +142,9 @@ namespace WadTool
                              if (option is int)   SetOptionValue(name, config,   (int)((DarkNumericUpDown)control).Value);
                         else if (option is float) SetOptionValue(name, config, (float)((DarkNumericUpDown)control).Value);
                     }
-                    else if (control is Panel && option is Vector4)
+                    else if (control is DarkPanel && option is Vector4)
                     {
-                        var newColor = ((Panel)control).BackColor.ToFloat4Color();
+                        var newColor = ((DarkPanel)control).BackColor.ToFloat4Color();
                         newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
                         SetOptionValue(name, config, newColor);
                     }

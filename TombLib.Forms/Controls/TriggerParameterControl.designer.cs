@@ -28,7 +28,7 @@ namespace TombLib.Controls
         /// </summary>
         private void InitializeComponent()
         {
-            this.colorPreview = new System.Windows.Forms.Panel();
+            this.colorPreview = new DarkUI.Controls.DarkPanel();
             this.label = new DarkUI.Controls.DarkLabel();
             this.numericUpDown = new DarkUI.Controls.DarkNumericUpDown();
             this.butView = new DarkUI.Controls.DarkButton();
@@ -165,7 +165,7 @@ namespace TombLib.Controls
         private DarkUI.Controls.DarkComboBox combo;
         private DarkUI.Controls.DarkLabel label;
         private DarkUI.Controls.DarkNumericUpDown numericUpDown;
-        private System.Windows.Forms.Panel colorPreview;
+        private DarkUI.Controls.DarkPanel colorPreview;
         private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkButton butReset;
     }

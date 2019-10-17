@@ -161,7 +161,7 @@
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
-            this.panelRoomAmbientLight = new System.Windows.Forms.Panel();
+            this.panelRoomAmbientLight = new DarkUI.Controls.DarkPanel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.tabPaths = new System.Windows.Forms.TabPage();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -2074,7 +2074,7 @@
         private System.Windows.Forms.TabPage tabMisc;
         private System.Windows.Forms.Panel panel12;
         private DarkUI.Controls.DarkLabel darkLabel16;
-        private System.Windows.Forms.Panel panelRoomAmbientLight;
+        private DarkUI.Controls.DarkPanel panelRoomAmbientLight;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Panel panelTr5Sprites;
         private System.Windows.Forms.PictureBox tr5SpritesTextureFilePathPicPreview;
