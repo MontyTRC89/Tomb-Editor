@@ -37,6 +37,17 @@ namespace TombLib.Utils
 
         public static bool ConvertWad2ToNewSoundFormat(string src, string dest)
         {
+            /* PROCEDURE:
+             * 1. Collect all sounds from Wad2
+             * 2. Initialise the list of SoundInfoConversionRow, getting ID from TrCatalog
+             * 3. Show the dialog to the user. Here he can load an additional catalog if he changed sounds via TRLE tools.
+             *    He can also choose which sounds to export to Xml and if export also samples.
+             * 4. Assign new IDs to sound infos
+             * 5. Remap sounds in animcommands
+             * 6. Optionally export samples if needed and bind them to sound infos
+             * 7. Save Wad2 + Xml (if sounds are present)
+             */
+
             try
             {
                 // Load Wad2
@@ -73,6 +84,7 @@ namespace TombLib.Utils
                     if (form.ShowDialog() == DialogResult.Cancel)
                         return false;
 
+                    // If the user has loaded a custom catalog, let's get a pointer to it
                     if (form.Sounds != null)
                         sounds = form.Sounds;
                 }                
@@ -100,24 +112,27 @@ namespace TombLib.Utils
                                 }
                     }
 
-                // Bind samples
+                // Bind samples (only if additional catalog was loaded, TrCatalog has not samples names)
                 if (sounds != null)
                     foreach (var row in conversionList)
                         if (row.SaveToXml)
                         {
                             if (row.ExportSamples)
                             {
+                                // We export samples only if user has marked both Export to Xml and Export samples checkboxes
                                 var samples = new List<string>();
                                 foreach (var sample in row.SoundInfo.Samples)
                                 {
                                     if (sample.IsLoaded)
                                     {
+                                        // If sample is valid, export the .WAV file to the same directory of Wad2
                                         string sampleName = row.NewName.ToLower() + "_" + row.SoundInfo.Samples.IndexOf(sample) + ".wav";
                                         samples.Add(sampleName);
                                         File.WriteAllBytes(Path.GetDirectoryName(dest) + "\\" + sampleName, sample.Data);
                                     }
                                 }
 
+                                // Assign new samples names
                                 row.SoundInfo.Samples.Clear();
                                 foreach (var sample in samples)
                                     row.SoundInfo.Samples.Add(new WadSample(sample));
