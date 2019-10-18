@@ -196,13 +196,14 @@ namespace TombLib.Utils
             /* PROCEDURE:
              * 1. Collect all sound sources of level: if embedded sound info is null, then it's a sound source 
              *    that is referencing a Wad file and we should just remap it, otherwise it's a custom sound source 
-             *    created inside Tomb Editor and we must export it to Xml and we must expor samples too
+             *    created inside Tomb Editor and we must export it to Xml and we must export samples too
              * 2. Try to guess the ID for Wad sounds and generate instead a new ID above 602 for custom sounds
              *    (ID = 602 is the start of TR1 area of extended soundmap of TRNG and it should be rarely used)
-             * 3. Assign new IDs and new names to sound infos
-             * 4. Remap sound sources
-             * 5. Export samples if needed
-             * 6. Save Prj2 + Xml if custom sounds are present
+             * 3. Show the dialog to the user. Here he can load an additional catalog if he changed sounds via TRLE tools
+             * 4. Assign new IDs and new names to sound infos
+             * 5. Remap sound sources
+             * 6. Export samples if needed
+             * 7. Save Prj2 + Xml if custom sounds are present
              */
 
             try
@@ -489,11 +490,6 @@ namespace TombLib.Utils
             {
                 return false;
             }
-        }
-
-        private static void Log(string msg)
-        {
-            Console.WriteLine(msg);
         }
     }
 }
