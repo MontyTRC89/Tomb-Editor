@@ -193,6 +193,18 @@ namespace TombLib.Utils
 
         public static bool ConvertPrj2ToNewSoundFormat(Level level, string src, string dest, string soundsCatalog, bool save)
         {
+            /* PROCEDURE:
+             * 1. Collect all sound sources of level: if embedded sound info is null, then it's a sound source 
+             *    that is referencing a Wad file and we should just remap it, otherwise it's a custom sound source 
+             *    created inside Tomb Editor and we must export it to Xml and we must expor samples too
+             * 2. Try to guess the ID for Wad sounds and generate instead a new ID above 602 for custom sounds
+             *    (ID = 602 is the start of TR1 area of extended soundmap of TRNG and it should be rarely used)
+             * 3. Assign new IDs and new names to sound infos
+             * 4. Remap sound sources
+             * 5. Export samples if needed
+             * 6. Save Prj2 + Xml if custom sounds are present
+             */
+
             try
             {
                 // Check for sound system
@@ -257,7 +269,7 @@ namespace TombLib.Utils
 
                                     // Let's first try a search in TrCatalog, maybe we are lucky
                                     // First try to get sound name from TrCatalog
-                                    int newId = TrCatalog.TryGetSoundInfoIdByDescription(version, soundSource.EmbeddedSoundInfo.Name);
+                                    /*int newId = TrCatalog.TryGetSoundInfoIdByDescription(version, soundSource.EmbeddedSoundInfo.Name);
 
                                     var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo, soundSource.EmbeddedSoundInfo.Name);
                                     if (newId == -1)
@@ -271,9 +283,17 @@ namespace TombLib.Utils
                                         // Otherwise, we are lucky, and we can just assign the correct Id
                                         row.NewName = TrCatalog.GetOriginalSoundName(version, (uint)newId);
                                         row.NewId = newId;
-                                    }
+                                    }*/
 
-                                    // This flag is handle by Tomb Editor and set only for embedded sound sources
+                                    // TODO: Lwmte proposed to also there check in TrCatalog, but we should assume that 
+                                    // embedded sound sources are custom sound sources, created by thhe user with custom samples
+                                    // and we should think carrefully about this
+                                    var row = new SoundInfoConversionRow(soundSource.EmbeddedSoundInfo, soundSource.EmbeddedSoundInfo.Name);
+                                    row.NewName = Regex.Replace(soundSource.EmbeddedSoundInfo.Name, "[^A-Za-z0-9 _]", "").ToUpper();
+                                    row.NewId = lastSoundId++;
+
+                                    // These flags are handle by Tomb Editor and set only for embedded sound sources
+                                    row.SaveToXml = true;
                                     row.ExportSamples = true;
 
                                     conversionList.Add(row);
@@ -291,6 +311,7 @@ namespace TombLib.Utils
                         if (form.ShowDialog() == DialogResult.Cancel)
                             return false;
 
+                        // If the user has loaded an additional catalog, let's get a pointer to it
                         if (form.Sounds != null)
                             sounds = form.Sounds;
                     }
@@ -343,7 +364,7 @@ namespace TombLib.Utils
                                             soundSource.SoundId = row.NewId;
 
                                             // Try to bind samples from additional catalog, if loaded
-                                            if (sounds != null)
+                                            /*if (sounds != null)
                                             {
                                                 WadSoundInfo catalogInfo = sounds.TryGetSoundInfo(row.NewId);
                                                 if (catalogInfo != null && catalogInfo.Samples.Count > 0)
@@ -354,7 +375,7 @@ namespace TombLib.Utils
                                                     // export them
                                                     row.ExportSamples = false;
                                                 }
-                                            }
+                                            }*/
 
                                             break;
                                         }
