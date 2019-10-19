@@ -16,11 +16,11 @@
     </Choice>
   </TimerFieldTrigger>
   <FlipEffectTrigger>
-    <Subtrigger K="1" V="OldFlip. Plays a fast single eartquake, sound and rumbler." />
+    <Subtrigger K="1" V="OldFlip. Plays a fast single earthquake, sound and rumbler." />
     <Subtrigger K="2" V="OldFlip. Plays a flooding sound effect" />
     <Subtrigger K="4" V="OldFlip. Jump to next level (following position in script.dat)" />
     <Subtrigger K="5" V="OldFlip. Triggers a camera in puzzle animation belove the puzzle_hole." />
-    <Subtrigger K="7" V="OldFlip. Plays continuos earthquake sound effect and rumbler." />
+    <Subtrigger K="7" V="OldFlip. Plays continuous earthquake sound effect and rumbler." />
     <Subtrigger K="8" V="OldFlip. Swap crowbar with empty hand on Lara's right hand" />
     <Subtrigger K="10" V="OldFlip. Will play the &lt;&amp;&gt;sound effect number.">
       <Timer>
@@ -927,7 +927,7 @@
     <Subtrigger K="78" V="Lara. (Animation) Force &lt;&amp;&gt;StateID and (E)next StateID for Lara">
       <Timer>
         <Choice>
-          <LinearModel Start="0" End="126">
+          <LinearModel Start="0" End="127">
             <Fixed>StateId =</Fixed>
             <Linear Add="0" Factor="1" />
           </LinearModel>
@@ -938,7 +938,7 @@
       </Timer>
       <Extra>
         <Choice>
-          <LinearModel Start="0" End="126">
+          <LinearModel Start="0" End="127">
             <Fixed>StateId =</Fixed>
             <Linear Add="0" Factor="1" />
           </LinearModel>
@@ -1094,7 +1094,7 @@
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Immediatly, one-shot" />
-          <Enum K="1" V="Continuosly, until lara is over current trigger" />
+          <Enum K="1" V="continuously, until lara is over current trigger" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -1118,7 +1118,7 @@
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Immediatly, one-shot" />
-          <Enum K="1" V="Continuosly, until lara is over current trigger" />
+          <Enum K="1" V="continuously, until lara is over current trigger" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -1634,7 +1634,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>GlobalTrigger=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -1772,7 +1772,7 @@
     </Subtrigger>
     <Subtrigger K="118" V="TriggerGroup. Perform &lt;&amp;&gt;TriggerGroup from script.dat in (E)way">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>TriggerGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2039,7 +2039,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2059,7 +2059,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2079,7 +2079,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2087,7 +2087,7 @@
     </Subtrigger>
     <Subtrigger K="137" V="ItemGroup. Move continuously forward-backward &lt;&amp;&gt;ItemGroup of (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2101,7 +2101,7 @@
     </Subtrigger>
     <Subtrigger K="138" V="ItemGroup. Move up &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2115,7 +2115,7 @@
     </Subtrigger>
     <Subtrigger K="139" V="ItemGroup. Move down &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2129,7 +2129,7 @@
     </Subtrigger>
     <Subtrigger K="140" V="ItemGroup. Move to -X direction (west) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2143,7 +2143,7 @@
     </Subtrigger>
     <Subtrigger K="141" V="ItemGroup. Move to +Z direction (north) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2157,7 +2157,7 @@
     </Subtrigger>
     <Subtrigger K="142" V="ItemGroup. Move to +X direction (east) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2171,7 +2171,7 @@
     </Subtrigger>
     <Subtrigger K="143" V="ItemGroup. Move to -Z direction (south) &lt;&amp;&gt;ItemGroup for (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2183,9 +2183,9 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="144" V="ItemGroup. Move continuosly upstairs-downstairs &lt;&amp;&gt;ItemGroup of (E) clicks">
+    <Subtrigger K="144" V="ItemGroup. Move continuously upstairs-downstairs &lt;&amp;&gt;ItemGroup of (E) clicks">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2199,7 +2199,7 @@
     </Subtrigger>
     <Subtrigger K="145" V="ItemGroup. Activate &lt;&amp;&gt;ItemGroup with (E)Timer value">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2219,7 +2219,7 @@
     </Subtrigger>
     <Subtrigger K="146" V="ItemGroup. Untrigger &lt;&amp;&gt;ItemGroup with (E)Timer value">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2237,7 +2237,7 @@
         </Choice>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="147" V="ItemGroup. Disable all continuos actions of &lt;&amp;&gt;ItemGroup">
+    <Subtrigger K="147" V="ItemGroup. Disable all continuous actions of &lt;&amp;&gt;ItemGroup">
       <Timer>
         <LinearModel Start="1" End="998">
           <Fixed>ItemGroup=</Fixed>
@@ -2279,7 +2279,7 @@
     </Subtrigger>
     <Subtrigger K="152" V="Weather. Sky, Set new &lt;&amp;&gt;Color for (E)Layer1/2">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ColorRBG=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2307,13 +2307,13 @@
     </Subtrigger>
     <Subtrigger K="154" V="Weather. Sky, change slowly the color of Layer1 to &lt;&amp;&gt;color in (E)seconds">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ColorRBG=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2321,13 +2321,13 @@
     </Subtrigger>
     <Subtrigger K="155" V="Weather. Sky, change slowly the color of Layer2 to &lt;&amp;&gt;color in (E)seconds">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>ColorRBG=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2365,7 +2365,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2373,7 +2373,7 @@
     </Subtrigger>
     <Subtrigger K="159" V="Distance. Set level far view (max distance) to &lt;&amp;&gt;number of sectors">
       <Timer>
-        <LinearModel Start="5" End="126">
+        <LinearModel Start="5" End="127">
           <Fixed>Sectors=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2604,7 +2604,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2618,7 +2618,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2681,7 +2681,7 @@
         <NgStringsList255 />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2697,7 +2697,7 @@
         <NgStringsList255 />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2708,7 +2708,7 @@
         <NgStringsList255 />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2719,7 +2719,7 @@
         <PsxStringsList />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2730,7 +2730,7 @@
         <PcStringsList />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2741,7 +2741,7 @@
         <PcStringsList />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2752,7 +2752,7 @@
         <NgStringsList255 />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_PRINT_TEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2782,7 +2782,7 @@
     <Subtrigger K="213" V="AnimCommand. Remove Free Hands and restore previous status" />
     <Subtrigger K="214" V="Camera. Change camera mode with &lt;&amp;&gt;Parameters for (E)time">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_SET_CAMERA,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -2803,7 +2803,7 @@
     <Subtrigger K="216" V="AnimCommand. Reset the number of turns (jump power) of ParallelBar" />
     <Subtrigger K="217" V="Images. Show image with data in &lt;&amp;&gt;Image script command for (E)Seconds">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Image=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -3036,7 +3036,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -3094,7 +3094,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -3152,7 +3152,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -4106,7 +4106,7 @@
         </Choice>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -4475,7 +4475,7 @@
         </Choice>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -4578,7 +4578,7 @@
         </Choice>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -4636,7 +4636,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -4752,7 +4752,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -4907,7 +4907,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5151,7 +5151,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5367,7 +5367,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5470,7 +5470,7 @@
         </Choice>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5528,7 +5528,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5564,7 +5564,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5578,7 +5578,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5592,7 +5592,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Frame Ticks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -5629,7 +5629,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -6115,7 +6115,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -6151,7 +6151,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -6589,7 +6589,7 @@
     </Subtrigger>
     <Subtrigger K="290" V="Organizer. Resume &lt;&amp;&gt;Organizer in (E)way">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Organizer=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -6654,7 +6654,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>ColorRBG=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7139,7 +7139,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Number=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7349,7 +7349,7 @@
     </Subtrigger>
     <Subtrigger K="310" V="Collision. Set -X,-Z direction (south-west) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7374,7 +7374,7 @@
     </Subtrigger>
     <Subtrigger K="311" V="Collision. Set -X,+Z direction (north-west) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7399,7 +7399,7 @@
     </Subtrigger>
     <Subtrigger K="312" V="Collision. Set +X,+Z direction (north-east) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7424,7 +7424,7 @@
     </Subtrigger>
     <Subtrigger K="313" V="Collision. Set +X,-Z direction (south-east) &lt;&amp;&gt;Tri-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7449,7 +7449,7 @@
     </Subtrigger>
     <Subtrigger K="314" V="Collision. Set -X direction (west) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7474,7 +7474,7 @@
     </Subtrigger>
     <Subtrigger K="315" V="Collision. Set +X direction (east) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7499,7 +7499,7 @@
     </Subtrigger>
     <Subtrigger K="316" V="Collision. Set +Z direction (north) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7524,7 +7524,7 @@
     </Subtrigger>
     <Subtrigger K="317" V="Collision. Set -Z direction (south) &lt;&amp;&gt;Slope-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7549,7 +7549,7 @@
     </Subtrigger>
     <Subtrigger K="318" V="Collision. Set -X direction (west) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7574,7 +7574,7 @@
     </Subtrigger>
     <Subtrigger K="319" V="Collision. Set +X direction (east) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7599,7 +7599,7 @@
     </Subtrigger>
     <Subtrigger K="320" V="Collision. Set +Z direction (north) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7624,7 +7624,7 @@
     </Subtrigger>
     <Subtrigger K="321" V="Collision. Set -Z direction (south) &lt;&amp;&gt;Ceiling-Slope-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7649,7 +7649,7 @@
     </Subtrigger>
     <Subtrigger K="322" V="Collision. Set -X,-Z direction (south-west) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7674,7 +7674,7 @@
     </Subtrigger>
     <Subtrigger K="323" V="Collision. Set -X,+Z direction (north-west) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7699,7 +7699,7 @@
     </Subtrigger>
     <Subtrigger K="324" V="Collision. Set +X,-Z direction (south-east) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7724,7 +7724,7 @@
     </Subtrigger>
     <Subtrigger K="325" V="Collision. Set +X,+Z direction (north-east) &lt;&amp;&gt;Ceiling-Tri-Collision changing ceiling of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Slope Collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7749,7 +7749,7 @@
     </Subtrigger>
     <Subtrigger K="326" V="Collision. Set -X,-Z direction (south-west) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular split collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7774,7 +7774,7 @@
     </Subtrigger>
     <Subtrigger K="327" V="Collision. Set -X,+Z direction (north-west) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular split collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7799,7 +7799,7 @@
     </Subtrigger>
     <Subtrigger K="328" V="Collision. Set +X,+Z direction (north-east) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular split collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7824,7 +7824,7 @@
     </Subtrigger>
     <Subtrigger K="329" V="Collision. Set +X,-Z direction (south-east) &lt;&amp;&gt;Tri-Split-Collision changing floor of (E)Clicks">
       <Timer>
-        <LinearModel Start="0" End="14">
+        <LinearModel Start="0" End="15">
           <Fixed>Triangular split collision with height=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -7888,7 +7888,7 @@
         </FixedEnumeration>
       </Timer>
     </Subtrigger>
-    <Subtrigger K="333" V="Flipmap. Alternate continuosly the &lt;&amp;&gt;flipmap with the (E)Frame interval">
+    <Subtrigger K="333" V="Flipmap. Alternate continuously the &lt;&amp;&gt;flipmap with the (E)Frame interval">
       <Timer>
         <LinearModel Start="0" End="30">
           <Fixed>FlipMap=</Fixed>
@@ -7896,7 +7896,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8123,7 +8123,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8145,7 +8145,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8716,13 +8716,13 @@
     </Subtrigger>
     <Subtrigger K="346" V="Camera. Enable the &lt;&amp;&gt;StandBy camera effect for (E)seconds">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>StandBy=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Seconds=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8812,7 +8812,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>ItemGroup=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8847,7 +8847,7 @@
     <Subtrigger K="356" V="Screen. Remove Infinite Flash effect" />
     <Subtrigger K="357" V="Sprite. Show sprite with data in &lt;&amp;&gt;Parameters for (E)Durate">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_SHOW_SPRITE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8874,13 +8874,13 @@
     </Subtrigger>
     <Subtrigger K="359" V="Weather. Perform a lightning with data in &lt;&amp;&gt;Parameters for (E)Durate in Tick frames (1/30 second)">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_LIGHTNING,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Frame Ticks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8909,7 +8909,7 @@
         <NgStringsList255 />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_WTEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8920,7 +8920,7 @@
         <NgStringsList255 />
       </Timer>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_WTEXT,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -8980,7 +8980,7 @@
     </Subtrigger>
     <Subtrigger K="370" V="AnimCommand. If current item is wading water, add to him twirls (ripples) with &lt;&amp;&gt;Intensity in (E)quantity">
       <Timer>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Intensity=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9087,7 +9087,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Clicks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9115,7 +9115,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Clicks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9143,7 +9143,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Clicks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9152,13 +9152,13 @@
     <Subtrigger K="384" V="Cutscene. Camera. Reset cutscene camera and come back to lara's chase camera" />
     <Subtrigger K="385" V="Cutscene. Camera. Move up cutscene camera of &lt;&amp;&gt;Clicks in (E)demo frames">
       <Timer>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Clicks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Demo frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9166,13 +9166,13 @@
     </Subtrigger>
     <Subtrigger K="386" V="Cutscene. Camera. Move down cutscene camera of &lt;&amp;&gt;Clicks in (E)demo frames">
       <Timer>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Clicks=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Demo frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9186,7 +9186,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Demo frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9200,7 +9200,7 @@
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Demo frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9220,7 +9220,7 @@
         </Choice>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Demo frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9240,7 +9240,7 @@
         </Choice>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Demo frames=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9257,7 +9257,7 @@
     <Subtrigger K="392" V="Cutscene. Camera. Remove freeze from cutscene camera" />
     <Subtrigger K="393" V="Cutscene. Animations. Swap animations set in data of &lt;&amp;&gt;Parameter command for (E)Actor">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_SWAP_ANIMATIONS,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9375,7 +9375,7 @@
         </FixedEnumeration>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9464,13 +9464,13 @@
     </Subtrigger>
     <Subtrigger K="402" V="Sprite. Stop the animated sprites with data in &lt;&amp;&gt;Parameter at (E)frame">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_SHOW_SPRITE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
       </Timer>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Frame=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -9478,7 +9478,7 @@
     </Subtrigger>
     <Subtrigger K="403" V="Sprite. Resume animation of sprites with data in &lt;&amp;&gt;Parameter">
       <Timer>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_SHOW_SPRITE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10039,7 +10039,7 @@
         </LinearModel>
       </Extra>
     </Subtrigger>
-    <Subtrigger K="36" V="Move. Move continuosly upstairs-downstairs &lt;#&gt;animating of (E) clicks">
+    <Subtrigger K="36" V="Move. Move continuously upstairs-downstairs &lt;#&gt;animating of (E) clicks">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10134,7 +10134,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Vitality Points=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10145,7 +10145,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Next State Id=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10164,7 +10164,7 @@
         <CamerasInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Timer=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10225,7 +10225,7 @@
         <SinksInLevel />
       </Target>
     </Subtrigger>
-    <Subtrigger K="47" V="Disable. Disable all continuos actions on &lt;#&gt;Moveable">
+    <Subtrigger K="47" V="Disable. Disable all continuous actions on &lt;#&gt;Moveable">
       <Target>
         <MoveablesInLevel />
       </Target>
@@ -10235,7 +10235,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>AddEffect=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10246,7 +10246,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>AddEffect=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10495,7 +10495,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10511,7 +10511,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10522,7 +10522,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10533,7 +10533,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10544,7 +10544,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10555,7 +10555,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10566,7 +10566,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Speed=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10587,7 +10587,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10598,7 +10598,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Sectors=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10639,7 +10639,7 @@
         <StaticsInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>AddEffect=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10650,7 +10650,7 @@
         <StaticsInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>AddEffect=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10703,7 +10703,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Frame </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10714,7 +10714,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>State Id </Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -10725,7 +10725,7 @@
         <MoveablesInLevel />
       </Target>
       <Extra>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Parameters=PARAM_ACTOR_SPEECH,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -11723,7 +11723,7 @@
     </Subtrigger>
     <Subtrigger K="17" V="Lara. (Secrets) Lara found at least &lt;#&gt;secrets">
       <Target>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Found Secrets=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -11731,7 +11731,7 @@
     </Subtrigger>
     <Subtrigger K="18" V="Lara. (Secrets) Lara found exaclty &lt;#&gt;secrets">
       <Target>
-        <LinearModel Start="1" End="126">
+        <LinearModel Start="1" End="127">
           <Fixed>Found Secrets=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -11921,7 +11921,7 @@
     </Subtrigger>
     <Subtrigger K="36" V="Random. Condition is true with &lt;#&gt;chances on 64 computed in (E)way">
       <Target>
-        <LinearModel Start="1" End="63">
+        <LinearModel Start="1" End="64">
           <Fixed>Chances=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -11929,7 +11929,7 @@
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Test condition only while lara enters in this sector" />
-          <Enum K="1" V="Test condition continuosly until lara is over this sector" />
+          <Enum K="1" V="Test condition continuously until lara is over this sector" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
@@ -13302,7 +13302,7 @@
     </Subtrigger>
     <Subtrigger K="78" V="Fragmented trigger. Check in (E) way if lara is in the custom triangle defined in the &lt;#&gt;Parameter command">
       <Target>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_TRIANGLE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13318,7 +13318,7 @@
     </Subtrigger>
     <Subtrigger K="79" V="Fragmented trigger. Check in (E) way if lara is in the quadrilateral defined in the &lt;#&gt;Parameter command">
       <Target>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_QUADRILATERAL,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13334,7 +13334,7 @@
     </Subtrigger>
     <Subtrigger K="80" V="Fragmented trigger: Check in (E) way if lara is in the custom Circle defined in the &lt;#&gt;Parameter command">
       <Target>
-        <LinearModel Start="1" End="254">
+        <LinearModel Start="1" End="255">
           <Fixed>Parameters=PARAM_CIRCLE,</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13409,7 +13409,7 @@
     </Subtrigger>
     <Subtrigger K="87" V="Cutscene. Current demo is playing/recording the &lt;#&gt;frame from Paramaters=PARAM_BIG_NUMBERS script command">
       <Target>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Value of Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13417,7 +13417,7 @@
     </Subtrigger>
     <Subtrigger K="88" V="Cutscene. Leading Actor is far from floor of &lt;#&gt;Units or greater">
       <Target>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13425,7 +13425,7 @@
     </Subtrigger>
     <Subtrigger K="89" V="Cutscene. Leading Actor is far from floor of &lt;#&gt;Units or lower">
       <Target>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13433,7 +13433,7 @@
     </Subtrigger>
     <Subtrigger K="90" V="Cutscene. Leading Actor top side is far from ceiling of &lt;#&gt;Units or greater">
       <Target>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
@@ -13441,7 +13441,7 @@
     </Subtrigger>
     <Subtrigger K="91" V="Cutscene. Leading Actor top side is far from ceiling of &lt;#&gt;Units or lower">
       <Target>
-        <LinearModel Start="0" End="126">
+        <LinearModel Start="0" End="127">
           <Fixed>Units typed in Parameters=PARAM_BIG_NUMBERS at index=</Fixed>
           <Linear Add="0" Factor="1" />
         </LinearModel>
