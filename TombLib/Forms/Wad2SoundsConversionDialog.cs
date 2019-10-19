@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -29,6 +30,18 @@ namespace TombLib.Forms
 
         private void Wad2SoundsConversionDialog_Load(object sender, EventArgs e)
         {
+            // Try to load default Sounds.xml
+            if (File.Exists("Catalogs\\Sounds.xml"))
+            {
+                string filename = Path.GetDirectoryName(Application.ExecutablePath) + "\\Catalogs\\Sounds.xml";
+                var sounds = WadSounds.ReadFromFile(filename);
+                if (sounds != null)
+                {
+                    Sounds = sounds;
+                    tbSoundsCatalogPath.Text = filename;
+                }
+            }
+
             // Add rows
             ReloadSoundInfos();
         }
@@ -269,6 +282,22 @@ namespace TombLib.Forms
                 Sounds = sounds;
                 tbSoundsCatalogPath.Text = result;
             }
+        }
+
+        private void butSelectAllSamples_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgvSoundInfos.Rows)
+                row.Cells[4].Value = true;
+
+            dgvSoundInfos.Invalidate();
+        }
+
+        private void butUnselectAllSamples_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dgvSoundInfos.Rows)
+                row.Cells[4].Value = false;
+
+            dgvSoundInfos.Invalidate();
         }
     }
 }
