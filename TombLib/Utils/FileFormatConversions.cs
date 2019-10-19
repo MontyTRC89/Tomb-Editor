@@ -70,7 +70,6 @@ namespace TombLib.Utils
                     row.NewId = TrCatalog.TryGetSoundInfoIdByDescription(wad.GameVersion, soundInfo.Name);
                     if (row.NewId != -1)
                     {
-                        row.SaveToXml = true;
                         row.NewName = TrCatalog.GetOriginalSoundName(wad.GameVersion, (uint)row.NewId);
                     }
 
