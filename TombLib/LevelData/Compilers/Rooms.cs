@@ -97,7 +97,7 @@ namespace TombLib.LevelData.Compilers
                     { 
                         IsWater = ((trRoom.Flags & 1) == 1), 
                         AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1, 
-                        Position = new VectorInt3(trRoom.Info.X + v.Position.X, trRoom.Info.YBottom + v.Position.Y, trRoom.Info.Z + v.Position.Z)
+                        Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
                     };
 
                     if (_vertexColors.ContainsKey(sig))
@@ -1423,7 +1423,7 @@ namespace TombLib.LevelData.Compilers
                             // appropriate rooms, and not all rooms at once.
                             IsWater = (room.Flags & 1) == 1,
                             AlternateGroup = room.AlternateKind == AlternateKind.AlternateRoom ? room.AlternateGroup : -1,
-                            Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y + room.Info.YBottom, v1.Position.Z + room.Info.Z)
+                            Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z)
                         };
 
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
