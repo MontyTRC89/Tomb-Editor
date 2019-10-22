@@ -80,13 +80,13 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
             _vertexColors = new Dictionary<VectorInt3, ushort>();
-            /*var rooms = _tempRooms.Values.ToList();
+            var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
                 {
                     var room = rooms[i];
                     MatchDoorShades(room, flipped == 1);
-                }*/
+                }
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
