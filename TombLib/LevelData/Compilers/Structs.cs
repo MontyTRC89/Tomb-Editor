@@ -14,13 +14,13 @@ namespace TombLib.LevelData.Compilers
         AlternateRoom
     }
 
-    public struct ShadeMatchSignature
+    public class ShadeMatchSignature
     {
         public bool IsWater;
         public int AlternateGroup;
         public Vector3 Position;
 
-        public override int GetHashCode() => (Position.GetHashCode().ToString() + "A" + AlternateGroup.ToString() + IsWater.ToString()).GetHashCode();
+        public override int GetHashCode() => (Position.X + ";" + Position.Y + ";" + Position.Z + ";" + AlternateGroup + ";" + (IsWater ? 1 : 0)).GetHashCode(); 
         public override bool Equals(object obj) => GetHashCode() == obj.GetHashCode();
     }
 
