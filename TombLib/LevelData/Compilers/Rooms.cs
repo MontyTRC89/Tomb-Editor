@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
-        private Dictionary<VectorInt3, ushort> _vertexColors;
+        private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
 
         private void BuildRooms()
         {
@@ -79,7 +79,7 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
-            _vertexColors = new Dictionary<VectorInt3, ushort>();
+            _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
             var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
@@ -100,11 +100,9 @@ namespace TombLib.LevelData.Compilers
                         Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
                     };
 
-                    var Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z);
-
-                    if (_vertexColors.ContainsKey(Position))
+                    if (_vertexColors.ContainsKey(sig))
                     {
-                        v.Lighting2 = _vertexColors[Position];
+                        v.Lighting2 = _vertexColors[sig];
                         trRoom.Vertices[i] = v;
                     }
                 }
@@ -1428,8 +1426,6 @@ namespace TombLib.LevelData.Compilers
                             Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z)
                         };
 
-                        var Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z);
-
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
                             if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
                                 if (v1.Position.Z >= z1 && v1.Position.Z <= z2)
@@ -1439,13 +1435,13 @@ namespace TombLib.LevelData.Compilers
                                     int otherZ = v1.Position.Z + room.Info.Z - otherRoom.Info.Z;
 
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
-                                    { 
+                                    {
                                         var v2 = otherRoom.Vertices[j];
                                         ushort refColor;
-                                        var isPresentInLookup = _vertexColors.TryGetValue(Position, out refColor);
+                                        var isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
                                         if (!isPresentInLookup) refColor = v1.Lighting2;
 
-                                        if (room.Info.X+v1.Position.X == otherRoom.Info.X+ v2.Position.X &&
+                                        if (room.Info.X + v1.Position.X == otherRoom.Info.X + v2.Position.X &&
                                             v1.Position.Y == v2.Position.Y &&
                                             room.Info.Z + v1.Position.Z == otherRoom.Info.Z + v2.Position.Z)
                                         {
@@ -1465,9 +1461,9 @@ namespace TombLib.LevelData.Compilers
                                             }
 
                                             if (!isPresentInLookup)
-                                                _vertexColors.TryAdd(Position, newColor);
+                                                _vertexColors.TryAdd(sig, newColor);
                                             else
-                                                _vertexColors[Position] = newColor;
+                                                _vertexColors[sig] = newColor;
                                         }
                                     }
                                 }
