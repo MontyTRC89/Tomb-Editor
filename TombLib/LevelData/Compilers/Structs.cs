@@ -193,7 +193,12 @@ namespace TombLib.LevelData.Compilers
 
         public override int GetHashCode()
         {
-            return Position.GetHashCode();
+            //return Position.GetHashCode();
+            int hash = 17;
+            hash = (hash * 37) ^ Position.X;
+            hash = (hash * 37) ^ Position.Y;
+            hash = (hash * 37) ^ Position.Z;
+            return hash;
         }
     }
 

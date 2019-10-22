@@ -15,7 +15,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
-        private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
+        private Dictionary<VectorInt3, ushort> _vertexColors;
 
         private void BuildRooms()
         {
@@ -79,14 +79,14 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
 
-            _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
-            var rooms = _tempRooms.Values.ToList();
+            _vertexColors = new Dictionary<VectorInt3, ushort>();
+            /*var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
                 for (int i = 0; i < rooms.Count; i++)
                 {
                     var room = rooms[i];
                     MatchDoorShades(room, flipped == 1);
-                }
+                }*/
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
@@ -100,9 +100,11 @@ namespace TombLib.LevelData.Compilers
                         Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
                     };
 
-                    if (_vertexColors.ContainsKey(sig))
+                    var Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z);
+
+                    if (_vertexColors.ContainsKey(Position))
                     {
-                        v.Lighting2 = _vertexColors[sig];
+                        v.Lighting2 = _vertexColors[Position];
                         trRoom.Vertices[i] = v;
                     }
                 }
@@ -287,7 +289,7 @@ namespace TombLib.LevelData.Compilers
                 var vertexPositions = room.RoomGeometry.VertexPositions;
                 var vertexColors = room.RoomGeometry.VertexColors;
 
-                var roomVerticesDictionary = new Dictionary<tr_room_vertex, ushort>();
+                var roomVerticesDictionary = new Dictionary<int, ushort>();
                 var roomVertices = new List<tr_room_vertex>();
 
                 var roomTriangles = new List<tr_face3>();
@@ -801,7 +803,7 @@ namespace TombLib.LevelData.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<tr_room_vertex, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
+        private static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
         {
             tr_room_vertex trVertex;
             trVertex.Position = new tr_vertex
@@ -823,12 +825,12 @@ namespace TombLib.LevelData.Compilers
 
             // Do we need this vertex?
             ushort vertexIndex;
-            if (roomVerticesDictionary.TryGetValue(trVertex, out vertexIndex))
+            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
                 return vertexIndex;
 
             // Add vertex
             vertexIndex = (ushort)roomVertices.Count;
-            roomVerticesDictionary.Add(trVertex, vertexIndex);
+            roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
             roomVertices.Add(trVertex);
             return vertexIndex;
         }
@@ -1426,6 +1428,8 @@ namespace TombLib.LevelData.Compilers
                             Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z)
                         };
 
+                        var Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z);
+
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
                             if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
                                 if (v1.Position.Z >= z1 && v1.Position.Z <= z2)
@@ -1438,10 +1442,12 @@ namespace TombLib.LevelData.Compilers
                                     { 
                                         var v2 = otherRoom.Vertices[j];
                                         ushort refColor;
-                                        var isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
+                                        var isPresentInLookup = _vertexColors.TryGetValue(Position, out refColor);
                                         if (!isPresentInLookup) refColor = v1.Lighting2;
 
-                                        if (otherX == v2.Position.X && otherY == v2.Position.Y && otherZ == v2.Position.Z)
+                                        if (room.Info.X+v1.Position.X == otherRoom.Info.X+ v2.Position.X &&
+                                            v1.Position.Y == v2.Position.Y &&
+                                            room.Info.Z + v1.Position.Z == otherRoom.Info.Z + v2.Position.Z)
                                         {
                                             ushort newColor;
 
@@ -1459,9 +1465,9 @@ namespace TombLib.LevelData.Compilers
                                             }
 
                                             if (!isPresentInLookup)
-                                                _vertexColors.TryAdd(sig, newColor);
+                                                _vertexColors.TryAdd(Position, newColor);
                                             else
-                                                _vertexColors[sig] = newColor;
+                                                _vertexColors[Position] = newColor;
                                         }
                                     }
                                 }
