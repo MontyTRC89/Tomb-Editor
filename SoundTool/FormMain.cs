@@ -230,7 +230,7 @@ namespace SoundTool
             string message = "Sound Infos: " + dgvSoundInfos.Rows.Count;
 
             if (refLoaded)
-                message += " | Reference level: " + ReferenceLevel.Settings.MakeAbsolute(ReferenceLevel.Settings.LevelFilePath);
+                message += " | Reference project: " + ReferenceLevel.Settings.MakeAbsolute(ReferenceLevel.Settings.LevelFilePath);
             labelStatus.Text = message;
 
             unloadReferenceProjectToolStripMenuItem.Enabled = refLoaded;
