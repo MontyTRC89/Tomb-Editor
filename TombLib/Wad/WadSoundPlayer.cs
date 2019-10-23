@@ -58,6 +58,9 @@ namespace TombLib.Wad
 
         public static void PlaySoundInfo(Level level, WadSoundInfo soundInfo)
         {
+            if (soundInfo == null || soundInfo.Samples == null || soundInfo.Samples.Count == 0)
+                return;
+
             int channelIndex = FindPlayingIndex(soundInfo.Id);
 
             if (channelIndex >= 0)
@@ -81,9 +84,6 @@ namespace TombLib.Wad
                 channelIndex = GetFreeChannel();
 
             _indices[channelIndex] = soundInfo.Id;
-
-            if (soundInfo.Samples == null || soundInfo.Samples.Count == 0)
-                return;
 
             // Figure out the precise play parameters
             int sampleIndex;
