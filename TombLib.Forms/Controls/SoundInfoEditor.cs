@@ -46,8 +46,10 @@ namespace TombLib.Controls
         {
             get
             {
-                // XML_SOUND_SYSTEM
-                WadSoundInfo result = new WadSoundInfo(int.Parse(tbID.Text));
+                int id = 0;
+                int.TryParse(tbID.Text, out id);
+                
+                WadSoundInfo result = new WadSoundInfo(id);
                 result.Name = tbName.Text;
                 result.Volume = (int)(numericVolume.Value);
                 result.PitchFactor = (int)(numericPitch.Value);
@@ -109,6 +111,7 @@ namespace TombLib.Controls
         public override Color BackColor { get { return Colors.GreyBackground; } }
 
         public event EventHandler SoundInfoChanged;
+        public void PlayCurrentSoundInfo() => WadSoundPlayer.PlaySoundInfo(ReferenceLevel, SoundInfo);
 
         public SoundInfoEditor()
         {
@@ -116,6 +119,7 @@ namespace TombLib.Controls
 
             picDisabledOverlay.Dock = DockStyle.Fill;
             BackColor = Colors.GreyBackground;
+            comboLoop.SelectedIndex = 0;
 
             toolTip.SetToolTip(numericVolumeLabel, toolTip.GetToolTip(numericVolume));
             toolTip.SetToolTip(numericPitchLabel, toolTip.GetToolTip(numericPitch));
@@ -278,6 +282,6 @@ namespace TombLib.Controls
 
         private void dgvSamples_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e) => OnSoundInfoChanged(null, null);
         private void dgvSamples_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => OnSoundInfoChanged(null, null);
-        private void butPlayPreview_Click(object sender, EventArgs e) => WadSoundPlayer.PlaySoundInfo(ReferenceLevel, SoundInfo);
+        private void butPlayPreview_Click(object sender, EventArgs e) => PlayCurrentSoundInfo();
     }
 }

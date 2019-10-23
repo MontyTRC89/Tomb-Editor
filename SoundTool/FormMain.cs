@@ -317,6 +317,7 @@ namespace SoundTool
         private void butDeleteSoundInfo_Click(object sender, EventArgs e) => DeleteSoundInfos();
         private void butSearch_Click(object sender, EventArgs e) { SearchForSound(); }
         private void tbSearch_KeyDown(object sender, KeyEventArgs e) { if (e.KeyCode == Keys.Enter) SearchForSound(); }
+        private void dgvSoundInfos_DoubleClick(object sender, EventArgs e) => soundInfoEditor.PlayCurrentSoundInfo();
 
         private void AboutSoundToolToolStripMenuItem_Click(object sender, EventArgs e)
         {
