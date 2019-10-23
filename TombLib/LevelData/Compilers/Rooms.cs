@@ -78,15 +78,13 @@ namespace TombLib.LevelData.Compilers
 #endif
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
+            ReportProgress(23, "    Matching vertex colors on portals...");
 
             _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
             var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
-                for (int i = 0; i < rooms.Count; i++)
-                {
-                    var room = rooms[i];
-                    MatchDoorShades(room, flipped == 1);
-                }
+                foreach(var room in rooms)
+                    MatchDoorShades(rooms, room, flipped == 1);
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
@@ -1343,17 +1341,15 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void MatchDoorShades(tr_room room, bool flipped)
+        private void MatchDoorShades(List<tr_room> roomList, tr_room room, bool flipped)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
                 return;
 
-            var rooms = _tempRooms.Values.ToList();
-
             foreach (var p in room.Portals)
             {
-                var otherRoom = rooms[p.AdjoiningRoom];
+                var otherRoom = roomList[p.AdjoiningRoom];
 
                 // Here we must decide if match or not, basing on flipped flag.
                 // In winroomedit.exe, all flipped rooms were swapped with their counterparts,
@@ -1368,8 +1364,8 @@ namespace TombLib.LevelData.Compilers
                 {
                     // We allow here flipped vs flipped, flipped vs normal and flipped vs base room.
                     // NOTICE: We only take other flipped room into account if it belongs to SAME ALTERNATE GROUP.
-                    if (otherRoom.AlternateKind == AlternateKind.BaseRoom && rooms[otherRoom.AlternateRoom].AlternateGroup == room.AlternateGroup)
-                        otherRoom = rooms[otherRoom.AlternateRoom];
+                    if (otherRoom.AlternateKind == AlternateKind.BaseRoom && roomList[otherRoom.AlternateRoom].AlternateGroup == room.AlternateGroup)
+                        otherRoom = roomList[otherRoom.AlternateRoom];
 
                     // Don't proceed if current room isn't alternate or if alternate group don't match (paranoidal foolproof in case previous check failed).
                     if (room.AlternateKind != AlternateKind.AlternateRoom || (otherRoom.AlternateKind == AlternateKind.AlternateRoom && room.AlternateGroup != otherRoom.AlternateGroup))
