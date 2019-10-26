@@ -808,21 +808,28 @@ namespace TombLib.LevelData.Compilers
                 Y = (short)-(Position.Y + room.WorldPos.Y),
                 Z = (short)Position.Z
             };
+
             trVertex.Lighting1 = 0;
-            trVertex.Lighting2 = PackColorTo16Bit(Color);
             trVertex.Attributes = 0;
+            trVertex.Lighting2 = 0;
+            trVertex.Color = 0;
             trVertex.Normal = new tr_vertex
             {
                 X = 0,
                 Y = 0,
                 Z = 0
             };
-            trVertex.Color = PackColorTo32Bit(Color);
 
-            // Do we need this vertex?
+            // Do the check here, so we can save some time with unuseful calculations
             ushort vertexIndex;
             if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
                 return vertexIndex;
+
+            // Ignore this for TRNG ad TR4
+            if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                trVertex.Color = PackColorTo32Bit(Color);
+            else
+                trVertex.Lighting2 = PackColorTo16Bit(Color);
 
             // Add vertex
             vertexIndex = (ushort)roomVertices.Count;

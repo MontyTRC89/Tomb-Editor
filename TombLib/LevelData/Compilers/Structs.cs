@@ -162,7 +162,7 @@ namespace TombLib.LevelData.Compilers
         public ushort Lighting1;
         public ushort Attributes;
         public ushort Lighting2;
-
+        
         // For TR5 only
         public tr_vertex Normal;
         public uint Color;
@@ -193,11 +193,12 @@ namespace TombLib.LevelData.Compilers
 
         public override int GetHashCode()
         {
-            //return Position.GetHashCode();
             int hash = 17;
             hash = (hash * 37) ^ Position.X;
             hash = (hash * 37) ^ Position.Y;
             hash = (hash * 37) ^ Position.Z;
+            hash = (hash * 37) ^ Lighting1;
+            hash = (hash * 37) ^ Attributes;
             return hash;
         }
     }
