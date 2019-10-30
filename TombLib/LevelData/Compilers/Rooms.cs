@@ -91,6 +91,9 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {
                     var v = trRoom.Vertices[i];
+                    if (!v.IsOnPortal)
+                        continue;
+
                     var sig = new ShadeMatchSignature() 
                     { 
                         IsWater = ((trRoom.Flags & 1) == 1), 
@@ -813,6 +816,7 @@ namespace TombLib.LevelData.Compilers
             trVertex.Attributes = 0;
             trVertex.Lighting2 = 0;
             trVertex.Color = 0;
+            trVertex.IsOnPortal = false;
             trVertex.Normal = new tr_vertex
             {
                 X = 0,
@@ -1433,6 +1437,9 @@ namespace TombLib.LevelData.Compilers
                             if (v1.Position.Y >= y1 && v1.Position.Y <= y2)
                                 if (v1.Position.Z >= z1 && v1.Position.Z <= z2)
                                 {
+                                    v1.IsOnPortal = true;
+                                    room.Vertices[i] = v1; 
+
                                     int otherX = v1.Position.X + room.Info.X - otherRoom.Info.X;
                                     int otherY = v1.Position.Y;
                                     int otherZ = v1.Position.Z + room.Info.Z - otherRoom.Info.Z;

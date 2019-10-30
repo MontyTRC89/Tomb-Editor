@@ -167,6 +167,9 @@ namespace TombLib.LevelData.Compilers
         public tr_vertex Normal;
         public uint Color;
 
+        // Used internally by Tomb Editor
+        public bool IsOnPortal;
+
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
         public static unsafe bool operator ==(tr_room_vertex first, tr_room_vertex second)
