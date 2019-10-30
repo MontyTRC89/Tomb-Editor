@@ -135,7 +135,7 @@ namespace TombLib.Rendering
         
         public static readonly ColorScheme Pastel = new ColorScheme()
         {
-            ColorSelection         =  new Vector4(255, 140, 140, 255) / 255.0f,
+            ColorSelection         =  new Vector4(255, 120, 120, 255) / 255.0f,
             ColorIllegalSlope      =  new Vector4(255, 171, 79, 255) / 255.0f,
             ColorSlideDirection    =  new Vector4(206, 158, 222, 255) / 255.0f,
             Color3DBackground      =  new Vector4(120, 120, 120, 255) / 255.0f,
