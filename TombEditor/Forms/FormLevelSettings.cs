@@ -1489,7 +1489,8 @@ namespace TombEditor.Forms
 
         private void ButAutodetectSoundsAndAssign_Click(object sender, EventArgs e)
         {
-            if (DarkMessageBox.Show(this, "Deselect all sounds before autodetection?", "Deselect sounds", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (_levelSettings.SelectedSounds.Count > 0 &&
+                DarkMessageBox.Show(this, "Deselect all sounds before autodetection?", "Deselect sounds", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 _levelSettings.SelectedSounds.Clear();
 
             AssignHardcodedSounds();
