@@ -23,6 +23,7 @@ using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -3226,6 +3227,9 @@ namespace TombEditor
                 return false;
             }
 
+            if (level.Settings.SelectedSounds.Count == 0 && level.Settings.AutoAssignSoundsIfNoSelection)
+                AutodetectAndAssignSounds(level.Settings);
+
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
@@ -4566,5 +4570,107 @@ namespace TombEditor
             } ;
         }
 
+
+        public static void AutodetectAndAssignSounds(LevelSettings settings, IWin32Window owner = null) // No owner - no confirmation
+        {
+            if (owner != null && settings.SelectedSounds.Count > 0 &&
+                DarkMessageBox.Show(owner, "Deselect all sounds before autodetection?", "Deselect sounds", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                settings.SelectedSounds.Clear();
+
+            AssignHardcodedSounds(settings);
+            AssignWadSounds(settings);
+            AssignTriggerSounds(settings);
+            AssignSoundSourcesSounds(settings);
+        }
+
+        public static void AssignHardcodedSounds(LevelSettings settings)
+        {
+            var referenceSounds = TrCatalog.GetAllFixedByDefaultSounds(settings.GameVersion);
+            foreach (int id in referenceSounds.Keys.ToList())
+                if (!settings.SelectedSounds.Contains(id))
+                    settings.SelectedSounds.Add(id);
+
+            foreach (var catalog in settings.SoundsCatalogs)
+                foreach (var sound in catalog.Sounds.SoundInfos)
+                    if (sound.Global)
+                        if (!settings.SelectedSounds.Contains(sound.Id))
+                            settings.SelectedSounds.Add(sound.Id);
+
+        }
+
+        public static void AssignCatalogSounds(LevelSettings settings, ReferencedSoundsCatalog catalog)
+        {
+            foreach (var soundInfo in catalog.Sounds.SoundInfos)
+                if (!settings.SelectedSounds.Contains(soundInfo.Id))
+                    settings.SelectedSounds.Add(soundInfo.Id);
+        }
+
+        public static void AssignSoundSourcesSounds(LevelSettings settings)
+        {
+            foreach (var room in _editor.Level.Rooms)
+                if (room != null)
+                    foreach (var instance in room.Objects)
+                        if (instance is SoundSourceInstance)
+                        {
+                            var soundSource = instance as SoundSourceInstance;
+                            if (!settings.SelectedSounds.Contains(soundSource.SoundId))
+                                settings.SelectedSounds.Add(soundSource.SoundId);
+                        }
+        }
+
+        public static void AssignWadSounds(LevelSettings settings)
+        {
+            foreach (var wad in _editor.Level.Settings.Wads)
+                foreach (var item in wad.Wad.Moveables)
+                    foreach (var anim in item.Value.Animations)
+                        foreach (var cmd in anim.AnimCommands)
+                            if (cmd.Type == WadAnimCommandType.PlaySound)
+                                if (!settings.SelectedSounds.Contains(cmd.Parameter2 & 0x3FFF))
+                                    settings.SelectedSounds.Add(cmd.Parameter2 & 0x3FFF);
+        }
+
+        public static void AssignTriggerSounds(LevelSettings settings)
+        {
+            bool isTR4 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
+                         _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+
+            foreach (var room in _editor.Level.Rooms)
+                if (room != null)
+                    foreach (var trigger in room?.Triggers)
+                        if (trigger.TargetType == TriggerTargetType.FlipEffect &&
+                            trigger.Target is TriggerParameterUshort)
+                        {
+                            int foundId = -1;
+                            var feNum = ((TriggerParameterUshort)trigger.Target).Key;
+
+                            switch (feNum)
+                            {
+                                case 2: // FLOOD_FX, broken in TR5 onwards
+                                    if (isTR4) foundId = 238;
+                                    break;
+
+                                case 3: // LARA_BUBBLES
+                                    foundId = 37;
+                                    break;
+
+                                case 11: // EXPLOSION_FX
+                                    foundId = 105;
+                                    break;
+
+                                case 10:  // TIMERFIELD_FX
+                                case 70:  // NG (legacy 0-255)
+                                case 168: // NG extended soundmap
+                                    foundId = ((TriggerParameterUshort)trigger.Timer).Key;
+                                    break;
+
+                                case 71: // NG (legacy 256-370)
+                                    foundId = ((TriggerParameterUshort)trigger.Timer).Key + 256;
+                                    break;
+                            }
+
+                            if (foundId != -1 && !settings.SelectedSounds.Contains(foundId))
+                                settings.SelectedSounds.Add(foundId);
+                        }
+        }
     }
 }

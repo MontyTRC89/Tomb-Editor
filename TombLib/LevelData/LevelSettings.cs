@@ -132,6 +132,7 @@ namespace TombLib.LevelData
                 return soundmap.Values.ToList();
             }
         }
+        public bool AutoAssignSoundsIfNoSelection { get; set; } = true; // Autodetect and assign sounds if none selected
 
         public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
 
