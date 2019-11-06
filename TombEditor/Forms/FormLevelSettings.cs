@@ -571,6 +571,9 @@ namespace TombEditor.Forms
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
 
+            // Update sound autodetection option
+            cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
+
             // Hide version-specific controls
 
             bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
@@ -1489,125 +1492,26 @@ namespace TombEditor.Forms
 
         private void ButAutodetectSoundsAndAssign_Click(object sender, EventArgs e)
         {
-            if (_levelSettings.SelectedSounds.Count > 0 &&
-                DarkMessageBox.Show(this, "Deselect all sounds before autodetection?", "Deselect sounds", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                _levelSettings.SelectedSounds.Clear();
-
-            AssignHardcodedSounds();
-            AssignWadSounds();
-            AssignTriggerSounds();
-            AssignSoundSourcesSounds();
-
+            EditorActions.AutodetectAndAssignSounds(_levelSettings, this);
             PopulateSoundInfoList();
         }
 
-        private void AssignHardcodedSounds()
-        {
-            var referenceSounds = TrCatalog.GetAllFixedByDefaultSounds(_levelSettings.GameVersion);
-            foreach (int id in referenceSounds.Keys.ToList())
-                if (!_levelSettings.SelectedSounds.Contains(id))
-                    _levelSettings.SelectedSounds.Add(id);
-
-            foreach (var catalog in _levelSettings.SoundsCatalogs)
-                foreach (var sound in catalog.Sounds.SoundInfos)
-                    if (sound.Global)
-                        if (!_levelSettings.SelectedSounds.Contains(sound.Id))
-                            _levelSettings.SelectedSounds.Add(sound.Id);
-
-        }
-
-        private void AssignCatalogSounds(ReferencedSoundsCatalog catalog)
-        {
-            foreach (var soundInfo in catalog.Sounds.SoundInfos)
-                if (!_levelSettings.SelectedSounds.Contains(soundInfo.Id))
-                    _levelSettings.SelectedSounds.Add(soundInfo.Id);
-        }
-
-        private void AssignSoundSourcesSounds()
-        {
-            foreach (var room in _editor.Level.Rooms)
-                if (room != null)
-                    foreach (var instance in room.Objects)
-                        if (instance is SoundSourceInstance)
-                        {
-                            var soundSource = instance as SoundSourceInstance;
-                            if (!_levelSettings.SelectedSounds.Contains(soundSource.SoundId))
-                                _levelSettings.SelectedSounds.Add(soundSource.SoundId);
-                        }
-        }
-
-        private void AssignWadSounds()
-        {
-            foreach (var wad in _editor.Level.Settings.Wads)
-                foreach (var item in wad.Wad.Moveables)
-                    foreach (var anim in item.Value.Animations)
-                        foreach (var cmd in anim.AnimCommands)
-                            if (cmd.Type == WadAnimCommandType.PlaySound)
-                                if (!_levelSettings.SelectedSounds.Contains(cmd.Parameter2 & 0x3FFF))
-                                    _levelSettings.SelectedSounds.Add(cmd.Parameter2 & 0x3FFF);
-        }
-
-        private void AssignTriggerSounds()
-        {
-            bool isTR4 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                         _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
-
-            foreach (var room in _editor.Level.Rooms)
-                if (room != null)
-                    foreach (var trigger in room?.Triggers)
-                        if (trigger.TargetType == TriggerTargetType.FlipEffect &&
-                            trigger.Target is TriggerParameterUshort)
-                        {
-                            int foundId = -1;
-                            var feNum = ((TriggerParameterUshort)trigger.Target).Key;
-
-                            switch (feNum)
-                            {
-                                case 2: // FLOOD_FX, broken in TR5 onwards
-                                    if (isTR4) foundId = 238;
-                                    break;
-
-                                case 3: // LARA_BUBBLES
-                                    foundId = 37;
-                                    break;
-
-                                case 11: // EXPLOSION_FX
-                                    foundId = 105;
-                                    break;
-
-                                case 10:  // TIMERFIELD_FX
-                                case 70:  // NG (legacy 0-255)
-                                case 168: // NG extended soundmap
-                                    foundId = ((TriggerParameterUshort)trigger.Timer).Key;
-                                    break;
-
-                                case 71: // NG (legacy 256-370)
-                                    foundId = ((TriggerParameterUshort)trigger.Timer).Key + 256;
-                                    break;
-                            }
-
-                            if (foundId != -1 && !_levelSettings.SelectedSounds.Contains(foundId))
-                                _levelSettings.SelectedSounds.Add(foundId);
-
-                        }
-            }
-
         private void ButAssignHardcodedSounds_Click(object sender, EventArgs e)
         {
-            AssignHardcodedSounds();
+            EditorActions.AssignHardcodedSounds(_levelSettings);
             PopulateSoundInfoList();
         }
 
         private void ButAssignSoundsFromSelectedCatalogs_Click(object sender, EventArgs e)
         {
             foreach (DataGridViewRow row in soundsCatalogsDataGridView.SelectedRows)
-                AssignCatalogSounds(_soundsCatalogsDataGridViewDataSource[row.Index].Sounds);
+                EditorActions.AssignCatalogSounds(_levelSettings, _soundsCatalogsDataGridViewDataSource[row.Index].Sounds);
             PopulateSoundInfoList();
         }
 
         private void ButAssignFromSoundSources_Click(object sender, EventArgs e)
         {
-            AssignSoundSourcesSounds();
+            EditorActions.AssignSoundSourcesSounds(_levelSettings);
             PopulateSoundInfoList();
         }
 
@@ -1625,12 +1529,18 @@ namespace TombEditor.Forms
 
         private void butAssignFromWads_Click(object sender, EventArgs e)
         {
-            AssignWadSounds();
+            EditorActions.AssignWadSounds(_levelSettings);
             PopulateSoundInfoList();
         }
 
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
+
+        private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
+            UpdateDialog();
+        }
     }
 }
