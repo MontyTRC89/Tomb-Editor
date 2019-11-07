@@ -478,9 +478,7 @@ namespace WadTool
                 tool.SendMessage(infoString, PopupType.Info);
             }
 
-            var result = newIds.Where(item => !failedIdList.Any(failed => failed == item)).ToList();
-
-            return result;
+            return newIds.Where(item => !failedIdList.Any(failed => failed == item)).ToList();
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
