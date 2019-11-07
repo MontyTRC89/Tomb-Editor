@@ -312,7 +312,7 @@ namespace WadTool
             foreach (IWadObjectId id in treeDestWad.SelectedWadObjectIds)
                 _tool.DestinationWad.Remove(id);
             _tool.MainSelection = null;
-            _tool.DestinationWadChanged();
+            _tool.WadChanged(WadArea.Destination);
         }
 
         private void butSave_Click(object sender, EventArgs e)
