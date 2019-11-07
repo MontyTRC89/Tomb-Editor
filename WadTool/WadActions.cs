@@ -359,7 +359,7 @@ namespace WadTool
                     @static.VisibilityBox = @static.Mesh.BoundingBox;
                     @static.CollisionBox = @static.Mesh.BoundingBox;
                     tool.DestinationWad.Statics.Add(@static.Id, @static);
-                    tool.DestinationWadChanged();
+                    tool.WadChanged(WadArea.Destination);
                 }
             }
         }
@@ -421,7 +421,7 @@ namespace WadTool
                             if (destinationWad.Contains(form.NewId) || newIds.Take(i).Contains(form.NewId))
                             {
                                 destinationWad.Remove(form.NewId);
-                                tool.DestinationWadChanged();
+                                tool.WadChanged(WadArea.Destination);
                             }
                             newIds[i] = form.NewId;
 
@@ -435,7 +435,7 @@ namespace WadTool
                     else
                     {
                         destinationWad.Remove(objectIdsToMove[i]);
-                        tool.DestinationWadChanged();
+                        tool.WadChanged(WadArea.Destination);
                         break;
                     }
                 } while (destinationWad.Contains(newIds[i]) || newIds.Take(i).Contains(newIds[i])); // There also must not be collisions with the other custom assigned ids.
@@ -463,7 +463,7 @@ namespace WadTool
             if (actualAmountOfCopiedObjects > 0)
             {
                 // Update the situation
-                tool.DestinationWadChanged();
+                tool.WadChanged(WadArea.Destination);
 
                 string infoString = (objectIdsToMove.Count == 1 ? "Object" : "Objects") + " successfully copied.";
 
@@ -478,7 +478,9 @@ namespace WadTool
                 tool.SendMessage(infoString, PopupType.Info);
             }
 
-            return newIds.Where(item => !failedIdList.Any(failed => failed == item)).ToList();
+            var result = newIds.Where(item => !failedIdList.Any(failed => failed == item)).ToList();
+
+            return result;
         }
 
         public static void EditObject(WadToolClass tool, IWin32Window owner, DeviceManager deviceManager)
@@ -569,7 +571,7 @@ namespace WadTool
                 result = form.NewId;
             }
 
-            tool.DestinationWadChanged();
+            tool.WadChanged(WadArea.Destination);
             tool.ToggleUnsavedChanges();
 
             return result;
@@ -819,7 +821,7 @@ namespace WadTool
             {
                 if (form.ShowDialog(owner) != DialogResult.OK)
                     return;
-                tool.DestinationWadChanged();
+                tool.WadChanged(WadArea.Destination);
             }
         }
     }

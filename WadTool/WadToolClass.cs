@@ -53,7 +53,7 @@ namespace WadTool
                 if (_destinationWad == value)
                     return;
                 _destinationWad = value;
-                DestinationWadChanged();
+                WadChanged(WadArea.Destination);
 
                 // Update selection
                 if (_mainSelection.HasValue)
@@ -75,7 +75,7 @@ namespace WadTool
                     return;
                 _sourceWad = value;
 
-                SourceWadChanged();
+                WadChanged(WadArea.Source);
 
                 // Update selection
                 if (_mainSelection.HasValue)
@@ -113,33 +113,22 @@ namespace WadTool
             }
         }
 
+        public class DestinationWadChangedEvent : IWadChangedEvent { }
+        public class SourceWadChangedEvent : IWadChangedEvent { }
         public void WadChanged(WadArea wadArea)
         {
             switch (wadArea)
             {
                 case WadArea.Source:
-                    SourceWadChanged();
+                    RaiseEvent(new SourceWadChangedEvent());
                     break;
                 case WadArea.Destination:
-                    DestinationWadChanged();
+                    RaiseEvent(new DestinationWadChangedEvent());
+                    ToggleUnsavedChanges(true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        public class DestinationWadChangedEvent : IWadChangedEvent
-        { }
-        public void DestinationWadChanged()
-        {
-            RaiseEvent(new DestinationWadChangedEvent());
-        }
-
-        public class SourceWadChangedEvent : IWadChangedEvent
-        { }
-        public void SourceWadChanged()
-        {
-            RaiseEvent(new SourceWadChangedEvent());
         }
 
         // Selection
