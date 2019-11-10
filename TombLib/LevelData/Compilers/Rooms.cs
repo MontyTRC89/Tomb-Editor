@@ -294,6 +294,232 @@ namespace TombLib.LevelData.Compilers
                 var roomTriangles = new List<tr_face3>();
                 var roomQuads = new List<tr_face4>();
 
+                foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
+                {
+                    //check if static Mesh is in the Auto Merge list
+                    var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
+                        mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
+                    if (entry == null)
+                        continue;
+                    bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
+                    int meshVertexBase = roomVertices.Count;
+                    var worldTransform = staticMesh.RotationMatrix *
+                                         Matrix4x4.CreateTranslation(staticMesh.Position);
+                    var normalTransform = staticMesh.RotationMatrix;
+                    WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
+                    for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
+                    {
+                        // Apply the transform to the vertex
+                        Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
+                        Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
+                        normal = Vector3.Normalize(normal);
+                        int lightingEffect = 0;
+                        float shade = 1.0f;
+                        if (interpretShadesAsMovement)
+                        {
+                            if (j < wadStatic.Mesh.VerticesShades.Count)
+                            {
+                                lightingEffect = wadStatic.Mesh.VerticesShades[j];
+                                if (lightingEffect > 4227)
+                                {
+                                    lightingEffect = 0x2000;
+                                }
+                                else if (lightingEffect > 0)
+                                {
+                                    lightingEffect = 0x4000;
+                                }
+                                else
+                                {
+                                    // Mark this vertex with zero attrib as already processed.
+                                    lightingEffect = 0xFFFF;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //If we have shades, use them as a factor for the resulting vertex color
+                            if (j < wadStatic.Mesh.VerticesShades.Count)
+                            {
+                                shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
+                                shade = 1.0f - shade;
+                            }
+                        }
+                        Vector3 color = CalculateLightForCustomVertex(room, position, normal, false);
+                        //Apply Shade factor
+                        color *= shade;
+                        //Apply Instance Color
+                        color *= staticMesh.Color;
+                        var trVertex = new tr_room_vertex
+                        {
+                            Position = new tr_vertex
+                            {
+                                X = (short)position.X,
+                                Y = (short)-(position.Y + room.WorldPos.Y),
+                                Z = (short)position.Z
+                            },
+                            Lighting1 = 0,
+                            Lighting2 = 0,
+                            Attributes = (ushort)lightingEffect
+                        };
+                        trVertex.Lighting2 = PackColorTo16Bit(color);
+                        // Check for maximum vertices reached
+                        if (roomVertices.Count >= 65536)
+                        {
+                            throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
+                        }
+
+                        roomVertices.Add(trVertex);
+                    }
+                    for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
+                    {
+                        WadPolygon poly = wadStatic.Mesh.Polys[i];
+                        ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
+                        ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
+                        ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
+                        ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+                        if (poly.Shape == WadPolygonShape.Triangle)
+                        {
+
+                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                            {
+                                var result = _mergedStaticMeshTextureInfos[poly];
+                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
+                                roomTriangles.Add(tri);
+                            }
+                            else
+                            {
+                                FixWadTextureCoordinates(ref poly.Texture);
+                                var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
+                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
+                                roomTriangles.Add(tri);
+                                _mergedStaticMeshTextureInfos.Add(poly, result);
+                            }
+                        }
+                        else
+                        {
+                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                            {
+                                var result = _mergedStaticMeshTextureInfos[poly];
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
+                                roomQuads.Add(quad);
+                            }
+                            else
+                            {
+                                FixWadTextureCoordinates(ref poly.Texture);
+                                var result = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
+                                roomQuads.Add(quad);
+                                _mergedStaticMeshTextureInfos.Add(poly, result);
+                            }
+
+                        }
+                    }
+                }
+
+                // Add geometry imported objects
+                int geometryVertexIndexBase = roomVertices.Count;
+                foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
+                {
+                    if (geometry.Model?.DirectXModel == null)
+                        continue;
+
+                    var meshes = geometry.Model.DirectXModel.Meshes;
+                    var worldTransform = geometry.RotationMatrix *
+                                         Matrix4x4.CreateScale(geometry.Scale) *
+                                         Matrix4x4.CreateTranslation(geometry.Position);
+                    var normalTransform = geometry.RotationMatrix;
+
+                    foreach (var mesh in meshes)
+                    {
+                        if (!geometry.MeshNameMatchesFilter(mesh.Name))
+                            continue;
+
+                        foreach (var submesh in mesh.Submeshes)
+                        {
+                            for (int j = 0; j < mesh.Vertices.Count; j++)
+                            {
+                                // Apply the transform to the vertex
+                                Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, worldTransform);
+                                Vector3 normal = MathC.HomogenousTransform(mesh.Vertices[j].Normal, normalTransform);
+                                normal = Vector3.Normalize(normal);
+
+                                var trVertex = new tr_room_vertex
+                                {
+                                    Position = new tr_vertex
+                                    {
+                                        X = (short)position.X,
+                                        Y = (short)-(position.Y + room.WorldPos.Y),
+                                        Z = (short)position.Z
+                                    },
+                                    Lighting1 = 0,
+                                    Lighting2 = 0,
+                                    Attributes = 0
+                                };
+
+                                // Pack the light according to chosen lighting model
+                                if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                                    trVertex.Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color);
+                                else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
+                                         position.X >= 0 && position.Z >= 0 &&
+                                         position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true));
+                                else
+                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
+
+                                // Check for maximum vertices reached
+                                if (roomVertices.Count >= 65536)
+                                {
+                                    throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
+                                }
+
+                                roomVertices.Add(trVertex);
+                            }
+
+                            for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                            {
+                                int numPolygons = roomQuads.Count + roomTriangles.Count;
+                                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 3000)
+                                {
+                                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
+                                }
+
+                                var triangle = new tr_face3();
+
+                                ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
+                                ushort index1 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 1]);
+                                ushort index2 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 2]);
+
+                                triangle.Texture = 20;
+
+                                // TODO Move texture area into the mesh
+                                TextureArea texture = new TextureArea();
+                                texture.DoubleSided = false;
+                                texture.BlendMode = BlendMode.Normal;
+                                texture.Texture = submesh.Value.Material.Texture;
+                                texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
+                                texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
+                                texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
+                                texture.TexCoord3 = texture.TexCoord2;
+
+                                // TODO: what happens for flipped textures?
+                                if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
+                                if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
+                                if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
+                                if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
+                                if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
+                                if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
+                                if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
+                                if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
+
+                                var result = _textureInfoManager.AddTexture(texture, true, true);
+                                roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
+                            }
+
+                            geometryVertexIndexBase += mesh.Vertices.Count;
+                        }
+                    }
+                }
+
                 for (int z = 0; z < room.NumZSectors; ++z)
                     for (int x = 0; x < room.NumXSectors; ++x)
                         for (BlockFace face = 0; face < BlockFace.Count; ++face)
@@ -365,232 +591,6 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
                         }
-
-                foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
-                {
-                    //check if static Mesh is in the Auto Merge list
-                    var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
-                        mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
-                    if (entry == null)
-                        continue;
-                    bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
-                    int meshVertexBase = roomVertices.Count;
-                    var worldTransform = staticMesh.RotationMatrix *
-                                         Matrix4x4.CreateTranslation(staticMesh.Position);
-                    var normalTransform = staticMesh.RotationMatrix;
-                    WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
-                    for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
-                    {
-                        // Apply the transform to the vertex
-                        Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
-                        Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
-                        normal = Vector3.Normalize(normal);
-                        int lightingEffect = 0;
-                        float shade = 1.0f;
-                        if (interpretShadesAsMovement)
-                        {
-                            if (j < wadStatic.Mesh.VerticesShades.Count)
-                            {
-                                lightingEffect = wadStatic.Mesh.VerticesShades[j];
-                                if (lightingEffect > 4227)
-                                {
-                                    lightingEffect = 0x2000;
-                                }
-                                else if (lightingEffect > 0)
-                                {
-                                    lightingEffect = 0x4000;
-                                }
-                                else
-                                {
-                                    // Mark this vertex with zero attrib as already processed.
-                                    lightingEffect = 0xFFFF; 
-                                }
-                            }
-                        }
-                        else
-                        {
-                            //If we have shades, use them as a factor for the resulting vertex color
-                            if (j < wadStatic.Mesh.VerticesShades.Count)
-                            {
-                                shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
-                                shade = 1.0f - shade;
-                            }
-                        }
-                        Vector3 color = CalculateLightForCustomVertex(room, position, normal, false);
-                        //Apply Shade factor
-                        color *= shade;
-                        //Apply Instance Color
-                        color *= staticMesh.Color;
-                        var trVertex = new tr_room_vertex
-                        {
-                            Position = new tr_vertex
-                            {
-                                X = (short)position.X,
-                                Y = (short)-(position.Y + room.WorldPos.Y),
-                                Z = (short)position.Z
-                            },
-                            Lighting1 = 0,
-                            Lighting2 = 0,
-                            Attributes = (ushort)lightingEffect
-                        };
-                        trVertex.Lighting2 = PackColorTo16Bit(color);
-                        // Check for maximum vertices reached
-                        if (roomVertices.Count >= 65536)
-                        {
-                            throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
-                        }
-
-                        roomVertices.Add(trVertex);
-                    }
-                    for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
-                    {
-                        WadPolygon poly = wadStatic.Mesh.Polys[i];
-                        ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
-                        ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
-                        ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
-                        ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
-                        if (poly.Shape == WadPolygonShape.Triangle)
-                        {
-                            
-                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
-                            {
-                                var result = _mergedStaticMeshTextureInfos[poly];
-                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
-                                roomTriangles.Add(tri);
-                            }
-                            else
-                            {
-                                FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
-                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
-                                roomTriangles.Add(tri);
-                                _mergedStaticMeshTextureInfos.Add(poly, result);
-                            }
-                        }
-                        else 
-                        {
-                            if(_mergedStaticMeshTextureInfos.ContainsKey(poly))
-                            {
-                                var result = _mergedStaticMeshTextureInfos[poly];
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
-                                roomQuads.Add(quad);
-                            }
-                            else
-                            {
-                                FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, true, false);
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
-                                roomQuads.Add(quad);
-                                _mergedStaticMeshTextureInfos.Add(poly, result);
-                            }
-                            
-                        }
-                    }
-                }
-
-                // Add geometry imported objects
-                int geometryVertexIndexBase = roomVertices.Count;
-                foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
-                {
-                    if (geometry.Model?.DirectXModel == null)
-                        continue;
-
-                    var meshes = geometry.Model.DirectXModel.Meshes;
-                    var worldTransform = geometry.RotationMatrix *
-                                         Matrix4x4.CreateScale(geometry.Scale) *
-                                         Matrix4x4.CreateTranslation(geometry.Position);
-                    var normalTransform = geometry.RotationMatrix;
-
-                    foreach (var mesh in meshes)
-                    {
-                        if (!geometry.MeshNameMatchesFilter(mesh.Name))
-                            continue;
-
-                        foreach (var submesh in mesh.Submeshes)
-                        {
-                            for (int j = 0; j < mesh.Vertices.Count; j++)
-                            {
-                                // Apply the transform to the vertex
-                                Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, worldTransform);
-                                Vector3 normal = MathC.HomogenousTransform(mesh.Vertices[j].Normal, normalTransform);
-                                normal = Vector3.Normalize(normal);
-
-                                var trVertex = new tr_room_vertex
-                                {
-                                    Position = new tr_vertex
-                                    {
-                                        X = (short)position.X,
-                                        Y = (short)-(position.Y + room.WorldPos.Y),
-                                        Z = (short)position.Z
-                                    },
-                                    Lighting1 = 0,
-                                    Lighting2 = 0,
-                                    Attributes = 0
-                                };
-
-                                // Pack the light according to chosen lighting model
-                                if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
-                                    trVertex.Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color);
-                                else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom && 
-                                         position.X >= 0 && position.Z >= 0 && 
-                                         position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true));
-                                else
-                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
-
-                                // Check for maximum vertices reached
-                                if (roomVertices.Count >= 65536)
-                                {
-                                    throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
-                                }
-
-                                roomVertices.Add(trVertex);
-                            }
-
-                            for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
-                            {
-                                int numPolygons = roomQuads.Count + roomTriangles.Count;
-                                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 3000)
-                                {
-                                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
-                                }
-
-                                var triangle = new tr_face3();
-
-                                ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
-                                ushort index1 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 1]);
-                                ushort index2 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 2]);
-
-                                triangle.Texture = 20;
-
-                                // TODO Move texture area into the mesh
-                                TextureArea texture = new TextureArea();
-                                texture.DoubleSided = false;
-                                texture.BlendMode = BlendMode.Normal;
-                                texture.Texture = submesh.Value.Material.Texture;
-                                texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
-                                texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
-                                texture.TexCoord2 = mesh.Vertices[submesh.Value.Indices[j + 2]].UV;
-                                texture.TexCoord3 = texture.TexCoord2;
-
-                                // TODO: what happens for flipped textures?
-                                if (texture.TexCoord0.X < 0.0f) texture.TexCoord0.X = 0.0f;
-                                if (texture.TexCoord0.Y < 0.0f) texture.TexCoord0.Y = 0.0f;
-                                if (texture.TexCoord1.X < 0.0f) texture.TexCoord1.X = 0.0f;
-                                if (texture.TexCoord1.Y < 0.0f) texture.TexCoord1.Y = 0.0f;
-                                if (texture.TexCoord2.X < 0.0f) texture.TexCoord2.X = 0.0f;
-                                if (texture.TexCoord2.Y < 0.0f) texture.TexCoord2.Y = 0.0f;
-                                if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
-                                if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
-
-                                var result = _textureInfoManager.AddTexture(texture, true, true);
-                                roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
-                            }
-
-                            geometryVertexIndexBase += mesh.Vertices.Count;
-                        }
-                    }
-                }
 
                 for (int i = 0; i < roomVertices.Count; ++i)
                 {
