@@ -3221,6 +3221,38 @@
       <anim item="0" id="442" name="DEATH_BIG_SCORPION" />
       <anim item="0" id="443" name="DEATH_SETH" />
       <anim item="0" id="444" name="BEETLE_PUT" />
+
+	  <!-- SAS -->
+      <anim item="95" id="0" name="WALK" />
+      <anim item="95" id="1" name="RUN" />
+      <anim item="95" id="2" name="SIGHT_SHOOT" />
+      <anim item="95" id="3" name="STANCE_TO_SIGHT_AIM" />
+      <anim item="95" id="4" name="WALK_TO_WALK_AIM" />
+      <anim item="95" id="5" name="RUN_TO_WALK" />
+      <anim item="95" id="6" name="WALK_SHOOT" />
+      <anim item="95" id="7" name="SIGHT_AIM_TO_STANCE" />
+      <anim item="95" id="8" name="WALK_AIM_TO_STANCE" />
+      <anim item="95" id="9" name="STANCE_TO_RUN" />
+      <anim item="95" id="10" name="STANCE_TO_WAIT" />
+      <anim item="95" id="11" name="STANCE_TO_WALK" />
+      <anim item="95" id="12" name="STANCE" />
+      <anim item="95" id="13" name="WAIT_TO_STANCE" />
+      <anim item="95" id="14" name="WAIT" />
+      <anim item="95" id="15" name="WAIT_TO_SIGHT_AIM" />
+      <anim item="95" id="16" name="WALK_TO_RUN" />
+      <anim item="95" id="17" name="WALK_TO_STANCE" />
+      <anim item="95" id="18" name="WALK_AIM_TO_WALK" />
+      <anim item="95" id="19" name="DEATH" />
+      <anim item="95" id="20" name="STANCE_TO_HOLD_AIM" />
+      <anim item="95" id="21" name="HOLD_SHOOT" />
+      <anim item="95" id="22" name="HOLD_AIM_TO_STANCE" />
+      <anim item="95" id="23" name="HOLD_PREPARE_GRENADE" />
+      <anim item="95" id="24" name="HOLD_SHOOT_GRENADE" />
+      <anim item="95" id="25" name="STANCE_TO_KNEEL_AIM" />
+      <anim item="95" id="26" name="KNEEL_SHOOT" />
+      <anim item="95" id="27" name="KNEEL_AIM_TO_STANCE" />
+      <anim item="95" id="28" name="BLIND" />
+      <anim item="95" id="29" name="BLIND_TO_STANCE" />
     </animations>
     <states>
       <state item="0" id="90" name="ROPE_TURN_LEFT" />
@@ -3252,6 +3284,26 @@
       <state item="0" id="116" name="POSITION_CORRECTOR" />
       <state item="0" id="117" name="DOUBLEDOORS_PUSH" />
       <state item="0" id="118" name="DOZY" />
+
+	  <!-- SAS -->
+      <state item="95" id="0" name="EMPTY" />
+      <state item="95" id="1" name="STOP" />
+      <state item="95" id="2" name="WALK" />
+      <state item="95" id="3" name="RUN" />
+      <state item="95" id="4" name="WAIT" />
+      <state item="95" id="5" name="SIGHT_SHOOT" />
+      <state item="95" id="6" name="WALK_SHOOT" />
+      <state item="95" id="7" name="DEATH" />
+      <state item="95" id="8" name="SIGHT_AIM" />
+      <state item="95" id="9" name="WALK_AIM" />
+      <state item="95" id="10" name="HOLD_AIM" />
+      <state item="95" id="11" name="HOLD_SHOOT" />
+      <state item="95" id="12" name="KNEEL_AIM" />
+      <state item="95" id="13" name="KNEEL_SHOOT" />
+      <state item="95" id="14" name="KNEEL_STOP" />
+      <state item="95" id="15" name="HOLD_PREPARE_GRENADE" />
+      <state item="95" id="16" name="HOLD_SHOOT_GRENADE" />
+      <state item="95" id="17" name="BLIND" />
     </states>
   </game>
   <game id="TR5">
