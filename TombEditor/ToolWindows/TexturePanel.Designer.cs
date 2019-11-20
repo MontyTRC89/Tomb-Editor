@@ -34,6 +34,7 @@ namespace TombEditor.ToolWindows
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.panelTextureMap = new TombEditor.Controls.PanelTextureMap();
+            this.butSearch = new DarkUI.Controls.DarkButton();
             this.panelTextureTools.SuspendLayout();
             this.textureSelectionPanel.SuspendLayout();
             this.SuspendLayout();
@@ -189,6 +190,7 @@ namespace TombEditor.ToolWindows
             // 
             // textureSelectionPanel
             // 
+            this.textureSelectionPanel.Controls.Add(this.butSearch);
             this.textureSelectionPanel.Controls.Add(this.butBrowseTexture);
             this.textureSelectionPanel.Controls.Add(this.butAddTexture);
             this.textureSelectionPanel.Controls.Add(this.comboCurrentTexture);
@@ -218,7 +220,7 @@ namespace TombEditor.ToolWindows
             this.comboCurrentTexture.FormattingEnabled = true;
             this.comboCurrentTexture.Location = new System.Drawing.Point(3, 3);
             this.comboCurrentTexture.Name = "comboCurrentTexture";
-            this.comboCurrentTexture.Size = new System.Drawing.Size(192, 23);
+            this.comboCurrentTexture.Size = new System.Drawing.Size(169, 23);
             this.comboCurrentTexture.TabIndex = 0;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
@@ -231,6 +233,19 @@ namespace TombEditor.ToolWindows
             this.panelTextureMap.Name = "panelTextureMap";
             this.panelTextureMap.Size = new System.Drawing.Size(279, 586);
             this.panelTextureMap.TabIndex = 4;
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(171, 3);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 4;
+            this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // TexturePanel
             // 
@@ -269,5 +284,6 @@ namespace TombEditor.ToolWindows
         private DarkUI.Controls.DarkButton butBrowseTexture;
         private DarkUI.Controls.DarkButton butBumpMaps;
         private PanelTextureMap panelTextureMap;
+        private DarkUI.Controls.DarkButton butSearch;
     }
 }
