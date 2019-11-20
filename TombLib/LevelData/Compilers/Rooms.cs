@@ -320,19 +320,9 @@ namespace TombLib.LevelData.Compilers
                             if (j < wadStatic.Mesh.VerticesShades.Count)
                             {
                                 lightingEffect = wadStatic.Mesh.VerticesShades[j];
-                                if (lightingEffect > 4227)
-                                {
-                                    lightingEffect = 0x2000;
-                                }
-                                else if (lightingEffect > 0)
-                                {
-                                    lightingEffect = 0x4000;
-                                }
-                                else
-                                {
-                                    // Mark this vertex with zero attrib as already processed.
-                                    lightingEffect = 0xFFFF;
-                                }
+
+                                     if (lightingEffect > 4227) lightingEffect = 0x2000; // Movement
+                                else if (lightingEffect > 0   ) lightingEffect = 0x4000; // Glow
                             }
                         }
                         else
@@ -595,20 +585,6 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < roomVertices.Count; ++i)
                 {
                     var trVertex = roomVertices[i];
-
-                    // If vertex already has attribute assigned, bypass it.
-                    // It's needed for merged statics which already have effect applied or
-                    // for forward-compatibility with any future vertex attrib assignment code.
-                    if (trVertex.Attributes == 0xFFFF)
-                    {
-                        // Unmark processed vertex with already applied zero attrib.
-                        trVertex.Attributes = 0x0000; 
-                        roomVertices[i] = trVertex;
-                        continue;
-                    }
-                    else if (trVertex.Attributes != 0x0000)
-                        continue;
-
                     ushort flags = 0x0000;
                     
                     bool allowMovement = true;
@@ -745,6 +721,15 @@ namespace TombLib.LevelData.Compilers
                         flags |= 0x2000;
                     if (allowGlow     && (lightEffect == RoomLightEffect.Glow     || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x4000;
+
+                    // FIXME: Workaround for desynced water reflections (possibly make it an option in TR5Main?)
+                    // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
+                    // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
+                    // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
+                    // This is original TR renderer bug and should be resolved in TR5Main DX11 renderer.
+
+                    if (lightEffect == RoomLightEffect.None && trVertex.Attributes != 0x0000)
+                        continue;
 
                     trVertex.Attributes = flags;
                     roomVertices[i] = trVertex;
