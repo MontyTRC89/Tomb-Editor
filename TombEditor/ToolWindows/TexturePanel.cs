@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombEditor.Forms;
+using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -218,5 +219,11 @@ namespace TombEditor.ToolWindows
         }
 
         private void cmbTileSize_SelectionChangeCommitted(object sender, EventArgs e) => EditorActions.SetSelectionTileSize((float)cmbTileSize.SelectedItem);
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(comboCurrentTexture);
+            searchPopUp.Show(this);
+        }
     }
 }
