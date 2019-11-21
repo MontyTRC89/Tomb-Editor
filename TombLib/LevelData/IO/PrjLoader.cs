@@ -666,9 +666,9 @@ namespace TombLib.LevelData.IO
                         room.LightEffect = RoomLightEffect.Default;
 
                     if (room.Type == RoomType.Water || room.Type == RoomType.Quicksand)
-                        room.LightEffectStrength = waterLevel;
+                        room.LightEffectStrength = (byte)(waterLevel + 1);
                     else
-                        room.LightEffectStrength = mistOrReflectionLevel;
+                        room.LightEffectStrength = (byte)(mistOrReflectionLevel + 1);
 
                     if (room.Type == RoomType.Snow || room.Type == RoomType.Rain)
                         room.TypeStrength = waterLevel;
