@@ -53,7 +53,7 @@ namespace TombLib.LevelData
         public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
         public RoomLightInterpolationMode LightInterpolationMode { get; set; } = RoomLightInterpolationMode.Default;
 
-        public byte LightEffectStrength { get; set; } = 0;
+        public byte LightEffectStrength { get; set; } = 1;
 
         public bool FlagCold { get; set; }
         public bool FlagDamage { get; set; }

@@ -206,7 +206,7 @@
             this.numLightEffectStrength.Location = new System.Drawing.Point(246, 194);
             this.numLightEffectStrength.LoopValues = false;
             this.numLightEffectStrength.Maximum = new decimal(new int[] {
-            3,
+            4,
             0,
             0,
             0});

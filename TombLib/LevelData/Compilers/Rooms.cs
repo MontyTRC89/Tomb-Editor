@@ -219,7 +219,7 @@ namespace TombLib.LevelData.Compilers
                 (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection || lightEffect == RoomLightEffect.Mist))
             {
                 var waterRoom = waterPortals.First().AdjoiningRoom;
-                newRoom.WaterScheme = (byte)(((waterRoom.LightEffectStrength + 1) * 4) + room.LightEffectStrength + 1);
+                newRoom.WaterScheme = (byte)((waterRoom.LightEffectStrength * 4) + room.LightEffectStrength);
                 waterSchemeSet = true;
             }
 
@@ -245,14 +245,14 @@ namespace TombLib.LevelData.Compilers
             {
                 case RoomLightEffect.GlowAndMovement:
                 case RoomLightEffect.Movement:
-                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 3.75f);
                     if (lightEffect == RoomLightEffect.GlowAndMovement)
                         newRoom.Flags |= 0x0100;
                     break;
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
-                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
+                    if (!waterSchemeSet) newRoom.WaterScheme = room.LightEffectStrength;
                     newRoom.Flags |= 0x0100;
                     break;
 
@@ -262,7 +262,7 @@ namespace TombLib.LevelData.Compilers
 
                 case RoomLightEffect.None:
                     if (!waterSchemeSet)
-                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5);
+                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 3.75f);
                     break;
             }
 
