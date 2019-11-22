@@ -349,9 +349,13 @@ namespace TombLib.Wad.Tr4Wad
 
                             case WadAnimCommandType.PlaySound:
                             case WadAnimCommandType.FlipEffect:
-                                // Clamp frame number to maximum real frame (another fix for WM/wad format single-frame anims frame range inversion)
-                                command.Parameter1 = (short)Math.Min((oldWad.Commands[lastCommand + 1] - newFrameStart), (newAnimation.RealNumberOfFrames - 1));
+                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - newFrameStart);
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
+
+                                // For single-frame anims, clamp frame number to first frame (another fix for WM/wad format range inversion bug)
+                                if (newAnimation.RealNumberOfFrames == 1 && command.Parameter1 > 0)
+                                    command.Parameter1 = 0;
+
                                 lastCommand += 3;
                                 break;
 
