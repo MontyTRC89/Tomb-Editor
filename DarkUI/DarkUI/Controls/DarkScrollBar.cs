@@ -80,9 +80,7 @@ namespace DarkUI.Controls
                 _value = value;
 
                 UpdateThumb(true);
-
-                if (ValueChanged != null)
-                    ValueChanged(this, new ScrollValueEventArgs(Value));
+                ValueChanged?.Invoke(this, new ScrollValueEventArgs(Value));
             }
         }
 

@@ -38,8 +38,8 @@ namespace WadTool
             Configuration.LoadWindowProperties(this, _tool.Configuration);
 
             // Try to load reference project on start-up, if specified in config
-            if ((!string.IsNullOrEmpty(tool.Configuration.Tool_ReferenceProject) &&
-                File.Exists(tool.Configuration.Tool_ReferenceProject)))
+            if (!string.IsNullOrEmpty(tool.Configuration.Tool_ReferenceProject) &&
+                File.Exists(tool.Configuration.Tool_ReferenceProject))
                 WadActions.LoadReferenceLevel(tool, this, tool.Configuration.Tool_ReferenceProject);
         }
 

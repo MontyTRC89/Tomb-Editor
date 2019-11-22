@@ -276,7 +276,7 @@ namespace TombEditor.Controls
                     SlopeScaledDepthBias = -2
                 });
 
-                _gizmo = new Gizmo(device, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
+                _gizmo = new Gizmo(DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"]);
 
                 ResetCamera(true);
             }

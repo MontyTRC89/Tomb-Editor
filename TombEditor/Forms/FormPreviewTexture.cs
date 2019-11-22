@@ -9,7 +9,7 @@ namespace TombEditor.Forms
 {
     public partial class FormPreviewTexture : DarkForm
     {
-        public FormPreviewTexture(LevelTexture texture, Editor editor)
+        public FormPreviewTexture(LevelTexture texture)
         {
             InitializeComponent();
             panelTextureMapForPreview.VisibleTexture = texture;

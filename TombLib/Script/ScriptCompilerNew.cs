@@ -625,8 +625,6 @@ namespace TombLib.Script
                             flags |= 0x01;
                         else if (entry.Command.Name == "RemoveAmulet")
                             flags |= 0x4000;
-                        else if (entry.Command.Name == "Train")
-                            flags |= 0x80;
                         /*else if (entry.Command.Name == "NoLevel")
                             flags |= (short)0x8000;*/
                         else if (entry.Command.Name == "LensFlare")

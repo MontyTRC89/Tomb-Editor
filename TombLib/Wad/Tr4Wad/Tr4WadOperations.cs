@@ -202,7 +202,7 @@ namespace TombLib.Wad.Tr4Wad
                             byte g = oldWad.SpriteData[baseIndex + 1];
                             byte r = oldWad.SpriteData[baseIndex + 2];
 
-                            if (r == 255 & g == 0 && b == 255)
+                            if (r == 255 && g == 0 && b == 255)
                                 spriteImage.SetPixel(x, y, 0, 0, 0, 0);
                             else
                                 spriteImage.SetPixel(x, y, b, g, r, 255);

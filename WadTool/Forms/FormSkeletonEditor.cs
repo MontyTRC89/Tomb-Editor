@@ -51,7 +51,7 @@ namespace WadTool
             }
 
             // Sort bones by name
-            _bones.OrderBy(bone => bone.Name);
+            _bones = _bones.OrderBy(bone => bone.Name).ToList();
 
             treeSkeleton.Nodes.AddRange(LoadSkeleton());
             ExpandSkeleton();
@@ -575,7 +575,7 @@ namespace WadTool
                         meshCount = _bones.Count;
 
                     // Synchronize meshes and bones by name
-                    meshes.OrderBy(mesh => mesh.Name);
+                    meshes = meshes.OrderBy(mesh => mesh.Name).ToList();
 
                     for (int i = 0; i < meshCount; i++)
                         ReplaceExistingBone(meshes[i], _bones[i]);
