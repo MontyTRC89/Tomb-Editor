@@ -36,7 +36,7 @@ namespace TombLib.Controls
                     return;
 
                 _referenceLevel = value;
-                butPlayPreview.Visible = value != null;
+                UpdateUI(SoundInfo, false);
             }
         }
         private Level _referenceLevel = null;
@@ -161,6 +161,7 @@ namespace TombLib.Controls
                 // Prevent a number of sound info changed events
                 _soundInfoCurrentlyChanging = true;
 
+                butPlayPreview.Visible = _referenceLevel != null;
                 numericVolume.Value = Math.Min(numericVolume.Maximum, Math.Max(numericVolume.Minimum, (decimal)newSoundInfo.Volume));
                 numericPitch.Value = Math.Min(numericPitch.Maximum, Math.Max(numericPitch.Minimum, (decimal)newSoundInfo.PitchFactor));
                 numericRange.Value = Math.Min(numericRange.Maximum, Math.Max(numericRange.Minimum, (decimal)newSoundInfo.RangeInSectors));
@@ -178,16 +179,36 @@ namespace TombLib.Controls
                     dgvSamples.Rows.Clear();
 
                     if (newSoundInfo.Samples != null && newSoundInfo.Samples.Count > 0)
-                    {
                         foreach (var sample in newSoundInfo.Samples)
-                            dgvSamples.Rows.Add(sample.FileName);
-                    }
+                            AddSampleToList(sample.FileName);
                 }
             }
             finally
             {
                 _soundInfoCurrentlyChanging = false;
             }
+        }
+
+        private bool AddSampleToList(string name)
+        {
+            var  path = string.Empty;
+            bool notFound = false;
+
+            if (_referenceLevel != null)
+            {
+                var foundPath = WadSounds.TryGetSamplePath(_referenceLevel.Settings, name);
+                notFound = string.IsNullOrEmpty(foundPath);
+                path = notFound ? "[ not found in any reference project sample paths ]" : foundPath;
+            }
+
+            dgvSamples.Rows.Add(name, path);
+
+            // Highlight row if sample is missing
+
+            if (notFound)
+                dgvSamples.Rows[dgvSamples.Rows.Count - 1].DefaultCellStyle.BackColor = dgvSamples.BackColor.MixWith(Color.DarkRed, 0.55);
+
+            return !notFound;
         }
 
         private void butClipboardCopy_Click(object sender, EventArgs e)
@@ -236,7 +257,7 @@ namespace TombLib.Controls
                 form.StartPosition = FormStartPosition.CenterParent;
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
-                dgvSamples.Rows.Add(form.Result + ".wav");
+                AddSampleToList(form.Result + ".wav");
             }
         }
 
@@ -267,10 +288,7 @@ namespace TombLib.Controls
                     }
                     if (alreadyInList) break;
 
-                    dgvSamples.Rows.Add(fileName);
-
-                    if (ReferenceLevel != null && string.IsNullOrEmpty(WadSounds.TryGetSamplePath(ReferenceLevel.Settings, fileName)))
-                        samplesAreMisplaced = true;
+                    samplesAreMisplaced = AddSampleToList(fileName);
                 }
 
                 if (samplesAreMisplaced)

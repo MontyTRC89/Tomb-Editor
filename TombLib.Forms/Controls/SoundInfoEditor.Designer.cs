@@ -30,6 +30,17 @@
         {
             this.components = new System.ComponentModel.Container();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
+            this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
+            this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
+            this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
+            this.cbRandomizePitch = new DarkUI.Controls.DarkCheckBox();
+            this.numericChance = new DarkUI.Controls.DarkNumericUpDown();
+            this.numericPitch = new DarkUI.Controls.DarkNumericUpDown();
+            this.numericRange = new DarkUI.Controls.DarkNumericUpDown();
+            this.butClipboardPaste = new DarkUI.Controls.DarkButton();
+            this.butClipboardCopy = new DarkUI.Controls.DarkButton();
+            this.butResetToDefaults = new DarkUI.Controls.DarkButton();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.picDisabledOverlay = new System.Windows.Forms.PictureBox();
             this.butMoveDown = new DarkUI.Controls.DarkButton();
@@ -37,17 +48,11 @@
             this.butDeleteSample = new DarkUI.Controls.DarkButton();
             this.butAddSample = new DarkUI.Controls.DarkButton();
             this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
-            this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbGlobal = new DarkUI.Controls.DarkCheckBox();
             this.tbID = new DarkUI.Controls.DarkTextBox();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.lblModeTooltip = new DarkUI.Controls.DarkLabel();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.numericVolume = new DarkUI.Controls.DarkNumericUpDown();
-            this.cbDisablePanning = new DarkUI.Controls.DarkCheckBox();
-            this.cbRandomizeVolume = new DarkUI.Controls.DarkCheckBox();
-            this.cbRandomizePitch = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.numericChanceLabel = new DarkUI.Controls.DarkLabel();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
@@ -57,24 +62,20 @@
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.numericVolumeLabel = new DarkUI.Controls.DarkLabel();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-            this.numericChance = new DarkUI.Controls.DarkNumericUpDown();
             this.comboLoop = new DarkUI.Controls.DarkComboBox();
-            this.numericPitch = new DarkUI.Controls.DarkNumericUpDown();
-            this.numericRange = new DarkUI.Controls.DarkNumericUpDown();
             this.butPlayPreview = new DarkUI.Controls.DarkButton();
             this.tbName = new DarkUI.Controls.DarkTextBox();
-            this.butClipboardPaste = new DarkUI.Controls.DarkButton();
             this.tbNameLabel = new DarkUI.Controls.DarkLabel();
-            this.butClipboardCopy = new DarkUI.Controls.DarkButton();
             this.butBrowse = new DarkUI.Controls.DarkButton();
-            this.butResetToDefaults = new DarkUI.Controls.DarkButton();
-            ((System.ComponentModel.ISupportInitialize)(this.picDisabledOverlay)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
-            this.darkGroupBox1.SuspendLayout();
+            this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SampleFoundPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDisabledOverlay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).BeginInit();
+            this.darkGroupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolTip
@@ -82,6 +83,166 @@
             this.toolTip.AutoPopDelay = 30000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
+            // 
+            // cbGlobal
+            // 
+            this.cbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbGlobal.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbGlobal.Location = new System.Drawing.Point(294, 4);
+            this.cbGlobal.Name = "cbGlobal";
+            this.cbGlobal.Size = new System.Drawing.Size(107, 17);
+            this.cbGlobal.TabIndex = 33;
+            this.cbGlobal.Text = "Global sound";
+            this.toolTip.SetToolTip(this.cbGlobal, "Include sound when Tomb Editor autodetect option is used");
+            this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericVolume
+            // 
+            this.numericVolume.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericVolume.IncrementAlternate = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.numericVolume.Location = new System.Drawing.Point(78, 6);
+            this.numericVolume.LoopValues = false;
+            this.numericVolume.Name = "numericVolume";
+            this.numericVolume.Size = new System.Drawing.Size(68, 22);
+            this.numericVolume.TabIndex = 4;
+            this.toolTip.SetToolTip(this.numericVolume, "Volume in percent of the volume used in the sample.");
+            this.numericVolume.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // cbDisablePanning
+            // 
+            this.cbDisablePanning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbDisablePanning.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDisablePanning.Location = new System.Drawing.Point(255, 33);
+            this.cbDisablePanning.Name = "cbDisablePanning";
+            this.cbDisablePanning.Size = new System.Drawing.Size(140, 17);
+            this.cbDisablePanning.TabIndex = 13;
+            this.cbDisablePanning.Text = "Disable 3D positioning";
+            this.toolTip.SetToolTip(this.cbDisablePanning, "Disable 3D environment for this sound.");
+            this.cbDisablePanning.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // cbRandomizeVolume
+            // 
+            this.cbRandomizeVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbRandomizeVolume.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbRandomizeVolume.Location = new System.Drawing.Point(333, 7);
+            this.cbRandomizeVolume.Name = "cbRandomizeVolume";
+            this.cbRandomizeVolume.Size = new System.Drawing.Size(62, 17);
+            this.cbRandomizeVolume.TabIndex = 6;
+            this.cbRandomizeVolume.Text = "volume";
+            this.toolTip.SetToolTip(this.cbRandomizeVolume, "Slightly vary the volume for each playback of the sound info (around 12%).");
+            this.cbRandomizeVolume.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // cbRandomizePitch
+            // 
+            this.cbRandomizePitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbRandomizePitch.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbRandomizePitch.Location = new System.Drawing.Point(272, 7);
+            this.cbRandomizePitch.Name = "cbRandomizePitch";
+            this.cbRandomizePitch.Size = new System.Drawing.Size(59, 17);
+            this.cbRandomizePitch.TabIndex = 10;
+            this.cbRandomizePitch.Text = "pitch";
+            this.toolTip.SetToolTip(this.cbRandomizePitch, "Slightly vary the pitch for each playback of the sound info (around 10%).");
+            this.cbRandomizePitch.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericChance
+            // 
+            this.numericChance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericChance.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericChance.Location = new System.Drawing.Point(78, 84);
+            this.numericChance.LoopValues = false;
+            this.numericChance.Name = "numericChance";
+            this.numericChance.Size = new System.Drawing.Size(68, 22);
+            this.numericChance.TabIndex = 15;
+            this.toolTip.SetToolTip(this.numericChance, "Probability that any sample will play when triggered.");
+            this.numericChance.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericPitch
+            // 
+            this.numericPitch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericPitch.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericPitch.Location = new System.Drawing.Point(78, 32);
+            this.numericPitch.LoopValues = false;
+            this.numericPitch.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.numericPitch.Name = "numericPitch";
+            this.numericPitch.Size = new System.Drawing.Size(68, 22);
+            this.numericPitch.TabIndex = 8;
+            this.toolTip.SetToolTip(this.numericPitch, "Pitch of the sound. Value is relative.");
+            this.numericPitch.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // numericRange
+            // 
+            this.numericRange.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.numericRange.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numericRange.Location = new System.Drawing.Point(78, 58);
+            this.numericRange.LoopValues = false;
+            this.numericRange.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.numericRange.Name = "numericRange";
+            this.numericRange.Size = new System.Drawing.Size(68, 22);
+            this.numericRange.TabIndex = 12;
+            this.toolTip.SetToolTip(this.numericRange, "Range in blocks from where the sample can be heard relative to where it was trigg" +
+        "ered.");
+            this.numericRange.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
+            // 
+            // butClipboardPaste
+            // 
+            this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butClipboardPaste.Checked = false;
+            this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
+            this.butClipboardPaste.Location = new System.Drawing.Point(350, 31);
+            this.butClipboardPaste.Name = "butClipboardPaste";
+            this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
+            this.butClipboardPaste.TabIndex = 22;
+            this.toolTip.SetToolTip(this.butClipboardPaste, "Paste all settings and samples from the clipboard. (Must have been copied before." +
+        ")");
+            this.butClipboardPaste.Click += new System.EventHandler(this.butClipboardPaste_Click);
+            // 
+            // butClipboardCopy
+            // 
+            this.butClipboardCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butClipboardCopy.Checked = false;
+            this.butClipboardCopy.Image = global::TombLib.Properties.Resources.general_copy_16;
+            this.butClipboardCopy.Location = new System.Drawing.Point(322, 31);
+            this.butClipboardCopy.Name = "butClipboardCopy";
+            this.butClipboardCopy.Size = new System.Drawing.Size(22, 22);
+            this.butClipboardCopy.TabIndex = 22;
+            this.toolTip.SetToolTip(this.butClipboardCopy, "Copy all settings and samples into the clipboard.");
+            this.butClipboardCopy.Click += new System.EventHandler(this.butClipboardCopy_Click);
+            // 
+            // butResetToDefaults
+            // 
+            this.butResetToDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butResetToDefaults.Checked = false;
+            this.butResetToDefaults.Image = global::TombLib.Properties.Resources.general_undo_16;
+            this.butResetToDefaults.Location = new System.Drawing.Point(378, 31);
+            this.butResetToDefaults.Name = "butResetToDefaults";
+            this.butResetToDefaults.Size = new System.Drawing.Size(22, 22);
+            this.butResetToDefaults.TabIndex = 104;
+            this.toolTip.SetToolTip(this.butResetToDefaults, "Reset to defaults");
+            this.butResetToDefaults.Click += new System.EventHandler(this.butResetToDefaults_Click);
             // 
             // colSampleName
             // 
@@ -105,6 +266,7 @@
             // butMoveDown
             // 
             this.butMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butMoveDown.Checked = false;
             this.butMoveDown.Image = global::TombLib.Properties.Resources.general_ArrowDown_16;
             this.butMoveDown.ImagePadding = 3;
             this.butMoveDown.Location = new System.Drawing.Point(378, 178);
@@ -116,6 +278,7 @@
             // butMoveUp
             // 
             this.butMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butMoveUp.Checked = false;
             this.butMoveUp.Image = global::TombLib.Properties.Resources.general_ArrowUp_16;
             this.butMoveUp.ImagePadding = 3;
             this.butMoveUp.Location = new System.Drawing.Point(350, 178);
@@ -126,6 +289,7 @@
             // 
             // butDeleteSample
             // 
+            this.butDeleteSample.Checked = false;
             this.butDeleteSample.Image = global::TombLib.Properties.Resources.general_trash_16;
             this.butDeleteSample.ImagePadding = 3;
             this.butDeleteSample.Location = new System.Drawing.Point(178, 178);
@@ -138,6 +302,7 @@
             // 
             // butAddSample
             // 
+            this.butAddSample.Checked = false;
             this.butAddSample.Image = global::TombLib.Properties.Resources.general_plus_math_16;
             this.butAddSample.ImagePadding = 3;
             this.butAddSample.Location = new System.Drawing.Point(0, 178);
@@ -160,7 +325,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvSamples.ColumnHeadersHeight = 17;
             this.dgvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.SamplePathColumn});
+            this.SamplePathColumn,
+            this.SampleFoundPathColumn});
             this.dgvSamples.Location = new System.Drawing.Point(0, 206);
             this.dgvSamples.Name = "dgvSamples";
             this.dgvSamples.RowHeadersWidth = 41;
@@ -168,24 +334,6 @@
             this.dgvSamples.TabIndex = 97;
             this.dgvSamples.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvSamples_RowsAdded);
             this.dgvSamples.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvSamples_RowsRemoved);
-            // 
-            // SamplePathColumn
-            // 
-            this.SamplePathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SamplePathColumn.HeaderText = "Sample name";
-            this.SamplePathColumn.Name = "SamplePathColumn";
-            // 
-            // cbGlobal
-            // 
-            this.cbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbGlobal.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbGlobal.Location = new System.Drawing.Point(294, 4);
-            this.cbGlobal.Name = "cbGlobal";
-            this.cbGlobal.Size = new System.Drawing.Size(107, 17);
-            this.cbGlobal.TabIndex = 33;
-            this.cbGlobal.Text = "Global sound";
-            this.toolTip.SetToolTip(this.cbGlobal, "Include sound when Tomb Editor autodetect option is used");
-            this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
             // tbID
             // 
@@ -256,59 +404,6 @@
             this.darkLabel7.Size = new System.Drawing.Size(67, 13);
             this.darkLabel7.TabIndex = 30;
             this.darkLabel7.Text = "Randomize:";
-            // 
-            // numericVolume
-            // 
-            this.numericVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericVolume.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericVolume.IncrementAlternate = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.numericVolume.Location = new System.Drawing.Point(78, 6);
-            this.numericVolume.Name = "numericVolume";
-            this.numericVolume.Size = new System.Drawing.Size(68, 22);
-            this.numericVolume.TabIndex = 4;
-            this.toolTip.SetToolTip(this.numericVolume, "Volume in percent of the volume used in the sample.");
-            this.numericVolume.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // cbDisablePanning
-            // 
-            this.cbDisablePanning.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbDisablePanning.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDisablePanning.Location = new System.Drawing.Point(255, 33);
-            this.cbDisablePanning.Name = "cbDisablePanning";
-            this.cbDisablePanning.Size = new System.Drawing.Size(140, 17);
-            this.cbDisablePanning.TabIndex = 13;
-            this.cbDisablePanning.Text = "Disable 3D positioning";
-            this.toolTip.SetToolTip(this.cbDisablePanning, "Disable 3D environment for this sound.");
-            this.cbDisablePanning.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // cbRandomizeVolume
-            // 
-            this.cbRandomizeVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRandomizeVolume.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbRandomizeVolume.Location = new System.Drawing.Point(333, 7);
-            this.cbRandomizeVolume.Name = "cbRandomizeVolume";
-            this.cbRandomizeVolume.Size = new System.Drawing.Size(62, 17);
-            this.cbRandomizeVolume.TabIndex = 6;
-            this.cbRandomizeVolume.Text = "volume";
-            this.toolTip.SetToolTip(this.cbRandomizeVolume, "Slightly vary the volume for each playback of the sound info (around 12%).");
-            this.cbRandomizeVolume.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // cbRandomizePitch
-            // 
-            this.cbRandomizePitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbRandomizePitch.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbRandomizePitch.Location = new System.Drawing.Point(272, 7);
-            this.cbRandomizePitch.Name = "cbRandomizePitch";
-            this.cbRandomizePitch.Size = new System.Drawing.Size(59, 17);
-            this.cbRandomizePitch.TabIndex = 10;
-            this.cbRandomizePitch.Text = "pitch";
-            this.toolTip.SetToolTip(this.cbRandomizePitch, "Slightly vary the pitch for each playback of the sound info (around 10%).");
-            this.cbRandomizePitch.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
             // darkLabel2
             // 
@@ -409,23 +504,6 @@
             this.darkLabel6.TabIndex = 17;
             this.darkLabel6.Text = "Mode:";
             // 
-            // numericChance
-            // 
-            this.numericChance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericChance.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericChance.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericChance.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numericChance.Location = new System.Drawing.Point(78, 84);
-            this.numericChance.Name = "numericChance";
-            this.numericChance.Size = new System.Drawing.Size(68, 22);
-            this.numericChance.TabIndex = 15;
-            this.toolTip.SetToolTip(this.numericChance, "Probability that any sample will play when triggered.");
-            this.numericChance.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
             // comboLoop
             // 
             this.comboLoop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -441,55 +519,10 @@
             this.comboLoop.TabIndex = 18;
             this.comboLoop.SelectedIndexChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
-            // numericPitch
-            // 
-            this.numericPitch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericPitch.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericPitch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericPitch.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numericPitch.Location = new System.Drawing.Point(78, 32);
-            this.numericPitch.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            -2147483648});
-            this.numericPitch.LoopValues = false;
-            this.numericPitch.Name = "numericPitch";
-            this.numericPitch.Size = new System.Drawing.Size(68, 22);
-            this.numericPitch.TabIndex = 8;
-            this.toolTip.SetToolTip(this.numericPitch, "Pitch of the sound. Value is relative.");
-            this.numericPitch.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
-            // numericRange
-            // 
-            this.numericRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numericRange.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericRange.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.numericRange.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numericRange.Location = new System.Drawing.Point(78, 58);
-            this.numericRange.Maximum = new decimal(new int[] {
-            255,
-            0,
-            0,
-            0});
-            this.numericRange.Name = "numericRange";
-            this.numericRange.Size = new System.Drawing.Size(68, 22);
-            this.numericRange.TabIndex = 12;
-            this.toolTip.SetToolTip(this.numericRange, "Range in blocks from where the sample can be heard relative to where it was trigg" +
-        "ered.");
-            this.numericRange.ValueChanged += new System.EventHandler(this.OnSoundInfoChanged);
-            // 
             // butPlayPreview
             // 
             this.butPlayPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPlayPreview.Checked = false;
             this.butPlayPreview.Image = global::TombLib.Properties.Resources.actions_play_16;
             this.butPlayPreview.ImagePadding = 3;
             this.butPlayPreview.Location = new System.Drawing.Point(202, 31);
@@ -511,18 +544,6 @@
             this.tbName.TabIndex = 1;
             this.tbName.TextChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
-            // butClipboardPaste
-            // 
-            this.butClipboardPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butClipboardPaste.Image = global::TombLib.Properties.Resources.general_clipboard_161;
-            this.butClipboardPaste.Location = new System.Drawing.Point(350, 31);
-            this.butClipboardPaste.Name = "butClipboardPaste";
-            this.butClipboardPaste.Size = new System.Drawing.Size(22, 22);
-            this.butClipboardPaste.TabIndex = 22;
-            this.toolTip.SetToolTip(this.butClipboardPaste, "Paste all settings and samples from the clipboard. (Must have been copied before." +
-        ")");
-            this.butClipboardPaste.Click += new System.EventHandler(this.butClipboardPaste_Click);
-            // 
             // tbNameLabel
             // 
             this.tbNameLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -533,19 +554,9 @@
             this.tbNameLabel.Text = "Name:";
             this.tbNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // butClipboardCopy
-            // 
-            this.butClipboardCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butClipboardCopy.Image = global::TombLib.Properties.Resources.general_copy_16;
-            this.butClipboardCopy.Location = new System.Drawing.Point(322, 31);
-            this.butClipboardCopy.Name = "butClipboardCopy";
-            this.butClipboardCopy.Size = new System.Drawing.Size(22, 22);
-            this.butClipboardCopy.TabIndex = 22;
-            this.toolTip.SetToolTip(this.butClipboardCopy, "Copy all settings and samples into the clipboard.");
-            this.butClipboardCopy.Click += new System.EventHandler(this.butClipboardCopy_Click);
-            // 
             // butBrowse
             // 
+            this.butBrowse.Checked = false;
             this.butBrowse.Image = global::TombLib.Properties.Resources.general_Open_16;
             this.butBrowse.ImagePadding = 3;
             this.butBrowse.Location = new System.Drawing.Point(89, 178);
@@ -556,16 +567,19 @@
             this.butBrowse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butBrowse.Click += new System.EventHandler(this.butBrowse_Click);
             // 
-            // butResetToDefaults
+            // SamplePathColumn
             // 
-            this.butResetToDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butResetToDefaults.Image = global::TombLib.Properties.Resources.general_undo_16;
-            this.butResetToDefaults.Location = new System.Drawing.Point(378, 31);
-            this.butResetToDefaults.Name = "butResetToDefaults";
-            this.butResetToDefaults.Size = new System.Drawing.Size(22, 22);
-            this.butResetToDefaults.TabIndex = 104;
-            this.toolTip.SetToolTip(this.butResetToDefaults, "Reset to defaults");
-            this.butResetToDefaults.Click += new System.EventHandler(this.butResetToDefaults_Click);
+            this.SamplePathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SamplePathColumn.FillWeight = 30F;
+            this.SamplePathColumn.HeaderText = "Sample name";
+            this.SamplePathColumn.Name = "SamplePathColumn";
+            // 
+            // SampleFoundPathColumn
+            // 
+            this.SampleFoundPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SampleFoundPathColumn.FillWeight = 70F;
+            this.SampleFoundPathColumn.HeaderText = "Found in directory";
+            this.SampleFoundPathColumn.Name = "SampleFoundPathColumn";
             // 
             // SoundInfoEditor
             // 
@@ -593,14 +607,14 @@
             this.MinimumSize = new System.Drawing.Size(400, 346);
             this.Name = "SoundInfoEditor";
             this.Size = new System.Drawing.Size(400, 426);
-            ((System.ComponentModel.ISupportInitialize)(this.picDisabledOverlay)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).EndInit();
-            this.darkGroupBox1.ResumeLayout(false);
-            this.darkGroupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericRange)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picDisabledOverlay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvSamples)).EndInit();
+            this.darkGroupBox1.ResumeLayout(false);
+            this.darkGroupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -642,9 +656,10 @@
         private DarkUI.Controls.DarkButton butDeleteSample;
         private DarkUI.Controls.DarkButton butMoveUp;
         private DarkUI.Controls.DarkButton butMoveDown;
-        private System.Windows.Forms.DataGridViewTextBoxColumn SamplePathColumn;
         private System.Windows.Forms.PictureBox picDisabledOverlay;
         private DarkUI.Controls.DarkButton butBrowse;
         private DarkUI.Controls.DarkButton butResetToDefaults;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SamplePathColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SampleFoundPathColumn;
     }
 }
