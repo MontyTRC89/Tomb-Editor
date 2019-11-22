@@ -93,7 +93,7 @@
             this.cbGlobal.Size = new System.Drawing.Size(107, 17);
             this.cbGlobal.TabIndex = 33;
             this.cbGlobal.Text = "Global sound";
-            this.toolTip.SetToolTip(this.cbGlobal, "Include sound when Tomb Editor autodetect option is used");
+            this.toolTip.SetToolTip(this.cbGlobal, "Always include sound when Tomb Editor autodetect option is used");
             this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
             // numericVolume
