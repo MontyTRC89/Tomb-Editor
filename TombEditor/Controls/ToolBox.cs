@@ -130,7 +130,7 @@ namespace TombEditor.Controls
         private void ContextMenuTimer_Tick(object sender, EventArgs e)
         {
             var _currentContextMenu = new GridPaintContextMenu(_editor, this);
-            _currentContextMenu?.Show(Cursor.Position);
+            _currentContextMenu.Show(Cursor.Position);
             _contextMenuTimer.Stop();
         }
 

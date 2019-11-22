@@ -57,7 +57,7 @@ namespace TombEditor.Forms
 
         private void UpdateDialog()
         {
-            if (textureMap.VisibleTexture != null && textureMap.VisibleTexture is LevelTexture)
+            if (textureMap.VisibleTexture != null)
             {
                 bool isCustomMap = !String.IsNullOrEmpty(textureMap.VisibleTexture.BumpPath);
                 cmbBump.Enabled = !isCustomMap;
@@ -75,9 +75,9 @@ namespace TombEditor.Forms
 
         private void SwitchCustomBumpmap()
         {
-            if (textureMap.VisibleTexture != null && textureMap.VisibleTexture is LevelTexture)
+            if (textureMap.VisibleTexture != null)
             {
-                var currentTexture = textureMap.VisibleTexture as LevelTexture;
+                var currentTexture = textureMap.VisibleTexture;
 
                 if (cbUseCustomFile.Checked)
                     currentTexture.BumpPath = null;

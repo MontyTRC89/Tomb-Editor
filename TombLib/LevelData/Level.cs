@@ -76,7 +76,7 @@ namespace TombLib.LevelData
         public Room GetNearbyRoomBelow(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
         {
             var roomsOutsideGroup = roomsToCheck.Where(r => !roomGroup.Contains(r) && r != null).ToList();
-            if (roomsOutsideGroup.Count() == 0 || roomsOutsideGroup == null)
+            if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
                 return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetHighestCorner() + tolerance && height >= r.Position.Y + r.GetHighestCorner() - tolerance));
@@ -85,7 +85,7 @@ namespace TombLib.LevelData
         public Room GetNearbyRoomAbove(HashSet<Room> roomGroup, HashSet<Room> roomsToCheck, int height, int tolerance)
         {
             var roomsOutsideGroup = roomsToCheck.Where(r => !roomGroup.Contains(r) && r != null).ToList();
-            if (roomsOutsideGroup.Count() == 0 || roomsOutsideGroup == null)
+            if (roomsOutsideGroup == null || roomsOutsideGroup.Count() == 0)
                 return null;
             else
                 return roomsOutsideGroup.FirstOrDefault(r => (height < r.Position.Y + r.GetLowestCorner() + tolerance && height >= r.Position.Y + r.GetLowestCorner() - tolerance));

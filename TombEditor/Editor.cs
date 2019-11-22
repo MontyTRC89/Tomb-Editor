@@ -810,7 +810,6 @@ namespace TombEditor
                             (sender, e) => LoadedWadsChange(false),
                             (sender, e) => LoadedSoundsCatalogsChange(false),
                             (sender, e) => LoadedImportedGeometriesChange(true),
-                            (sender, e) => LoadedImportedGeometriesChange(false),
                             SynchronizationContext);
                     }
                     else

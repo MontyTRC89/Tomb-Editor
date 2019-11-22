@@ -164,8 +164,7 @@ namespace TombLib.GeometryIO.Importers
                 scene.HasAnimations && scene.AnimationCount > 0)
             {
                 // Find all mesh nodes to count against animation nodes
-                var meshNameList = CollectMeshNodeNames(scene.RootNode);
-                meshNameList.OrderBy(s => s); // Sort by ascending names, just in case
+                var meshNameList = CollectMeshNodeNames(scene.RootNode).OrderBy(s => s).ToList(); // Sort by ascending names, just in case
 
                 // Loop through all animations and add appropriate ones.
                 // Integrity check: there should be meshes and mesh count should be equal to unique mesh name count.

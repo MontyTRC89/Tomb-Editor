@@ -101,8 +101,6 @@ namespace TombEditor
 
         private static class Tomb4ConvinienceImprovements
         {
-            private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
             private delegate int EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
             [DllImport("User32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -290,8 +288,6 @@ namespace TombEditor
 
         private static class Tomb4Patcher
         {
-            private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
             [DllImport("ntdll.dll", SetLastError = false)]
             public static extern uint NtSuspendProcess(IntPtr processHandle);
             [DllImport("ntdll.dll", SetLastError = false)]

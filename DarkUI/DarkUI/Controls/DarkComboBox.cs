@@ -320,8 +320,7 @@ namespace DarkUI.Controls
         // Raise the SelectedIndexChanged event.
         private void OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            if (SelectedIndexChanged != null)
-                SelectedIndexChanged(this, e);
+            SelectedIndexChanged?.Invoke(this, e);
         }
     }
 

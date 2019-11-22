@@ -93,7 +93,7 @@ namespace TombEditor.Forms
         private List<AnimatedTextureSet> _backupSets = new List<AnimatedTextureSet>();
 
 
-        public FormAnimatedTextures(Editor editor, LevelTexture levelTextureToOpen)
+        public FormAnimatedTextures(Editor editor)
         {
             InitializeComponent();
 

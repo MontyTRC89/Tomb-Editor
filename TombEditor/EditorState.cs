@@ -28,7 +28,7 @@ namespace TombEditor
         public bool TextureUVFixer { get; set; }
         public PaintGridSize GridSize { get; set; }
 
-        public static bool operator == (EditorTool first, EditorTool second)
+        public static bool operator ==(EditorTool first, EditorTool second)
         {
             return first.Tool == second.Tool && first.TextureUVFixer == second.TextureUVFixer;
         }

@@ -1081,7 +1081,7 @@ namespace TombLib.LevelData.IO
                     NG.NgParameterInfo.DecodeNGRealTimer(instance.TargetType, instance.TriggerType,
                         unchecked((ushort)targetObjectId), realTimer, instance.CodeBits, out timer, out extra);
                     instance.Timer = timer == null ? null : new TriggerParameterUshort(timer.Value);
-                    instance.Extra = timer == null ? null : new TriggerParameterUshort(extra.Value);
+                    instance.Extra = extra == null ? null : new TriggerParameterUshort(extra.Value);
 
 
                     objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, targetObj => instance.Target = targetObj));

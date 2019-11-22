@@ -1180,7 +1180,7 @@ namespace TombEditor
                 var existingWindow = Application.OpenForms["FormAnimatedTextures"];
                 if (existingWindow == null)
                 {
-                    FormAnimatedTextures form = new FormAnimatedTextures(args.Editor, null);
+                    FormAnimatedTextures form = new FormAnimatedTextures(args.Editor);
                     form.Show(args.Window);
                 }
                 else

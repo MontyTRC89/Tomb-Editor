@@ -32,7 +32,7 @@ namespace TombEditor.Controls
             base.ValueChanged += (sender, e) => 
             {
                 if (!_currentlySet)
-                    ValueChanged.Invoke(sender, e);
+                    ValueChanged?.Invoke(sender, e);
             };
         }
 

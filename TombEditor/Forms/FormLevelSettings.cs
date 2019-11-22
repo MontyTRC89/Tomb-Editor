@@ -893,7 +893,7 @@ namespace TombEditor.Forms
 
                 // Open preview
                 _previewTexture?.Dispose();
-                _previewTexture = new FormPreviewTexture(texture, _editor);
+                _previewTexture = new FormPreviewTexture(texture);
                 var screenArea = textureFileDataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true);
                 FitPreview(_previewTexture, new Rectangle(textureFileDataGridView.PointToScreen(screenArea.Location), screenArea.Size));
                 _previewTexture.Show(this);

@@ -29,7 +29,6 @@ namespace TombEditor
             EventHandler<ChangedEventArgs<ReferencedWad>> wadChanged,
             EventHandler<ChangedEventArgs<ReferencedSoundsCatalog>> soundsCatalogChanged,
             EventHandler<ChangedEventArgs<ImportedGeometry>> importedGeometryChanged,
-            EventHandler<ChangedEventArgs<ImportedGeometryTexture>> ImportedGeometryTexturesChanged,
             SynchronizationContext synchronizationContext = null)
         {
             TextureChanged = textureChanged;
