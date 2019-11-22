@@ -290,9 +290,9 @@ namespace TombLib.Wad.Tr4Wad
                 newAnimation.NextFrame = oldAnimation.NextFrame;
                 newAnimation.Name = TrCatalog.GetAnimationName(TRVersion.Game.TR4, oldMoveable.ObjectID, (uint)j);
 
-                // Fix wadmerger bug with inverted frame start/end on 0-frame anims
+                // Fix wadmerger/wad format bug with inverted frame start/end on single-frame anims
                 ushort newFrameStart = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameStart : oldAnimation.FrameEnd;
-                ushort newFrameEnd   = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameEnd : oldAnimation.FrameStart;
+                ushort newFrameEnd   = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameEnd : newFrameStart;
                 newAnimation.RealNumberOfFrames = (ushort)(newFrameEnd - newFrameStart + 1);
 
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
@@ -327,39 +327,30 @@ namespace TombLib.Wad.Tr4Wad
 
                         WadAnimCommand command = new WadAnimCommand();
                         command.Type = (WadAnimCommandType)commandType;
-                        switch (commandType)
+                        switch (command.Type)
                         {
-                            case 1:
+                            case WadAnimCommandType.SetPosition:
                                 command.Parameter1 = (short)oldWad.Commands[lastCommand + 1];
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 command.Parameter3 = (short)oldWad.Commands[lastCommand + 3];
-
                                 lastCommand += 4;
                                 break;
 
-                            case 2:
+                            case WadAnimCommandType.SetJumpDistance:
                                 command.Parameter1 = (short)oldWad.Commands[lastCommand + 1];
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
-
                                 lastCommand += 3;
                                 break;
 
-                            case 3:
+                            case WadAnimCommandType.EmptyHands:
+                            case WadAnimCommandType.KillEntity:
                                 lastCommand += 1;
                                 break;
 
-                            case 4:
-                                lastCommand += 1;
-                                break;
-
-                            case 5:
-                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - newFrameStart);
-                                command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
-                                lastCommand += 3;
-                                break;
-
-                            case 6:
-                                command.Parameter1 = (short)(oldWad.Commands[lastCommand + 1] - newFrameStart);
+                            case WadAnimCommandType.PlaySound:
+                            case WadAnimCommandType.FlipEffect:
+                                // Clamp frame number to maximum real frame (another fix for WM/wad format single-frame anims frame range inversion)
+                                command.Parameter1 = (short)Math.Min((oldWad.Commands[lastCommand + 1] - newFrameStart), (newAnimation.RealNumberOfFrames - 1));
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
                                 lastCommand += 3;
                                 break;
