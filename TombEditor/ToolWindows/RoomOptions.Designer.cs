@@ -215,6 +215,11 @@
             this.numLightEffectStrength.TabIndex = 15;
             this.numLightEffectStrength.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.toolTip.SetToolTip(this.numLightEffectStrength, "Light / transform effect strength");
+            this.numLightEffectStrength.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numLightEffectStrength.ValueChanged += new System.EventHandler(this.numLightEffectStrength_ValueChanged);
             // 
             // comboPortalShade
