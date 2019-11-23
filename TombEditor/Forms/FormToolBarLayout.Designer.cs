@@ -90,7 +90,7 @@
             this.butToSrc.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.butToSrc.Checked = false;
             this.butToSrc.Image = global::TombEditor.Properties.Resources.general_angle_left_16;
-            this.butToSrc.Location = new System.Drawing.Point(211, 6);
+            this.butToSrc.Location = new System.Drawing.Point(211, 178);
             this.butToSrc.Name = "butToSrc";
             this.butToSrc.Size = new System.Drawing.Size(30, 166);
             this.butToSrc.TabIndex = 2;
@@ -159,7 +159,7 @@
             this.butToDest.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.butToDest.Checked = false;
             this.butToDest.Image = global::TombEditor.Properties.Resources.general_angle_right_16;
-            this.butToDest.Location = new System.Drawing.Point(211, 178);
+            this.butToDest.Location = new System.Drawing.Point(211, 6);
             this.butToDest.Name = "butToDest";
             this.butToDest.Size = new System.Drawing.Size(30, 166);
             this.butToDest.TabIndex = 5;
