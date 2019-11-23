@@ -140,6 +140,22 @@ namespace TombEditor
         public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
 
+        // Toolbar button order
+
+        public string[] UI_ToolbarButtons { get; set; } = new string[]
+        {
+            "2D", "3D", "FaceEdit", "LightingMode", "|",
+            "Undo", "Redo", "|",
+            "CenterCamera", "DrawPortals", "DrawAllRooms", "DrawHorizon", "DrawRoomNames",
+            "DrawCardinalDirections", "DrawExtraBlendingModes", "DrawIllegalSlopes",
+            "DrawSlideDirections", "DisableGeometryPicking", "DrawObjects", "|",
+            "FlipMap", "|",
+            "Copy", "Paste", "Stamp", "|",
+            "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
+            "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "|",
+            "CompileLevel", "CompileLevelAndPlay"
+        };
+
         // Window options
 
         public Point ColorDialog_Position { get; set; } = new Point(-1); // Center by default
