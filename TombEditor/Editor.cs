@@ -372,6 +372,7 @@ namespace TombEditor
         {
             public bool UpdateLayout { get; internal set; } = false;
             public bool UpdateKeyboardShortcuts { get; internal set; } = false;
+            public bool UpdateToolbarLayout { get; internal set; } = false;
             public bool Save { get; internal set; } = false;
         }
         private Configuration _configuration;
@@ -670,9 +671,15 @@ namespace TombEditor
         // Change sector highlights
         public SectorColoringManager SectorColoringManager { get; private set; }
 
-        public void ConfigurationChange(bool updateKeyboardShortcuts = false, bool updateLayout = false, bool save = false)
+        public void ConfigurationChange(bool updateKeyboardShortcuts = false, bool updateLayout = false, bool updateToolbarLayout = false, bool save = false)
         {
-            RaiseEvent(new ConfigurationChangedEvent { UpdateKeyboardShortcuts = updateKeyboardShortcuts, UpdateLayout = updateLayout, Save = save });
+            RaiseEvent(new ConfigurationChangedEvent
+            {
+                UpdateKeyboardShortcuts = updateKeyboardShortcuts,
+                UpdateLayout = updateLayout,
+                Save = save,
+                UpdateToolbarLayout = updateToolbarLayout
+            });
         }
 
         // Select a room and (optonally) center the camera

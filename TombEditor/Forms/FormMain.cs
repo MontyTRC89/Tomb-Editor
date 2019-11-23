@@ -380,7 +380,7 @@ namespace TombEditor.Forms
             {
                 // Always save window properties on exit and resave config!
                 Configuration.SaveWindowProperties(this, _editor.Configuration);
-                _editor.ConfigurationChange(false, false, true);
+                _editor.ConfigurationChange(false, false, false, true);
             }
 
             base.OnFormClosing(e);

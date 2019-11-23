@@ -8,13 +8,16 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Forms;
 using TombLib.Utils;
-using System.Reflection;
+using System.Linq;
+using System.Collections.Generic;
+using TombEditor.Forms;
 
 namespace TombEditor.ToolWindows
 {
     public partial class MainView : DarkDocument
     {
         private readonly Editor _editor;
+        private readonly List<ToolStripItem> _toolstripButtons = new List<ToolStripItem>();
         private readonly PopUpInfo popup = new PopUpInfo();
 
         public MainView()
@@ -24,10 +27,14 @@ namespace TombEditor.ToolWindows
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
 
+            foreach (var button in toolStrip.Items)
+                _toolstripButtons.Add((ToolStripItem)button);
+
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
             RefreshControls(_editor.Configuration);
+            UpdateToolStripLayout();
             GenerateToolStripCommands(toolStrip.Items);
         }
 
@@ -92,8 +99,16 @@ namespace TombEditor.ToolWindows
         {
             if (obj is Editor.ConfigurationChangedEvent)
             {
-                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                var o = (Editor.ConfigurationChangedEvent)obj;
+
+                if (o.UpdateKeyboardShortcuts)
                     GenerateToolStripCommands(toolStrip.Items, true);
+
+                if (o.UpdateToolbarLayout)
+                {
+                    UpdateToolStripLayout();
+                    GenerateToolStripCommands(toolStrip.Items, true);
+                }
 
                 RefreshControls(_editor.Configuration);
             }
@@ -205,6 +220,25 @@ namespace TombEditor.ToolWindows
             panel3D.Invalidate();
         }
 
+        private void UpdateToolStripLayout()
+        {
+            toolStrip.Items.Clear();
+
+            foreach (var item in _editor.Configuration.UI_ToolbarButtons)
+            {
+                if (item == "|")
+                    toolStrip.Items.Add(new ToolStripSeparator());
+                else
+                {
+                    var key = "but" + item;
+                    var btn = _toolstripButtons.FirstOrDefault(but => but.Name == key);
+                    if (btn != null) toolStrip.Items.Add(btn);
+                }
+            }
+
+            toolStrip.Invalidate(); // Just in case
+        }
+
         private void GenerateToolStripCommands(ToolStripItemCollection items, bool onlyLabels = false)
         {
             foreach (object obj in items)
@@ -235,6 +269,20 @@ namespace TombEditor.ToolWindows
                     }
                 }
             }
+        }
+
+        private void toolStrip_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            var cMenu = new DarkContextMenu();
+            cMenu.Items.Add(new ToolStripMenuItem("Customize...", null, (o, e2) =>
+            {
+                using (var f = new FormToolBarLayout(_editor, _toolstripButtons))
+                    f.ShowDialog(this.FindForm());
+            }));
+            cMenu.Show(Cursor.Position, ToolStripDropDownDirection.BelowRight);
         }
     }
 }
