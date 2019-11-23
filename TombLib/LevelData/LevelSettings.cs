@@ -150,10 +150,10 @@ namespace TombLib.LevelData
                 new WadSoundPath(".." + Dir + ".." + Dir + "Sound"),
                 new WadSoundPath(".." + Dir + ".." + Dir + "Sounds" + Dir + "Samples"),
                 new WadSoundPath(".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.GameDirectory) + Dir + "Sound" + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sound" + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
+                new WadSoundPath(VariableCreate(VariableType.GameDirectory) + Dir + "Sound" + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
                 new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
