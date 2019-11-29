@@ -974,7 +974,6 @@ namespace WadTool
             int animationIndex = _editor.Animations.Count;
             var pastedAnim = _editor.ClipboardNode.Clone(animationIndex);
             _editor.Animations.Add(pastedAnim);
-            pastedAnim.DirectXAnimation.Name += " - Copy";
             pastedAnim.WadAnimation.Name += " - Copy";
             RebuildAnimationsList();
             UpdateAnimListSelection(animationIndex);
@@ -994,7 +993,6 @@ namespace WadTool
             int animationIndex = _editor.CurrentAnim.Index;
             var pastedAnim = _editor.ClipboardNode.Clone(animationIndex);
             _editor.Animations[animationIndex] = pastedAnim;
-            pastedAnim.DirectXAnimation.Name += " - Copy";
             pastedAnim.WadAnimation.Name += " - Copy";
             RebuildAnimationsList();
             UpdateAnimListSelection(animationIndex);
