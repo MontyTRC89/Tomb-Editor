@@ -31,8 +31,6 @@ namespace TombLib.Wad
 
         public WadAnimation Clone()
         {
-            // TODO Investigate if we actually need 'RealNumberOfFrames'.
-
             var animation = (WadAnimation)MemberwiseClone();
             animation.KeyFrames = KeyFrames.ConvertAll(keyFrame => keyFrame.Clone());
 
@@ -46,5 +44,10 @@ namespace TombLib.Wad
 
             return animation;
         }
+
+        // FIXME: Addressed to Monty - please remove RealNumberOfFrames and all other deprecated values
+        // some day, as it smells BADLY.
+
+        public int GetRealNumberOfFrames(int keyFrameCount) => FrameRate * (keyFrameCount - 1) + 1;
     }
 }

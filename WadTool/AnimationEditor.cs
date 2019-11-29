@@ -55,14 +55,16 @@ namespace WadTool
 
         public int GetRealNumberOfFrames(int animNumber = -1)
         {
-            if (CurrentAnim == null) return 0;
-
-            if (animNumber < 0) animNumber = CurrentAnim.Index;
+            if (animNumber < 0)
+            {
+                if (CurrentAnim == null) return 0;
+                animNumber = CurrentAnim.Index;
+            }
 
             if (Animations.Count <= animNumber)
                 return -1;
             else
-                return Animations[animNumber].WadAnimation.FrameRate * (Animations[animNumber].DirectXAnimation.KeyFrames.Count - 1) + 1;
+                return Animations[animNumber].WadAnimation.GetRealNumberOfFrames(Animations[animNumber].DirectXAnimation.KeyFrames.Count);
         }
 
         public int GetRealFrameNumber(int keyFrameNumber = -1, int animNumber = -1)
@@ -153,6 +155,12 @@ namespace WadTool
 
                 wadAnim.KeyFrames.Add(keyframe);
             }
+
+            // FIXME: After Monty fixes WadAnimation class and removes all hacky and deprecated fields,
+            // this line must be removed as number of frames should be calculated automatically either
+            // as class method or on actual level file conversion.
+
+            wadAnim.RealNumberOfFrames = (ushort)GetRealNumberOfFrames(animation.Index);
 
             return wadAnim;
         }

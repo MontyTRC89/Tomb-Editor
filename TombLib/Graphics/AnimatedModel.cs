@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace TombLib.Graphics
 {
@@ -69,13 +68,11 @@ namespace TombLib.Graphics
             if (animationIndex >= Animations.Count)
                 return;
             var animation = Animations[animationIndex];
-            int frameRate = Math.Max(animation.Framerate, (short)1);
-            int keyFrameIndex1 = frameIndex / frameRate;
+            int keyFrameIndex1 = frameIndex;
             int keyFrameIndex2 = keyFrameIndex1 + 1;
             if (keyFrameIndex1 >= animation.KeyFrames.Count || keyFrameIndex2 >= animation.KeyFrames.Count)
                 return;
-            float k = (frameIndex - keyFrameIndex1 * frameRate) / (float)frameRate;
-            BuildAnimationPose(animation.KeyFrames[keyFrameIndex1], animation.KeyFrames[keyFrameIndex2], k);
+            BuildAnimationPose(animation.KeyFrames[keyFrameIndex1], animation.KeyFrames[keyFrameIndex2], 1);
         }
 
         public void BuildAnimationPose(KeyFrame frame)

@@ -6,17 +6,12 @@ namespace TombLib.Graphics
 {
     public class Animation
     {
-        public string Name { get; set; }
-        public short Framerate { get; set; }
-        public float Speed { get; set; }
-        public float Acceleration { get; set; }
         public List<KeyFrame> KeyFrames { get; set; } = new List<KeyFrame>();
 
         public static Animation FromWad2(List<WadBone> bones, WadAnimation wadAnim)
         {
             Animation animation = new Animation();
 
-            animation.Framerate = wadAnim.FrameRate;
             animation.KeyFrames = new List<KeyFrame>();
 
             for (int f = 0; f < wadAnim.KeyFrames.Count; f++)
@@ -28,7 +23,6 @@ namespace TombLib.Graphics
                 {
                     frame.Rotations.Add(Vector3.Zero);
                     frame.Translations.Add(Vector3.Zero);
-                    //frame.RotationsMatrices.Add(Matrix4x4.Identity);
                     frame.Quaternions.Add(Quaternion.Identity);
                     frame.TranslationsMatrices.Add(Matrix4x4.Identity);
                 }
@@ -40,13 +34,11 @@ namespace TombLib.Graphics
                 {
                     frame.Translations[k] = Vector3.Zero;
                     frame.Quaternions[k] = Quaternion.Identity;
-                    //frame.RotationsMatrices[k] = Matrix4x4.CreateTranslation(Vector3.Zero);
                 }
 
                 for (int n = 0; n < frame.Rotations.Count; n++)
                 {
                     frame.Rotations[n] = wadFrame.Angles[n].RotationVectorInRadians;
-                    //frame.RotationsMatrices[n] = wadFrame.Angles[n].RotationMatrix;
                     frame.Quaternions[n] = Quaternion.CreateFromYawPitchRoll(wadFrame.Angles[n].RotationVectorInRadians.Y,
                                                                              wadFrame.Angles[n].RotationVectorInRadians.X,
                                                                              wadFrame.Angles[n].RotationVectorInRadians.Z);
@@ -63,10 +55,6 @@ namespace TombLib.Graphics
         public Animation Clone()
         {
             var animation = new Animation();
-            animation.Name = Name;
-            animation.Framerate = Framerate;
-            animation.Speed = Speed;
-            animation.Acceleration = Acceleration;
             foreach (var keyframe in KeyFrames)
                 animation.KeyFrames.Add(keyframe.Clone());
             return animation;
