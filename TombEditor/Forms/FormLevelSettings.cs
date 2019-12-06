@@ -570,6 +570,7 @@ namespace TombEditor.Forms
             numPadding.Value = _levelSettings.TexturePadding;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
+            cbFixInconsistentFrameCount.Checked = _levelSettings.FixInconsistentAnimationFrameCount;
 
             // Update sound autodetection option
             cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
@@ -1229,6 +1230,18 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
+        private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
+            UpdateDialog();
+        }
+
+        private void cbFixInconsistentFrameCount_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.FixInconsistentAnimationFrameCount = cbFixInconsistentFrameCount.Checked;
+            UpdateDialog();
+        }
+
         // Re-populates list of sounds, taking filtering into consideration.
         private void PopulateSoundInfoList()
         {
@@ -1536,11 +1549,5 @@ namespace TombEditor.Forms
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
-
-        private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
-            UpdateDialog();
-        }
     }
 }

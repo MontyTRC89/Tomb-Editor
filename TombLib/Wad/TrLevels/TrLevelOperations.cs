@@ -404,10 +404,6 @@ namespace TombLib.Wad.TrLevels
 
                 WadAnimation newAnimation = new WadAnimation();
                 var oldAnimation = oldLevel.Animations[j + oldMoveable.Animation];
-                newAnimation.Acceleration = oldAnimation.Accel;
-                newAnimation.Speed = oldAnimation.Speed;
-                newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
-                newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
                 newAnimation.FrameRate = oldAnimation.FrameRate;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.Animation);
                 newAnimation.NextFrame = oldAnimation.NextFrame;

@@ -2723,7 +2723,7 @@ namespace TombEditor
                 _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             if (!height.HasValue)
-                height = ceiling ? room.GetHighestCorner(area) : room.GetLowestCorner(area);
+                height = ceiling ? room.GetHighestCorner() : room.GetLowestCorner();
 
             for (int x = area.X0; x <= area.X1; x++)
                 for (int z = area.Y0; z <= area.Y1; z++)
