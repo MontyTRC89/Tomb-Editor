@@ -8,14 +8,8 @@ namespace TombLib.Wad
         public ushort StateId { get; set; }
         public ushort NextAnimation { get; set; }
         public ushort NextFrame { get; set; }
-        public ushort RealNumberOfFrames { get; set; }
+        public ushort RealNumberOfFrames { get; set; } // FIXME: LEGACY, remove if turns out not needed
         public string Name { get; set; } = "Animation";
-
-        // TODO: old deprecated stuff
-        public int Speed { get; set; }
-        public int Acceleration { get; set; }
-        public int LateralSpeed { get; set; }
-        public int LateralAcceleration { get; set; }
 
         // New velocities. Originally Core's AnimEdit had Start Velocity and End Velocity pairs and
         // acceleration is obtained used the equations of motion: v = v0 + a * t where in our case
@@ -48,6 +42,27 @@ namespace TombLib.Wad
         // FIXME: Addressed to Monty - please remove RealNumberOfFrames and all other deprecated values
         // some day, as it smells BADLY.
 
-        public int GetRealNumberOfFrames(int keyFrameCount) => FrameRate * (keyFrameCount - 1) + 1;
+        public int GetRealNumberOfFrames(int keyFrameCount = -1)
+        {
+            if (keyFrameCount < 0) keyFrameCount = KeyFrames.Count;
+            if (keyFrameCount == 0) return 0;
+
+            return FrameRate * (keyFrameCount - 1) + 1;
+
+            // HACK! For some reason, different FrameRate values have different formula!
+            // Maybe legacy native tools (AnimEdit) bug or tomb4 hack?
+            // Uncomment this code if straightforward recalculation turns out to be unusable.
+
+            // switch (FrameRate)
+            // {
+            //     default:
+            //     case 1:
+            //         return FrameRate * (keyFrameCount - 1) + 1;
+            //     case 2:
+            //     case 4:
+            //         return FrameRate * (keyFrameCount - 1);
+            // }
+
+        }
     }
 }

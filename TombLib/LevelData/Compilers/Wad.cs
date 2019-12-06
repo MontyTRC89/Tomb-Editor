@@ -335,6 +335,13 @@ namespace TombLib.LevelData.Compilers
                     speed = (int)Math.Round(oldAnimation.StartVelocity * 65536.0f);
                     lateralSpeed = (int)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
 
+                    // FIXME: Optionally recalculate frame count to make sure it's consistent.
+                    // It's needed to fix up inconsistent original wad frame count (which is kept in RealNumberOfFrames field).
+                    // Remove this option (along with RealNumberOfFrames) later if it turns out working OK by default.
+
+                    var frameCount = _level.Settings.FixInconsistentAnimationFrameCount ? 
+                        oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count) : oldAnimation.RealNumberOfFrames;
+
                     // Setup the final animation
                     if (j == 0)
                         newMoveable.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
@@ -346,7 +353,7 @@ namespace TombLib.LevelData.Compilers
                     newAnimation.SpeedLateral = lateralSpeed;
                     newAnimation.AccelLateral = lateralAcceleration;
                     newAnimation.FrameStart = unchecked((ushort)realFrameBase);
-                    newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (oldAnimation.RealNumberOfFrames == 0 ? 0 : oldAnimation.RealNumberOfFrames - 1)));
+                    newAnimation.FrameEnd = unchecked((ushort)(realFrameBase + (frameCount == 0 ? 0 : frameCount - 1)));
                     newAnimation.AnimCommand = checked((ushort)_animCommands.Count);
                     newAnimation.StateChangeOffset = checked((ushort)_stateChanges.Count);
                     newAnimation.NumAnimCommands = checked((ushort)oldAnimation.AnimCommands.Count);
@@ -433,7 +440,7 @@ namespace TombLib.LevelData.Compilers
 
                     _animations.Add(newAnimation);
 
-                    realFrameBase += oldAnimation.RealNumberOfFrames == 0xffff ? (ushort)0 : oldAnimation.RealNumberOfFrames;
+                    realFrameBase += frameCount < 0 ? (ushort)0 : (ushort)frameCount; // FIXME: Not really needed?
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 

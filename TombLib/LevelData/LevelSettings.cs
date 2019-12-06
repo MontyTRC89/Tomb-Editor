@@ -176,6 +176,7 @@ namespace TombLib.LevelData
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
         public int TexturePadding { get; set; } = 8;
+        public bool FixInconsistentAnimationFrameCount { get; set; } = true;
 
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;

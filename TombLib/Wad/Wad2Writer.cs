@@ -226,18 +226,11 @@ namespace TombLib.Wad
 
                         foreach (var animation in m.Animations)
                         {
-                            chunkIO.WriteChunkWithChildren(Wad2Chunks.Animation, () =>
+                            chunkIO.WriteChunkWithChildren(Wad2Chunks.Animation2, () =>
                             {
                                 LEB128.Write(chunkIO.Raw, animation.StateId);
                                 LEB128.Write(chunkIO.Raw, animation.RealNumberOfFrames);
                                 LEB128.Write(chunkIO.Raw, animation.FrameRate);
-
-                                // Legacy stuff **********************************
-                                LEB128.Write(chunkIO.Raw, animation.Speed);
-                                LEB128.Write(chunkIO.Raw, animation.Acceleration);
-                                LEB128.Write(chunkIO.Raw, animation.LateralSpeed);
-                                LEB128.Write(chunkIO.Raw, animation.LateralAcceleration);
-                                // End of legacy stuff ***************************
 
                                 LEB128.Write(chunkIO.Raw, animation.NextAnimation);
                                 LEB128.Write(chunkIO.Raw, animation.NextFrame);

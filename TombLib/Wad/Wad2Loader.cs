@@ -688,22 +688,33 @@ namespace TombLib.Wad
 
                         mov.Bones.Add(bone);
                     }
-                    else if (id2 == Wad2Chunks.AnimationObsolete || id2 == Wad2Chunks.Animation)
+                    else if (id2 == Wad2Chunks.AnimationObsolete || 
+                             id2 == Wad2Chunks.Animation ||
+                             id2 == Wad2Chunks.Animation2)
                     {
                         var animation = new WadAnimation();
 
                         animation.StateId = LEB128.ReadUShort(chunkIO.Raw);
                         animation.RealNumberOfFrames = LEB128.ReadUShort(chunkIO.Raw);
                         animation.FrameRate = LEB128.ReadByte(chunkIO.Raw);
+
                         if (id2 == Wad2Chunks.AnimationObsolete)
                         {
                             LEB128.ReadUShort(chunkIO.Raw);
                             LEB128.ReadUShort(chunkIO.Raw);
                         }
-                        animation.Speed = LEB128.ReadInt(chunkIO.Raw);
-                        animation.Acceleration = LEB128.ReadInt(chunkIO.Raw);
-                        animation.LateralSpeed = LEB128.ReadInt(chunkIO.Raw);
-                        animation.LateralAcceleration = LEB128.ReadInt(chunkIO.Raw);
+
+                        int oldSpeed, oldAccel, oldLatSpeed, oldLatAccel;
+                        oldSpeed = oldAccel = oldLatSpeed = oldLatAccel = 0;
+
+                        if (id2 != Wad2Chunks.Animation2)
+                        {
+                            oldSpeed    = LEB128.ReadInt(chunkIO.Raw);
+                            oldAccel    = LEB128.ReadInt(chunkIO.Raw);
+                            oldLatSpeed = LEB128.ReadInt(chunkIO.Raw);
+                            oldLatAccel = LEB128.ReadInt(chunkIO.Raw);
+                        }
+
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
                         animation.NextFrame = LEB128.ReadUShort(chunkIO.Raw);
 
@@ -816,16 +827,16 @@ namespace TombLib.Wad
                             return true;
                         });
 
-                        // Legacy code for calculatin start and end velocities
+                        // Legacy code for calculating start and end velocities
                         if (!foundNewVelocitiesChunk)
                         {
-                            float acceleration = animation.Acceleration / 65536.0f;
-                            animation.StartVelocity = animation.Speed / 65536.0f;
+                            float acceleration = oldAccel / 65536.0f;
+                            animation.StartVelocity = oldSpeed / 65536.0f;
                             animation.EndVelocity = animation.StartVelocity + acceleration *
                                                         (animation.KeyFrames.Count - 1) * animation.FrameRate;
 
-                            float lateralAcceleration = animation.LateralAcceleration / 65536.0f;
-                            animation.StartLateralVelocity = animation.LateralSpeed / 65536.0f;
+                            float lateralAcceleration = oldLatAccel / 65536.0f;
+                            animation.StartLateralVelocity = oldLatSpeed / 65536.0f;
                             animation.EndLateralVelocity = animation.StartLateralVelocity + lateralAcceleration *
                                                                 (animation.KeyFrames.Count - 1) * animation.FrameRate;
                         }

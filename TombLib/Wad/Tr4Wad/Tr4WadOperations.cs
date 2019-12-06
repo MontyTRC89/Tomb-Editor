@@ -281,10 +281,6 @@ namespace TombLib.Wad.Tr4Wad
                 wad_animation oldAnimation = oldWad.Animations[j + oldMoveable.AnimationIndex];
                 WadAnimation newAnimation = new WadAnimation();
                 newAnimation.StateId = oldAnimation.StateId;
-                newAnimation.Acceleration = oldAnimation.Accel;
-                newAnimation.Speed = oldAnimation.Speed;
-                newAnimation.LateralSpeed = oldAnimation.SpeedLateral;
-                newAnimation.LateralAcceleration = oldAnimation.AccelLateral;
                 newAnimation.FrameRate = oldAnimation.FrameDuration;
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.AnimationIndex);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
@@ -405,11 +401,11 @@ namespace TombLib.Wad.Tr4Wad
                 }
 
                 // New velocities
-                float acceleration = newAnimation.Acceleration / 65536.0f;
-                newAnimation.StartVelocity = newAnimation.Speed / 65536.0f;
+                float acceleration = oldAnimation.Accel / 65536.0f;
+                newAnimation.StartVelocity = oldAnimation.Speed / 65536.0f;
 
-                float lateralAcceleration = newAnimation.LateralAcceleration / 65536.0f;
-                newAnimation.StartLateralVelocity = newAnimation.LateralSpeed / 65536.0f;
+                float lateralAcceleration = oldAnimation.AccelLateral / 65536.0f;
+                newAnimation.StartLateralVelocity = oldAnimation.SpeedLateral / 65536.0f;
 
                 if (newAnimation.KeyFrames.Count != 0 && newAnimation.FrameRate != 0)
                 {
@@ -418,11 +414,17 @@ namespace TombLib.Wad.Tr4Wad
                     newAnimation.EndLateralVelocity = newAnimation.StartLateralVelocity + lateralAcceleration *
                                                         (newAnimation.KeyFrames.Count - 1) * newAnimation.FrameRate;
                 }
+                else
+                {
+                    // Basic foolproofness for potentially broken animations
+                    newAnimation.EndVelocity = newAnimation.StartVelocity;
+                    newAnimation.EndLateralVelocity = newAnimation.StartLateralVelocity;
+                }
 
                 // Deduce real maximum frame number, based on interpolation and keyframes.
                 // We need to refer this value in NextFrame-related fixes (below) because of epic WadMerger bug,
                 // which incorrectly calculates NextFrame and "steals" last frame from every custom animation.
-                ushort maxFrameCount = (ushort)((newAnimation.FrameRate == 1 || numFrames < 2) ? numFrames : ((numFrames - 1) * newAnimation.FrameRate + 1));
+                ushort maxFrameCount = (ushort)((newAnimation.FrameRate == 1 || numFrames <= 2) ? numFrames : ((numFrames - 1) * newAnimation.FrameRate) + 1);
 
                 // Also correct animation out-point
                 if (newAnimation.RealNumberOfFrames > maxFrameCount)
