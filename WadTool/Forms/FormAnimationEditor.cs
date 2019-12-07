@@ -2021,6 +2021,11 @@ namespace WadTool
             // Scroll the grid
             if (_editor.Tool.Configuration.AnimationEditor_ScrollGrid)
             {
+                // Reset grid position if animation isn't looped
+                if (!_editor.Tool.Configuration.AnimationEditor_ChainPlayback && _frameCount >= realRangeNumber - 1 &&
+                    _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
+                    panelRendering.GridPosition = Vector3.Zero;
+
                 Vector3 startVel = new Vector3(_editor.CurrentAnim.WadAnimation.StartLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.StartVelocity);
                 Vector3 endVel = new Vector3(_editor.CurrentAnim.WadAnimation.EndLateralVelocity, 0, _editor.CurrentAnim.WadAnimation.EndVelocity);
 
@@ -2102,11 +2107,6 @@ namespace WadTool
                     timeline.Value = 0;
                 else
                     timeline.Value = newFrameNumber;
-
-                // Reset grid position if animation isn't looped
-                if (!_editor.Tool.Configuration.AnimationEditor_ChainPlayback && newFrameNumber == timeline.Maximum &&
-                    _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
-                    panelRendering.GridPosition = Vector3.Zero;
             }
             else if (_editor.Tool.Configuration.AnimationEditor_SmoothAnimation)
             {
