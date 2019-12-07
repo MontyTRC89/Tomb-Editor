@@ -206,6 +206,7 @@ namespace TombEditor.Forms
             this.numScalable.Size = new System.Drawing.Size(98, 22);
             this.numScalable.TabIndex = 12;
             this.numScalable.ValueChanged += new System.EventHandler(this.numScalable_ValueChanged);
+            this.numScalable.Validated += new System.EventHandler(this.numScalable_Validated);
             // 
             // tbOCB
             // 
