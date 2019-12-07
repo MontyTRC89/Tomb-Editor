@@ -245,7 +245,7 @@ namespace TombLib.LevelData.Compilers
             {
                 case RoomLightEffect.GlowAndMovement:
                 case RoomLightEffect.Movement:
-                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 3.75f);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
                     if (lightEffect == RoomLightEffect.GlowAndMovement)
                         newRoom.Flags |= 0x0100;
                     break;
@@ -262,7 +262,7 @@ namespace TombLib.LevelData.Compilers
 
                 case RoomLightEffect.None:
                     if (!waterSchemeSet)
-                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 3.75f);
+                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
                     break;
             }
 
