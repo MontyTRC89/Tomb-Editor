@@ -11,17 +11,26 @@ I don't work for/have ever worked for Core Design, Eidos Interactive or Square E
 ## Thanks to...
 I would like to to thank all the following people that contributed to the development of this new Tomb Raider level editor. (not in order of importance :)) They helped me with tips, knowledge, bug reporting, suggestions, direct development.
 
-* Lwmte
-* XProger
-* Stohrendorf
-* Titak
-* leveldesigner1
-* TRTombLevBauer
+* Banderi
+* Caesum
+* Dustie
 * Gancian
 * Gemini
 * Gh0stBlade
+* JMN
+* Joey79100
+* leveldesigner1
+* Lore
+* Lwmte
 * Monsieur Z
-* Teslarus
+* Nickelony
+* Raildex
+* stohrendorf
+* teme9
+* TeslaRus
+* Titak
+* TRTombLevBauer
+* XProger
 
 ## External libraries
 [A list can be found here.](ExternalResources.md)
