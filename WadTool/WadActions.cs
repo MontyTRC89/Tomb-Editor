@@ -786,6 +786,13 @@ namespace WadTool
                 return null;
             }
 
+            // Integrity check, is there any valid frames?
+            if (animToImport.Frames.Count <= 0)
+            {
+                tool.SendMessage("Selected animation has no frames!", PopupType.Error);
+                return null;
+            }
+
             // Integrity check, number of bones = number of nodes?
             if (animToImport.NumNodes != nodeCount)
             {
@@ -804,6 +811,8 @@ namespace WadTool
 
                 animation.KeyFrames.Add(keyFrame);
             }
+
+            animation.EndFrame = (ushort)(animToImport.Frames.Count - 1);
 
             return animation;
         }
