@@ -474,6 +474,7 @@ namespace WadTool
                 {
                     tbName.Text = node.WadAnimation.Name;
                     nudFramerate.Value = node.WadAnimation.FrameRate;
+                    nudEndFrame.Value = node.WadAnimation.EndFrame;
                     nudNextAnim.Value = node.WadAnimation.NextAnimation;
                     nudNextFrame.Value = node.WadAnimation.NextFrame;
                     tbStartVertVel.Text = node.WadAnimation.StartVelocity.ToString();
@@ -693,6 +694,8 @@ namespace WadTool
             for (int i = start; i < end; i++)
                 InflateFrameBoundingBox(i, value, false);
         }
+
+        public void ResetEndFrame() => nudEndFrame.Value = _editor.GetRealNumberOfFrames() - 1;
 
         public void UpdateTransform()
         {
@@ -1169,6 +1172,10 @@ namespace WadTool
                     oldValue = _editor.CurrentAnim.WadAnimation.FrameRate;
                     roundToByte = true;
                     break;
+                case "nudEndFrame":
+                    oldValue = _editor.CurrentAnim.WadAnimation.EndFrame;
+                    roundToShort = true;
+                    break;
                 case "tbStartVertVel":
                     oldValue = _editor.CurrentAnim.WadAnimation.StartVelocity;
                     break;
@@ -1232,6 +1239,9 @@ namespace WadTool
                     break;
                 case "nudFramerate":
                     _editor.CurrentAnim.WadAnimation.FrameRate = (byte)result;
+                    break;
+                case "nudEndFrame":
+                    _editor.CurrentAnim.WadAnimation.EndFrame = (ushort)result;
                     break;
                 case "tbStartVertVel":
                     _editor.CurrentAnim.WadAnimation.StartVelocity = result;
@@ -1853,6 +1863,7 @@ namespace WadTool
         private void tbName_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) animParameter_Validated(this, e); }
         private void tbStateId_KeyDown(object sender, KeyEventArgs e) { if (e.KeyData == Keys.Enter) UpdateStateChange(); }
         private void nudFramerate_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudFramerate);
+        private void nudEndFrame_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudEndFrame);
         private void nudNextAnim_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudNextAnim);
         private void nudNextFrame_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(nudNextFrame);
         private void tbStartVertVel_ValueChanged(object sender, EventArgs e) => UpdateAnimationParameter(tbStartVertVel);
@@ -1930,12 +1941,13 @@ namespace WadTool
                 return;
 
             int realFrameNumber = _editor.GetRealNumberOfFrames();
+            int realRangeNumber = _editor.CurrentAnim.WadAnimation.EndFrame > realFrameNumber - 1 ? realFrameNumber : _editor.CurrentAnim.WadAnimation.EndFrame + 1;
 
             _frameCount++;
 
             var nextIndex = _editor.CurrentAnim.WadAnimation.NextAnimation;
             var nextFrame = _editor.CurrentAnim.WadAnimation.NextFrame;
-            var nextRange = new VectorInt2(realFrameNumber);
+            var nextRange = new VectorInt2(realRangeNumber);
 
             // If state change data is present, make sure it complies to current animation params.
 

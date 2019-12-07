@@ -335,12 +335,12 @@ namespace TombLib.LevelData.Compilers
                     speed = (int)Math.Round(oldAnimation.StartVelocity * 65536.0f);
                     lateralSpeed = (int)Math.Round(oldAnimation.StartLateralVelocity * 65536.0f);
 
-                    // FIXME: Optionally recalculate frame count to make sure it's consistent.
-                    // It's needed to fix up inconsistent original wad frame count (which is kept in RealNumberOfFrames field).
-                    // Remove this option (along with RealNumberOfFrames) later if it turns out working OK by default.
+                    // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 
-                    var frameCount = _level.Settings.FixInconsistentAnimationFrameCount ? 
-                        oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count) : oldAnimation.RealNumberOfFrames;
+                    var frameCount = oldAnimation.EndFrame + 1;
+                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
+                    if (frameCount > maxFrame)
+                        frameCount = maxFrame;
 
                     // Setup the final animation
                     if (j == 0)

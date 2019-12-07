@@ -229,7 +229,7 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkWithChildren(Wad2Chunks.Animation2, () =>
                             {
                                 LEB128.Write(chunkIO.Raw, animation.StateId);
-                                LEB128.Write(chunkIO.Raw, animation.RealNumberOfFrames);
+                                LEB128.Write(chunkIO.Raw, animation.EndFrame);
                                 LEB128.Write(chunkIO.Raw, animation.FrameRate);
 
                                 LEB128.Write(chunkIO.Raw, animation.NextAnimation);

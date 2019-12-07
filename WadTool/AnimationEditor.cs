@@ -156,12 +156,6 @@ namespace WadTool
                 wadAnim.KeyFrames.Add(keyframe);
             }
 
-            // FIXME: After Monty fixes WadAnimation class and removes all hacky and deprecated fields,
-            // this line must be removed as number of frames should be calculated automatically either
-            // as class method or on actual level file conversion.
-
-            wadAnim.RealNumberOfFrames = (ushort)GetRealNumberOfFrames(animation.Index);
-
             return wadAnim;
         }
 
