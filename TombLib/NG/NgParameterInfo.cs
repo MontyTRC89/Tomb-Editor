@@ -385,7 +385,8 @@ namespace TombLib.NG
                                     if (!actionTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
 
-                                    result = "$5000," + firstValue + ",$" + secondValue.ToString("X4");
+                                    result = trigger.Target is StaticInstance ? "$4000," : "$5000,";
+                                    result += firstValue + ",$" + secondValue.ToString("X4");
                                     break;
                                 }
                         }
