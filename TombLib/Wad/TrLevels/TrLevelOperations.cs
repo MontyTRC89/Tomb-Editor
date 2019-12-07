@@ -408,7 +408,7 @@ namespace TombLib.Wad.TrLevels
                 newAnimation.NextAnimation = (ushort)(oldAnimation.NextAnimation - oldMoveable.Animation);
                 newAnimation.NextFrame = oldAnimation.NextFrame;
                 newAnimation.StateId = oldAnimation.StateID;
-                newAnimation.RealNumberOfFrames = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart + 1);
+                newAnimation.EndFrame = (ushort)(oldAnimation.FrameEnd - oldAnimation.FrameStart);
                 newAnimation.Name = TrCatalog.GetAnimationName(oldLevel.Version, oldMoveable.ObjectID, (uint)j);
 
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
@@ -496,7 +496,7 @@ namespace TombLib.Wad.TrLevels
                 if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame + 1) / newAnimation.FrameRate) : 0;
                     else
                         numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
@@ -504,7 +504,7 @@ namespace TombLib.Wad.TrLevels
                 {
                     if (oldAnimation.FrameSize == 0)
                     {
-                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(newAnimation.RealNumberOfFrames / newAnimation.FrameRate) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame + 1) / newAnimation.FrameRate) : 0;
                     }
                     else
                     {
@@ -573,7 +573,7 @@ namespace TombLib.Wad.TrLevels
                 var animation = newMoveable.Animations[i];
 
                 if (animation.KeyFrames.Count == 0)
-                    animation.RealNumberOfFrames = 0;
+                    animation.EndFrame = 0;
 
                 // HACK: this fixes some invalid NextAnimations values
                 animation.NextAnimation %= (ushort)newMoveable.Animations.Count;
@@ -600,7 +600,7 @@ namespace TombLib.Wad.TrLevels
 
                             // In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
-                            if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].RealNumberOfFrames)
+                            if (newFrame > newMoveable.Animations[animDispatch.NextAnimation].EndFrame)
                                 newFrame = 0;
 
                             animDispatch.NextFrame = newFrame;

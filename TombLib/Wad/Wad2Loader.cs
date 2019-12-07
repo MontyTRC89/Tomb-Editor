@@ -695,7 +695,7 @@ namespace TombLib.Wad
                         var animation = new WadAnimation();
 
                         animation.StateId = LEB128.ReadUShort(chunkIO.Raw);
-                        animation.RealNumberOfFrames = LEB128.ReadUShort(chunkIO.Raw);
+                        animation.EndFrame = LEB128.ReadUShort(chunkIO.Raw);
                         animation.FrameRate = LEB128.ReadByte(chunkIO.Raw);
 
                         if (id2 == Wad2Chunks.AnimationObsolete)
@@ -709,10 +709,14 @@ namespace TombLib.Wad
 
                         if (id2 != Wad2Chunks.Animation2)
                         {
+                            // Use old speeds/accels for legacy chunk versions
                             oldSpeed    = LEB128.ReadInt(chunkIO.Raw);
                             oldAccel    = LEB128.ReadInt(chunkIO.Raw);
                             oldLatSpeed = LEB128.ReadInt(chunkIO.Raw);
                             oldLatAccel = LEB128.ReadInt(chunkIO.Raw);
+
+                            // Correct EndFrame for legacy chunk versions
+                            animation.EndFrame--;
                         }
 
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);

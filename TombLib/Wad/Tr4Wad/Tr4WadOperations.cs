@@ -289,7 +289,7 @@ namespace TombLib.Wad.Tr4Wad
                 // Fix wadmerger/wad format bug with inverted frame start/end on single-frame anims
                 ushort newFrameStart = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameStart : oldAnimation.FrameEnd;
                 ushort newFrameEnd   = oldAnimation.FrameStart < oldAnimation.FrameEnd ? oldAnimation.FrameEnd : newFrameStart;
-                newAnimation.RealNumberOfFrames = (ushort)(newFrameEnd - newFrameStart + 1);
+                newAnimation.EndFrame = (ushort)(newFrameEnd - newFrameStart);
 
                 for (int k = 0; k < oldAnimation.NumStateChanges; k++)
                 {
@@ -349,7 +349,7 @@ namespace TombLib.Wad.Tr4Wad
                                 command.Parameter2 = (short)oldWad.Commands[lastCommand + 2];
 
                                 // For single-frame anims, clamp frame number to first frame (another fix for WM/wad format range inversion bug)
-                                if (newAnimation.RealNumberOfFrames == 1 && command.Parameter1 > 0)
+                                if (newAnimation.EndFrame == 0 && command.Parameter1 > 0)
                                     command.Parameter1 = 0;
 
                                 lastCommand += 3;
@@ -427,8 +427,8 @@ namespace TombLib.Wad.Tr4Wad
                 ushort maxFrameCount = (ushort)((newAnimation.FrameRate == 1 || numFrames <= 2) ? numFrames : ((numFrames - 1) * newAnimation.FrameRate) + 1);
 
                 // Also correct animation out-point
-                if (newAnimation.RealNumberOfFrames > maxFrameCount)
-                    newAnimation.RealNumberOfFrames = maxFrameCount;
+                if (newAnimation.EndFrame >= maxFrameCount)
+                    newAnimation.EndFrame = (ushort)(maxFrameCount - 1);
 
                 frameBases.Add(newAnimation, new ushort[] { newFrameStart, (ushort)(maxFrameCount - 1) });
                 newMoveable.Animations.Add(newAnimation);
@@ -439,7 +439,7 @@ namespace TombLib.Wad.Tr4Wad
                 var animation = newMoveable.Animations[i];
 
                 if (animation.KeyFrames.Count == 0)
-                    animation.RealNumberOfFrames = 0;
+                    animation.EndFrame = 0;
 
                 // HACK: this fixes some invalid NextAnimations values
                 animation.NextAnimation %= (ushort)newMoveable.Animations.Count;
