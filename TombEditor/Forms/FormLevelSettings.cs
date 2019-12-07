@@ -570,7 +570,6 @@ namespace TombEditor.Forms
             numPadding.Value = _levelSettings.TexturePadding;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
-            cbFixInconsistentFrameCount.Checked = _levelSettings.FixInconsistentAnimationFrameCount;
 
             // Update sound autodetection option
             cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
@@ -1233,12 +1232,6 @@ namespace TombEditor.Forms
         private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
-            UpdateDialog();
-        }
-
-        private void cbFixInconsistentFrameCount_CheckedChanged(object sender, EventArgs e)
-        {
-            _levelSettings.FixInconsistentAnimationFrameCount = cbFixInconsistentFrameCount.Checked;
             UpdateDialog();
         }
 

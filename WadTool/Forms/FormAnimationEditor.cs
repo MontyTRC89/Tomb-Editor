@@ -2022,7 +2022,7 @@ namespace WadTool
             if (_editor.Tool.Configuration.AnimationEditor_ScrollGrid)
             {
                 // Reset grid position if animation isn't looped
-                if (!_editor.Tool.Configuration.AnimationEditor_ChainPlayback && _frameCount >= realRangeNumber - 1 &&
+                if (!_editor.Tool.Configuration.AnimationEditor_ChainPlayback && _frameCount >= (realRangeNumber - 1) &&
                     _editor.CurrentAnim.WadAnimation.NextAnimation != _editor.CurrentAnim.Index)
                     panelRendering.GridPosition = Vector3.Zero;
 
