@@ -33,9 +33,9 @@ namespace TombEditor.ToolWindows
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
             ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
-            RefreshControls(_editor.Configuration);
-            UpdateToolStripLayout();
             GenerateToolStripCommands(toolStrip.Items);
+            UpdateToolStripLayout();
+            RefreshControls(_editor.Configuration);
         }
 
         public void InitializeRendering(RenderingDevice device)
