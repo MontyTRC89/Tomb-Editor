@@ -1727,7 +1727,7 @@
             // 
             this.scriptPathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.scriptPathBut.Checked = false;
-            this.scriptPathBut.Location = new System.Drawing.Point(683, 25);
+            this.scriptPathBut.Location = new System.Drawing.Point(683, 23);
             this.scriptPathBut.Name = "scriptPathBut";
             this.scriptPathBut.Size = new System.Drawing.Size(92, 22);
             this.scriptPathBut.TabIndex = 3;
