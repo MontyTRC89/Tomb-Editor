@@ -174,7 +174,6 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbFixInconsistentFrameCount = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -1659,7 +1658,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 295);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 271);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1688,7 +1687,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 244);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 220);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1718,7 +1717,7 @@
             this.panel10.Controls.Add(this.darkLabel15);
             this.panel10.Controls.Add(this.tbScriptPath);
             this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel10.Location = new System.Drawing.Point(0, 194);
+            this.panel10.Location = new System.Drawing.Point(0, 170);
             this.panel10.Name = "panel10";
             this.panel10.Size = new System.Drawing.Size(778, 50);
             this.panel10.TabIndex = 95;
@@ -1759,7 +1758,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 142);
+            this.panel6.Location = new System.Drawing.Point(0, 118);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -1796,7 +1795,6 @@
             // 
             // panel12
             // 
-            this.panel12.Controls.Add(this.cbFixInconsistentFrameCount);
             this.panel12.Controls.Add(this.cbAgressiveFloordataPacking);
             this.panel12.Controls.Add(this.cbAgressiveTexturePacking);
             this.panel12.Controls.Add(this.darkLabel13);
@@ -1807,7 +1805,7 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 142);
+            this.panel12.Size = new System.Drawing.Size(778, 118);
             this.panel12.TabIndex = 91;
             // 
             // cbAgressiveFloordataPacking
@@ -1979,17 +1977,6 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // cbFixInconsistentFrameCount
-            // 
-            this.cbFixInconsistentFrameCount.AutoSize = true;
-            this.cbFixInconsistentFrameCount.Location = new System.Drawing.Point(3, 116);
-            this.cbFixInconsistentFrameCount.Name = "cbFixInconsistentFrameCount";
-            this.cbFixInconsistentFrameCount.Size = new System.Drawing.Size(304, 17);
-            this.cbFixInconsistentFrameCount.TabIndex = 106;
-            this.cbFixInconsistentFrameCount.Tag = "";
-            this.cbFixInconsistentFrameCount.Text = "Fix inconsistent frame count in legacy wad animations";
-            this.cbFixInconsistentFrameCount.CheckedChanged += new System.EventHandler(this.cbFixInconsistentFrameCount_CheckedChanged);
             // 
             // FormLevelSettings
             // 
@@ -2224,6 +2211,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private DarkUI.Controls.DarkCheckBox cbAutodetectIfNoneSelected;
-        private DarkUI.Controls.DarkCheckBox cbFixInconsistentFrameCount;
     }
 }
