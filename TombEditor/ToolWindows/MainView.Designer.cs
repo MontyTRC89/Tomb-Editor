@@ -53,6 +53,10 @@
             this.butAddGhostBlock = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
+            this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
+            this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
+            this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
+            this.butEditLevelSettings = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStrip.SuspendLayout();
@@ -96,7 +100,11 @@
             this.butAddImportedGeometry,
             this.butAddGhostBlock,
             this.butCompileLevel,
-            this.butCompileLevelAndPlay});
+            this.butCompileLevelAndPlay,
+            this.butTextureFloor,
+            this.butTextureCeiling,
+            this.butTextureWalls,
+            this.butEditLevelSettings});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -537,6 +545,50 @@
             this.butCompileLevelAndPlay.Size = new System.Drawing.Size(23, 25);
             this.butCompileLevelAndPlay.Tag = "BuildAndPlay";
             // 
+            // butTextureFloor
+            // 
+            this.butTextureFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTextureFloor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTextureFloor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTextureFloor.Image = global::TombEditor.Properties.Resources.texture_Floor2_16;
+            this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTextureFloor.Name = "butTextureFloor";
+            this.butTextureFloor.Size = new System.Drawing.Size(23, 25);
+            this.butTextureFloor.Tag = "TextureFloor";
+            // 
+            // butTextureCeiling
+            // 
+            this.butTextureCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTextureCeiling.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTextureCeiling.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.texture_Ceiling2_16;
+            this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTextureCeiling.Name = "butTextureCeiling";
+            this.butTextureCeiling.Size = new System.Drawing.Size(23, 25);
+            this.butTextureCeiling.Tag = "TextureCeiling";
+            // 
+            // butTextureWalls
+            // 
+            this.butTextureWalls.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTextureWalls.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTextureWalls.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTextureWalls.Image = global::TombEditor.Properties.Resources.texture_Walls2_16;
+            this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTextureWalls.Name = "butTextureWalls";
+            this.butTextureWalls.Size = new System.Drawing.Size(23, 25);
+            this.butTextureWalls.Tag = "TextureWalls";
+            // 
+            // butEditLevelSettings
+            // 
+            this.butEditLevelSettings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butEditLevelSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butEditLevelSettings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butEditLevelSettings.Image = global::TombEditor.Properties.Resources.general_settings_16;
+            this.butEditLevelSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butEditLevelSettings.Name = "butEditLevelSettings";
+            this.butEditLevelSettings.Size = new System.Drawing.Size(24, 24);
+            this.butEditLevelSettings.Tag = "EditLevelSettings";
+            // 
             // panel3D
             // 
             this.panel3D.AllowDrop = true;
@@ -620,5 +672,9 @@
         private System.Windows.Forms.ToolStripButton butDrawAllRooms;
         private System.Windows.Forms.ToolStripMenuItem butDrawGhostBlocks;
         private System.Windows.Forms.ToolStripButton butAddImportedGeometry;
+        private System.Windows.Forms.ToolStripButton butTextureFloor;
+        private System.Windows.Forms.ToolStripButton butTextureCeiling;
+        private System.Windows.Forms.ToolStripButton butTextureWalls;
+        private System.Windows.Forms.ToolStripButton butEditLevelSettings;
     }
 }
