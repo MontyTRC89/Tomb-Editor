@@ -59,6 +59,8 @@
             this.butEditLevelSettings = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
+            this.butSearch = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,7 +106,9 @@
             this.butTextureFloor,
             this.butTextureCeiling,
             this.butTextureWalls,
-            this.butEditLevelSettings});
+            this.butEditLevelSettings,
+            this.butToggleFlyMode,
+            this.butSearch});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -613,6 +617,28 @@
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
+            // butToggleFlyMode
+            // 
+            this.butToggleFlyMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butToggleFlyMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butToggleFlyMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butToggleFlyMode.Image = global::TombEditor.Properties.Resources.general_airplane_16;
+            this.butToggleFlyMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butToggleFlyMode.Name = "butToggleFlyMode";
+            this.butToggleFlyMode.Size = new System.Drawing.Size(24, 24);
+            this.butToggleFlyMode.Tag = "ToggleFlyMode";
+            // 
+            // butSearch
+            // 
+            this.butSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(24, 24);
+            this.butSearch.Tag = "Search";
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -676,5 +702,7 @@
         private System.Windows.Forms.ToolStripButton butTextureCeiling;
         private System.Windows.Forms.ToolStripButton butTextureWalls;
         private System.Windows.Forms.ToolStripButton butEditLevelSettings;
+        private System.Windows.Forms.ToolStripButton butToggleFlyMode;
+        private System.Windows.Forms.ToolStripButton butSearch;
     }
 }
