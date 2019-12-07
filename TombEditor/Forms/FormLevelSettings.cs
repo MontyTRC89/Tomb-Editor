@@ -1492,7 +1492,12 @@ namespace TombEditor.Forms
             {
                 var path = _levelSettings.MakeAbsolute(_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path);
                 if (File.Exists("soundtool.exe") && File.Exists(path) && Path.GetExtension(path).Equals(".xml", StringComparison.InvariantCultureIgnoreCase))
-                    System.Diagnostics.Process.Start("soundtool.exe", "\"" + path + "\"");
+                {
+                    if (!string.IsNullOrEmpty(_levelSettings.LevelFilePath))
+                        System.Diagnostics.Process.Start("soundtool.exe", "\"" + path + "\" -r \"" + _levelSettings.MakeAbsolute(_levelSettings.LevelFilePath));
+                    else
+                        System.Diagnostics.Process.Start("soundtool.exe", "\"" + path + "\"");
+                }
             }
         }
 

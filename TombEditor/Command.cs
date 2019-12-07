@@ -1297,7 +1297,10 @@ namespace TombEditor
             {
                 try
                 {
-                    Process.Start("WadTool.exe");
+                    if (!string.IsNullOrEmpty(args.Editor.Level.Settings.LevelFilePath))
+                        Process.Start("WadTool.exe", "-r \"" + args.Editor.Level.Settings.LevelFilePath + "\"");
+                    else
+                        Process.Start("WadTool.exe");
                 }
                 catch (Exception exc)
                 {
@@ -1310,7 +1313,10 @@ namespace TombEditor
             {
                 try
                 {
-                    Process.Start("SoundTool.exe");
+                    if (!string.IsNullOrEmpty(args.Editor.Level.Settings.LevelFilePath))
+                        Process.Start("SoundTool.exe", "-r \"" + args.Editor.Level.Settings.MakeAbsolute(args.Editor.Level.Settings.LevelFilePath) + "\"");
+                    else
+                        Process.Start("SoundTool.exe");
                 }
                 catch (Exception exc)
                 {

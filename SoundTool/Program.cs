@@ -20,14 +20,36 @@ namespace SoundTool
             var extensions = new List<string>() { ".xml", ".txt" };
 
             string startFile = null;
+            string refLevel  = null;
+
             if (args.Length > 0) // Open files on start
             {
-                foreach(var ext in extensions)
-                    if(args[0].EndsWith(ext, StringComparison.InvariantCultureIgnoreCase))
+                bool loadAsRefLevel = false;
+
+                foreach (var arg in args)
+                {
+                    if (arg.Equals("-r", StringComparison.InvariantCultureIgnoreCase))
+                        loadAsRefLevel = true;
+                    else
                     {
-                        startFile = args[0];
-                        break;
+                        if (!File.Exists(arg))
+                            continue; // No file and no valid argument, don't even try to load anything
+
+                        if (loadAsRefLevel)
+                        {
+                            if (arg.EndsWith("prj2", StringComparison.InvariantCultureIgnoreCase))
+                                refLevel = arg;
+                        }
+                        else
+                            foreach (var ext in extensions)
+                            {
+                                if (arg.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase))
+                                    startFile = arg;
+                            }
+
+                        loadAsRefLevel = false; // Reset arg mode if no expected path was found next to it
                     }
+                }
             }
 
             if (mutex.WaitOne(TimeSpan.Zero, true))
@@ -43,13 +65,13 @@ namespace SoundTool
                 }
                 TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
 
-                using (FormMain form = new FormMain(startFile))
+                using (FormMain form = new FormMain(startFile, refLevel))
                 {
                     form.Show();
                     Application.Run(form);
                 }
             }
-            else if (startFile != null )
+            else if (startFile != null)
                 SingleInstanceManagement.Send(Process.GetCurrentProcess(), extensions, startFile);
             else
                 SingleInstanceManagement.Bump(Process.GetCurrentProcess());

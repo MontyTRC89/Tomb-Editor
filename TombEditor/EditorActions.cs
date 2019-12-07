@@ -771,8 +771,10 @@ namespace TombEditor
             }
             else if (instance is StaticInstance)
             {
-                // Use static editing dialog only for NG levels for now
-                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || Control.ModifierKeys.HasFlag(Keys.Control))
+                // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
+                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || 
+                    Control.ModifierKeys.HasFlag(Keys.Control) ||
+                    Control.ModifierKeys.HasFlag(Keys.Alt))
                     EditStaticMeshColor(owner, (StaticInstance)instance);
                 else
                 {

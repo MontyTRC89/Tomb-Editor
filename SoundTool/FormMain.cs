@@ -31,7 +31,7 @@ namespace SoundTool
         private bool _saved = true;
         private string _currentArchive = null;
 
-        public FormMain(string archive = null)
+        public FormMain(string archive = null, string refLevel = null)
         {
             // Load config
             _configuration = new Configuration().LoadOrUseDefault<Configuration>();
@@ -45,7 +45,10 @@ namespace SoundTool
 
             Configuration.LoadWindowProperties(this, _configuration);
 
-            if (!string.IsNullOrEmpty(_configuration.SoundTool_ReferenceProject))
+            // Load either specified ref level or from config (if exists)
+            if (!string.IsNullOrEmpty(refLevel))
+                LoadReferenceLevel(refLevel);
+            else if (!string.IsNullOrEmpty(_configuration.SoundTool_ReferenceProject))
                 LoadReferenceLevel(_configuration.SoundTool_ReferenceProject);
 
             // If no args, create new catalog

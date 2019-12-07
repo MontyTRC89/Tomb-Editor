@@ -68,12 +68,45 @@ namespace WadTool
                 SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
                 using (WadToolClass tool = new WadToolClass(configuration))
-                using (FormMain form = new FormMain(tool))
                 {
-                    form.Show();
+                    string startWad = null;
+                    string refLevel = null;
+
                     if (args.Length > 0)
-                        WadActions.LoadWad(tool, null, true, args[0]);
-                    Application.Run(form);
+                    {
+                        bool loadAsRefLevel = false;
+
+                        foreach (var arg in args)
+                        {
+                            if (arg.Equals("-r", StringComparison.InvariantCultureIgnoreCase))
+                                loadAsRefLevel = true;
+                            else
+                            {
+                                if (!File.Exists(arg))
+                                    continue; // No file and no valid argument, don't even try to load anything
+
+                                if (loadAsRefLevel)
+                                {
+                                    if (arg.EndsWith("prj2", StringComparison.InvariantCultureIgnoreCase))
+                                        refLevel = arg;
+                                }
+                                else
+                                    startWad = arg;
+
+                                loadAsRefLevel = false; // Reset arg mode if no expected path was found next to it
+                            }
+                        }
+                    }
+
+                    using (FormMain form = new FormMain(tool))
+                    {
+                        form.Show();
+
+                        if (!string.IsNullOrEmpty(refLevel)) WadActions.LoadReferenceLevel(tool, form, refLevel);
+                        if (!string.IsNullOrEmpty(startWad)) WadActions.LoadWad(tool, form, true, startWad);
+
+                        Application.Run(form);
+                    }
                 }
             }
         }
