@@ -1263,11 +1263,34 @@ namespace TombLib.LevelData.Compilers
                     if (roomConnectionInfo.AnyType != Room.RoomConnectionType.NoPortal)
                     {
                         BlockSurface s = isCeiling ? block.Ceiling : block.Floor;
-                        if (BlockSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
-                        { // Diagonal is split, one face
-                            AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XnZp - s.XnZn));
+
+                        if (s.DiagonalSplit != DiagonalSplit.None || BlockSurface.IsQuad2(s.XnZn, s.XpZn, s.XnZp, s.XpZp))
+                        {
+                            switch (s.DiagonalSplit)
+                            {
+                                // Ordinary quad
+                                case DiagonalSplit.None:
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZn - s.XnZn, s.XnZp - s.XnZn));
+                                    break;
+
+                                case DiagonalSplit.XnZn:
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XpZp, z, 0, 0));
+                                    break;
+
+                                case DiagonalSplit.XnZp:
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XpZn, z, 0, 0));
+                                    break;
+
+                                case DiagonalSplit.XpZn:
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZp, z, 0, 0));
+                                    break;
+
+                                case DiagonalSplit.XpZp:
+                                    AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, 0, 0));
+                                    break;
+                            }
                         }
-                        else if (isCeiling ? block.Ceiling.SplitDirectionIsXEqualsZ : block.Floor.SplitDirectionIsXEqualsZ)
+                        else if (s.SplitDirectionIsXEqualsZ)
                         { // Diagonal is split X = Y
                             if (roomConnectionInfo.AnyType == Room.RoomConnectionType.FullPortal || roomConnectionInfo.AnyType == Room.RoomConnectionType.TriangularPortalXnZp)
                                 AddPortalPlane(portalPlanes, portalAreas, x, z, new PortalPlane(x, s.XnZn, z, s.XpZp - s.XnZp, s.XnZp - s.XnZn));
