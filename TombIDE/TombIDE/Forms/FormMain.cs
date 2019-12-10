@@ -522,17 +522,17 @@ namespace TombIDE
 		{
 			base.OnKeyDown(e);
 
-            if (e.Modifiers == Keys.None)
-            {
-                if (e.KeyCode == Keys.F2)
-                    LaunchFLEP();
+			if (ModifierKeys == Keys.None)
+			{
+				if (e.KeyCode == Keys.F2)
+					LaunchFLEP();
 
-                if (e.KeyCode == Keys.F3)
-                    SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
+				if (e.KeyCode == Keys.F3)
+					SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
 
-                if (e.KeyCode == Keys.F4)
-                    LaunchGame();
-            }
+				if (e.KeyCode == Keys.F4)
+					LaunchGame();
+			}
 		}
 
 		// All 3 methods below trigger IDE.SelectedIDETabChangedEvent
