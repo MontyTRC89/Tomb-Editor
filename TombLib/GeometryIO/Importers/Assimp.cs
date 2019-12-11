@@ -91,7 +91,7 @@ namespace TombLib.GeometryIO.Importers
                     }
 
                     // Make sure we have appropriate material in list. If not, skip mesh and warn user.
-                    var material = newModel.Materials.FirstOrDefault(mat => mat.Name.Equals(scene.Materials[mesh.MaterialIndex]));
+                    var material = newModel.Materials.FirstOrDefault(mat => mat.Name.Equals(scene.Materials[mesh.MaterialIndex].Name));
                     if (material == null)
                     {
                         logger.Warn("Can't find material with specified index (" + mesh.MaterialIndex + "). Probably you're missing textures or using non-diffuse materials only for this mesh.");
