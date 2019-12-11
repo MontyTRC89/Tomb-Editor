@@ -80,7 +80,7 @@
             this.cbDrawGizmo.AutoSize = true;
             this.cbDrawGizmo.Checked = true;
             this.cbDrawGizmo.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGizmo.Location = new System.Drawing.Point(500, 368);
+            this.cbDrawGizmo.Location = new System.Drawing.Point(500, 395);
             this.cbDrawGizmo.Name = "cbDrawGizmo";
             this.cbDrawGizmo.Size = new System.Drawing.Size(87, 17);
             this.cbDrawGizmo.TabIndex = 82;
@@ -93,7 +93,7 @@
             this.cbDrawGrid.AutoSize = true;
             this.cbDrawGrid.Checked = true;
             this.cbDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGrid.Location = new System.Drawing.Point(500, 391);
+            this.cbDrawGrid.Location = new System.Drawing.Point(500, 415);
             this.cbDrawGrid.Name = "cbDrawGrid";
             this.cbDrawGrid.Size = new System.Drawing.Size(77, 17);
             this.cbDrawGrid.TabIndex = 81;
@@ -103,6 +103,7 @@
             // butSaveChanges
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSaveChanges.Checked = false;
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
             this.butSaveChanges.Location = new System.Drawing.Point(643, 411);
             this.butSaveChanges.Name = "butSaveChanges";
@@ -115,6 +116,7 @@
             // butRenameBone
             // 
             this.butRenameBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRenameBone.Checked = false;
             this.butRenameBone.Image = global::WadTool.Properties.Resources.edit_16;
             this.butRenameBone.Location = new System.Drawing.Point(500, 277);
             this.butRenameBone.Name = "butRenameBone";
@@ -127,6 +129,7 @@
             // butDeleteBone
             // 
             this.butDeleteBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeleteBone.Checked = false;
             this.butDeleteBone.Image = global::WadTool.Properties.Resources.trash_161;
             this.butDeleteBone.Location = new System.Drawing.Point(643, 277);
             this.butDeleteBone.Name = "butDeleteBone";
@@ -139,14 +142,13 @@
             // butLoadModel
             // 
             this.butLoadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butLoadModel.Image = global::WadTool.Properties.Resources.opened_folder_16;
-            this.butLoadModel.Location = new System.Drawing.Point(643, 364);
+            this.butLoadModel.Checked = false;
+            this.butLoadModel.Location = new System.Drawing.Point(500, 364);
             this.butLoadModel.Name = "butLoadModel";
-            this.butLoadModel.Size = new System.Drawing.Size(137, 23);
+            this.butLoadModel.Size = new System.Drawing.Size(280, 23);
             this.butLoadModel.TabIndex = 80;
             this.butLoadModel.Text = "Replace model";
             this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butLoadModel.Visible = false;
             this.butLoadModel.Click += new System.EventHandler(this.butLoadModel_Click);
             // 
             // darkStatusStrip1
@@ -163,6 +165,7 @@
             // butAddFromWad2
             // 
             this.butAddFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddFromWad2.Checked = false;
             this.butAddFromWad2.Image = global::WadTool.Properties.Resources.search_16;
             this.butAddFromWad2.Location = new System.Drawing.Point(643, 335);
             this.butAddFromWad2.Name = "butAddFromWad2";
@@ -175,6 +178,7 @@
             // butAddFromFile
             // 
             this.butAddFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddFromFile.Checked = false;
             this.butAddFromFile.Image = global::WadTool.Properties.Resources.opened_folder_16;
             this.butAddFromFile.Location = new System.Drawing.Point(643, 306);
             this.butAddFromFile.Name = "butAddFromFile";
@@ -187,6 +191,7 @@
             // butReplaceFromWad2
             // 
             this.butReplaceFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceFromWad2.Checked = false;
             this.butReplaceFromWad2.Image = global::WadTool.Properties.Resources.search_16;
             this.butReplaceFromWad2.Location = new System.Drawing.Point(500, 335);
             this.butReplaceFromWad2.Name = "butReplaceFromWad2";
@@ -199,6 +204,7 @@
             // butReplaceFromFile
             // 
             this.butReplaceFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butReplaceFromFile.Checked = false;
             this.butReplaceFromFile.Image = global::WadTool.Properties.Resources.opened_folder_16;
             this.butReplaceFromFile.Location = new System.Drawing.Point(500, 306);
             this.butReplaceFromFile.Name = "butReplaceFromFile";
