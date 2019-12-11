@@ -244,7 +244,7 @@ namespace TombEditor.ToolWindows
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 23);
             this.butSearch.TabIndex = 4;
-            this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
+            this.toolTip.SetToolTip(this.butSearch, "Search for texture sets");
             this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // TexturePanel
