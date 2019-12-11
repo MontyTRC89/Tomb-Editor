@@ -82,6 +82,10 @@ namespace TombLib.GeometryIO.Importers
                 // Loop for each mesh loaded in scene
                 foreach (var mesh in scene.Meshes)
                 {
+                    // Discard nullmeshes
+                    if (!mesh.HasFaces || !mesh.HasVertices)
+                        continue;
+
                     // Import only textured meshes with valid materials
                     Texture faceTexture;
                     if (!textures.TryGetValue(mesh.MaterialIndex, out faceTexture))
