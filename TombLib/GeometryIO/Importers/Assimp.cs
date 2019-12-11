@@ -59,7 +59,15 @@ namespace TombLib.GeometryIO.Importers
                     if (string.IsNullOrWhiteSpace(diffusePath))
                         continue;
 
-                    textures.Add(i, GetTexture(path, diffusePath));
+                    // Don't add materials with missing textures
+                    var texture = GetTexture(path, diffusePath);
+                    if (texture == null)
+                    {
+                        logger.Warn("Texture for material " + mat.Name + " is missing. Meshes referencing this material won't be imported.");
+                        continue;
+                    }
+                    else
+                        textures.Add(i, texture);
 
                     // Create the new material
                     material.Texture = textures[i];
@@ -82,8 +90,15 @@ namespace TombLib.GeometryIO.Importers
                         continue;
                     }
 
+                    // Make sure we have appropriate material in list. If not, skip mesh and warn user.
+                    var material = newModel.Materials.FirstOrDefault(mat => mat.Name.Equals(scene.Materials[mesh.MaterialIndex]));
+                    if (material == null)
+                    {
+                        logger.Warn("Can't find material with specified index (" + mesh.MaterialIndex + "). Probably you're missing textures or using non-diffuse materials only for this mesh.");
+                        continue;
+                    }
+
                     // Assimp's mesh is our IOSubmesh so we import meshes with just one submesh
-                    var material = newModel.Materials[mesh.MaterialIndex];
                     var newMesh = new IOMesh(mesh.Name);
                     var newSubmesh = new IOSubmesh(material);
                     newMesh.Submeshes.Add(material, newSubmesh);

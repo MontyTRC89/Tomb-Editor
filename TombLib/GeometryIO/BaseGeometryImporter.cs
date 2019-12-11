@@ -79,7 +79,14 @@ namespace TombLib.GeometryIO
 
         protected Texture GetTexture(string baseDirectory, string textureFilePath)
         {
-            string absoluteTextureFilePath = Path.Combine(baseDirectory, textureFilePath);
+            // Try to get texture from absolute file path first, then try to locate texture in same dir as model.
+            // If both approaches fail, return null and eventually don't import model.
+
+            string absoluteTextureFilePath = File.Exists(textureFilePath) ? textureFilePath : Path.Combine(baseDirectory, Path.GetFileName(textureFilePath));
+
+            if (!File.Exists(absoluteTextureFilePath))
+                return null;
+
             return (_getTextureCallback != null ? _getTextureCallback(absoluteTextureFilePath) : null);
         }
 
