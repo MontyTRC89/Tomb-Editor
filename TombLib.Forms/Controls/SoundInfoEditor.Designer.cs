@@ -573,6 +573,7 @@
             this.SamplePathColumn.FillWeight = 30F;
             this.SamplePathColumn.HeaderText = "Sample name";
             this.SamplePathColumn.Name = "SamplePathColumn";
+            this.SamplePathColumn.ReadOnly = true;
             // 
             // SampleFoundPathColumn
             // 
@@ -580,6 +581,7 @@
             this.SampleFoundPathColumn.FillWeight = 70F;
             this.SampleFoundPathColumn.HeaderText = "Found in directory";
             this.SampleFoundPathColumn.Name = "SampleFoundPathColumn";
+            this.SampleFoundPathColumn.ReadOnly = true;
             // 
             // SoundInfoEditor
             // 
