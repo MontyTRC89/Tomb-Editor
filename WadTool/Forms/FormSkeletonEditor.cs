@@ -566,7 +566,7 @@ namespace WadTool
                     else if (meshes.Count < _bones.Count)
                     {
                         meshCount = meshes.Count;
-                        popup.ShowError(panelRendering, "Mesh count is lower in imported model. Only meshes up to " + _bones.Count + " will be replaced.");
+                        popup.ShowError(panelRendering, "Mesh count is lower in imported model. Only meshes up to " + meshes.Count + " will be replaced.");
                     }
                     else
                         meshCount = _bones.Count;
