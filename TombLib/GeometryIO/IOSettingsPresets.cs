@@ -171,6 +171,21 @@ namespace TombLib.GeometryIO
                 }
             });
 
+            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "TRViewer 3DS",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1.0f,
+                    FlipZ = false,
+                    SwapYZ = true,
+                    FlipUV_V = true,
+                    InvertFaces = true,
+                    PremultiplyUV = true,
+                    WrapUV = true
+                }
+            });
+
             AnimationSettingsPresets = new List<IOGeometrySettingsPreset>();
 
             // 3dsmax COLLADA
