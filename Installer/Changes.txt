@@ -1,5 +1,38 @@
-Version 1.2.8 - 10/2019
-=======================
+Version 1.2.9 - 11/12/2019
+==========================
+Tomb Editor:
+Fix light values leaking through paper-thin walls of non-connected rooms
+Overwrite merged statics effects with global room effects (partially fixes desynced caustics)
+Fix corrupted animcommand frame numbers in single-frame animations
+Fix static action triggers not being exported correctly
+Fix static scale field not updating on enter keypress
+Partially fix diagonal geometry portal flickering (all remaining cases are tomb4 bugs)
+Make room effect range similar to TRLE (1-4) and allow "true zero" value (e.g. to disable water waves)
+Directly edit static mesh color in TRNG projects by holding Ctrl or Alt
+Added one extra default sound sample path (default TRLE one)
+Fix selection color for pastel color scheme
+Ask for autodetect sound deselection only if any sounds are selected
+Added option to automatically autodetect sounds if none were selected (e.g. new project)
+Added texture set in-place search
+Added toolbar customization (right-click on it) and extra buttons
+SoundTool and WadTool are now auto-loading current project if launched from Tomb Editor
+
+WadTool:
+Add End Frame field to animation editor
+Fix potential errors while importing meshes from external 3D files
+Fix unsaved changes indication
+Fix incorrect frame count on animation changes
+Potentially fix errors with assignation of sprite magenta transparency
+Added SAS state names
+
+SoundTool:
+Show found sample paths in sample list (if reference project is loaded)
+
+TombIDE:
+Fix game launching with Alt+F4 
+
+Version 1.2.8 - 23/10/2019
+==========================
 GENERAL:
 
 1. New TombIDE project, which serves as much more advanced and intuitive replacement for NG center.
