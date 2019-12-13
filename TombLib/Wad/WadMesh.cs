@@ -7,11 +7,14 @@ using TombLib.IO;
 using TombLib.Utils;
 using System.Linq;
 using TombLib.GeometryIO.Importers;
+using NLog;
 
 namespace TombLib.Wad
 {
     public class WadMesh : ICloneable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public string Name { get; set; }
         public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
         public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
@@ -198,6 +201,7 @@ namespace TombLib.Wad
             }
             catch (Exception ex)
             {
+                logger.Error(ex, "Geometry import failed!");
                 return null;
             }
 
