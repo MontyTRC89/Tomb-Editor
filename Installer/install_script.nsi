@@ -34,7 +34,7 @@ SetCompressor lzma
 Unicode true
 Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
-InstallDir "$PROGRAMFILES\Tomb Editor"
+InstallDir "C:\Tomb Editor"
 RequestExecutionLevel highest
 
 ;--------------------------------
@@ -1255,6 +1255,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\Editor\Shaders\Solid.fx"
 	Delete "$INSTDIR\Editor\Shaders\RoomGeometry.fx"
 	Delete "$INSTDIR\Editor\Shaders\Model.fx"
+	Delete "$INSTDIR\Catalogs\Sounds.xml"
 	Delete "$INSTDIR\Catalogs\TrCatalog.xml"
 	Delete "$INSTDIR\Catalogs\NgCatalog.xml"
 	Delete "$INSTDIR\WadTool.exe"
