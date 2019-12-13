@@ -73,6 +73,7 @@ Section "Tomb Editor" Section1
   /x "*.pdb" \
   /x "*.config" \
   /x "*.so" \
+  /x "*.vshost.*" \
   /x "install_script.nsi" \
   /x "TombEditorInstall.exe" \
   /x "TombEditorConfiguration.xml" \
@@ -114,6 +115,7 @@ Section "TombIDE" Section2
   /x "runtimes" \
   /x "*.pdb" \
   /x "*.config" \
+  /x "*.vshost.*" \
   /x "TombIDE*.xml" \
   TombIDE*.* 
   
