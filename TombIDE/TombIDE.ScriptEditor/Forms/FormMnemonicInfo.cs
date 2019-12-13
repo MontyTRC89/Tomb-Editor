@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.Scripting;
@@ -35,26 +36,30 @@ namespace TombIDE.ScriptEditor
 
 		private string GetFlagDescription(string flag)
 		{
-			try
-			{
-				foreach (string file in Directory.GetFiles(Path.Combine(SharedMethods.GetProgramDirectory(), @"References\Mnemonics"), "info_*.txt"))
-				{
-					if (Path.GetFileName(file).ToLower() == "info_" + flag.ToLower() + ".txt")
-						return File.ReadAllText(file, Encoding.GetEncoding(1252));
-				}
-			}
+            var result = string.Empty;
+
+            try
+            {
+                var mnemonicPath = Path.Combine(SharedMethods.GetProgramDirectory(), @"References\Mnemonics\info_" + flag.ToLower() + ".txt");
+                if (File.Exists(mnemonicPath))
+                    result = File.ReadAllText(mnemonicPath, Encoding.GetEncoding(1252));
+                else
+                {
+                    foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
+                        if (mnemonic.Flag == flag)
+                            result = mnemonic.Description;
+                }
+
+                // Fix Nickelony's persistent problems with line endings
+                if (!string.IsNullOrEmpty(result))
+                    result = Regex.Replace(result, @"\r\n?|\n", "\n");
+            }
 			catch (Exception ex)
 			{
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+            }
 
-			foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
-			{
-				if (mnemonic.Flag == flag)
-					return mnemonic.Description;
-			}
-
-			return string.Empty;
-		}
+            return result;
+        }
 	}
 }
