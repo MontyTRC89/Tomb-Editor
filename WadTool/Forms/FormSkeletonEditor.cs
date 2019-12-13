@@ -518,9 +518,7 @@ namespace WadTool
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                     if (mesh == null)
                     {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ImportFailed();
                         return;
                     }
 
@@ -551,9 +549,7 @@ namespace WadTool
                     var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, false);
                     if (meshes == null || meshes.Count == 0)
                     {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ImportFailed();
                         return;
                     }
 
@@ -710,15 +706,20 @@ namespace WadTool
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                     if (mesh == null)
                     {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ImportFailed();
                         return;
                     }
 
                     InsertNewBone(mesh, theNode);
                 }
             }
+        }
+
+        private void ImportFailed()
+        {
+            DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file \n" +
+                                "is one of the supported formats and that the meshes are textured",
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void PanelRendering_MouseUp(object sender, MouseEventArgs e)
