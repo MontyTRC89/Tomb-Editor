@@ -87,10 +87,8 @@ Section "Tomb Editor" Section1
   ; Choose 32-bit or 64-bit d3dcompiler dll based on system version
   ${If} ${RunningX64}
       Rename "$INSTDIR\Native\64 bit\d3dcompiler_43.dll" "$INSTDIR\d3dcompiler_43.dll"
-      Rename "$INSTDIR\runtimes\win-x64\native\assimp.dll" "$INSTDIR\assimp.dll"
   ${Else}
       Rename "$INSTDIR\Native\32 bit\d3dcompiler_43.dll" "$INSTDIR\d3dcompiler_43.dll"
-      Rename "$INSTDIR\runtimes\win-x86\native\assimp.dll" "$INSTDIR\assimp.dll"
   ${EndIf}
   
   RMDir /r "$INSTDIR\Native"
@@ -1300,6 +1298,8 @@ Section "Uninstall"
 	Delete "$INSTDIR\CH.SipHash.dll"
 	Delete "$INSTDIR\Castle.Core.xml"
 	Delete "$INSTDIR\Castle.Core.dll"
+	Delete "$INSTDIR\Assimp32.dll"
+	Delete "$INSTDIR\Assimp64.dll"
 	Delete "$INSTDIR\AssimpNet.dll"
 	RMDir "$INSTDIR\Templates\TOMB4\Defaults"
 	RMDir "$INSTDIR\Templates\TOMB4"
@@ -1347,7 +1347,6 @@ Section "Uninstall"
   
   ; Remove dlls which were externally copied
   Delete "$INSTDIR\d3dcompiler_43.dll"
-  Delete "$INSTDIR\assimp.dll"
   
   ; Remove uninstaller
   Delete "$INSTDIR\uninstall.exe"
