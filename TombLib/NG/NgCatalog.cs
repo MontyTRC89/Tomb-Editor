@@ -25,24 +25,24 @@ namespace TombLib.NG
                         TimerFieldTrigger = ReadNgParameterRange(triggerNode.ChildNodes[0]);
                         break;
                     case "FlipEffectTrigger":
-                        FlipEffectTrigger = ReadNgTriggerSubtypes(triggerNode);
+                        FlipEffectTrigger = ReadNgTriggerSubtypes(triggerNode, "F");
                         break;
                     case "ActionTrigger":
-                        ActionTrigger = ReadNgTriggerSubtypes(triggerNode);
+                        ActionTrigger = ReadNgTriggerSubtypes(triggerNode, "A");
                         break;
                     case "ConditionTrigger":
-                        ConditionTrigger = ReadNgTriggerSubtypes(triggerNode);
+                        ConditionTrigger = ReadNgTriggerSubtypes(triggerNode, "C");
                         break;
                 }
         }
 
-        private static NgTriggerSubtypes ReadNgTriggerSubtypes(XmlNode parentNode)
+        private static NgTriggerSubtypes ReadNgTriggerSubtypes(XmlNode parentNode, string prefix = null)
         {
             var result = new NgTriggerSubtypes();
             foreach (XmlNode timerNode in parentNode.ChildNodes)
             {
                 var key = ushort.Parse(timerNode.Attributes["K"].Value, CultureInfo.InvariantCulture);
-                var value = timerNode.Attributes["V"].Value;
+                var value = ((prefix != null) ? (prefix + key.ToString("D3") + ". ") : string.Empty) + timerNode.Attributes["V"].Value;
                 var triggerSubtype = new NgTriggerSubtype(key, value);
 
                 foreach (XmlNode nodeList in timerNode.ChildNodes)
