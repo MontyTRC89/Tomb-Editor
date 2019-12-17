@@ -97,9 +97,9 @@ namespace WadTool
                 lstCommands.EnsureVisible();
         }
 
-        public void SelectCommand(WadAnimCommand cmd, bool selectInTree = true)
+        public void SelectCommand(WadAnimCommand cmd, bool selectInTree = true, bool copy = false)
         {
-            if (cmd != null && !_animation.WadAnimation.AnimCommands.Contains(cmd))
+            if (cmd != null && (copy || !_animation.WadAnimation.AnimCommands.Contains(cmd)))
             {
                 _animation.WadAnimation.AnimCommands.Add(cmd);
                 lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd });
@@ -175,7 +175,7 @@ namespace WadTool
             _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
         }
 
-        public void UpdateSelectedItemText() => lstCommands.Items[lstCommands.SelectedIndices[0]].Text = lstCommands.Items[lstCommands.SelectedIndices[0]].Tag.ToString();
+        public void UpdateSelectedItemText() => lstCommands.SelectedItem.Text = lstCommands.SelectedItem.Tag.ToString();
 
         private void butCommandUp_Click(object sender, EventArgs e) => MoveCommand(false);
         private void butCommandDown_Click(object sender, EventArgs e) => MoveCommand(true);
@@ -185,6 +185,16 @@ namespace WadTool
         {
             var newCmd = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
             SelectCommand(newCmd);
+            ApplyChanges(false);
+        }
+
+        private void butCopy_Click(object sender, EventArgs e)
+        {
+            if (lstCommands.SelectedIndices.Count == 0)
+                return;
+
+            var newCmd = ((WadAnimCommand)(lstCommands.SelectedItem.Tag)).Clone();
+            SelectCommand(newCmd, true, true);
             ApplyChanges(false);
         }
 
