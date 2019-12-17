@@ -35,7 +35,6 @@ Unicode true
 Name "Tomb Editor"
 OutFile "TombEditorInstall.exe"
 InstallDir "C:\Tomb Editor"
-RequestExecutionLevel highest
 
 ;--------------------------------
 
