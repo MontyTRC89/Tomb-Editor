@@ -241,6 +241,9 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Light effect
+            // WARNING: DO NOT use raw value of 1 in WaterScheme ever with classic tomb engines,
+            // it will result in broken effect.
+
             switch (lightEffect)
             {
                 case RoomLightEffect.GlowAndMovement:
@@ -252,7 +255,7 @@ namespace TombLib.LevelData.Compilers
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
-                    if (!waterSchemeSet) newRoom.WaterScheme = room.LightEffectStrength;
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
                     break;
 
