@@ -2604,15 +2604,6 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem curToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton butTbCutAnimation;
-        private DarkUI.Controls.DarkTextBox tbLatAccel;
-        private DarkUI.Controls.DarkLabel darkLabel14;
-        private DarkUI.Controls.DarkTextBox tbLatSpeed;
-        private DarkUI.Controls.DarkLabel darkLabel15;
-        private DarkUI.Controls.DarkTextBox tbAccel;
-        private DarkUI.Controls.DarkLabel darkLabel16;
-        private DarkUI.Controls.DarkTextBox tbSpeed;
-        private DarkUI.Controls.DarkLabel darkLabel17;
-        private DarkUI.Controls.DarkLabel darkLabel20;
         private DarkUI.Controls.DarkLabel darkLabel22;
         private DarkUI.Controls.DarkLabel darkLabel23;
         private DarkUI.Controls.DarkLabel darkLabel24;
@@ -2629,7 +2620,6 @@ namespace WadTool
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel4;
         private System.Windows.Forms.Panel panelMain;
-        private System.Windows.Forms.Panel panelTools;
         private System.Windows.Forms.Panel panelTimeline;
         private System.Windows.Forms.Panel panelTransport;
         private Controls.PanelRenderingAnimationEditor panelRendering;

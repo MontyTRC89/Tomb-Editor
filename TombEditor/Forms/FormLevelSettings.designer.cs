@@ -2181,7 +2181,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsGameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SelectedSoundsOriginalIdColumn;
         private DarkUI.Controls.DarkButton butAssignFromWads;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private DarkUI.Controls.DarkButton butSelectAllButShatterStatics;
         private DarkUI.Controls.DarkButton butDeselectAllStatics;
         private DarkUI.Controls.DarkButton butSelectAllStatics;
