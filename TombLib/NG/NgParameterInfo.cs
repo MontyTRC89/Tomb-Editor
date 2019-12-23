@@ -116,7 +116,7 @@ namespace TombLib.NG
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
                             else
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList
-                                    .DicWhere(entry => entry.Value.Name.StartsWith("OldFlip"))
+                                    .DicWhere(entry => entry.Value.Name.Contains("OldFlip"))
                                     .DicSelect(e => (TriggerParameterUshort)e.Value));
 
                         case TriggerTargetType.ActionNg:
