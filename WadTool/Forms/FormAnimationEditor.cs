@@ -2129,15 +2129,16 @@ namespace WadTool
 
                     var listOfMaterialSounds = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.Where(s => s.Name.IndexOf("FOOTSTEPS_", StringComparison.InvariantCultureIgnoreCase) >= 0).ToList();
 
-                    while (true)
-                    {
-                        var newMaterialIndex = (new Random()).Next(0, listOfMaterialSounds.Count() - 1);
-                        if (listOfMaterialSounds.Count == 1 || newMaterialIndex != _currentMaterialIndex)
+                    if (listOfMaterialSounds.Count > 1)
+                        while (true)
                         {
-                            _currentMaterialIndex = listOfMaterialSounds[newMaterialIndex].Id;
-                            break;
+                            var newMaterialIndex = (new Random()).Next(0, listOfMaterialSounds.Count() - 1);
+                            if (listOfMaterialSounds.Count == 1 || newMaterialIndex != _currentMaterialIndex)
+                            {
+                                _currentMaterialIndex = listOfMaterialSounds[newMaterialIndex].Id;
+                                break;
+                            }
                         }
-                    }
                 }
 
                 foreach (var ac in _editor.CurrentAnim.WadAnimation.AnimCommands)
