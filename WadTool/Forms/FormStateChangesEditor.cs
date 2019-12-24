@@ -248,18 +248,18 @@ namespace WadTool
                 else if (name == columnNextFrame.Name)
                 {
                     Int16 limitNew = 0;
-                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
+                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[4].Value.ToString(), out limitNew))
                         limit = (Int16)(_editor.GetRealNumberOfFrames(limitNew));
                 }
                 else if (name == columnLowFrame.Name)
                 {
                     Int16 limitNew = 0;
-                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[2].Value.ToString(), out limitNew))
+                    if (Int16.TryParse(dgvStateChanges.Rows[e.RowIndex].Cells[3].Value.ToString(), out limitNew))
                         limit = limitNew;
                 }
                 else if (name == columnHighFrame.Name)
                 {
-                    limit = (Int16)(_editor.GetRealNumberOfFrames());
+                    limit = (Int16)(_editor.GetRealNumberOfFrames() - 1);
                 }
 
                 if (parsedValue > limit)
