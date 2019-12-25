@@ -383,17 +383,7 @@ namespace TombLib.LevelData
         {
             var absolutePathTextureLookup = new Dictionary<string, Texture>();
 
-            // Add level textures to lookup
-            foreach (LevelTexture levelTexture in Textures)
-            {
-                if (string.IsNullOrEmpty(levelTexture.Path))
-                    continue;
-                string absolutePath = MakeAbsolute(levelTexture.Path);
-                if (!absolutePathTextureLookup.ContainsKey(absolutePath))
-                    absolutePathTextureLookup.Add(absolutePath, levelTexture);
-            }
-
-            // Add other imported geometry texture to lookup
+            // Add other imported geometry textures to lookup
             foreach (ImportedGeometry importedGeometry in ImportedGeometries)
                 foreach (ImportedGeometryTexture importedGeometryTexture in importedGeometry.Textures)
                     if (!absolutePathTextureLookup.ContainsKey(importedGeometryTexture.AbsolutePath))
