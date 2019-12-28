@@ -288,7 +288,7 @@ namespace TombLib.Controls
                     }
                     if (alreadyInList) break;
 
-                    samplesAreMisplaced = AddSampleToList(fileName);
+                    samplesAreMisplaced = !AddSampleToList(fileName);
                 }
 
                 if (samplesAreMisplaced)
