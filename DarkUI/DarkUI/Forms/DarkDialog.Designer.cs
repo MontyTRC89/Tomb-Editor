@@ -99,7 +99,7 @@ namespace DarkUI.Forms
             this.btnOk.Padding = new System.Windows.Forms.Padding(5);
             this.btnOk.Size = new System.Drawing.Size(75, 26);
             this.btnOk.TabIndex = 4;
-            this.btnOk.Text = "Ok";
+            this.btnOk.Text = "OK";
             //
             // btnCancel
             //
