@@ -288,7 +288,7 @@ namespace TombLib.LevelData.Compilers
 
             if (block.Type == BlockType.Wall ||
                 block.Type == BlockType.BorderWall ||
-                block.WallPortal != null && block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
+                block.WallPortal != null && block.WallPortal.Opacity == PortalOpacity.SolidFaces)
             {
                 return false;
             }
