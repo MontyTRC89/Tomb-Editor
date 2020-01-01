@@ -271,12 +271,18 @@ namespace TombEditor.Forms
                             refObject.Ocb != currObject.Ocb)
                             continue;
 
-                        currObject.WadObjectId = destObject.WadObjectId;
+                        if (currObject.WadObjectId != destObject.WadObjectId)
+                        {
+                            currObject.WadObjectId = destObject.WadObjectId;
+                            objectChanged = true;
+                        }
 
-                        if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly)
+                        if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
+                            currObject.Ocb != destObject.Ocb)
+                        {
                             currObject.Ocb = destObject.Ocb;
-
-                        objectChanged = true;
+                            objectChanged = true;
+                        }
                     }
                     else if (obj is StaticInstance)
                     {
@@ -294,13 +300,19 @@ namespace TombEditor.Forms
                             refObject.Ocb != currObject.Ocb)
                             continue;
 
-                        currObject.WadObjectId = destObject.WadObjectId;
+                        if (currObject.WadObjectId != destObject.WadObjectId)
+                        {
+                            currObject.WadObjectId = destObject.WadObjectId;
+                            objectChanged = true;
+                        }
 
                         if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG && 
-                            cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly)
+                            cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
+                            currObject.Ocb != destObject.Ocb)
+                        {
                             currObject.Ocb = destObject.Ocb;
-
-                        objectChanged = true;
+                            objectChanged = true;
+                        }
                     }
                     else if (obj is LightInstance)
                     {
@@ -363,12 +375,18 @@ namespace TombEditor.Forms
                             refObject.Scale != currObject.Scale)
                             continue;
 
-                        currObject.Model = destObject.Model;
+                        if (!currObject.Model.Equals(destObject.Model))
+                        {
+                            currObject.Model = destObject.Model;
+                            objectChanged = true;
+                        }
 
-                        if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly)
+                        if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
+                            currObject.Scale != destObject.Scale)
+                        {
                             currObject.Scale *= destObject.Scale;
-
-                        objectChanged = true;
+                            objectChanged = true;
+                        }
                     }
 
                     if (objectChanged)
