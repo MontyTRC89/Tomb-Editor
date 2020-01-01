@@ -13,8 +13,6 @@ namespace TombLib.Wad
 {
     public static class Wad2Loader
     {
-        private static bool _legacySounds = false;
-
         public static Wad2 LoadFromFile(string fileName, bool withSounds)
         {
             Wad2 result;
@@ -170,7 +168,6 @@ namespace TombLib.Wad
 
                 string FilenameObsolete = null;
                 byte[] data = null;
-                _legacySounds = true;
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
@@ -239,7 +236,6 @@ namespace TombLib.Wad
                     tempSoundInfo.Samples.Add(samples[chunkIO.ReadChunkInt(chunkSize2)]); // Legacy
                 else
                     return false;
-                _legacySounds = true;
                 return true;
             });
 
@@ -277,7 +273,6 @@ namespace TombLib.Wad
                 LoadSoundInfo(chunkIO, wad, samples, out soundInfo, out index);
                 soundInfos.Add(index, soundInfo);
 
-                _legacySounds = true;
                 return true;
             });
 
@@ -312,7 +307,6 @@ namespace TombLib.Wad
 
                 var Id = new WadFixedSoundInfoId(checked((uint)soundId));
                 fixedSoundInfos.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
-                _legacySounds = true;
                 return true;
             });
 
@@ -335,7 +329,6 @@ namespace TombLib.Wad
                     var wId = new WadAdditionalSoundInfoId("Unnamed " + soundInfo.Name);
                     wad.AdditionalSoundInfosObsolete.Add(wId, new WadAdditionalSoundInfo(wId) { SoundInfo = soundInfo });
 
-                    _legacySounds = true;
                     return true;
                 });
                 return true;
@@ -362,7 +355,6 @@ namespace TombLib.Wad
 
                     var Id = new WadAdditionalSoundInfoId(soundName);
                     additionalSoundInfos.Add(Id, new WadAdditionalSoundInfo(Id) { SoundInfo = soundInfos[SoundInfoId] });
-                    _legacySounds = true;
                     return true;
                 });
 

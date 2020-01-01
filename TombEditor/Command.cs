@@ -830,8 +830,20 @@ namespace TombEditor
                 var existingWindow = Application.OpenForms["FormSearch"];
                 if (existingWindow == null)
                 {
-                    FormSearch searchForm = new FormSearch(args.Editor);
+                    var searchForm = new FormSearch(args.Editor);
                     searchForm.Show(args.Window);
+                }
+                else
+                    existingWindow.Focus();
+            });
+
+            AddCommand("SearchAndReplaceObjects", "Search and replace objects...", CommandType.Edit, delegate (CommandArgs args)
+            {
+                var existingWindow = Application.OpenForms["FormReplaceObject"];
+                if (existingWindow == null)
+                {
+                    var searchAndReplaceForm = new FormReplaceObject(args.Editor);
+                    searchAndReplaceForm.Show(args.Window);
                 }
                 else
                     existingWindow.Focus();

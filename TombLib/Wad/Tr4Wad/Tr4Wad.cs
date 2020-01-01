@@ -182,7 +182,6 @@ namespace TombLib.Wad.Tr4Wad
         internal List<short> KeyFrames = new List<short>();
         internal List<wad_moveable> Moveables = new List<wad_moveable>();
         internal List<wad_static_mesh> Statics = new List<wad_static_mesh>();
-        internal short[] SoundMap;
         internal List<wad_sound_info> SoundInfo = new List<wad_sound_info>();
         internal List<wad_sprite_sequence> SpriteSequences = new List<wad_sprite_sequence>();
         internal List<wad_sprite_texture> SpriteTextures = new List<wad_sprite_texture>();

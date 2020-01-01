@@ -160,6 +160,12 @@
     <Compile Include="Forms\FormQuickItemgroup.Designer.cs">
       <DependentUpon>FormQuickItemgroup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormReplaceObject.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormReplaceObject.Designer.cs">
+      <DependentUpon>FormReplaceObject.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormResizeRoom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -455,6 +461,9 @@
     <EmbeddedResource Include="Forms\FormQuickItemgroup.resx">
       <DependentUpon>FormQuickItemgroup.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormReplaceObject.resx">
+      <DependentUpon>FormReplaceObject.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormResizeRoom.resx">
       <DependentUpon>FormResizeRoom.cs</DependentUpon>
     </EmbeddedResource>
@@ -580,6 +589,7 @@
     <None Include="Resources\icons_objects\objects_geometry-override-16.png" />
     <None Include="Resources\icons_actions\actions_back-16.png" />
     <None Include="Resources\icons_general\general_airplane-16.png" />
+    <None Include="Resources\icons_general\general_search-and-replace-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">

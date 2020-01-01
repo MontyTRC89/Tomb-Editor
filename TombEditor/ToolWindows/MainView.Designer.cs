@@ -57,10 +57,11 @@
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
             this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
             this.butEditLevelSettings = new System.Windows.Forms.ToolStripButton();
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
-            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
             this.butSearch = new System.Windows.Forms.ToolStripButton();
+            this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
+            this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -108,7 +109,8 @@
             this.butTextureWalls,
             this.butEditLevelSettings,
             this.butToggleFlyMode,
-            this.butSearch});
+            this.butSearch,
+            this.butSearchAndReplaceObjects});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -593,6 +595,39 @@
             this.butEditLevelSettings.Size = new System.Drawing.Size(24, 24);
             this.butEditLevelSettings.Tag = "EditLevelSettings";
             // 
+            // butToggleFlyMode
+            // 
+            this.butToggleFlyMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butToggleFlyMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butToggleFlyMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butToggleFlyMode.Image = global::TombEditor.Properties.Resources.general_airplane_16;
+            this.butToggleFlyMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butToggleFlyMode.Name = "butToggleFlyMode";
+            this.butToggleFlyMode.Size = new System.Drawing.Size(24, 24);
+            this.butToggleFlyMode.Tag = "ToggleFlyMode";
+            // 
+            // butSearch
+            // 
+            this.butSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(24, 24);
+            this.butSearch.Tag = "Search";
+            // 
+            // butSearchAndReplaceObjects
+            // 
+            this.butSearchAndReplaceObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butSearchAndReplaceObjects.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butSearchAndReplaceObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butSearchAndReplaceObjects.Image = global::TombEditor.Properties.Resources.general_search_and_replace_16;
+            this.butSearchAndReplaceObjects.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butSearchAndReplaceObjects.Name = "butSearchAndReplaceObjects";
+            this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(24, 24);
+            this.butSearchAndReplaceObjects.Tag = "SearchAndReplaceObjects";
+            // 
             // panel3D
             // 
             this.panel3D.AllowDrop = true;
@@ -616,28 +651,6 @@
             this.panel2DMap.Size = new System.Drawing.Size(833, 255);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
-            // 
-            // butToggleFlyMode
-            // 
-            this.butToggleFlyMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butToggleFlyMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butToggleFlyMode.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butToggleFlyMode.Image = global::TombEditor.Properties.Resources.general_airplane_16;
-            this.butToggleFlyMode.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butToggleFlyMode.Name = "butToggleFlyMode";
-            this.butToggleFlyMode.Size = new System.Drawing.Size(24, 24);
-            this.butToggleFlyMode.Tag = "ToggleFlyMode";
-            // 
-            // butSearch
-            // 
-            this.butSearch.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butSearch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butSearch.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butSearch.Name = "butSearch";
-            this.butSearch.Size = new System.Drawing.Size(24, 24);
-            this.butSearch.Tag = "Search";
             // 
             // MainView
             // 
@@ -704,5 +717,6 @@
         private System.Windows.Forms.ToolStripButton butEditLevelSettings;
         private System.Windows.Forms.ToolStripButton butToggleFlyMode;
         private System.Windows.Forms.ToolStripButton butSearch;
+        private System.Windows.Forms.ToolStripButton butSearchAndReplaceObjects;
     }
 }
