@@ -1,6 +1,7 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
@@ -23,9 +24,7 @@ namespace TombEditor.Forms
 
         private enum ObjectSearchType
         {
-            [Description("Primary attribute only (object ID, sound ID, color, sink strength...)")]
             PrimaryAttributeOnly,
-            [Description("Full (including OCB, light type, scale...)")]
             Full
         }
 
@@ -47,8 +46,17 @@ namespace TombEditor.Forms
 
                 _selectionType = value;
 
-                // Auto-toggle item for convenience
-                ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
+                if (value == ObjectSelectionType.Source)
+                {
+                    // Auto-toggle source item for convenience
+                    ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
+                }
+                else
+                {
+                    // Reset dest selection and editor selection altogether
+                    _editor.SelectedObject = null;
+                    ToggleItem(null);
+                }
             }
         }
         private ObjectSelectionType _selectionType;
@@ -90,13 +98,6 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
-
-            // Populate search type combos
-            foreach (ObjectSearchType searchType in Enum.GetValues(typeof(ObjectSearchType)))
-            {
-                cmbReplaceType.Items.Add(searchType.GetEnumDescription());
-                cmbSearchType.Items.Add(searchType.GetEnumDescription());
-            }
 
             // Init UI
             InitializeNewSearch();
@@ -166,16 +167,20 @@ namespace TombEditor.Forms
             {
                 case ObjectSelectionType.Destination:
                     if (Source != null && item != null && item.GetType() != Source.GetType())
-                        ObjectsNotMatchMessage();
+                        InitializeNewSearch();
                     else
                         Dest = item;
                     break;
 
                 case ObjectSelectionType.Source:
                     if (Dest != null && item != null && item.GetType() != Dest.GetType())
-                        ObjectsNotMatchMessage();
+                        InitializeNewSearch();
                     else
+                    {
+                        var firstSearch = Source == null;
                         Source = item;
+                        RepopulateUI();
+                    }
                     break;
             }
         }
@@ -183,17 +188,57 @@ namespace TombEditor.Forms
         private void InitializeNewSearch()
         {
             Source = Dest = null;
-            lblResult.Text = string.Empty;
-            cmbReplaceType.SelectedIndex = cmbSearchType.SelectedIndex = 0;
+            SelectionType = ObjectSelectionType.Source;
+            RepopulateUI();
+        }
 
-            if (_editor.SelectedObject is PositionBasedObjectInstance && TypeIsReplaceable((PositionBasedObjectInstance)_editor.SelectedObject))
+        private void RepopulateUI()
+        {
+            lblResult.Text = string.Empty;
+
+            cmbReplaceType.Items.Clear();
+            cmbSearchType.Items.Clear();
+
+            var primaryAttribDesc = string.Empty;
+            var secondAttribDesc = string.Empty;
+
+            if (Source != null)
             {
-                SelectionType = ObjectSelectionType.Source;
-                SelectionType = ObjectSelectionType.Destination;
-                Dest = null;
+                if (Source is MoveableInstance || Source is StaticInstance)
+                {
+                    primaryAttribDesc = " (object ID)";
+                    if (!(Source is StaticInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)) secondAttribDesc = " (OCB)";
+                }
+                else if (Source is LightInstance)
+                {
+                    primaryAttribDesc = " (colour)";
+                    secondAttribDesc = " (light type)";
+                }
+                else if (Source is ImportedGeometryInstance)
+                {
+                    primaryAttribDesc = " (model)";
+                    secondAttribDesc = " (scale)";
+                }
+                else if (Source is SinkInstance)
+                    primaryAttribDesc = " (strength)";
+                else if (Source is SoundSourceInstance)
+                    primaryAttribDesc = " (sound ID)";
             }
-            else if (_editor.SelectedObject == null)
-                SelectionType = ObjectSelectionType.Source; // Just arm for source selection, if selected object is null
+
+            var searchTypeList = new List<string>()
+            {
+                "Primary attribute only" + primaryAttribDesc,
+                "With secondary attribute" + secondAttribDesc
+            };
+
+            // Populate search type combos
+            foreach (var searchType in searchTypeList)
+            {
+                cmbReplaceType.Items.Add(searchType);
+                cmbSearchType.Items.Add(searchType);
+            }
+
+            cmbReplaceType.SelectedIndex = cmbSearchType.SelectedIndex = 0;
         }
 
         private void UpdateUI()
@@ -233,7 +278,6 @@ namespace TombEditor.Forms
                 colDest.Visible = false;
         }
 
-        private void ObjectsNotMatchMessage() => _editor.SendMessage("Object types must match.\nSelect object of the same type or push \"New search\".", PopupType.Warning);
         private void butSelectSourceObject_Click(object sender, EventArgs e) => SelectionType = ObjectSelectionType.Source;
         private void butSelectDestObject_Click(object sender, EventArgs e) => SelectionType = ObjectSelectionType.Destination;
         private void butCancel_Click(object sender, EventArgs e) => Close();
