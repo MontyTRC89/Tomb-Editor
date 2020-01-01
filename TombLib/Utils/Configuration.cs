@@ -78,7 +78,9 @@ namespace TombLib
             else
                 form.StartPosition = FormStartPosition.Manual;
 
-            if (form.Location.X < 0 || form.Location.Y < 0) form.Location = new Point(0, 0);
+            // Properly clamp screen coords to fix issues with out-of-bounds windows
+            if (form.Location.X < 0) form.Location = new Point(0, form.Location.Y);
+            if (form.Location.Y < 0) form.Location = new Point(form.Location.X, 0);
         }
 
         public string GetVariable(VariableType variableType)
