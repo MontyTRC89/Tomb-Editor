@@ -262,7 +262,7 @@ namespace TombEditor.Forms
                         var destObject = (MoveableInstance)Dest;
                         var currObject = (MoveableInstance)obj;
 
-                        if (refObject.WadObjectId != currObject.WadObjectId || destObject.WadObjectId == currObject.WadObjectId)
+                        if (refObject.WadObjectId != currObject.WadObjectId)
                             continue;
 
                         // Moveable: secondary attrib is OCB. Search and replacement of secondary attrib is possible.
@@ -272,6 +272,7 @@ namespace TombEditor.Forms
                             continue;
 
                         currObject.WadObjectId = destObject.WadObjectId;
+
                         if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly)
                             currObject.Ocb = destObject.Ocb;
 
@@ -283,7 +284,7 @@ namespace TombEditor.Forms
                         var destObject = (StaticInstance)Dest;
                         var currObject = (StaticInstance)obj;
 
-                        if (refObject.WadObjectId != currObject.WadObjectId || destObject.WadObjectId == currObject.WadObjectId)
+                        if (refObject.WadObjectId != currObject.WadObjectId)
                             continue;
 
                         // Static: secondary attrib is OCB for TRNG only. Search and replacement of secondary attrib is possible for TRNG only.
@@ -294,6 +295,7 @@ namespace TombEditor.Forms
                             continue;
 
                         currObject.WadObjectId = destObject.WadObjectId;
+
                         if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG && 
                             cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly)
                             currObject.Ocb = destObject.Ocb;
@@ -352,7 +354,7 @@ namespace TombEditor.Forms
                         var destObject = (ImportedGeometryInstance)Dest;
                         var currObject = (ImportedGeometryInstance)obj;
 
-                        if (!refObject.Model.Equals(currObject.Model) || destObject.Model.Equals(currObject.Model))
+                        if (!refObject.Model.Equals(currObject.Model))
                             continue;
 
                         // Imp. geo: secondary attrib is scale. Search and replacement of secondary attrib is possible.
@@ -362,6 +364,7 @@ namespace TombEditor.Forms
                             continue;
 
                         currObject.Model = destObject.Model;
+
                         if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly)
                             currObject.Scale *= destObject.Scale;
 
