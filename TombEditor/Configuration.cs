@@ -180,6 +180,9 @@ namespace TombEditor
         public Point Window_FormSearch_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormSearch_Size { get; set; } = new Size(650, 350);
         public bool  Window_FormSearch_Maximized { get; set; } = false;
+        public Point Window_FormReplaceObject_Position { get; set; } = new Point(-1); // Center by default
+        public Size  Window_FormReplaceObject_Size { get; set; } = new Size(600, 264);
+        public bool  Window_FormReplaceObject_Maximized { get; set; } = false;
         public Point Window_FormTrigger_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
         public bool  Window_FormTrigger_Maximized { get; set; } = false;

@@ -1,11 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace TombLib.Utils
 {
     public static class CollectionUtils
     {
+        public static string GetEnumDescription(this Enum GenericEnum)
+        {
+            Type genericEnumType = GenericEnum.GetType();
+            MemberInfo[] memberInfo = genericEnumType.GetMember(GenericEnum.ToString());
+
+            if ((memberInfo != null && memberInfo.Length > 0))
+            {
+                var attribs = memberInfo[0].GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false);
+                if ((attribs != null && attribs.Count() > 0))
+                    return ((System.ComponentModel.DescriptionAttribute)attribs.ElementAt(0)).Description;
+            }
+
+            return GenericEnum.ToString();
+        }
+
         public static int IndexOf<T>(this IEnumerable<T> list, Predicate<T> test, int skip = 0, int @default = -1)
         {
             int i = 0;
