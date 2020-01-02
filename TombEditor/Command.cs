@@ -989,8 +989,8 @@ namespace TombEditor
 
             AddCommand("ApplyAmbientLightToSelectedRooms", "Set ambient light for selected rooms", CommandType.Rooms, delegate (CommandArgs args)
             {
-                EditorActions.ApplyAmbientLightToSelectedRooms(args.Window);
-                args.Editor.SendMessage("Ambient light was applied to selected rooms.", PopupType.Info);
+                if (EditorActions.ApplyAmbientLightToSelectedRooms(args.Window))
+                    args.Editor.SendMessage("Ambient light was applied to selected rooms.", PopupType.Info);
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)

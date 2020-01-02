@@ -2748,7 +2748,7 @@ namespace TombEditor
         {
             if (rooms.Count() < 2)
             {
-                _editor.SendMessage("Select at least 2 rooms to merge them.");
+                _editor.SendMessage("Select at least 2 rooms to merge them.", PopupType.Info);
                 return;
             }
 
@@ -3118,15 +3118,20 @@ namespace TombEditor
             return true;
         }
 
-        public static void ApplyAmbientLightToSelectedRooms(IWin32Window owner)
+        public static bool ApplyAmbientLightToSelectedRooms(IWin32Window owner)
         {
-            IEnumerable<Room> SelectedRooms = _editor.SelectedRooms;
+            var oldColours = new List<Vector3>();
+            foreach (var room in _editor.SelectedRooms)
+                oldColours.Add(room.AmbientLight);
+
+            var applied = false;
+
             using (var colorDialog = new RealtimeColorDialog(
                 _editor.Configuration.ColorDialog_Position.X,
                 _editor.Configuration.ColorDialog_Position.Y,
                 c =>
                 {
-                    foreach (Room room in SelectedRooms)
+                    foreach (Room room in _editor.SelectedRooms)
                     {
                         room.AmbientLight = c.ToFloat3Color() * 2.0f;
                         room.BuildGeometry();
@@ -3135,18 +3140,25 @@ namespace TombEditor
                 }, _editor.Configuration.UI_ColorScheme))
             {
                 if (colorDialog.ShowDialog(owner) == DialogResult.OK)
-                    foreach (Room room in SelectedRooms)
+                {
+                    foreach (Room room in _editor.SelectedRooms)
                         room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+                    applied = true;
+                }
+                else
+                    foreach (var pair in _editor.SelectedRooms.Zip(oldColours, Tuple.Create))
+                        pair.Item1.AmbientLight = pair.Item2;
 
                 _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
 
-            foreach (Room room in SelectedRooms)
+            foreach (Room room in _editor.SelectedRooms)
             {
                 room.BuildGeometry();
                 _editor.RoomPropertiesChange(room);
             }
 
+            return applied;
         }
 
         public static void ApplyCurrentAmbientLightToAllRooms()
