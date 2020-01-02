@@ -6,6 +6,7 @@ Tomb Editor:
  * Fix room effect value of 1
  * Fix broken textures on imported geometry if same level texture set is used
  * Fix occasional floordata generation bug
+ * Fix inability to cancel "Set ambient light for selected rooms" action
  
 WadTool:
  * Add "Copy" button to animcommand editor
