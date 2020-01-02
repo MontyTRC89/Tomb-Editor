@@ -39,6 +39,15 @@ namespace TombLib.LevelData
         float Roll { get; set; }
     }
 
+    public interface IReplaceable
+    {
+        string PrimaryAttribDesc { get; }
+        string SecondaryAttribDesc { get; }
+
+        bool ReplaceableEquals(IReplaceable other, bool withProperties = false);
+        bool Replace(IReplaceable other, bool withProperties);
+    }
+
     public abstract class ObjectInstance : ICloneable, ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(ObjectInstance instance);
