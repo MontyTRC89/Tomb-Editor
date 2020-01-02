@@ -123,6 +123,17 @@ namespace TombEditor.Forms
                 if (evt.Current == null) return;
                 ToggleItem((PositionBasedObjectInstance)evt.Current);
             }
+
+            // Reset search if list of imported geos has changed and current search is imported geo
+            if (obj is Editor.LoadedImportedGeometriesChangedEvent)
+            {
+                var evt = (Editor.LoadedImportedGeometriesChangedEvent)obj;
+
+                if (Source != null && Source is ImportedGeometryInstance && !_editor.Level.Settings.ImportedGeometries.Contains(((ImportedGeometryInstance)Source).Model))
+                    InitializeNewSearch();
+                else if (Dest != null && Dest is ImportedGeometryInstance && !_editor.Level.Settings.ImportedGeometries.Contains(((ImportedGeometryInstance)Dest).Model))
+                    InitializeNewSearch();
+            }
         }
 
         private string GetDescription(PositionBasedObjectInstance instance)
@@ -290,6 +301,9 @@ namespace TombEditor.Forms
             int roomCount = 0;
             int replCount = 0;
 
+            // Initialize undo list here not to clunk Undo.cs
+            var undoList = new List<UndoRedoInstance>();
+
             foreach (var room in cbSelectedRooms.Checked ? _editor.SelectedRooms : _editor.Level.Rooms)
             {
                 if (room == null) continue;
@@ -317,6 +331,7 @@ namespace TombEditor.Forms
 
                         if (currObject.WadObjectId != destObject.WadObjectId)
                         {
+                            undoList.Add(new ChangeObjectIDUndoInstance(_editor.UndoManager, currObject));
                             currObject.WadObjectId = destObject.WadObjectId;
                             objectChanged = true;
                         }
@@ -324,6 +339,7 @@ namespace TombEditor.Forms
                         if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
                             currObject.Ocb != destObject.Ocb)
                         {
+                            undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
                             currObject.Ocb = destObject.Ocb;
                             objectChanged = true;
                         }
@@ -346,6 +362,7 @@ namespace TombEditor.Forms
 
                         if (currObject.WadObjectId != destObject.WadObjectId)
                         {
+                            undoList.Add(new ChangeObjectIDUndoInstance(_editor.UndoManager, currObject));
                             currObject.WadObjectId = destObject.WadObjectId;
                             objectChanged = true;
                         }
@@ -354,6 +371,7 @@ namespace TombEditor.Forms
                             cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
                             currObject.Ocb != destObject.Ocb)
                         {
+                            undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
                             currObject.Ocb = destObject.Ocb;
                             objectChanged = true;
                         }
@@ -373,6 +391,7 @@ namespace TombEditor.Forms
                            refObject.Type != currObject.Type)
                             continue;
 
+                        undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
                         currObject.Color = destObject.Color;
                         objectChanged = true;
                     }
@@ -387,6 +406,7 @@ namespace TombEditor.Forms
 
                         // Sink: no secondary attribs.
 
+                        undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
                         currObject.Strength = destObject.Strength;
                         objectChanged = true;
                     }
@@ -401,6 +421,7 @@ namespace TombEditor.Forms
 
                         // Sound source: no secondary attribs.
 
+                        undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
                         currObject.SoundId = destObject.SoundId;
                         objectChanged = true;
                     }
@@ -421,6 +442,7 @@ namespace TombEditor.Forms
 
                         if (!currObject.Model.Equals(destObject.Model))
                         {
+                            undoList.Add(new ChangeImportedGeoModelUndoInstance(_editor.UndoManager, currObject));
                             currObject.Model = destObject.Model;
                             objectChanged = true;
                         }
@@ -428,6 +450,7 @@ namespace TombEditor.Forms
                         if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
                             currObject.Scale != destObject.Scale)
                         {
+                            undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
                             currObject.Scale *= destObject.Scale;
                             objectChanged = true;
                         }
@@ -449,7 +472,10 @@ namespace TombEditor.Forms
             }
 
             if (replCount > 0)
+            {
+                _editor.UndoManager.Push(undoList);
                 lblResult.Text = "Replacement finished. Replaced " + replCount + " objects in " + roomCount + " room" + (roomCount > 1 ? "s" : string.Empty) + ".";
+            }
             else
                 lblResult.Text = "No matching objects found. No replacements were made.";
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor
 {
@@ -166,6 +167,105 @@ namespace TombEditor
                     Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
             };
             RedoInstance = () => new TransformObjectUndoInstance(Parent, UndoObject);
+        }
+    }
+
+    public class ChangeObjectIDUndoInstance : EditorUndoRedoInstance
+    {
+        private PositionBasedObjectInstance UndoObject;
+        private IWadObjectId ID;
+
+        public ChangeObjectIDUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
+        {
+            UndoObject = obj;
+
+            if (UndoObject is MoveableInstance)
+                ID = ((MoveableInstance)UndoObject).WadObjectId;
+            if (UndoObject is StaticInstance)
+                ID = ((StaticInstance)UndoObject).WadObjectId;
+
+            Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
+
+            UndoAction = () =>
+            {
+                if (UndoObject is MoveableInstance)
+                    ((MoveableInstance)UndoObject).WadObjectId = (WadMoveableId)ID;
+                if (UndoObject is StaticInstance)
+                    ((StaticInstance)UndoObject).WadObjectId = (WadStaticId)ID;
+
+                parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
+            };
+
+            RedoInstance = () => new ChangeObjectIDUndoInstance(Parent, UndoObject);
+        }
+    }
+
+    public class ChangeObjectPropertyUndoInstance : EditorUndoRedoInstance
+    {
+        private PositionBasedObjectInstance UndoObject;
+        private Vector3 Property;
+
+        public ChangeObjectPropertyUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
+        {
+            UndoObject = obj;
+
+            if (UndoObject is MoveableInstance)
+                Property = new Vector3(((MoveableInstance)UndoObject).Ocb);
+            if (UndoObject is StaticInstance)
+                Property = new Vector3(((StaticInstance)UndoObject).Ocb);
+            if (UndoObject is LightInstance)
+                Property = ((LightInstance)UndoObject).Color;
+            if (UndoObject is SinkInstance)
+                Property = new Vector3(((SinkInstance)UndoObject).Strength);
+            if (UndoObject is SoundSourceInstance)
+                Property = new Vector3(((SoundSourceInstance)UndoObject).SoundId);
+            if (UndoObject is ImportedGeometryInstance)
+                Property = new Vector3(((ImportedGeometryInstance)UndoObject).Scale);
+
+            Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
+
+            UndoAction = () =>
+            {
+                if (UndoObject is MoveableInstance)
+                    ((MoveableInstance)UndoObject).Ocb = (short)Property.X;
+                if (UndoObject is StaticInstance)
+                    ((StaticInstance)UndoObject).Ocb = (short)Property.X;
+                if (UndoObject is SinkInstance)
+                    ((SinkInstance)UndoObject).Strength = (short)Property.X;
+                if (UndoObject is SoundSourceInstance)
+                    ((SoundSourceInstance)UndoObject).SoundId = (short)Property.X;
+                if (UndoObject is ImportedGeometryInstance)
+                    ((ImportedGeometryInstance)UndoObject).Scale = Property.X;
+
+                if (UndoObject is LightInstance)
+                {
+                    ((LightInstance)UndoObject).Color = Property;
+                    // HACK: This potentially results in lots of relights for batch undo action!
+                    UndoObject.Room.RoomGeometry?.Relight(UndoObject.Room);
+                }
+
+                parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
+            };
+
+            RedoInstance = () => new ChangeObjectPropertyUndoInstance(Parent, UndoObject);
+        }
+    }
+
+    public class ChangeImportedGeoModelUndoInstance : EditorUndoRedoInstance
+    {
+        private ImportedGeometryInstance UndoObject;
+        private ImportedGeometry Model;
+
+        public ChangeImportedGeoModelUndoInstance(EditorUndoManager parent, ImportedGeometryInstance obj) : base(parent, obj.Room)
+        {
+            UndoObject = obj;
+            Model = obj.Model;
+
+            Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel &&
+                          Model != null && parent.Editor.Level.Settings.ImportedGeometries.Contains(Model);
+
+            UndoAction = () => { UndoObject.Model = Model; parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change); };
+            RedoInstance = () => new ChangeImportedGeoModelUndoInstance(Parent, UndoObject);
         }
     }
 
