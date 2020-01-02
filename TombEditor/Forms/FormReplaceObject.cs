@@ -2,12 +2,10 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
-using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -15,6 +13,8 @@ namespace TombEditor.Forms
 {
     public partial class FormReplaceObject : DarkForm
     {
+        private const string selectNewObjPrompt = " [ Please select new object in level ]";
+
         private enum ObjectSelectionType
         {
             None,
@@ -28,35 +28,18 @@ namespace TombEditor.Forms
             Full
         }
 
-        private const string _sourcePrompt = " [ Please select source object in level ]";
-        private const string _destPrompt   = " [ Please select destination object in level ]";
-
         private ObjectSelectionType SelectionType
         {
             get { return _selectionType; }
             set
             {
-                if (_selectionType == value)
-                    return;
-
                 // Block button to indicate that selection is in progress
                 var selectDest = (value == ObjectSelectionType.Destination);
                 butSelectDestObject.Enabled   = value == ObjectSelectionType.None || !selectDest;
                 butSelectSourceObject.Enabled = value == ObjectSelectionType.None ||  selectDest;
 
                 _selectionType = value;
-
-                if (value == ObjectSelectionType.Source)
-                {
-                    // Auto-toggle source item for convenience
-                    ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
-                }
-                else
-                {
-                    // Reset dest selection and editor selection altogether
-                    _editor.SelectedObject = null;
-                    ToggleItem(null);
-                }
+                ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
             }
         }
         private ObjectSelectionType _selectionType;
@@ -67,8 +50,8 @@ namespace TombEditor.Forms
             set
             {
                 _source = (PositionBasedObjectInstance)value?.Clone();
-                tbSourceObject.Text = (value == null) ? _sourcePrompt : GetDescription(_source);
-                if (_dest == null) tbDestObject.Text = string.Empty; // Empty opposing selection if null
+                var newDesc = GetDescription((IReplaceable)_source);
+                if (!string.IsNullOrEmpty(newDesc)) tbSourceObject.Text = newDesc;
                 UpdateUI();
             }
         }
@@ -80,8 +63,8 @@ namespace TombEditor.Forms
             set
             {
                 _dest = (PositionBasedObjectInstance)value?.Clone();
-                tbDestObject.Text = (value == null) ? _destPrompt : GetDescription(_dest);
-                if (_source == null) tbSourceObject.Text = string.Empty; // Empty opposing selection if null
+                var newDesc = GetDescription((IReplaceable)_dest);
+                if (!string.IsNullOrEmpty(newDesc)) tbDestObject.Text = newDesc;
                 UpdateUI();
             }
         }
@@ -136,110 +119,97 @@ namespace TombEditor.Forms
             }
         }
 
-        private string GetDescription(PositionBasedObjectInstance instance)
+        private string GetDescription(IReplaceable instance)
         {
-            var result = instance.ToShortString();
+            if (instance == null) return string.Empty;
+            var result  = ((ObjectInstance)instance).ToShortString();
 
             if (instance is MoveableInstance)
-                result += " (OCB: " + ((MoveableInstance)instance).Ocb + ")";
+                result += " (" + instance.SecondaryAttribDesc + ": " + ((MoveableInstance)instance).Ocb + ")";
             else if (instance is StaticInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
-                result += " (OCB: " + ((StaticInstance)instance).Ocb + ")";
+                result += " (" + instance.SecondaryAttribDesc + ": " + ((StaticInstance)instance).Ocb + ")";
             else if (instance is SinkInstance)
-                result += " (Strength: " + ((SinkInstance)instance).Strength + ")";
+                result += " (" + instance.PrimaryAttribDesc + ": " + ((SinkInstance)instance).Strength + ")";
             else if (instance is ImportedGeometryInstance)
-                result += " (Scale: " + ((ImportedGeometryInstance)instance).Scale.ToString(".0#") + ")";
+                result += " (" + instance.SecondaryAttribDesc + ": " + ((ImportedGeometryInstance)instance).Scale.ToString(".0#") + ")";
             else if (instance is SoundSourceInstance)
-                result  = "Sound source (ID: " + ((SoundSourceInstance)instance).SoundId + ")"; // FIXME: Why sound source fails with ToShortString? Room data wrongly cloned?
+                result += " (" + instance.PrimaryAttribDesc + ": " + ((SoundSourceInstance)instance).SoundId + ")";
 
             return result;
         }
 
-        private bool TypeIsReplaceable(PositionBasedObjectInstance instance)
-        {
-            // Probably should be extended if in the future there will be other types of
-            // property-less objects
-
-            return !(instance is CameraInstance ||
-                     instance is FlybyCameraInstance);
-        }
-
         private void ToggleItem(PositionBasedObjectInstance item)
         {
-            if (!TypeIsReplaceable(item))
+            var replItem = item as IReplaceable;
+            if (replItem != null)
             {
-                _editor.SendMessage("Selected object can't be replaced with another object. Select another object type.", PopupType.Warning);
-                return;
+                // Foolproofness to prevent selection of objects of different types.
+                // Probably more smart approach is to reset opposite selection type, but IMO it's too intrusive. -- Lwmte
+                
+                switch (SelectionType)
+                {
+                    case ObjectSelectionType.Destination:
+                        if (Source != null && replItem != null && replItem.GetType() != Source.GetType())
+                            InitializeNewSearch();
+                        else
+                            Dest = item;
+                        break;
+
+                    case ObjectSelectionType.Source:
+                        if (Dest != null && replItem != null && replItem.GetType() != Dest.GetType())
+                            InitializeNewSearch();
+                        else
+                        {
+                            var firstSearch = Source == null;
+                            Source = item;
+                            RepopulateUI();
+                        }
+                        break;
+                }
             }
-
-            // Foolproofness to prevent selection of objects of different types.
-            // Probably more smart approach is to reset opposite selection type, but IMO it's too intrusive. -- Lwmte
-
-            switch (SelectionType)
+            else
             {
-                case ObjectSelectionType.Destination:
-                    if (Source != null && item != null && item.GetType() != Source.GetType())
-                        InitializeNewSearch();
-                    else
-                        Dest = item;
-                    break;
-
-                case ObjectSelectionType.Source:
-                    if (Dest != null && item != null && item.GetType() != Dest.GetType())
-                        InitializeNewSearch();
-                    else
-                    {
-                        var firstSearch = Source == null;
-                        Source = item;
-                        RepopulateUI();
-                    }
-                    break;
+                switch (SelectionType)
+                {
+                    case ObjectSelectionType.Source:
+                        tbSourceObject.Text = selectNewObjPrompt;
+                        if (Dest == null) tbDestObject.Text = string.Empty;
+                        break;
+                    case ObjectSelectionType.Destination:
+                        tbDestObject.Text = selectNewObjPrompt;
+                        if (Source == null) tbSourceObject.Text = string.Empty;
+                        break;
+                }
             }
         }
 
         private void InitializeNewSearch()
         {
             Source = Dest = null;
+            RepopulateUI(true);
             SelectionType = ObjectSelectionType.Source;
-            RepopulateUI();
         }
 
-        private void RepopulateUI()
+        private void RepopulateUI(bool resetLabels = false)
         {
             lblResult.Text = string.Empty;
+
+            if (resetLabels)
+            {
+                tbSourceObject.Text = selectNewObjPrompt;
+                tbDestObject.Text = string.Empty;
+            }
 
             cmbReplaceType.Items.Clear();
             cmbSearchType.Items.Clear();
 
-            var primaryAttribDesc = string.Empty;
-            var secondAttribDesc = string.Empty;
-
-            if (Source != null)
-            {
-                if (Source is MoveableInstance || Source is StaticInstance)
-                {
-                    primaryAttribDesc = " (object ID)";
-                    if (!(Source is StaticInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)) secondAttribDesc = " (OCB)";
-                }
-                else if (Source is LightInstance)
-                {
-                    primaryAttribDesc = " (colour)";
-                    secondAttribDesc = " (light type)";
-                }
-                else if (Source is ImportedGeometryInstance)
-                {
-                    primaryAttribDesc = " (model)";
-                    secondAttribDesc = " (scale)";
-                }
-                else if (Source is SinkInstance)
-                    primaryAttribDesc = " (strength)";
-                else if (Source is SoundSourceInstance)
-                    primaryAttribDesc = " (sound ID)";
-            }
+            var primaryAttribDesc = ((IReplaceable)Source)?.PrimaryAttribDesc   ?? string.Empty;
+            var secondAttribDesc  = ((IReplaceable)Source)?.SecondaryAttribDesc ?? string.Empty;
 
             var searchTypeList = new List<string>()
             {
-                "Primary attribute only" + primaryAttribDesc,
-                "With secondary attribute" + secondAttribDesc
+                "Only " + primaryAttribDesc,
+                primaryAttribDesc + " and " + secondAttribDesc
             };
 
             // Populate search type combos
@@ -296,10 +266,12 @@ namespace TombEditor.Forms
 
         private void butReplace_Click(object sender, EventArgs e)
         {
-            var sourceType = Source.GetType();
-
             int roomCount = 0;
             int replCount = 0;
+
+            // Initialize source/dest replace objects
+            var replSrc  = (IReplaceable)Source;
+            var replDest = (IReplaceable)Dest;
 
             // Initialize undo list here not to clunk Undo.cs
             var undoList = new List<UndoRedoInstance>();
@@ -307,159 +279,22 @@ namespace TombEditor.Forms
             foreach (var room in cbSelectedRooms.Checked ? _editor.SelectedRooms : _editor.Level.Rooms)
             {
                 if (room == null) continue;
-
                 bool anyObjectsChanged = false;
 
-                foreach (var obj in room.Objects.Where(item => item.GetType() == sourceType))
+                foreach (IReplaceable obj in room.Objects.Where(item => item is IReplaceable && ((IReplaceable)item).ReplaceableEquals(replSrc, (cmbSearchType.SelectedIndex == (int)ObjectSearchType.Full))))
                 {
-                    bool objectChanged = false;
-
-                    if (obj is MoveableInstance)
-                    {
-                        var refObject  = (MoveableInstance)Source;
-                        var destObject = (MoveableInstance)Dest;
-                        var currObject = (MoveableInstance)obj;
-
-                        if (refObject.WadObjectId != currObject.WadObjectId)
-                            continue;
-
-                        // Moveable: secondary attrib is OCB. Search and replacement of secondary attrib is possible.
-
-                        if (cmbSearchType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                            refObject.Ocb != currObject.Ocb)
-                            continue;
-
-                        if (currObject.WadObjectId != destObject.WadObjectId)
-                        {
-                            undoList.Add(new ChangeObjectIDUndoInstance(_editor.UndoManager, currObject));
-                            currObject.WadObjectId = destObject.WadObjectId;
-                            objectChanged = true;
-                        }
-
-                        if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                            currObject.Ocb != destObject.Ocb)
-                        {
-                            undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
-                            currObject.Ocb = destObject.Ocb;
-                            objectChanged = true;
-                        }
-                    }
-                    else if (obj is StaticInstance)
-                    {
-                        var refObject  = (StaticInstance)Source;
-                        var destObject = (StaticInstance)Dest;
-                        var currObject = (StaticInstance)obj;
-
-                        if (refObject.WadObjectId != currObject.WadObjectId)
-                            continue;
-
-                        // Static: secondary attrib is OCB for TRNG only. Search and replacement of secondary attrib is possible for TRNG only.
-
-                        if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG &&
-                            cmbSearchType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                            refObject.Ocb != currObject.Ocb)
-                            continue;
-
-                        if (currObject.WadObjectId != destObject.WadObjectId)
-                        {
-                            undoList.Add(new ChangeObjectIDUndoInstance(_editor.UndoManager, currObject));
-                            currObject.WadObjectId = destObject.WadObjectId;
-                            objectChanged = true;
-                        }
-
-                        if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG && 
-                            cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                            currObject.Ocb != destObject.Ocb)
-                        {
-                            undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
-                            currObject.Ocb = destObject.Ocb;
-                            objectChanged = true;
-                        }
-                    }
-                    else if (obj is LightInstance)
-                    {
-                        var refObject  = (LightInstance)Source;
-                        var destObject = (LightInstance)Dest;
-                        var currObject = (LightInstance)obj;
-
-                        if (refObject.Color != currObject.Color || destObject.Color == currObject.Color)
-                            continue;
-
-                        // Light: secondary attrib is light type. Only search of secondary attrib is possible.
-
-                        if (cmbSearchType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                           refObject.Type != currObject.Type)
-                            continue;
-
-                        undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
-                        currObject.Color = destObject.Color;
-                        objectChanged = true;
-                    }
-                    else if (obj is SinkInstance)
-                    {
-                        var refObject  = (SinkInstance)Source;
-                        var destObject = (SinkInstance)Dest;
-                        var currObject = (SinkInstance)obj;
-
-                        if (refObject.Strength != currObject.Strength || destObject.Strength == currObject.Strength)
-                            continue;
-
-                        // Sink: no secondary attribs.
-
-                        undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
-                        currObject.Strength = destObject.Strength;
-                        objectChanged = true;
-                    }
-                    else if (obj is SoundSourceInstance)
-                    {
-                        var refObject  = (SoundSourceInstance)Source;
-                        var destObject = (SoundSourceInstance)Dest;
-                        var currObject = (SoundSourceInstance)obj;
-
-                        if (refObject.SoundId != currObject.SoundId || destObject.SoundId == currObject.SoundId)
-                            continue;
-
-                        // Sound source: no secondary attribs.
-
-                        undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
-                        currObject.SoundId = destObject.SoundId;
-                        objectChanged = true;
-                    }
+                    if (obj is ItemInstance)
+                        undoList.Add(new ChangeObjectIDUndoInstance(_editor.UndoManager, (ItemInstance)obj));
                     else if (obj is ImportedGeometryInstance)
-                    {
-                        var refObject  = (ImportedGeometryInstance)Source;
-                        var destObject = (ImportedGeometryInstance)Dest;
-                        var currObject = (ImportedGeometryInstance)obj;
+                        undoList.Add(new ChangeImportedGeoModelUndoInstance(_editor.UndoManager, (ImportedGeometryInstance)obj));
 
-                        if (!refObject.Model.Equals(currObject.Model))
-                            continue;
+                    undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)obj));
 
-                        // Imp. geo: secondary attrib is scale. Search and replacement of secondary attrib is possible.
-
-                        if (cmbSearchType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                            refObject.Scale != currObject.Scale)
-                            continue;
-
-                        if (!currObject.Model.Equals(destObject.Model))
-                        {
-                            undoList.Add(new ChangeImportedGeoModelUndoInstance(_editor.UndoManager, currObject));
-                            currObject.Model = destObject.Model;
-                            objectChanged = true;
-                        }
-
-                        if (cmbReplaceType.SelectedIndex != (int)ObjectSearchType.PrimaryAttributeOnly &&
-                            currObject.Scale != destObject.Scale)
-                        {
-                            undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, currObject));
-                            currObject.Scale *= destObject.Scale;
-                            objectChanged = true;
-                        }
-                    }
-
+                    var objectChanged = obj.Replace(replDest, cmbReplaceType.SelectedIndex == (int)ObjectSearchType.Full);
                     if (objectChanged)
                     {
                         replCount++;
-                        _editor.ObjectChange(obj, ObjectChangeType.Change);
+                        _editor.ObjectChange((ObjectInstance)obj, ObjectChangeType.Change);
                         anyObjectsChanged |= objectChanged;
                     }
                 }

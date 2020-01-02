@@ -172,10 +172,10 @@ namespace TombEditor
 
     public class ChangeObjectIDUndoInstance : EditorUndoRedoInstance
     {
-        private PositionBasedObjectInstance UndoObject;
+        private ItemInstance UndoObject;
         private IWadObjectId ID;
 
-        public ChangeObjectIDUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
+        public ChangeObjectIDUndoInstance(EditorUndoManager parent, ItemInstance obj) : base(parent, obj.Room)
         {
             UndoObject = obj;
 

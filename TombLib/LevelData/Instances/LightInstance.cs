@@ -8,7 +8,7 @@ namespace TombLib.LevelData
         Point, Shadow, Spot, Effect, Sun, FogBulb
     }
 
-    public class LightInstance : PositionBasedObjectInstance, IRotateableYX
+    public class LightInstance : PositionBasedObjectInstance, IReplaceable, IRotateableYX
     {
         public LightType Type { get; }
         public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
@@ -77,6 +77,28 @@ namespace TombLib.LevelData
         public override void RemoveFromRoom(Level level, Room room)
         {
             base.RemoveFromRoom(level, room);
+        }
+
+
+        public string PrimaryAttribDesc => "Colour";
+        public string SecondaryAttribDesc => "Light type";
+
+        public bool ReplaceableEquals(IReplaceable other, bool withProperties = false)
+        {
+            var otherInstance = other as LightInstance;
+            return (otherInstance?.Color == Color && (withProperties ? otherInstance?.Type == Type : true));
+        }
+
+        public bool Replace(IReplaceable other, bool withProperties)
+        {
+            var thatColor = (LightInstance)other;
+            if (!ReplaceableEquals(other) && Color != thatColor?.Color)
+            {
+                Color = thatColor.Color;
+                return true;
+            }
+            else
+                return false;
         }
     }
 }

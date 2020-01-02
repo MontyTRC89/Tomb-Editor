@@ -9,7 +9,7 @@ namespace TombLib.LevelData
         CalculateFromLightsInRoom
     }
 
-    public class ImportedGeometryInstance : PositionBasedObjectInstance, IScaleable, IRotateableYXRoll
+    public class ImportedGeometryInstance : PositionBasedObjectInstance, IReplaceable, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
         public float Scale { get; set; } = 1;
@@ -84,6 +84,38 @@ namespace TombLib.LevelData
             if (MeshFilter == null || MeshFilter == "") return true;
 
             return (meshName.ToLower() == MeshFilter.ToLower());
+        }
+
+        public string PrimaryAttribDesc => "Model";
+        public string SecondaryAttribDesc => "Scale";
+
+        public bool ReplaceableEquals(IReplaceable other, bool withProperties = false)
+        {
+            var otherInstance = other as ImportedGeometryInstance;
+            return (otherInstance?.Model == Model && (withProperties ? otherInstance?.Scale == Scale : true));
+        }
+
+        public bool Replace(IReplaceable other, bool withProperties)
+        {
+            var result = false;
+
+            if (!ReplaceableEquals(other))
+            {
+                var thatObj = (ImportedGeometryInstance)other;
+
+                if (Model != thatObj.Model)
+                {
+                    Model = thatObj.Model;
+                    result = true;
+                }
+                if (withProperties && Scale != thatObj.Scale)
+                {
+                    Scale = thatObj.Scale;
+                    result = true;
+                }
+            }
+
+            return result;
         }
     }
 }

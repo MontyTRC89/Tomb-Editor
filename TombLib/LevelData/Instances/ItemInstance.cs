@@ -3,7 +3,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IRotateableY
+    public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IReplaceable, IRotateableY
     {
         public int LuaId { get; set; }
         public short Ocb { get; set; } = 0;
@@ -42,6 +42,58 @@ namespace TombLib.LevelData
                 return new StaticInstance() { WadObjectId = item.StaticId };
             else
                 return new MoveableInstance() { WadObjectId = item.MoveableId };
+        }
+
+        public string PrimaryAttribDesc => "Object ID";
+        public string SecondaryAttribDesc => "OCB";
+
+        public bool ReplaceableEquals(IReplaceable other, bool withProperties = false)
+        {
+            var otherInstance = other as ItemInstance;
+            return (otherInstance?.ItemType.IsStatic == ItemType.IsStatic && 
+                    otherInstance.ItemType == ItemType &&
+                    (withProperties ? otherInstance?.Ocb == Ocb : true));
+        }
+
+        public bool Replace(IReplaceable other, bool withProperties)
+        {
+            var result = false;
+
+            if (!ReplaceableEquals(other))
+            {
+                if (ItemType.IsStatic)
+                {
+                    var thisObj = (StaticInstance)this;
+                    var thatObj = (StaticInstance)other;
+                    if (thisObj.WadObjectId != thatObj.WadObjectId)
+                    {
+                        thisObj.WadObjectId = thatObj.WadObjectId;
+                        result = true;
+                    }
+                    if (withProperties && thisObj.Ocb != thatObj.Ocb)
+                    {
+                        thisObj.Ocb = thatObj.Ocb;
+                        result = true;
+                    }
+                }
+                else
+                {
+                    var thisObj = (MoveableInstance)this;
+                    var thatObj = (MoveableInstance)other;
+                    if (thisObj.WadObjectId != thatObj.WadObjectId)
+                    {
+                        thisObj.WadObjectId = thatObj.WadObjectId;
+                        result = true;
+                    }
+                    if (withProperties && thisObj.Ocb != thatObj.Ocb)
+                    {
+                        thisObj.Ocb = thatObj.Ocb;
+                        result = true;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 
