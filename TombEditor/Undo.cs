@@ -170,102 +170,71 @@ namespace TombEditor
         }
     }
 
-    public class ChangeObjectIDUndoInstance : EditorUndoRedoInstance
-    {
-        private ItemInstance UndoObject;
-        private IWadObjectId ID;
-
-        public ChangeObjectIDUndoInstance(EditorUndoManager parent, ItemInstance obj) : base(parent, obj.Room)
-        {
-            UndoObject = obj;
-
-            if (UndoObject is MoveableInstance)
-                ID = ((MoveableInstance)UndoObject).WadObjectId;
-            if (UndoObject is StaticInstance)
-                ID = ((StaticInstance)UndoObject).WadObjectId;
-
-            Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
-
-            UndoAction = () =>
-            {
-                if (UndoObject is MoveableInstance)
-                    ((MoveableInstance)UndoObject).WadObjectId = (WadMoveableId)ID;
-                if (UndoObject is StaticInstance)
-                    ((StaticInstance)UndoObject).WadObjectId = (WadStaticId)ID;
-
-                parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
-            };
-
-            RedoInstance = () => new ChangeObjectIDUndoInstance(Parent, UndoObject);
-        }
-    }
-
     public class ChangeObjectPropertyUndoInstance : EditorUndoRedoInstance
     {
         private PositionBasedObjectInstance UndoObject;
-        private Vector3 Property;
+        private object Base;
+        private object Property;
 
         public ChangeObjectPropertyUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
         {
             UndoObject = obj;
 
             if (UndoObject is MoveableInstance)
-                Property = new Vector3(((MoveableInstance)UndoObject).Ocb);
-            if (UndoObject is StaticInstance)
-                Property = new Vector3(((StaticInstance)UndoObject).Ocb);
-            if (UndoObject is LightInstance)
+            {
+                Base = ((MoveableInstance)UndoObject).WadObjectId;
+                Property = ((MoveableInstance)UndoObject).Ocb;
+            }
+            else if (UndoObject is StaticInstance)
+            {
+                Base = ((StaticInstance)UndoObject).WadObjectId;
+                Property = ((StaticInstance)UndoObject).Ocb;
+            }
+            else if (UndoObject is ImportedGeometryInstance)
+            {
+                Base = ((ImportedGeometryInstance)UndoObject).Model;
+                Property = ((ImportedGeometryInstance)UndoObject).Scale;
+            }
+            else if (UndoObject is LightInstance)
                 Property = ((LightInstance)UndoObject).Color;
-            if (UndoObject is SinkInstance)
-                Property = new Vector3(((SinkInstance)UndoObject).Strength);
-            if (UndoObject is SoundSourceInstance)
-                Property = new Vector3(((SoundSourceInstance)UndoObject).SoundId);
-            if (UndoObject is ImportedGeometryInstance)
-                Property = new Vector3(((ImportedGeometryInstance)UndoObject).Scale);
+            else if (UndoObject is SinkInstance)
+                Property = ((SinkInstance)UndoObject).Strength;
+            else if (UndoObject is SoundSourceInstance)
+                Property = ((SoundSourceInstance)UndoObject).SoundId;
 
             Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
 
             UndoAction = () =>
             {
                 if (UndoObject is MoveableInstance)
-                    ((MoveableInstance)UndoObject).Ocb = (short)Property.X;
-                if (UndoObject is StaticInstance)
-                    ((StaticInstance)UndoObject).Ocb = (short)Property.X;
-                if (UndoObject is SinkInstance)
-                    ((SinkInstance)UndoObject).Strength = (short)Property.X;
-                if (UndoObject is SoundSourceInstance)
-                    ((SoundSourceInstance)UndoObject).SoundId = (short)Property.X;
-                if (UndoObject is ImportedGeometryInstance)
-                    ((ImportedGeometryInstance)UndoObject).Scale = Property.X;
-
-                if (UndoObject is LightInstance)
                 {
-                    ((LightInstance)UndoObject).Color = Property;
-                    // HACK: This potentially results in lots of relights for batch undo action!
-                    UndoObject.Room.RoomGeometry?.Relight(UndoObject.Room);
+                    ((MoveableInstance)UndoObject).WadObjectId = (WadMoveableId)Base;
+                    ((MoveableInstance)UndoObject).Ocb = (short)Property;
                 }
+                else if (UndoObject is StaticInstance)
+                {
+                    ((StaticInstance)UndoObject).WadObjectId = (WadStaticId)Base;
+                    ((StaticInstance)UndoObject).Ocb = (short)Property;
+                }
+                else if (UndoObject is ImportedGeometryInstance)
+                {
+                    ((ImportedGeometryInstance)UndoObject).Model = (ImportedGeometry)Base;
+                    ((ImportedGeometryInstance)UndoObject).Scale = (float)Property;
+                }
+                else if (UndoObject is LightInstance)
+                {
+                    ((LightInstance)UndoObject).Color = (Vector3)Property;
+                    UndoObject.Room.RoomGeometry?.Relight(UndoObject.Room); // HACK: Results in lots of relights for batch undo!
+                }
+                else if (UndoObject is SinkInstance)
+                    ((SinkInstance)UndoObject).Strength = (short)Property;
+                else if (UndoObject is SoundSourceInstance)
+                    ((SoundSourceInstance)UndoObject).SoundId = (short)Property;
 
                 parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
             };
 
             RedoInstance = () => new ChangeObjectPropertyUndoInstance(Parent, UndoObject);
-        }
-    }
-
-    public class ChangeImportedGeoModelUndoInstance : EditorUndoRedoInstance
-    {
-        private ImportedGeometryInstance UndoObject;
-        private ImportedGeometry Model;
-
-        public ChangeImportedGeoModelUndoInstance(EditorUndoManager parent, ImportedGeometryInstance obj) : base(parent, obj.Room)
-        {
-            UndoObject = obj;
-            Model = obj.Model;
-
-            Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel &&
-                          Model != null && parent.Editor.Level.Settings.ImportedGeometries.Contains(Model);
-
-            UndoAction = () => { UndoObject.Model = Model; parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change); };
-            RedoInstance = () => new ChangeImportedGeoModelUndoInstance(Parent, UndoObject);
         }
     }
 
@@ -385,6 +354,7 @@ namespace TombEditor
         public void PushObjectCreated(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, true));
         public void PushObjectDeleted(PositionBasedObjectInstance obj) => Push(new AddRemoveObjectUndoInstance(this, obj, false));
         public void PushObjectTransformed(PositionBasedObjectInstance obj) => Push(new TransformObjectUndoInstance(this, obj));
+        public void PushObjectPropertyChanged(PositionBasedObjectInstance obj) => Push(new ChangeObjectPropertyUndoInstance(this, obj));
         public void PushGhostBlockCreated(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, true));
         public void PushGhostBlockCreated(List<GhostBlockInstance> objs) => Push(objs.Select(obj => (new AddRemoveGhostBlockUndoInstance(this, obj, true)) as UndoRedoInstance).ToList());
         public void PushGhostBlockDeleted(GhostBlockInstance obj) => Push(new AddRemoveGhostBlockUndoInstance(this, obj, false));
