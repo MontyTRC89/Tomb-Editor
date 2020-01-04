@@ -208,7 +208,7 @@ namespace TombEditor.Forms
 
             var searchTypeList = new List<string>()
             {
-                "Only " + primaryAttribDesc,
+                string.IsNullOrEmpty(primaryAttribDesc) ? string.Empty : "Only " + primaryAttribDesc,
                 primaryAttribDesc + " and " + secondAttribDesc
             };
 
