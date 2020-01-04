@@ -3190,7 +3190,7 @@ namespace TombEditor
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 light =>
                 {
-                    _editor.UndoManager.Push(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, light));
+                    _editor.UndoManager.PushObjectPropertyChanged(light);
 
                     using (var colorDialog = new RealtimeColorDialog(
                         _editor.Configuration.ColorDialog_Position.X,

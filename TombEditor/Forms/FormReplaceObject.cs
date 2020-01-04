@@ -226,6 +226,8 @@ namespace TombEditor.Forms
         {
             butReplace.Enabled = (Source != null && Dest != null);
 
+            // FIXME: These combo boxes should automatically enable or disable based on existence of secondary attrib,
+            // but we have complications with light type (thanks TRTomb) and static type (thanks Paolone).
             // Both search / replacement type is disabled for statics in all game versions except TRNG as statics have OCBs there.
             // Sinks and sound sources have no additional parameters, therefore we block search type choice.
             cmbSearchType.Enabled  = !(Source == null ||
@@ -283,11 +285,6 @@ namespace TombEditor.Forms
 
                 foreach (IReplaceable obj in room.Objects.Where(item => item is IReplaceable && ((IReplaceable)item).ReplaceableEquals(replSrc, (cmbSearchType.SelectedIndex == (int)ObjectSearchType.Full))))
                 {
-                    if (obj is ItemInstance)
-                        undoList.Add(new ChangeObjectIDUndoInstance(_editor.UndoManager, (ItemInstance)obj));
-                    else if (obj is ImportedGeometryInstance)
-                        undoList.Add(new ChangeImportedGeoModelUndoInstance(_editor.UndoManager, (ImportedGeometryInstance)obj));
-
                     undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)obj));
 
                     var objectChanged = obj.Replace(replDest, cmbReplaceType.SelectedIndex == (int)ObjectSearchType.Full);
