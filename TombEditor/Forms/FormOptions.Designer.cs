@@ -243,6 +243,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.panel4 = new DarkUI.Controls.DarkPanel();
             this.butPageDefaults = new DarkUI.Controls.DarkButton();
+            this.darkCheckBox35 = new DarkUI.Controls.DarkCheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -2772,6 +2773,7 @@
             // tabPage4
             // 
             this.tabPage4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage4.Controls.Add(this.darkCheckBox35);
             this.tabPage4.Controls.Add(this.darkCheckBox10);
             this.tabPage4.Controls.Add(this.darkCheckBox9);
             this.tabPage4.Controls.Add(this.darkLabel33);
@@ -3120,6 +3122,16 @@
             this.butPageDefaults.Text = "Set page to default";
             this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
             // 
+            // darkCheckBox35
+            // 
+            this.darkCheckBox35.AutoSize = true;
+            this.darkCheckBox35.Location = new System.Drawing.Point(10, 249);
+            this.darkCheckBox35.Name = "darkCheckBox35";
+            this.darkCheckBox35.Size = new System.Drawing.Size(182, 17);
+            this.darkCheckBox35.TabIndex = 46;
+            this.darkCheckBox35.Tag = "TextureMap_PickTextureWithoutAttributes";
+            this.darkCheckBox35.Text = "Pick texture without attributes";
+            // 
             // FormOptions
             // 
             this.AcceptButton = this.butOk;
@@ -3447,5 +3459,6 @@
         private DarkUI.Controls.DarkLabel darkLabel73;
         private DarkUI.Controls.DarkComboBox cmbColorScheme;
         private DarkUI.Controls.DarkLabel darkLabel74;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox35;
     }
 }
