@@ -3,6 +3,7 @@ Version 1.2.10
 Tomb Editor:
  * Add "Search & Replace objects" feature
  * Add short NG trigger names as prefixes
+ * Add option to pick texture without blending mode and double-sided attribs
  * Fix room effect value of 1
  * Fix broken textures on imported geometry if same level texture set is used
  * Fix occasional floordata generation bug
