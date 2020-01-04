@@ -106,6 +106,7 @@ namespace TombEditor
         public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
         public bool TextureMap_DrawSelectionDirectionIndicators { get; set; } = true;
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
+        public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
         public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
 
         // Gizmo options
