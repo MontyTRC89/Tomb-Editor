@@ -83,7 +83,8 @@ namespace TombLib.GeometryIO.Importers
                 foreach (var mesh in scene.Meshes)
                 {
                     // Discard nullmeshes
-                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3 || !mesh.HasTextureCoords(0))
+                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3 ||
+                         mesh.TextureCoordinateChannelCount == 0 || !mesh.HasTextureCoords(0))
                     {
                         logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no faces, no texture coordinates or wrong vertex count.");
                         continue;
@@ -110,16 +111,13 @@ namespace TombLib.GeometryIO.Importers
                     var newSubmesh = new IOSubmesh(material);
                     newMesh.Submeshes.Add(material, newSubmesh);
 
-                    bool hasTexCoords = mesh.HasTextureCoords(0);
-                    bool hasColors = mesh.HasVertexColors(0);
+                    bool hasColors  = mesh.VertexColorChannelCount > 0 && mesh.HasVertexColors(0);
                     bool hasNormals = mesh.HasNormals;
 
                     // Additional integrity checks
-                    if ((hasTexCoords && mesh.TextureCoordinateChannelCount < 1) ||
-                        (hasTexCoords && mesh.VertexCount != mesh.TextureCoordinateChannels[0].Count) ||
-                        (hasColors    && mesh.VertexColorChannelCount < 1) ||
-                        (hasColors    && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
-                        (hasNormals   && mesh.VertexCount != mesh.Normals.Count))
+                    if ((mesh.VertexCount != mesh.TextureCoordinateChannels[0].Count) ||
+                        (hasColors  && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
+                        (hasNormals && mesh.VertexCount != mesh.Normals.Count))
                     {
                         logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" data structure is inconsistent.");
                         continue;
