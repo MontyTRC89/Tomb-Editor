@@ -83,8 +83,11 @@ namespace TombLib.GeometryIO.Importers
                 foreach (var mesh in scene.Meshes)
                 {
                     // Discard nullmeshes
-                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3)
+                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3 || !mesh.HasTextureCoords(0))
+                    {
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" has no faces, no texture coordinates or wrong vertex count.");
                         continue;
+                    }
 
                     // Import only textured meshes with valid materials
                     Texture faceTexture;
@@ -111,6 +114,17 @@ namespace TombLib.GeometryIO.Importers
                     bool hasColors = mesh.HasVertexColors(0);
                     bool hasNormals = mesh.HasNormals;
 
+                    // Additional integrity checks
+                    if ((hasTexCoords && mesh.TextureCoordinateChannelCount < 1) ||
+                        (hasTexCoords && mesh.VertexCount != mesh.TextureCoordinateChannels[0].Count) ||
+                        (hasColors    && mesh.VertexColorChannelCount < 1) ||
+                        (hasColors    && mesh.VertexCount != mesh.VertexColorChannels[0].Count) ||
+                        (hasNormals   && mesh.VertexCount != mesh.Normals.Count))
+                    {
+                        logger.Warn("Mesh \"" + (mesh.Name ?? "") + "\" data structure is inconsistent.");
+                        continue;
+                    }
+
                     // Source data
                     var positions = mesh.Vertices;
                     var normals = mesh.Normals;
@@ -125,9 +139,12 @@ namespace TombLib.GeometryIO.Importers
                         newMesh.Positions.Add(position);
 
                         // Create normal
-                        var normal = new Vector3(normals[i].X, normals[i].Y, normals[i].Z);
-                        normal = ApplyAxesTransforms(normal);
-                        newMesh.Normals.Add(normal);
+                        if (hasNormals)
+                        {
+                            var normal = new Vector3(normals[i].X, normals[i].Y, normals[i].Z);
+                            normal = ApplyAxesTransforms(normal);
+                            newMesh.Normals.Add(normal);
+                        }
 
                         // Create UV
                         var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);

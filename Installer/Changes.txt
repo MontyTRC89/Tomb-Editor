@@ -12,6 +12,7 @@ Tomb Editor:
 WadTool:
  * Add "Copy" button to animcommand editor
  * Prevent exceptions while reference project without sounds is loaded
+ * Fix some more geometry import bugs
  * Fix state change editor foolproofing
  
 SoundTool:
