@@ -500,11 +500,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void FormStaticEditor_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void butRecalcNormals_Click(object sender, EventArgs e)
         {
             if (_workingStatic.Mesh != null)

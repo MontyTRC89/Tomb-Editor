@@ -145,6 +145,8 @@ namespace TombLib.GeometryIO.Importers
                             normal = ApplyAxesTransforms(normal);
                             newMesh.Normals.Add(normal);
                         }
+                        else
+                            newMesh.CalculateNormals();
 
                         // Create UV
                         var currentUV = new Vector2(texCoords[i].X, texCoords[i].Y);
