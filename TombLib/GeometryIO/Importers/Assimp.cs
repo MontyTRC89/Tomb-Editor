@@ -83,7 +83,7 @@ namespace TombLib.GeometryIO.Importers
                 foreach (var mesh in scene.Meshes)
                 {
                     // Discard nullmeshes
-                    if (!mesh.HasFaces || !mesh.HasVertices)
+                    if (!mesh.HasFaces || !mesh.HasVertices || mesh.VertexCount < 3)
                         continue;
 
                     // Import only textured meshes with valid materials
