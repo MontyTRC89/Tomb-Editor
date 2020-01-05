@@ -717,8 +717,8 @@ namespace WadTool
 
         private void ImportFailed()
         {
-            DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file \n" +
-                                "is one of the supported formats and that the meshes are textured",
+            DarkMessageBox.Show(this, "Error while loading 3D model. Check that the file format \n" +
+                                "is supported, meshes are textured and texture file is present.",
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 

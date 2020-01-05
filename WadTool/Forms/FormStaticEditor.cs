@@ -279,9 +279,9 @@ namespace WadTool
                     var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
                     if (mesh == null)
                     {
-                        DarkMessageBox.Show(this, "Error while loading the 3D model. Please check that the file " +
-                                            "is one of the supported formats and that the meshes are textured",
-                                            "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        DarkMessageBox.Show(this, "Error while loading 3D model. Check that the file format \n" +
+                                            "is supported, meshes are textured and texture file is present.",
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                     _workingStatic.Mesh = mesh;
