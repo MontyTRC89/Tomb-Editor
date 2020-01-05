@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
+using TombLib.Utils;
 
 namespace TombLib.GeometryIO
 {
@@ -77,6 +79,51 @@ namespace TombLib.GeometryIO
                 Vector3 center = (boundingBox.Minimum + boundingBox.Maximum) * 0.5f;
                 float radius = (boundingBox.Maximum - center).Length();
                 return new BoundingSphere(center, radius);
+            }
+        }
+
+        public void CalculateNormals()
+        {
+            Normals.Clear();
+
+            var tempNormals = new List<VertexNormalAverageHelper>();
+            for (int i = 0; i < Positions.Count; i++)
+                tempNormals.Add(new VertexNormalAverageHelper());
+
+            foreach (var submesh in Submeshes)
+            {
+                foreach (var poly in submesh.Value.Polygons)
+                {
+                    var p0 = Positions[poly.Indices[0]];
+                    var p1 = Positions[poly.Indices[1]];
+                    var p2 = Positions[poly.Indices[2]];
+
+                    var v1 = p0 - p2;
+                    var v2 = p1 - p2;
+                    var normal = Vector3.Cross(v1, v2);
+
+                    tempNormals[poly.Indices[0]].Normal += normal;
+                    tempNormals[poly.Indices[0]].NumVertices++;
+
+                    tempNormals[poly.Indices[1]].Normal += normal;
+                    tempNormals[poly.Indices[1]].NumVertices++;
+
+                    tempNormals[poly.Indices[2]].Normal += normal;
+                    tempNormals[poly.Indices[2]].NumVertices++;
+
+                    if (poly.Shape == IOPolygonShape.Quad)
+                    {
+                        tempNormals[poly.Indices[3]].Normal += normal;
+                        tempNormals[poly.Indices[3]].NumVertices++;
+                    }
+                }
+            }
+
+            for (int i = 0; i < tempNormals.Count; i++)
+            {
+                var normal = tempNormals[i].Normal / Math.Max(1, tempNormals[i].NumVertices);
+                normal = Vector3.Normalize(normal);
+                Normals.Add(normal);
             }
         }
     }
