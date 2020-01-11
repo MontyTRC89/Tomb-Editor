@@ -56,6 +56,7 @@
        -->
       .allowedextension
     </AllowedReferenceRelatedFileExtensions>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>wad_tool.ico</ApplicationIcon>
