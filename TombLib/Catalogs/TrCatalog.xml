@@ -3367,6 +3367,29 @@
       <anim item="43" id="68" name="BLIND" />
       <anim item="43" id="69" name="BLIND_TO_STAND" />
       <anim item="43" id="70" name="DEAD" />
+
+    <!-- MUMMY -->
+	  <anim item="47" id="0" name="STAND" />
+      <anim item="47" id="1" name="WALK" />
+      <anim item="47" id="2" name="WALK_ARMS_UP" />
+      <anim item="47" id="3" name="PUSHED_BACK" />
+      <anim item="47" id="4" name="WALK_TO_WALK_ARMS_UP_RIGHT" />
+      <anim item="47" id="5" name="WALK_ARMS_UP_TO_WALK_LEFT" />
+      <anim item="47" id="6" name="WALK_ARMS_UP_TO_STAND" />
+      <anim item="47" id="7" name="STAND_TO_WALK_ARMS_UP" />
+      <anim item="47" id="8" name="STAND_TO_WALK" />
+      <anim item="47" id="9" name="WALK_TO_STAND" />
+      <anim item="47" id="10" name="COLLAPSE_START" />
+      <anim item="47" id="11" name="COLLAPSE_END" />
+      <anim item="47" id="12" name="LYING_DOWN" />
+      <anim item="47" id="13" name="GET_UP" />
+      <anim item="47" id="14" name="HIT_RIGHT" />
+      <anim item="47" id="15" name="HIT_LEFT" />
+      <anim item="47" id="16" name="WALK_HIT" />
+      <anim item="47" id="17" name="ARMS_CROSSED_TO_STAND_START" />
+      <anim item="47" id="18" name="ARMS_CROSSED_TO_STAND_END" />
+      <anim item="47" id="19" name="ARMS_CROSSED" />
+      <anim item="47" id="20" name="ARMS_UP_PUSHED_BACK" />
       
     <!-- SAS -->
       <anim item="95" id="0" name="WALK" />
@@ -3524,6 +3547,19 @@
       <state item="43" id="42" name="JUMP_OFF_4_CLICKS" />
       <state item="43" id="43" name="JUMP_OFF_3_CLICKS" />
       <state item="43" id="44" name="BLIND" />
+
+    <!-- MUMMY -->
+      <state item="47" id="0" name="ARMS_CROSSED" />
+      <state item="47" id="1" name="STOP" />
+      <state item="47" id="2" name="WALK" />
+      <state item="47" id="3" name="WALK_ARMS_UP" />
+      <state item="47" id="4" name="WALK_HIT" />
+      <state item="47" id="5" name="PUSHED_BACK" />
+      <state item="47" id="6" name="ARMS_UP_PUSHED_BACK" />
+      <state item="47" id="7" name="COLLAPSE" />
+      <state item="47" id="8" name="LYING_DOWN" />
+      <state item="47" id="9" name="GET_UP" />
+      <state item="47" id="10" name="HIT" />
 
     <!-- SAS -->
       <state item="95" id="0" name="EMPTY" />
