@@ -393,8 +393,8 @@
     <animations>
       <anim item="0" id="0" name="RUN" />
       <anim item="0" id="1" name="WALK_FORWARD" />
-      <anim item="0" id="2" name="END_WALK_RIGHT" />
-      <anim item="0" id="3" name="END_WALK_LEFT" />
+      <anim item="0" id="2" name="WALK_STOP_RIGHT" />
+      <anim item="0" id="3" name="WALK_STOP_LEFT" />
       <anim item="0" id="4" name="WALK_TO_RUN_RIGHT" />
       <anim item="0" id="5" name="WALK_TO_RUN_LEFT" />
       <anim item="0" id="6" name="RUN_START" />
@@ -502,7 +502,7 @@
       <anim item="0" id="108" name="UNDERWATER_IDLE" />
       <anim item="0" id="109" name="UNDERWARER_IDLE_TO_SWIM" />
       <anim item="0" id="110" name="ONWATER_IDLE" />
-      <anim item="0" id="111" name="ONWATER_TO_STANCE_HIGH" />
+      <anim item="0" id="111" name="ONWATER_TO_STAND_HIGH" />
       <anim item="0" id="112" name="FREEFALL_TO_UNDERWATER" />
       <anim item="0" id="113" name="ONWATER_DIVE_ALTERNATE_UNUSED" />
       <anim item="0" id="114" name="UNDERWATER_TO_ONWATER" />
@@ -1230,8 +1230,8 @@
       <anim item="0" id="188" name="LADDER_DOWN_HANGING" />
       <anim item="0" id="189" name="FLARE_THROW" />
       <anim item="0" id="190" name="ONWATER_TO_WADE" />
-      <anim item="0" id="191" name="ONWATER_TO_STANCE_MEDIUM" />
-      <anim item="0" id="192" name="UNDERWATER_TO_STANCE" />
+      <anim item="0" id="191" name="ONWATER_TO_STAND_MEDIUM" />
+      <anim item="0" id="192" name="UNDERWATER_TO_STAND" />
       <anim item="0" id="193" name="ONWATER_TO_WADE_LOW" />
       <anim item="0" id="194" name="LADDER_TO_HANG_DOWN" />
       <anim item="0" id="195" name="SWITCH_SMALL_DOWN" />
@@ -3222,37 +3222,183 @@
       <anim item="0" id="443" name="DEATH_SETH" />
       <anim item="0" id="444" name="BEETLE_PUT" />
 
-	  <!-- SAS -->
+    <!-- BADDY_1 -->
+      <anim item="41" id="0" name="RUN" />
+      <anim item="41" id="1" name="RUN_STOP_START" />
+      <anim item="41" id="2" name="RUN_STOP_END" />
+      <!-- <anim item="41" id="3" name="" /> -->
+      <!-- <anim item="41" id="4" name="" /> -->
+      <!-- <anim item="41" id="5" name="" /> -->
+      <!-- <anim item="41" id="6" name="" /> -->
+      <!-- <anim item="41" id="7" name="" /> -->
+      <!-- <anim item="41" id="8" name="" /> -->
+      <anim item="41" id="9" name="MONKEY_GRAB" />
+      <anim item="41" id="10" name="MONKEY_IDLE" />
+      <anim item="41" id="11" name="MONKEY_FORWARD" />
+      <anim item="41" id="12" name="MONKEY_IDLE_TO_FORWARD" />
+      <anim item="41" id="13" name="MONKEY_STOP_LEFT" />
+      <anim item="41" id="14" name="MONKEY_STOP_RIGHT" />
+      <anim item="41" id="15" name="MONKEY_FALL_LAND" />
+      <anim item="41" id="16" name="MONKEY_PUSH_OFF" />
+      <!-- <anim item="41" id="17" name="" /> -->
+      <anim item="41" id="18" name="STAND_IDLE" />
+      <!-- <anim item="41" id="19" name="" /> -->
+      <anim item="41" id="20" name="DRAW_GUN" />
+      <anim item="41" id="21" name="HOLSTER_GUN" />
+      <anim item="41" id="22" name="DRAW_SWORD" />
+      <anim item="41" id="23" name="HOLSTER_SWORD" />
+      <anim item="41" id="24" name="STAND_TO_ROLL_LEFT" />
+      <anim item="41" id="25" name="ROLL_LEFT_START" />
+      <anim item="41" id="26" name="ROLL_LEFT_CONTINUE" />
+      <anim item="41" id="27" name="ROLL_LEFT_END" />
+      <anim item="41" id="28" name="ROLL_LEFT_TO_CROUCH" />
+      <anim item="41" id="29" name="CROUCH" />
+      <anim item="41" id="30" name="CROUCH_TO_STAND" />
+      <anim item="41" id="31" name="STAND_TO_WALK" />
+      <anim item="41" id="32" name="WALK" />
+      <anim item="41" id="33" name="WALK_TO_RUN" />
+      <anim item="41" id="34" name="STAND_TO_AIM" />
+      <anim item="41" id="35" name="AIM" />
+      <anim item="41" id="36" name="FIRE" />
+      <anim item="41" id="37" name="AIM_TO_STAND" />
+      <anim item="41" id="38" name="SWORD_HIT_FRONT" />
+      <anim item="41" id="39" name="CROUCH_PICKUP" />
+      <anim item="41" id="40" name="STAND_TO_CROUCH" />
+      <anim item="41" id="41" name="SWORD_HIT_RIGHT" />
+      <anim item="41" id="42" name="SWORD_HIT_RIGHT_TO_LEFT" />
+      <anim item="41" id="43" name="SWORD_HIT_RIGHT_TO_STAND" />
+      <anim item="41" id="44" name="SWORD_HIT_LEFT" />
+      <anim item="41" id="45" name="STAND_DEATH" />
+      <anim item="41" id="46" name="WALK_SWORD_HIT_RIGHT" />
+      <anim item="41" id="47" name="STAND_TO_JUMP_RIGHT" />
+      <anim item="41" id="48" name="JUMP_RIGHT_START" />
+      <anim item="41" id="49" name="JUMP_RIGHT_CONTINUE" />
+      <anim item="41" id="50" name="JUMP_RIGHT_END" />
+      <anim item="41" id="51" name="RUN_TO_WALK" />
+      <!-- <anim item="41" id="52" name="" /> -->
+      <!-- <anim item="41" id="53" name="STAND_STILL" /> -->
+      <anim item="41" id="54" name="WALK_STOP_RIGHT" />
+      <anim item="41" id="55" name="STAND_TO_JUMP_FORWARD" />
+      <anim item="41" id="56" name="JUMP_FORWARD_1_BLOCK" />
+      <anim item="41" id="57" name="JUMP_FORWARD_FALL" />
+      <anim item="41" id="58" name="JUMP_FORWARD_LAND" />
+      <anim item="41" id="59" name="MONKEY_TO_FREEFALL" />
+      <anim item="41" id="60" name="FREEFALL" />
+      <anim item="41" id="61" name="FREEFALL_LAND_DEATH" />
+      <anim item="41" id="62" name="CLIMB_4_CLICKS" />
+      <anim item="41" id="63" name="CLIMB_3_CLICKS" />
+      <anim item="41" id="64" name="CLIMB_2_CLICKS" />
+      <anim item="41" id="65" name="JUMP_OFF_4_CLICKS" />
+      <anim item="41" id="66" name="JUMP_OFF_3_CLICKS" />
+      <anim item="41" id="67" name="JUMP_FORWARD_2_BLOCKS" />
+      <anim item="41" id="68" name="BLIND" />
+      <anim item="41" id="69" name="BLIND_TO_STAND" />
+      <anim item="41" id="70" name="DEAD" />
+
+    <!-- BADDY_2 -->
+      <anim item="43" id="0" name="RUN" />
+      <anim item="43" id="1" name="RUN_STOP_START" />
+      <anim item="43" id="2" name="RUN_STOP_END" />
+      <anim item="43" id="3" name="SOMERSAULT_START" />
+      <anim item="43" id="4" name="SOMERSAULT_END" />
+      <anim item="43" id="5" name="DODGE_START" />
+      <!-- <anim item="43" id="6" name="" /> -->
+      <!-- <anim item="43" id="7" name="" /> -->
+      <anim item="43" id="8" name="DODGE" />
+      <anim item="43" id="9" name="MONKEY_GRAB" />
+      <anim item="43" id="10" name="MONKEY_IDLE" />
+      <anim item="43" id="11" name="MONKEY_FORWARD" />
+      <anim item="43" id="12" name="MONKEY_IDLE_TO_FORWARD" />
+      <anim item="43" id="13" name="MONKEY_STOP_LEFT" />
+      <anim item="43" id="14" name="MONKEY_STOP_RIGHT" />
+      <anim item="43" id="15" name="MONKEY_FALL_LAND" />
+      <anim item="43" id="16" name="MONKEY_PUSH_OFF" />
+      <anim item="43" id="17" name="DODGE_END" />
+      <anim item="43" id="18" name="STAND_IDLE" />
+      <anim item="43" id="19" name="DODGE_END_TO_STAND" />
+      <anim item="43" id="20" name="DRAW_GUN" />
+      <anim item="43" id="21" name="HOLSTER_GUN" />
+      <anim item="43" id="22" name="DRAW_SWORD" />
+      <anim item="43" id="23" name="HOLSTER_SWORD" />
+      <anim item="43" id="24" name="STAND_TO_ROLL_LEFT" />
+      <anim item="43" id="25" name="ROLL_LEFT_START" />
+      <anim item="43" id="26" name="ROLL_LEFT_CONTINUE" />
+      <anim item="43" id="27" name="ROLL_LEFT_END" />
+      <anim item="43" id="28" name="ROLL_LEFT_TO_CROUCH" />
+      <anim item="43" id="29" name="CROUCH" />
+      <anim item="43" id="30" name="CROUCH_TO_STAND" />
+      <anim item="43" id="31" name="STAND_TO_WALK" />
+      <anim item="43" id="32" name="WALK" />
+      <anim item="43" id="33" name="WALK_TO_RUN" />
+      <anim item="43" id="34" name="STAND_TO_AIM" />
+      <anim item="43" id="35" name="AIM" />
+      <anim item="43" id="36" name="FIRE" />
+      <anim item="43" id="37" name="AIM_TO_STAND" />
+      <anim item="43" id="38" name="SWORD_HIT_FRONT" />
+      <anim item="43" id="39" name="CROUCH_PICKUP" />
+      <anim item="43" id="40" name="STAND_TO_CROUCH" />
+      <anim item="43" id="41" name="SWORD_HIT_RIGHT" />
+      <anim item="43" id="42" name="SWORD_HIT_RIGHT_TO_LEFT" />
+      <anim item="43" id="43" name="SWORD_HIT_RIGHT_TO_STAND" />
+      <anim item="43" id="44" name="SWORD_HIT_LEFT" />
+      <anim item="43" id="45" name="STAND_DEATH" />
+      <anim item="43" id="46" name="WALK_SWORD_HIT_RIGHT" />
+      <anim item="43" id="47" name="STAND_TO_JUMP_RIGHT" />
+      <anim item="43" id="48" name="JUMP_RIGHT_START" />
+      <anim item="43" id="49" name="JUMP_RIGHT_CONTINUE" />
+      <anim item="43" id="50" name="JUMP_RIGHT_END" />
+      <anim item="43" id="51" name="RUN_TO_WALK" />
+      <!-- <anim item="43" id="52" name="DODGE_END_TO_DODGE" /> -->
+      <!-- <anim item="43" id="53" name="STAND_STILL" /> -->
+      <anim item="43" id="54" name="WALK_STOP_RIGHT" />
+      <anim item="43" id="55" name="STAND_TO_JUMP_FORWARD" />
+      <anim item="43" id="56" name="JUMP_FORWARD_1_BLOCK" />
+      <anim item="43" id="57" name="JUMP_FORWARD_FALL" />
+      <anim item="43" id="58" name="JUMP_FORWARD_LAND" />
+      <anim item="43" id="59" name="MONKEY_TO_FREEFALL" />
+      <anim item="43" id="60" name="FREEFALL" />
+      <anim item="43" id="61" name="FREEFALL_LAND_DEATH" />
+      <anim item="43" id="62" name="CLIMB_4_CLICKS" />
+      <anim item="43" id="63" name="CLIMB_3_CLICKS" />
+      <anim item="43" id="64" name="CLIMB_2_CLICKS" />
+      <anim item="43" id="65" name="JUMP_OFF_4_CLICKS" />
+      <anim item="43" id="66" name="JUMP_OFF_3_CLICKS" />
+      <anim item="43" id="67" name="JUMP_FORWARD_2_BLOCKS" />
+      <anim item="43" id="68" name="BLIND" />
+      <anim item="43" id="69" name="BLIND_TO_STAND" />
+      <anim item="43" id="70" name="DEAD" />
+      
+    <!-- SAS -->
       <anim item="95" id="0" name="WALK" />
       <anim item="95" id="1" name="RUN" />
       <anim item="95" id="2" name="SIGHT_SHOOT" />
-      <anim item="95" id="3" name="STANCE_TO_SIGHT_AIM" />
+      <anim item="95" id="3" name="STAND_TO_SIGHT_AIM" />
       <anim item="95" id="4" name="WALK_TO_WALK_AIM" />
       <anim item="95" id="5" name="RUN_TO_WALK" />
       <anim item="95" id="6" name="WALK_SHOOT" />
-      <anim item="95" id="7" name="SIGHT_AIM_TO_STANCE" />
-      <anim item="95" id="8" name="WALK_AIM_TO_STANCE" />
-      <anim item="95" id="9" name="STANCE_TO_RUN" />
-      <anim item="95" id="10" name="STANCE_TO_WAIT" />
-      <anim item="95" id="11" name="STANCE_TO_WALK" />
-      <anim item="95" id="12" name="STANCE" />
-      <anim item="95" id="13" name="WAIT_TO_STANCE" />
+      <anim item="95" id="7" name="SIGHT_AIM_TO_STAND" />
+      <anim item="95" id="8" name="WALK_AIM_TO_STAND" />
+      <anim item="95" id="9" name="STAND_TO_RUN" />
+      <anim item="95" id="10" name="STAND_TO_WAIT" />
+      <anim item="95" id="11" name="STAND_TO_WALK" />
+      <anim item="95" id="12" name="STAND" />
+      <anim item="95" id="13" name="WAIT_TO_STAND" />
       <anim item="95" id="14" name="WAIT" />
       <anim item="95" id="15" name="WAIT_TO_SIGHT_AIM" />
       <anim item="95" id="16" name="WALK_TO_RUN" />
-      <anim item="95" id="17" name="WALK_TO_STANCE" />
+      <anim item="95" id="17" name="WALK_TO_STAND" />
       <anim item="95" id="18" name="WALK_AIM_TO_WALK" />
       <anim item="95" id="19" name="DEATH" />
-      <anim item="95" id="20" name="STANCE_TO_HOLD_AIM" />
+      <anim item="95" id="20" name="STAND_TO_HOLD_AIM" />
       <anim item="95" id="21" name="HOLD_SHOOT" />
-      <anim item="95" id="22" name="HOLD_AIM_TO_STANCE" />
+      <anim item="95" id="22" name="HOLD_AIM_TO_STAND" />
       <anim item="95" id="23" name="HOLD_PREPARE_GRENADE" />
       <anim item="95" id="24" name="HOLD_SHOOT_GRENADE" />
-      <anim item="95" id="25" name="STANCE_TO_KNEEL_AIM" />
+      <anim item="95" id="25" name="STAND_TO_KNEEL_AIM" />
       <anim item="95" id="26" name="KNEEL_SHOOT" />
-      <anim item="95" id="27" name="KNEEL_AIM_TO_STANCE" />
+      <anim item="95" id="27" name="KNEEL_AIM_TO_STAND" />
       <anim item="95" id="28" name="BLIND" />
-      <anim item="95" id="29" name="BLIND_TO_STANCE" />
+      <anim item="95" id="29" name="BLIND_TO_STAND" />
     </animations>
     <states>
       <state item="0" id="90" name="ROPE_TURN_LEFT" />
@@ -3285,7 +3431,101 @@
       <state item="0" id="117" name="DOUBLEDOORS_PUSH" />
       <state item="0" id="118" name="DOZY" />
 
-	  <!-- SAS -->
+    <!-- BADDY_1 -->
+      <state item="41" id="0" name="STOP" />
+      <state item="41" id="1" name="WALK" />
+      <state item="41" id="2" name="RUN" />
+      <!-- <state item="41" id="3" name="" /> -->
+      <!-- <state item="41" id="4" name="" /> -->
+      <!-- <state item="41" id="5" name="" /> -->
+      <!-- <state item="41" id="6" name="" /> -->
+      <!-- <state item="41" id="7" name="" /> -->
+      <!-- <state item="41" id="8" name="" /> -->
+      <!-- <state item="41" id="9" name="" /> -->
+      <state item="41" id="10" name="DRAW_GUN" />
+      <state item="41" id="11" name="HOLSTER_GUN" />
+      <state item="41" id="12" name="DRAW_SWORD" />
+      <state item="41" id="13" name="HOLSTER_SWORD" />
+      <state item="41" id="14" name="FIRE" />
+      <state item="41" id="15" name="SWORD_HIT_FRONT" />
+      <state item="41" id="16" name="SWORD_HIT_RIGHT" />
+      <state item="41" id="17" name="SWORD_HIT_LEFT" />
+      <state item="41" id="18" name="MONKEY_GRAB" />
+      <state item="41" id="19" name="MONKEY_IDLE" />
+      <state item="41" id="20" name="MONKEY_FORWARD" />
+      <state item="41" id="21" name="MONKEY_PUSH_OFF" />
+      <state item="41" id="22" name="MONKEY_FALL_LAND" />
+      <state item="41" id="23" name="ROLL_LEFT" />
+      <state item="41" id="24" name="JUMP_RIGHT" />
+      <state item="41" id="25" name="STAND_TO_CROUCH" />
+      <state item="41" id="26" name="CROUCH" />
+      <state item="41" id="27" name="CROUCH_PICKUP" />
+      <state item="41" id="28" name="CROUCH_TO_STAND" />
+      <state item="41" id="29" name="WALK_SWORD_HIT_RIGHT" />
+      <!-- <state item="41" id="30" name="" /> -->
+      <state item="41" id="31" name="AIM" />
+      <state item="41" id="32" name="DEATH" />
+      <state item="41" id="33" name="JUMP_FORWARD_1_BLOCK" />
+      <state item="41" id="34" name="JUMP_FORWARD_FALL" />
+      <state item="41" id="35" name="MONKEY_TO_FREEFALL" />
+      <state item="41" id="36" name="FREEFALL" />
+      <state item="41" id="37" name="FREEFALL_LAND_DEATH" />
+      <state item="41" id="38" name="JUMP_FORWARD_2_BLOCKS" />
+      <state item="41" id="39" name="CLIMB_4_CLICKS" />
+      <state item="41" id="40" name="CLIMB_3_CLICKS" />
+      <state item="41" id="41" name="CLIMB_2_CLICKS" />
+      <state item="41" id="42" name="JUMP_OFF_4_CLICKS" />
+      <state item="41" id="43" name="JUMP_OFF_3_CLICKS" />
+      <state item="41" id="44" name="BLIND" />
+
+    <!-- BADDY_2 -->
+      <state item="43" id="0" name="STOP" />
+      <state item="43" id="1" name="WALK" />
+      <state item="43" id="2" name="RUN" />
+      <!-- <state item="43" id="3" name="" /> -->
+      <state item="43" id="4" name="DODGE_START" />
+      <!-- <state item="43" id="5" name="" /> -->
+      <!-- <state item="43" id="6" name="" /> -->
+      <!-- <state item="43" id="7" name="" /> -->
+      <state item="43" id="8" name="DODGE" />
+      <state item="43" id="9" name="DODGE_END" />
+      <state item="43" id="10" name="DRAW_GUN" />
+      <state item="43" id="11" name="HOLSTER_GUN" />
+      <state item="43" id="12" name="DRAW_SWORD" />
+      <state item="43" id="13" name="HOLSTER_SWORD" />
+      <state item="43" id="14" name="FIRE" />
+      <state item="43" id="15" name="SWORD_HIT_FRONT" />
+      <state item="43" id="16" name="SWORD_HIT_RIGHT" />
+      <state item="43" id="17" name="SWORD_HIT_LEFT" />
+      <state item="43" id="18" name="MONKEY_GRAB" />
+      <state item="43" id="19" name="MONKEY_IDLE" />
+      <state item="43" id="20" name="MONKEY_FORWARD" />
+      <state item="43" id="21" name="MONKEY_PUSH_OFF" />
+      <state item="43" id="22" name="MONKEY_FALL_LAND" />
+      <state item="43" id="23" name="ROLL_LEFT" />
+      <state item="43" id="24" name="JUMP_RIGHT" />
+      <state item="43" id="25" name="STAND_TO_CROUCH" />
+      <state item="43" id="26" name="CROUCH" />
+      <state item="43" id="27" name="CROUCH_PICKUP" />
+      <state item="43" id="28" name="CROUCH_TO_STAND" />
+      <state item="43" id="29" name="WALK_SWORD_HIT_RIGHT" />
+      <state item="43" id="30" name="SOMERSAULT" />
+      <state item="43" id="31" name="AIM" />
+      <state item="43" id="32" name="DEATH" />
+      <state item="43" id="33" name="JUMP_FORWARD_1_BLOCK" />
+      <state item="43" id="34" name="JUMP_FORWARD_FALL" />
+      <state item="43" id="35" name="MONKEY_TO_FREEFALL" />
+      <state item="43" id="36" name="FREEFALL" />
+      <state item="43" id="37" name="FREEFALL_LAND_DEATH" />
+      <state item="43" id="38" name="JUMP_FORWARD_2_BLOCKS" />
+      <state item="43" id="39" name="CLIMB_4_CLICKS" />
+      <state item="43" id="40" name="CLIMB_3_CLICKS" />
+      <state item="43" id="41" name="CLIMB_2_CLICKS" />
+      <state item="43" id="42" name="JUMP_OFF_4_CLICKS" />
+      <state item="43" id="43" name="JUMP_OFF_3_CLICKS" />
+      <state item="43" id="44" name="BLIND" />
+
+    <!-- SAS -->
       <state item="95" id="0" name="EMPTY" />
       <state item="95" id="1" name="STOP" />
       <state item="95" id="2" name="WALK" />
