@@ -886,25 +886,12 @@ namespace TombEditor
         {
             var room = instance.Room;
             var adjoiningRoom = (instance as PortalInstance)?.AdjoiningRoom;
-            var isTriggerableObject = instance is MoveableInstance || instance is StaticInstance || instance is CameraInstance ||
-                                      instance is FlybyCameraInstance || instance is SinkInstance || instance is SoundSourceInstance;
             room.RemoveObject(_editor.Level, instance);
 
-            // Delete trigger if is necessary
-            if (isTriggerableObject)
-            {
-                var triggersToRemove = new List<TriggerInstance>();
-                foreach (var r in _editor.Level.Rooms)
-                    if (r != null)
-                        foreach (var trigger in r.Triggers)
-                        {
-                            if (trigger.Target == instance)
-                                triggersToRemove.Add(trigger);
-                        }
-
-                foreach (var t in triggersToRemove)
-                    t.Room.RemoveObject(_editor.Level, t);
-            }
+            // Delete triggers if is necessary
+            var affectedRooms = _editor.Level.DeleteTriggersForObject(instance);
+            foreach (var r in affectedRooms)
+                _editor.RoomSectorPropertiesChange(r);
 
             // Additional updates
             if (instance is SectorBasedObjectInstance)
@@ -1754,8 +1741,15 @@ namespace TombEditor
                 .Except(rooms)
                 .ToList();
 
+            // Delete rooms and collect a list of rooms in which related triggers were removed
+            List<Room> affectedRooms = new List<Room>();
             foreach (Room room in rooms)
-                _editor.Level.DeleteAlternateRoom(room);
+                affectedRooms = affectedRooms.Concat(_editor.Level.DeleteRoom(room)).ToList();
+
+            // Update sector highlights in rooms where triggers for related objects were removed
+            foreach (var r in affectedRooms)
+                if (_editor.Level.Rooms.Contains(r)) // Room itself may be removed from level by now if multiselection was used
+                    _editor.RoomPropertiesChange(r);
 
             // Update selection
             foreach (Room adjoiningRoom in adjoiningRooms)
@@ -2356,9 +2350,13 @@ namespace TombEditor
                 _editor.SelectedRoom = room;
 
             // Delete alternate room
-            _editor.Level.DeleteAlternateRoom(room.AlternateRoom);
+            var affectedRooms = _editor.Level.DeleteRoom(room.AlternateRoom);
             room.AlternateRoom = null;
             room.AlternateGroup = -1;
+
+            // Update sector highlights in rooms where triggers for related objects were removed
+            foreach (var r in affectedRooms)
+                _editor.RoomPropertiesChange(r);
 
             _editor.RoomListChange();
             _editor.RoomPropertiesChange(room);
@@ -2853,7 +2851,7 @@ namespace TombEditor
                         if (sector.Value == newRoomToHandle)
                             continue;
 
-                        // Copy adjacemt blocks
+                        // Copy adjacent blocks
                         Block thisBlockNegativeX = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos + new VectorInt2(-1, 0));
                         Block otherBlockNegativeX = sector.Value.GetBlock(sector.Key - sector.Value.SectorPos + new VectorInt2(-1, 0));
                         Block thisBlockPositiveX = newRoomToHandle.GetBlock(sector.Key - newRoomToHandle.SectorPos + new VectorInt2(1, 0));
@@ -2998,7 +2996,7 @@ namespace TombEditor
 
             // Add room and update the editor
             foreach (Room room in mergeRooms)
-                _editor.Level.DeleteRoom(room);
+                _editor.Level.DeleteRoomWithAlternate(room);
             if (_editor.SelectedRooms.Intersect(rooms).Any())
                 _editor.SelectedRoom = newRoom;
             foreach (Room relevantRoom in relevantRooms)

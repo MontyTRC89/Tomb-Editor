@@ -143,23 +143,51 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public void DeleteAlternateRoom(Room room)
+        public List<Room> DeleteRoom(Room room)
         {
             for (int i = 0; i < Rooms.Length; ++i)
                 if (Rooms[i] == room)
                 {
-                    room.Delete(this);
+                    var result = room.Delete(this);
                     Rooms[i] = null;
-                    return;
+                    return result;
                 }
             throw new ArgumentException("The room does not belong to the level from which it should be removed.");
         }
 
-        public void DeleteRoom(Room room)
+        public void DeleteRoomWithAlternate(Room room)
         {
-            DeleteAlternateRoom(room);
+            DeleteRoom(room);
             if (room.AlternateOpposite != null)
-                DeleteAlternateRoom(room.AlternateOpposite);
+                DeleteRoom(room.AlternateOpposite);
+        }
+
+        public List<Room> DeleteTriggersForObject(ObjectInstance instance)
+        {
+            List<Room> result = new List<Room>();
+
+            var isTriggerableObject = instance is MoveableInstance || instance is StaticInstance || instance is CameraInstance ||
+                                      instance is FlybyCameraInstance || instance is SinkInstance || instance is SoundSourceInstance;
+
+            if (isTriggerableObject)
+            {
+                var triggersToRemove = new List<TriggerInstance>();
+                foreach (var r in Rooms)
+                    if (r != null)
+                        foreach (var trigger in r.Triggers)
+                        {
+                            if (trigger.Target == instance)
+                                triggersToRemove.Add(trigger);
+
+                            if (!result.Contains(r))
+                                result.Add(r);
+                        }
+
+                foreach (var t in triggersToRemove)
+                    t.Room.RemoveObject(this, t);
+            }
+
+            return result;
         }
 
         public void MergeFrom(Level otherLevel, bool unifyData, Action<LevelSettings> applyLevelSettings = null)
@@ -176,7 +204,7 @@ namespace TombLib.LevelData
                 catch
                 { // If we fail, roll back the changes...
                     while (i > 0)
-                        DeleteRoom(otherRooms[--i]);
+                        DeleteRoomWithAlternate(otherRooms[--i]);
                     throw;
                 }
 
