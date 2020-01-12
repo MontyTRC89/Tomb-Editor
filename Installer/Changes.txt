@@ -8,12 +8,15 @@ Tomb Editor:
  * Fix broken textures on imported geometry if same level texture set is used
  * Fix occasional floordata generation bug
  * Fix inability to cancel "Set ambient light for selected rooms" action
+ * Remove triggers to nonexistent targets on room removal
+ * Prevent lock-ups when prj2 with broken trigger with nonexistent target is selected
  
 WadTool:
  * Add "Copy" button to animcommand editor
  * Prevent exceptions while reference project without sounds is loaded
  * Fix some more geometry import bugs
  * Fix state change editor foolproofing
+ * Unset "Prefer 32-bit" flag which caused WT to stop working on some Win10 systems
  
 SoundTool:
  * Fix misplaced samples warning condition

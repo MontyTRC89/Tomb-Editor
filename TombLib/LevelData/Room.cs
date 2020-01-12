@@ -286,18 +286,27 @@ namespace TombLib.LevelData
         /// <summary>
         /// This methode should be invoked after the object was added to a room and the object will go out of scope.
         /// </summary>
-        public void Delete(Level level)
+        public List<Room> Delete(Level level)
         {
+            List<Room> result = new List<Room>();
+
             // Remove all objects in the room
             var objectsToRemove = AnyObjects.ToList();
             foreach (var instance in objectsToRemove)
+            {
                 if (AlternateBaseRoom != null)
                     RemoveObjectAndSingularPortal(level, instance);
                 else
                     RemoveObject(level, instance);
 
+                // Collect affected rooms in case 
+                result = result.Concat(level.DeleteTriggersForObject(instance)).ToList();
+            }
+
             // Inform of room removal
             DeletedEvent?.Invoke(this);
+
+            return result;
         }
 
         public List<Room> AndAdjoiningRooms => new List<Room>(Portals.ToList()

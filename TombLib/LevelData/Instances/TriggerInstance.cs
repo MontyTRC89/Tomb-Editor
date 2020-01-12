@@ -165,7 +165,7 @@ namespace TombLib.LevelData
             string output = TriggerType + " ";
             output += "[" + TargetType + "] ";
 
-            if (Target == null)
+            if (Target == null || Target == this) // FIXME: "Target == this" IS A HACK AGAINST TRTombalization
                 output += "<None>";
             else if (Target is TriggerParameterUshort)
                 output += "#" + ((TriggerParameterUshort)Target).Key;
