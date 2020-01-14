@@ -8,6 +8,7 @@ Tomb Editor:
  * Fix broken textures on imported geometry if same level texture set is used
  * Fix occasional floordata generation bug
  * Fix inability to cancel "Set ambient light for selected rooms" action
+ * Implement undo for changing light colour
  * Remove triggers to nonexistent targets on room removal
  * Prevent lock-ups when prj2 with broken trigger with nonexistent target is selected
  
