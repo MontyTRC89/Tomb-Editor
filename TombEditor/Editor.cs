@@ -629,13 +629,6 @@ namespace TombEditor
         }
         public void SelectTextureAndCenterView(TextureArea texture)
         {
-            // Preserve current attribs if option is set
-            if (Configuration.TextureMap_PickTextureWithoutAttributes)
-            {
-                texture.BlendMode = SelectedTexture.BlendMode;
-                texture.DoubleSided = SelectedTexture.DoubleSided;
-            }
-
             RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
         }
 
