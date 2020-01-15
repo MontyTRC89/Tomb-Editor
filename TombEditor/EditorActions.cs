@@ -997,9 +997,27 @@ namespace TombEditor
             if (area == null || area.TextureIsUnavailable)
                 return;
             else if (area.TextureIsInvisible)
-                _editor.SelectedTexture = TextureArea.Invisible;
+            {
+                var newInvisibleTexture = TextureArea.Invisible;
+
+                // Preserve current attribs if option is set
+                if (_editor.Configuration.TextureMap_PickTextureWithoutAttributes)
+                {
+                    newInvisibleTexture.BlendMode = _editor.SelectedTexture.BlendMode;
+                    newInvisibleTexture.DoubleSided = _editor.SelectedTexture.DoubleSided;
+                }
+
+                _editor.SelectedTexture = newInvisibleTexture;
+            }
             else
             {
+                // Preserve current attribs if option is set
+                if (_editor.Configuration.TextureMap_PickTextureWithoutAttributes)
+                {
+                    area.BlendMode = _editor.SelectedTexture.BlendMode;
+                    area.DoubleSided = _editor.SelectedTexture.DoubleSided;
+                }
+
                 if (face >= BlockFace.Ceiling) area.Mirror(area.TextureIsTriangle);
                 _editor.SelectTextureAndCenterView(area.RestoreQuad());
             }
