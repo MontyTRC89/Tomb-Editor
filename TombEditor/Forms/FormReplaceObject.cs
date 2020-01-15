@@ -341,5 +341,29 @@ namespace TombEditor.Forms
                 }
             }
         }
+
+        private void FormReplaceObject_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ItemType)))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void FormReplaceObject_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(ItemType)))
+            {
+                var item = ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType)));
+                PositionBasedObjectInstance instance;
+
+                if (item is StaticInstance)
+                    instance = new StaticInstance() { WadObjectId = item.ItemType.StaticId };
+                else if (item is MoveableInstance)
+                    instance = new MoveableInstance() { WadObjectId = item.ItemType.MoveableId };
+                else
+                    return;
+
+                ToggleItem(instance);
+            }
+        }
     }
 }
