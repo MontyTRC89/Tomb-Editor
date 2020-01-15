@@ -252,7 +252,6 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(584, 226);
             this.Controls.Add(this.darkStatusStrip1);
