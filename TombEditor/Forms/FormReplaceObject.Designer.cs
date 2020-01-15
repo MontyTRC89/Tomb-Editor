@@ -249,6 +249,7 @@
             // FormReplaceObject
             // 
             this.AcceptButton = this.butCancel;
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -282,6 +283,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search & replace objects";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.FormReplaceObject_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.FormReplaceObject_DragEnter);
             this.darkStatusStrip1.ResumeLayout(false);
             this.darkStatusStrip1.PerformLayout();
             this.ResumeLayout(false);
