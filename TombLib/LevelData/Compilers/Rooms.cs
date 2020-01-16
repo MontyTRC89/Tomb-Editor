@@ -1475,9 +1475,7 @@ namespace TombLib.LevelData.Compilers
                                             if (flipped && otherRoom.AlternateKind != AlternateKind.AlternateRoom)
                                             {
                                                 var baseSig = new ShadeMatchSignature() { IsWater = sig.IsWater, AlternateGroup = -1, Position = sig.Position };
-                                                ushort baseColor;
-                                                if (!_vertexColors.TryGetValue(baseSig, out baseColor)) baseColor = v2.Lighting2;
-                                                newColor = baseColor;
+                                                if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Lighting2;
                                             }
                                             else
                                             {
