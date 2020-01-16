@@ -1473,7 +1473,12 @@ namespace TombLib.LevelData.Compilers
                                             // This way we don't get sharp-cut half-transitioned vertex colour.
 
                                             if (flipped && otherRoom.AlternateKind != AlternateKind.AlternateRoom)
-                                                newColor = v2.Lighting2;
+                                            {
+                                                var baseSig = new ShadeMatchSignature() { IsWater = sig.IsWater, AlternateGroup = -1, Position = sig.Position };
+                                                ushort baseColor;
+                                                if (!_vertexColors.TryGetValue(baseSig, out baseColor)) baseColor = v2.Lighting2;
+                                                newColor = baseColor;
+                                            }
                                             else
                                             {
                                                 newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
