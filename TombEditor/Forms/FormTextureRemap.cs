@@ -52,8 +52,6 @@ namespace TombEditor.Forms
 
         private TextureArea RemapTexture(TextureArea source, float scale)
         {
-            if (scale == 1.0f) return source;
-
             var bounds = source.GetRect();
 
             // Limit scale if we already reached minimum size of 1 px by any side

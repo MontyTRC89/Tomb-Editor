@@ -104,7 +104,7 @@
             this.sourceTextureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.sourceTextureMap.Name = "sourceTextureMap";
             this.sourceTextureMap.Scaling = 1F;
-            this.sourceTextureMap.Size = new System.Drawing.Size(328, 482);
+            this.sourceTextureMap.Size = new System.Drawing.Size(328, 454);
             this.sourceTextureMap.TabIndex = 2;
             // 
             // destinationPanel
@@ -178,11 +178,11 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(519, 645);
+            this.butOk.Location = new System.Drawing.Point(519, 642);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 4;
-            this.butOk.Text = "OK";
+            this.butOk.Text = "Remap";
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
             // butCancel
@@ -190,11 +190,11 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(605, 645);
+            this.butCancel.Location = new System.Drawing.Point(605, 642);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 5;
-            this.butCancel.Text = "Cancel";
+            this.butCancel.Text = "Close";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // cbRemapAnimTextures
@@ -255,17 +255,19 @@
             this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 673);
+            this.statusStrip.Location = new System.Drawing.Point(0, 671);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
-            this.statusStrip.Size = new System.Drawing.Size(694, 24);
+            this.statusStrip.Size = new System.Drawing.Size(694, 26);
             this.statusStrip.TabIndex = 28;
             this.statusStrip.Text = "darkStatusStrip1";
             // 
+            // statusLabel
             // 
             this.statusLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(0, 11);
+            this.statusLabel.Size = new System.Drawing.Size(0, 13);
             // 
             // FormTextureRemap
             // 
