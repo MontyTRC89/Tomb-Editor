@@ -223,7 +223,7 @@ namespace TombEditor.Forms
 
         private void scalingFactor_ValueChanged(object sender, EventArgs e)
         {
-            var destEnd = destinationTextureMap.Start + ((sourceTextureMap.End - sourceTextureMap.Start) * destinationTextureMap.Scaling);
+            var destEnd = destinationTextureMap.Start + ((sourceTextureMap.End - sourceTextureMap.Start) * (float)scalingFactor.Value);
             if (destEnd.X > destinationTextureMap.VisibleTexture.Image.Size.X ||
                 destEnd.Y > destinationTextureMap.VisibleTexture.Image.Size.Y)
             {

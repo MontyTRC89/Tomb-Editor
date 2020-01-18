@@ -100,6 +100,7 @@
             this.sourceTextureMap.Location = new System.Drawing.Point(3, 55);
             this.sourceTextureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.sourceTextureMap.Name = "sourceTextureMap";
+            this.sourceTextureMap.Scaling = 1F;
             this.sourceTextureMap.Size = new System.Drawing.Size(328, 482);
             this.sourceTextureMap.TabIndex = 2;
             // 
@@ -185,6 +186,7 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
+            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(605, 664);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
@@ -216,6 +218,7 @@
             // scalingFactor
             // 
             this.scalingFactor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scalingFactor.DecimalPlaces = 2;
             this.scalingFactor.IncrementAlternate = new decimal(new int[] {
             25,
             0,
