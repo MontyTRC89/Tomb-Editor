@@ -37,12 +37,12 @@ namespace TombEditor.Forms
                 sourceTextureMap.End.X >= texCoord.X && sourceTextureMap.End.Y >= texCoord.Y;
         }
 
-        private AnimatedTextureFrame ScaleTexture(AnimatedTextureFrame source, float scale)
+        private AnimatedTextureFrame RemapTexture(AnimatedTextureFrame source, float scale)
         {
             if (scale == 1.0f) return source;
 
             var dummyTexture = new TextureArea() { TexCoord0 = source.TexCoord0, TexCoord1 = source.TexCoord1, TexCoord2 = source.TexCoord2, TexCoord3 = source.TexCoord3 };
-            dummyTexture = ScaleTexture(dummyTexture, scale);
+            dummyTexture = RemapTexture(dummyTexture, scale);
             source.TexCoord0 = dummyTexture.TexCoord0;
             source.TexCoord1 = dummyTexture.TexCoord1;
             source.TexCoord2 = dummyTexture.TexCoord2;
@@ -50,14 +50,16 @@ namespace TombEditor.Forms
             return source;
         }
 
-        private TextureArea ScaleTexture(TextureArea source, float scale)
+        private TextureArea RemapTexture(TextureArea source, float scale)
         {
             if (scale == 1.0f) return source;
 
             var bounds = source.GetRect();
 
-            // Scale all coords
+            // Limit scale if we already reached minimum size of 1 px by any side
+            if (bounds.Width * scale < 1.0f || bounds.Height * scale < 1.0f) scale = 1.0f;
 
+            // Scale all coords
             for (int i = 0; i < 4; i++)
             {
                 switch (i)
@@ -85,14 +87,12 @@ namespace TombEditor.Forms
             var shift = destinationTextureMap.Start - sourceTextureMap.Start;
 
             // Shift coords with respect to distance from enclosing region start
-
             source.TexCoord0 += distance + shift;
             source.TexCoord1 += distance + shift;
             source.TexCoord2 += distance + shift;
             source.TexCoord3 += distance + shift;
 
             // Also shift and scale parent area
-
             if (source.ParentArea != Rectangle2.Zero)
             {
                 distance = (source.ParentArea.End - source.ParentArea.Start) * scale;
@@ -140,7 +140,7 @@ namespace TombEditor.Forms
                             SourceContains(currentTextureArea.TexCoord2) &&
                             SourceContains(currentTextureArea.TexCoord3))
                         {
-                            currentTextureArea = ScaleTexture(currentTextureArea, destinationTextureMap.Scaling);
+                            currentTextureArea = RemapTexture(currentTextureArea, destinationTextureMap.Scaling);
                             currentTextureArea.Texture = destinationTexture;
                             if (untextureCompletely)
                                 currentTextureArea.Texture = null;
@@ -163,7 +163,7 @@ namespace TombEditor.Forms
                             SourceContains(frame.TexCoord2) &&
                             SourceContains(frame.TexCoord3))
                         {
-                            var newFrame = ScaleTexture(frame, destinationTextureMap.Scaling);
+                            var newFrame = RemapTexture(frame, destinationTextureMap.Scaling);
                             frame.TexCoord0 = newFrame.TexCoord0;
                             frame.TexCoord1 = newFrame.TexCoord1;
                             frame.TexCoord2 = newFrame.TexCoord2;
@@ -223,8 +223,18 @@ namespace TombEditor.Forms
 
         private void scalingFactor_ValueChanged(object sender, EventArgs e)
         {
-            destinationTextureMap.Scaling = (float)scalingFactor.Value;
-            destinationTextureMap.Invalidate();
+            var destEnd = destinationTextureMap.Start + ((sourceTextureMap.End - sourceTextureMap.Start) * destinationTextureMap.Scaling);
+            if (destEnd.X > destinationTextureMap.VisibleTexture.Image.Size.X ||
+                destEnd.Y > destinationTextureMap.VisibleTexture.Image.Size.Y)
+            {
+                scalingFactor.Value = (decimal)destinationTextureMap.Scaling; // Get current scaling from backup
+                return; // Dest map will be invalidated in recursive call
+            }
+            else
+            {
+                destinationTextureMap.Scaling = (float)scalingFactor.Value;
+                destinationTextureMap.Invalidate();
+            }
         }
 
         public class PanelTextureMapForRemap : Controls.PanelTextureMap
@@ -316,7 +326,7 @@ namespace TombEditor.Forms
                 else if (IsDestination && e.Button == MouseButtons.Left)
                 {
                     var newStart = Quantize2(FromVisualCoord(e.Location, false), false);
-                    var size = FormParent.sourceTextureMap.End - FormParent.sourceTextureMap.Start;
+                    var size = (FormParent.sourceTextureMap.End - FormParent.sourceTextureMap.Start) * FormParent.destinationTextureMap.Scaling;
 
                     var finalStart = FormParent.destinationTextureMap.Start;
 
