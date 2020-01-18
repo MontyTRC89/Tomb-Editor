@@ -217,10 +217,10 @@
             // 
             this.scalingFactor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.scalingFactor.IncrementAlternate = new decimal(new int[] {
-            10,
+            25,
             0,
             0,
-            65536});
+            131072});
             this.scalingFactor.Location = new System.Drawing.Point(634, 91);
             this.scalingFactor.LoopValues = false;
             this.scalingFactor.Maximum = new decimal(new int[] {
@@ -248,6 +248,7 @@
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(694, 697);
             this.Controls.Add(this.scalingFactor);
             this.Controls.Add(this.darkLabel1);
