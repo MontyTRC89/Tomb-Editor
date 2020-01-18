@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 
@@ -34,6 +35,72 @@ namespace TombEditor.Forms
         {
             return sourceTextureMap.Start.X <= texCoord.X && sourceTextureMap.Start.Y <= texCoord.Y &&
                 sourceTextureMap.End.X >= texCoord.X && sourceTextureMap.End.Y >= texCoord.Y;
+        }
+
+        private AnimatedTextureFrame ScaleTexture(AnimatedTextureFrame source, float scale)
+        {
+            if (scale == 1.0f) return source;
+
+            var dummyTexture = new TextureArea() { TexCoord0 = source.TexCoord0, TexCoord1 = source.TexCoord1, TexCoord2 = source.TexCoord2, TexCoord3 = source.TexCoord3 };
+            dummyTexture = ScaleTexture(dummyTexture, scale);
+            source.TexCoord0 = dummyTexture.TexCoord0;
+            source.TexCoord1 = dummyTexture.TexCoord1;
+            source.TexCoord2 = dummyTexture.TexCoord2;
+            source.TexCoord3 = dummyTexture.TexCoord3;
+            return source;
+        }
+
+        private TextureArea ScaleTexture(TextureArea source, float scale)
+        {
+            if (scale == 1.0f) return source;
+
+            var bounds = source.GetRect();
+
+            // Scale all coords
+
+            for (int i = 0; i < 4; i++)
+            {
+                switch (i)
+                {
+                    case 0:
+                        if (source.TexCoord0.X != bounds.X0) source.TexCoord0.X = bounds.X0 + (source.TexCoord0.X - bounds.X0) * scale;
+                        if (source.TexCoord0.Y != bounds.Y0) source.TexCoord0.Y = bounds.Y0 + (source.TexCoord0.Y - bounds.Y0) * scale;
+                        break;
+                    case 1:
+                        if (source.TexCoord1.X != bounds.X0) source.TexCoord1.X = bounds.X0 + (source.TexCoord1.X - bounds.X0) * scale;
+                        if (source.TexCoord1.Y != bounds.Y0) source.TexCoord1.Y = bounds.Y0 + (source.TexCoord1.Y - bounds.Y0) * scale;
+                        break;
+                    case 2:
+                        if (source.TexCoord2.X != bounds.X0) source.TexCoord2.X = bounds.X0 + (source.TexCoord2.X - bounds.X0) * scale;
+                        if (source.TexCoord2.Y != bounds.Y0) source.TexCoord2.Y = bounds.Y0 + (source.TexCoord2.Y - bounds.Y0) * scale;
+                        break;
+                    case 3:
+                        if (source.TexCoord3.X != bounds.X0) source.TexCoord3.X = bounds.X0 + (source.TexCoord3.X - bounds.X0) * scale;
+                        if (source.TexCoord3.Y != bounds.Y0) source.TexCoord3.Y = bounds.Y0 + (source.TexCoord3.Y - bounds.Y0) * scale;
+                        break;
+                }
+            }
+
+            var distance = ((bounds.Start - sourceTextureMap.Start) * scale) - (bounds.Start - sourceTextureMap.Start);
+            var shift = destinationTextureMap.Start - sourceTextureMap.Start;
+
+            // Shift coords with respect to distance from enclosing region start
+
+            source.TexCoord0 += distance + shift;
+            source.TexCoord1 += distance + shift;
+            source.TexCoord2 += distance + shift;
+            source.TexCoord3 += distance + shift;
+
+            // Also shift and scale parent area
+
+            if (source.ParentArea != Rectangle2.Zero)
+            {
+                distance = (source.ParentArea.End - source.ParentArea.Start) * scale;
+                source.ParentArea.Start += shift;
+                source.ParentArea.End    = source.ParentArea.Start + distance;
+            }
+
+            return source;
         }
 
         private void cbUntextureCompletely_CheckedChanged(object sender, EventArgs e)
@@ -73,10 +140,7 @@ namespace TombEditor.Forms
                             SourceContains(currentTextureArea.TexCoord2) &&
                             SourceContains(currentTextureArea.TexCoord3))
                         {
-                            currentTextureArea.TexCoord0 += destinationTextureMap.Start - sourceTextureMap.Start;
-                            currentTextureArea.TexCoord1 += destinationTextureMap.Start - sourceTextureMap.Start;
-                            currentTextureArea.TexCoord2 += destinationTextureMap.Start - sourceTextureMap.Start;
-                            currentTextureArea.TexCoord3 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            currentTextureArea = ScaleTexture(currentTextureArea, destinationTextureMap.Scaling);
                             currentTextureArea.Texture = destinationTexture;
                             if (untextureCompletely)
                                 currentTextureArea.Texture = null;
@@ -99,10 +163,11 @@ namespace TombEditor.Forms
                             SourceContains(frame.TexCoord2) &&
                             SourceContains(frame.TexCoord3))
                         {
-                            frame.TexCoord0 += destinationTextureMap.Start - sourceTextureMap.Start;
-                            frame.TexCoord1 += destinationTextureMap.Start - sourceTextureMap.Start;
-                            frame.TexCoord2 += destinationTextureMap.Start - sourceTextureMap.Start;
-                            frame.TexCoord3 += destinationTextureMap.Start - sourceTextureMap.Start;
+                            var newFrame = ScaleTexture(frame, destinationTextureMap.Scaling);
+                            frame.TexCoord0 = newFrame.TexCoord0;
+                            frame.TexCoord1 = newFrame.TexCoord1;
+                            frame.TexCoord2 = newFrame.TexCoord2;
+                            frame.TexCoord3 = newFrame.TexCoord3;
                             frame.Texture = destinationTexture;
                             ++animatedTextureCount;
                             if (untextureCompletely)
@@ -158,6 +223,7 @@ namespace TombEditor.Forms
 
         private void scalingFactor_ValueChanged(object sender, EventArgs e)
         {
+            destinationTextureMap.Scaling = (float)scalingFactor.Value;
             destinationTextureMap.Invalidate();
         }
 
@@ -165,6 +231,9 @@ namespace TombEditor.Forms
         {
             public FormTextureRemap FormParent { get; set; }
             public bool IsDestination { get; set; }
+
+            public float Scaling { get; set; } = 1.0f;
+            public Vector2 AreaSize => Vector2.Abs(End - Start) * Scaling;
 
             public Vector2 Start { get; set; }
             public Vector2 End
@@ -216,7 +285,7 @@ namespace TombEditor.Forms
             protected override void OnPaintSelection(PaintEventArgs e)
             {
                 if (IsDestination)
-                    DrawArea(FormParent.destinationTextureMap.Start, FormParent.destinationTextureMap.Start + (FormParent.sourceTextureMap.End - FormParent.sourceTextureMap.Start), e.Graphics);
+                    DrawArea(FormParent.destinationTextureMap.Start, FormParent.destinationTextureMap.Start + FormParent.sourceTextureMap.AreaSize * FormParent.destinationTextureMap.Scaling, e.Graphics);
                 else
                     DrawArea(FormParent.sourceTextureMap.Start, FormParent.sourceTextureMap.End, e.Graphics);
             }

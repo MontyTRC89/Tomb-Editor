@@ -41,9 +41,12 @@
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.scalingFactor = new DarkUI.Controls.DarkNumericUpDown();
             this.tableLayoutPanel1.SuspendLayout();
             this.sourcePanel.SuspendLayout();
             this.destinationPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scalingFactor)).BeginInit();
             this.SuspendLayout();
             // 
             // comboSourceTexture
@@ -68,12 +71,12 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Controls.Add(this.sourcePanel, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.destinationPanel, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 110);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 118);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(3);
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(688, 553);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(688, 545);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // sourcePanel
@@ -84,7 +87,7 @@
             this.sourcePanel.Location = new System.Drawing.Point(6, 6);
             this.sourcePanel.Name = "sourcePanel";
             this.sourcePanel.SectionHeader = "Source";
-            this.sourcePanel.Size = new System.Drawing.Size(335, 541);
+            this.sourcePanel.Size = new System.Drawing.Size(335, 533);
             this.sourcePanel.TabIndex = 1;
             // 
             // sourceTextureMap
@@ -108,7 +111,7 @@
             this.destinationPanel.Location = new System.Drawing.Point(347, 6);
             this.destinationPanel.Name = "destinationPanel";
             this.destinationPanel.SectionHeader = "Destination";
-            this.destinationPanel.Size = new System.Drawing.Size(335, 541);
+            this.destinationPanel.Size = new System.Drawing.Size(335, 533);
             this.destinationPanel.TabIndex = 2;
             // 
             // destinationTextureMap
@@ -121,7 +124,8 @@
             this.destinationTextureMap.Location = new System.Drawing.Point(4, 55);
             this.destinationTextureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.destinationTextureMap.Name = "destinationTextureMap";
-            this.destinationTextureMap.Size = new System.Drawing.Size(327, 482);
+            this.destinationTextureMap.Scaling = 1F;
+            this.destinationTextureMap.Size = new System.Drawing.Size(327, 474);
             this.destinationTextureMap.TabIndex = 1;
             // 
             // comboDestinationTexture
@@ -140,7 +144,7 @@
             // 
             this.cbRestrictToSelectedRooms.Checked = true;
             this.cbRestrictToSelectedRooms.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbRestrictToSelectedRooms.Location = new System.Drawing.Point(9, 65);
+            this.cbRestrictToSelectedRooms.Location = new System.Drawing.Point(9, 69);
             this.cbRestrictToSelectedRooms.Name = "cbRestrictToSelectedRooms";
             this.cbRestrictToSelectedRooms.Size = new System.Drawing.Size(277, 17);
             this.cbRestrictToSelectedRooms.TabIndex = 1;
@@ -159,16 +163,17 @@
             // 
             // cbUntextureCompletely
             // 
-            this.cbUntextureCompletely.Location = new System.Drawing.Point(9, 42);
+            this.cbUntextureCompletely.Location = new System.Drawing.Point(9, 46);
             this.cbUntextureCompletely.Name = "cbUntextureCompletely";
-            this.cbUntextureCompletely.Size = new System.Drawing.Size(277, 17);
+            this.cbUntextureCompletely.Size = new System.Drawing.Size(156, 17);
             this.cbUntextureCompletely.TabIndex = 0;
-            this.cbUntextureCompletely.Text = "Untexture completely (ATTENTION)";
+            this.cbUntextureCompletely.Text = "Untexture completely";
             this.cbUntextureCompletely.CheckedChanged += new System.EventHandler(this.cbUntextureCompletely_CheckedChanged);
             // 
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.Location = new System.Drawing.Point(519, 664);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
@@ -179,6 +184,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.Location = new System.Drawing.Point(605, 664);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
@@ -190,11 +196,52 @@
             // 
             this.darkCheckBox1.Checked = true;
             this.darkCheckBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.darkCheckBox1.Location = new System.Drawing.Point(9, 87);
+            this.darkCheckBox1.Location = new System.Drawing.Point(9, 92);
             this.darkCheckBox1.Name = "darkCheckBox1";
-            this.darkCheckBox1.Size = new System.Drawing.Size(277, 17);
+            this.darkCheckBox1.Size = new System.Drawing.Size(173, 17);
             this.darkCheckBox1.TabIndex = 2;
             this.darkCheckBox1.Text = "Remap animated textures too";
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(559, 93);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(74, 20);
+            this.darkLabel1.TabIndex = 26;
+            this.darkLabel1.Text = "Scale factor:";
+            // 
+            // scalingFactor
+            // 
+            this.scalingFactor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scalingFactor.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.scalingFactor.Location = new System.Drawing.Point(634, 91);
+            this.scalingFactor.LoopValues = false;
+            this.scalingFactor.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.scalingFactor.Minimum = new decimal(new int[] {
+            25,
+            0,
+            0,
+            131072});
+            this.scalingFactor.Name = "scalingFactor";
+            this.scalingFactor.Size = new System.Drawing.Size(51, 22);
+            this.scalingFactor.TabIndex = 27;
+            this.scalingFactor.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.scalingFactor.ValueChanged += new System.EventHandler(this.scalingFactor_ValueChanged);
             // 
             // FormTextureRemap
             // 
@@ -202,6 +249,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(694, 697);
+            this.Controls.Add(this.scalingFactor);
+            this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.darkLabel3);
@@ -220,6 +269,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.sourcePanel.ResumeLayout(false);
             this.destinationPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.scalingFactor)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -238,5 +288,7 @@
         private DarkUI.Controls.DarkSectionPanel sourcePanel;
         private DarkUI.Controls.DarkSectionPanel destinationPanel;
         private PanelTextureMapForRemap sourceTextureMap;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkNumericUpDown scalingFactor;
     }
 }

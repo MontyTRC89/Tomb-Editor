@@ -7,6 +7,7 @@ namespace TombLib
     public struct Rectangle2
     {
         public static readonly Rectangle2 MaxMin = new Rectangle2(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
+        public static readonly Rectangle2 Zero = new Rectangle2(0, 0, 0, 0);
 
         public Vector2 Start;
         public Vector2 End;
