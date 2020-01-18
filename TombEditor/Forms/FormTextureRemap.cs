@@ -227,7 +227,10 @@ namespace TombEditor.Forms
             if (destEnd.X > destinationTextureMap.VisibleTexture.Image.Size.X ||
                 destEnd.Y > destinationTextureMap.VisibleTexture.Image.Size.Y)
             {
-                scalingFactor.Value = (decimal)destinationTextureMap.Scaling; // Get current scaling from backup
+                var backupValue = Math.Floor(destinationTextureMap.Scaling); // Get nearest rounded value
+                if (backupValue < 1) backupValue = 1; // Reset to default scaling if we go below zero during rounding
+
+                scalingFactor.Value = (decimal)backupValue;
                 return; // Dest map will be invalidated in recursive call
             }
             else
