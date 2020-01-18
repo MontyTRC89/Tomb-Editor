@@ -127,6 +127,9 @@ namespace TombEditor.Forms
                 return;
             }
 
+            // Prepare undo
+            var undoList = new List<UndoRedoInstance>();
+
             // Room textures
             int roomTextureCount = 0;
             foreach (Room room in relevantRooms)
@@ -140,6 +143,11 @@ namespace TombEditor.Forms
                             SourceContains(currentTextureArea.TexCoord2) &&
                             SourceContains(currentTextureArea.TexCoord3))
                         {
+                            // Add current room to undo if not already added
+                            if (!undoList.Any(item => ((EditorUndoRedoInstance)item).Room == room))
+                                undoList.Add(new GeometryUndoInstance(_editor.UndoManager, room));
+
+                            // Replace texture
                             currentTextureArea = RemapTexture(currentTextureArea, destinationTextureMap.Scaling);
                             currentTextureArea.Texture = destinationTexture;
                             if (untextureCompletely)
@@ -148,6 +156,9 @@ namespace TombEditor.Forms
                             ++roomTextureCount;
                         }
                     }
+
+            // Push undo
+            _editor.UndoManager.Push(undoList);
 
             // Animated textures
             int animatedTextureCount = 0;
@@ -183,9 +194,12 @@ namespace TombEditor.Forms
                 _editor.RoomTextureChange(room);
 
             // Inform user
-            if (DarkMessageBox.Show(this, "Remapped textures successfully (" + roomTextureCount + " in rooms, " + animatedTextureCount + " in texture animations.).\n" +
-                "Replace another texture?", "Succcess", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.No)
-                Close();
+            var message = "Successfully remapped " + roomTextureCount + " textures in rooms";
+            if (cbRemapAnimTextures.Checked == true)
+                message += ", " + animatedTextureCount + " in texture animations.).\n";
+            else
+                message += ".";
+            statusLabel.Text = message;
         }
 
         private void butCancel_Click(object sender, EventArgs e)

@@ -283,7 +283,8 @@ namespace TombEditor.Forms
                 if (room == null) continue;
                 bool anyObjectsChanged = false;
 
-                foreach (IReplaceable obj in room.Objects.Where(item => item is IReplaceable && ((IReplaceable)item).ReplaceableEquals(replSrc, (cmbSearchType.SelectedIndex == (int)ObjectSearchType.Full))))
+                var objectsToReplace = room.Objects.Where(item => item is IReplaceable && ((IReplaceable)item).ReplaceableEquals(replSrc, (cmbSearchType.SelectedIndex == (int)ObjectSearchType.Full)));
+                foreach (IReplaceable obj in objectsToReplace)
                 {
                     undoList.Add(new ChangeObjectPropertyUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)obj));
 

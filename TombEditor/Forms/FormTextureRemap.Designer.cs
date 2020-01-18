@@ -40,13 +40,16 @@
             this.cbUntextureCompletely = new DarkUI.Controls.DarkCheckBox();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
-            this.darkCheckBox1 = new DarkUI.Controls.DarkCheckBox();
+            this.cbRemapAnimTextures = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.scalingFactor = new DarkUI.Controls.DarkNumericUpDown();
+            this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel1.SuspendLayout();
             this.sourcePanel.SuspendLayout();
             this.destinationPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scalingFactor)).BeginInit();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // comboSourceTexture
@@ -76,7 +79,7 @@
             this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(3);
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(688, 545);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(688, 525);
             this.tableLayoutPanel1.TabIndex = 23;
             // 
             // sourcePanel
@@ -87,7 +90,7 @@
             this.sourcePanel.Location = new System.Drawing.Point(6, 6);
             this.sourcePanel.Name = "sourcePanel";
             this.sourcePanel.SectionHeader = "Source";
-            this.sourcePanel.Size = new System.Drawing.Size(335, 533);
+            this.sourcePanel.Size = new System.Drawing.Size(335, 513);
             this.sourcePanel.TabIndex = 1;
             // 
             // sourceTextureMap
@@ -112,7 +115,7 @@
             this.destinationPanel.Location = new System.Drawing.Point(347, 6);
             this.destinationPanel.Name = "destinationPanel";
             this.destinationPanel.SectionHeader = "Destination";
-            this.destinationPanel.Size = new System.Drawing.Size(335, 533);
+            this.destinationPanel.Size = new System.Drawing.Size(335, 513);
             this.destinationPanel.TabIndex = 2;
             // 
             // destinationTextureMap
@@ -126,7 +129,7 @@
             this.destinationTextureMap.Margin = new System.Windows.Forms.Padding(3, 30, 3, 3);
             this.destinationTextureMap.Name = "destinationTextureMap";
             this.destinationTextureMap.Scaling = 1F;
-            this.destinationTextureMap.Size = new System.Drawing.Size(327, 474);
+            this.destinationTextureMap.Size = new System.Drawing.Size(327, 454);
             this.destinationTextureMap.TabIndex = 1;
             // 
             // comboDestinationTexture
@@ -175,7 +178,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(519, 664);
+            this.butOk.Location = new System.Drawing.Point(519, 645);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 4;
@@ -187,22 +190,22 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(605, 664);
+            this.butCancel.Location = new System.Drawing.Point(605, 645);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 5;
             this.butCancel.Text = "Cancel";
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
-            // darkCheckBox1
+            // cbRemapAnimTextures
             // 
-            this.darkCheckBox1.Checked = true;
-            this.darkCheckBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.darkCheckBox1.Location = new System.Drawing.Point(9, 92);
-            this.darkCheckBox1.Name = "darkCheckBox1";
-            this.darkCheckBox1.Size = new System.Drawing.Size(173, 17);
-            this.darkCheckBox1.TabIndex = 2;
-            this.darkCheckBox1.Text = "Remap animated textures too";
+            this.cbRemapAnimTextures.Checked = true;
+            this.cbRemapAnimTextures.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbRemapAnimTextures.Location = new System.Drawing.Point(9, 92);
+            this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
+            this.cbRemapAnimTextures.Size = new System.Drawing.Size(277, 17);
+            this.cbRemapAnimTextures.TabIndex = 2;
+            this.cbRemapAnimTextures.Text = "Remap animated textures too (no undo possible)";
             // 
             // darkLabel1
             // 
@@ -246,6 +249,24 @@
             0});
             this.scalingFactor.ValueChanged += new System.EventHandler(this.scalingFactor_ValueChanged);
             // 
+            // statusStrip
+            // 
+            this.statusStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 673);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(2, 5, 0, 3);
+            this.statusStrip.Size = new System.Drawing.Size(694, 24);
+            this.statusStrip.TabIndex = 28;
+            this.statusStrip.Text = "darkStatusStrip1";
+            // 
+            // 
+            this.statusLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 11);
+            // 
             // FormTextureRemap
             // 
             this.AcceptButton = this.butOk;
@@ -253,17 +274,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(694, 697);
+            this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.scalingFactor);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.darkLabel3);
             this.Controls.Add(this.cbUntextureCompletely);
-            this.Controls.Add(this.darkCheckBox1);
+            this.Controls.Add(this.cbRemapAnimTextures);
             this.Controls.Add(this.cbRestrictToSelectedRooms);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "FormTextureRemap";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -274,6 +297,8 @@
             this.sourcePanel.ResumeLayout(false);
             this.destinationPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scalingFactor)).EndInit();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -288,11 +313,13 @@
         private DarkUI.Controls.DarkCheckBox cbUntextureCompletely;
         private DarkUI.Controls.DarkButton butOk;
         private DarkUI.Controls.DarkButton butCancel;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox1;
+        private DarkUI.Controls.DarkCheckBox cbRemapAnimTextures;
         private DarkUI.Controls.DarkSectionPanel sourcePanel;
         private DarkUI.Controls.DarkSectionPanel destinationPanel;
         private PanelTextureMapForRemap sourceTextureMap;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkNumericUpDown scalingFactor;
+        private DarkUI.Controls.DarkStatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
