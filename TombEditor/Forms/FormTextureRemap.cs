@@ -156,7 +156,8 @@ namespace TombEditor.Forms
                     }
 
             // Push undo
-            _editor.UndoManager.Push(undoList);
+            if(undoList.Count > 0)
+                _editor.UndoManager.Push(undoList);
 
             // Animated textures
             int animatedTextureCount = 0;
