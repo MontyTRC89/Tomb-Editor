@@ -101,6 +101,27 @@ namespace TombEditor.Forms
             return source;
         }
 
+        private void UpdateScaling()
+        {
+            var destEnd = destinationTextureMap.Start + ((sourceTextureMap.End - sourceTextureMap.Start) * (float)scalingFactor.Value);
+            if (destEnd.X > destinationTextureMap.VisibleTexture.Image.Size.X ||
+                destEnd.Y > destinationTextureMap.VisibleTexture.Image.Size.Y)
+            {
+                var maxFactor = Math.Floor(Math.Min((destinationTextureMap.VisibleTexture.Image.Size.X - destinationTextureMap.Start.X) / sourceTextureMap.AreaSize.X,
+                                                    (destinationTextureMap.VisibleTexture.Image.Size.Y - destinationTextureMap.Start.Y) / sourceTextureMap.AreaSize.Y));
+
+                if (maxFactor < 1) maxFactor = 1; // Reset to default scaling if we go below zero during rounding
+
+                scalingFactor.Value = (decimal)maxFactor;
+                return; // Dest map will be invalidated in recursive call
+            }
+            else
+            {
+                destinationTextureMap.Scaling = (float)scalingFactor.Value;
+                destinationTextureMap.Invalidate();
+            }
+        }
+
         private void cbUntextureCompletely_CheckedChanged(object sender, EventArgs e)
         {
             destinationPanel.Enabled = !cbUntextureCompletely.Checked;
@@ -201,10 +222,7 @@ namespace TombEditor.Forms
             statusLabel.Text = message;
         }
 
-        private void butCancel_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
+        private void butCancel_Click(object sender, EventArgs e) => Close();
 
         private void comboSourceTexture_DropDown(object sender, EventArgs e)
         {
@@ -234,24 +252,7 @@ namespace TombEditor.Forms
                 destinationTextureMap.ResetVisibleTexture(comboDestinationTexture.SelectedItem as LevelTexture);
         }
 
-        private void scalingFactor_ValueChanged(object sender, EventArgs e)
-        {
-            var destEnd = destinationTextureMap.Start + ((sourceTextureMap.End - sourceTextureMap.Start) * (float)scalingFactor.Value);
-            if (destEnd.X > destinationTextureMap.VisibleTexture.Image.Size.X ||
-                destEnd.Y > destinationTextureMap.VisibleTexture.Image.Size.Y)
-            {
-                var backupValue = Math.Floor(destinationTextureMap.Scaling); // Get nearest rounded value
-                if (backupValue < 1) backupValue = 1; // Reset to default scaling if we go below zero during rounding
-
-                scalingFactor.Value = (decimal)backupValue;
-                return; // Dest map will be invalidated in recursive call
-            }
-            else
-            {
-                destinationTextureMap.Scaling = (float)scalingFactor.Value;
-                destinationTextureMap.Invalidate();
-            }
-        }
+        private void scalingFactor_ValueChanged(object sender, EventArgs e) => UpdateScaling();
 
         public class PanelTextureMapForRemap : Controls.PanelTextureMap
         {
@@ -335,8 +336,9 @@ namespace TombEditor.Forms
                 if (!IsDestination && e.Button == MouseButtons.Left)
                 {
                     FormParent.sourceTextureMap.End = Quantize2(FromVisualCoord(e.Location, true), true);
-                    Invalidate();
+                    FormParent.UpdateScaling();
 
+                    Invalidate();
                     FormParent.destinationTextureMap.Invalidate();
                 }
                 else if (IsDestination && e.Button == MouseButtons.Left)
