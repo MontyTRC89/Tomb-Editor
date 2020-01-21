@@ -110,9 +110,9 @@ namespace TombLib.Forms
         {
             groupAnims.Enabled = settings.ImportAnimations;
             groupAxis.Enabled = settings.ImportGeometry;
-            groupMisc.Enabled = settings.ImportGeometry;
             groupTextures.Enabled = settings.ImportGeometry;
             nmScale.Enabled = settings.ImportGeometry;
+            cbImportBakedLight.Enabled = settings.ImportGeometry;
 
             cbFlipX.Checked = settings.FlipX;
             cbFlipY.Checked = settings.FlipY;
@@ -126,6 +126,7 @@ namespace TombLib.Forms
             nmScale.Value = (decimal)settings.Scale;
             cbInvertFaces.Checked = settings.InvertFaces;
             cbImportBakedLight.Checked = settings.UseVertexColor;
+            cbSortByName.Checked = settings.SortByName;
 
             cbSwapXYTrans.Checked = settings.SwapAnimTranslationXY;
             cbSwapXZTrans.Checked = settings.SwapAnimTranslationXZ;
@@ -146,6 +147,7 @@ namespace TombLib.Forms
             Settings.Scale = (float)nmScale.Value;
             Settings.InvertFaces = cbInvertFaces.Checked;
             Settings.UseVertexColor = cbImportBakedLight.Checked;
+            Settings.SortByName = cbSortByName.Checked;
 
             Settings.SwapAnimTranslationXY = cbSwapXYTrans.Checked;
             Settings.SwapAnimTranslationXZ = cbSwapXZTrans.Checked;
@@ -188,6 +190,9 @@ namespace TombLib.Forms
             cbSwapXYTrans.CheckedChanged += ModifiedPresetEvent;
             cbSwapXZTrans.CheckedChanged += ModifiedPresetEvent;
             cbSwapYZTrans.CheckedChanged += ModifiedPresetEvent;
+
+            cbImportBakedLight.CheckedChanged += ModifiedPresetEvent;
+            cbSortByName.CheckedChanged += ModifiedPresetEvent;
         }
 
         private void SuspendControlListening()
@@ -206,6 +211,9 @@ namespace TombLib.Forms
             cbSwapXYTrans.CheckedChanged -= ModifiedPresetEvent;
             cbSwapXZTrans.CheckedChanged -= ModifiedPresetEvent;
             cbSwapYZTrans.CheckedChanged -= ModifiedPresetEvent;
+
+            cbImportBakedLight.CheckedChanged -= ModifiedPresetEvent;
+            cbSortByName.CheckedChanged -= ModifiedPresetEvent;
         }
 
         private void ModifiedPresetEvent(object sender, EventArgs e)

@@ -49,6 +49,8 @@ namespace TombLib.GeometryIO.Importers
 
             if (_settings.ImportGeometry)
             {
+                var tmpList = new List<IOMesh>();
+
                 // Create the list of materials to load
                 for (int i = 0; i < scene.Materials.Count; i++)
                 {
@@ -192,15 +194,26 @@ namespace TombLib.GeometryIO.Importers
                         }
                     }
 
-                    newModel.Meshes.Add(newMesh);
+                    tmpList.Add(newMesh);
                 }
+
+                // Sort meshes by name, if specified
+                if (_settings.SortByName)
+                    tmpList = tmpList.OrderBy(m => m.Name, new CustomComparer<string>(NaturalComparer.Do)).ToList();
+
+                foreach (var mesh in tmpList)
+                    newModel.Meshes.Add(mesh);
             }
 
             if (_settings.ImportAnimations && 
                 scene.HasAnimations && scene.AnimationCount > 0)
             {
                 // Find all mesh nodes to count against animation nodes
-                var meshNameList = CollectMeshNodeNames(scene.RootNode).OrderBy(s => s).ToList(); // Sort by ascending names, just in case
+                var meshNameList = CollectMeshNodeNames(scene.RootNode);
+
+                // Sort animations by name, if specified
+                if (_settings.SortByName)
+                    meshNameList = meshNameList.OrderBy(s => s, new CustomComparer<string>(NaturalComparer.Do)).ToList();
 
                 // Loop through all animations and add appropriate ones.
                 // Integrity check: there should be meshes and mesh count should be equal to unique mesh name count.
