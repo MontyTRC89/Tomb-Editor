@@ -41,6 +41,7 @@
             this.groupSize = new DarkUI.Controls.DarkGroupBox();
             this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
+            this.cbSortByName = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).BeginInit();
             this.panelContents.SuspendLayout();
             this.groupAnims.SuspendLayout();
@@ -53,7 +54,8 @@
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOK.Location = new System.Drawing.Point(141, 291);
+            this.butOK.Checked = false;
+            this.butOK.Location = new System.Drawing.Point(141, 304);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 16;
@@ -63,8 +65,9 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(227, 291);
+            this.butCancel.Location = new System.Drawing.Point(227, 304);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 17;
@@ -128,9 +131,7 @@
             // 
             this.nmScale.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nmScale.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.nmScale.DecimalPlaces = 4;
-            this.nmScale.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.nmScale.Increment = new decimal(new int[] {
             25,
             0,
@@ -142,6 +143,7 @@
             0,
             65536});
             this.nmScale.Location = new System.Drawing.Point(47, 21);
+            this.nmScale.LoopValues = false;
             this.nmScale.Maximum = new decimal(new int[] {
             2048,
             0,
@@ -152,7 +154,6 @@
             0,
             0,
             262144});
-            this.nmScale.LoopValues = false;
             this.nmScale.Name = "nmScale";
             this.nmScale.Size = new System.Drawing.Size(101, 22);
             this.nmScale.TabIndex = 8;
@@ -201,7 +202,7 @@
             this.lblPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(5, 255);
+            this.lblPreset.Location = new System.Drawing.Point(5, 267);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -212,7 +213,7 @@
             this.cmbPresetList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(52, 251);
+            this.cmbPresetList.Location = new System.Drawing.Point(52, 263);
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(243, 23);
             this.cmbPresetList.TabIndex = 15;
@@ -230,7 +231,7 @@
             this.panelContents.Location = new System.Drawing.Point(6, 6);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(301, 280);
+            this.panelContents.Size = new System.Drawing.Size(301, 292);
             this.panelContents.TabIndex = 7;
             // 
             // groupAnims
@@ -240,7 +241,7 @@
             this.groupAnims.Controls.Add(this.cbSwapXYTrans);
             this.groupAnims.Location = new System.Drawing.Point(140, 157);
             this.groupAnims.Name = "groupAnims";
-            this.groupAnims.Size = new System.Drawing.Size(155, 88);
+            this.groupAnims.Size = new System.Drawing.Size(155, 100);
             this.groupAnims.TabIndex = 10;
             this.groupAnims.TabStop = false;
             this.groupAnims.Text = "Animations";
@@ -271,10 +272,11 @@
             // 
             // groupMisc
             // 
+            this.groupMisc.Controls.Add(this.cbSortByName);
             this.groupMisc.Controls.Add(this.cbImportBakedLight);
             this.groupMisc.Location = new System.Drawing.Point(6, 192);
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size(128, 53);
+            this.groupMisc.Size = new System.Drawing.Size(128, 65);
             this.groupMisc.TabIndex = 0;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
@@ -284,7 +286,7 @@
             this.cbImportBakedLight.AutoSize = true;
             this.cbImportBakedLight.Location = new System.Drawing.Point(6, 21);
             this.cbImportBakedLight.Name = "cbImportBakedLight";
-            this.cbImportBakedLight.Size = new System.Drawing.Size(113, 17);
+            this.cbImportBakedLight.Size = new System.Drawing.Size(114, 17);
             this.cbImportBakedLight.TabIndex = 7;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
@@ -336,6 +338,15 @@
             this.cbInvertFaces.TabIndex = 6;
             this.cbInvertFaces.Text = "Invert faces";
             // 
+            // cbSortByName
+            // 
+            this.cbSortByName.AutoSize = true;
+            this.cbSortByName.Location = new System.Drawing.Point(6, 44);
+            this.cbSortByName.Name = "cbSortByName";
+            this.cbSortByName.Size = new System.Drawing.Size(93, 17);
+            this.cbSortByName.TabIndex = 8;
+            this.cbSortByName.Text = "Sort by name";
+            // 
             // GeometryIOSettingsDialog
             // 
             this.AcceptButton = this.butOK;
@@ -343,7 +354,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(313, 320);
+            this.ClientSize = new System.Drawing.Size(313, 333);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -399,5 +410,6 @@
         private DarkUI.Controls.DarkCheckBox cbSwapXZTrans;
         private DarkUI.Controls.DarkCheckBox cbSwapXYTrans;
         private DarkUI.Controls.DarkCheckBox cbSwapYZTrans;
+        private DarkUI.Controls.DarkCheckBox cbSortByName;
     }
 }

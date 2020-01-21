@@ -567,12 +567,6 @@ namespace WadTool
                     else
                         meshCount = _bones.Count;
 
-                    // Funky foolproof check to make sure we've got all numbered meshes in correct order
-                    int  numberLength = meshCount.ToString().Length;
-                    bool allMeshesNumbered = meshes.All(mesh => mesh.Name.Length >= numberLength && mesh.Name.Substring(mesh.Name.Length - numberLength).All(char.IsDigit));
-                    if (allMeshesNumbered)
-                        meshes = meshes.OrderBy(mesh => Convert.ToInt32(mesh.Name.Substring(mesh.Name.Length - numberLength))).ToList();
-
                     for (int i = 0; i < meshCount; i++)
                         ReplaceExistingBone(meshes[i], _bones[i]);
                 }
