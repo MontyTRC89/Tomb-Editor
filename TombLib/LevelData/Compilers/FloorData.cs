@@ -372,6 +372,13 @@ namespace TombLib.LevelData.Compilers
             // Ceiling collision
             BuildFloorDataCollision(ceilingShape, floorShape.Min, true, outFloorData, ref lastFloorDataFunction, room, pos);
 
+            // If sector is Death
+            if (block.HasFlag(BlockFlags.DeathFire))
+            {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x05);
+            }
+
             // If sector is Climbable
             if (_level.Settings.GameVersion >= TRVersion.Game.TR2 &&
                 (block.Flags & BlockFlags.ClimbAny) != BlockFlags.None)
@@ -388,13 +395,6 @@ namespace TombLib.LevelData.Compilers
 
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add(climb);
-            }
-
-            // If sector is Death
-            if (block.HasFlag(BlockFlags.DeathFire))
-            {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x05);
             }
 
             // If sector is Monkey
