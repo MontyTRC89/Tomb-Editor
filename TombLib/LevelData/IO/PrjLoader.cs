@@ -1282,11 +1282,13 @@ namespace TombLib.LevelData.IO
                 }
 
                 // Read WAD path
+                bool wadLoaded = false;
                 {
                     var stringBuffer = GetPrjString(reader);
                     string wadName = _encodingCodepageWindows.GetString(stringBuffer);
                     if (!string.IsNullOrEmpty(wadName) && !wadName.StartsWith("NA"))
                     {
+                        wadLoaded = true;
                         string wadPath = PathC.TryFindFile(
                             level.Settings.GetVariable(VariableType.LevelDirectory),
                             Path.ChangeExtension(wadName.Trim('\0', ' '), "wad"), 3, 2);
@@ -1345,7 +1347,7 @@ namespace TombLib.LevelData.IO
 
                 // Read *.prj slots
                 var slots = new Dictionary<uint, string>();
-                int numSlots = reader.ReadInt32();
+                int numSlots = wadLoaded ? reader.ReadInt32() : 0;
                 for (int i = 0; i < numSlots; i++)
                 {
                     short slotType = reader.ReadInt16();
