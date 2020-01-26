@@ -1562,67 +1562,76 @@ namespace TombEditor.Controls
             {
                 // First check for all objects in the room
                 foreach (var instance in room.Objects)
-                    if (instance is MoveableInstance && ShowMoveables)
+                    if (instance is MoveableInstance)
                     {
-                        MoveableInstance modelInfo = (MoveableInstance)instance;
-                        WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
-                        if (moveable != null)
+                        if (ShowMoveables)
                         {
-                            // TODO Make picking independent of the rendering data.
-                            AnimatedModel model = _wadRenderer.GetMoveable(moveable);
-                            for (int j = 0; j < model.Meshes.Count; j++)
+                            MoveableInstance modelInfo = (MoveableInstance)instance;
+                            WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
+                            if (moveable != null)
                             {
-                                var mesh = model.Meshes[j];
-                                DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                                // TODO Make picking independent of the rendering data.
+                                AnimatedModel model = _wadRenderer.GetMoveable(moveable);
+                                for (int j = 0; j < model.Meshes.Count; j++)
+                                {
+                                    var mesh = model.Meshes[j];
+                                    DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                                }
+                            }
+                            else
+                            {
+                                BoundingBox box = new BoundingBox(
+                                    room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
+                                    room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
+                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                                    result = new PickingResultObject(distance, instance);
                             }
                         }
-                        else
+                    }
+                    else if (instance is StaticInstance)
+                    {
+                        if (ShowStatics)
                         {
-                            BoundingBox box = new BoundingBox(
-                                room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
-                                room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
-                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                result = new PickingResultObject(distance, instance);
+                            StaticInstance modelInfo = (StaticInstance)instance;
+                            WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
+                            if (@static != null)
+                            {
+                                // TODO Make picking independent of the rendering data.
+                                StaticModel model = _wadRenderer.GetStatic(@static);
+                                var mesh = model.Meshes[0];
+                                DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                            }
+                            else
+                            {
+                                BoundingBox box = new BoundingBox(
+                                    room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
+                                    room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
+                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                                    result = new PickingResultObject(distance, instance);
+                            }
                         }
                     }
-                    else if (instance is StaticInstance && ShowStatics)
+                    else if (instance is ImportedGeometryInstance)
                     {
-                        StaticInstance modelInfo = (StaticInstance)instance;
-                        WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
-                        if (@static != null)
+                        if (ShowImportedGeometry && !DisablePickingForImportedGeometry)
                         {
-                            // TODO Make picking independent of the rendering data.
-                            StaticModel model = _wadRenderer.GetStatic(@static);
-                            var mesh = model.Meshes[0];
-                            DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
-                        }
-                        else
-                        {
-                            BoundingBox box = new BoundingBox(
-                                room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
-                                room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
-                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                result = new PickingResultObject(distance, instance);
-                        }
-                    }
-                    else if (instance is ImportedGeometryInstance && ShowImportedGeometry && !DisablePickingForImportedGeometry)
-                    {
-                        var geometry = (ImportedGeometryInstance)instance;
+                            var geometry = (ImportedGeometryInstance)instance;
 
-                        bool testedMesh = false;
-                        foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
-                            if (geometry.MeshNameMatchesFilter(mesh.Name))
+                            bool testedMesh = false;
+                            foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
+                                if (geometry.MeshNameMatchesFilter(mesh.Name))
+                                {
+                                    DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                                    testedMesh = true;
+                                }
+                            if (!testedMesh)
                             {
-                                DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
-                                testedMesh = true;
+                                BoundingBox box = new BoundingBox(
+                                    room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
+                                    room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
+                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                                    result = new PickingResultObject(distance, instance);
                             }
-                        if (!testedMesh)
-                        {
-                            BoundingBox box = new BoundingBox(
-                                room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
-                                room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
-                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                result = new PickingResultObject(distance, instance);
                         }
                     }
                     else if (ShowOtherObjects)
