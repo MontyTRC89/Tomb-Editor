@@ -1,7 +1,6 @@
 ﻿using DarkUI.Config;
 using DarkUI.Controls;
 using DarkUI.Forms;
-using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
