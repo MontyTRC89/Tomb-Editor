@@ -46,8 +46,9 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(378, 237);
+            this.butCancel.Location = new System.Drawing.Point(378, 295);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 5;
@@ -58,7 +59,8 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Location = new System.Drawing.Point(292, 237);
+            this.butOk.Checked = false;
+            this.butOk.Location = new System.Drawing.Point(292, 295);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 4;
@@ -69,6 +71,7 @@
             // butBrowseTxt
             // 
             this.butBrowseTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butBrowseTxt.Checked = false;
             this.butBrowseTxt.Image = global::TombEditor.Properties.Resources.general_Open_16;
             this.butBrowseTxt.Location = new System.Drawing.Point(367, 21);
             this.butBrowseTxt.Name = "butBrowseTxt";
@@ -84,7 +87,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbTxtPath.Location = new System.Drawing.Point(6, 21);
             this.tbTxtPath.Name = "tbTxtPath";
-            this.tbTxtPath.Size = new System.Drawing.Size(355, 22);
+            this.tbTxtPath.Size = new System.Drawing.Size(355, 26);
             this.tbTxtPath.TabIndex = 2;
             // 
             // darkGroupBox1
@@ -92,9 +95,9 @@
             this.darkGroupBox1.Controls.Add(this.darkLabel3);
             this.darkGroupBox1.Controls.Add(this.tbTxtPath);
             this.darkGroupBox1.Controls.Add(this.butBrowseTxt);
-            this.darkGroupBox1.Location = new System.Drawing.Point(6, 148);
+            this.darkGroupBox1.Location = new System.Drawing.Point(6, 182);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(452, 81);
+            this.darkGroupBox1.Size = new System.Drawing.Size(452, 107);
             this.darkGroupBox1.TabIndex = 11;
             this.darkGroupBox1.TabStop = false;
             this.darkGroupBox1.Text = "Base sound catalog (optional)";
@@ -104,7 +107,7 @@
             this.darkLabel3.ForeColor = System.Drawing.Color.Silver;
             this.darkLabel3.Location = new System.Drawing.Point(6, 47);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(440, 31);
+            this.darkLabel3.Size = new System.Drawing.Size(440, 41);
             this.darkLabel3.TabIndex = 10;
             this.darkLabel3.Text = "Specifiy sound catalog (sounds.txt or xml file). If not specified, legacy SFX/SAM" +
     " files provided with specified WAD will be used.";
@@ -117,7 +120,7 @@
             this.darkGroupBox2.Controls.Add(this.cbRespectMousepatch);
             this.darkGroupBox2.Location = new System.Drawing.Point(6, 8);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(452, 134);
+            this.darkGroupBox2.Size = new System.Drawing.Size(452, 176);
             this.darkGroupBox2.TabIndex = 12;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "Import settings";
@@ -125,9 +128,9 @@
             // darkLabel1
             // 
             this.darkLabel1.ForeColor = System.Drawing.Color.Silver;
-            this.darkLabel1.Location = new System.Drawing.Point(6, 98);
+            this.darkLabel1.Location = new System.Drawing.Point(6, 127);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(440, 33);
+            this.darkLabel1.Size = new System.Drawing.Size(440, 44);
             this.darkLabel1.TabIndex = 13;
             this.darkLabel1.Text = "Legacy texture cropping to prevent border bleeding. Use only if you are about to " +
     "turn off advanced texture padding in Level settings.";
@@ -137,9 +140,9 @@
             // cbUseHalfPixelCorrection
             // 
             this.cbUseHalfPixelCorrection.AutoSize = true;
-            this.cbUseHalfPixelCorrection.Location = new System.Drawing.Point(6, 79);
+            this.cbUseHalfPixelCorrection.Location = new System.Drawing.Point(6, 101);
             this.cbUseHalfPixelCorrection.Name = "cbUseHalfPixelCorrection";
-            this.cbUseHalfPixelCorrection.Size = new System.Drawing.Size(169, 17);
+            this.cbUseHalfPixelCorrection.Size = new System.Drawing.Size(201, 23);
             this.cbUseHalfPixelCorrection.TabIndex = 1;
             this.cbUseHalfPixelCorrection.Tag = "";
             this.cbUseHalfPixelCorrection.Text = "Use half-pixel UV correction";
@@ -149,7 +152,7 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.Silver;
             this.darkLabel2.Location = new System.Drawing.Point(6, 41);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(440, 33);
+            this.darkLabel2.Size = new System.Drawing.Size(440, 57);
             this.darkLabel2.TabIndex = 11;
             this.darkLabel2.Text = "If you\'ve used a patch which increased maximum amount of flyby sequences in winro" +
     "omedit, use this option, otherwise flyby indices will be corrupted.";
@@ -161,7 +164,7 @@
             this.cbRespectMousepatch.AutoSize = true;
             this.cbRespectMousepatch.Location = new System.Drawing.Point(6, 21);
             this.cbRespectMousepatch.Name = "cbRespectMousepatch";
-            this.cbRespectMousepatch.Size = new System.Drawing.Size(265, 17);
+            this.cbRespectMousepatch.Size = new System.Drawing.Size(316, 23);
             this.cbRespectMousepatch.TabIndex = 0;
             this.cbRespectMousepatch.Tag = "";
             this.cbRespectMousepatch.Text = "Respect T4Larson\'s mousepatch flyby handling";
@@ -169,10 +172,10 @@
             // FormImportPrj
             // 
             this.AcceptButton = this.butOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(464, 267);
+            this.ClientSize = new System.Drawing.Size(464, 325);
             this.Controls.Add(this.darkGroupBox2);
             this.Controls.Add(this.darkGroupBox1);
             this.Controls.Add(this.butCancel);
