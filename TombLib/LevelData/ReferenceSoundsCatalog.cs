@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,13 +46,15 @@ namespace TombLib.LevelData
             // Load the catalog
             try
             {
-                WadSounds newSounds = WadSounds.ReadFromFile(settings.MakeAbsolute(Path));
-                /*Wad2 newWad = Wad2.ImportFromFile(
-                    settings.MakeAbsolute(Path),
-                    settings.WadSoundPaths.Select(soundPath => settings.ParseVariables(soundPath.Path)),
-                    progressReporter ?? new ProgressReporterSimple());*/
-                Sounds = newSounds;
-                LoadException = null;
+                var path = settings.MakeAbsolute(Path);
+                if (File.Exists(path))
+                {
+                    WadSounds newSounds = WadSounds.ReadFromFile(path);
+                    Sounds = newSounds;
+                    LoadException = null;
+                }
+                else
+                    LoadException = new Exception("File not found: " + path);
             }
             catch (Exception exc)
             {
