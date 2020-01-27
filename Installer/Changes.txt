@@ -4,8 +4,9 @@ Tomb Editor:
  * Add scaling to texture remap tool
  * Fix for death + climb floordata flag combination
  * Import objectless prjs without error
- * Fix invisible objects picking
  * Resize prj import window so all text is visible
+ * Fix invisible objects picking
+ * Fix nullref exception with missing sound catalogs
  
 WadTool:
  * An option to alphanumerically sort meshes on model/animation import
