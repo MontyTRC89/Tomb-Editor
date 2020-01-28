@@ -84,7 +84,7 @@
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel8.Location = new System.Drawing.Point(4, 6);
             this.darkLabel8.Name = "darkLabel8";
-            this.darkLabel8.Size = new System.Drawing.Size(32, 13);
+            this.darkLabel8.Size = new System.Drawing.Size(33, 13);
             this.darkLabel8.TabIndex = 1;
             this.darkLabel8.Text = "Type:";
             // 
@@ -254,7 +254,7 @@
             this.tabSetJumpDistance.Location = new System.Drawing.Point(4, 22);
             this.tabSetJumpDistance.Name = "tabSetJumpDistance";
             this.tabSetJumpDistance.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSetJumpDistance.Size = new System.Drawing.Size(362, 101);
+            this.tabSetJumpDistance.Size = new System.Drawing.Size(362, 102);
             this.tabSetJumpDistance.TabIndex = 1;
             this.tabSetJumpDistance.Text = "setJumpDistance";
             // 
@@ -264,7 +264,7 @@
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel5.Location = new System.Drawing.Point(85, 8);
             this.darkLabel5.Name = "darkLabel5";
-            this.darkLabel5.Size = new System.Drawing.Size(47, 13);
+            this.darkLabel5.Size = new System.Drawing.Size(48, 13);
             this.darkLabel5.TabIndex = 3;
             this.darkLabel5.Text = "Vertical:";
             // 
@@ -338,7 +338,7 @@
             this.tabFlipeffect.Location = new System.Drawing.Point(4, 22);
             this.tabFlipeffect.Name = "tabFlipeffect";
             this.tabFlipeffect.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFlipeffect.Size = new System.Drawing.Size(362, 101);
+            this.tabFlipeffect.Size = new System.Drawing.Size(362, 102);
             this.tabFlipeffect.TabIndex = 2;
             this.tabFlipeffect.Text = "flipeffect";
             // 
@@ -447,7 +447,7 @@
             this.tabPlaySound.Location = new System.Drawing.Point(4, 22);
             this.tabPlaySound.Name = "tabPlaySound";
             this.tabPlaySound.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPlaySound.Size = new System.Drawing.Size(362, 101);
+            this.tabPlaySound.Size = new System.Drawing.Size(362, 102);
             this.tabPlaySound.TabIndex = 3;
             this.tabPlaySound.Text = "playSound";
             // 
@@ -471,7 +471,6 @@
             this.nudSoundId.Size = new System.Drawing.Size(59, 23);
             this.nudSoundId.TabIndex = 105;
             this.nudSoundId.ValueChanged += new System.EventHandler(this.nudSoundId_ValueChanged);
-            this.nudSoundId.Click += new System.EventHandler(this.nudSoundId_ValueChanged);
             // 
             // butPlaySound
             // 
