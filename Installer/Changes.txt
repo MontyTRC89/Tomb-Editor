@@ -5,11 +5,13 @@ Tomb Editor:
  * Fix for death + climb floordata flag combination
  * Import objectless prjs without error
  * Resize prj import window so all text is visible
+ * Properly display imported geometry names on prj2 loading
  * Fix invisible objects picking
  * Fix nullref exception with missing sound catalogs
  
 WadTool:
  * An option to alphanumerically sort meshes on model/animation import
+ * Collect and play custom sounds from reference level in animcommand editor
 
 Version 1.2.10
 ==============

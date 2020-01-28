@@ -387,7 +387,7 @@ namespace TombLib.LevelData.IO
                         ImportedGeometry importedGeometry = new ImportedGeometry();
                         importedGeometries.Add(importedGeometryIndex, importedGeometry);
                         toLoad.Add(importedGeometry, importedGeometryInfo);
-                        progressReporter?.ReportInfo("Imported geometry successfully loaded: " + importedGeometry.Info.Name);
+                        progressReporter?.ReportInfo("Imported geometry successfully loaded: " + importedGeometryInfo.Name);
                         return true;
                     });
                     settings.ImportedGeometries = importedGeometries.Values.ToList();
