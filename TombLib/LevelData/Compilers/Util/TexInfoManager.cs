@@ -443,7 +443,7 @@ namespace TombLib.LevelData.Compilers.Util
         // Try to add texture to existing parent(s) either as a child of one, or as a parent, merging
         // enclosed parents.
 
-        public bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1)
+        private bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1)
         {
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
@@ -604,7 +604,10 @@ namespace TombLib.LevelData.Compilers.Util
         public Result AddTexture(TextureArea texture, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false)
         {
             if (isForTriangle && texture.TriangleCoordsOutOfBounds || !isForTriangle && texture.QuadCoordsOutOfBounds)
+            {
+                _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
                 return new Result();
+            }
 
             if (isForRoom)
             {
@@ -1105,7 +1108,25 @@ namespace TombLib.LevelData.Compilers.Util
             foreach (var parent in ParentTextures)
                 foreach (var child in parent.Children)
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
-                        _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version, maxSize));
+                    {
+                        var newObjectTexture = new ObjectTexture(parent, child, version, maxSize);
+
+                        if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
+                            newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
+                            newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[2] ||
+                            newObjectTexture.TexCoord[0].X < 0 || newObjectTexture.TexCoord[0].Y < 0 ||
+                            newObjectTexture.TexCoord[1].X < 0 || newObjectTexture.TexCoord[1].Y < 0 ||
+                            newObjectTexture.TexCoord[2].X < 0 || newObjectTexture.TexCoord[2].Y < 0 ||
+                            (!child.IsForTriangle && newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[3]) ||
+                            (!child.IsForTriangle && newObjectTexture.TexCoord[1] == newObjectTexture.TexCoord[3]) ||
+                            (!child.IsForTriangle && newObjectTexture.TexCoord[2] == newObjectTexture.TexCoord[3]) ||
+                            (!child.IsForTriangle && (newObjectTexture.TexCoord[3].X < 0 || newObjectTexture.TexCoord[3].Y < 0)))
+                        {
+                            _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken. Possible system issue, try to recompile level on another system.");
+                        }
+
+                        _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
+                    }
 
             foreach (var animTexture in ActualAnimTextures)
             {

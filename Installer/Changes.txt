@@ -8,6 +8,7 @@ Tomb Editor:
  * Properly display imported geometry names on prj2 loading
  * Fix invisible objects picking
  * Fix nullref exception with missing sound catalogs
+ * Add texture info diagnostics for possible system-specific compile issues
  
 WadTool:
  * An option to alphanumerically sort meshes on model/animation import
