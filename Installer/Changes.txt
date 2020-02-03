@@ -4,7 +4,6 @@ Tomb Editor:
  * Add scaling to texture remap tool
  * Fix for death + climb floordata flag combination
  * Import objectless prjs without error
- * Resize prj import window so all text is visible
  * Properly display imported geometry names on prj2 loading
  * Fix invisible objects picking
  * Fix nullref exception with missing sound catalogs
