@@ -28,7 +28,8 @@ namespace TombLib.LevelData.IO
                 SaveToPrj2(stream, level);
 
                 // Then, if no exception occurred, overwrite file
-                File.Delete(filename);
+                if (File.Exists(filename))
+                    File.Delete(filename);
 
                 stream.Seek(0, SeekOrigin.Begin);
                 using (var writer = new BinaryWriter(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None)))

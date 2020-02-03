@@ -17,9 +17,22 @@ namespace TombLib.Wad
 
         public static void SaveToFile(Wad2 wad, string filename)
         {
-            // Save Wad2 file
-            using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None))
-                SaveToStream(wad, fileStream);
+            // We save first to a temporary memory stream
+            using (var stream = new MemoryStream())
+            {
+                SaveToStream(wad, stream);
+
+                // Then, if no exception occurred, overwrite file
+                if (File.Exists(filename))
+                    File.Delete(filename);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                using (var writer = new BinaryWriter(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None)))
+                {
+                    var buffer = stream.ToArray();
+                    writer.Write(buffer, 0, buffer.Length);
+                }
+            }
 
             // Save sounds to XML file
             if (wad.Sounds.SoundInfos.Count > 0)
