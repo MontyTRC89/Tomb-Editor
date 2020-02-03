@@ -708,8 +708,13 @@ namespace TombLib.Wad
                             oldLatAccel = LEB128.ReadInt(chunkIO.Raw);
 
                             // Correct EndFrame for legacy chunk versions
-                            animation.EndFrame--;
+                            if (animation.EndFrame > 0)
+                                animation.EndFrame--;
                         }
+
+                        // Fix possibly corrupted EndFrame value which was caused by bug introduced in 1.2.9
+                        if (animation.EndFrame == ushort.MaxValue)
+                            animation.EndFrame = 0;
 
                         animation.NextAnimation = LEB128.ReadUShort(chunkIO.Raw);
                         animation.NextFrame = LEB128.ReadUShort(chunkIO.Raw);

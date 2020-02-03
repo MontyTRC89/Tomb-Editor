@@ -1722,8 +1722,8 @@ namespace WadTool
             }
 
             string newLabel =
-                "Frame: " + (_frameCount) + " / " + (_editor.GetRealNumberOfFrames() - 1) + "   " +
-                "Keyframe: " + timeline.Value + " / " + (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1);
+                "Frame: " + (_frameCount) + " / " + (_editor.GetRealNumberOfFrames()) + "   " +
+                "Keyframe: " + timeline.Value + " / " + (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count);
 
             if (!timeline.SelectionIsEmpty)
             {
