@@ -13,6 +13,8 @@ Tomb Editor:
 WadTool:
  * An option to alphanumerically sort meshes on model/animation import
  * Collect and play custom sounds from reference level in animcommand editor
+ * Fix corruption of EndFrame value with null animations re-saved from pre-1.2.9 wad2s
+ * Fix index out of range exception if anim parameters were edited with mousewheel
 
 Version 1.2.10
 ==============
