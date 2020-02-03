@@ -182,7 +182,7 @@ namespace WadTool
             if (CurrentAnim == null || CurrentKeyFrame == null) return;
 
             // Backup everything and push undo on first occurence of editing
-            if (!MadeChanges)
+            if (!MadeChanges || _backupPos.Count == 0 || _backupRot.Count == 0)
             {
                 _initialPos = CurrentKeyFrame.Translations[0];
                 _initialRot = CurrentKeyFrame.Rotations[meshIndex];
