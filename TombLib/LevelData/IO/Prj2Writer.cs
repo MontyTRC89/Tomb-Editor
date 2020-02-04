@@ -27,16 +27,20 @@ namespace TombLib.LevelData.IO
             {
                 SaveToPrj2(stream, level);
 
-                // Then, if no exception occurred, overwrite file
-                if (File.Exists(filename))
-                    File.Delete(filename);
+                // Save to temporary file as well, so original prj2 won't vanish in case of crash
+                var tempName = filename + ".tmp";
+                if (File.Exists(tempName)) File.Delete(tempName);
 
                 stream.Seek(0, SeekOrigin.Begin);
-                using (var writer = new BinaryWriter(new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None)))
+                using (var writer = new BinaryWriter(new FileStream(tempName, FileMode.Create, FileAccess.Write, FileShare.None)))
                 {
                     var buffer = stream.ToArray();
                     writer.Write(buffer, 0, buffer.Length);
                 }
+
+                // Save successful, write temp file over original (if exists)
+                if (File.Exists(filename)) File.Delete(filename);
+                File.Move(tempName, filename);
             }
         }
 
