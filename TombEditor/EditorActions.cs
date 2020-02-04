@@ -1023,6 +1023,46 @@ namespace TombEditor
             }
         }
 
+        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(bool onlySelectedRooms = false)
+        {
+            var result = new List<KeyValuePair<Room, VectorInt2>>();
+
+            foreach (var room in onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms)
+            {
+                if (room == null) continue;
+
+                for (int x = 0; x < room.NumXSectors; x++)
+                    for (int z = 0; z < room.NumZSectors; z++)
+                    {
+                        var block = room.GetBlockTry(x, z);
+                        if (block == null) continue;
+
+                        foreach (var face in Enum.GetValues(typeof(BlockFace)).Cast<BlockFace>())
+                        {
+                            // Filter out impossible combinations right away
+
+                            if (face >= BlockFace.Floor && block.IsAnyWall) continue;
+                            if (face == BlockFace.FloorTriangle2 && block.Floor.IsQuad) continue;
+                            if (face == BlockFace.CeilingTriangle2 && block.Ceiling.IsQuad) continue;
+
+                            // Filter out undefined faces
+                            if (!room.IsFaceDefined(x, z, face)) continue;
+
+                            var area = room.GetBlockTry(x, z).GetFaceTexture(face);
+
+                            if (area == TextureArea.None)
+                            {
+                                var newEntry = new KeyValuePair<Room, VectorInt2>(room, new VectorInt2(x, z));
+                                if (!result.Contains(newEntry))
+                                    result.Add(newEntry);
+                            }
+                        }
+                    }
+            }
+
+            return result;
+        }
+
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&

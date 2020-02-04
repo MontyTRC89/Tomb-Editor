@@ -1159,6 +1159,18 @@ namespace TombEditor
                     form.ShowDialog(args.Window);
             });
 
+            AddCommand("FindUntextured", "Find untextured faces...", CommandType.Textures, delegate (CommandArgs args)
+            {
+                var existingWindow = Application.OpenForms["FormFindUntextured"];
+                if (existingWindow == null)
+                {
+                    var findUntexturedForm = new FormFindUntextured(args.Editor);
+                    findUntexturedForm.Show(args.Window);
+                }
+                else
+                    existingWindow.Focus();
+            });
+
             AddCommand("TextureFloor", "Texture floor", CommandType.Textures, delegate (CommandArgs args)
             {
                 EditorActions.TexturizeAll(args.Editor.SelectedRoom, args.Editor.SelectedSectors, args.Editor.SelectedTexture, BlockFaceType.Floor);
