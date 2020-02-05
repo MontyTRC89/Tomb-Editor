@@ -10,7 +10,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class ReferencedSoundsCatalog : ICloneable
+    public class ReferencedSoundsCatalog : ICloneable, IEquatable<ReferencedSoundsCatalog>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -79,5 +79,10 @@ namespace TombLib.LevelData
 
         public ReferencedSoundsCatalog Clone() => (ReferencedSoundsCatalog)MemberwiseClone(); // Don't copy the data pointer
         object ICloneable.Clone() => Clone();
+
+        public bool Equals(ReferencedSoundsCatalog other)
+        {
+            return (UniqueID == other.UniqueID && Path.ToLower() == other.Path.ToLower());
+        }
     }
 }
