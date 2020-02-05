@@ -1,13 +1,12 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TombLib.Utils;
 using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class ReferencedWad : ICloneable
+    public class ReferencedWad : ICloneable, IEquatable<ReferencedWad>
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -73,5 +72,10 @@ namespace TombLib.LevelData
 
         public ReferencedWad Clone() => (ReferencedWad)MemberwiseClone(); // Don't copy the data pointer
         object ICloneable.Clone() => Clone();
+
+        public bool Equals(ReferencedWad other)
+        {
+            return (UniqueID == other.UniqueID && Path.ToLower() == other.Path.ToLower());
+        }
     }
 }
