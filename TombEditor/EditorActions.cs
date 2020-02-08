@@ -1023,6 +1023,41 @@ namespace TombEditor
             }
         }
 
+        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(bool onlySelectedRooms = false)
+        {
+            var result = new ConcurrentBag<KeyValuePair<Room, VectorInt2>>();
+            var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms;
+
+            Parallel.ForEach(roomList, room =>
+            {
+                if (room == null) return;
+
+                for (int x = 0; x < room.NumXSectors; x++)
+                    for (int z = 0; z < room.NumZSectors; z++)
+                    {
+                        var block = room.GetBlockTry(x, z);
+                        if (block == null) continue;
+
+                        foreach (var face in Enum.GetValues(typeof(BlockFace)).Cast<BlockFace>())
+                        {
+                            // Filter out impossible combinations right away
+                            if (face >= BlockFace.Floor && block.IsAnyWall) continue;
+                            if (face == BlockFace.FloorTriangle2 && block.Floor.IsQuad) continue;
+                            if (face == BlockFace.CeilingTriangle2 && block.Ceiling.IsQuad) continue;
+
+                            // Filter out undefined faces
+                            if (!room.IsFaceDefined(x, z, face)) continue;
+
+                            // Add entry, if no texture present
+                            if (block.GetFaceTexture(face) == TextureArea.None)
+                                result.Add(new KeyValuePair<Room, VectorInt2>(room, new VectorInt2(x, z)));
+                        }
+                    }
+            });
+
+            return result.Distinct().ToList();
+        }
+
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&

@@ -142,6 +142,12 @@
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormFindUntextured.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFindUntextured.Designer.cs">
+      <DependentUpon>FormFindUntextured.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormImportPrj.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -442,6 +448,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormFindUntextured.resx">
+      <DependentUpon>FormFindUntextured.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormImportPrj.resx">
       <DependentUpon>FormImportPrj.cs</DependentUpon>
