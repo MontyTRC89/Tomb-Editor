@@ -237,17 +237,19 @@ namespace TombLib.Rendering
                 VectorInt2 firstSize = first.Texture.To - first.Texture.From;
                 VectorInt2 secondSize = second.Texture.To - second.Texture.From;
 
+                // Return 0 if sizes are completely equal
+                if (firstSize == secondSize)
+                    return 0;
+
                 // Compare height
-                int firstMaxHeight = Math.Max(firstSize.X, firstSize.Y);
-                int secondMaxHeight = Math.Min(secondSize.X, secondSize.Y);
-                if (firstMaxHeight != secondMaxHeight)
-                    return firstMaxHeight > secondMaxHeight ? -1 : 1; //Heigher textures first!
+                if (firstSize.Y != secondSize.Y)
+                    return firstSize.Y > secondSize.Y ? -1 : 1; // Higher textures first!
 
                 // Compare area
                 int firstArea = firstSize.X * firstSize.Y;
                 int secondArea = secondSize.X * secondSize.Y;
                 if (firstArea != secondArea)
-                    return firstArea > secondArea ? -1 : 1; //Bigger textures first!
+                    return firstArea > secondArea ? -1 : 1; // Bigger textures first!
 
                 return 0;
             }
