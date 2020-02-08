@@ -16,7 +16,7 @@
         private void InitializeComponent()
         {
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.darkLabel2 = new DarkUI.Controls.DarkLabel();
+            this.lblDest = new DarkUI.Controls.DarkLabel();
             this.butSelectSourceObject = new DarkUI.Controls.DarkButton();
             this.butSelectDestObject = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
@@ -47,15 +47,15 @@
             this.darkLabel1.TabIndex = 0;
             this.darkLabel1.Text = "Source object to search:";
             // 
-            // darkLabel2
+            // lblDest
             // 
-            this.darkLabel2.AutoSize = true;
-            this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(7, 89);
-            this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(185, 13);
-            this.darkLabel2.TabIndex = 1;
-            this.darkLabel2.Text = "Destination object to replace with:";
+            this.lblDest.AutoSize = true;
+            this.lblDest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblDest.Location = new System.Drawing.Point(7, 89);
+            this.lblDest.Name = "lblDest";
+            this.lblDest.Size = new System.Drawing.Size(185, 13);
+            this.lblDest.TabIndex = 1;
+            this.lblDest.Text = "Destination object to replace with:";
             // 
             // butSelectSourceObject
             // 
@@ -270,7 +270,7 @@
             this.Controls.Add(this.butReplace);
             this.Controls.Add(this.butSelectDestObject);
             this.Controls.Add(this.butSelectSourceObject);
-            this.Controls.Add(this.darkLabel2);
+            this.Controls.Add(this.lblDest);
             this.Controls.Add(this.darkLabel1);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MaximizeBox = false;
@@ -294,7 +294,7 @@
         #endregion
 
         private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkLabel darkLabel2;
+        private DarkUI.Controls.DarkLabel lblDest;
         private DarkUI.Controls.DarkButton butSelectSourceObject;
         private DarkUI.Controls.DarkButton butSelectDestObject;
         private DarkUI.Controls.DarkButton butCancel;

@@ -89,7 +89,7 @@ namespace TombLib.Controls
 
         public void ResetCamera()
         {
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 0, 1000000, FieldOfView * (float)(Math.PI / 180));
+            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000, FieldOfView * (float)(Math.PI / 180));
         }
 
         protected override void Dispose(bool disposing)

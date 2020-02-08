@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
+using DarkUI.Forms;
 
 namespace TombLib.Forms
 {
@@ -22,7 +23,7 @@ namespace TombLib.Forms
                     owner.InvokeIfNecessary(() =>
                     {
                         while (dialogDescription.Texture.LoadException != null)
-                            switch (MessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +
+                            switch (DarkMessageBox.Show(owner, "The texture file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Texture.Path) +
                         " could not be loaded: " + (dialogDescription.Texture.LoadException?.Message ?? "null") + ". \n" +
                         "Do you want to load a substituting file now?", "Open project",
                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
@@ -47,7 +48,7 @@ namespace TombLib.Forms
                     owner.InvokeIfNecessary(() =>
                     {
                         while (dialogDescription.Wad.LoadException != null)
-                            switch (MessageBox.Show(owner, "The objects file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Wad.Path) +
+                            switch (DarkMessageBox.Show(owner, "The objects file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Wad.Path) +
                             " could not be loaded: " + (dialogDescription.Wad.LoadException?.Message ?? "null") + ". \n" +
                             "Do you want to load a substituting file now?", "Open project",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
@@ -72,7 +73,7 @@ namespace TombLib.Forms
                     owner.InvokeIfNecessary(() =>
                     {
                         while (dialogDescription.Sounds.LoadException != null)
-                            switch (MessageBox.Show(owner, "Sound catalog file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Sounds.Path) +
+                            switch (DarkMessageBox.Show(owner, "Sound catalog file '" + dialogDescription.Settings.MakeAbsolute(dialogDescription.Sounds.Path) +
                             " could not be loaded: " + (dialogDescription.Sounds.LoadException?.Message ?? "null") + ". \n" +
                             "Do you want to load a substituting file now?", "Open project",
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))

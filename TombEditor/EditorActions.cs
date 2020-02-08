@@ -4663,18 +4663,20 @@ namespace TombEditor
                     settings.SelectedSounds.Add(id);
 
             foreach (var catalog in settings.SoundsCatalogs)
-                foreach (var sound in catalog.Sounds.SoundInfos)
-                    if (sound.Global)
-                        if (!settings.SelectedSounds.Contains(sound.Id))
-                            settings.SelectedSounds.Add(sound.Id);
+                if (catalog.Sounds != null)
+                    foreach (var sound in catalog.Sounds.SoundInfos)
+                        if (sound.Global)
+                            if (!settings.SelectedSounds.Contains(sound.Id))
+                                settings.SelectedSounds.Add(sound.Id);
 
         }
 
         public static void AssignCatalogSounds(LevelSettings settings, ReferencedSoundsCatalog catalog)
         {
-            foreach (var soundInfo in catalog.Sounds.SoundInfos)
-                if (!settings.SelectedSounds.Contains(soundInfo.Id))
-                    settings.SelectedSounds.Add(soundInfo.Id);
+            if (catalog.Sounds != null)
+                foreach (var soundInfo in catalog.Sounds.SoundInfos)
+                    if (!settings.SelectedSounds.Contains(soundInfo.Id))
+                        settings.SelectedSounds.Add(soundInfo.Id);
         }
 
         public static void AssignSoundSourcesSounds(LevelSettings settings)
