@@ -138,26 +138,34 @@ namespace TombEditor.Forms
             return result;
         }
 
-        private void ToggleItem(PositionBasedObjectInstance item)
+        private void ToggleItem(PositionBasedObjectInstance item, ObjectSelectionType? selectionType = null)
         {
+            var realSelectionType = selectionType.HasValue ? selectionType : SelectionType;
             var replItem = item as IReplaceable;
             if (replItem != null)
             {
                 // Foolproofness to prevent selection of objects of different types.
                 // Probably more smart approach is to reset opposite selection type, but IMO it's too intrusive. -- Lwmte
                 
-                switch (SelectionType)
+                switch (realSelectionType)
                 {
                     case ObjectSelectionType.Destination:
                         if (Source != null && replItem != null && replItem.GetType() != Source.GetType())
+                        {
                             InitializeNewSearch();
+                            ToggleItem(item, realSelectionType);
+                        }
                         else
                             Dest = item;
                         break;
 
                     case ObjectSelectionType.Source:
                         if (Dest != null && replItem != null && replItem.GetType() != Dest.GetType())
+                        {
                             InitializeNewSearch();
+                            ToggleItem(item, realSelectionType);
+                            
+                        }
                         else
                         {
                             var firstSearch = Source == null;
@@ -363,7 +371,8 @@ namespace TombEditor.Forms
                 else
                     return;
 
-                ToggleItem(instance);
+                bool dest = e.Y >= PointToScreen(lblDest.Location).Y;
+                ToggleItem(instance, dest ? ObjectSelectionType.Destination : ObjectSelectionType.Source);
             }
         }
     }
