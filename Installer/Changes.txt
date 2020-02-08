@@ -4,6 +4,7 @@ Tomb Editor:
  * Add new "Find untextured" feature
  * Add scaling to texture remap tool
  * Specify source/destination in find & replace window based on where item was dropped
+ * Change the way TRNG flipeffects/actions/conditions are listed to preserve alphabetical sorting
  * Fix for death + climb floordata flag combination
  * Import objectless prjs without error
  * Properly display imported geometry names on prj2 loading
