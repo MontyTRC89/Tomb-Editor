@@ -36,13 +36,13 @@ namespace TombLib.NG
                 }
         }
 
-        private static NgTriggerSubtypes ReadNgTriggerSubtypes(XmlNode parentNode, string prefix = null)
+        private static NgTriggerSubtypes ReadNgTriggerSubtypes(XmlNode parentNode, string postfix = null)
         {
             var result = new NgTriggerSubtypes();
             foreach (XmlNode timerNode in parentNode.ChildNodes)
             {
                 var key = ushort.Parse(timerNode.Attributes["K"].Value, CultureInfo.InvariantCulture);
-                var value = ((prefix != null) ? (prefix + key.ToString("D3") + ". ") : string.Empty) + timerNode.Attributes["V"].Value;
+                var value = timerNode.Attributes["V"].Value + ((postfix != null) ? (" (" + postfix + key.ToString() + ")") : string.Empty);
                 var triggerSubtype = new NgTriggerSubtype(key, value);
 
                 foreach (XmlNode nodeList in timerNode.ChildNodes)
