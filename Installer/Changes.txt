@@ -1,6 +1,7 @@
 Version 1.2.11
 ==============
 Tomb Editor:
+ * Add new "Find untextured" feature
  * Add scaling to texture remap tool
  * Specify source/destination in find & replace window based on where item was dropped
  * Fix for death + climb floordata flag combination

@@ -24,9 +24,15 @@ namespace TombEditor.Forms
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
-
-            InitializeNewSearch();
         }
+        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _editor.EditorEventRaised -= _editor_EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
         private void _editor_EditorEventRaised(IEditorEvent obj)
         {
             // Level has changed, reset everything
@@ -34,9 +40,7 @@ namespace TombEditor.Forms
                 InitializeNewSearch();
 
             // Re-toggle current object on changed object selection
-            if (obj is Editor.RoomListChangedEvent ||
-                obj is Editor.RoomGeometryChangedEvent ||
-                obj is Editor.RoomPropertiesChangedEvent)
+            if (obj is Editor.RoomListChangedEvent)
             {
                 _list = _list.Where(item => _editor.Level.Rooms.Contains(item.Key)).ToList();
                 RefreshList();
@@ -45,7 +49,7 @@ namespace TombEditor.Forms
 
         private void InitializeNewSearch()
         {
-            _list = EditorActions.FindUntextured();
+            _list = EditorActions.FindUntextured(cbSelectedRooms.Checked);
             RefreshList();
         }
 
@@ -62,10 +66,11 @@ namespace TombEditor.Forms
 
         private void dgvUntextured_SelectionChanged(object sender, EventArgs e)
         {
+            // A hack to remove selection from empty table on non-modal form
             if (_firstLaunch)
             {
                 _firstLaunch = false;
-                dgvUntextured.ClearSelection();
+                dgvUntextured.ClearSelection(); 
                 return;
             }
 
@@ -82,7 +87,6 @@ namespace TombEditor.Forms
         }
 
         private void butNewSearch_Click(object sender, EventArgs e) => InitializeNewSearch();
-
         private void butCancel_Click(object sender, EventArgs e) => Close();
     }
 }

@@ -7,19 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         /// <summary>
@@ -33,6 +20,7 @@
             this.dgvUntextured = new DarkUI.Controls.DarkDataGridView();
             this.colRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCoordinates = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cbSelectedRooms = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUntextured)).BeginInit();
             this.SuspendLayout();
             // 
@@ -40,7 +28,7 @@
             // 
             this.butNewSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butNewSearch.Checked = false;
-            this.butNewSearch.Location = new System.Drawing.Point(162, 246);
+            this.butNewSearch.Location = new System.Drawing.Point(142, 332);
             this.butNewSearch.Name = "butNewSearch";
             this.butNewSearch.Size = new System.Drawing.Size(80, 23);
             this.butNewSearch.TabIndex = 9;
@@ -53,7 +41,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(248, 246);
+            this.butCancel.Location = new System.Drawing.Point(228, 332);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 10;
@@ -78,14 +66,14 @@
             this.dgvUntextured.MultiSelect = false;
             this.dgvUntextured.Name = "dgvUntextured";
             this.dgvUntextured.RowHeadersWidth = 41;
-            this.dgvUntextured.Size = new System.Drawing.Size(321, 234);
+            this.dgvUntextured.Size = new System.Drawing.Size(301, 320);
             this.dgvUntextured.TabIndex = 11;
             this.dgvUntextured.SelectionChanged += new System.EventHandler(this.dgvUntextured_SelectionChanged);
             // 
             // colRoom
             // 
             this.colRoom.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colRoom.FillWeight = 70F;
+            this.colRoom.FillWeight = 75F;
             this.colRoom.HeaderText = "Room";
             this.colRoom.Name = "colRoom";
             this.colRoom.ReadOnly = true;
@@ -93,26 +81,45 @@
             // colCoordinates
             // 
             this.colCoordinates.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colCoordinates.FillWeight = 30F;
+            this.colCoordinates.FillWeight = 25F;
             this.colCoordinates.HeaderText = "Block";
             this.colCoordinates.Name = "colCoordinates";
             this.colCoordinates.ReadOnly = true;
             // 
+            // cbSelectedRooms
+            // 
+            this.cbSelectedRooms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbSelectedRooms.AutoSize = true;
+            this.cbSelectedRooms.Checked = true;
+            this.cbSelectedRooms.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSelectedRooms.Location = new System.Drawing.Point(7, 336);
+            this.cbSelectedRooms.Name = "cbSelectedRooms";
+            this.cbSelectedRooms.Size = new System.Drawing.Size(129, 17);
+            this.cbSelectedRooms.TabIndex = 12;
+            this.cbSelectedRooms.Text = "Selected rooms only";
+            // 
             // FormFindUntextured
             // 
+            this.AcceptButton = this.butNewSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(334, 276);
+            this.CancelButton = this.butCancel;
+            this.ClientSize = new System.Drawing.Size(314, 362);
+            this.Controls.Add(this.cbSelectedRooms);
             this.Controls.Add(this.dgvUntextured);
             this.Controls.Add(this.butNewSearch);
             this.Controls.Add(this.butCancel);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(330, 400);
             this.Name = "FormFindUntextured";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Find untextured faces";
             ((System.ComponentModel.ISupportInitialize)(this.dgvUntextured)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -121,6 +128,7 @@
         private DarkUI.Controls.DarkButton butNewSearch;
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkDataGridView dgvUntextured;
+        private DarkUI.Controls.DarkCheckBox cbSelectedRooms;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRoom;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCoordinates;
     }
