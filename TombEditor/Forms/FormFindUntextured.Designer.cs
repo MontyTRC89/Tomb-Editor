@@ -18,9 +18,9 @@
             this.butNewSearch = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.dgvUntextured = new DarkUI.Controls.DarkDataGridView();
+            this.cbSelectedRooms = new DarkUI.Controls.DarkCheckBox();
             this.colRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCoordinates = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbSelectedRooms = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvUntextured)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,22 +70,6 @@
             this.dgvUntextured.TabIndex = 11;
             this.dgvUntextured.SelectionChanged += new System.EventHandler(this.dgvUntextured_SelectionChanged);
             // 
-            // colRoom
-            // 
-            this.colRoom.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colRoom.FillWeight = 75F;
-            this.colRoom.HeaderText = "Room";
-            this.colRoom.Name = "colRoom";
-            this.colRoom.ReadOnly = true;
-            // 
-            // colCoordinates
-            // 
-            this.colCoordinates.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colCoordinates.FillWeight = 25F;
-            this.colCoordinates.HeaderText = "Block";
-            this.colCoordinates.Name = "colCoordinates";
-            this.colCoordinates.ReadOnly = true;
-            // 
             // cbSelectedRooms
             // 
             this.cbSelectedRooms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -97,6 +81,24 @@
             this.cbSelectedRooms.Size = new System.Drawing.Size(129, 17);
             this.cbSelectedRooms.TabIndex = 12;
             this.cbSelectedRooms.Text = "Selected rooms only";
+            // 
+            // colRoom
+            // 
+            this.colRoom.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colRoom.FillWeight = 75F;
+            this.colRoom.HeaderText = "Room";
+            this.colRoom.Name = "colRoom";
+            this.colRoom.ReadOnly = true;
+            this.colRoom.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // colCoordinates
+            // 
+            this.colCoordinates.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colCoordinates.FillWeight = 25F;
+            this.colCoordinates.HeaderText = "Block";
+            this.colCoordinates.Name = "colCoordinates";
+            this.colCoordinates.ReadOnly = true;
+            this.colCoordinates.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             // 
             // FormFindUntextured
             // 
