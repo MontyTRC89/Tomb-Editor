@@ -407,7 +407,7 @@ namespace TombEditor.Controls
             // Initialize a new camera
             if (Camera == null || forceNewCamera || !_editor.Configuration.Rendering3D_AnimateCameraOnReset)
             {
-                Camera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 1, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
+                Camera = new ArcBallCamera(target, rotX, rotY, -(float)Math.PI / 2, (float)Math.PI / 2, dist, 100, 1000000, _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180));
                 Invalidate();
             }
             else

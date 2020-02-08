@@ -17,7 +17,7 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WadMesh Mesh { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 1, 1000000, (float)Math.PI / 4.0f);
+        public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 100, 1000000, (float)Math.PI / 4.0f);
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawGrid { get; set; } = true;
 
