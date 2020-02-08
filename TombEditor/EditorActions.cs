@@ -1023,12 +1023,12 @@ namespace TombEditor
             }
         }
 
-        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(bool onlySelectedRooms = false)
+        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(uint maxEntries, bool onlySelectedRooms = false)
         {
             var result = new ConcurrentBag<KeyValuePair<Room, VectorInt2>>();
             var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms;
 
-            Parallel.ForEach(roomList, room =>
+            Parallel.ForEach(roomList, (room, state) =>
             {
                 if (room == null) return;
 
@@ -1051,6 +1051,9 @@ namespace TombEditor
                             // Add entry, if no texture present
                             if (block.GetFaceTexture(face) == TextureArea.None)
                                 result.Add(new KeyValuePair<Room, VectorInt2>(room, new VectorInt2(x, z)));
+
+                            if (result.Count > maxEntries)
+                                state.Break(); // Don't continue if we've reached max entries
                         }
                     }
             });

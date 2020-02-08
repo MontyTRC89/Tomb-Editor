@@ -10,6 +10,8 @@ namespace TombEditor.Forms
 {
     public partial class FormFindUntextured : DarkForm
     {
+        private const uint _maxEntries = 500;
+
         private readonly Editor _editor;
         private List<KeyValuePair<Room, VectorInt2>> _list;
         private bool _lockSelection = true;
@@ -49,7 +51,16 @@ namespace TombEditor.Forms
 
         private void InitializeNewSearch()
         {
-            _list = EditorActions.FindUntextured(cbSelectedRooms.Checked);
+            _list = EditorActions.FindUntextured(_maxEntries, cbSelectedRooms.Checked);
+
+            lblStatus.Text = "Search finished. ";
+            if (_list.Count >= _maxEntries)
+                lblStatus.Text += "Too many entries, showing first 500.";
+            else if (_list.Count == 0)
+                lblStatus.Text += "No untextured blocks found.";
+            else
+                lblStatus.Text += "Found " + _list.Count + " untextured blocks.";
+
             RefreshList();
         }
 
