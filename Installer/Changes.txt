@@ -311,6 +311,35 @@ Version 1.2.1 - 12/11/2018
 18. Fix missing textures on imported geometry.
 19. Optional agressive texture and floordata packing.
 
+Version 1.2.0 - 27/10/2018
+==========================
+1.  Multi-texture support. Now you can load lots of texture files and use them at once.
+2.  Multi-wad support. It's now also possible to use several wads with different objects.
+3.  New renderer, now editor runs much faster (up to 10 times) in "Draw all rooms" and geometry modes.
+4.  New TexInfo packer, which is more efficient than tom2pc one (same project will generate less TexInfos).
+5.  Design-time texture tile padding. Finally, no cracks on face edges with antialiasing and anisotropic filter.
+6.  Bump-mapping support, with extra Level 3 and ability to load external custom bumpmap image files.
+7.  In-place search for items, rooms and trigger parameters.
+8.  New tools: Grid Paint and Portal Digger.
+9.  Fully customizable hotkeys for any actions.
+10. General editor options window instead of editing plain XML file.
+11. Customizable block highlight color scheme.
+12. Ability to jump between rooms with double-clicking on them in 3D view.
+13. Powerful procedural UV animators for animated textures.
+14. New and non-intrusive notify system.
+15. Support for extra blending modes enabled by FLEP.
+16. Realtime color dialog for light colors, room ambient light color and static color.
+17. Recent files menu entry.
+18. Quick commands for resetting floor and ceiling areas and creating rooms on the sides of current room.
+19. Simplified group texture handling on walls.
+20. Depth bar supports snapping when moving rooms up/down (hold ALT key for non-snapped movement).
+21. Fixed very annoying bug with ceiling textures being flipped by default.
+22. Support for antialiasing in main view and item browser.
+23. Multi-layer Photoshop (PSD) format support for textures.
+24. Automatic reloading of resources (wads and textures) in case these were modified externally
+25. Lots of TRNG-related bugs fixed, including animated textures, flyby and trigger handling.
+26. Lots of various UI bugs fixed, including critical ones, which caused crashes and deadlocks.
+
 Version 1.1.1 - 10/06/2018
 ==========================
 Selection now is resetted after room change
