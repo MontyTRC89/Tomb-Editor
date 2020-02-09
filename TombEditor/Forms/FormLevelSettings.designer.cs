@@ -86,6 +86,7 @@
             this.colMeshName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMergeStatics = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.colInterpretShadesAsEffect = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colTintAsAmbient = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.tabSkyAndFont = new System.Windows.Forms.TabPage();
@@ -219,14 +220,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -966,7 +967,8 @@
             this.staticMeshMergeDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colMeshName,
             this.colMergeStatics,
-            this.colInterpretShadesAsEffect});
+            this.colInterpretShadesAsEffect,
+            this.colTintAsAmbient});
             this.staticMeshMergeDataGridView.DisableSelection = true;
             this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(6, 19);
             this.staticMeshMergeDataGridView.MultiSelect = false;
@@ -1000,6 +1002,13 @@
             this.colInterpretShadesAsEffect.FillWeight = 50F;
             this.colInterpretShadesAsEffect.HeaderText = "Interpret shades as effect";
             this.colInterpretShadesAsEffect.Name = "colInterpretShadesAsEffect";
+            // 
+            // colTintAsAmbient
+            // 
+            this.colTintAsAmbient.DataPropertyName = "TintAsAmbient";
+            this.colTintAsAmbient.HeaderText = "Use Tint as AmbientColor";
+            this.colTintAsAmbient.Name = "colTintAsAmbient";
+            this.colTintAsAmbient.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
             // darkLabel18
             // 
@@ -2192,9 +2201,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewSizeColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colMeshName;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colMergeStatics;
-        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colInterpretShadesAsEffect;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogPathColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogSearchColumn;
         private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogReloadButton;
@@ -2210,5 +2216,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private DarkUI.Controls.DarkCheckBox cbAutodetectIfNoneSelected;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMeshName;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colMergeStatics;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colInterpretShadesAsEffect;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colTintAsAmbient;
     }
 }

@@ -56,7 +56,7 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripMenuItem("Merge into room geometry", null, (o, e) =>
                 {
                     if (!isMerged)
-                        editor.Level.Settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(stat.WadObjectId.TypeId, true, false, editor.Level.Settings));
+                        editor.Level.Settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(stat.WadObjectId.TypeId, true, false,false, editor.Level.Settings));
                     else
                         editor.Level.Settings.AutoStaticMeshMerges.RemoveAll(item => item.meshId == stat.WadObjectId.TypeId);
                 })

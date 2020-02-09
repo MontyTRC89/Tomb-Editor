@@ -112,9 +112,9 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(25, "    Vertex colors on portals matched.");
         }
 
-        private Vector3 CalculateLightForCustomVertex(Room room, Vector3 position, Vector3 normal, bool forImportedGeometry)
+        private Vector3 CalculateLightForCustomVertex(Room room, Vector3 position, Vector3 normal, bool forImportedGeometry, Vector3 ambientColor)
         {
-            Vector3 output = room.AmbientLight * 128;
+            Vector3 output = ambientColor;
 
             foreach (var obj in room.Objects)
                 if (obj is LightInstance)
@@ -337,11 +337,21 @@ namespace TombLib.LevelData.Compilers
                                 shade = 1.0f - shade;
                             }
                         }
-                        Vector3 color = CalculateLightForCustomVertex(room, position, normal, false);
-                        //Apply Shade factor
-                        color *= shade;
-                        //Apply Instance Color
-                        color *= staticMesh.Color;
+                        Vector3 color;
+                        if(!entry.TintAsAmbient)
+                        {
+                            color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
+                            //Apply Shade factor
+                            color *= shade;
+                            //Apply Instance Color
+                            color *= staticMesh.Color;
+                        }else
+                        {
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color*255);
+                                //Apply Shade factor
+                                color *= shade;
+                        }
+                        
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -455,7 +465,7 @@ namespace TombLib.LevelData.Compilers
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true));
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true,room.AmbientLight*128));
                                 else
                                     trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
 
