@@ -465,10 +465,17 @@ namespace TombLib.LevelData.IO
                         {
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades,false, settings));
                             return true;
                         }
-                        else return false;
+                        else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry2)
+                        {
+                            uint value = chunkIO.Raw.ReadUInt32();
+                            bool vertexShades = chunkIO.Raw.ReadBoolean();
+                            bool tintAsAmbient = chunkIO.Raw.ReadBoolean();
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient, settings));
+                            return true;
+                        }else return false;
                     });
                 }else
                     return false;
