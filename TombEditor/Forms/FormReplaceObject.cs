@@ -13,7 +13,7 @@ namespace TombEditor.Forms
 {
     public partial class FormReplaceObject : DarkForm
     {
-        private const string selectNewObjPrompt = " [ Please select new object in level ]";
+        private const string selectNewObjPrompt = " [ Select object in level or drag-n-drop it from item browser ]";
 
         private enum ObjectSelectionType
         {
@@ -152,7 +152,7 @@ namespace TombEditor.Forms
                     case ObjectSelectionType.Destination:
                         if (Source != null && replItem != null && replItem.GetType() != Source.GetType())
                         {
-                            InitializeNewSearch();
+                            InitializeNewSearch(false);
                             ToggleItem(item, realSelectionType);
                         }
                         else
@@ -162,7 +162,7 @@ namespace TombEditor.Forms
                     case ObjectSelectionType.Source:
                         if (Dest != null && replItem != null && replItem.GetType() != Dest.GetType())
                         {
-                            InitializeNewSearch();
+                            InitializeNewSearch(false);
                             ToggleItem(item, realSelectionType);
                             
                         }
@@ -175,27 +175,13 @@ namespace TombEditor.Forms
                         break;
                 }
             }
-            else
-            {
-                switch (SelectionType)
-                {
-                    case ObjectSelectionType.Source:
-                        tbSourceObject.Text = selectNewObjPrompt;
-                        if (Dest == null) tbDestObject.Text = string.Empty;
-                        break;
-                    case ObjectSelectionType.Destination:
-                        tbDestObject.Text = selectNewObjPrompt;
-                        if (Source == null) tbSourceObject.Text = string.Empty;
-                        break;
-                }
-            }
         }
 
-        private void InitializeNewSearch()
+        private void InitializeNewSearch(bool resetSelectionType = true)
         {
             Source = Dest = null;
             RepopulateUI(true);
-            SelectionType = ObjectSelectionType.Source;
+            if (resetSelectionType) SelectionType = ObjectSelectionType.Source;
         }
 
         private void RepopulateUI(bool resetLabels = false)
@@ -204,8 +190,8 @@ namespace TombEditor.Forms
 
             if (resetLabels)
             {
-                tbSourceObject.Text = selectNewObjPrompt;
-                tbDestObject.Text = string.Empty;
+                tbSourceObject.Text = SelectionType == ObjectSelectionType.Source ? selectNewObjPrompt : string.Empty;
+                tbDestObject.Text   = SelectionType == ObjectSelectionType.Source ? string.Empty : selectNewObjPrompt;
             }
 
             cmbReplaceType.Items.Clear();
