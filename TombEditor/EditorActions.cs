@@ -1061,7 +1061,7 @@ namespace TombEditor
             return result.Distinct().ToList();
         }
 
-        private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
+        private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
                 !room.FlagHorizon && (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2) &&
@@ -1078,7 +1078,7 @@ namespace TombEditor
             texture.ClampToBounds();
 
             // HACK: Ceiling vertex order is hardly messed up, we need to do some transforms.
-            if (face >= BlockFace.Ceiling) texture.Mirror();
+            if (autocorrectCeiling && face >= BlockFace.Ceiling) texture.Mirror();
 
             if (!_editor.Tool.TextureUVFixer ||
                 (shape == BlockFaceShape.Triangle && texture.TextureIsTriangle))
@@ -1639,8 +1639,8 @@ namespace TombEditor
 
                             case BlockFace.Ceiling:
                             case BlockFace.CeilingTriangle2:
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, currentTexture);
-                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, currentTexture);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.Ceiling, currentTexture, false);
+                                ApplyTextureWithoutUpdate(room, new VectorInt2(x, z), BlockFace.CeilingTriangle2, currentTexture, false);
                                 break;
                         }
                     }

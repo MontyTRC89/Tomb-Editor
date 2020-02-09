@@ -12,6 +12,7 @@ Tomb Editor:
  * Fix invisible objects picking
  * Fix nullref exception with missing sound catalogs
  * Fix item browser reset on paste object action
+ * Fix inconsistent texture mirroring on ceiling while using group and grid paint texturing tools
  * Attempt to fix texture sorting exception on resource reload
  * Add texture info diagnostics for possible system-specific compile issues
  
