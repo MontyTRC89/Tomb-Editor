@@ -1023,15 +1023,14 @@ namespace TombEditor
             }
         }
 
-        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(uint maxEntries, bool onlySelectedRooms = false)
+        public static List<KeyValuePair<Room, VectorInt2>> FindUntextured(bool onlySelectedRooms, uint maxEntries, out bool tooManyEntries)
         {
             var result = new ConcurrentBag<KeyValuePair<Room, VectorInt2>>();
-            var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms;
+            var roomList = onlySelectedRooms ? _editor.SelectedRooms : _editor.Level.Rooms.Where(item => item != null);
+            var _tooManyEntries = false;
 
             Parallel.ForEach(roomList, (room, state) =>
             {
-                if (room == null) return;
-
                 for (int x = 0; x < room.NumXSectors; x++)
                     for (int z = 0; z < room.NumZSectors; z++)
                     {
@@ -1053,11 +1052,16 @@ namespace TombEditor
                                 result.Add(new KeyValuePair<Room, VectorInt2>(room, new VectorInt2(x, z)));
 
                             if (result.Count > maxEntries)
+                            {
                                 state.Break(); // Don't continue if we've reached max entries
+                                if (!_tooManyEntries) _tooManyEntries = true;
+                                return;
+                            }
                         }
                     }
             });
 
+            tooManyEntries = _tooManyEntries;
             return result.Distinct().ToList();
         }
 
