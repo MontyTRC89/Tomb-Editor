@@ -347,7 +347,7 @@ namespace TombLib.LevelData.Compilers
                             color *= staticMesh.Color;
                         }else
                         {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color*255);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color*128);
                                 //Apply Shade factor
                                 color *= shade;
                         }
