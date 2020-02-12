@@ -33,13 +33,14 @@ namespace TombEditor.Forms
             get { return _selectionType; }
             set
             {
-                // Block button to indicate that selection is in progress
+                // Block button and update labels to indicate that selection is in progress
                 var selectDest = (value == ObjectSelectionType.Destination);
                 butSelectDestObject.Enabled   = value == ObjectSelectionType.None || !selectDest;
                 butSelectSourceObject.Enabled = value == ObjectSelectionType.None ||  selectDest;
 
                 _selectionType = value;
                 ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
+                UpdateLabels();
             }
         }
         private ObjectSelectionType _selectionType;
@@ -180,20 +181,14 @@ namespace TombEditor.Forms
         private void InitializeNewSearch(bool resetSelectionType = true)
         {
             Source = Dest = null;
-            RepopulateUI(true);
             if (resetSelectionType) SelectionType = ObjectSelectionType.Source;
+            RepopulateUI(true);
         }
 
         private void RepopulateUI(bool resetLabels = false)
         {
             lblResult.Text = string.Empty;
-
-            if (resetLabels)
-            {
-                tbSourceObject.Text = SelectionType == ObjectSelectionType.Source ? selectNewObjPrompt : string.Empty;
-                tbDestObject.Text   = SelectionType == ObjectSelectionType.Source ? string.Empty : selectNewObjPrompt;
-            }
-
+            if (resetLabels) UpdateLabels();
             cmbReplaceType.Items.Clear();
             cmbSearchType.Items.Clear();
 
@@ -253,6 +248,20 @@ namespace TombEditor.Forms
             }
             else
                 colDest.Visible = false;
+        }
+
+        private void UpdateLabels()
+        {
+            if (SelectionType == ObjectSelectionType.Source)
+            {
+                if (_source == null) tbSourceObject.Text = selectNewObjPrompt;
+                if (_dest == null) tbDestObject.Text = string.Empty;
+            }
+            else if (SelectionType == ObjectSelectionType.Destination)
+            {
+                if (_dest == null) tbDestObject.Text = selectNewObjPrompt;
+                if (_source == null) tbSourceObject.Text = string.Empty;
+            }
         }
 
         private void butSelectSourceObject_Click(object sender, EventArgs e) => SelectionType = ObjectSelectionType.Source;
