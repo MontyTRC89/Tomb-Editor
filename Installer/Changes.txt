@@ -3,6 +3,7 @@ Version 1.2.11
 Tomb Editor:
  * Add new "Find untextured" feature
  * Add scaling to texture remap tool
+ * Add extra checkbox for merged statics to replace room ambient light with static color
  * Specify source/destination in find & replace window based on where item was dropped
  * Change the way TRNG flipeffects/actions/conditions are listed to preserve alphabetical sorting
  * Limit camera distance to prevent annoying zoom slowdown
