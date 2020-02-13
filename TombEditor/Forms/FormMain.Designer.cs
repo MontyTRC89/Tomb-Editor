@@ -1249,7 +1249,6 @@ namespace TombEditor.Forms
             this.unloadTexturesToolStripMenuItem,
             this.reloadTexturesToolStripMenuItem,
             this.importConvertTexturesToPng,
-            this.findUntexturedToolStripMenuItem,
             this.remapTextureToolStripMenuItem,
             this.toolStripMenuSeparator9,
             this.textureFloorToolStripMenuItem,
@@ -1258,6 +1257,7 @@ namespace TombEditor.Forms
             this.toolStripMenuItem3,
             this.clearAllTexturesInRoomToolStripMenuItem,
             this.clearAllTexturesInRoomToolStripMenuItem1,
+            this.findUntexturedToolStripMenuItem,
             this.toolStripMenuSeparator10,
             this.animationRangesToolStripMenuItem});
             this.texturesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
