@@ -963,6 +963,7 @@ namespace TombEditor.Forms
             this.exportRoomToolStripMenuItem.Size = new System.Drawing.Size(272, 22);
             this.exportRoomToolStripMenuItem.Tag = "ExportRooms";
             this.exportRoomToolStripMenuItem.Text = "ExportRooms";
+            this.exportRoomToolStripMenuItem.Visible = false;
             // 
             // importRoomsToolStripMenuItem
             // 
