@@ -140,7 +140,7 @@ namespace TombLib.LevelData.IO
         /************/public static readonly ChunkId ObjectTrigger2LuaScript = ChunkId.FromString("TeTrLua");
         /****/public static readonly ChunkId AutoMergeStaticMeshes = ChunkId.FromString("TeMergeStatics");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry = ChunkId.FromString("TeMergeStaticsEntry");
-        /****/public static readonly ChunkId AutoMergeStaticMeshEntryShades = ChunkId.FromString("TeMergeStaticsEntryShades");
+        /****/public static readonly ChunkId AutoMergeStaticMeshEntry2 = ChunkId.FromString("TeMergeStaticsEntry2");
         public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
     }
 }

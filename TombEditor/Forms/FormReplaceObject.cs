@@ -13,7 +13,7 @@ namespace TombEditor.Forms
 {
     public partial class FormReplaceObject : DarkForm
     {
-        private const string selectNewObjPrompt = " [ Please select new object in level ]";
+        private const string selectNewObjPrompt = " [ Select object in level or drag-n-drop it from item browser ]";
 
         private enum ObjectSelectionType
         {
@@ -33,13 +33,14 @@ namespace TombEditor.Forms
             get { return _selectionType; }
             set
             {
-                // Block button to indicate that selection is in progress
+                // Block button and update labels to indicate that selection is in progress
                 var selectDest = (value == ObjectSelectionType.Destination);
                 butSelectDestObject.Enabled   = value == ObjectSelectionType.None || !selectDest;
                 butSelectSourceObject.Enabled = value == ObjectSelectionType.None ||  selectDest;
 
                 _selectionType = value;
                 ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
+                UpdateLabels();
             }
         }
         private ObjectSelectionType _selectionType;
@@ -152,7 +153,7 @@ namespace TombEditor.Forms
                     case ObjectSelectionType.Destination:
                         if (Source != null && replItem != null && replItem.GetType() != Source.GetType())
                         {
-                            InitializeNewSearch();
+                            InitializeNewSearch(false);
                             ToggleItem(item, realSelectionType);
                         }
                         else
@@ -162,7 +163,7 @@ namespace TombEditor.Forms
                     case ObjectSelectionType.Source:
                         if (Dest != null && replItem != null && replItem.GetType() != Dest.GetType())
                         {
-                            InitializeNewSearch();
+                            InitializeNewSearch(false);
                             ToggleItem(item, realSelectionType);
                             
                         }
@@ -175,39 +176,19 @@ namespace TombEditor.Forms
                         break;
                 }
             }
-            else
-            {
-                switch (SelectionType)
-                {
-                    case ObjectSelectionType.Source:
-                        tbSourceObject.Text = selectNewObjPrompt;
-                        if (Dest == null) tbDestObject.Text = string.Empty;
-                        break;
-                    case ObjectSelectionType.Destination:
-                        tbDestObject.Text = selectNewObjPrompt;
-                        if (Source == null) tbSourceObject.Text = string.Empty;
-                        break;
-                }
-            }
         }
 
-        private void InitializeNewSearch()
+        private void InitializeNewSearch(bool resetSelectionType = true)
         {
             Source = Dest = null;
+            if (resetSelectionType) SelectionType = ObjectSelectionType.Source;
             RepopulateUI(true);
-            SelectionType = ObjectSelectionType.Source;
         }
 
         private void RepopulateUI(bool resetLabels = false)
         {
             lblResult.Text = string.Empty;
-
-            if (resetLabels)
-            {
-                tbSourceObject.Text = selectNewObjPrompt;
-                tbDestObject.Text = string.Empty;
-            }
-
+            if (resetLabels) UpdateLabels();
             cmbReplaceType.Items.Clear();
             cmbSearchType.Items.Clear();
 
@@ -267,6 +248,20 @@ namespace TombEditor.Forms
             }
             else
                 colDest.Visible = false;
+        }
+
+        private void UpdateLabels()
+        {
+            if (SelectionType == ObjectSelectionType.Source)
+            {
+                if (_source == null) tbSourceObject.Text = selectNewObjPrompt;
+                if (_dest == null) tbDestObject.Text = string.Empty;
+            }
+            else if (SelectionType == ObjectSelectionType.Destination)
+            {
+                if (_dest == null) tbDestObject.Text = selectNewObjPrompt;
+                if (_source == null) tbSourceObject.Text = string.Empty;
+            }
         }
 
         private void butSelectSourceObject_Click(object sender, EventArgs e) => SelectionType = ObjectSelectionType.Source;
