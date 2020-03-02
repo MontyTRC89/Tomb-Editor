@@ -16,6 +16,7 @@ namespace TombLib.Wad.Catalog
             public uint SkinId { get; set; }
             public bool AIObject { get; set; }
             public bool Shatterable { get; set; }
+            public string TR5MainSlot { get; set; }
         }
 
         private struct ItemSound
@@ -87,6 +88,48 @@ namespace TombLib.Wad.Catalog
             return game.Moveables[id].Names.LastOrDefault();
         }
 
+        public static string GetMoveableTR5MainSlot(TRVersion.Game version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version.Native(), out game))
+                return "";
+            Item entry;
+            if (!game.Moveables.TryGetValue(id, out entry))
+                return "";
+            return game.Moveables[id].TR5MainSlot;
+        }
+
+        public static string GetSpriteSequenceTR5MainSlot(TRVersion.Game version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version.Native(), out game))
+                return "";
+            Item entry;
+            if (!game.SpriteSequences.TryGetValue(id, out entry))
+                return "";
+            return game.SpriteSequences[id].TR5MainSlot;
+        }
+
+        public static int GetTR5MainSoundMapStart(TRVersion.Game version)
+        {
+            switch (version)
+            {
+                case TRVersion.Game.TR1:
+                    return 450;
+                case TRVersion.Game.TR2:
+                    return (450 + 256);
+                case TRVersion.Game.TR3:
+                    return (450 + 256 + 370);
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TRNG:
+                    return (450 + 256 + 370 + 370);
+                case TRVersion.Game.TR5:
+                    return 0;
+                default:
+                    return 0;
+            }
+        }
+
         public static uint GetMoveableSkin(TRVersion.Game version, uint id)
         {
             Game game;
@@ -150,6 +193,13 @@ namespace TombLib.Wad.Catalog
             }
 
             entry = game.Statics.FirstOrDefault(item => item.Value.Names.Any(possibleName => possibleName.Equals(name, StringComparison.InvariantCultureIgnoreCase)));
+            if (entry.Value.Names != null)
+            {
+                isMoveable = false;
+                return entry.Key;
+            }
+
+            entry = game.SpriteSequences.FirstOrDefault(item => item.Value.Names.Any(possibleName => possibleName.Equals(name, StringComparison.InvariantCultureIgnoreCase)));
             if (entry.Value.Names != null)
             {
                 isMoveable = false;
@@ -369,7 +419,11 @@ namespace TombLib.Wad.Catalog
 
                         bool isAI = bool.Parse(moveableNode.Attributes["ai"]?.Value ?? "false");
 
-                        game.Moveables.Add(id, new Item { Names = new List<string>(names), SkinId = skinId, AIObject = isAI });
+                        var tr5MainSlot = "";
+                        if (moveableNode.Attributes["t5m"] != null)
+                            tr5MainSlot = moveableNode.Attributes["t5m"].Value;
+
+                        game.Moveables.Add(id, new Item { Names = new List<string>(names), SkinId = skinId, AIObject = isAI, TR5MainSlot = tr5MainSlot });
                     }
 
                 // Parse statics
@@ -409,9 +463,13 @@ namespace TombLib.Wad.Catalog
                         if (spriteSequenceNode.Name != "sprite_sequence")
                             continue;
 
+                        var tr5MainSlot = "";
+                        if (spriteSequenceNode.Attributes["t5m"] != null)
+                            tr5MainSlot = spriteSequenceNode.Attributes["t5m"].Value;
+
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
                         var names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
-                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names) });
+                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TR5MainSlot = tr5MainSlot });
                     }
 
                 // Parse animations

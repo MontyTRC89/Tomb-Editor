@@ -16,6 +16,7 @@ using System.Numerics;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.GeometryIO.Importers;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -364,6 +365,61 @@ namespace WadTool
             }
         }
 
+        public static Wad2 ConvertWad2ToTR5Main(WadToolClass tool, IWin32Window owner, Wad2 src)
+        {
+            Wad2 dest = new Wad2();
+            dest.GameVersion = TRVersion.Game.TR5Main;
+            dest.SoundSystem = SoundSystem.Xml;
+
+            foreach (var moveable in src.Moveables)
+            {
+                var compatibleSlot = TrCatalog.GetMoveableTR5MainSlot(src.GameVersion, moveable.Key.TypeId);
+                if (compatibleSlot == "")
+                    continue;
+
+                bool isMoveable = false;
+                var destId = TrCatalog.GetItemIndex(TRVersion.Game.TR5Main, compatibleSlot, out isMoveable);
+                if (!destId.HasValue)
+                    continue;
+
+                var newId = new WadMoveableId(destId.Value);
+
+                foreach (var animation in moveable.Value.Animations)
+                    foreach (var command in animation.AnimCommands)
+                        if (command.Type == WadAnimCommandType.PlaySound)
+                        {
+                            int id = command.Parameter2 & 0x3FFF;
+                            id += TrCatalog.GetTR5MainSoundMapStart(src.GameVersion);
+                            command.Parameter2 = (short)((command.Parameter2 & 0xC000) | (id & 0x3FFF));
+                        }
+
+                dest.Add(newId, moveable.Value);
+            }
+
+            foreach (var sequence in src.SpriteSequences)
+            {
+                var compatibleSlot = TrCatalog.GetSpriteSequenceTR5MainSlot(src.GameVersion, sequence.Key.TypeId);
+                if (compatibleSlot == "")
+                    continue;
+
+                bool isMoveable = false;
+                var destId = TrCatalog.GetItemIndex(TRVersion.Game.TR5Main, compatibleSlot, out isMoveable);
+                if (!destId.HasValue)
+                    continue;
+
+                var newId = new WadSpriteSequenceId(destId.Value);
+
+                dest.Add(newId, sequence.Value);
+            }
+
+            foreach (var staticObject in src.Statics)
+            {
+                dest.Add(staticObject.Key, staticObject.Value);
+            }
+
+            return dest;
+        }
+
         public static List<IWadObjectId> CopyObject(WadToolClass tool, IWin32Window owner, List<IWadObjectId> objectIdsToMove, bool alwaysChooseId)
         {
             Wad2 sourceWad = tool.SourceWad;
@@ -379,6 +435,34 @@ namespace WadTool
 
             // Figure out the new ids if there are any id collisions
             IWadObjectId[] newIds = objectIdsToMove.ToArray();
+
+            // If destination is TR5Main, try to remap object IDs
+            if (destinationWad.GameVersion == TRVersion.Game.TR5Main)
+            {
+                for (int i = 0; i < objectIdsToMove.Count; ++i)
+                {
+                    var objectId = objectIdsToMove[i];
+                    if (objectId is WadMoveableId)
+                    {
+                        var moveableId = (WadMoveableId)objectId;
+
+                        // Try to get a compatible slot
+                        var newSlot = TrCatalog.GetMoveableTR5MainSlot(sourceWad.GameVersion, moveableId.TypeId);
+                        if (newSlot == "")
+                            continue;
+
+                        // Get the new ID
+                        bool isMoveable;
+                        var newId = TrCatalog.GetItemIndex(destinationWad.GameVersion, newSlot, out isMoveable);
+                        if (!newId.HasValue)
+                            continue;
+
+                        // Save the new ID
+                        newIds[i] = new WadMoveableId(newId.Value);
+                    }
+                }
+            }
+
             for (int i = 0; i < objectIdsToMove.Count; ++i)
             {
                 if (!sourceWad.Contains(objectIdsToMove[i]))
@@ -455,7 +539,22 @@ namespace WadTool
                 if (destinationWad.Contains(obj)) // Aforementioned HACK continues here - just add object which failed to copy to failed list
                     failedIdList.Add(newIds[i]);
                 else
+                {
                     destinationWad.Add(newIds[i], obj);
+
+                    if (destinationWad.GameVersion == TRVersion.Game.TR5Main && obj is WadMoveable)
+                    {
+                        var moveable = obj as WadMoveable;
+                        foreach (var animation in moveable.Animations)
+                            foreach (var command in animation.AnimCommands)
+                                if (command.Type == WadAnimCommandType.PlaySound)
+                                {
+                                    int id = command.Parameter2 & 0x3FFF;
+                                    id += TrCatalog.GetTR5MainSoundMapStart(sourceWad.GameVersion);
+                                    command.Parameter2 = (short)((command.Parameter2 & 0xC000) | (id & 0x3FFF));
+                                }
+                    }
+                }
             }
 
             // Aforementioned HACK continues here - count amount of actually copied objects

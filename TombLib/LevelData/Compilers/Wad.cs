@@ -732,8 +732,10 @@ namespace TombLib.LevelData.Compilers
                     _soundMapSize = 370;
                     break;
                 case TRVersion.Game.TR5:
-                case TRVersion.Game.TR5Main:
                     _soundMapSize = 450;
+                    break;
+                case TRVersion.Game.TR5Main:
+                    _soundMapSize = 4096;
                     break;
 
                 default:
@@ -797,8 +799,9 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundMetadata(BinaryWriter writer)
         {
-            // In TRNG NumDemoData is used as sound map size
-            writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ? _soundMapSize : 0));
+            // In TRNG and TR5Main NumDemoData is used as sound map size
+            writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
+                                  _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
 
             using (var ms = new MemoryStream())
             {
