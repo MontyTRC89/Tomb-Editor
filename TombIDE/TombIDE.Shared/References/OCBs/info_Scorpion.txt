@@ -1,0 +1,12 @@
+Old OCBs
+--------
+The standard OCBs for scorpion are not very useful because they should work linked with a internal cutscene.
+Placing a value in the range 1/6 the scorpion looks for a TROOP baddy with OCB = 1.  If it finds the Troop, its AI will be disabled and it could be manipulated with custom animations to simulate the fighting with the scorpion. 
+
+OCB 33 (Attack only Lara)
+-------------------------
+A new OCB has been added to force the scorpion to attack Lara (and only Lara).
+By default, in fact, the scorpion tried to attack all baddies it finds, and only after killed them, it will attack Lara.
+Typing 33 as ocb in the Scorpion it will attack only Lara ignoring other baddies.
+
+

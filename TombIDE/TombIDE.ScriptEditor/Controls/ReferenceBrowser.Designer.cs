@@ -33,7 +33,7 @@
             "Mnemonic Constants",
             "Enemy Damage List",
             "Keyboard Scancodes",
-            "OCB LIST (Unavailable)",
+            "OCB List",
             "SCRIPT NEW COMMANDS (Unavailable)",
             "SCRIPT OLD COMMANDS (Unavailable)",
             "SOUND SFX INDICES LIST (Unavailable)",

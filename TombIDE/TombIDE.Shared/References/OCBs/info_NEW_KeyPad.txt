@@ -1,0 +1,49 @@
+Remark: you can compute the ocb value for this object using the OCB Calculator you find in Tools2 panel of NG_Center program. Using that tool is very easy compute the correct OCB value.
+
+If you use the object stored in SWITCH_TYPE1 slot of ng.wad you'll be able to have a working Key Pad for your levels.
+
+With keypad you can create door requiring password (keycode) or control with custom trigger for the elevators present in your level.
+The keypad work fine in SWITCH_TYPE1 slot but probably it should work also in Switch_type 2 and 3.
+
+In OCB window of switch_type object you have to set a combination of following OCB to do work it like a keypad:
+
+0-9999 = Keycode. This is the number (secret code) that Lara will have to type to activate the switch.
+
+10001 - 10010 =  If you set as key code number a value in the range of 10001- 10010 this means it's required a single key (like for elevator). In this case, the number of ocb describes the max number that user will be able to type. For example if you set 10007, players will be able to hit only number upto 7 (1 - 7) 
+This work mode is used for elevator but in short time will be added other features using this method to permit to player to choose between different choiches. For example to choose a door to open in a sequence of door, or the room where lara will be teleported.
+
++16384 = Signal a keypad switch. You have ALWAYS to add this value to your ocb number if you want that this switch object will work like a keypad.
+
+Some examples:
+
+To have a keypad requiring the secret code "7153": 
+7153 + 16384 = 23537
+So you have to type 23537 in OCB code of keypad.
+
+To have a keypad requiring a single number encloses in the range from "1" to "4":
+10004 + 16384 = 26388
+In this case the number to insert in OCB is 26388
+
+Remark:
+About the keypad mode with single key, currently there is only the trigger:
+
+Elevator. Move <#>elevator to floor number set in last keypad operation
+
+able to use it but many other will be added in short time.
+To use above trigger just you place switch_Type and trigger it with a trigger of SWITCH type (this is the usual old method to use switch objects)
+Then you set in OCB of switch type a value like (10004 + 16384 =) 26388
+
+
+Now you'll have to cast another common trigger in same sector, the trigger will be the flipeffect:
+
+
+Elevator. Move <#>elevator to floor number set in last keypad operation
+
+In game the trigger to move elevator will be performed ONLY if player insert a correct value, in this sample it will be a number enclosed in range "1" upto "4".
+When this happens this number will be used by trigger to move elevator as target floor.
+
+Remark: Please don't confuse the real keypad you find in slot SWITCH_TYPE1 with the fake keypad used for elevator you find in ANIMATING16_MIP slot of ng.wad.
+The fake keypad you find in this slot can be used only inside of elevator but it works in hardcoded mode when you create an elevator with internal keypad.
+The reason of this duplication is that in sectors where is the elevator it was not possible to use a real SWITCH_TYPE object and switch trigger because the elevator requires also DUMMY trigger and it's not possible overlap special triggers (like SWITCH and DUMMY), so I had to use an harcoded mode to avoid this problem using a fake switch trigger but really it is not a switch trigger you can use in otherside outside of elevator.
+
+

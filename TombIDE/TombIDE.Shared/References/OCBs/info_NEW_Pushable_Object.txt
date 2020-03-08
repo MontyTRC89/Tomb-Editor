@@ -1,0 +1,42 @@
+Remark: you can compute the ocb value for this object using the OCB Calculator you find in Tools2 panel of NG_Center program. Using that tool is very easy compute the correct OCB value.
+
+You can get all pushable objects treadable and climbable just set correct value in OCB field in the Object window of object. (Key 'O' in NGLE while the object is selected)
+
+0-31 = height of object collision. 1 click = 1 unit, so to set a pushable height 1 sector (4 clicks) you have to type 4
+You can create pushable height upto 7 sectors in this way.
+
+Then you can add one or more of following values to set corresponding feature:
+
+32 = The pushable obejcts with value 32 could be throwed in the empty. 
+Usage of this features requires some attention:
+For technical reason the engine requires to rotate (in immediate way) the facing of pushable to have always correct orienting (facing) of pushable in according with moving direction.
+
+You'll have no problems if your pushable has same textures on its sides and a simmetrical texture on top, while in other cases, when lara was pushing the object in the empty the pushable will change orienting to have correct facing in according with direction.
+
+You have two ways to solve this problem:
+- Texturixe the pushable to have same texture on 4 sides and place on top texture an image that remaing always the same rotaing it in 90 degrees steps.
+- Enable ocb values 512 or 1024 to forbid movements in some direction (east-west or south-north), and then place the pushable in the level with correct facing, looking the border where it could be throwed down.
+Remark: when pushable object is falling down it will destroy shatter objects and kill mortal creatures but it will not kill the semigods.
+
+64 = ENABLE new trng features for current pushable. WARNING, it's very important,  because ONLY if you add also the value 64 the special ocb features will work.
+When the value 64 is missing, next generation engine will ignore the ocb values of current pushable. 
+This method to work it is necessary to allow compatibily with Planet Effect you see in Lost Library. 
+When you want use pushables for planet effect, you have to type in ocb only nunber between  1 and 5 in different five pushables, since in ocb value typed the value 64 is missing, trng will ignore the ocb values for pushales of planet effects.
+Differently, when you want use new special features for next generation pushables , you have ALWAYS to add value 64 to other ocb values.
+128 = forbid pulling 
+256 = forbid pushing 
+512 = forbid east-west 
+1024 = forbid south-north
+2048 = climb west
+4096 = climb north
+8192 = climb east
+16384 = climb south
+
+About climb feature it should be used only for pushable height al least 8 clicks (8 clicks = 32 units as value to set in ocb for height)
+
+Remarks: 
+
+*If you want have a tradition pushable (tomb4 old style) just you omit to add the value 64 in your ocb.
+*If you want have some special features like forbid pushing/pulling or some direction, but you don't want that the pushable object was walkable, just you type like height the value 0 (zero) and then add only other ocb values to set the wished features.
+
+

@@ -1,0 +1,45 @@
+From TRNG version 1.1.8.7 you can set in each static object some OCB codes to set following features:
+
+4  = Disable collision. Lara could pass across the static
+
+8  = Set Glass Transparence. The static will have a glass transparency effect
+
+16 = Set Ice Transparence. The static will have a light transparence, like the ice
+
+32 = Damage Lara on physical contact. The static injures lara if she touches it. The damage removes 10 hp to lara (full vitality= 1000) anyway you can change this value using CUST_SET_STATIC_DAMAGE in Customize script command.
+Remark: remember that this damage will be continuosly applied while lara is touching the static, this means that also a little damage could kill lara in short time.
+
+64 = Burns Lara on physical contact. Lara will be burned anyway she will have yet some time to search water to save her.
+
+128 = Explode killing Lara on physical contact. With this ocb you can transform this static in a sort of mine.
+Remark: if you use this ocb code you should import in your wad the lara animation number 438. You can find it in newcity.wad
+If this animation is missing in your level, the trng will perform anyway the explosion but lara will be killed with default death animation used when lara has vitality = 0
+
+256 = Poison lara on physical contact. Lara will be poisoned when she touches the static. You can change the poison intensity using CUST_SET_STATIC_DAMAGE in Customize script command.
+
+512 = Huge Collision. Inform the trng engine that current static has a collision box larger than 6 x 6 sector. By default tomb4 ignored collision larger than 6x6 sector to optimize the speed in collision check, anyway if you want create a huge static to go over the 6x6 cut-off just you add the 512 ocb. In this way your static could have a box collision upto 36x36 sectors.
+
+1024 = Hard Shatter. In old tomb4 the shatter objects went destroyed by every weapon other by Skeleton and Templar. If you add 1024 to ocb of some shatter object you can increase its hardness and the static will be destroyed only by explosive ammo (not flash grenade)
+, sphinks, jeep, sidecar and Rollingball (if it has correct OCB).
+
+2048 = Heavy Trigger on contact. When Lara touches a static with OCB 2048 the heavy trigger placed under the static will be activated.
+
+4096 = Scalable. This flag allows to scale the size of current static, increasing or decreasing it.
+You type the ocb value to set the scale rating with following formula:
+Percentage * 4 + 4096
+where Percentage is a number in the range 1 - 1000, and 100 = original size.
+For example if you use 1000 the static will be ten times bigger than original. If you type 1 the static will be 100 times littler than original.
+About the max size the "ten times" is a theorical limit and it will work about mesh scaling but you could get an overflow in view box. In this case the item will be not visible in game from many positions.
+For this reason it's better don't execed the 400 % scaling (i.e. 4 times bigger)
+
+IMPORTANT: When you set the Scalable flag the previous (with lower value) flags will be ignored. This is necessary since this flag requires to use the ocb value to set the percentage of scaling. Anyway this flag will work like if the following ocb flags were always enabled: huge collision (512) and Heavy trigger on contact (2048)
+
+Remarks:
+*You can add above values but you cann't add the two different type of transparence.
+For example if you want the static was like glass and with no collision you can type in OCB window the value (8 + 4 =) 12
+Other example:
+To transform a static in a bomb was able to explode lara and burn her: 64+128 = 192
+
+*You can change in game time these attributes using the "Static. ..." flipeffects.
+
+

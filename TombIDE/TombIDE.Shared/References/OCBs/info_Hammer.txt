@@ -1,0 +1,5 @@
+1 = normal hammer ( hammer smashes, chain lifted then smashes again, and so on... ) 
+2 = Hammer smashes while lara stays on the trigger, when she steps of, the hammer will remain in his position, so if it was lifted up it will just stop and stay that way. makes explosive sound when smashes 
+3 = same as above but when lara gets of the trigger it first gets lifted to the ceiling and then it stops. 
+
+

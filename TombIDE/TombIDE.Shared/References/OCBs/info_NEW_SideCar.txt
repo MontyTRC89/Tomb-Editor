@@ -1,0 +1,3 @@
+By default the sidecar has always a beam light when is working.
+You can disable the beam light typing "1" in OCB field of SideCar object.
+

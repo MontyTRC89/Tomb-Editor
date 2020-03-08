@@ -1,0 +1,7 @@
+If door is a double door you must set:
+
+In left door the value 269
+In right door the value 276
+
+(From example in tut1 level)
+
