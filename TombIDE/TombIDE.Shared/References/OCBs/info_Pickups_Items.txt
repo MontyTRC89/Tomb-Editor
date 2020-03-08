@@ -1,0 +1,9 @@
+0 = the object is on the floor (pickup in an old stylee)
+1 = the object is `hidden' (Lara plays a stick hand in wall type animation)
+2 = the object is attached to a wall (Lara has to use the crowbar)
+3 = the object is on a high pedestal
+4 = the object is on a low pedestal
+64 +=  Add 64 to any of the above if you want the item activates a pickup trigger.
+128 = Set unlimited ammo, it works for all ammos execpt UZI
+256 = Set pickup for mirror puzzle, see Coastal with crossbow.
+

@@ -1,0 +1,16 @@
+The parallel bar is a new object imported from Tomb Raider Chronicles.
+The ocb value set the power for final jump.
+If you set 0, lara performs a very short jump, while with 200 she jumps about to 2 sectors of distance.
+I presume that 100 = one sector, but it's only a supposition because the formula changes the horizzontal and vertical speed for jump in a complicated way and only these speeds affect the covered distance for final jump.
+
+Remarks: 
+* Looking the code, apparently the compute of jump power changes in according with orienting (facing) of Parallel bar object respect to lara. I.e. if lara comes from a direction the ocb value will be used in a way, while if lara comes from opposite direction, the ocb value will be computed in other way. This means you can change the power of jump also inverting the facing of parallel bar, rotating it by 180 degrees.
+I've not had time to perform many analysis about this supposition but the original chronicles code seems to work in this way.
+
+* If you customize the parallel bar with PB_PROGRESSIVE_CHARGE flag, the value you set in OCB will be a starting point for progressive charge compute. 
+With PB_PROGRESSIVE_CHARGE the power of final jump will be increased by [OCB value] for each full rotation around the bar, so it's better in this case don't set too big values.
+The compute begins from current OCB value (minimum power) to a max of OCB multiplicated by 10 (max value).
+
+* When you use PB_PROGRESSIVE_CHARGE togheter with PB_LARA_CAN_SLIDE flag, the current power of jump will be reset everytime lara moves herself to left or to right.
+
+

@@ -1,0 +1,16 @@
+The ocb is a color in compact format, where each gradient (red, green, blue) has only 5 bits.
+The first 5 bits (with lower value) are the red, then it comes the geen, and at end with higher values the blue.
+
+Some example:
+
+31  = Full red
+992 = Full green
+31744 = Full Blue
+
+The adding some of above values (or using others with less intensity) you can get other colors.
+For example:
+
+31 + 992 = (red + green) = 1023 = yellow
+
+
+
