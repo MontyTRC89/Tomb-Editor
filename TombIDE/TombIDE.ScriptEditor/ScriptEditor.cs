@@ -32,6 +32,8 @@ namespace TombIDE.ScriptEditor
 		/// </summary>
 		private ScriptTextBox _textBox;
 
+		private FormDebugMode _formDebugMode;
+
 		#region Initialization
 
 		public ScriptEditor()
@@ -39,6 +41,8 @@ namespace TombIDE.ScriptEditor
 			KeyWords.SetupConstants();
 
 			InitializeComponent();
+
+			_formDebugMode = new FormDebugMode();
 		}
 
 		public void Initialize(IDE ide)
@@ -910,7 +914,10 @@ namespace TombIDE.ScriptEditor
 				var ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
 
 				if (ngErrorWindow != null)
+				{
+					_formDebugMode.Show();
 					return; // For Daniel
+				}
 
 				// Find the "Show Log" button
 				var logButton = ngWindow.Get<TestStack.White.UIItems.Button>("Show Log");
