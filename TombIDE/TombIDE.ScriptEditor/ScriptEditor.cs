@@ -832,6 +832,9 @@ namespace TombIDE.ScriptEditor
 
 		private void CompileTRNGScript()
 		{
+			foreach (Process fuckingDieAlreadyYouStupidFuck in Process.GetProcessesByName("ng_center"))
+				fuckingDieAlreadyYouStupidFuck.Kill();
+
 			if (!AreLibrariesRegistered())
 				return;
 
@@ -907,11 +910,7 @@ namespace TombIDE.ScriptEditor
 				var ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
 
 				if (ngErrorWindow != null)
-				{
-					// Stop the program here and wait for the error message box to close
-					while (!ngErrorWindow.IsClosed)
-					{ continue; }
-				}
+					return; // For Daniel
 
 				// Find the "Show Log" button
 				var logButton = ngWindow.Get<TestStack.White.UIItems.Button>("Show Log");
@@ -947,6 +946,14 @@ namespace TombIDE.ScriptEditor
 				// Select the "Compiler Logs" tab
 				tabControl_Info.SelectTab(1);
 				tabControl_Info.Invalidate();
+
+				System.Threading.Thread.Sleep(100);
+
+				foreach (Process fuckingDieAlreadyYouStupidFuck in Process.GetProcessesByName("notepad"))
+				{
+					if (fuckingDieAlreadyYouStupidFuck.MainWindowTitle.Contains("script_log"))
+						fuckingDieAlreadyYouStupidFuck.Kill();
+				}
 			}
 			catch (ElementNotAvailableException)
 			{
