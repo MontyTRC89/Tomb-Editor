@@ -390,7 +390,7 @@ namespace TombEditor.Forms
                     }
                 }
                 if (!added)
-                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false,false, _levelSettings));
+                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false,false,false, _levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
 

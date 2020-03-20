@@ -175,6 +175,7 @@
             this.colMergeStatics = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.colInterpretShadesAsEffect = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.colTintAsAmbient = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colClearShades = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -220,14 +221,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -968,7 +969,8 @@
             this.colMeshName,
             this.colMergeStatics,
             this.colInterpretShadesAsEffect,
-            this.colTintAsAmbient});
+            this.colTintAsAmbient,
+            this.colClearShades});
             this.staticMeshMergeDataGridView.DisableSelection = true;
             this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(6, 19);
             this.staticMeshMergeDataGridView.MultiSelect = false;
@@ -1960,6 +1962,7 @@
             // 
             this.colMeshName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.colMeshName.DataPropertyName = "StaticMesh";
+            this.colMeshName.FillWeight = 80F;
             this.colMeshName.HeaderText = "Mesh name";
             this.colMeshName.Name = "colMeshName";
             this.colMeshName.ReadOnly = true;
@@ -1967,26 +1970,39 @@
             // colMergeStatics
             // 
             this.colMergeStatics.DataPropertyName = "Merge";
-            this.colMergeStatics.FillWeight = 33F;
+            this.colMergeStatics.FillWeight = 20F;
             this.colMergeStatics.HeaderText = "Merge";
             this.colMergeStatics.Name = "colMergeStatics";
             this.colMergeStatics.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.colMergeStatics.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colMergeStatics.ToolTipText = "Whether to merge the Mesh";
             // 
             // colInterpretShadesAsEffect
             // 
             this.colInterpretShadesAsEffect.DataPropertyName = "InterpretShadesAsEffect";
-            this.colInterpretShadesAsEffect.FillWeight = 33F;
+            this.colInterpretShadesAsEffect.FillWeight = 50F;
             this.colInterpretShadesAsEffect.HeaderText = "Interpret shades as effect";
             this.colInterpretShadesAsEffect.Name = "colInterpretShadesAsEffect";
+            this.colInterpretShadesAsEffect.ToolTipText = "See description below";
             // 
             // colTintAsAmbient
             // 
             this.colTintAsAmbient.DataPropertyName = "TintAsAmbient";
-            this.colTintAsAmbient.FillWeight = 33F;
+            this.colTintAsAmbient.FillWeight = 60F;
             this.colTintAsAmbient.HeaderText = "Use tint as ambient color";
             this.colTintAsAmbient.Name = "colTintAsAmbient";
             this.colTintAsAmbient.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colTintAsAmbient.ToolTipText = "Uses the Static Mesh\'s Tint and uses it as the base for lighting";
+            // 
+            // colClearShades
+            // 
+            this.colClearShades.DataPropertyName = "ClearShades";
+            this.colClearShades.FillWeight = 50F;
+            this.colClearShades.HeaderText = "Clear Vertex Shades";
+            this.colClearShades.Name = "colClearShades";
+            this.colClearShades.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colClearShades.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colClearShades.ToolTipText = "The shades of the mesh are ignored for lighting calculation";
             // 
             // FormLevelSettings
             // 
@@ -2221,5 +2237,6 @@
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colMergeStatics;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colInterpretShadesAsEffect;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colTintAsAmbient;
+        private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colClearShades;
     }
 }
