@@ -465,7 +465,7 @@ namespace TombLib.LevelData.IO
                         {
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades,false, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades,false,false, settings));
                             return true;
                         }
                         else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry2)
@@ -473,9 +473,19 @@ namespace TombLib.LevelData.IO
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
                             bool tintAsAmbient = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient,false, settings));
                             return true;
-                        }else return false;
+                        }
+                        else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry3)
+                        {
+                            uint value = chunkIO.Raw.ReadUInt32();
+                            bool vertexShades = chunkIO.Raw.ReadBoolean();
+                            bool tintAsAmbient = chunkIO.Raw.ReadBoolean();
+                            bool clearShades = chunkIO.Raw.ReadBoolean();
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient, clearShades, settings));
+                            return true;
+                        }
+                        else return false;
                     });
                 }else
                     return false;

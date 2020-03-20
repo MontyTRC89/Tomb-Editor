@@ -305,6 +305,7 @@ namespace TombLib.LevelData.Compilers
                     if (entry == null)
                         continue;
                     bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
+                    bool clearShades = entry.ClearShades;
                     int meshVertexBase = roomVertices.Count;
                     var worldTransform = staticMesh.RotationMatrix *
                                          Matrix4x4.CreateTranslation(staticMesh.Position);
@@ -330,6 +331,7 @@ namespace TombLib.LevelData.Compilers
                         }
                         else
                         {
+                            if(!clearShades)
                             //If we have shades, use them as a factor for the resulting vertex color
                             if (j < wadStatic.Mesh.VerticesShades.Count)
                             {

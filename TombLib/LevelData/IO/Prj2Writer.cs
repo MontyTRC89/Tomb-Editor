@@ -260,12 +260,12 @@ namespace TombLib.LevelData.IO
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes,UInt16.MaxValue))
                 {
                     foreach(var entry in settings.AutoStaticMeshMerges)
-                        using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry2))
+                        using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry3))
                         {
                             chunkIO.Raw.Write(entry.meshId);
                             chunkIO.Raw.Write(entry.InterpretShadesAsEffect);
                             chunkIO.Raw.Write(entry.TintAsAmbient);
-
+                            chunkIO.Raw.Write(entry.ClearShades);
                         }
                     chunkIO.WriteChunkEnd();
                 }
