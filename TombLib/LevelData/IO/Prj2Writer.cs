@@ -399,7 +399,7 @@ namespace TombLib.LevelData.IO
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMovable2, () =>
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMovable3, () =>
                         {
                             var instance = (MoveableInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -412,6 +412,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
+                            chunkIO.Raw.Write(instance.Color);
                         });
                     else if (o is StaticInstance)
                         chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectStatic2, () =>
