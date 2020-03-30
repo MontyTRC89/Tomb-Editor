@@ -855,7 +855,7 @@ namespace TombLib.LevelData.IO
                     instance.CodeBits = chunkIO.Raw.ReadByte();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
-                }
+                }else 
                 if (id3 == Prj2Chunks.ObjectMovable2)
                 {
                     var instance = new MoveableInstance();
@@ -876,6 +876,29 @@ namespace TombLib.LevelData.IO
                         }
                         return false;
                     });
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }else if (id3 == Prj2Chunks.ObjectMovable2)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new Wad.WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    chunkIO.ReadChunks((id4, chunkSize4) =>
+                    {
+                        if (id4 == Prj2Chunks.ObjectItemLuaId)
+                        {
+                            instance.LuaId = chunkIO.ReadChunkInt(chunkSize4);
+                            return true;
+                        }
+                        return false;
+                    });
+                    instance.Color = chunkIO.Raw.ReadVector3();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
