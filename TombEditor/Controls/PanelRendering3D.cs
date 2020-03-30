@@ -1819,7 +1819,7 @@ namespace TombEditor.Controls
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                 }
 
-            if (Array.IndexOf(roomsWhoseObjectsToDraw, _editor.SelectedObject?.Room) != -1 && _editor.SelectedObject is LightInstance)
+            if (Array.IndexOf(roomsWhoseObjectsToDraw, _editor.SelectedObject?.Room) != -1 && _editor.SelectedObject is LightInstance && ShowLightMeshes)
             {
                 LightInstance light = (LightInstance)_editor.SelectedObject;
 
