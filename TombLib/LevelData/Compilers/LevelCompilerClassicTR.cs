@@ -462,7 +462,7 @@ namespace TombLib.LevelData.Compilers
                     else
                     {
                         int flags = (instance.CodeBits << 9) | (instance.ClearBody ? 0x80 : 0) | (instance.Invisible ? 0x100 : 0);
-
+                        ushort color = instance.Color.Equals(Vector3.One) ? (ushort)0xFFFF : PackColorTo16Bit(instance.Color);
                         _items.Add(new tr_item
                         {
                             X = (int)Math.Round(position.X),
@@ -471,7 +471,7 @@ namespace TombLib.LevelData.Compilers
                             ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
-                            Intensity1 = -1,
+                            Intensity1 = color,
                             Ocb = instance.Ocb,
                             Flags = unchecked((ushort)flags)
                         });
@@ -516,6 +516,7 @@ namespace TombLib.LevelData.Compilers
             if (_items.Count > maxSafeItemCount)
                 _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
         }
+
 
         public string GetTRNGVersion()
         {

@@ -892,7 +892,7 @@ namespace TombLib.LevelData.Compilers
         public int Y;
         public int Z;
         public ushort Angle;
-        public short Intensity1;
+        public ushort Intensity1;
         public short Ocb;
         public ushort Flags;
     }
