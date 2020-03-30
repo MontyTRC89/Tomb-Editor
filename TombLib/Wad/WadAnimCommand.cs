@@ -17,6 +17,7 @@ namespace TombLib.Wad
         // Only for old Wad2 importing
         public WadSoundInfo SoundInfoObsolete { get; set; }
 
+        public string Description => ToString();
         public override string ToString()
         {
             switch (Type)

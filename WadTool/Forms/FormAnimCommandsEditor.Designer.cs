@@ -20,17 +20,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.butAddEffect = new DarkUI.Controls.DarkButton();
             this.butDeleteEffect = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
-            this.lstCommands = new DarkUI.Controls.DarkListView();
+            this.gridViewCommands = new DarkUI.Controls.DarkDataGridView();
+            this.colCommands = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.butCopy = new DarkUI.Controls.DarkButton();
             this.butCommandDown = new DarkUI.Controls.DarkButton();
             this.butCommandUp = new DarkUI.Controls.DarkButton();
             this.animCommandEditor = new WadTool.AnimCommandEditor();
-            this.butCopy = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewCommands)).BeginInit();
             this.SuspendLayout();
             // 
             // btCancel
@@ -83,8 +86,8 @@
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkGroupBox1.Controls.Add(this.gridViewCommands);
             this.darkGroupBox1.Controls.Add(this.butCopy);
-            this.darkGroupBox1.Controls.Add(this.lstCommands);
             this.darkGroupBox1.Controls.Add(this.butCommandDown);
             this.darkGroupBox1.Controls.Add(this.butCommandUp);
             this.darkGroupBox1.Controls.Add(this.butAddEffect);
@@ -95,17 +98,49 @@
             this.darkGroupBox1.TabIndex = 99;
             this.darkGroupBox1.TabStop = false;
             // 
-            // lstCommands
+            // gridViewCommands
             // 
-            this.lstCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstCommands.Location = new System.Drawing.Point(6, 7);
-            this.lstCommands.Name = "lstCommands";
-            this.lstCommands.Size = new System.Drawing.Size(329, 153);
-            this.lstCommands.TabIndex = 98;
-            this.lstCommands.Text = "darkListView1";
-            this.lstCommands.SelectedIndicesChanged += new System.EventHandler(this.lstCommands_SelectedIndicesChanged);
+            this.gridViewCommands.AllowUserToAddRows = false;
+            this.gridViewCommands.AllowUserToDragDropRows = false;
+            this.gridViewCommands.AllowUserToOrderColumns = true;
+            this.gridViewCommands.AllowUserToResizeColumns = false;
+            this.gridViewCommands.AutoGenerateColumns = false;
+            this.gridViewCommands.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridViewCommands.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.gridViewCommands.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+            this.gridViewCommands.ColumnHeadersHeight = 23;
+            this.gridViewCommands.ColumnHeadersVisible = false;
+            this.gridViewCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colCommands});
+            this.gridViewCommands.Location = new System.Drawing.Point(7, 12);
+            this.gridViewCommands.Name = "gridViewCommands";
+            this.gridViewCommands.ReadOnly = true;
+            this.gridViewCommands.RowHeadersWidth = 41;
+            this.gridViewCommands.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridViewCommands.Size = new System.Drawing.Size(328, 148);
+            this.gridViewCommands.TabIndex = 100;
+            this.gridViewCommands.SelectionChanged += new System.EventHandler(this.GridViewCommands_SelectionChanged);
+            // 
+            // colCommands
+            // 
+            this.colCommands.DataPropertyName = "Description";
+            dataGridViewCellStyle1.NullValue = "//";
+            this.colCommands.DefaultCellStyle = dataGridViewCellStyle1;
+            this.colCommands.HeaderText = "Commands";
+            this.colCommands.MaxInputLength = 100;
+            this.colCommands.Name = "colCommands";
+            this.colCommands.ReadOnly = true;
+            // 
+            // butCopy
+            // 
+            this.butCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCopy.Checked = false;
+            this.butCopy.Image = global::WadTool.Properties.Resources.copy_16;
+            this.butCopy.Location = new System.Drawing.Point(341, 36);
+            this.butCopy.Name = "butCopy";
+            this.butCopy.Size = new System.Drawing.Size(24, 24);
+            this.butCopy.TabIndex = 99;
+            this.butCopy.Click += new System.EventHandler(this.butCopy_Click);
             // 
             // butCommandDown
             // 
@@ -139,18 +174,7 @@
             this.animCommandEditor.Name = "animCommandEditor";
             this.animCommandEditor.Size = new System.Drawing.Size(371, 141);
             this.animCommandEditor.TabIndex = 100;
-            this.animCommandEditor.AnimCommandChanged += new System.EventHandler<WadTool.AnimCommandEditor.AnimCommandEventArgs>(this.animCommandEditor_AnimCommandChanged);
-            // 
-            // butCopy
-            // 
-            this.butCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCopy.Checked = false;
-            this.butCopy.Image = global::WadTool.Properties.Resources.copy_16;
-            this.butCopy.Location = new System.Drawing.Point(341, 36);
-            this.butCopy.Name = "butCopy";
-            this.butCopy.Size = new System.Drawing.Size(24, 24);
-            this.butCopy.TabIndex = 99;
-            this.butCopy.Click += new System.EventHandler(this.butCopy_Click);
+            this.animCommandEditor.AnimCommandChanged += new System.EventHandler<WadTool.AnimCommandEditor.AnimCommandEventArgs>(this.AnimCommandEditor_AnimCommandChanged);
             // 
             // FormAnimCommandsEditor
             // 
@@ -174,6 +198,7 @@
             this.Text = "Anim commands editor";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAnimCommandsEditor_KeyDown);
             this.darkGroupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridViewCommands)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -186,8 +211,9 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkButton butCommandDown;
         private DarkUI.Controls.DarkButton butCommandUp;
-        private DarkUI.Controls.DarkListView lstCommands;
         private AnimCommandEditor animCommandEditor;
         private DarkUI.Controls.DarkButton butCopy;
+        private DarkUI.Controls.DarkDataGridView gridViewCommands;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCommands;
     }
 }
