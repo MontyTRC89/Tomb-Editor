@@ -78,6 +78,7 @@ namespace TombEditor.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(456, 389);
             this.butCancel.Name = "butCancel";
@@ -90,6 +91,7 @@ namespace TombEditor.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOK.Checked = false;
             this.butOK.Location = new System.Drawing.Point(370, 389);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
@@ -272,7 +274,7 @@ namespace TombEditor.Forms
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label5.Location = new System.Drawing.Point(12, 74);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.Size = new System.Drawing.Size(38, 13);
             this.label5.TabIndex = 26;
             this.label5.Text = "Timer:";
             // 
@@ -308,68 +310,61 @@ namespace TombEditor.Forms
             // 
             // numSequence
             // 
-            this.numSequence.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numSequence.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numSequence.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numSequence.Location = new System.Drawing.Point(82, 20);
+            this.numSequence.LoopValues = false;
             this.numSequence.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numSequence.LoopValues = false;
             this.numSequence.Name = "numSequence";
             this.numSequence.Size = new System.Drawing.Size(71, 22);
             this.numSequence.TabIndex = 0;
             // 
             // numNumber
             // 
-            this.numNumber.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numNumber.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numNumber.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numNumber.Location = new System.Drawing.Point(82, 46);
+            this.numNumber.LoopValues = false;
             this.numNumber.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numNumber.LoopValues = false;
             this.numNumber.Name = "numNumber";
             this.numNumber.Size = new System.Drawing.Size(71, 22);
             this.numNumber.TabIndex = 1;
             // 
             // numTimer
             // 
-            this.numTimer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numTimer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numTimer.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numTimer.Location = new System.Drawing.Point(82, 72);
+            this.numTimer.LoopValues = false;
             this.numTimer.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-            this.numTimer.LoopValues = false;
             this.numTimer.Name = "numTimer";
             this.numTimer.Size = new System.Drawing.Size(71, 22);
             this.numTimer.TabIndex = 2;
             // 
             // numSpeed
             // 
-            this.numSpeed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numSpeed.DecimalPlaces = 2;
             this.numSpeed.IncrementAlternate = new decimal(new int[] {
             10,
             0,
@@ -383,56 +378,52 @@ namespace TombEditor.Forms
             // 
             // numFOV
             // 
-            this.numFOV.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numFOV.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.numFOV.DecimalPlaces = 2;
             this.numFOV.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numFOV.Location = new System.Drawing.Point(82, 124);
+            this.numFOV.LoopValues = false;
             this.numFOV.Maximum = new decimal(new int[] {
             360,
             0,
             0,
             0});
-            this.numFOV.LoopValues = false;
             this.numFOV.Name = "numFOV";
             this.numFOV.Size = new System.Drawing.Size(71, 22);
             this.numFOV.TabIndex = 4;
             // 
             // numRoll
             // 
-            this.numRoll.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numRoll.DecimalPlaces = 2;
-            this.numRoll.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numRoll.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numRoll.Location = new System.Drawing.Point(82, 150);
+            this.numRoll.LoopValues = false;
             this.numRoll.Maximum = new decimal(new int[] {
             360,
             0,
             0,
             0});
-            this.numRoll.LoopValues = false;
             this.numRoll.Name = "numRoll";
             this.numRoll.Size = new System.Drawing.Size(71, 22);
             this.numRoll.TabIndex = 5;
             // 
             // numRotationX
             // 
-            this.numRotationX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numRotationX.DecimalPlaces = 2;
-            this.numRotationX.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numRotationX.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numRotationX.Location = new System.Drawing.Point(82, 176);
+            this.numRotationX.LoopValues = false;
             this.numRotationX.Maximum = new decimal(new int[] {
             90,
             0,
@@ -443,28 +434,25 @@ namespace TombEditor.Forms
             0,
             0,
             -2147483648});
-            this.numRotationX.LoopValues = false;
             this.numRotationX.Name = "numRotationX";
             this.numRotationX.Size = new System.Drawing.Size(71, 22);
             this.numRotationX.TabIndex = 6;
             // 
             // numRotationY
             // 
-            this.numRotationY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numRotationY.DecimalPlaces = 2;
-            this.numRotationY.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numRotationY.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
             this.numRotationY.Location = new System.Drawing.Point(82, 202);
+            this.numRotationY.LoopValues = false;
             this.numRotationY.Maximum = new decimal(new int[] {
             360,
             0,
             0,
             0});
-            this.numRotationY.LoopValues = false;
             this.numRotationY.Name = "numRotationY";
             this.numRotationY.Size = new System.Drawing.Size(71, 22);
             this.numRotationY.TabIndex = 7;
