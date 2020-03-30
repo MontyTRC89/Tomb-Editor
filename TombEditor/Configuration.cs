@@ -1,6 +1,7 @@
 ﻿using DarkUI.Docking;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -84,6 +85,7 @@ namespace TombEditor
         public bool Rendering3D_AutoBookmarkSelectedObject { get; set; } = false;
         public bool Rendering3D_CursorWarping { get; set; } = true;
         public int Rendering3D_FlyModeMoveSpeed { get; set; } = 5;
+        public bool Rendering3D_ShowLightRadius { get; set; } = true;
 
         // 2D Map options 
 
@@ -190,7 +192,6 @@ namespace TombEditor
         public Point Window_FormFindUntextured_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormFindUntextured_Size { get; set; } = new Size(330, 400);
         public bool Window_FormFindUntextured_Maximized { get; set; } = false;
-
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 
