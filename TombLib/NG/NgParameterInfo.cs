@@ -399,7 +399,8 @@ namespace TombLib.NG
                             "\n; <#> " + trigger.Target +
                             "\n; <&> " + trigger.Timer  +
                             (trigger.Extra == null ? "" : "\n; <E> " + trigger.Extra) +
-                            "\n; Copy next line to your script: \n\n"
+                            "\n; Copy following values to your script:"+
+                            "\n; "
                         : "")
                         + result;
             }
