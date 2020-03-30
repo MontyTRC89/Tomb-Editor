@@ -83,11 +83,6 @@
             this.butSelectAllStatics = new DarkUI.Controls.DarkButton();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.staticMeshMergeDataGridView = new DarkUI.Controls.DarkDataGridView();
-            this.colMeshName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colMergeStatics = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.colInterpretShadesAsEffect = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.colTintAsAmbient = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
-            this.colClearShades = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel17 = new DarkUI.Controls.DarkLabel();
             this.tabSkyAndFont = new System.Windows.Forms.TabPage();
@@ -176,6 +171,11 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMeshName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMergeStatics = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colInterpretShadesAsEffect = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colTintAsAmbient = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
+            this.colClearShades = new DarkUI.Controls.DarkDataGridViewCheckBoxColumn();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -976,56 +976,9 @@
             this.staticMeshMergeDataGridView.MultiSelect = false;
             this.staticMeshMergeDataGridView.Name = "staticMeshMergeDataGridView";
             this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
+            this.staticMeshMergeDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(769, 383);
             this.staticMeshMergeDataGridView.TabIndex = 2;
-            this.staticMeshMergeDataGridView.ToggleCheckBoxOnClick = true;
-            this.staticMeshMergeDataGridView.ToggleCheckBoxOnDoubleClick = true;
-            // 
-            // colMeshName
-            // 
-            this.colMeshName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colMeshName.DataPropertyName = "StaticMesh";
-            this.colMeshName.FillWeight = 80F;
-            this.colMeshName.HeaderText = "Mesh name";
-            this.colMeshName.Name = "colMeshName";
-            this.colMeshName.ReadOnly = true;
-            // 
-            // colMergeStatics
-            // 
-            this.colMergeStatics.DataPropertyName = "Merge";
-            this.colMergeStatics.FillWeight = 20F;
-            this.colMergeStatics.HeaderText = "Merge";
-            this.colMergeStatics.Name = "colMergeStatics";
-            this.colMergeStatics.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colMergeStatics.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.colMergeStatics.ToolTipText = "Whether to merge the Mesh";
-            // 
-            // colInterpretShadesAsEffect
-            // 
-            this.colInterpretShadesAsEffect.DataPropertyName = "InterpretShadesAsEffect";
-            this.colInterpretShadesAsEffect.FillWeight = 50F;
-            this.colInterpretShadesAsEffect.HeaderText = "Interpret shades as effect";
-            this.colInterpretShadesAsEffect.Name = "colInterpretShadesAsEffect";
-            this.colInterpretShadesAsEffect.ToolTipText = "See description below";
-            // 
-            // colTintAsAmbient
-            // 
-            this.colTintAsAmbient.DataPropertyName = "TintAsAmbient";
-            this.colTintAsAmbient.FillWeight = 60F;
-            this.colTintAsAmbient.HeaderText = "Use tint as ambient color";
-            this.colTintAsAmbient.Name = "colTintAsAmbient";
-            this.colTintAsAmbient.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colTintAsAmbient.ToolTipText = "Uses the Static Mesh\'s Tint and uses it as the base for lighting";
-            // 
-            // colClearShades
-            // 
-            this.colClearShades.DataPropertyName = "ClearShades";
-            this.colClearShades.FillWeight = 50F;
-            this.colClearShades.HeaderText = "Clear Vertex Shades";
-            this.colClearShades.Name = "colClearShades";
-            this.colClearShades.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.colClearShades.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.colClearShades.ToolTipText = "The shades of the mesh are ignored for lighting calculation";
             // 
             // darkLabel18
             // 
@@ -1535,14 +1488,13 @@
             this.selectedSoundsDataGridView.ShowRowErrors = false;
             this.selectedSoundsDataGridView.Size = new System.Drawing.Size(769, 201);
             this.selectedSoundsDataGridView.TabIndex = 116;
-            this.selectedSoundsDataGridView.ToggleCheckBoxOnClick = true;
-            this.selectedSoundsDataGridView.ToggleCheckBoxOnDoubleClick = true;
             this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
             // 
             // colSoundsEnabled
             // 
             this.colSoundsEnabled.HeaderText = "";
             this.colSoundsEnabled.Name = "colSoundsEnabled";
+            this.colSoundsEnabled.ReadOnly = true;
             this.colSoundsEnabled.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.colSoundsEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.colSoundsEnabled.Width = 40;
@@ -2004,6 +1956,56 @@
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
+            // colMeshName
+            // 
+            this.colMeshName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.colMeshName.DataPropertyName = "StaticMesh";
+            this.colMeshName.FillWeight = 40F;
+            this.colMeshName.HeaderText = "Mesh name";
+            this.colMeshName.Name = "colMeshName";
+            this.colMeshName.ReadOnly = true;
+            // 
+            // colMergeStatics
+            // 
+            this.colMergeStatics.DataPropertyName = "Merge";
+            this.colMergeStatics.FillWeight = 20F;
+            this.colMergeStatics.HeaderText = "Merge";
+            this.colMergeStatics.Name = "colMergeStatics";
+            this.colMergeStatics.ReadOnly = true;
+            this.colMergeStatics.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colMergeStatics.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colMergeStatics.ToolTipText = "Whether to merge the Mesh";
+            // 
+            // colInterpretShadesAsEffect
+            // 
+            this.colInterpretShadesAsEffect.DataPropertyName = "InterpretShadesAsEffect";
+            this.colInterpretShadesAsEffect.FillWeight = 50F;
+            this.colInterpretShadesAsEffect.HeaderText = "Interpret shades as effect";
+            this.colInterpretShadesAsEffect.Name = "colInterpretShadesAsEffect";
+            this.colInterpretShadesAsEffect.ReadOnly = true;
+            this.colInterpretShadesAsEffect.ToolTipText = "See description below";
+            // 
+            // colTintAsAmbient
+            // 
+            this.colTintAsAmbient.DataPropertyName = "TintAsAmbient";
+            this.colTintAsAmbient.FillWeight = 60F;
+            this.colTintAsAmbient.HeaderText = "Use tint as ambient color";
+            this.colTintAsAmbient.Name = "colTintAsAmbient";
+            this.colTintAsAmbient.ReadOnly = true;
+            this.colTintAsAmbient.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colTintAsAmbient.ToolTipText = "Uses the Static Mesh\'s Tint and uses it as the base for lighting";
+            // 
+            // colClearShades
+            // 
+            this.colClearShades.DataPropertyName = "ClearShades";
+            this.colClearShades.FillWeight = 50F;
+            this.colClearShades.HeaderText = "Clear vertex shades";
+            this.colClearShades.Name = "colClearShades";
+            this.colClearShades.ReadOnly = true;
+            this.colClearShades.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.colClearShades.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.colClearShades.ToolTipText = "The shades of the mesh are ignored for lighting calculation";
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2225,6 +2227,7 @@
         private DarkUI.Controls.DarkDataGridViewButtonColumn SoundsCatalogsAssignColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogsSoundCountColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoundsCatalogMessageColumn;
+        private DarkUI.Controls.DarkCheckBox cbAutodetectIfNoneSelected;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colSoundsEnabled;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoundID;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
@@ -2232,7 +2235,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private DarkUI.Controls.DarkCheckBox cbAutodetectIfNoneSelected;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMeshName;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colMergeStatics;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn colInterpretShadesAsEffect;
