@@ -1,4 +1,5 @@
-﻿using TombLib.Wad;
+﻿using System.Numerics;
+using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
@@ -12,7 +13,7 @@ namespace TombLib.LevelData
         public bool Invisible { get; set; } = false;
         public bool ClearBody { get; set; } = false;
         public byte CodeBits { get; set; } = 0; // Only the lower 5 bits are used.
-
+        public Vector3 Color { get; set; } = new Vector3(1.0f);
         public override bool CopyToAlternateRooms => false;
         public override ItemType ItemType => new ItemType(WadObjectId, Room?.Level?.Settings);
     }

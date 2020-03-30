@@ -143,5 +143,6 @@ namespace TombLib.LevelData.IO
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry2 = ChunkId.FromString("TeMergeStaticsEntry2");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry3 = ChunkId.FromString("TeMergeStaticsEntry3");
         public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
+        /**********/public static readonly ChunkId ObjectMovable3 = ChunkId.FromString("TeMov3");
     }
 }

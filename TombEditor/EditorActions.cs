@@ -365,6 +365,31 @@ namespace TombEditor
             }
         }
 
+        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj,Action<Vector3> newColorCallback)
+        {
+            using (var colorDialog = new RealtimeColorDialog(
+                _editor.Configuration.ColorDialog_Position.X,
+                _editor.Configuration.ColorDialog_Position.Y,
+                c =>
+                {
+                    obj.Color = c.ToFloat3Color();
+                    _editor.ObjectChange(obj, ObjectChangeType.Change);
+                }, _editor.Configuration.UI_ColorScheme))
+            {
+                colorDialog.Color = (obj.Color).ToWinFormsColor();
+                var oldLightColor = colorDialog.Color;
+
+                if (colorDialog.ShowDialog(owner) != DialogResult.OK)
+                    colorDialog.Color = oldLightColor;
+
+                obj.Color = colorDialog.Color.ToFloat3Color();
+                _editor.ObjectChange(obj, ObjectChangeType.Change);
+
+                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
+                newColorCallback.Invoke(colorDialog.Color.ToFloat3Color());
+            }
+        }
+
         public static void SmoothSector(Room room, int x, int z, BlockVertical vertical, bool disableUndo = false)
         {
             var currBlock = room.GetBlockTryThroughPortal(x, z);
