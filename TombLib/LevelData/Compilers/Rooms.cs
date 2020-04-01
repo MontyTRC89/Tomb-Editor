@@ -19,6 +19,10 @@ namespace TombLib.LevelData.Compilers
 
         private void BuildRooms()
         {
+            ReportProgress(5, "Lighting Rooms");
+            Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
+                room.RebuildLighting(true);
+            });
             ReportProgress(15, "Building rooms");
 
             foreach (var room in _level.Rooms.Where(r => r != null))
@@ -128,7 +132,7 @@ namespace TombLib.LevelData.Compilers
                         (!light.IsStaticallyUsed && !forImportedGeometry))
                         continue;
 
-                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false);                    
+                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false,false);                    
                 }
 
             return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;

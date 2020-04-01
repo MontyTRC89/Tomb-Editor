@@ -142,6 +142,8 @@ namespace TombEditor
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
         public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
+        // Geometry options
+        public bool Geometry_HighQualityLightPreview { get; set; } = false;
 
         // Toolbar button order
 
