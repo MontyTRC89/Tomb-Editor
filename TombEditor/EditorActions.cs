@@ -58,7 +58,7 @@ namespace TombEditor
         {
             var watch = new Stopwatch();
             watch.Start();
-            room.SmartBuildGeometry(area);
+            room.SmartBuildGeometry(area,_editor.Configuration.Geometry_HighQualityLightPreview);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
             _editor.RoomGeometryChange(room);
@@ -715,7 +715,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-                instance.Room.RoomGeometry?.Relight(instance.Room);
+                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -747,7 +747,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-                instance.Room.RoomGeometry?.Relight(instance.Room);
+                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -923,8 +923,8 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
             {
-                room.BuildGeometry();
-                _editor.RoomGeometryChange(room);
+                room.RebuildLighting(true);
+                //_editor.RoomGeometryChange(room);
             }
             if (instance is PortalInstance)
             {
@@ -3248,7 +3248,7 @@ namespace TombEditor
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 room.AmbientLight = _editor.SelectedRoom.AmbientLight;
-            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => room.RoomGeometry?.Relight(room));
+            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview); });
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
         }
@@ -3264,7 +3264,17 @@ namespace TombEditor
                 return;
 
             setLightValue(light, newValue.Value);
-            light.Room.RoomGeometry?.Relight(light.Room);
+            light.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            _editor.ObjectChange(light, ObjectChangeType.Change);
+        }
+
+        public static void UpdateLightQuality(LightQuality newQuality)
+        {
+            var light = _editor.SelectedObject as LightInstance;
+            if (light == null)
+                return;
+            light.Quality = newQuality;
+            light.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 

@@ -45,6 +45,8 @@
             this.numDirectionY = new DarkUI.Controls.DarkNumericUpDown();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cbLightIsUsedForImportedGeometry = new DarkUI.Controls.DarkCheckBox();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.cbLightQuality = new DarkUI.Controls.DarkComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).BeginInit();
@@ -207,6 +209,7 @@
             // 
             // butAddFogBulb
             // 
+            this.butAddFogBulb.Checked = false;
             this.butAddFogBulb.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddFogBulb.Image = global::TombEditor.Properties.Resources.objects_Fog_16;
             this.butAddFogBulb.Location = new System.Drawing.Point(77, 102);
@@ -219,6 +222,7 @@
             // 
             // butAddEffectLight
             // 
+            this.butAddEffectLight.Checked = false;
             this.butAddEffectLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddEffectLight.Image = global::TombEditor.Properties.Resources.objects_Effect_16;
             this.butAddEffectLight.Location = new System.Drawing.Point(77, 73);
@@ -231,6 +235,7 @@
             // 
             // butAddSpotLight
             // 
+            this.butAddSpotLight.Checked = false;
             this.butAddSpotLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddSpotLight.Image = global::TombEditor.Properties.Resources.objects_Spotlight_16;
             this.butAddSpotLight.Location = new System.Drawing.Point(77, 44);
@@ -243,6 +248,7 @@
             // 
             // butAddSun
             // 
+            this.butAddSun.Checked = false;
             this.butAddSun.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddSun.Image = global::TombEditor.Properties.Resources.objects_sun_16;
             this.butAddSun.Location = new System.Drawing.Point(3, 102);
@@ -255,6 +261,7 @@
             // 
             // butAddShadow
             // 
+            this.butAddShadow.Checked = false;
             this.butAddShadow.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddShadow.Image = global::TombEditor.Properties.Resources.objects_Shadow_16;
             this.butAddShadow.Location = new System.Drawing.Point(3, 73);
@@ -267,6 +274,7 @@
             // 
             // butAddPointLight
             // 
+            this.butAddPointLight.Checked = false;
             this.butAddPointLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddPointLight.Image = global::TombEditor.Properties.Resources.objects_LightPoint_16;
             this.butAddPointLight.Location = new System.Drawing.Point(3, 44);
@@ -290,10 +298,8 @@
             // 
             // numIntensity
             // 
-            this.numIntensity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numIntensity.DecimalPlaces = 2;
             this.numIntensity.Enabled = false;
-            this.numIntensity.ForeColor = System.Drawing.Color.Gainsboro;
             this.numIntensity.Increment = new decimal(new int[] {
             3,
             0,
@@ -305,6 +311,7 @@
             0,
             131072});
             this.numIntensity.Location = new System.Drawing.Point(198, 53);
+            this.numIntensity.LoopValues = false;
             this.numIntensity.Maximum = new decimal(new int[] {
             128,
             0,
@@ -315,7 +322,6 @@
             0,
             0,
             -2147483648});
-            this.numIntensity.LoopValues = false;
             this.numIntensity.Name = "numIntensity";
             this.numIntensity.Size = new System.Drawing.Size(60, 22);
             this.numIntensity.TabIndex = 7;
@@ -325,10 +331,8 @@
             // 
             // numInnerRange
             // 
-            this.numInnerRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numInnerRange.DecimalPlaces = 2;
             this.numInnerRange.Enabled = false;
-            this.numInnerRange.ForeColor = System.Drawing.Color.Gainsboro;
             this.numInnerRange.Increment = new decimal(new int[] {
             3,
             0,
@@ -340,12 +344,12 @@
             0,
             0});
             this.numInnerRange.Location = new System.Drawing.Point(198, 78);
+            this.numInnerRange.LoopValues = false;
             this.numInnerRange.Maximum = new decimal(new int[] {
             256,
             0,
             0,
             0});
-            this.numInnerRange.LoopValues = false;
             this.numInnerRange.Name = "numInnerRange";
             this.numInnerRange.Size = new System.Drawing.Size(60, 22);
             this.numInnerRange.TabIndex = 8;
@@ -355,10 +359,8 @@
             // 
             // numOuterRange
             // 
-            this.numOuterRange.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numOuterRange.DecimalPlaces = 2;
             this.numOuterRange.Enabled = false;
-            this.numOuterRange.ForeColor = System.Drawing.Color.Gainsboro;
             this.numOuterRange.Increment = new decimal(new int[] {
             3,
             0,
@@ -370,12 +372,12 @@
             0,
             0});
             this.numOuterRange.Location = new System.Drawing.Point(198, 103);
+            this.numOuterRange.LoopValues = false;
             this.numOuterRange.Maximum = new decimal(new int[] {
             256,
             0,
             0,
             0});
-            this.numOuterRange.LoopValues = false;
             this.numOuterRange.Name = "numOuterRange";
             this.numOuterRange.Size = new System.Drawing.Size(60, 22);
             this.numOuterRange.TabIndex = 9;
@@ -385,22 +387,20 @@
             // 
             // numInnerAngle
             // 
-            this.numInnerAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numInnerAngle.DecimalPlaces = 2;
             this.numInnerAngle.Enabled = false;
-            this.numInnerAngle.ForeColor = System.Drawing.Color.Gainsboro;
             this.numInnerAngle.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numInnerAngle.Location = new System.Drawing.Point(298, 28);
+            this.numInnerAngle.LoopValues = false;
             this.numInnerAngle.Maximum = new decimal(new int[] {
             180,
             0,
             0,
             0});
-            this.numInnerAngle.LoopValues = false;
             this.numInnerAngle.Name = "numInnerAngle";
             this.numInnerAngle.Size = new System.Drawing.Size(60, 22);
             this.numInnerAngle.TabIndex = 10;
@@ -410,22 +410,20 @@
             // 
             // numOuterAngle
             // 
-            this.numOuterAngle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numOuterAngle.DecimalPlaces = 2;
             this.numOuterAngle.Enabled = false;
-            this.numOuterAngle.ForeColor = System.Drawing.Color.Gainsboro;
             this.numOuterAngle.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numOuterAngle.Location = new System.Drawing.Point(298, 53);
+            this.numOuterAngle.LoopValues = false;
             this.numOuterAngle.Maximum = new decimal(new int[] {
             180,
             0,
             0,
             0});
-            this.numOuterAngle.LoopValues = false;
             this.numOuterAngle.Name = "numOuterAngle";
             this.numOuterAngle.Size = new System.Drawing.Size(60, 22);
             this.numOuterAngle.TabIndex = 11;
@@ -435,16 +433,15 @@
             // 
             // numDirectionX
             // 
-            this.numDirectionX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numDirectionX.DecimalPlaces = 2;
             this.numDirectionX.Enabled = false;
-            this.numDirectionX.ForeColor = System.Drawing.Color.Gainsboro;
             this.numDirectionX.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numDirectionX.Location = new System.Drawing.Point(298, 103);
+            this.numDirectionX.LoopValues = false;
             this.numDirectionX.Maximum = new decimal(new int[] {
             90,
             0,
@@ -455,7 +452,6 @@
             0,
             0,
             -2147483648});
-            this.numDirectionX.LoopValues = false;
             this.numDirectionX.Name = "numDirectionX";
             this.numDirectionX.Size = new System.Drawing.Size(60, 22);
             this.numDirectionX.TabIndex = 13;
@@ -465,16 +461,15 @@
             // 
             // numDirectionY
             // 
-            this.numDirectionY.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numDirectionY.DecimalPlaces = 2;
             this.numDirectionY.Enabled = false;
-            this.numDirectionY.ForeColor = System.Drawing.Color.Gainsboro;
             this.numDirectionY.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             0});
             this.numDirectionY.Location = new System.Drawing.Point(298, 78);
+            this.numDirectionY.LoopValues = false;
             this.numDirectionY.Maximum = new decimal(new int[] {
             720,
             0,
@@ -485,7 +480,6 @@
             0,
             0,
             -2147483648});
-            this.numDirectionY.LoopValues = false;
             this.numDirectionY.Name = "numDirectionY";
             this.numDirectionY.Size = new System.Drawing.Size(60, 22);
             this.numDirectionY.TabIndex = 12;
@@ -512,10 +506,37 @@
             this.toolTip.SetToolTip(this.cbLightIsUsedForImportedGeometry, "Use light for imported geometry");
             this.cbLightIsUsedForImportedGeometry.CheckedChanged += new System.EventHandler(this.cbLightIsUsedForImportedGeometry_CheckedChanged);
             // 
+            // darkLabel1
+            // 
+            this.darkLabel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(147, 128);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(51, 22);
+            this.darkLabel1.TabIndex = 82;
+            this.darkLabel1.Text = "Quality";
+            this.darkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cbLightQuality
+            // 
+            this.cbLightQuality.Enabled = false;
+            this.cbLightQuality.Items.AddRange(new object[] {
+            "Default",
+            "Low",
+            "Medium",
+            "High"});
+            this.cbLightQuality.Location = new System.Drawing.Point(198, 128);
+            this.cbLightQuality.Name = "cbLightQuality";
+            this.cbLightQuality.Size = new System.Drawing.Size(160, 23);
+            this.cbLightQuality.TabIndex = 83;
+            this.cbLightQuality.SelectionChangeCommitted += new System.EventHandler(this.cbLightQualityChanged);
+            // 
             // Lighting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbLightQuality);
+            this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.cbLightIsUsedForImportedGeometry);
             this.Controls.Add(this.numDirectionY);
             this.Controls.Add(this.numDirectionX);
@@ -547,10 +568,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
             this.DockText = "Lighting";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(432, 128);
+            this.MinimumSize = new System.Drawing.Size(432, 155);
             this.Name = "Lighting";
             this.SerializationKey = "Lighting";
-            this.Size = new System.Drawing.Size(432, 128);
+            this.Size = new System.Drawing.Size(432, 155);
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).EndInit();
@@ -593,5 +614,7 @@
         private DarkUI.Controls.DarkNumericUpDown numDirectionY;
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkCheckBox cbLightIsUsedForImportedGeometry;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkComboBox cbLightQuality;
     }
 }
