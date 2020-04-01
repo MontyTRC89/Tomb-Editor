@@ -43,7 +43,7 @@ namespace TombEditor.ToolWindows
                 bool HasDirection = false;
                 bool CanCastShadows = false;
                 bool CanIlluminateGeometry = false;
-
+                cbLightQuality.Enabled = false;
                 if (light != null)
                     switch (light.Type)
                     {
@@ -113,6 +113,8 @@ namespace TombEditor.ToolWindows
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;
                 cbLightIsStaticallyUsed.Checked = light?.IsStaticallyUsed ?? false;
                 cbLightIsUsedForImportedGeometry.Checked = light?.IsUsedForImportedGeometry ?? false;
+                cbLightQuality.Enabled = light != null;
+                cbLightQuality.SelectedIndex = (int)(light?.Quality ?? 0);
             }
 
             // Update tooltip texts
@@ -218,6 +220,13 @@ namespace TombEditor.ToolWindows
         private void panelLightColor_Click(object sender, EventArgs e)
         {
             EditorActions.EditLightColor(this);
+        }
+
+        private void cbLightQualityChanged(object sender, EventArgs e)
+        {
+            int index = cbLightQuality.SelectedIndex;
+            LightQuality newQuality = (LightQuality)index;
+            EditorActions.UpdateLightQuality(newQuality);
         }
     }
 }
