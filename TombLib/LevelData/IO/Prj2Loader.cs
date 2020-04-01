@@ -878,7 +878,7 @@ namespace TombLib.LevelData.IO
                     });
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
-                }else if (id3 == Prj2Chunks.ObjectMovable2)
+                }else if (id3 == Prj2Chunks.ObjectMovable3)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
