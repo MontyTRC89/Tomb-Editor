@@ -3855,7 +3855,7 @@ namespace TombEditor
 
         private static Vector2 GetNormalizedUV(Vector2 uv)
         {
-            return new Vector2((int)Math.Round(uv.X), (int)Math.Round(uv.Y) % 256);
+            return new Vector2((int)Math.Round(uv.X), (int)Math.Round(uv.Y) );
         }
 
         public static void ExportRooms(IEnumerable<Room> rooms, IWin32Window owner)
@@ -3938,31 +3938,31 @@ namespace TombEditor
 
                                     // Build materials for this texture pahe
                                     var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + i,
-                                                                   texture,
+                                                                   t,
                                                                    fileName,
                                                                    i,
                                                                    false,
                                                                    false,
                                                                    0);
 
-                                    var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + i, 
-                                                                              texture,
+                                    var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + i,
+                                                                              t,
                                                                               fileName,
                                                                               i,
                                                                               false,
                                                                               true,
                                                                               0);
 
-                                    var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + i, 
-                                                                             texture,
+                                    var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + i,
+                                                                             t,
                                                                              fileName,
                                                                              i, 
                                                                              true, 
                                                                              false, 
                                                                              0);
 
-                                    var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + i, 
-                                                                                        texture, 
+                                    var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + i,
+                                                                                        t, 
                                                                                         fileName,
                                                                                         i,
                                                                                         true, 
@@ -4051,10 +4051,14 @@ namespace TombEditor
                                                                             textureArea1.BlendMode == BlendMode.Additive,
                                                                             textureArea1.DoubleSided,
                                                                             0);
-                                                var submesh = mesh.Submeshes[mat];
-                                                submesh.Polygons.Add(poly);
+                                                if(mat != null)
+                                                {
+                                                    var submesh = mesh.Submeshes[mat];
+                                                    submesh.Polygons.Add(poly);
 
-                                                lastIndex += 4;
+                                                    lastIndex += 4;
+                                                }
+                                                
                                             }
                                             else
                                             {
@@ -4092,10 +4096,13 @@ namespace TombEditor
                                                                             textureArea.BlendMode == BlendMode.Additive,
                                                                             textureArea.DoubleSided,
                                                                             0);
-                                                var submesh = mesh.Submeshes[mat];
-                                                submesh.Polygons.Add(poly);
+                                                if(mat != null)
+                                                {
+                                                    var submesh = mesh.Submeshes[mat];
+                                                    submesh.Polygons.Add(poly);
 
-                                                lastIndex += 3;
+                                                    lastIndex += 3;
+                                                }
                                             }
                                         }
                                     }

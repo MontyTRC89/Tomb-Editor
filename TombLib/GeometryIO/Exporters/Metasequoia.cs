@@ -128,7 +128,7 @@ namespace TombLib.GeometryIO.Exporters
                             }
                             else
                             {
-                                var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], texture.Image.Width, texture.Image.Height));
+                                var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], texture.Image.Width, texture.Image.Width));
                                 var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
 
                                 writer.Write("\t\t4 V(" + optimizedIndices[v1] + " " + optimizedIndices[v2] + " " + optimizedIndices[v3] + " " + optimizedIndices[v4] + ") ");
