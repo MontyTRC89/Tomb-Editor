@@ -111,9 +111,9 @@ namespace TombLib.GeometryIO.Exporters
                             var v4 = poly.Shape == IOPolygonShape.Quad ? indices[3] : 0;
 
                             var texture = submesh.Value.Material.Texture;
-                            var uv1 = GetUV(ApplyUVTransform(mesh.UV[v1], texture.Image.Width, texture.Image.Width));
-                            var uv2 = GetUV(ApplyUVTransform(mesh.UV[v2], texture.Image.Width, texture.Image.Width));
-                            var uv3 = GetUV(ApplyUVTransform(mesh.UV[v3], texture.Image.Width, texture.Image.Width));
+                            var uv1 = GetUV(mesh.UV[v1]);
+                            var uv2 = GetUV(mesh.UV[v2]);
+                            var uv3 = GetUV(mesh.UV[v3]);
 
                             var color1 = GetColor(ApplyColorTransform(mesh.Colors[v1]));
                             var color2 = GetColor(ApplyColorTransform(mesh.Colors[v2]));
@@ -128,7 +128,7 @@ namespace TombLib.GeometryIO.Exporters
                             }
                             else
                             {
-                                var uv4 = GetUV(ApplyUVTransform(mesh.UV[v4], texture.Image.Width, texture.Image.Width));
+                                var uv4 = GetUV(mesh.UV[v4]);
                                 var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
 
                                 writer.Write("\t\t4 V(" + optimizedIndices[v1] + " " + optimizedIndices[v2] + " " + optimizedIndices[v3] + " " + optimizedIndices[v4] + ") ");

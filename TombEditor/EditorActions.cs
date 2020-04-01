@@ -3853,9 +3853,9 @@ namespace TombEditor
             ExportRooms(new[] { _editor.SelectedRoom }, owner);
         }
 
-        private static Vector2 GetNormalizedUV(Vector2 uv)
+        private static Vector2 GetNormalizedUV(Vector2 uv,int textureWidth,int textureHeight)
         {
-            return new Vector2((int)Math.Round(uv.X), (int)Math.Round(uv.Y) );
+            return new Vector2(uv.X/textureWidth, uv.Y/textureHeight );
         }
 
         public static void ExportRooms(IEnumerable<Room> rooms, IWin32Window owner)
@@ -3919,61 +3919,39 @@ namespace TombEditor
                             // Now fragment textures in pages
                             for (int j = 0; j < usedTextures.Count; j++)
                             {
-                                var t = usedTextures[j];
-                                string baseName = Path.GetFileNameWithoutExtension(t.Image.FileName);
-                                int pageSize = t.Image.Width;
-                                int numPages = (int)Math.Ceiling((float)t.Image.Height / pageSize);
+                                // Build materials for this texture pahe
+                                var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j,
+                                                               usedTextures[j],
+                                                               usedTextures[j].Image.FileName,
+                                                               false,
+                                                               false,
+                                                               0);
 
-                                for (int i = 0; i < numPages; i++)
-                                {
-                                    string fileName = baseName + "_" + i + ".png";
-                                    int startX = 0;
-                                    int width = pageSize;
-                                    int startY = i * pageSize;
-                                    int height = (i * pageSize + pageSize > t.Image.Height ? t.Image.Height - i * pageSize : pageSize);
+                                var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j,
+                                                                          usedTextures[j],
+                                                                          usedTextures[j].Image.FileName,
+                                                                          false,
+                                                                          true,
+                                                                          0);
 
-                                    ImageC newImage = ImageC.CreateNew(pageSize, pageSize);
-                                    newImage.CopyFrom(0, 0, t.Image, startX, startY, width, height);
-                                    newImage.Save(fileName);
+                                var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j,
+                                                                         usedTextures[j],
+                                                                         usedTextures[j].Image.FileName,
+                                                                         true,
+                                                                         false,
+                                                                         0);
 
-                                    // Build materials for this texture pahe
-                                    var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + i,
-                                                                   t,
-                                                                   fileName,
-                                                                   i,
-                                                                   false,
-                                                                   false,
-                                                                   0);
+                                var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j,
+                                                                                    usedTextures[j],
+                                                                                    usedTextures[j].Image.FileName,
+                                                                                    true,
+                                                                                    true,
+                                                                                    0);
 
-                                    var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + i,
-                                                                              t,
-                                                                              fileName,
-                                                                              i,
-                                                                              false,
-                                                                              true,
-                                                                              0);
-
-                                    var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + i,
-                                                                             t,
-                                                                             fileName,
-                                                                             i, 
-                                                                             true, 
-                                                                             false, 
-                                                                             0);
-
-                                    var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + i,
-                                                                                        t, 
-                                                                                        fileName,
-                                                                                        i,
-                                                                                        true, 
-                                                                                        true, 
-                                                                                        0);
-
-                                    model.Materials.Add(matOpaque);
-                                    model.Materials.Add(matOpaqueDoubleSided);
-                                    model.Materials.Add(matAdditiveBlending);
-                                    model.Materials.Add(matAdditiveBlendingDoubleSided);
-                                }
+                                model.Materials.Add(matOpaque);
+                                model.Materials.Add(matOpaqueDoubleSided);
+                                model.Materials.Add(matAdditiveBlending);
+                                model.Materials.Add(matAdditiveBlendingDoubleSided);
                             }
                             
                             bool normalizePosition = rooms.Count() == 1;
@@ -4033,32 +4011,27 @@ namespace TombEditor
                                                 mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 3] - deltaPos + room.WorldPos);
 
                                                 var uvFactor = new Vector2(0.5f / (float)textureArea1.Texture.Image.Width, 0.5f / (float)textureArea1.Texture.Image.Height);
-                                                                      
-                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord2 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord0 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord1 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea2.TexCoord0 - uvFactor));
+                                                int textureWidth = textureArea1.Texture.Image.Width;
+                                                int textureHeight = textureArea1.Texture.Image.Height;
+                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord2, textureWidth,textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord0, textureWidth, textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord1, textureWidth, textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea2.TexCoord0, textureWidth, textureHeight));
 
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 0], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 3], 1.0f));
 
-                                                // Get the right submesh
-                                                int tile = (int)((textureArea1.TexCoord2 - uvFactor).Y / 256);
                                                 var mat = model.GetMaterial(textureArea1.Texture,
-                                                                            tile,
                                                                             textureArea1.BlendMode == BlendMode.Additive,
                                                                             textureArea1.DoubleSided,
                                                                             0);
-                                                if(mat != null)
-                                                {
-                                                    var submesh = mesh.Submeshes[mat];
-                                                    submesh.Polygons.Add(poly);
 
-                                                    lastIndex += 4;
-                                                }
-                                                
+                                                var submesh = mesh.Submeshes[mat];
+                                                submesh.Polygons.Add(poly);
+
+                                                lastIndex += 4;
                                             }
                                             else
                                             {
@@ -4080,29 +4053,25 @@ namespace TombEditor
                                                 mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] - deltaPos + room.WorldPos);
 
                                                 var uvFactor = new Vector2(0.5f / (float)textureArea.Texture.Image.Width, 0.5f / (float)textureArea.Texture.Image.Height);
-
-                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord0 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord1 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord2 - uvFactor));
+                                                int textureWidth = textureArea.Texture.Image.Width;
+                                                int textureHeight = textureArea.Texture.Image.Height;
+                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord0, textureWidth, textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord1, textureWidth, textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord2, textureWidth, textureHeight));
                                                 
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
 
                                                 // Get the right submesh
-                                                int tile = (int)((textureArea.TexCoord0 - uvFactor).Y / 256);
                                                 var mat = model.GetMaterial(textureArea.Texture,
-                                                                            tile,
                                                                             textureArea.BlendMode == BlendMode.Additive,
                                                                             textureArea.DoubleSided,
                                                                             0);
-                                                if(mat != null)
-                                                {
-                                                    var submesh = mesh.Submeshes[mat];
-                                                    submesh.Polygons.Add(poly);
+                                                var submesh = mesh.Submeshes[mat];
+                                                submesh.Polygons.Add(poly);
 
-                                                    lastIndex += 3;
-                                                }
+                                                lastIndex += 3;
                                             }
                                         }
                                     }
