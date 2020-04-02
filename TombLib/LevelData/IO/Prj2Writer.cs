@@ -411,8 +411,9 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Invisible);
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
-                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
                             chunkIO.Raw.Write(instance.Color);
+                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
+                            
                         });
                     else if (o is StaticInstance)
                         chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectStatic2, () =>
