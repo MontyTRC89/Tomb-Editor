@@ -1786,8 +1786,17 @@ namespace TombLib.LevelData
                     for (int z = (int)(-numSamples / 2.0f); z <= (int)(numSamples / 2.0f); z++)
                     {
                         Vector3 samplePos = new Vector3(x * 256, y * 256, z * 256);
-                        if (!LightRayTrace(room, position, light.Position + samplePos))
-                            sampleSum += 1.0f;
+                        if (light.IsObstructedByRoomGeometry)
+                        {
+                            if (!LightRayTrace(room, position, light.Position + samplePos))
+                            {
+                                sampleSum += 1.0f;
+                            }
+                        }else
+                        {
+                            sampleSum += 1;
+                        }
+
                     }
             sampleSum /= (numSamples * 1 * numSamples);
             return sampleSum;
