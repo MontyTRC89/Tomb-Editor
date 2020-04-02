@@ -889,6 +889,7 @@ namespace TombLib.LevelData.IO
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.ReadChunks((id4, chunkSize4) =>
                     {
                         if (id4 == Prj2Chunks.ObjectItemLuaId)
@@ -898,7 +899,6 @@ namespace TombLib.LevelData.IO
                         }
                         return false;
                     });
-                    instance.Color = chunkIO.Raw.ReadVector3();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
