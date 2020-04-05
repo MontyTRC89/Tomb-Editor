@@ -1,0 +1,27 @@
+0 =  it is the flame used on the special "oil" water in the palace levels. Will cause death
+Numbers different than 0 =  it will change the flame into the blue "lightning" as in the Karnak level.
+2 or 4 = Inverts facing by 180 degrees
+Numbers >= 3  the lightning tries to hit (in progressive, endless way) the Animating3 items present in the level that having the same ocb value typed in emitter3 ocb and another animating3 with ocb=0.
+
+For example if you place an animating3 and you want have it will be used like target of lighning you have to type in its OCB the same value you typed in emitter 3. For example type 5 in emitter3 OCB and type 5 also in Animating3 OCB.
+
+You should place always also another Animating3 with ocb = 0 because this ocb generate a double lightning.
+
+Ocb 888, 889, 890
+-----------------
+These OCBs have been added from 1.2.2.4 version of trng dll.
+You can use these ocb to hit lara with a blue lightning.
+The difference is for the injury for lara:
+
+888 = Kill and fire immediatly Lara
+889 = Hurt lara and burn and kill her only after few seconds
+890 = No damage. You'll use this ocb when you wish generate a your custom effect when you trigger this flame emitter.
+
+Remark: the damage with value 889 changes in according with dry/wet state of lara.
+If lara is underwater the damage is very low
+If lara is floating on the water the damage is higher
+ than underwater
+If lara is dripping (after a swimming) the damage is furtherly higher
+When lara is fully dry the damage will have the max intensity
+
+

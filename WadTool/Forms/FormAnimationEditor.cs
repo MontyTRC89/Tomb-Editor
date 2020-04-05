@@ -1547,8 +1547,9 @@ namespace WadTool
             var existingWindow = Application.OpenForms["FormAnimCommandsEditor"];
             if (existingWindow == null)
             {
-                var acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim, cmd);
+                var acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim);
                 acEditor.Show(this);
+                acEditor.SelectCommand(cmd);
             }
             else
             {

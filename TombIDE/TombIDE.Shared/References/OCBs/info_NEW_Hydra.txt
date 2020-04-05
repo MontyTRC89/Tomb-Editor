@@ -1,0 +1,60 @@
+OCB 1 or OCB 2 
+--------------
+If you place 1 or 2 in OCB of Hydra you'll work with a pair (a couple) of  Hydra objects.
+In this situation you should place both hydra in same sector, setting in first object the OCB = 1, while in other object set OCB = 2.
+In game the two Hydra will be (a bit) moved, to stay on two opposite corners of same side.
+Another feature of hydra's couple is that both hydras will be inclinated a bit in opposite way to create a sort of "V" letter.
+
+Remarks: 
+
+* When you work with couple of Hydras you cann't chose the facing, since the engine will force the starting facing to South (in ngle view).
+
+* If you omit 2 and 1 in OCB, the Hydra will work like single object and it will keep the facing and position set in the project.
+
+OCBs for Missile type
+---------------------
+The Missile should be the energize ball shot by Hydra to hit Lara.
+
+You can choose only a single of following values, and then you'll add it to (further) "1" or "2" for couple setting.
+
+0 OCB (Missile 0)
+If you don't add meaninful values for Missile Type, you chose the first missile type.
+Missile 0, is an energic ball of green color. It creates a little damage to Lara. (shockwave)
+
+256 OCB (Missile 1)
+Green Energize ball, but this will burn Lara.
+
+512 OCB (Missile 2)
+Yellow Energize ball. Little damage
+
+768 OCB (Missile 3)
+Azure Energize ball. Little damage. This ball curve a bit to reach Lara.
+
+1024 OCB (Missile 4). 
+Azure Energize ball. Almost the same of 768 ocb, but in this case the ball doesn't curve.
+
+1280 OCB (Missile 5)
+Yellow Ball, little damage.
+
+1536 OCB (Missile 6)
+Fire Ball. It burns Lara
+
+1792 OCB (Random Missile type)
+If you set 1792 like missile type, the engine will choose in random way the missile type. 
+This means that, in same life time of same Hydra, it could shot different kind of missiles.
+The player will be able to recognize the most dangerous balls for their color or layout: the Missile 1 (green color) and the Missile 6 (fire ball).
+
+Other OCB settings
+------------------
+
+2048 OCB (Disable Fire)
+The hydra, before shooting an energize ball, shows a little fire.
+This fire is not very beauty to see, because it will be showed in a weird position of Hydra's body, anyway it could be useful for player to understand when the shot is coming soon.
+If you add the value 2048 to OCB, the little fire will be no more showed.
+
+4096 OCB (Disable Missile)
+If you add the 4096 value to OCB, the hydra will no more shot energize or fire balls.
+Also with this limitation the Hydra will be able to hurth lara usign its big beak.
+
+
+

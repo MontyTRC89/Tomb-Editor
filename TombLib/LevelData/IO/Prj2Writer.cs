@@ -260,12 +260,12 @@ namespace TombLib.LevelData.IO
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes,UInt16.MaxValue))
                 {
                     foreach(var entry in settings.AutoStaticMeshMerges)
-                        using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry2))
+                        using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry3))
                         {
                             chunkIO.Raw.Write(entry.meshId);
                             chunkIO.Raw.Write(entry.InterpretShadesAsEffect);
                             chunkIO.Raw.Write(entry.TintAsAmbient);
-
+                            chunkIO.Raw.Write(entry.ClearShades);
                         }
                     chunkIO.WriteChunkEnd();
                 }
@@ -399,7 +399,7 @@ namespace TombLib.LevelData.IO
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMovable2, () =>
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMovable3, () =>
                         {
                             var instance = (MoveableInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -412,6 +412,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
+                            chunkIO.Raw.Write(instance.Color);
                         });
                     else if (o is StaticInstance)
                         chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectStatic2, () =>
@@ -474,7 +475,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, -1);
                         }
                     else if (o is LightInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight2, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight3, LEB128.MaximumSize2Byte))
                         {
                             var instance = (LightInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -493,6 +494,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.IsDynamicallyUsed);
                             chunkIO.Raw.Write(instance.IsStaticallyUsed);
                             chunkIO.Raw.Write(instance.IsUsedForImportedGeometry);
+                            chunkIO.Raw.Write((byte)instance.Quality);
                         }
                     else if (o is PortalInstance && rooms.ContainsKey(((PortalInstance)o).AdjoiningRoom))
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectPortal, LEB128.MaximumSize2Byte))

@@ -29,6 +29,42 @@ namespace TombIDE.ScriptEditor
 			if (comboBox_References.SelectedItem.ToString().Contains("(Unavailable)")) // TEMPORARY
 				return;
 
+			// TEMP !!!
+
+			if (comboBox_References.SelectedItem.ToString() == "OCB List")
+			{
+				DataTable ocbListTable = GetOCBListTable();
+
+				DataColumn dcRowString = ocbListTable.Columns.Add("_RowString", typeof(string));
+
+				foreach (DataRow dataRow in ocbListTable.Rows)
+				{
+					StringBuilder builder = new StringBuilder();
+
+					for (int i = 0; i < ocbListTable.Columns.Count - 1; i++)
+					{
+						builder.Append(dataRow[i].ToString());
+						builder.Append("\t");
+					}
+
+					dataRow[dcRowString] = builder.ToString();
+				}
+
+				string filter = string.Empty;
+
+				if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search references...")
+					filter = textBox_Search.Text.Trim();
+
+				ocbListTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
+
+				dataGrid.DataSource = ocbListTable;
+				dataGrid.Columns["_RowString"].Visible = false;
+
+				return;
+			}
+
+			// !!!
+
 			try
 			{
 				string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", comboBox_References.SelectedItem + ".xml");
@@ -109,6 +145,26 @@ namespace TombIDE.ScriptEditor
 			return dataTable;
 		}
 
+		private DataTable GetOCBListTable()
+		{
+			DataTable dataTable = new DataTable();
+
+			dataTable.Columns.Add("OCBs", typeof(string));
+
+			string ocbListPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", "OCB List.txt");
+			string[] entries = File.ReadAllLines(ocbListPath);
+
+			foreach (string entry in entries)
+			{
+				DataRow row = dataTable.NewRow();
+				row["OCBs"] = entry;
+
+				dataTable.Rows.Add(row);
+			}
+
+			return dataTable;
+		}
+
 		private void SetFriendlyColumnHeaders()
 		{
 			foreach (DataGridViewColumn column in dataGrid.Columns)
@@ -179,6 +235,11 @@ namespace TombIDE.ScriptEditor
 			if (comboBox_References.SelectedIndex == 0 && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
 			{
 				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString()))
+					form.ShowDialog(this);
+			}
+			else if (comboBox_References.SelectedItem.ToString() == "OCB List" && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
+			{
+				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), true))
 					form.ShowDialog(this);
 			}
 		}

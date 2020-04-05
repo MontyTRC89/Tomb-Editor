@@ -1477,7 +1477,11 @@ namespace TombEditor
                 args.Editor.Configuration.Rendering3D_ShowGhostBlocks = !args.Editor.Configuration.Rendering3D_ShowGhostBlocks;
                 args.Editor.ConfigurationChange();
             });
-
+            AddCommand("DrawLightRadius", "Draw light radius", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowLightRadius = !args.Editor.Configuration.Rendering3D_ShowLightRadius;
+                args.Editor.ConfigurationChange();
+            });
             AddCommand("DrawOtherObjects", "Draw other objects", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowOtherObjects = !args.Editor.Configuration.Rendering3D_ShowOtherObjects;

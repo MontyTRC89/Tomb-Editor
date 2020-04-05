@@ -303,7 +303,7 @@ namespace TombEditor.Forms
                 if (anyObjectsChanged)
                 {
                     roomCount++;
-                    if (Source is LightInstance) room.RoomGeometry?.Relight(room); // HACK!
+                    if (Source is LightInstance) room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                 }
             }
 

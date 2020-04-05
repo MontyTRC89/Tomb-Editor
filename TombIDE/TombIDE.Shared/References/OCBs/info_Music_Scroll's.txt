@@ -1,0 +1,3 @@
+-422 = Lara will place the scroll on the "puzzle hole 2" and play the Lyre(you have to put the Lyre to the left of the puzzle hole)
+Remark: you must set -422 value also in puzzle hole 2 object.
+

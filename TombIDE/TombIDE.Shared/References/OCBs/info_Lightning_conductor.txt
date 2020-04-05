@@ -1,0 +1,6 @@
+0 = No damage
+1 = It can burn Lara
+2 = The engine looks for ANIMATING8 item. If it is present the Lightning conductor will use as target the ANIMATING8 item 
+The ocb 2 cause also a particular compute when the lightning conductor is in flipmap 1 and the flipmap has been enabled. It will be used the sound effect ELEC_ARCING_LOOP
+
+

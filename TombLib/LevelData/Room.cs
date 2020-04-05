@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.Graphics;
 using TombLib.Utils;
-
+using TombEditor;
 namespace TombLib.LevelData
 {
     public enum Reverberation : byte
@@ -848,6 +848,11 @@ namespace TombLib.LevelData
             RoomGeometry = new RoomGeometry(this);
         }
 
+        public void RebuildLighting(bool highQualityLighting)
+        {
+            RoomGeometry.Relight(this, highQualityLighting);
+        }
+
         public Matrix4x4 Transform => Matrix4x4.CreateTranslation(WorldPos);
 
         public int GetHighestCorner(RectangleInt2 area)
@@ -1370,7 +1375,7 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(RectangleInt2 area)
+        public void SmartBuildGeometry(RectangleInt2 area,bool highQualityLighting = false)
         {
             area = area.Inflate(1); // Add margin
 

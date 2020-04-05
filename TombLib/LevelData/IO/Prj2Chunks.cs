@@ -126,6 +126,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectImportedGeometryLightingModel = ChunkId.FromString("TeImpLM");
         /**********/public static readonly ChunkId ObjectLight = ChunkId.FromString("TeLig");
         /**********/public static readonly ChunkId ObjectLight2 = ChunkId.FromString("TeLig2");
+        /**********/public static readonly ChunkId ObjectLight3 = ChunkId.FromString("TeLig3");
         /**********/public static readonly ChunkId ObjectPortal = ChunkId.FromString("TePor");
         /**********/public static readonly ChunkId ObjectTrigger = ChunkId.FromString("TeTri");
         /**********/public static readonly ChunkId ObjectTrigger2 = ChunkId.FromString("TeTri2");
@@ -141,6 +142,9 @@ namespace TombLib.LevelData.IO
         /****/public static readonly ChunkId AutoMergeStaticMeshes = ChunkId.FromString("TeMergeStatics");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry = ChunkId.FromString("TeMergeStaticsEntry");
         /****/public static readonly ChunkId AutoMergeStaticMeshEntry2 = ChunkId.FromString("TeMergeStaticsEntry2");
+        /****/public static readonly ChunkId AutoMergeStaticMeshEntry3 = ChunkId.FromString("TeMergeStaticsEntry3");
         public static readonly ChunkId EmbeddedSoundInfoWad = ChunkId.FromString("TeEmbeddedSoundInfoWad");
+        /**********/public static readonly ChunkId ObjectMovable3 = ChunkId.FromString("TeMov3");
+        
     }
 }
