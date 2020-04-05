@@ -1,0 +1,34 @@
+Baddy 2
+1 = Roll Right. He rolls about a block so this is good for triggering as Lara comes up to a doorway 
+2 = Jump Left. As above 
+3 = Ducked 
+4 = Climb up 4 clicks. Make sure the origin of the baddy is 4 clicks below the block he's about to enter
+10 += To give to baddy unlimited ammo
+
+You can set a sequence of baddyes (type 1) adding number 1000 for first baddy, 2000 for second ect.
+In this way the second baddy will be activacted only when first baddy will be killed.
+
+1000 += set as first baddy
+2000 += set as second baddy
+ect.
+
+Same method could be used for baddy 2 but in this case you should use multiple of 100:
+100 += set as first baddy 2
+200 += set as second baddy 2
+300 += set as third baddy 2
+
+Remark: if you want create two different enemy sequences in same level you must create an "hole" value bigger than 1000 (or 100 for baddy_2)
+For example:
+We say you want then baddy 1 (that we named it "Bob") had other two enemies that will appears when he will be killed.
+We will set OCB for first sequence in this way:
+
+Baddy_1 "Bob" with ocb 1000
+Other baddy_1 (for bob) with ocb 2000
+Other baddy_1 (for bob) with ocb 3000
+
+If we wish have in same room other baddy with other enemies sequence (we will name him "Richard") we should set in this way ocb codes for second sequence:
+
+Baddy_1 "Richard" with ocb 5000 (do you see? It has not "4000" but 5000 eg. +1000 of next value for "bob" baddy_1 sequence)
+Other baddy_1 for "richard" with ocb 6000
+Other baddy_1 for "richard" with ocb 7000
+

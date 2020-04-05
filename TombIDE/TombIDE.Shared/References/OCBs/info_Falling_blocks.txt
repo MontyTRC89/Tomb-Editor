@@ -1,0 +1,4 @@
+Any value different than 0 =  don't collapse when you stand on them but only when they will be triggered
+
+
+

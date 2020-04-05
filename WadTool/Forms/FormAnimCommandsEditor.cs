@@ -2,6 +2,7 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib;
@@ -16,15 +17,14 @@ namespace WadTool
 
         private readonly AnimationEditor _editor;
         private AnimationNode _animation;
-        private readonly List<WadAnimCommand> _oldAnimCommands = new List<WadAnimCommand>();
-        public IEnumerable<WadAnimCommand> AnimCommands => lstCommands.Items.Select(item => item.Tag).OfType<WadAnimCommand>();
-        
-        public FormAnimCommandsEditor(AnimationEditor editor, AnimationNode animation, WadAnimCommand startupCommand = null)
+        private BindingList<WadAnimCommand> _animCommands = new BindingList<WadAnimCommand>();
+        public FormAnimCommandsEditor(AnimationEditor editor, AnimationNode animation)
         {
             InitializeComponent();
             animCommandEditor.Initialize(editor);
             _editor = editor;
-            Initialize(animation, startupCommand, true);
+            Initialize(animation);
+            
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
 
             // Set window property handlers
@@ -32,36 +32,30 @@ namespace WadTool
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Tool.Configuration));
         }
 
-        private void Initialize(AnimationNode animation, WadAnimCommand startupCommand, bool genBackup = false)
+        private void Initialize(AnimationNode animation)
         {
             _animation = animation;
-            if (genBackup) _oldAnimCommands.Clear();
-            lstCommands.Items.Clear();
+            //Make a copy of the Animation's commands. we dont want to edit the Commands directly
+            _animCommands = new BindingList<WadAnimCommand>(animation.WadAnimation.AnimCommands.ToList());
+            this.gridViewCommands.DataSource = _animCommands;
+        }
 
-            // Backup existing animcommands and populate list
-            foreach (var cmd in _animation.WadAnimation.AnimCommands)
+        private void AnimCommandEditor_AnimCommandChanged(object sender, AnimCommandEditor.AnimCommandEventArgs e)
+        {
+            int index = gridViewCommands.SelectedRows[0].Index;
+            _animCommands[index] = e.Command;
+            Invalidate();
+        }
+
+        private void GridViewCommands_SelectionChanged(object sender, EventArgs e)
+        {
+            if (gridViewCommands.SelectedRows.Count == 1)
             {
-                if (genBackup) _oldAnimCommands.Add(cmd.Clone());
-                lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd });
+                int index = gridViewCommands.SelectedRows[0].Index;
+                WadAnimCommand cmd = _animCommands[index];
+                animCommandEditor.Command = cmd;
             }
-
-            // Try to add and/or select start-up command
-            if (startupCommand != null)
-            {
-                if (!_animation.WadAnimation.AnimCommands.Contains(startupCommand))
-                {
-                    _animation.WadAnimation.AnimCommands.Add(startupCommand);
-                    lstCommands.Items.Add(new DarkListItem(startupCommand.ToString()) { Tag = startupCommand.Clone() });
-                }
-                SelectCommand(startupCommand);
-            }
-            else if (lstCommands.Items.Count > 0)
-                SelectCommand((WadAnimCommand)lstCommands.Items.First().Tag);
-            else
-                SelectCommand(null);
-
-            if (Visible && lstCommands.SelectedIndices.Count > 0)
-                lstCommands.EnsureVisible();  // This code oly works when control is already visible
+            else return;
         }
 
         protected override void Dispose(bool disposing)
@@ -79,76 +73,67 @@ namespace WadTool
             {
                 var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
                 if (e != null && e.Animation != _animation)
-                    Initialize(e.Animation, null);
+                    Initialize(e.Animation);
             }
 
             if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorAnimationChangedEvent;
                 if (e != null && e.Animation == _animation && e.Focus)
-                    Initialize(e.Animation, null);
+                    Initialize(e.Animation);
             }
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
-            if (lstCommands.SelectedIndices.Count > 0)
-                lstCommands.EnsureVisible();
-        }
-
-        public void SelectCommand(WadAnimCommand cmd, bool selectInTree = true, bool copy = false)
-        {
-            if (cmd != null && (copy || !_animation.WadAnimation.AnimCommands.Contains(cmd)))
-            {
-                _animation.WadAnimation.AnimCommands.Add(cmd);
-                lstCommands.Items.Add(new DarkListItem(cmd.ToString()) { Tag = cmd });
-            }
-
-            animCommandEditor.Command = cmd;
-
-            if (cmd != null && selectInTree)
-            {
-                for (int i = 0; i < lstCommands.Items.Count; i++)
-                    if (lstCommands.Items[i].Text == cmd.ToString()) lstCommands.SelectItem(i);
-                lstCommands.EnsureVisible();
-            }
+            if (gridViewCommands.SelectedRows.Count > 0)
+                gridViewCommands.FirstDisplayedScrollingRowIndex = gridViewCommands.SelectedRows[0].Index;
         }
 
         private void DeleteCommand()
         {
-            if (lstCommands.SelectedIndices.Count == 0)
+            if (gridViewCommands.SelectedRows.Count == 0)
                 return;
 
-            for (int i = lstCommands.Items.Count - 1; i >= 0; i--)
-                if (lstCommands.SelectedIndices.Contains(i))
-                    lstCommands.Items.RemoveAt(i);
-
-            if (lstCommands.Items.Count > 0)
-                SelectCommand(lstCommands.Items.FirstOrDefault()?.Tag as WadAnimCommand);
-            else
-                SelectCommand(null);
-            ApplyChanges(false);
+            foreach(DataGridViewRow row in gridViewCommands.SelectedRows)
+            {
+                int index = row.Index;
+                _animCommands.RemoveAt(index);
+            }
         }
 
         private void MoveCommand(bool down)
         {
-            if (lstCommands.Items.Count <= 1)
-                return;
-
-            int index = lstCommands.SelectedIndices[0];
-            int newIndex = down ? index + 1 : index - 1;
-            var item = lstCommands.Items[index];
-
-            if (down && index >= lstCommands.Items.Count - 1) return;
-            if (!down && index <= 0) return;
-
-            lstCommands.Items.RemoveAt(index);
-            lstCommands.Items.Insert((newIndex), item);
-            lstCommands.SelectItem(newIndex);
-            lstCommands.EnsureVisible();
-
-            ApplyChanges(false);
+            if(down)
+            {
+                foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
+                {
+                    int index = row.Index;
+                    if (index + 1 > _animCommands.Count-1)
+                        continue;
+                    WadAnimCommand cmd = _animCommands[index];
+                    _animCommands.RemoveAt(index);
+                    _animCommands.Insert(index +1, cmd);
+                    gridViewCommands.Rows[index].Selected = false;
+                    gridViewCommands.Rows[index + 1].Selected = true;
+                }
+            }
+            else
+            {
+                foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
+                {
+                    int index = row.Index;
+                    if (index - 1 < 0)
+                        continue;
+                    WadAnimCommand cmd = _animCommands[index];
+                    _animCommands.RemoveAt(index);
+                    _animCommands.Insert(index - 1, cmd);
+                    gridViewCommands.Rows[index].Selected = false;
+                    gridViewCommands.Rows[index - 1].Selected = true;
+                }
+            }
+            
         }
 
         private void ApplyChanges(bool undo = true)
@@ -158,24 +143,11 @@ namespace WadTool
 
             // Add new commands
             _animation.WadAnimation.AnimCommands.Clear();
-            _animation.WadAnimation.AnimCommands.AddRange(AnimCommands);
+            _animation.WadAnimation.AnimCommands.AddRange(_animCommands);
 
             // Update state in parent window
             _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
         }
-
-        // Only actual data is updating, not UI, so it shouldn't be used for in-window undo.
-        private void DiscardChanges(bool undo = true)
-        {
-            // Add the new state changes
-            _animation.WadAnimation.AnimCommands.Clear();
-            _animation.WadAnimation.AnimCommands.AddRange(_oldAnimCommands);
-
-            // Update state in parent window
-            _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
-        }
-
-        public void UpdateSelectedItemText() => lstCommands.SelectedItem.Text = lstCommands.SelectedItem.Tag.ToString();
 
         private void butCommandUp_Click(object sender, EventArgs e) => MoveCommand(false);
         private void butCommandDown_Click(object sender, EventArgs e) => MoveCommand(true);
@@ -183,19 +155,24 @@ namespace WadTool
 
         private void butAddEffect_Click(object sender, EventArgs e)
         {
-            var newCmd = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
-            SelectCommand(newCmd);
-            ApplyChanges(false);
+            WadAnimCommand newCmd = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
+            _animCommands.Add(newCmd);
+            for(int i = 0; i < _animCommands.Count-1;i++)
+            {
+                gridViewCommands.Rows[i].Selected = false;
+            }
+            gridViewCommands.Rows[_animCommands.Count - 1].Selected = true;
+            
         }
 
         private void butCopy_Click(object sender, EventArgs e)
         {
-            if (lstCommands.SelectedIndices.Count == 0)
-                return;
-
-            var newCmd = ((WadAnimCommand)(lstCommands.SelectedItem.Tag)).Clone();
-            SelectCommand(newCmd, true, true);
-            ApplyChanges(false);
+            foreach(DataGridViewRow row in gridViewCommands.SelectedRows)
+            {
+                int index = row.Index;
+                WadAnimCommand cmdCopy = _animCommands[index].Clone();
+                _animCommands.Insert(index+1, cmdCopy);
+            }
         }
 
         private void btOk_Click(object sender, EventArgs e)
@@ -213,19 +190,8 @@ namespace WadTool
         {
             base.OnFormClosing(e);
             _closing = true;
-
             if (DialogResult == DialogResult.OK) ApplyChanges();
-            else DiscardChanges();
-
             WadSoundPlayer.StopSample();
-        }
-
-        private void lstCommands_SelectedIndicesChanged(object sender, EventArgs e)
-        {
-            if (lstCommands.Items.Count > 0 && lstCommands.SelectedIndices.Count > 0)
-                SelectCommand((WadAnimCommand)(lstCommands.SelectedItem.Tag), false);
-            else
-                SelectCommand(null);
         }
 
         private void FormAnimCommandsEditor_KeyDown(object sender, KeyEventArgs e)
@@ -234,14 +200,18 @@ namespace WadTool
                 DeleteCommand();
         }
 
-        private void animCommandEditor_AnimCommandChanged(object sender, AnimCommandEditor.AnimCommandEventArgs e)
+        internal void SelectCommand(WadAnimCommand cmd)
         {
-            if (e.Command != null &&
-                lstCommands.Items.Count > 0 && lstCommands.SelectedIndices.Count > 0)
+            foreach(DataGridViewRow row in gridViewCommands.Rows)
             {
-                lstCommands.SelectedItem.Tag = e.Command;
-                UpdateSelectedItemText();
-                ApplyChanges(false);
+                if(_animCommands[row.Index].Equals(cmd))
+                {
+                    row.Selected = true;
+                }else
+                {
+                    row.Selected = false;
+                }
+               
             }
         }
     }

@@ -3,6 +3,10 @@ using System.Numerics;
 
 namespace TombLib.LevelData
 {
+    public enum LightQuality : byte
+    {
+        Default,Low,Medium,High
+    }
     public enum LightType : byte
     {
         Point, Shadow, Spot, Effect, Sun, FogBulb
@@ -10,6 +14,7 @@ namespace TombLib.LevelData
 
     public class LightInstance : PositionBasedObjectInstance, IReplaceable, IRotateableYX
     {
+        public LightQuality Quality { get; set; } = LightQuality.Default;
         public LightType Type { get; }
         public Vector3 Color { get; set; } = new Vector3(1.0f, 1.0f, 1.0f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         public float Intensity { get; set; } = 0.5f;
@@ -25,7 +30,6 @@ namespace TombLib.LevelData
 
         private float _rotationX;
         private float _rotationY;
-
         /// <summary> Degrees in the range [-90, 90] </summary>
         public float RotationX
         {

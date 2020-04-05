@@ -1,0 +1,4 @@
+1 = to activate rumble effect
+
+Enter 1-5 in OCB to elevate. 
+

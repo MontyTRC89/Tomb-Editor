@@ -1,0 +1,7 @@
+Remark: Earth quake is nullmesh object placed and triggered to create earthquake effects ­ rumbling and shaking.
+
+333 = for 16 seconds (sound but not shaking)
+888 = for a 5 second quake and sound
+
+
+

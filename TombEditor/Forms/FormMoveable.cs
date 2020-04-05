@@ -1,18 +1,22 @@
 ﻿using System;
+using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
     public partial class FormMoveable : DarkForm
     {
         private readonly MoveableInstance _movable;
-
+        private Vector3 oldColor;
+        private Editor _editor;
         public FormMoveable(MoveableInstance moveable)
         {
             _movable = moveable;
             InitializeComponent();
+            this._editor = Editor.Instance;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -23,15 +27,15 @@ namespace TombEditor.Forms
 
         private void FormObject_Load(object sender, EventArgs e)
         {
+            oldColor = _movable.Color;
             cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_movable.CodeBits & (1 << 1)) != 0;
             cbBit3.Checked = (_movable.CodeBits & (1 << 2)) != 0;
             cbBit4.Checked = (_movable.CodeBits & (1 << 3)) != 0;
             cbBit5.Checked = (_movable.CodeBits & (1 << 4)) != 0;
-
+            panelColor.BackColor = _movable.Color.ToWinFormsColor();
             cbInvisible.Checked = _movable.Invisible;
             cbClearBody.Checked = _movable.ClearBody;
-
             tbOCB.Text = _movable.Ocb.ToString();
         }
 
@@ -65,6 +69,13 @@ namespace TombEditor.Forms
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '-' || tbOCB.SelectionStart != 0))
                 e.Handled = true;
+        }
+
+        private void panelColor_Click(object sender, EventArgs e)
+        {
+            EditorActions.EditMoveableColor(this, _movable, (Vector3 newColor) => {
+                panelColor.BackColor = newColor.ToWinFormsColor();
+            });
         }
     }
 }

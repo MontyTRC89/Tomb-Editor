@@ -1,0 +1,15 @@
+The OCB with value less than 4096 (0 / 4095) for indicate the time durate of pause between a shooting (of missile) and the following.
+The value is in tick frames, where one second = 30 tick frames.
+If you let 0 in ocb, the engine will force the value 120 (4 seconds) in OCB.
+
+Remark: it's not advisable type a number little than 3 seconds (ocb = 90) because, when this time has been completed the previous torpedo will be destroyed and another it will be launched. For this reason if you use a too short time, the missile will be not able to hit Lara, at least she was very closed to sub-marine.
+
+Other OCB value to add to shooting time:
+
+4096 = It allows to submarine to shoot its missile also out of water room. 
+By default the missile explodes on water surface avoiding it can go off from water room.
+
+8192 = Disables the bubbles from the back of sub-marine.
+
+
+

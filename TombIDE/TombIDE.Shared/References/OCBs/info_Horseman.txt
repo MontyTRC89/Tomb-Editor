@@ -1,0 +1,10 @@
+Horse
+If you want have two or more couples of horseman-horse you must set for each couple the same OCB value.
+For example:
+
+Horseman1 = OCB 1
+Horseman2 = OCB 2
+Horse1 = OCB 1
+Horse2 = OCB 2
+
+

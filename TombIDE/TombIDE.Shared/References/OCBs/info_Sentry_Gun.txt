@@ -1,0 +1,2 @@
+Enter 1 in OCB to jam the gun, no entry and the gun fires at Lara as long as she is "in range". Place a SMOKE_EMMITER_BLACK on the same square for added effect (no trigger necessary).
+

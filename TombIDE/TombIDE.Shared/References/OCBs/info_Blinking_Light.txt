@@ -1,0 +1,4 @@
+Apparently the ocb value is a simple countdown before starting of the light.
+If you type a very big number the light will require more time to become visible after its triggering.
+
+

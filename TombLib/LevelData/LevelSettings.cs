@@ -42,13 +42,15 @@ namespace TombLib.LevelData
         public bool Merge { get; set; }
         public bool InterpretShadesAsEffect { get; set; }
         public bool TintAsAmbient { get; set; }
-        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect,bool tintAsAmbient, LevelSettings parent)
+        public bool ClearShades { get; set; }
+        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect,bool tintAsAmbient,bool clearShades, LevelSettings parent)
         {
             this.meshId = staticMesh;
             this.parent = parent;
             this.Merge = merge;
             this.TintAsAmbient = tintAsAmbient;
             this.InterpretShadesAsEffect = interpretShadesAsEffect;
+            this.ClearShades = clearShades;
         }
 
         public AutoStaticMeshMergeEntry Clone()

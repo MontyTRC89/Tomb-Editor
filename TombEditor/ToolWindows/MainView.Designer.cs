@@ -62,6 +62,7 @@
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -309,6 +310,7 @@
             this.butDrawStatics,
             this.butDrawImportedGeometry,
             this.butDrawGhostBlocks,
+            this.butDrawLightRadius,
             this.butDrawOther});
             this.butDrawObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawObjects.Image = global::TombEditor.Properties.Resources.actions_DrawObjects_16;
@@ -324,7 +326,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -336,7 +338,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -348,7 +350,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -360,7 +362,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -372,7 +374,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -652,6 +654,18 @@
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
+            // butDrawLightRadius
+            // 
+            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawLightRadius.Checked = true;
+            this.butDrawLightRadius.CheckOnClick = true;
+            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawLightRadius.Name = "butDrawLightRadius";
+            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
+            this.butDrawLightRadius.Tag = "DrawLightRadius";
+            this.butDrawLightRadius.Text = "DrawLightRadius";
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -718,5 +732,6 @@
         private System.Windows.Forms.ToolStripButton butToggleFlyMode;
         private System.Windows.Forms.ToolStripButton butSearch;
         private System.Windows.Forms.ToolStripButton butSearchAndReplaceObjects;
+        private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
     }
 }

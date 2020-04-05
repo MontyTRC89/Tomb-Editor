@@ -1,0 +1,9 @@
+1 = Enable an earthquake effect and it plays sound effects BOULDER_FALL and EXPLOSION2_VOLWAS80
+
+2 = Plays sound effect MAPPER_PYRAMID_OPEN and, if this object is in an outside room, it enables a volumetric explosion effect.
+
+Remark: This object could be affected by Pulse= script command.
+If in current level there is a Pulse=ENABLED command, the amber light will be never enabled, with the only exception if the flipmap 4 is currently enabled. 
+
+
+
