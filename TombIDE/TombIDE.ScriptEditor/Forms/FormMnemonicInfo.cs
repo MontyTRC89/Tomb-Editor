@@ -4,8 +4,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using TombIDE.Shared;
+using TombIDE.ScriptEditor.Resources;
 using TombIDE.Shared.Scripting;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptEditor
 {
@@ -40,8 +41,7 @@ namespace TombIDE.ScriptEditor
 
 			try
 			{
-				string mnemonicPath = Path.Combine(SharedMethods.GetProgramDirectory(),
-					@"References\Mnemonics\info_" + flag.ToLower() + ".txt");
+				string mnemonicPath = Path.Combine(PathHelper.GetMnemonicDefinitionsPath(), "info_" + flag.ToLower() + ".txt");
 
 				if (File.Exists(mnemonicPath))
 					result = File.ReadAllText(mnemonicPath, Encoding.GetEncoding(1252));
@@ -72,8 +72,8 @@ namespace TombIDE.ScriptEditor
 
 			try
 			{
-				string ocbPath = Path.Combine(SharedMethods.GetProgramDirectory(),
-					@"References\OCBs\info_" + flag.TrimStart('_').Replace(" ", "_").Replace("/", string.Empty).ToLower() + ".txt");
+				string ocbPath = Path.Combine(PathHelper.GetOCBDefinitionsPath(),
+					"info_" + flag.TrimStart('_').Replace(" ", "_").Replace("/", string.Empty).ToLower() + ".txt");
 
 				if (File.Exists(ocbPath))
 					result = File.ReadAllText(ocbPath, Encoding.GetEncoding(1252));

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster
 {
@@ -116,8 +117,8 @@ namespace TombIDE.ProjectMaster
 					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "splash.bmp")))
 					{
 						if ((image.Width == 1024 && image.Height == 512)
-						|| (image.Width == 768 && image.Height == 384)
-						|| (image.Width == 512 && image.Height == 256))
+							|| (image.Width == 768 && image.Height == 384)
+							|| (image.Width == 512 && image.Height == 256))
 						{
 							panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 460, 230);
 							label_Blank.Visible = false;

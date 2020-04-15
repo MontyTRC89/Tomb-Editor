@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
@@ -117,9 +118,9 @@ namespace TombIDE.ProjectMaster
 				string imageFilePath = string.Empty;
 
 				if (_ide.Project.GameVersion.Native() == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
-					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "load.bmp");
+					imageFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "load.bmp");
 				else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
-					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "load.bmp");
+					imageFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "load.bmp");
 
 				ReplaceImage(imageFilePath);
 			}

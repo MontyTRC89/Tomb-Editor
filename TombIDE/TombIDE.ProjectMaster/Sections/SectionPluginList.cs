@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster
 {
@@ -52,23 +52,7 @@ namespace TombIDE.ProjectMaster
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
 		{
 			using (FormPluginManager form = new FormPluginManager(_ide))
-			{
 				form.ShowDialog(this);
-
-				bool newPluginsInstalled = false;
-
-				foreach (Plugin plugin in _ide.Project.InstalledPlugins)
-				{
-					if (initialPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
-						continue;
-
-					_ide.AddPluginToLanguageFile(plugin);
-					newPluginsInstalled = true;
-				}
-
-				if (newPluginsInstalled)
-					_ide.RaiseEvent(new IDE.NewPluginsInstalledEvent());
-			}
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)

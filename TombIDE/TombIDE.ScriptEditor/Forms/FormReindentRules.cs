@@ -1,5 +1,6 @@
 ﻿using DarkUI.Forms;
 using System;
+using TombIDE.ScriptEditor.Controls;
 using TombIDE.Shared;
 
 namespace TombIDE.ScriptEditor
@@ -8,11 +9,21 @@ namespace TombIDE.ScriptEditor
 	{
 		private IDE _ide;
 
+		private AvalonTextBox textBox;
+
 		public FormReindentRules(IDE ide)
 		{
 			_ide = ide;
 
 			InitializeComponent();
+
+			textBox = new AvalonTextBox
+			{
+				Text = "[Level]\r\nName=Coastal Ruins\r\nRain=ENABLED\r\nLayer1=128,128,128,-8\r\nMirror=69,$2137   ; Crossbow room\r\nLevel=DATA\\COASTAL,105",
+				ShowLineNumbers = false
+			};
+
+			elementHost.Child = textBox;
 
 			checkBox_PreEqualSpace.Checked = _ide.Configuration.Tidy_PreEqualSpace;
 			checkBox_PostEqualSpace.Checked = _ide.Configuration.Tidy_PostEqualSpace;
@@ -49,27 +60,27 @@ namespace TombIDE.ScriptEditor
 
 		private void checkBox_PreEqualSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox_Preview.Text = checkBox_PreEqualSpace.Checked ? textBox_Preview.Text.Replace("=", " =") : textBox_Preview.Text.Replace(" =", "=");
+			textBox.Text = checkBox_PreEqualSpace.Checked ? textBox.Text.Replace("=", " =") : textBox.Text.Replace(" =", "=");
 		}
 
 		private void checkBox_PostEqualSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox_Preview.Text = checkBox_PostEqualSpace.Checked ? textBox_Preview.Text.Replace("=", "= ") : textBox_Preview.Text.Replace("= ", "=");
+			textBox.Text = checkBox_PostEqualSpace.Checked ? textBox.Text.Replace("=", "= ") : textBox.Text.Replace("= ", "=");
 		}
 
 		private void checkBox_PreCommaSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox_Preview.Text = checkBox_PreCommaSpace.Checked ? textBox_Preview.Text.Replace(",", " ,") : textBox_Preview.Text.Replace(" ,", ",");
+			textBox.Text = checkBox_PreCommaSpace.Checked ? textBox.Text.Replace(",", " ,") : textBox.Text.Replace(" ,", ",");
 		}
 
 		private void checkBox_PostCommaSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox_Preview.Text = checkBox_PostCommaSpace.Checked ? textBox_Preview.Text.Replace(",", ", ") : textBox_Preview.Text.Replace(", ", ",");
+			textBox.Text = checkBox_PostCommaSpace.Checked ? textBox.Text.Replace(",", ", ") : textBox.Text.Replace(", ", ",");
 		}
 
 		private void checkBox_ReduceSpaces_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox_Preview.Text = checkBox_ReduceSpaces.Checked ? textBox_Preview.Text.Replace("  ;", ";") : textBox_Preview.Text.Replace(";", "  ;");
+			textBox.Text = checkBox_ReduceSpaces.Checked ? textBox.Text.Replace("  ;", ";") : textBox.Text.Replace(";", "  ;");
 		}
 	}
 }

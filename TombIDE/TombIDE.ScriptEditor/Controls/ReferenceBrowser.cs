@@ -5,10 +5,11 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using TombIDE.Shared;
+using TombIDE.ScriptEditor.Resources;
 using TombIDE.Shared.Scripting;
+using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptEditor.Controls
 {
 	internal partial class ReferenceBrowser : UserControl
 	{
@@ -67,7 +68,7 @@ namespace TombIDE.ScriptEditor
 
 			try
 			{
-				string xmlPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", comboBox_References.SelectedItem + ".xml");
+				string xmlPath = Path.Combine(PathHelper.GetReferencesPath(), comboBox_References.SelectedItem + ".xml");
 
 				using (XmlReader reader = XmlReader.Create(xmlPath))
 				{
@@ -151,7 +152,7 @@ namespace TombIDE.ScriptEditor
 
 			dataTable.Columns.Add("OCBs", typeof(string));
 
-			string ocbListPath = Path.Combine(SharedMethods.GetProgramDirectory(), "References", "OCB List.txt");
+			string ocbListPath = Path.Combine(PathHelper.GetReferencesPath(), "OCB List.txt");
 			string[] entries = File.ReadAllLines(ocbListPath);
 
 			foreach (string entry in entries)

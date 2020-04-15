@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,7 +30,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>tomb_ide.ico</ApplicationIcon>
@@ -49,9 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\GlobalAssemblyInfo.cs">
-      <Link>GlobalAssemblyInfo.cs</Link>
-    </Compile>
+    <Compile Include="FileFinder.cs" />
     <Compile Include="Forms\FormEngineHelp.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +85,7 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\TablessTabControl.cs">
       <SubType>Component</SubType>
@@ -120,46 +117,46 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="NGC\center_settings.bin">
+    <None Include="TIDE\NGC\center_settings.bin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\audio\keep.me">
+    <None Include="TIDE\NGC\VGE\audio\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\data\keep.me">
+    <None Include="TIDE\NGC\VGE\data\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\ENGLISH.DAT">
+    <None Include="TIDE\NGC\VGE\ENGLISH.DAT">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\graphics\wads\keep.me">
+    <None Include="TIDE\NGC\VGE\graphics\wads\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\pix\keep.me">
+    <None Include="TIDE\NGC\VGE\pix\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\SCRIPT.DAT">
+    <None Include="TIDE\NGC\VGE\SCRIPT.DAT">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\sound\samples\keep.me">
+    <None Include="TIDE\NGC\VGE\sound\samples\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="NGC\VGE\tools\keep.me">
+    <None Include="TIDE\NGC\VGE\tools\keep.me">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\Engines\TR4.zip">
+    <None Include="TIDE\Templates\Engines\TR4.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\Engines\TRNG + FLEP.zip">
+    <None Include="TIDE\Templates\Engines\TRNG + FLEP.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\Engines\TRNG.zip">
+    <None Include="TIDE\Templates\Engines\TRNG.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\TOMB4\Defaults\uklogo.pak">
+    <None Include="TIDE\Templates\TOMB4\Defaults\uklogo.pak">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Templates\TOMB4\Shared.zip">
+    <None Include="TIDE\Templates\TOMB4\Shared.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -167,57 +164,58 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NGC\scripter_constants.txt">
+    <Content Include="TIDE\NGC\DO_NOT_USE_THIS_NG_CENTER.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\ngle.exe">
+    <Content Include="TIDE\NGC\VGE\ngle.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\NG_Tom2Pc.exe">
+    <Content Include="TIDE\NGC\VGE\NG_Tom2Pc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\Objects.h">
+    <Content Include="TIDE\NGC\VGE\Objects.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\Script\ENGLISH.TXT">
+    <Content Include="TIDE\NGC\VGE\Script\ENGLISH.TXT">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\Script\SCRIPT.TXT">
+    <Content Include="TIDE\NGC\VGE\Script\SCRIPT.TXT">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\sound\LevelSFX Creator\sounds.txt">
+    <Content Include="TIDE\NGC\VGE\sound\LevelSFX Creator\sounds.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\tomb4.exe">
+    <Content Include="TIDE\NGC\VGE\tomb4.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\VGE\Tomb_NextGeneration.dll">
+    <Content Include="TIDE\NGC\VGE\Tomb_NextGeneration.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\help_new_script_command.txt">
+    <Content Include="TIDE\NGC\help_new_script_command.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\help_old_script_command.txt">
+    <Content Include="TIDE\NGC\help_old_script_command.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\NG_Center.exe">
+    <Content Include="TIDE\NGC\NG_Center.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\TRNG\ngle.exe">
+    <Content Include="TIDE\NGC\TRNG\ngle.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\TRNG\ng_Tom2Pc.exe">
+    <Content Include="TIDE\NGC\TRNG\ng_Tom2Pc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\TRNG\Objects.h">
+    <Content Include="TIDE\NGC\TRNG\Objects.h">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\TRNG\Tomb4.exe">
+    <Content Include="TIDE\NGC\TRNG\Tomb4.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NGC\TRNG\Tomb_NextGeneration.dll">
+    <Content Include="TIDE\NGC\TRNG\Tomb_NextGeneration.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\add-48.png" />
     <Content Include="Resources\forward-arrow-16.png" />
     <Content Include="Resources\general_ArrowDown-16.png" />
     <Content Include="Resources\general_ArrowUp-16.png" />
@@ -232,19 +230,18 @@
     <Content Include="Resources\ide-play-30.png" />
     <Content Include="Resources\ide-script-30.png" />
     <Content Include="Resources\ide-tools-30.png" />
-    <Content Include="Resources\import-52.png" />
-    <Content Include="Resources\opened-folder-50.png" />
-    <Content Include="Resources\plus-math-60.png" />
-    <Content Include="Templates\TOMB4\Defaults\FLEP.ico">
+    <Content Include="Resources\import-48.png" />
+    <Content Include="Resources\open-48.png" />
+    <Content Include="TIDE\Templates\TOMB4\Defaults\FLEP.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\TOMB4\Defaults\load.bmp">
+    <Content Include="TIDE\Templates\TOMB4\Defaults\load.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\TOMB4\Defaults\TR4.ico">
+    <Content Include="TIDE\Templates\TOMB4\Defaults\TR4.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\TOMB4\Defaults\TRNG.ico">
+    <Content Include="TIDE\Templates\TOMB4\Defaults\TRNG.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="tomb_ide.ico" />
