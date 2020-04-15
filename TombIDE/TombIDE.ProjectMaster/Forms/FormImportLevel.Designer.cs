@@ -1,4 +1,4 @@
-﻿namespace TombIDE
+﻿namespace TombIDE.ProjectMaster
 {
 	partial class FormImportLevel
 	{

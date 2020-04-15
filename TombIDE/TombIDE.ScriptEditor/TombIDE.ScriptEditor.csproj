@@ -31,40 +31,77 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="CustomTabControl">
       <HintPath>..\..\Libs\CustomTabControl.dll</HintPath>
     </Reference>
-    <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\FastColoredTextBox.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="TestStack.White, Version=0.13.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
       <HintPath>..\..\packages\TestStack.White.0.13.3\lib\net40\TestStack.White.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationClient" />
     <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentHelper.cs" />
+    <Compile Include="Autocomplete.cs" />
+    <Compile Include="CommandVariations.cs" />
+    <Compile Include="Controls\AvalonTextBox.cs" />
+    <Compile Include="Controls\FileList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FileList.Designer.cs">
+      <DependentUpon>FileList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ObjectBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ObjectBrowser.Designer.cs">
+      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ReferenceBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ReferenceBrowser.Designer.cs">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SyntaxPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ErrorChecking.cs" />
+    <Compile Include="Forms\FormCompiling.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormCompiling.Designer.cs">
+      <DependentUpon>FormCompiling.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormDebugMode.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FormDebugMode.Designer.cs">
       <DependentUpon>FormDebugMode.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormFindReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFindReplace.Designer.cs">
+      <DependentUpon>FormFindReplace.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormMnemonicInfo.cs">
       <SubType>Form</SubType>
@@ -78,6 +115,12 @@
     <Compile Include="Forms\FormReindentRules.Designer.cs">
       <DependentUpon>FormReindentRules.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormSaveAs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSaveAs.Designer.cs">
+      <DependentUpon>FormSaveAs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,11 +128,49 @@
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="MonospacedFonts.cs" />
+    <Compile Include="Objects\CompletionData.cs" />
+    <Compile Include="Objects\ErrorLine.cs" />
+    <Compile Include="Objects\PluginMnemonic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Rendering\BookmarkRenderer.cs" />
+    <Compile Include="Rendering\ErrorRenderer.cs" />
+    <Compile Include="Rendering\LUASyntaxHighlighting.cs" />
+    <Compile Include="Rendering\ScriptSyntaxHighlighting.cs" />
+    <Compile Include="Resources\KeyWords.cs" />
+    <Compile Include="Resources\Syntaxes\CustSyntaxes.Designer.cs">
+      <DependentUpon>CustSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Syntaxes\NewCommandSyntaxes.Designer.cs">
+      <DependentUpon>NewCommandSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Syntaxes\OldCommandSyntaxes.Designer.cs">
+      <DependentUpon>OldCommandSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Syntaxes\ParamSyntaxes.Designer.cs">
+      <DependentUpon>ParamSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\ToolTips\CommandToolTips.Designer.cs">
+      <DependentUpon>CommandToolTips.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\ToolTips\SectionToolTips.Designer.cs">
+      <DependentUpon>SectionToolTips.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="ScriptEditor.cs">
       <SubType>UserControl</SubType>
@@ -97,19 +178,30 @@
     <Compile Include="ScriptEditor.Designer.cs">
       <DependentUpon>ScriptEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="SyntaxTidying.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\ReferenceBrowser.resx">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormCompiling.resx">
+      <DependentUpon>FormCompiling.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormDebugMode.resx">
       <DependentUpon>FormDebugMode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormFindReplace.resx">
+      <DependentUpon>FormFindReplace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMnemonicInfo.resx">
       <DependentUpon>FormMnemonicInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormReindentRules.resx">
       <DependentUpon>FormReindentRules.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSaveAs.resx">
+      <DependentUpon>FormSaveAs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
@@ -117,6 +209,30 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\CustSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CustSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\NewCommandSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>NewCommandSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\OldCommandSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>OldCommandSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\ParamSyntaxes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParamSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolTips\CommandToolTips.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommandToolTips.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolTips\SectionToolTips.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SectionToolTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ScriptEditor.resx">
       <DependentUpon>ScriptEditor.cs</DependentUpon>
@@ -141,29 +257,3349 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\actions_play-16.png" />
-    <Content Include="Resources\file.ico" />
-    <Content Include="Resources\folder.ico" />
-    <Content Include="Resources\general_AboutIcon-16.png" />
-    <Content Include="Resources\general_clipboard-16.png" />
-    <Content Include="Resources\general_copy-16.png" />
-    <Content Include="Resources\general_copy_comments-16.png" />
-    <Content Include="Resources\general_cut-16.png" />
-    <Content Include="Resources\general_redo-16.png" />
-    <Content Include="Resources\general_Save-16.png" />
-    <Content Include="Resources\general_SaveAll-16.png" />
-    <Content Include="Resources\general_search-16.png" />
-    <Content Include="Resources\general_settings-16.png" />
-    <Content Include="Resources\general_undo-16.png" />
-    <Content Include="Resources\script-bookmark-16.png" />
-    <Content Include="Resources\script-clearbookmarks-16.png" />
-    <Content Include="Resources\script-comment-16.png" />
-    <Content Include="Resources\script-nextbookmark-16.png" />
-    <Content Include="Resources\script-prevbookmark-16.png" />
-    <Content Include="Resources\script-uncomment-16.png" />
+    <Content Include="TIDE\References\Enemy Damage List.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Keyboard Scancodes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonic Constants.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_BLOOD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_FLAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_LIGHT_BLINK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_LIGHT_FLAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_LIGHT_GLOVE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_LIGHT_SPOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_MIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ADD_SMOKE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_AMMO_ADD_GUN_SHELL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_AMMO_ADD_SHOTGUN_SHELL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_AMMO_PUSH_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_AMMO_PUSH_TARGET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_AMMO_REMOVE_SHOTGUN_SHELL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_AMMO_SET_GRENADE_TIMER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_AIR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_COLD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_CUSTOM1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_CUSTOM2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_CUSTOM3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_CUSTOM4.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_DAMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_DASH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_HEALTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BAR_LOAD_LEVEL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_COMPASS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_LIGHTNESS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_LIGHT_SWITCH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_NOTATION_EXTENDED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_PROGRESSIVE_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_SEXTANT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_SOUND_ON_LIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_SOUND_ON_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_SUPER_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_SWING_COMPASS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_SWING_SEXTANT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINF_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINT_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINT_NUMERIC.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINT_PATTERN_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINT_ROUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BINT_STRIP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_ADD_COLOR_AND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_ADD_COLOR_OR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_ADD_COLOR_XOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_ADD_DARKNESS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_ADD_NEGATIVE_EFFECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_COLORIZE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_HIDE_LOADING_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_HIDE_SPRITE_LASER_SIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_KEEP_GAME_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_MINIMAL_LOADING_TIME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_SEMI_TRANSPARENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDF_SKIP_LOADING_TIME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDT_BINOCULAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDT_INVENTORY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDT_LASER_SIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDT_LOADING_LEVEL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BKGDT_TITLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BUGF_DART_NO_POISON_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BUGF_LAND_WATER_SFX_ENEMIES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_BUGF_TRANSPARENT_WHITE_ON_FOG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CDM_NO_SAVE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CDM_RESTORE_FROM_BEGIN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CDM_RESTORE_FROM_MIDDLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_BLINKING_WHITE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_BLUE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_DARKMETAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_GOLD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_METAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_RED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_WHITE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CL_YELLOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CODE_ACTION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CODE_CONDITION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CODE_FLIPEFFECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_ANIMATINGS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_DOORS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_FAKE_WALLS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_FAST_TURNING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_NO_SLIDING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_NO_SPLAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_PANELS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_STATICS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_STOP_ON_45_DEGREES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLL_VEHICLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLTYPE_SET_COLOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLTYPE_SET_PULSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_COLTYPE_SHADE_COLORS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_ADD_DEATH_ANIMATION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_AMMO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_BACKGROUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_BIKE_VS_ENEMIES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_BINOCULARS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_CAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_CD_SINGLE_PLAYBACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_DARTS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_DISABLE_FORCING_ANIM_96.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_DISABLE_MISSING_SOUNDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_DISABLE_PUSH_AWAY_ANIMATION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_DISABLE_SCREAMING_HEAD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_ESCAPE_FLY_CAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_FIX_BUGS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_FIX_WATER_FOG_BUG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_FLARE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_FMV_CUTSCENE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_HAIR_TYPE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_HARPOON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_INNER_SCREENSHOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_KEEP_DEAD_ENEMIES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_KEEP_LARA_HP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_LIGHT_OBJECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_LOOK_TRASPARENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_NEW_SOUND_ENGINE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_NO_TIME_IN_SAVELIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_PARALLEL_BARS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_PAUSE_FLY_CAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_RAIN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_ROLLINGBALL_PUSHING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_ROLLING_BOAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SAVE_LOCUST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SCREENSHOT_CAPTURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_CREDITS_LEVEL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_INV_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_JEEP_KEY_SLOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_OLD_CD_TRIGGER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_SECRET_NUMBER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_STATIC_DAMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_STILL_COLLISION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SET_TEXT_COLOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SFX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SHATTER_RANGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SHATTER_SPECIFIC.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SHOW_AMMO_COUNTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SLOT_FLAGS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_SPEED_MOVING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_STATIC_TRANSPARENCY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_TEXT_ON_FLY_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_TITLE_FMV.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_TR5_UNDERWATER_COLLISIONS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_WATERFALL_SPEED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_CUST_WEAPON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_CINEMA_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_CROSS_FADE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_MUTE_SFX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_MUTE_TRACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_PERFORM_AT_START.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_PLAY_ALL_SEQUENCE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_PLAY_LEVEL_SEQUENCE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_PLAY_ON_KEY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_QUIT_WITH_ESCAPE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMF_RANDOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DEMO_FRAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DENV_FLAG_FACE2BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DENV_FLAG_FACE2FACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_ADJUSTMENT_MODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_ANIMATION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_AUDIO_TRACKS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_CHEATS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_COMMON_VARIABLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_ERRORS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_FAR_VIEW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_FLYBY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_FOG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_FPS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_LOG_SCRIPT_COMMANDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_SFX_SOUNDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_STORE_VARIABLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_TEXT_VARIABLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DGX_WEAPON_ANIMATION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_DIRECTION_LARA_LEADING_ACTOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_EAST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_FORWARD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_HEAD_FOR_EXTRA_ACTOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_HEAD_FOR_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_HEAD_FOR_LEADING_ACTOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_INVERT_DIRECTION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_LARA_FACING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_LEADING_ACTOR_FACING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_LU_TURNING_180.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_NORTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_RU_TURNING_180.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_SOUTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_TURNING_LEFT_45.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_TURNING_LEFT_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_TURNING_RIGHT_45.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_TURNING_RIGHT_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DIR_WEST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DISABLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_ALERT_BEEP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_BURNING_DEATH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_BURNING_SCREAM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_COLD_WATER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_INCREASE_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_INDIRECT_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_LITTLE_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_ONLY_PAD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_POISON_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DMG_SLOW_DISAPPEARING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DRT_ADD_EFFECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DRT_FIX_POISON_BUG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DRT_HIDE_DART.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DRT_NO_POISON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DRT_NO_SMOKE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DRT_PERFOM_TRIGGERGROUP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_ENGAGE_ALWAYS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_ENGAGE_INVENTORY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_ENGAGE_IN_RANGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_FAST_RADAR_SCAN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_INVERSE_VPOINTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_NONE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_RADAR_MODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_REQUIRED_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_DTF_SWINGING_POINTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_ANIMATION_SLOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_CONCISE_SCRIPT_LOG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_CUTSCENE_LOG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_LARA_CORD_IN_LOG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_RECORDING_DEMO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_SLOW_MOTION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_SWAP_VIEW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EDGX_TRIGGER_TIMING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_DOUBLE_DOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_INNER_KEYPAD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_MODE_STOP_AND_GO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_MODE_YO_YO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_MULTI_DOORS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_NONE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EF_SINGLE_DOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENABLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ANIM_COMPLETE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_LEFT_IN_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_LEFT_OUT_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_LEFT_SPACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_RIGHT_IN_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_RIGHT_OUT_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_RIGHT_SPACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_WALL_AT_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_WALL_AT_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_WALL_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CLIMB_WALL_IN_FRONT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_CONDITION_TRIGGER_GROUP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_DISTANCE_CEILING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_DISTANCE_EAST_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_DISTANCE_FLOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_DISTANCE_NORTH_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_DISTANCE_SOUTH_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_DISTANCE_WEST_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ENEMY_SEE_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_FLOATING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_FLYING_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_FLYING_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_FRAME_NUMBER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_FRAME_RANGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_FREE_HANDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_LEFT_IN_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_LEFT_OUT_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_LEFT_SPACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_RIGHT_IN_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_RIGHT_OUT_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_RIGHT_SPACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HANG_WITH_FEET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLD_EXTRA_ITEM_IN_HANDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLE_BACK_CEILING_CLIMB.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLE_FLOOR_AT_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLE_FLOOR_AT_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLE_FLOOR_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLE_FLOOR_IN_FRONT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_HOLE_IN_FRONT_CEILING_CLIMB.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_IN_LEFT_SIDE_SECTOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_IN_RIGHT_SIDE_SECTOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_IS_STILL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ITEM_EXTRA_AT_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ITEM_EXTRA_AT_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ITEM_EXTRA_IN_FRONT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ITEM_EXTRA_OVER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ITEM_EXTRA_UNDER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ITEM_TEST_POSITION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_LARA_IN_MICRO_STRIP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_MONKEY_CEILING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_MULT_CONDITION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_MULT_OR_CONDITION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NON_TRUE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BLOCK_AT_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BLOCK_AT_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BLOCK_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BLOCK_IN_FRONT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BOX_AT_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BOX_AT_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BOX_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_NO_BOX_IN_FRONT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ONLAND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ON_VEHICLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_PLAYER_IS_SLEEPING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_PLAYER_WOKE_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_CENTRAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_HORTOGONAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_IN_THE_MIDDLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_LEFT_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_RIGHT_CORNER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_STRIP_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_STRIP_2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_POS_STRIP_3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_ROOM_IS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_SUPPORT_IN_BACK_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_SUPPORT_IN_FRONT_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_SUPPORT_IN_LEFT_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_SUPPORT_IN_RIGHT_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_UNDERWATER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_VERTICAL_ORIENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ENV_WALL_HOLE_IN_FRONT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EXTRA_MUTANT_NO_LOCUSTS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EXTRA_TEETH_NO_DAMAGE_ON_WALKING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_EXTRA_WRAITH_BURN_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_CONTINUE_EMIT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_DURATE_ANIMATION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_DURATE_SINGLE_FRAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_DURATE_STATEID.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_FIRE_STRIP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_IGNORE_STATUS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_NONE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_NO_SOUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_ROTATE_180.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_ROTATE_270.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_ROTATE_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_SMOKE_EXHAUST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_VORIENT_180.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_VORIENT_270.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FADD_VORIENT_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_ALIGN_TO_ENV_POS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_DISABLE_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_DISABLE_PUSH_AWAY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_ENABLE_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_KEEP_NEXT_STATEID.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_KEYS_AS_SCANCODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_PERFORM_TRIGGER_GROUP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_RANDOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_SET_ADDEFFECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_SET_BUSY_HANDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_SET_FREE_HANDS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_SET_FREE_HANDS_TEMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_SET_LARA_PLACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_SET_NEUTRAL_STATE_ID.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FAN_START_FROM_EXTRA_FRAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FBAR_DRAW_ALWAYS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FBAR_SHOW_BAR_NAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FBAR_SOUND_BAR_ANIM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FBAR_USED_FOR_BOAT_FUEL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FCAM_DISABLE_COMBAT_CAM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FCAM_INVISIBLE_LARA_ON_LOOK_CAM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FFL_ADD_FIRE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FFL_ADD_GLOW_LIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FFL_ADD_SMOKE_TO_SPARKS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FFL_ADD_SPARKS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FFL_FLAT_LIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FFS_PUSHABLE_CAN_OVERSTEP_IT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_DISABLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_HIDE_IN_DEBUG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_NOT_TRUE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_PUSHING_COLLISION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_REMOVE_INPUT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_REPLACE_MANAGEMENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_SINGLE_SHOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FGT_SINGLE_SHOT_RESUMED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FLI_DISTANCE_IN_SECTORS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FLI_SHOW_BOUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FLI_SHOW_DIFFERENCES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FLI_STATIC_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMIR_ADJUST_X.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMIR_ADJUST_Z.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMIR_ALTERNATE_REFLEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_ANVIL_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_APOLLO_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_APPLE_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_CAR_SPEED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_EXPLOSION_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_EXPLOSION_SPEED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_FROG_JUMP_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_HEAVY_ALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_HEAVY_AT_END.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_IGNORE_FLOOR_COLLISION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_INFINITE_LOOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_LEAF_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_MAGNET_SPEED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_MAN_GRAVITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_TRIGGERS_ALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_USE_EXTRA_ACTOR_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_USE_LEADING_ACTOR_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMOV_WAIT_STAND_ON_FLOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMV_FADE_OUT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMV_LONG_BLACK_RESTART.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMV_NO_AUDIO_RESTART.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMV_PRE_CACHE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FMV_SHORT_BLACK_RESTART.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FO_DEMO_ORGANIZER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FO_ENABLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FO_LOOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FO_TICK_TIME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_ALLOW_DRIFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_PITCHING_HIGH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_PITCHING_LOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_PITCHING_NORMAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_SWINGING_HIGH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_SWINGING_LOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FRB_SWINGING_NORMAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FROT_LOOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FR_ADD_DRIPS_TO_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FR_CORRECT_SPRINKLERS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FR_PLAY_SFX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_DISABLE_ON_COMBAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_DISABLE_ON_CRAMPED_SPACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_EXIT_ON_ATTACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_FLIP_DISTANCE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_FLIP_H_ORIENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_FLIP_SPEED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_FLIP_V_ANGLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_FREEZE_ENEMIES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_FREEZE_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_IMMEDIATE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSB_OVERLAP_AUDIO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSCAM_DISABLE_COMBAT_CAM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSCAM_DISABLE_LOOK_CAM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSCA_ENDLESS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSCA_IMMEDIATE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSCA_ITEMGROUP_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_ANIMATE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_ANIMATE_FOR_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_CLONE_SPRITE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_EFFECT_FROM_BOTTOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_EFFECT_FROM_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_EFFECT_FROM_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_EFFECT_FROM_TOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_EFFECT_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_SHOW_SPRITE_GRID.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FSS_TRANSPARENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FTYPE_SETTINGS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FTYPE_SOUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FTYPE_USERFILE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_BLINK_CHARS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_BOTTOM_CENTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_BOTTOM_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_BOTTOM_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_CENTER_CENTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_NARROW_CHARS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_ATOMIC_CHAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_DOUBLE_CHAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_DOUBLE_HEIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_DOUBLE_WIDTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_HALF_CHAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_HALF_HEIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_HALF_WIDTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_MICRO_CHAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_SIZE_NO_BORDER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_TOP_CENTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_TOP_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_TOP_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_UNDER_LEFT_BARS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_FT_UNDER_RIGHT_BARS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GTD_IGNORE_HEIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_AFTER_RELOADING_VARIABLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_ALWAYS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_BEFORE_SAVING_VARIABLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_COLLIDE_CREATURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_COLLIDE_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_COLLIDE_SLOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_COLLIDE_STATIC_SLOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_COMPLETED_SCALING_ON_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_CONDITION_GROUP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_CREATED_NEW_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_DAMAGE_BAR_LESS_THAN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_DISTANCE_FROM_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_DISTANCE_FROM_STATIC.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_ELEVATOR_STARTS_FROM_FLOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_ELEVATOR_STOPS_AT_FLOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_ENEMY_KILLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_FMV_COMPLETED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_GAME_KEY1_COMMAND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_GAME_KEY2_COMMAND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_KEYBOARD_CODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_KEYPAD_REMOVED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_KEYPAD_SHOWED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_LARA_HOLDS_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_LARA_HP_HIGHER_THAN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_LARA_HP_LESS_THAN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_LARA_POISONED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_LOADED_SAVEGAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_NO_ACTION_ON_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_SAVED_SAVEGAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_SCREEN_TIMER_REACHED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_SELECTED_INVENTORY_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_TITLE_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_TRNG_G_TIMER_EQUALS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_TRNG_L_TIMER_EQUALS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_USED_BIG_MEDIPACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_USED_INVENTORY_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_USED_LITTLE_MEDIPACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_USING_BINOCULAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_VSCROLL_COMPLETE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_GT_VSCROLL_LAST_VISIBLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HAIR_ONE_PONYTAIL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HAIR_ONE_TR5_PONYTAIL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HAIR_PAGE_BOY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HAIR_TWO_PLAITS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HIT_BIKE_EXPLODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HIT_EXPLODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HIT_HURT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HIT_KILL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HIT_PUSH_AWAY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HIT_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_ANY_TORCH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_CROSSBOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_FIRED_TORCH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_FLARE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_GRENADEGUN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_JEEP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_KAYAK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_MOTOR_BOAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_OUT_TORCH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_PISTOLS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_POLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_REVOLVER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_ROPE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_RUBBER_BOAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_SHOTGUN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_SIDECAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HOLD_UZI.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HRP_DISABLE_LASER_SIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HRP_DOUBLE_AMMO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HRP_NO_SWIM_UNDERWATER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_HRP_SINGLE_AMMO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_CRYPTIC.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_EFFECT_CROSS_FADE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_EFFECT_FROM_BOTTOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_EFFECT_FROM_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_EFFECT_FROM_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_EFFECT_FROM_TOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_EFFECT_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_FULL_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_LOOP_AUDIO_TRACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_OVER_FIXED_CAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_OVER_FLYBY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_PLAY_AUDIO_TRACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_POP_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_PRELOAD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_QUIT_ESCAPE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IF_TRANSPARENCE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IGNORE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IMPORT_MEMORY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_IMPORT_TEMPORARY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_ABDOMEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_LEFT_ANCKLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_LEFT_ELBOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_LEFT_KNEE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_LEFT_SHOULDER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_LEFT_THIGH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_LEFT_WRIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_NECK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_PUBIS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_RIGHT_ANCKLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_RIGHT_ELBOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_RIGHT_KNEE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_RIGHT_SHOULDER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_RIGHT_THIGH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_RIGHT_WRIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_JOINT_SINGLE_MESH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_ACTION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_DRAW_WEAPON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_JUMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_LOOK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_RELEASED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_ROLL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY1_WALK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY2_DASH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY2_DUCK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KEY2_USE_FLARE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_KLH_ALL_LEVELS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LDF_PLAY_TRACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LDF_SILENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LDF_SOUND_EFFECTS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LDF_TRANSPARENT_BKG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LDF_ZOOM_START.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_ADD_GLOVE_LIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_EXPLODE_TARGET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_FIRE_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_FLASH_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_GLOBAL_SOUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_HEARTHQUAKE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_INCLINED_RANDOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_KILL_TARGET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_LARA_SCREAM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_PLAY_SOUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LGTN_RANDOM_COLOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LOAD_AMMO_TYPE1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LOAD_AMMO_TYPE2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LOAD_AMMO_TYPE3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_LOAD_LASERSIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_CEILING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_EAST_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_FLOOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_INVERSE_WEST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_NORTH_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_SOUTH_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIR_WEST_WALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_AZURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_BLUE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_GREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_PURPLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_RED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_WHITE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MIST_COL_YELLOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_MPS_DISABLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_EASY_HEAVY_ENABLING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_EXPLODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_EXPLODE_AFTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_HIT_BLOOD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_HIT_DEFAULT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_HIT_FRAGMENTS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_HIT_SMOKE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_NONE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_NON_TARGET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_ONLY_EXPLODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SAVE_MESH_VISIBILITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SET_AS_BRIDGE_FLAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SET_AS_BRIDGE_TILT1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SET_AS_BRIDGE_TILT2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SET_AS_CREATURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SET_AS_MORTAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_NEF_SET_AS_SEMIGOD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OBJ_MOTOR_BOAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OBJ_MOTOR_BOAT_ANIM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OBJ_RUBBER_BOAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OBJ_RUBBER_BOAT_ANIM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OTYPE_AI_DATA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OTYPE_MOVEABLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_OTYPE_STATIC.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_ACTOR_SPEECH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_BIG_NUMBERS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_CIRCLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_COLOR_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_INPUT_BOX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_LIGHTNING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_MOVE_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_PRINT_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_QUADRILATERAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_RECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_ROTATE_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_SCALE_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_SET_CAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_SHOW_SPRITE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_SWAP_ANIMATIONS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_TRIANGLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PARAM_WTEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PB_DOUBLE_FACE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PB_LARA_CAN_SLIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PB_MULTIPLE_ENDINGS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PB_PROGRESSIVE_CHARGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PB_SHOW_CHARGE_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PB_SHOW_CHARGE_COUNTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PLACE_FLOATING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PLACE_GROUND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PLACE_LOW_WATER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PLACE_SPECIAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PLACE_UNDERWATER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_ADD_INFO_BAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_CENTRAL_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_CUSTOM_LAYOUT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_DOUBLE_PAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_FIX_WIDE_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_LEFT_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_LEFT_IMAGE_LOGO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_RIGHT_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_RIGHT_IMAGE_LOGO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_PL_WIDE_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_SIZE_260x200.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_SIZE_320x240.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_SIZE_390x300.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_SIZE_468x360.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_SIZE_520x400.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_SIZE_640x480.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_QSF_TRUE_COLOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RAIN_ALL_OUTSIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RAIN_DISABLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RAIN_SINGLE_ROOMS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_ADD_SCANCODE_LIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_ALIGN_CENTER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_BLINK_CARET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_HIDE_CARET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_HIDE_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_INPUT_BELOW_BIG_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_ONLY_CAPS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_ONLY_DIGITS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_ONLY_LETTERS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_PRINT_BIG_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_PRINT_ONLY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_SHORTCUT_KEY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_RIB_SOUND_ON_KEY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_COLD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_DAMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_MIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_OUTSIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_QUICKSAND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_RAIN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_REFLEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_SNOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROOM_WATER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROTH_CLOCKWISE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROTH_INV_CLOCKWISE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROTH_NONE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROTV_BACKWARD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROTV_FORWARD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_ROTV_NONE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_DOUBLE_HEIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_DOUBLE_SIZE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_DOUBLE_WIDTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_HALF_HEIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_HALF_SIZE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_HALF_WIDTH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SC_NORMAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEQ_LOOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEQ_LOOP_INVERSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEQ_STOP_AT_FIRST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_ACCEPT_EXTRA_TAILINFOS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_BLIND_SAVEGAMES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_CRYPT_SCRIPT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_DISABLE_CHEATS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_FORCE_NO_WAITING_REFRESH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_FORCE_SOFT_FULL_SCREEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SET_PERFORM_FROM_CD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_AIFF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_MP1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_MP2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_MP3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_MULTIPLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_OGG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SEXT_WAV.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SHOWC_OMIT_AMMO_NAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SHOWC_USE_GRAPHIC_AMMO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SHOWC_USE_GRAPHIC_WEAPON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SNOW_ALL_OUTSIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SNOW_DISABLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SNOW_SINGLE_ROOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPCF_FREEZE_HAIR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPCF_LOOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPCF_OLD_SPEECH_SLOTS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_ANIMATION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_HEAD_NOD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_HEAD_SHAKE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_LOOK_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_LOOK_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_LOOK_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_LOOK_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_MESH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_NEXT_STATEID.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_PAUSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_PERFORM_TG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_PLAY_CD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_PLAY_SFX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_SEQUENCE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_SYLL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPC_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPF_BLINK_SELECTED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPF_NO_PANEL_TITLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPF_NO_TIME_IN_LIST.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPF_PRELOAD_BKG_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPF_SCROLL_PAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_CENTRAL_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_LEFT_IMAGE_BOTTOM_INFO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_LEFT_IMAGE_NO_INFO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_LEFT_IMAGE_RIGHT_INFO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_RIGHT_IMAGE_BOTTOM_INFO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_RIGHT_IMAGE_LEFT_INFO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SPL_RIGHT_IMAGE_NO_INFO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SQ_HIGH_QUALITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SQ_LOW_QUALITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SQ_MEDIUM_QUALITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_BACK_JUMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CLIMB_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CLIMB_END.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CLIMB_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CLIMB_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CLIMB_START_AND_STANDING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CLIMB_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_COMPRESS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_117.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_92.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_93.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_94.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_97.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_LET.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_CONTROLLED_LET_96.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DASH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DASH_DIVE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DEATH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DEATH_SLIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DIVE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DUCK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DUCK_72.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DUCK_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_DUCK_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_EXTERNAL_CORNER_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_EXTERNAL_CORNER_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FALL_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FAST_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FAST_DIVE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FAST_FALL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FAST_TURN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FAST_TURN_14.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FAST_TURN_4.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_FORWARD_JUMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_GLIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_HANG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_HANG_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_HANG_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_HANG_TURN_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_HANG_TURN_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_INTERNAL_CORNER_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_INTERNAL_CORNER_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_LEFT_JUMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_MONKEY_180.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_MONKEY_FORWARD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_MONKEY_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_MONKEY_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_MONKEY_STILL_OR_HANG_SWING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_116.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_19.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_50.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_51.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_54.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_62.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_63.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_64.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_68.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_69.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_NULL_87.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ON_ALL_FOURS_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ON_ALL_FOURS_FORWARD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ON_ALL_FOURS_STANDING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ON_ALL_FOURS_TO_HANG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ON_ALL_FOURS_TURN_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ON_ALL_FOURS_TURN_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PB_HANGING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PB_LEAP_OFF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PICK_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PICK_UP_98.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PICK_UP_FLARE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_POLE_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_POLE_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_POLE_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_POLE_STATIC_99.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_POLE_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PULLEY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PULL_BLOCK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PUSH_BLOCK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_PUSH_PULL_READY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_REACH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_RIGHT_JUMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROLL_23.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROLL_45.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE_114.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE_115.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE_CLIMB_DOWN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE_CLIMB_UP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_ROPE_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_RUN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SLIDE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SLIDE_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SPECIAL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SPLAT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_STEP_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_STEP_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_STOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SURF_BACK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SURF_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SURF_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SURF_SWIM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SURF_TREAD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SWAN_DIVE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SWIM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SWITCH_ON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SWITCH_ON_126.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_SWITCH_ON_41.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TREAD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TR_FALL_122.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TR_FALL_123.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TR_POSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TR_WALK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TURN_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_TURN_RIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_UNDERWATER_DEATH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_UP_JUMP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_USE_KEY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_USE_PUZZLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_WADE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_WALK.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_WATER_OUT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_STATE_WATER_ROLL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SWT_BASE_ZERO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_SWT_RANDOM_MODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCF_CREATURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCF_LAND_CREATURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCF_ONLY_EXPLODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCF_SAVEPOS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_EXIT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_GOTO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_LOG.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_PAUSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_SET_EXTRA_CONDITION.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_SET_EXTRA_TIMER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_SET_FULL_TIMER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_SET_OBJECT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_SET_TIMER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TCMD_TIMER_FIELD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_AND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_COMMAND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_ELSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_NOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_OR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_SINGLE_SHOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_SINGLE_SHOT_RESUMED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_USE_EXECUTOR_ITEM_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_USE_FOUND_ITEM_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_USE_ITEM_USED_BY_LARA_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_USE_OWNER_ANIM_ITEM_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TGROUP_USE_TRIGGER_ITEM_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_DOUBLE_HORIENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_FAST_ALIGNMENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_FOUR_HORIENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_OPPOSITE_FACING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_ROUND_HORIENT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_SELF_FIXING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_TEST_ITEM_INDEX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_TURN_FACING_180.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TPOS_TURN_FACING_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TRB_ADAPTIVE_FARVIEW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TRB_ASYNC_FRAMES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TRB_HIGH_PRIORITY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TRB_OPTIMIZE_SORTING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TRB_SELECTIVE_VIEW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSB_MATRIX.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSB_NO_CHANGE_CAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSB_PANORAMA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSB_PORTRAIT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSCR_LOAD_GAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSCR_MAIN_TITLES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSCR_NEW_GAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TSCR_OPTIONS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_AFTER_FALLING_AS_INVULNERABLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_ANIMATING_DOOR_CLOSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_ANIMATING_DOOR_OPEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_BINOCULAR_LIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_BINOCULAR_ZOOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_DAMAGE_ROOM_BEEP_ALERT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_DAMAGE_ROOM_SCREAM_BURNING.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_DETECTOR_SHOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_DIARY_CHANGE_PAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_DIARY_NO_PAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_DIARY_ZOOM_START.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_ELEVATOR_SQUASHED_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_MISSING_REQUIRED_ITEM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_MIST_EMITTER_WITH_OCB.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_PUSHED_ITEM_IMPACT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_SAVEGAME_PANEL_SELECTED.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_SCREENSHOT_CAPTURE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_SHOT_HARPOON_UW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_VIBRATE_RESUME_FROM_FROZEN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TS_WHIRLPOOL_SINKED_LARA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_ACTION_INVENTORY_MENU_OFF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_ACTION_INVENTORY_MENU_ON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_AMMO.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_CAMERA_VIEW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_CREDITS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_EXAMINE1_BOTTOM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_EXAMINE1_TOP.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_EXAMINE3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_ITEM_NAME.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_LEGEND.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_LEVEL_NAME_OFF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_LEVEL_NAME_ON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_MAIN_MENU_OFF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_MAIN_MENU_ON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_NEW_LEVEL_ARROWS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_OPTION_DESCRIPTIONS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_OPTION_VALUES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_PAUSED_MENU_ITEMS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_PAUSED_MENU_TITLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_SAVEGAME_DESCRIPTION_OFF.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_SAVEGAME_DESCRIPTION_ON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_SAVEGAME_PANEL_TITLE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_SCREEN_TIMER.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_SELECT_LEVEL.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_STATISTICS_DESCRIPTIONS.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_TT_STATISTICS_VALUES.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WEAP_DISABLE_AUTO_SHOT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WEAP_DISABLE_CHANGE_WEAPON.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_BOLD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_CENTER_ALIGN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_FORCE_FIXED_PITCH.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_FROM_RIGHT_TO_LEFT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_ITALIC.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_LEFT_ALIGN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_LIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_RIGHT_ALIGN.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_ROTATE_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_ROTATE_INV_90.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_SHADOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_ULTRA_BOLD.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_UNDERLINE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_UNICODE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WFF_UTF8.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_CHANGE_COLOR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_FLYING_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_OVER_BINOCULAR.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_OVER_FIXCAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_OVER_FLYCAMERA.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_OVER_IMAGE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_OVER_INVENTORY.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_OVER_LASER_SIGHT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Mnemonics\info_WTF_PULSING_TEXT.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Moveable Slot Indices.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCB List.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_AI_FOLLOW.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Amber_light.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Animated_objects.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Baddy_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Blinking_Light.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Chain.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Clockwork_Beetle.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Dog.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Door_Type_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Door_Type_2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Door_Type_3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_EarthQuake.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Emitters.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Enemy_Jeep.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Falling_blocks.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Flame_Emitter_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Flame_Emitter_2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Flame_Emitter_3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Flyby_Camera.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Guide.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Hammer.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Helicopter_%28flying%29.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Helicopter_%28Mine%29.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Horseman.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Jump_Switch.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Lightning_conductor.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Little_Beetles.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Locust_Emitter.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Mummy.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Music_Scroll%27s.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Animating.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Boats.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Bridges.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Fish_Emitter.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Guardian.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Hydra.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Jeep.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Kayak.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_KeyPad.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_ParallelBars.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Pushable_Object.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_RollingBall.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_SideCar.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Static_Objects.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_SubMarine.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Switch_123.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Teeth_Spikes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_Tight-Rope.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_NEW_WaterfallMist.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Pickups_Items.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Pulley.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Puzzle_Holes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Raising_Block_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Raising_block_2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Scorpion.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Sentry_Gun.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Seth_Blade.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Skeleton.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Smashable_Bike_Wall.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Sphinx_%28Like_a_bull%29.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Steam_Emitter.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Switch_type_7.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Teeth_Spikes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Trapdoor_1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Troop.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_TwoBlock_Platform.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Wall_Scarab.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Waterfalls.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_White_Light.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\OCBs\info_Wraith_2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Static Object Indices.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TIDE\References\Variable Placeholders.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Icons\file.ico" />
+    <Content Include="Resources\Icons\folder.ico" />
+    <Content Include="Resources\Images\actions_play-16.png" />
+    <Content Include="Resources\Images\general_AboutIcon-16.png" />
+    <Content Include="Resources\Images\general_clipboard-16.png" />
+    <Content Include="Resources\Images\general_copy-16.png" />
+    <Content Include="Resources\Images\general_copy_comments-16.png" />
+    <Content Include="Resources\Images\general_cut-16.png" />
+    <Content Include="Resources\Images\general_redo-16.png" />
+    <Content Include="Resources\Images\general_Save-16.png" />
+    <Content Include="Resources\Images\general_SaveAll-16.png" />
+    <Content Include="Resources\Images\general_search-16.png" />
+    <Content Include="Resources\Images\general_settings-16.png" />
+    <Content Include="Resources\Images\general_undo-16.png" />
+    <Content Include="Resources\Images\script-bookmark-16.png" />
+    <Content Include="Resources\Images\script-clearbookmarks-16.png" />
+    <Content Include="Resources\Images\script-comment-16.png" />
+    <Content Include="Resources\Images\script-nextbookmark-16.png" />
+    <Content Include="Resources\Images\script-prevbookmark-16.png" />
+    <Content Include="Resources\Images\script-uncomment-16.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

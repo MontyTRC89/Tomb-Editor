@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
