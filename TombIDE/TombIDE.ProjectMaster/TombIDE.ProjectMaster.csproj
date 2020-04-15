@@ -34,6 +34,9 @@
     <Reference Include="CustomTabControl">
       <HintPath>..\..\Libs\CustomTabControl.dll</HintPath>
     </Reference>
+    <Reference Include="DotNetZip, Version=1.13.7.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DotNetZip.1.13.7\lib\net40\DotNetZip.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="SharpCompress, Version=0.23.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpCompress.0.23.0\lib\net45\SharpCompress.dll</HintPath>
@@ -85,6 +88,7 @@
     </Compile>
     <Compile Include="IconExtractor.cs" />
     <Compile Include="IconInjector.cs" />
+    <Compile Include="PakFile.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

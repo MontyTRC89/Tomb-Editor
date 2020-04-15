@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster
 {
@@ -35,7 +36,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string newName = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(newName))
 					throw new ArgumentException("Invalid file name.");
@@ -49,7 +50,7 @@ namespace TombIDE.ProjectMaster
 					File.Move(_ide.Project.LaunchFilePath, newPath);
 
 					_ide.Project.LaunchFilePath = newPath;
-					XmlHandling.SaveTRPROJ(_ide.Project);
+					_ide.Project.Save();
 				}
 			}
 			catch (Exception ex)

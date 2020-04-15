@@ -3,19 +3,19 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE
 {
 	public partial class FormRenameProject : DarkForm
 	{
-		private IDE _ide;
+		private Project _targetProject;
 
 		#region Initialization
 
-		public FormRenameProject(IDE ide)
+		public FormRenameProject(Project targetProject)
 		{
-			_ide = ide;
+			_targetProject = targetProject;
 
 			InitializeComponent();
 		}
@@ -24,7 +24,7 @@ namespace TombIDE
 		{
 			base.OnShown(e);
 
-			textBox_NewName.Text = _ide.Project.Name;
+			textBox_NewName.Text = _targetProject.Name;
 			textBox_NewName.SelectAll();
 		}
 
@@ -36,24 +36,22 @@ namespace TombIDE
 		{
 			try
 			{
-				string newName = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(newName) || newName.ToLower() == "engine")
 					throw new ArgumentException("Invalid name.");
 
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
 
-				if (newName == _ide.Project.Name)
+				if (newName == _targetProject.Name)
 				{
 					// If the name hasn't changed, but the directory name is different and the user wants to rename it
-					if (Path.GetFileName(_ide.Project.ProjectPath) != newName && renameDirectory)
+					if (Path.GetFileName(_targetProject.ProjectPath) != newName && renameDirectory)
 					{
-						HandleDirectoryRenaming(newName);
+						HandleDirectoryRenaming();
 
-						_ide.Project.Rename(newName, true);
-						XmlHandling.SaveTRPROJ(_ide.Project);
-
-						_ide.RaiseEvent(new IDE.ActiveProjectRenamedEvent());
+						_targetProject.Rename(newName, true);
+						_targetProject.Save();
 					}
 					else
 						DialogResult = DialogResult.Cancel;
@@ -66,10 +64,10 @@ namespace TombIDE
 						if (project.Name.ToLower() == newName.ToLower())
 						{
 							// Check if the project we found IS the current _ide.Project
-							if (project.ProjectPath.ToLower() == _ide.Project.ProjectPath.ToLower())
+							if (project.ProjectPath.ToLower() == _targetProject.ProjectPath.ToLower())
 							{
 								if (renameDirectory)
-									HandleDirectoryRenaming(newName);
+									HandleDirectoryRenaming();
 
 								break;
 							}
@@ -78,10 +76,8 @@ namespace TombIDE
 						}
 					}
 
-					_ide.Project.Rename(newName, renameDirectory);
-					XmlHandling.SaveTRPROJ(_ide.Project);
-
-					_ide.RaiseEvent(new IDE.ActiveProjectRenamedEvent());
+					_targetProject.Rename(newName, renameDirectory);
+					_targetProject.Save();
 				}
 			}
 			catch (Exception ex)
@@ -96,14 +92,14 @@ namespace TombIDE
 
 		#region Methods
 
-		private void HandleDirectoryRenaming(string newName)
+		private void HandleDirectoryRenaming()
 		{
 			// Allow renaming directories to the same name, but with different letter cases
 			// To do that, we must add a "_TEMP" suffix at the end of the directory name
 			// _ide.Project.Rename() will then handle the rest
 
-			string tempPath = _ide.Project.ProjectPath + "_TEMP";
-			Directory.Move(_ide.Project.ProjectPath, tempPath);
+			string tempPath = _targetProject.ProjectPath + "_TEMP";
+			Directory.Move(_targetProject.ProjectPath, tempPath);
 		}
 
 		#endregion Methods

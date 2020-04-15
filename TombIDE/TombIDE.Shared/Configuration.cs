@@ -17,6 +17,7 @@ namespace TombIDE.Shared
 		public Size IDE_WindowSize { get; set; } = new Size(1070, 640);
 
 		public string RememberedProject { get; set; }
+
 		public List<string> PinnedProgramPaths { get; set; }
 
 		/* ProjectMaster */
@@ -28,19 +29,22 @@ namespace TombIDE.Shared
 		public bool PluginsPanelHidden { get; set; } = false;
 
 		/// <summary>
-		/// This can only be set by directly modifying the .xml file
+		/// This can only be changed by directly modifying the .xml file
 		/// </summary>
 		public string ExternalLevelPrefix { get; set; } = "(Ext.) ";
 
 		/* ScriptEditor */
 
 		public string FontFamily { get; set; } = "Consolas";
-		public float FontSize { get; set; } = 12F;
+		public double FontSize { get; set; } = 16d;
+
 		public int UndoStackSize { get; set; } = 256;
 
-		public bool Autocomplete { get; set; } = true;
+		public bool AutocompleteEnabled { get; set; } = true;
+		public bool LiveErrorDetection { get; set; } = true;
 		public bool AutoCloseBrackets { get; set; } = true;
-		public bool WordWrap { get; set; } = false;
+		public bool AutoCloseQuotes { get; set; } = true;
+		public bool WordWrapEnabled { get; set; } = false;
 
 		public bool Tidy_PreEqualSpace { get; set; } = false;
 		public bool Tidy_PostEqualSpace { get; set; } = true;
@@ -56,6 +60,8 @@ namespace TombIDE.Shared
 		public bool View_ShowStatusStrip { get; set; } = true;
 		public bool View_ShowLineNumbers { get; set; } = true;
 		public bool View_ShowToolTips { get; set; } = true;
+		public bool View_ShowVisualSpaces { get; set; } = false;
+		public bool View_ShowVisualTabs { get; set; } = true;
 		public bool View_SwapPanels { get; set; } = false;
 
 		public string ScriptColors_Comment { get; set; } = ColorTranslator.ToHtml(Color.Green);
