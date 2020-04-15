@@ -26,14 +26,16 @@ namespace TombIDE.ScriptEditor
 			List<string> monospacedFonts = MonospacedFonts.GetMonospacedFontNames();
 			comboBox_FontFace.Items.AddRange(monospacedFonts.ToArray());
 
-			numeric_FontSize.Value = (int)_ide.Configuration.FontSize;
+			numeric_FontSize.Value = (int)_ide.Configuration.FontSize - 4; // -4 because WPF has a different font size scale
 			comboBox_FontFace.SelectedItem = _ide.Configuration.FontFamily;
 			numeric_UndoStackSize.Value = _ide.Configuration.UndoStackSize;
 
 			// General options
-			checkBox_Autocomplete.Checked = _ide.Configuration.Autocomplete;
+			checkBox_Autocomplete.Checked = _ide.Configuration.AutocompleteEnabled;
+			checkBox_LiveErrors.Checked = _ide.Configuration.LiveErrorDetection;
 			checkBox_AutoCloseBrackets.Checked = _ide.Configuration.AutoCloseBrackets;
-			checkBox_WordWrap.Checked = _ide.Configuration.WordWrap;
+			checkBox_AutoCloseQuotes.Checked = _ide.Configuration.AutoCloseQuotes;
+			checkBox_WordWrap.Checked = _ide.Configuration.WordWrapEnabled;
 			checkBox_ReindentOnSave.Checked = _ide.Configuration.Tidy_ReindentOnSave;
 
 			// Script syntax colors
@@ -50,14 +52,16 @@ namespace TombIDE.ScriptEditor
 
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
-			_ide.Configuration.FontSize = Convert.ToSingle(numeric_FontSize.Value);
+			_ide.Configuration.FontSize = (double)numeric_FontSize.Value + 4; // +4 because WPF has a different font size scale
 			_ide.Configuration.FontFamily = comboBox_FontFace.SelectedItem.ToString();
 			_ide.Configuration.UndoStackSize = (int)numeric_UndoStackSize.Value;
 
 			// General options
-			_ide.Configuration.Autocomplete = checkBox_Autocomplete.Checked;
+			_ide.Configuration.AutocompleteEnabled = checkBox_Autocomplete.Checked;
+			_ide.Configuration.LiveErrorDetection = checkBox_LiveErrors.Checked;
 			_ide.Configuration.AutoCloseBrackets = checkBox_AutoCloseBrackets.Checked;
-			_ide.Configuration.WordWrap = checkBox_WordWrap.Checked;
+			_ide.Configuration.AutoCloseQuotes = checkBox_AutoCloseQuotes.Checked;
+			_ide.Configuration.WordWrapEnabled = checkBox_WordWrap.Checked;
 			_ide.Configuration.Tidy_ReindentOnSave = checkBox_ReindentOnSave.Checked;
 
 			// Script syntax colors
@@ -85,7 +89,9 @@ namespace TombIDE.ScriptEditor
 
 				// General options
 				checkBox_Autocomplete.Checked = true;
+				checkBox_LiveErrors.Checked = true;
 				checkBox_AutoCloseBrackets.Checked = true;
+				checkBox_AutoCloseQuotes.Checked = true;
 				checkBox_WordWrap.Checked = false;
 				checkBox_ReindentOnSave.Checked = false;
 
@@ -173,7 +179,7 @@ namespace TombIDE.ScriptEditor
 		}
 
 		private void checkBox_Autocomplete_CheckedChanged(object sender, EventArgs e) =>
-			CheckRestartRequirement(checkBox_Autocomplete.Checked, _ide.Configuration.Autocomplete);
+			CheckRestartRequirement(checkBox_Autocomplete.Checked, _ide.Configuration.AutocompleteEnabled);
 
 		private void numeric_UndoStackSize_ValueChanged(object sender, EventArgs e)
 		{
