@@ -95,19 +95,8 @@ namespace TombIDE.ScriptEditor.Controls
 
 		private void UpdateTreeView()
 		{
-			string filter = string.Empty;
-
-			if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search objects...")
-				filter = textBox_Search.Text.Trim();
-
-			List<string> data = new List<string>
-			{
-				_editorText,
-				filter
-			};
-
-			if (!backgroundWorker.IsBusy)
-				backgroundWorker.RunWorkerAsync(data);
+			timer.Stop();
+			timer.Start();
 		}
 
 		private List<DarkTreeNode> GetNodes(string editorText, string filter)
@@ -243,5 +232,22 @@ namespace TombIDE.ScriptEditor.Controls
 		}
 
 		#endregion Methods
+
+		private void timer_Tick(object sender, EventArgs e)
+		{
+			string filter = string.Empty;
+
+			if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search objects...")
+				filter = textBox_Search.Text.Trim();
+
+			List<string> data = new List<string>
+			{
+				_editorText,
+				filter
+			};
+
+			if (!backgroundWorker.IsBusy)
+				backgroundWorker.RunWorkerAsync(data);
+		}
 	}
 }

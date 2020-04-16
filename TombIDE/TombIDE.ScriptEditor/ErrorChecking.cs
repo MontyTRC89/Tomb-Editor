@@ -34,6 +34,8 @@ namespace TombIDE.ScriptEditor
 
 			List<ErrorLine> errorLines = new List<ErrorLine>();
 
+			string currentSection = string.Empty;
+
 			for (int i = 1; i <= document.LineCount; i++)
 			{
 				DocumentLine line = document.GetLineByNumber(i);
@@ -49,9 +51,23 @@ namespace TombIDE.ScriptEditor
 						errorLines.Add(new ErrorLine(i, "Error:\nInvalid section. Please check its spelling."));
 						continue;
 					}
+
+					if (!IsHeaderWellFormatted(lineText))
+					{
+						errorLines.Add(new ErrorLine(i, "Error:\nInvalid section header formatting."));
+						continue;
+					}
+
+					currentSection = lineText.Split('[')[1].Split(']')[0];
 				}
 				else
 				{
+					if(currentSection.ToLower() == "strings" || currentSection.ToLower() == "psxstrings"
+						|| currentSection.ToLower() == "pcstrings" || currentSection.ToLower() == "extrang")
+					{
+						continue;
+					}
+
 					if (!IsCommandValid(lineText, document, i))
 					{
 						errorLines.Add(new ErrorLine(i, "Error:\nInvalid command. Please check its spelling."));
@@ -75,9 +91,15 @@ namespace TombIDE.ScriptEditor
 			return errorLines;
 		}
 
+		private static bool IsHeaderWellFormatted(string line)
+		{
+			Regex rgx = new Regex(@"^\s*?\[.*\]\s*?(;.*)?$");
+			return rgx.IsMatch(line);
+		}
+
 		private static bool IsValidSection(string line)
 		{
-			string section = line.Split('[')[1].Split(']')[0].Trim();
+			string section = line.Split('[')[1].Split(']')[0];
 
 			foreach (string entry in KeyWords.Sections)
 			{
