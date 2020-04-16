@@ -62,9 +62,16 @@ namespace TombIDE.ScriptEditor
 				}
 				else
 				{
-					if(currentSection.ToLower() == "strings" || currentSection.ToLower() == "psxstrings"
-						|| currentSection.ToLower() == "pcstrings" || currentSection.ToLower() == "extrang")
+					if (currentSection.ToLower() == "strings" || currentSection.ToLower() == "psxstrings" || currentSection.ToLower() == "pcstrings")
+						continue;
+
+					if (currentSection.ToLower() == "extrang")
 					{
+						Regex rgx = new Regex(@"^\d*:.*?");
+
+						if (!rgx.IsMatch(lineText))
+							errorLines.Add(new ErrorLine(i, "Error:\nNG string must start with an index."));
+
 						continue;
 					}
 
