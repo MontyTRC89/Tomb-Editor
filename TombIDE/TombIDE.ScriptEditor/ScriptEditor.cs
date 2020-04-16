@@ -1,3 +1,4 @@
+using DarkUI.Controls;
 using DarkUI.Forms;
 using ICSharpCode.AvalonEdit.Document;
 using System;
@@ -1495,6 +1496,12 @@ namespace TombIDE.ScriptEditor
 
 		private void treeView_SearchResults_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
+			foreach (DarkTreeNode node in treeView_SearchResults.Nodes)
+			{
+				if (treeView_SearchResults.SelectedNodes[0] == node)
+					return;
+			}
+
 			string sourceFilePath = Path.Combine(
 				_ide.Project.ScriptPath, treeView_SearchResults.SelectedNodes[0].ParentNode.Text.Split('(')[0].Trim());
 

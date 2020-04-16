@@ -17,10 +17,12 @@
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.textBox_Search = new DarkUI.Controls.DarkTextBox();
+			this.timer = new System.Windows.Forms.Timer(this.components);
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -44,9 +46,9 @@
 			// 
 			// treeView
 			// 
-			this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView.Location = new System.Drawing.Point(4, 51);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.Name = "treeView";
@@ -56,8 +58,8 @@
 			// 
 			// textBox_Search
 			// 
-			this.textBox_Search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox_Search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox_Search.Location = new System.Drawing.Point(4, 28);
 			this.textBox_Search.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.textBox_Search.Name = "textBox_Search";
@@ -67,6 +69,10 @@
 			this.textBox_Search.TextChanged += new System.EventHandler(this.textBox_Search_TextChanged);
 			this.textBox_Search.Enter += new System.EventHandler(this.textBox_Search_Enter);
 			this.textBox_Search.Leave += new System.EventHandler(this.textBox_Search_Leave);
+			// 
+			// timer
+			// 
+			this.timer.Tick += new System.EventHandler(this.timer_Tick);
 			// 
 			// ObjectBrowser
 			// 
@@ -88,5 +94,6 @@
 		private DarkUI.Controls.DarkTextBox textBox_Search;
 		private DarkUI.Controls.DarkTreeView treeView;
 		private System.ComponentModel.BackgroundWorker backgroundWorker;
+		private System.Windows.Forms.Timer timer;
 	}
 }

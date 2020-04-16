@@ -48,9 +48,10 @@ namespace TombIDE
 		protected override void OnLoad(EventArgs e)
 		{
 			ApplySavedSettings();
-			AddPinnedPrograms();
 
 			InitializeFLEP();
+
+			AddPinnedPrograms();
 
 			base.OnLoad(e);
 		}

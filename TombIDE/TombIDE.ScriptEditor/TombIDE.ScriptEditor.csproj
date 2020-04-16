@@ -181,6 +181,9 @@
     <Compile Include="SyntaxTidying.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\ObjectBrowser.resx">
+      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ReferenceBrowser.resx">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </EmbeddedResource>
