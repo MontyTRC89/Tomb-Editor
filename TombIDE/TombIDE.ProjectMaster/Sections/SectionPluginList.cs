@@ -52,7 +52,18 @@ namespace TombIDE.ProjectMaster
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
 		{
 			using (FormPluginManager form = new FormPluginManager(_ide))
-				form.ShowDialog(this);
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+					{
+						if (initialPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
+							continue;
+
+						_ide.ScriptEditor_AddNewNGString(plugin.Name);
+					}
+				}
+			}
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)
