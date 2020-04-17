@@ -603,9 +603,6 @@ namespace TombIDE.ScriptEditor
 			if (!textChangedDelayTimer.Enabled)
 				textChangedDelayTimer.Start();
 
-			DoStatusCounting();
-			UpdateUndoRedoSaveStates();
-
 			treeView_SearchResults.Nodes.Clear();
 			treeView_SearchResults.Invalidate();
 		}
@@ -622,7 +619,11 @@ namespace TombIDE.ScriptEditor
 		private void TextChangedDelayTimer_Tick(object sender, EventArgs e)
 		{
 			objectBrowser.UpdateContent(_textBox.Text);
+
+			DoStatusCounting();
+			UpdateUndoRedoSaveStates();
 			HandleTextChangedIndicator();
+
 			textChangedDelayTimer.Stop();
 		}
 
