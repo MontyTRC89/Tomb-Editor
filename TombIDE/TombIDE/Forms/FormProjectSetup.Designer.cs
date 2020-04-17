@@ -106,10 +106,8 @@
 			this.comboBox_EngineType.FormattingEnabled = true;
 			this.comboBox_EngineType.Items.AddRange(new object[] {
             "- Select -",
-            "TR4 (Not tested)",
             "TRNG",
-            "TRNG + FLEP",
-            "TR5Main (Unavailable)"});
+            "TRNG + FLEP"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(72, 54);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";

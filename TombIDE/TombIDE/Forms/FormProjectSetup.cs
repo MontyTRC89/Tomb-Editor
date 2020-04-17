@@ -93,12 +93,6 @@ namespace TombIDE
 
 		private void button_Create_Click(object sender, EventArgs e)
 		{
-			if (comboBox_EngineType.SelectedIndex == 4) // Temporary TR5Main disable
-			{
-				DialogResult = DialogResult.None;
-				return;
-			}
-
 			button_Create.Text = "Installing...";
 			button_Create.Enabled = false;
 
@@ -185,19 +179,11 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					gameVersion = TRVersion.Game.TR4;
+					gameVersion = TRVersion.Game.TRNG;
 					break;
 
 				case 2:
 					gameVersion = TRVersion.Game.TRNG;
-					break;
-
-				case 3:
-					gameVersion = TRVersion.Game.TRNG;
-					break;
-
-				case 4:
-					gameVersion = TRVersion.Game.TR5Main;
 					break;
 			}
 
