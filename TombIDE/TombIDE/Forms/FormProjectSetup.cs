@@ -209,19 +209,11 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
-					break;
-
-				case 2:
 					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
 					break;
 
-				case 3:
+				case 2:
 					engineBasePath = Path.Combine(engineBasePath, "TRNG + FLEP.zip");
-					break;
-
-				case 4:
-					engineBasePath = Path.Combine(engineBasePath, "TR5Main.zip");
 					break;
 			}
 
