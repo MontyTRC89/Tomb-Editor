@@ -121,9 +121,9 @@ namespace TombIDE.ScriptEditor
 		{
 			if (lineText.Trim().StartsWith("#"))
 			{
-				if (lineText.Trim().StartsWith("#include", StringComparison.OrdinalIgnoreCase)
-				|| lineText.Trim().StartsWith("#define", StringComparison.OrdinalIgnoreCase)
-				|| lineText.Trim().StartsWith("#first_id", StringComparison.OrdinalIgnoreCase))
+				if (lineText.StartsWith("#include", StringComparison.OrdinalIgnoreCase)
+				|| lineText.StartsWith("#define", StringComparison.OrdinalIgnoreCase)
+				|| lineText.StartsWith("#first_id", StringComparison.OrdinalIgnoreCase))
 					return true;
 			}
 			else
@@ -134,6 +134,16 @@ namespace TombIDE.ScriptEditor
 					command = lineText.Split('=')[0].Trim();
 				else if (lineText.Trim().StartsWith("#"))
 					command = lineText.Split(' ')[0].Trim();
+				else
+				{
+					DocumentLine previousLine = document.GetLineByNumber(lineNumber - 1);
+					string previousLineText = document.GetText(previousLine.Offset, previousLine.Length);
+
+					Regex rgx = new Regex(@">\s*?(;.*)?$");
+
+					if (rgx.IsMatch(previousLineText))
+						return true;
+				}
 
 				if (command.ToLower() == "level")
 					command = CommandVariations.GetCorrectLevelCommand(document, lineNumber);
@@ -175,6 +185,16 @@ namespace TombIDE.ScriptEditor
 				command = lineText.Split('=')[0].Trim();
 			else if (lineText.Trim().StartsWith("#"))
 				command = lineText.Split(' ')[0].Trim();
+			else
+			{
+				DocumentLine previousLine = document.GetLineByNumber(lineNumber - 1);
+				string previousLineText = document.GetText(previousLine.Offset, previousLine.Length);
+
+				Regex rgx = new Regex(@">\s*?(;.*)?$");
+
+				if (rgx.IsMatch(previousLineText))
+					return true;
+			}
 
 			if (command.ToLower() == "level")
 				command = CommandVariations.GetCorrectLevelCommand(document, lineNumber);

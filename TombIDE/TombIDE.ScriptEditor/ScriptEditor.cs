@@ -4,7 +4,6 @@ using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -12,7 +11,6 @@ using System.Linq;
 using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Automation;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using TombIDE.ScriptEditor.Controls;
@@ -1012,35 +1010,31 @@ namespace TombIDE.ScriptEditor
 
 		private void CompileTRNGScript()
 		{
-			if (!AreLibrariesRegistered())
+			if (!NGCompiler.AreLibrariesRegistered())
 				return;
 
 			try
 			{
-				string vgeScriptPath = PathHelper.GetVGEScriptPath();
+				_formCompiling.Show();
 
-				// Delete the old /Script/ directory in the VGE if it exists
-				if (Directory.Exists(vgeScriptPath))
-					Directory.Delete(vgeScriptPath, true);
+				if (NGCompiler.Compile(_ide.Project))
+				{
+					// Read the logs
+					string logFilePath = Path.Combine(PathHelper.GetVGEScriptPath(), "script_log.txt");
 
-				// Recreate the directory
-				Directory.CreateDirectory(vgeScriptPath);
+					// Read and show the logs in the "Compiler Logs" richTextBox
+					richTextBox_Logs.Text = File.ReadAllText(logFilePath);
 
-				// Create all of the subdirectories
-				foreach (string dirPath in Directory.GetDirectories(_ide.Project.ScriptPath, "*", SearchOption.AllDirectories))
-					Directory.CreateDirectory(dirPath.Replace(_ide.Project.ScriptPath, vgeScriptPath));
+					// Select the "Compiler Logs" tab
+					tabControl_Info.SelectTab(1);
+					tabControl_Info.Invalidate();
 
-				// Copy all the files into the VGE /Script/ folder
-				foreach (string newPath in Directory.GetFiles(_ide.Project.ScriptPath, "*.*", SearchOption.AllDirectories))
-					File.Copy(newPath, newPath.Replace(_ide.Project.ScriptPath, vgeScriptPath));
+					if (_formDebugMode.Visible)
+						_formDebugMode.Close();
+				}
 
-				AdjustOldFormatting();
-
-				// Run NG_Center.exe
-				var application = TestStack.White.Application.Launch(Path.Combine(PathHelper.GetInternalNGCPath(), "NG_Center.exe"));
-
-				// Do some actions in NG Center
-				RunScriptedNGCenterEvents(application);
+				if (_formCompiling.Visible)
+					_formCompiling.Close();
 			}
 			catch (Exception ex)
 			{
@@ -1049,171 +1043,6 @@ namespace TombIDE.ScriptEditor
 
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-		}
-
-		private void RunScriptedNGCenterEvents(TestStack.White.Application application)
-		{
-			try
-			{
-				_formCompiling.Show();
-
-				// Get a list of all windows belonging to the app
-				var windowList = application.GetWindows();
-
-				// Check if the list has the main NG Center window (it starts with "NG Center 1.5...")
-				var ngWindow = windowList.Find(x => x.Title.Contains("NG Center 1.5"));
-
-				if (ngWindow == null)
-				{
-					// Refresh the window list and check if a Updater message box appeared
-					windowList = application.GetWindows();
-					var ngMissingWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
-
-					if (ngMissingWindow != null)
-						ngMissingWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
-
-					// If not, then try again because we're most probably seeing the "Loading" window
-					RunScriptedNGCenterEvents(application);
-					return;
-				}
-
-				Point cachedCursorPosition = new Point();
-
-				// Refresh the window list and check if a Updater message box appeared
-				windowList = application.GetWindows();
-				var ngUpdaterWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
-
-				if (ngUpdaterWindow != null)
-					ngUpdaterWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
-
-				// Find the "Build" button
-				var buildButton = ngWindow.Get<TestStack.White.UIItems.Button>("Build");
-
-				// Click the button
-				cachedCursorPosition = Cursor.Position;
-				buildButton.Click();
-				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
-
-				// Refresh the window list and check if an error message box appeared
-				windowList = application.GetWindows();
-				var ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
-
-				if (ngErrorWindow != null)
-				{
-					ngErrorWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
-
-					// Click the button
-					cachedCursorPosition = Cursor.Position;
-					buildButton.Click();
-					Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
-
-					ngErrorWindow = null;
-				}
-
-				// Refresh the window list and check if an error message box appeared
-				windowList = application.GetWindows();
-				ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
-
-				if (ngErrorWindow != null)
-				{
-					if (_formCompiling.Visible)
-						_formCompiling.Close();
-
-					_formDebugMode.Show();
-					return;
-				}
-
-				// Find the "Show Log" button
-				var logButton = ngWindow.Get<TestStack.White.UIItems.Button>("Show Log");
-
-				// Click the button
-				cachedCursorPosition = Cursor.Position;
-				logButton.Click();
-				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
-
-				// Read the logs
-				string logFilePath = Path.Combine(PathHelper.GetVGEScriptPath(), "script_log.txt");
-				string logFileContent = File.ReadAllText(logFilePath);
-
-				// Replace the VGE paths in the log file with the current project ones
-				File.WriteAllText(logFilePath, logFileContent.Replace(PathHelper.GetVGEPath(), _ide.Project.EnginePath), Encoding.GetEncoding(1252));
-
-				application.Close(); // Done!
-
-				// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-				string compiledScriptFilePath = Path.Combine(PathHelper.GetVGEPath(), "Script.dat");
-				string compiledEnglishFilePath = Path.Combine(PathHelper.GetVGEPath(), "English.dat");
-
-				if (File.Exists(compiledScriptFilePath))
-					File.Copy(compiledScriptFilePath, Path.Combine(_ide.Project.EnginePath, "Script.dat"), true);
-
-				if (File.Exists(compiledEnglishFilePath))
-					File.Copy(compiledEnglishFilePath, Path.Combine(_ide.Project.EnginePath, "English.dat"), true);
-
-				// Read and show the logs in the "Compiler Logs" richTextBox
-				richTextBox_Logs.Text = File.ReadAllText(logFilePath);
-
-				// Select the "Compiler Logs" tab
-				tabControl_Info.SelectTab(1);
-				tabControl_Info.Invalidate();
-
-				System.Threading.Thread.Sleep(100);
-
-				foreach (Process fuckingDieAlreadyYouStupidFuck in Process.GetProcessesByName("notepad"))
-				{
-					if (fuckingDieAlreadyYouStupidFuck.MainWindowTitle.Contains("script_log"))
-						fuckingDieAlreadyYouStupidFuck.Kill();
-				}
-
-				if (_formCompiling.Visible)
-					_formCompiling.Close();
-
-				if (_formDebugMode.Visible)
-					_formDebugMode.Close();
-			}
-			catch (ElementNotAvailableException)
-			{
-				// The "Loading" window just closed, so try again
-				RunScriptedNGCenterEvents(application);
-			}
-		}
-
-		private void AdjustOldFormatting() // Because the compilers really don't like having a space before "="
-		{
-			string vgeScriptFileContent = File.ReadAllText(Path.Combine(PathHelper.GetVGEScriptPath(), "Script.txt"));
-
-			while (vgeScriptFileContent.Contains(" ="))
-				vgeScriptFileContent = vgeScriptFileContent.Replace(" =", "=");
-
-			File.WriteAllText(Path.Combine(PathHelper.GetVGEScriptPath(), "Script.txt"), vgeScriptFileContent, Encoding.GetEncoding(1252));
-		}
-
-		private bool AreLibrariesRegistered()
-		{
-			string MSCOMCTL = Path.Combine(PathHelper.GetSystemDirectory(), "Mscomctl.ocx");
-			string RICHTX32 = Path.Combine(PathHelper.GetSystemDirectory(), "Richtx32.ocx");
-			string PICFORMAT32 = Path.Combine(PathHelper.GetSystemDirectory(), "PicFormat32.ocx");
-			string COMDLG32 = Path.Combine(PathHelper.GetSystemDirectory(), "Comdlg32.ocx");
-
-			if (!File.Exists(MSCOMCTL) || !File.Exists(RICHTX32) || !File.Exists(PICFORMAT32) || !File.Exists(COMDLG32))
-			{
-				ProcessStartInfo startInfo = new ProcessStartInfo
-				{
-					FileName = Path.Combine(PathHelper.GetProgramDirectory(), "TombIDE Library Registration.exe")
-				};
-
-				try
-				{
-					Process process = Process.Start(startInfo);
-					process.WaitForExit();
-				}
-				catch
-				{
-					return false;
-				}
-			}
-
-			return true;
 		}
 
 		#endregion Compilers

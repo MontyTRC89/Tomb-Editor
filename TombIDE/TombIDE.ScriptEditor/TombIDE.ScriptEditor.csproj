@@ -128,6 +128,7 @@
       <DependentUpon>FormSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="MonospacedFonts.cs" />
+    <Compile Include="NGCompiler.cs" />
     <Compile Include="Objects\CompletionData.cs" />
     <Compile Include="Objects\ErrorLine.cs" />
     <Compile Include="Objects\PluginMnemonic.cs" />
