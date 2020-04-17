@@ -48,6 +48,7 @@ namespace TombIDE.ScriptEditor.Controls
 		private BackgroundWorker _errorDetectionWorker = new BackgroundWorker();
 		private BackgroundWorker _contentChangedWorker = new BackgroundWorker();
 		private DispatcherTimer _errorUpdateTimer = new DispatcherTimer();
+		private DispatcherTimer _contentChangedUpdateTimer = new DispatcherTimer();
 		private CompletionWindow _completionWindow = null;
 		private ToolTip _definitionToolTip = new ToolTip();
 
@@ -79,6 +80,9 @@ namespace TombIDE.ScriptEditor.Controls
 			// Initialize timers
 			_errorUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1);
 			_errorUpdateTimer.Tick += ErrorUpdateTimer_Tick;
+
+			_contentChangedUpdateTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+			_contentChangedUpdateTimer.Tick += ContentChangedUpdateTimer_Tick;
 		}
 
 		private void SetNewDefaultSettings()
@@ -158,14 +162,8 @@ namespace TombIDE.ScriptEditor.Controls
 
 			if (!string.IsNullOrEmpty(Document.FileName)) // If the currently modified file is not "Untitled"
 			{
-				List<string> data = new List<string>
-				{
-					Document.FileName,
-					Text
-				};
-
-				if (!_contentChangedWorker.IsBusy)
-					_contentChangedWorker.RunWorkerAsync(data);
+				_contentChangedUpdateTimer.Stop();
+				_contentChangedUpdateTimer.Start();
 			}
 		}
 
@@ -800,6 +798,20 @@ namespace TombIDE.ScriptEditor.Controls
 				SelectionStart = Document.GetOffset(new TextLocation(position.Value.Line, position.Value.Column));
 				SelectionLength = 0;
 			}
+		}
+
+		private void ContentChangedUpdateTimer_Tick(object sender, EventArgs e)
+		{
+			List<string> data = new List<string>
+			{
+				Document.FileName,
+				Text
+			};
+
+			if (!_contentChangedWorker.IsBusy)
+				_contentChangedWorker.RunWorkerAsync(data);
+
+			_contentChangedUpdateTimer.Stop();
 		}
 	}
 }

@@ -42,7 +42,6 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Uncomment = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_19 = new System.Windows.Forms.ToolStripSeparator();
 			this.contextMenuItem_ToggleBookmark = new System.Windows.Forms.ToolStripMenuItem();
-			this.fileList = new TombIDE.ScriptEditor.Controls.FileList();
 			this.label_ColNumber = new System.Windows.Forms.ToolStripStatusLabel();
 			this.label_LineNumber = new System.Windows.Forms.ToolStripStatusLabel();
 			this.label_SelectedChars = new System.Windows.Forms.ToolStripStatusLabel();
@@ -96,12 +95,9 @@ namespace TombIDE.ScriptEditor
 			this.separator_12 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_SwapPanels = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
-			this.objectBrowser = new TombIDE.ScriptEditor.Controls.ObjectBrowser();
 			this.panel_Editor = new System.Windows.Forms.Panel();
 			this.tabControl_Editor = new System.Windows.Forms.CustomTabControl();
 			this.panel_Syntax = new System.Windows.Forms.Panel();
-			this.syntaxPreview = new TombIDE.ScriptEditor.Controls.SyntaxPreview();
-			this.referenceBrowser = new TombIDE.ScriptEditor.Controls.ReferenceBrowser();
 			this.richTextBox_Logs = new System.Windows.Forms.RichTextBox();
 			this.sectionPanel_InfoBox = new DarkUI.Controls.DarkSectionPanel();
 			this.tabControl_Info = new System.Windows.Forms.CustomTabControl();
@@ -120,6 +116,10 @@ namespace TombIDE.ScriptEditor
 			this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
 			this.textChangedDelayTimer = new System.Windows.Forms.Timer(this.components);
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+			this.objectBrowser = new TombIDE.ScriptEditor.Controls.ObjectBrowser();
+			this.fileList = new TombIDE.ScriptEditor.Controls.FileList();
+			this.referenceBrowser = new TombIDE.ScriptEditor.Controls.ReferenceBrowser();
+			this.syntaxPreview = new TombIDE.ScriptEditor.Controls.SyntaxPreview();
 			this.contextMenu_TextBox.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.panel_Editor.SuspendLayout();
@@ -404,15 +404,6 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_ToggleBookmark.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_ToggleBookmark.Text = "Toggle Bookmark";
 			this.contextMenuItem_ToggleBookmark.Click += new System.EventHandler(this.ContextMenu_ToggleBookmark_Click);
-			// 
-			// fileList
-			// 
-			this.fileList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.fileList.Dock = System.Windows.Forms.DockStyle.Right;
-			this.fileList.Location = new System.Drawing.Point(760, 52);
-			this.fileList.Name = "fileList";
-			this.fileList.Size = new System.Drawing.Size(200, 315);
-			this.fileList.TabIndex = 4;
 			// 
 			// label_ColNumber
 			// 
@@ -950,15 +941,6 @@ namespace TombIDE.ScriptEditor
 			this.menuStrip.Size = new System.Drawing.Size(960, 24);
 			this.menuStrip.TabIndex = 0;
 			// 
-			// objectBrowser
-			// 
-			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Left;
-			this.objectBrowser.Location = new System.Drawing.Point(0, 52);
-			this.objectBrowser.Name = "objectBrowser";
-			this.objectBrowser.Size = new System.Drawing.Size(200, 315);
-			this.objectBrowser.TabIndex = 2;
-			// 
 			// panel_Editor
 			// 
 			this.panel_Editor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -1013,32 +995,6 @@ namespace TombIDE.ScriptEditor
 			this.panel_Syntax.Name = "panel_Syntax";
 			this.panel_Syntax.Size = new System.Drawing.Size(544, 20);
 			this.panel_Syntax.TabIndex = 12;
-			// 
-			// syntaxPreview
-			// 
-			this.syntaxPreview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.syntaxPreview.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.syntaxPreview.CurrentArgumentIndex = 0;
-			this.syntaxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.syntaxPreview.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.syntaxPreview.ForeColor = System.Drawing.Color.LightSalmon;
-			this.syntaxPreview.Location = new System.Drawing.Point(0, 0);
-			this.syntaxPreview.Name = "syntaxPreview";
-			this.syntaxPreview.ReadOnly = true;
-			this.syntaxPreview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.syntaxPreview.Size = new System.Drawing.Size(542, 18);
-			this.syntaxPreview.TabIndex = 0;
-			this.syntaxPreview.Text = "";
-			this.syntaxPreview.WordWrap = false;
-			// 
-			// referenceBrowser
-			// 
-			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.referenceBrowser.Location = new System.Drawing.Point(0, 0);
-			this.referenceBrowser.Name = "referenceBrowser";
-			this.referenceBrowser.Size = new System.Drawing.Size(948, 143);
-			this.referenceBrowser.TabIndex = 0;
 			// 
 			// richTextBox_Logs
 			// 
@@ -1227,7 +1183,6 @@ namespace TombIDE.ScriptEditor
 			// 
 			// textChangedDelayTimer
 			// 
-			this.textChangedDelayTimer.Interval = 10;
 			this.textChangedDelayTimer.Tick += new System.EventHandler(this.TextChangedDelayTimer_Tick);
 			// 
 			// toolStrip
@@ -1260,6 +1215,50 @@ namespace TombIDE.ScriptEditor
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
 			this.toolStrip.Size = new System.Drawing.Size(960, 28);
 			this.toolStrip.TabIndex = 1;
+			// 
+			// objectBrowser
+			// 
+			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Left;
+			this.objectBrowser.Location = new System.Drawing.Point(0, 52);
+			this.objectBrowser.Name = "objectBrowser";
+			this.objectBrowser.Size = new System.Drawing.Size(200, 315);
+			this.objectBrowser.TabIndex = 2;
+			// 
+			// fileList
+			// 
+			this.fileList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.fileList.Dock = System.Windows.Forms.DockStyle.Right;
+			this.fileList.Location = new System.Drawing.Point(760, 52);
+			this.fileList.Name = "fileList";
+			this.fileList.Size = new System.Drawing.Size(200, 315);
+			this.fileList.TabIndex = 4;
+			// 
+			// referenceBrowser
+			// 
+			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.referenceBrowser.Location = new System.Drawing.Point(0, 0);
+			this.referenceBrowser.Name = "referenceBrowser";
+			this.referenceBrowser.Size = new System.Drawing.Size(948, 143);
+			this.referenceBrowser.TabIndex = 0;
+			// 
+			// syntaxPreview
+			// 
+			this.syntaxPreview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.syntaxPreview.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.syntaxPreview.CurrentArgumentIndex = 0;
+			this.syntaxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.syntaxPreview.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.syntaxPreview.ForeColor = System.Drawing.Color.LightSalmon;
+			this.syntaxPreview.Location = new System.Drawing.Point(0, 0);
+			this.syntaxPreview.Name = "syntaxPreview";
+			this.syntaxPreview.ReadOnly = true;
+			this.syntaxPreview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+			this.syntaxPreview.Size = new System.Drawing.Size(542, 18);
+			this.syntaxPreview.TabIndex = 0;
+			this.syntaxPreview.Text = "";
+			this.syntaxPreview.WordWrap = false;
 			// 
 			// ScriptEditor
 			// 
