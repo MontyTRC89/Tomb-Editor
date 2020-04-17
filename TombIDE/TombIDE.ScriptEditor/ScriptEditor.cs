@@ -233,8 +233,8 @@ namespace TombIDE.ScriptEditor
 				}
 				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent)
 				{
-					AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).NGString);
-					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+					bool isChanged = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).NGString);
+					EndSilentScriptAction(cachedTab, isChanged, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
 				{
@@ -304,7 +304,7 @@ namespace TombIDE.ScriptEditor
 			OpenScriptFile(); // Changes the current _textBox as well
 
 			// Join the messages into a single string and append it into the _textBox
-			_textBox.AppendText(string.Join(Environment.NewLine, inputLines) + "\n");
+			_textBox.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
 
 			// Scroll to the line where changes were made (the last line)
 			_textBox.ScrollToLine(_textBox.LineCount);
@@ -347,7 +347,7 @@ namespace TombIDE.ScriptEditor
 			HandleTextChangedIndicator();
 		}
 
-		private void AddNewNGString(string ngString)
+		private bool AddNewNGString(string ngString)
 		{
 			OpenLanguageFile(_ide.Project.DefaultLanguage); // Changes the current _textBox as well
 
@@ -355,7 +355,7 @@ namespace TombIDE.ScriptEditor
 			_textBox.SelectionLength = 0;
 
 			// Scan all lines
-			for (int i = 1; i < _textBox.LineCount; i++)
+			for (int i = 1; i <= _textBox.LineCount; i++)
 			{
 				DocumentLine iline = _textBox.Document.GetLineByNumber(i);
 				string ilineText = _textBox.Document.GetText(iline.Offset, iline.Length);
@@ -363,17 +363,17 @@ namespace TombIDE.ScriptEditor
 				if (ilineText.ToLower().StartsWith("[extrang]"))
 				{
 					// Check if the string isn't already defined
-					for (int j = _textBox.LineCount - 1; j >= i; j--)
+					for (int j = _textBox.LineCount; j >= i; j--)
 					{
 						DocumentLine jline = _textBox.Document.GetLineByNumber(j);
 						string jlineText = _textBox.Document.GetText(jline.Offset, jline.Length);
 
 						if (Regex.IsMatch(jlineText, @"\A\d*:\s*?" + ngString + @"(;.*)?"))
-							return;
+							return false;
 					}
 
 					// Add the string
-					for (int j = _textBox.LineCount - 1; j >= i; j--)
+					for (int j = _textBox.LineCount; j >= i; j--)
 					{
 						DocumentLine jline = _textBox.Document.GetLineByNumber(j);
 						string jlineText = _textBox.Document.GetText(jline.Offset, jline.Length);
@@ -381,11 +381,10 @@ namespace TombIDE.ScriptEditor
 						if (Regex.IsMatch(jlineText, @"\A\d*:.*"))
 						{
 							_textBox.CaretOffset = jline.EndOffset;
-							_textBox.TextArea.PerformTextInput("\n");
+							_textBox.TextArea.PerformTextInput(Environment.NewLine);
 
 							int prevNumber = int.Parse(Regex.Replace(jlineText, @"\A(\d*):.*", "$1"));
 
-							_textBox.CaretOffset += 1;
 							_textBox.SelectedText = prevNumber + 1 + ": " + ngString;
 
 							_textBox.ScrollToLine(j + 1);
@@ -394,9 +393,8 @@ namespace TombIDE.ScriptEditor
 						else if (j == i)
 						{
 							_textBox.CaretOffset = jline.EndOffset;
-							_textBox.TextArea.PerformTextInput("\n");
+							_textBox.TextArea.PerformTextInput(Environment.NewLine);
 
-							_textBox.CaretOffset += 1;
 							_textBox.SelectedText = "0: " + ngString;
 
 							_textBox.ScrollToLine(j);
@@ -407,6 +405,8 @@ namespace TombIDE.ScriptEditor
 					break;
 				}
 			}
+
+			return true;
 		}
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
@@ -1100,6 +1100,22 @@ namespace TombIDE.ScriptEditor
 
 				if (ngErrorWindow != null)
 				{
+					ngErrorWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
+
+					// Click the button
+					cachedCursorPosition = Cursor.Position;
+					buildButton.Click();
+					Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
+
+					ngErrorWindow = null;
+				}
+
+				// Refresh the window list and check if an error message box appeared
+				windowList = application.GetWindows();
+				ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
+
+				if (ngErrorWindow != null)
+				{
 					if (_formCompiling.Visible)
 						_formCompiling.Close();
 
@@ -1151,6 +1167,9 @@ namespace TombIDE.ScriptEditor
 
 				if (_formCompiling.Visible)
 					_formCompiling.Close();
+
+				if (_formDebugMode.Visible)
+					_formDebugMode.Close();
 			}
 			catch (ElementNotAvailableException)
 			{
