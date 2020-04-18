@@ -16,6 +16,8 @@
         private void InitializeComponent()
         {
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+            this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
             this.butFaceEdit = new System.Windows.Forms.ToolStripButton();
@@ -29,6 +31,7 @@
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
             this.butDrawCardinalDirections = new System.Windows.Forms.ToolStripButton();
             this.butDrawExtraBlendingModes = new System.Windows.Forms.ToolStripButton();
+            this.butDrawWhiteLighting = new System.Windows.Forms.ToolStripButton();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
@@ -37,6 +40,7 @@
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawGhostBlocks = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.butCopy = new System.Windows.Forms.ToolStripButton();
@@ -60,9 +64,6 @@
             this.butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
             this.butSearch = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
-            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +87,7 @@
             this.butDrawRoomNames,
             this.butDrawCardinalDirections,
             this.butDrawExtraBlendingModes,
+            this.butDrawWhiteLighting,
             this.butDrawIllegalSlopes,
             this.butDrawSlideDirections,
             this.butDisableGeometryPicking,
@@ -119,6 +121,31 @@
             this.toolStrip.TabIndex = 12;
             this.toolStrip.Text = "darkToolStrip1";
             this.toolStrip.MouseClick += new System.Windows.Forms.MouseEventHandler(this.toolStrip_MouseClick);
+            // 
+            // panel3D
+            // 
+            this.panel3D.AllowDrop = true;
+            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Location = new System.Drawing.Point(3, 31);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.ShowLightingWhiteTextureOnly = false;
+            this.panel3D.Size = new System.Drawing.Size(833, 255);
+            this.panel3D.TabIndex = 13;
+            // 
+            // panel2DMap
+            // 
+            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
+            this.panel2DMap.Name = "panel2DMap";
+            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
+            this.panel2DMap.TabIndex = 14;
+            this.panel2DMap.Visible = false;
             // 
             // but2D
             // 
@@ -267,6 +294,17 @@
             this.butDrawExtraBlendingModes.Size = new System.Drawing.Size(23, 25);
             this.butDrawExtraBlendingModes.Tag = "DrawExtraBlendingModes";
             // 
+            // butDrawWhiteLighting
+            // 
+            this.butDrawWhiteLighting.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawWhiteLighting.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawWhiteLighting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawWhiteLighting.Image = global::TombEditor.Properties.Resources.actions_Lighting_White;
+            this.butDrawWhiteLighting.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawWhiteLighting.Name = "butDrawWhiteLighting";
+            this.butDrawWhiteLighting.Size = new System.Drawing.Size(24, 24);
+            this.butDrawWhiteLighting.Tag = "DrawWhiteTextureLightingOnly";
+            // 
             // butDrawIllegalSlopes
             // 
             this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -365,6 +403,18 @@
             this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
+            // 
+            // butDrawLightRadius
+            // 
+            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawLightRadius.Checked = true;
+            this.butDrawLightRadius.CheckOnClick = true;
+            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawLightRadius.Name = "butDrawLightRadius";
+            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
+            this.butDrawLightRadius.Tag = "DrawLightRadius";
+            this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
             // butDrawOther
             // 
@@ -583,7 +633,7 @@
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.texture_Walls2_16;
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureWalls.Name = "butTextureWalls";
-            this.butTextureWalls.Size = new System.Drawing.Size(23, 25);
+            this.butTextureWalls.Size = new System.Drawing.Size(24, 24);
             this.butTextureWalls.Tag = "TextureWalls";
             // 
             // butEditLevelSettings
@@ -629,42 +679,6 @@
             this.butSearchAndReplaceObjects.Name = "butSearchAndReplaceObjects";
             this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(24, 24);
             this.butSearchAndReplaceObjects.Tag = "SearchAndReplaceObjects";
-            // 
-            // panel3D
-            // 
-            this.panel3D.AllowDrop = true;
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Location = new System.Drawing.Point(3, 31);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(833, 255);
-            this.panel3D.TabIndex = 13;
-            // 
-            // panel2DMap
-            // 
-            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
-            this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
-            this.panel2DMap.TabIndex = 14;
-            this.panel2DMap.Visible = false;
-            // 
-            // butDrawLightRadius
-            // 
-            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawLightRadius.Checked = true;
-            this.butDrawLightRadius.CheckOnClick = true;
-            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
-            this.butDrawLightRadius.Tag = "DrawLightRadius";
-            this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
             // MainView
             // 
@@ -733,5 +747,6 @@
         private System.Windows.Forms.ToolStripButton butSearch;
         private System.Windows.Forms.ToolStripButton butSearchAndReplaceObjects;
         private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
+        private System.Windows.Forms.ToolStripButton butDrawWhiteLighting;
     }
 }

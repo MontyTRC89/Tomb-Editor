@@ -5,6 +5,7 @@ cbuffer WorldData
 	bool RoomGridForce;
 	bool RoomDisableVertexColors;
 	bool ShowExtraBlendingModes;
+	bool ShowLightingWhiteTextureOnly;
 };
 
 struct PixelInputType
@@ -39,7 +40,14 @@ float4 main(PixelInputType input) : SV_TARGET
     float4 result;
     if (input.Uvw.x != 0 && !RoomGridForce)
     { // Textured view
-        result = RoomTexture.Sample(DefaultSampler, input.Uvw);
+		result = RoomTexture.Sample(DefaultSampler, input.Uvw);
+		if (!RoomDisableVertexColors) {
+			if (ShowLightingWhiteTextureOnly) {
+				result = float4(1, 1, 1, 1);
+			}
+		}
+
+        
 
 		float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
 		float3 colorMul = min(input.Color.xyz, 1.0f);
@@ -47,7 +55,6 @@ float4 main(PixelInputType input) : SV_TARGET
         result.w *= input.Color.w;
 
 		result.xyz *= input.Color.w; // Turn into premultiplied alpha
-
 		if (input.BlendMode >= 2) // Alpha-blended modes
 		{
 			if (ShowExtraBlendingModes && input.BlendMode != 2)
