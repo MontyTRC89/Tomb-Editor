@@ -311,9 +311,6 @@ namespace TombLib.LevelData
 
             // Build color array
             VertexColors.Resize(VertexPositions.Count, room.AmbientLight);
-
-            // Lighting
-            Relight(room);
         }
 
         private enum FaceDirection
