@@ -781,7 +781,11 @@ namespace TombEditor
                     break;
             }
             if (instance is LightInstance)
+            {
                 instance.Room.BuildGeometry();
+                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            }
+                
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -930,20 +934,24 @@ namespace TombEditor
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                 if (adjoiningRoom != null)
                 {
                     adjoiningRoom.BuildGeometry();
+                    adjoiningRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(adjoiningRoom);
 
                     if (adjoiningRoom.AlternateOpposite != null)
                     {
                         adjoiningRoom.AlternateOpposite.BuildGeometry();
+                        adjoiningRoom.AlternateOpposite.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                         _editor.RoomSectorPropertiesChange(adjoiningRoom.AlternateOpposite);
                     }
                 }
                 if (room.AlternateOpposite != null)
                 {
                     room.AlternateOpposite.BuildGeometry();
+                    room.AlternateOpposite.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
                 }
             }
@@ -998,6 +1006,7 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1013,6 +1022,7 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1302,6 +1312,7 @@ namespace TombEditor
             if (textureApplied)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                 _editor.RoomTextureChange(room);
             }
             return textureApplied;
@@ -1678,6 +1689,7 @@ namespace TombEditor
             }
 
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1715,6 +1727,7 @@ namespace TombEditor
                 }
 
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1764,7 +1777,10 @@ namespace TombEditor
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
-                room.BuildGeometry(); // Rebuild lighting!
+            {
+                room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            }
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
@@ -1841,6 +1857,7 @@ namespace TombEditor
             foreach (Room adjoiningRoom in adjoiningRooms)
             {
                 adjoiningRoom?.BuildGeometry();
+                adjoiningRoom?.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
 
@@ -1882,7 +1899,11 @@ namespace TombEditor
                 room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.AlternateOpposite.GetLowestCorner(), (short)room.AlternateOpposite.GetHighestCorner(), useFloor);
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
             Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            });
 
             // Cleanup
             if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
@@ -2378,7 +2399,11 @@ namespace TombEditor
 
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
+            {
                 portalRoom.BuildGeometry();
+                portalRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            }
+                
             foreach (PortalInstance portal in portals)
                 _editor.ObjectChange(portal, ObjectChangeType.Add);
 
@@ -2405,6 +2430,7 @@ namespace TombEditor
 
             newRoom.Name = "Flipped of " + room;
             newRoom.BuildGeometry();
+            newRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
 
             // Assign room
             _editor.Level.AssignRoomToFree(newRoom);
@@ -2787,7 +2813,15 @@ namespace TombEditor
             _editor.RoomListChange();
 
             // Build the geometry of the new room
-            Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
+            Parallel.Invoke(() =>
+            {
+                newRoom.BuildGeometry();
+                newRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            }, () =>
+            {
+                room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            });
 
             if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
                 _editor.SelectedRoom = newRoom; //Don't center
@@ -3078,7 +3112,11 @@ namespace TombEditor
             if (alternated)
                 performMergeAction(newRoom.AlternateOpposite, mergeRooms?.Select(room => room.AlternateOpposite ?? room), alternateNewSectorMap, true);
             Room.FixupNeighborPortals(_editor.Level, new[] { newRoom }, new[] { newRoom }.Concat(mergeRooms), ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            });
 
             // Add room and update the editor
             foreach (Room room in mergeRooms)
@@ -3112,7 +3150,11 @@ namespace TombEditor
             relevantRooms.Add(room);
             relevantRooms.Add(splitRoom);
             Room.FixupNeighborPortals(_editor.Level, new[] { room, splitRoom }, new[] { room, splitRoom }, ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            });
 
             // Cleanup
             if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
@@ -3159,6 +3201,7 @@ namespace TombEditor
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = cutName + " (copy" + buffer + ")";
             newRoom.BuildGeometry();
+            newRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.UndoManager.PushRoomCreated(newRoom);
@@ -3219,6 +3262,7 @@ namespace TombEditor
                     {
                         room.AmbientLight = c.ToFloat3Color() * 2.0f;
                         room.BuildGeometry();
+                        room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                         _editor.RoomPropertiesChange(room);
                     }
                 }, _editor.Configuration.UI_ColorScheme))
@@ -3239,6 +3283,7 @@ namespace TombEditor
             foreach (Room room in _editor.SelectedRooms)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                 _editor.RoomPropertiesChange(room);
             }
 
@@ -3606,7 +3651,11 @@ namespace TombEditor
                 return false;
             var newRooms = _editor.Level.TransformRooms(_editor.SelectedRooms, transformation);
             foreach (Room room in newRooms)
+            {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            }
+
             _editor.SelectRoomsAndResetCamera(newRooms);
 
             _editor.RoomListChange();
@@ -3695,6 +3744,7 @@ namespace TombEditor
             portals.Select(p => p.AdjoiningRoom).ToList().ForEach(room => { room.BuildGeometry(); _editor.RoomGeometryChange(room); });
 
             _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -3781,6 +3831,7 @@ namespace TombEditor
 
             portal.Opacity = opacity;
             portal.Room.BuildGeometry();
+            portal.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
@@ -4294,11 +4345,15 @@ namespace TombEditor
                             hasUnsavedChanges = true;
                         }
                     }
-
+                    foreach(Room r  in newLevel.Rooms.Where(room => room != null))
+                    {
+                        r.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                    }
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
+
                 }
             }
             catch (Exception exc)
@@ -4402,6 +4457,7 @@ namespace TombEditor
             foreach (Room room in roomsToUpdate)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
                 _editor.RoomSectorPropertiesChange(room);
             }
 
@@ -4459,7 +4515,11 @@ namespace TombEditor
             {
                 var relevantRooms = new HashSet<Room> { room, ((PortalInstance)@object).AdjoiningRoom };
                 Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
-                Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+                Parallel.ForEach(relevantRooms, relevantRoom =>
+                {
+                    relevantRoom.BuildGeometry();
+                    relevantRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                });
                 foreach (Room relevantRoom in relevantRooms)
                     _editor.RoomPropertiesChange(relevantRoom);
             }
