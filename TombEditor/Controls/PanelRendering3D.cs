@@ -317,7 +317,7 @@ namespace TombEditor.Controls
             {
                 var value = (Editor.ObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
-                    _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
+                    _renderingCachedRooms.Remove(value.Object.Room);
             }
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
