@@ -599,6 +599,7 @@
     <None Include="Resources\icons_actions\actions_back-16.png" />
     <None Include="Resources\icons_general\general_airplane-16.png" />
     <None Include="Resources\icons_general\general_search-and-replace-16.png" />
+    <None Include="Resources\icons_objects\objects_LightPoint-161.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">
