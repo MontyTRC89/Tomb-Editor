@@ -923,8 +923,9 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
             {
-                room.RebuildLighting(true);
-                //_editor.RoomGeometryChange(room);
+
+                room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                _editor.RoomGeometryChange(room);
             }
             if (instance is PortalInstance)
             {
