@@ -30,16 +30,16 @@
 			// 
 			this.comboBox_References.FormattingEnabled = true;
 			this.comboBox_References.Items.AddRange(new object[] {
-			"Mnemonic Constants",
-			"Enemy Damage List",
-			"Keyboard Scancodes",
-			"OCB List",
-			"SCRIPT NEW COMMANDS (Unavailable)",
-			"SCRIPT OLD COMMANDS (Unavailable)",
-			"SOUND SFX INDICES LIST (Unavailable)",
-			"Moveable Slot Indices",
-			"Static Object Indices",
-			"Variable Placeholders"});
+            "Mnemonic Constants",
+            "Enemy Damage List",
+            "Keyboard Scancodes",
+            "OCB List",
+            "SCRIPT NEW COMMANDS (Unavailable)",
+            "SCRIPT OLD COMMANDS (Unavailable)",
+            "SOUND SFX INDICES LIST (Unavailable)",
+            "Moveable Slot Indices",
+            "Static Object Indices",
+            "Variable Placeholders"});
 			this.comboBox_References.Location = new System.Drawing.Point(3, 3);
 			this.comboBox_References.Margin = new System.Windows.Forms.Padding(3, 3, 0, 4);
 			this.comboBox_References.Name = "comboBox_References";
@@ -52,7 +52,7 @@
 			this.contextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.contextMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.menuItem_Copy});
+            this.menuItem_Copy});
 			this.contextMenu.Name = "contextMenu";
 			this.contextMenu.Size = new System.Drawing.Size(103, 26);
 			// 
@@ -72,9 +72,9 @@
 			this.dataGrid.AllowUserToDragDropRows = false;
 			this.dataGrid.AllowUserToOrderColumns = true;
 			this.dataGrid.AllowUserToPasteCells = false;
-			this.dataGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.dataGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.dataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
 			this.dataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 			this.dataGrid.ColumnHeadersHeight = 4;
@@ -93,8 +93,8 @@
 			// 
 			// textBox_Search
 			// 
-			this.textBox_Search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBox_Search.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBox_Search.Location = new System.Drawing.Point(211, 4);
 			this.textBox_Search.Margin = new System.Windows.Forms.Padding(3, 4, 4, 4);
 			this.textBox_Search.Name = "textBox_Search";

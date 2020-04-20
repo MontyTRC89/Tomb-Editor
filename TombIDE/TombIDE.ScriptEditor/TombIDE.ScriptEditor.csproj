@@ -40,6 +40,7 @@
     <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -61,7 +62,7 @@
   <ItemGroup>
     <Compile Include="ArgumentHelper.cs" />
     <Compile Include="Autocomplete.cs" />
-    <Compile Include="CommandVariations.cs" />
+    <Compile Include="CommandHelper.cs" />
     <Compile Include="Controls\AvalonTextBox.cs" />
     <Compile Include="Controls\FileList.cs">
       <SubType>UserControl</SubType>
@@ -85,17 +86,17 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ErrorChecking.cs" />
-    <Compile Include="Forms\FormCompiling.cs">
+    <Compile Include="Forms\FormFolderCreation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormCompiling.Designer.cs">
-      <DependentUpon>FormCompiling.cs</DependentUpon>
+    <Compile Include="Forms\FormFolderCreation.Designer.cs">
+      <DependentUpon>FormFolderCreation.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormDebugMode.cs">
+    <Compile Include="Forms\FormNGCompilingStatus.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormDebugMode.Designer.cs">
-      <DependentUpon>FormDebugMode.cs</DependentUpon>
+    <Compile Include="Forms\FormNGCompilingStatus.Designer.cs">
+      <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormFindReplace.cs">
       <SubType>Form</SubType>
@@ -115,11 +116,17 @@
     <Compile Include="Forms\FormReindentRules.Designer.cs">
       <DependentUpon>FormReindentRules.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSaveAs.cs">
+    <Compile Include="Forms\FormFileCreation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSaveAs.Designer.cs">
-      <DependentUpon>FormSaveAs.cs</DependentUpon>
+    <Compile Include="Forms\FormFileCreation.Designer.cs">
+      <DependentUpon>FormFileCreation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormRenameItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormRenameItem.Designer.cs">
+      <DependentUpon>FormRenameItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormSettings.cs">
       <SubType>Form</SubType>
@@ -182,17 +189,20 @@
     <Compile Include="SyntaxTidying.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\FileList.resx">
+      <DependentUpon>FileList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ObjectBrowser.resx">
       <DependentUpon>ObjectBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ReferenceBrowser.resx">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormCompiling.resx">
-      <DependentUpon>FormCompiling.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormFolderCreation.resx">
+      <DependentUpon>FormFolderCreation.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormDebugMode.resx">
-      <DependentUpon>FormDebugMode.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormNGCompilingStatus.resx">
+      <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormFindReplace.resx">
       <DependentUpon>FormFindReplace.cs</DependentUpon>
@@ -204,8 +214,11 @@
       <DependentUpon>FormReindentRules.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSaveAs.resx">
-      <DependentUpon>FormSaveAs.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormFileCreation.resx">
+      <DependentUpon>FormFileCreation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormRenameItem.resx">
+      <DependentUpon>FormRenameItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
@@ -261,6 +274,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Images\forward-arrow-16.png" />
+    <Content Include="Resources\Images\general_create_new-16.png" />
+    <Content Include="Resources\Images\general_edit-16.png" />
+    <Content Include="Resources\Images\general_folder-16.png" />
+    <Content Include="Resources\Images\general_trash-16.png" />
     <Content Include="TIDE\References\Enemy Damage List.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

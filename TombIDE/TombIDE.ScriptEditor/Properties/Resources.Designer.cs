@@ -93,6 +93,16 @@ namespace TombIDE.ScriptEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap forward_arrow_16 {
+            get {
+                object obj = ResourceManager.GetObject("forward_arrow_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_AboutIcon_16 {
             get {
                 object obj = ResourceManager.GetObject("general_AboutIcon_16", resourceCulture);
@@ -133,9 +143,39 @@ namespace TombIDE.ScriptEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_create_new_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_create_new_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_cut_16 {
             get {
                 object obj = ResourceManager.GetObject("general_cut_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_edit_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_edit_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_folder_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_folder_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -186,6 +226,16 @@ namespace TombIDE.ScriptEditor.Properties {
         internal static System.Drawing.Bitmap general_settings_16 {
             get {
                 object obj = ResourceManager.GetObject("general_settings_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_trash_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_trash_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
