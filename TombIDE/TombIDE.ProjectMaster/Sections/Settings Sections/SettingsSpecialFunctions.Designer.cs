@@ -27,6 +27,7 @@
 			// 
 			// button_BuildArchive
 			// 
+			this.button_BuildArchive.Checked = false;
 			this.button_BuildArchive.Enabled = false;
 			this.button_BuildArchive.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Open_16;
 			this.button_BuildArchive.Location = new System.Drawing.Point(7, 96);
@@ -39,6 +40,7 @@
 			// 
 			// button_DeleteLogs
 			// 
+			this.button_DeleteLogs.Checked = false;
 			this.button_DeleteLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_DeleteLogs.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
 			this.button_DeleteLogs.Location = new System.Drawing.Point(7, 65);
@@ -52,6 +54,7 @@
 			// 
 			// button_RenameLauncher
 			// 
+			this.button_RenameLauncher.Checked = false;
 			this.button_RenameLauncher.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_RenameLauncher.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_RenameLauncher.Location = new System.Drawing.Point(7, 34);

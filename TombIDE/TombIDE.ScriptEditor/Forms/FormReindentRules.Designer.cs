@@ -243,7 +243,6 @@ namespace TombIDE.ScriptEditor
 
 		#endregion
 
-        private System.Windows.Forms.Integration.ElementHost elementHost;
 		private DarkUI.Controls.DarkButton button_Cancel;
 		private DarkUI.Controls.DarkButton button_ResetDefault;
 		private DarkUI.Controls.DarkButton button_Save;
@@ -256,6 +255,7 @@ namespace TombIDE.ScriptEditor
 		private DarkUI.Controls.DarkGroupBox groupBox_Preview;
 		private DarkUI.Controls.DarkLabel label_Comma;
 		private DarkUI.Controls.DarkLabel label_Equal;
+		private System.Windows.Forms.Integration.ElementHost elementHost;
 		private System.Windows.Forms.Panel panel_Buttons;
 		private System.Windows.Forms.Panel panel_Main;
     }

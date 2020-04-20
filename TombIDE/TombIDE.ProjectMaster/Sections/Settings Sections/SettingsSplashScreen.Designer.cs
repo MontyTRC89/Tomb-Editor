@@ -31,6 +31,7 @@
 			// 
 			// button_Change
 			// 
+			this.button_Change.Checked = false;
 			this.button_Change.Location = new System.Drawing.Point(476, 200);
 			this.button_Change.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Change.Name = "button_Change";
@@ -41,6 +42,7 @@
 			// 
 			// button_Preview
 			// 
+			this.button_Preview.Checked = false;
 			this.button_Preview.Location = new System.Drawing.Point(476, 37);
 			this.button_Preview.Margin = new System.Windows.Forms.Padding(3, 12, 6, 6);
 			this.button_Preview.Name = "button_Preview";
@@ -51,6 +53,7 @@
 			// 
 			// button_Remove
 			// 
+			this.button_Remove.Checked = false;
 			this.button_Remove.Location = new System.Drawing.Point(476, 235);
 			this.button_Remove.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Remove.Name = "button_Remove";
