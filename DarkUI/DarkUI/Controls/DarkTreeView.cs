@@ -1166,18 +1166,23 @@ namespace DarkUI.Controls
             }
         }
 
+        public Color OddNodeColor { get; set; } = Colors.HeaderBackground;
+        public Color EvenNodeColor { get; set; } = Colors.GreyBackground;
+        public Color FocusedNodeColor { get; set; } = Colors.BlueSelection;
+        public Color NonFocusedNodeColor { get; set; } = Colors.GreySelection;
+
         private void DrawNode(DarkTreeNode node, Graphics g)
         {
             var rect = GetNodeFullRowArea(node);
 
             // 1. Draw background
-            var bgColor = node.Odd ? Colors.HeaderBackground : Colors.GreyBackground;
+            var bgColor = node.Odd ? OddNodeColor : EvenNodeColor;
 
             if (SelectedNodes.Count > 0 && SelectedNodes.Contains(node))
-                bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
+                bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
 
             if (IsDragging && _dropNode == node)
-                bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
+                bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
 
             using (var b = new SolidBrush(bgColor))
             {
