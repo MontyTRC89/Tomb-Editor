@@ -43,7 +43,7 @@ namespace WadTool
         private void AnimCommandEditor_AnimCommandChanged(object sender, AnimCommandEditor.AnimCommandEventArgs e)
         {
             int index = gridViewCommands.SelectedRows[0].Index;
-            _animCommands[index] = e.Command;
+            _animCommands[index] = e.Command.Clone();
             Invalidate();
         }
 
