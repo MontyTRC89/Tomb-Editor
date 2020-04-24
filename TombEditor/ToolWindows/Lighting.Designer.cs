@@ -505,6 +505,8 @@
             this.cbLightQuality.Name = "cbLightQuality";
             this.cbLightQuality.Size = new System.Drawing.Size(143, 23);
             this.cbLightQuality.TabIndex = 6;
+            this.toolTip.SetToolTip(this.cbLightQuality, "Raytracing sample count.\r\nHigher value gives more smooth shadows on obstructed ar" +
+        "eas.");
             this.cbLightQuality.SelectionChangeCommitted += new System.EventHandler(this.cbLightQualityChanged);
             // 
             // Lighting
