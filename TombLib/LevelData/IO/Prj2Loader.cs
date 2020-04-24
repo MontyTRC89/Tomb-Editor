@@ -227,6 +227,10 @@ namespace TombLib.LevelData.IO
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.DefaultLightQuality)
+                    settings.DefaultLightQuality = (LightQuality)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.OverrideLightQuality)
+                    settings.OverrideIndividualLightQualitySettings = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SelectedSounds)
@@ -1063,13 +1067,12 @@ namespace TombLib.LevelData.IO
                         instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
                     else
                         instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
+
                     if(id3 == Prj2Chunks.ObjectLight3)
-                    {
                         instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
-                    }else
-                    {
+                    else
                         instance.Quality = LightQuality.Default;
-                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

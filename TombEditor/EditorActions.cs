@@ -4345,10 +4345,10 @@ namespace TombEditor
                             hasUnsavedChanges = true;
                         }
                     }
-                    foreach(Room r  in newLevel.Rooms.Where(room => room != null))
-                    {
+
+                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
                         r.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
-                    }
+
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
@@ -4419,6 +4419,9 @@ namespace TombEditor
                 {
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
+
+                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                        r.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
 
                     _editor.Level = newLevel;
                     newLevel = null;
