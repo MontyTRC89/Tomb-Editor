@@ -111,11 +111,6 @@ namespace TombLib.LevelData
         public const string VariableEnd = ")";
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
-        public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
-        public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
-
         // New sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();
@@ -136,9 +131,8 @@ namespace TombLib.LevelData
             }
         }
         public bool AutoAssignSoundsIfNoSelection { get; set; } = true; // Autodetect and assign sounds if none selected
-
-        public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
-
+        
+        // Default sound paths
         public List<WadSoundPath> WadSoundPaths { get; set; } = new List<WadSoundPath>
             {
                 new WadSoundPath("Sounds"), // For directly loading wad files.
@@ -161,25 +155,40 @@ namespace TombLib.LevelData
                 new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
-        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
+        // Game version and version-specific settings
+        public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
+        public bool GameEnableQuickStartFeature { get; set; } = true;
+
+        // Paths
+        public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
+        public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
         public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
-        public bool GameEnableQuickStartFeature { get; set; } = true;
-        public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
+
+        // All data lists
+        public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
-        public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
+        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
-        public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
         public List<ImportedGeometry> ImportedRooms { get; set; } = new List<ImportedGeometry>();
         public bool InterpretStaticMeshVertexDataForMerge { get; set; } = false;
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
+        public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
+
+        // Light options
+        public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
+        public LightQuality DefaultLightQuality { get; set; } = LightQuality.Low;
+        public bool OverrideIndividualLightQualitySettings { get; set; } = false;
+
         // Compiler options
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
         public int TexturePadding { get; set; } = 8;
-
+        
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;
