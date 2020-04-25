@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -462,7 +463,7 @@ namespace TombLib.LevelData.IO
                     });
                     settings.AnimatedTextureSets = animatedTextureSets;
                 }
-                else if(id == Prj2Chunks.AutoMergeStaticMeshes)
+                else if (id == Prj2Chunks.AutoMergeStaticMeshes)
                 {
                     chunkIO.ReadChunks((id2, size) => {
                         if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
@@ -491,7 +492,22 @@ namespace TombLib.LevelData.IO
                         }
                         else return false;
                     });
-                }else
+                }
+                else if (id == Prj2Chunks.Palette)
+                {
+                    var colorCount = chunkIO.Raw.ReadUInt16();
+                    var colorList = new List<ColorC>();
+
+                    for (int i = 0; i < colorCount; i++)
+                    {
+                        var r = chunkIO.Raw.ReadByte();
+                        var g = chunkIO.Raw.ReadByte();
+                        var b = chunkIO.Raw.ReadByte();
+                        colorList.Add(new ColorC(r, g, b));
+                    }
+                    settings.Palette = colorList;
+                }
+                else
                     return false;
                 return true;
             });
