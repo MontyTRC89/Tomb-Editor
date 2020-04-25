@@ -131,7 +131,7 @@ namespace TombLib.LevelData
             }
         }
         public bool AutoAssignSoundsIfNoSelection { get; set; } = true; // Autodetect and assign sounds if none selected
-        
+
         // Default sound paths
         public List<WadSoundPath> WadSoundPaths { get; set; } = new List<WadSoundPath>
             {
@@ -178,6 +178,7 @@ namespace TombLib.LevelData
         public bool InterpretStaticMeshVertexDataForMerge { get; set; } = false;
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
         public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
+        public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
 
         // Light options
         public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
@@ -354,6 +355,20 @@ namespace TombLib.LevelData
                 return ImageC.FromSystemDrawingImage(ResourcesC.ResourcesC.Extra_Tr5_pc);
             return LoadRawExtraTexture(path);
         }
+
+        public static List<ColorC> LoadPalette(byte[] buffer)
+        {
+            var result = new List<ColorC>();
+            if (buffer.Length < 3) return result; // No suitable color data found
+
+            using (var stream = new MemoryStream(buffer, false))
+            using (var readerPalette = new BinaryReader(stream))
+                while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
+                    result.Add(new ColorC(readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
+
+            return result;
+        }
+        public static List<ColorC> LoadPalette() => LoadPalette(ResourcesC.ResourcesC.palette);
 
         public static ImageC LoadRawExtraTexture(string path)
         {

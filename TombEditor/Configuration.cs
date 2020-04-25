@@ -113,6 +113,10 @@ namespace TombEditor
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
         public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
 
+        // Palette options
+
+        public bool Palette_TextureSamplingMode { get; set; } = false;
+
         // Gizmo options
 
         public float Gizmo_Size { get; set; } = 1536.0f;

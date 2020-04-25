@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using NLog;
 using System;
+using System.Drawing;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -355,8 +356,14 @@ namespace TombEditor
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
+                // Temporarily hide selection
+                _editor.ToggleHiddenSelection(true);
+
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+
+                // Unhide selection
+                _editor.ToggleHiddenSelection(false);
 
                 obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
@@ -379,8 +386,14 @@ namespace TombEditor
                 colorDialog.Color = (obj.Color).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
+                // Temporarily hide selection
+                _editor.ToggleHiddenSelection(true);
+
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+
+                // Unhide selection
+                _editor.ToggleHiddenSelection(false);
 
                 obj.Color = colorDialog.Color.ToFloat3Color();
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
