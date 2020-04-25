@@ -2,7 +2,8 @@ Version 1.3
 ===========
 Tomb Editor:
  * Add "Lighting Quality" feature to create natural smooth shadows during raytracing.
- * Add experimental "Moveable Tint" feature.
+ * Refactored palette and added ability to sample palette from selected texture set.
+ * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add "Clear Shades" option for merged statics, which ignores static mesh's own shades before applying lighting.
  * Add "Untextured Lighting" mode.
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
