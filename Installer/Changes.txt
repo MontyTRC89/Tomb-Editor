@@ -14,6 +14,9 @@ TombIDE:
 
 WadTool:
  * Fix wrong copy animcommand behaviour
+ 
+General:
+ * Try to guess duplicated item IDs corrupted by StrPix after using it with v130 wads.
 
 Version 1.2.11
 ==============
