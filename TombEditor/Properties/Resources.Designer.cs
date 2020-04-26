@@ -153,6 +153,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_DrawUntexturedLights_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_DrawUntexturedLights_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_generic_text_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_generic_text_16", resourceCulture);
@@ -186,16 +196,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap actions_light_on_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_light_on_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap actions_Lighting_White {
-            get {
-                object obj = ResourceManager.GetObject("actions_Lighting_White", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
