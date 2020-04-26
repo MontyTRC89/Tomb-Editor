@@ -28,6 +28,11 @@ namespace TombEditor.Controls
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
 
+        private int _width => ClientSize.Width - Padding.Horizontal;
+        private int _height => ClientSize.Height - Padding.Vertical;
+        private int _startX => Padding.Left;
+        private int _startY => Padding.Top; 
+
         public static readonly HashSet<SectorColoringType> IgnoredHighlights = new HashSet<SectorColoringType>
         {
             SectorColoringType.FloorPortal,
@@ -95,19 +100,18 @@ namespace TombEditor.Controls
         protected float GetGridStep()
         {
             VectorInt2 gridDimensions = GetGridDimensions();
-            Size ClientSize = this.ClientSize;
-            if ((ClientSize.Width * gridDimensions.Y) < (ClientSize.Height * gridDimensions.X))
-                return (float)(ClientSize.Width) / gridDimensions.X;
+            if ((_width * gridDimensions.Y) < (_height * gridDimensions.X))
+                return (float)(_width) / gridDimensions.X;
             else
-                return (float)(ClientSize.Height) / gridDimensions.Y;
+                return (float)(_height) / gridDimensions.Y;
         }
 
         protected RectangleF GetVisualAreaTotal()
         {
             Vector2 gridSize = (Vector2)GetGridDimensions() * GetGridStep();
             return new RectangleF(
-                (ClientSize.Width - gridSize.X) * 0.5f,
-                (ClientSize.Height - gridSize.Y) * 0.5f,
+                _startX + (_width - gridSize.X) * 0.5f,
+                _startY + (_height - gridSize.Y) * 0.5f,
                 gridSize.X,
                 gridSize.Y);
         }
