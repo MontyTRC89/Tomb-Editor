@@ -706,7 +706,7 @@ namespace DarkUI.Docking
             }
 
             // Left color divider for last bottom group
-            if (DockArea == DarkDockArea.Bottom && DockRegion.Groups.Last() == this)
+            if (DockArea == DarkDockArea.Bottom && Order > 0)
             {
                 using (var p = new Pen(Colors.DarkBorder))
                 {
