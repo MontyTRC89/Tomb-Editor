@@ -51,9 +51,19 @@ namespace TombEditor.ToolWindows
             // Copy palette into level settings on update
             lightPalette.PaletteChanged += delegate { _editor.Level.Settings.Palette = lightPalette.Palette; };
 
-            // Hook into palette mouse events to hide selection in 3D window
-            lightPalette.MouseDown += delegate { _editor.ToggleHiddenSelection(true);  };
-            lightPalette.MouseUp   += delegate { _editor.ToggleHiddenSelection(false); };
+            // Hook into palette mouse events to temporarily hide selection highlight
+            lightPalette.MouseDown += delegate 
+            {
+                // Additionally save undo in case we're editing selected light colour
+                if (_editor.SelectedObject is LightInstance)
+                    _editor.UndoManager.PushObjectPropertyChanged((LightInstance)_editor.SelectedObject);
+                _editor.ToggleHiddenSelection(true);
+            };
+
+            lightPalette.MouseUp += delegate 
+            {
+                _editor.ToggleHiddenSelection(false);
+            };
         }
 
         protected override void Dispose(bool disposing)

@@ -25,7 +25,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color SelectedColor
         {
-            get { return getColorFromPalette(_selectedColorCoord); }
+            get { return GetColorFromPalette(_selectedColorCoord); }
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -72,7 +72,7 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
-        private Color getColorFromPalette(Point point)
+        private Color GetColorFromPalette(Point point)
         {
             if (_palette == null)
                 return Color.Magenta;
@@ -84,7 +84,7 @@ namespace TombEditor.Controls
             return Color.FromArgb(255, c.R, c.G, c.B);
         }
 
-        private void setColorToPalette(Color color, Point point)
+        private void SetColorToPalette(Color color, Point point)
         {
             int index = point.Y * PaletteSize.Width + point.X;
             if (_palette == null || index < 0)
@@ -97,18 +97,22 @@ namespace TombEditor.Controls
                 _palette[index] = c;
         }
 
-        protected override void OnMouseDown(MouseEventArgs e)
+        private void ChangeColorByMouse(MouseEventArgs e)
         {
-            base.OnMouseDown(e);
-
             if (e.Button == MouseButtons.Left)
             {
                 Focus();
-                _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1), 
+                _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1),
                                                 (int)MathC.Clamp((e.Y / _paletteCellHeight), 0, PaletteSize.Height - 1));
                 SelectedColorChanged?.Invoke(this, EventArgs.Empty);
                 Invalidate();
             }
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            ChangeColorByMouse(e);
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -119,10 +123,10 @@ namespace TombEditor.Controls
             {
                 using (var colorDialog = new RealtimeColorDialog())
                 {
-                    colorDialog.Color = getColorFromPalette(_selectedColorCoord);
+                    colorDialog.Color = GetColorFromPalette(_selectedColorCoord);
                     if (colorDialog.ShowDialog(FindForm()) == DialogResult.OK)
                     {
-                        setColorToPalette(colorDialog.Color, _selectedColorCoord);
+                        SetColorToPalette(colorDialog.Color, _selectedColorCoord);
                         PaletteChanged?.Invoke(this, EventArgs.Empty);
                         Invalidate();
                     }
@@ -136,7 +140,7 @@ namespace TombEditor.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                OnMouseDown(e);
+                ChangeColorByMouse(e);
                 Update(); // Invalidate gets extremely slow here for some reason
             }
         }
@@ -154,7 +158,7 @@ namespace TombEditor.Controls
             for (int y = 0; y < PaletteSize.Height; y++)
                 for (int x = 0; x < PaletteSize.Width; x++)
                 {
-                    Color color = getColorFromPalette(new Point(x, y));
+                    Color color = GetColorFromPalette(new Point(x, y));
                     using (Brush brush = new SolidBrush(color))
                         e.Graphics.FillRectangle(brush, startX + x * _paletteCellWidth, startY + y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
                 }
