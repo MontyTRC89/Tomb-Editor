@@ -705,6 +705,15 @@ namespace DarkUI.Docking
                 g.FillRectangle(b, ClientRectangle);
             }
 
+            // Left color divider for last bottom group
+            if (DockArea == DarkDockArea.Bottom && DockRegion.Groups.Last() == this)
+            {
+                using (var p = new Pen(Colors.DarkBorder))
+                {
+                    g.DrawLine(p, ClientRectangle.Left, 0, ClientRectangle.Left, ClientRectangle.Height);
+                }
+            }
+
             if (!_tabArea.Visible)
                 return;
 
