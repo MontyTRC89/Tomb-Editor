@@ -49,6 +49,7 @@ namespace TombEditor.Controls
         private const float _paletteCellHeight = 10;
 
         private Point _selectedColorCoord = new Point(-1, -1);
+        private Size _oldPaletteSize = new Size();
 
         private List<ColorC> _palette { get; } = new List<ColorC>();
 
@@ -62,6 +63,7 @@ namespace TombEditor.Controls
                      ControlStyles.ResizeRedraw |
                      ControlStyles.UserPaint, true);
             TabStop = true;
+            _oldPaletteSize = PaletteSize;
         }
 
         public void LoadPalette(List<ColorC> palette)
@@ -145,6 +147,19 @@ namespace TombEditor.Controls
             }
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            // Recalculate selected color coordinate
+            if (_selectedColorCoord != new Point(-1))
+            {
+                int colorIndex = _oldPaletteSize.Width * _selectedColorCoord.Y + _selectedColorCoord.X;
+                _selectedColorCoord = new Point((colorIndex % PaletteSize.Width), colorIndex / PaletteSize.Width);
+                _oldPaletteSize = PaletteSize;
+            }
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -181,7 +196,8 @@ namespace TombEditor.Controls
             e.Graphics.DrawRectangle(_gridPen, startX, startY, sizeX, sizeY);
 
             // Draw selection rect
-            if (_selectedColorCoord.X >= 0 && _selectedColorCoord.Y >= 0)
+            if (_selectedColorCoord.X >= 0 && _selectedColorCoord.Y >= 0 &&
+                _selectedColorCoord.X < PaletteSize.Width && _selectedColorCoord.Y < PaletteSize.Height)
                 e.Graphics.DrawRectangle(_selectionPen, startX + _selectedColorCoord.X * _paletteCellWidth,
                     startY + _selectedColorCoord.Y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
         }
