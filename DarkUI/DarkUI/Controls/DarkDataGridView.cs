@@ -877,12 +877,7 @@ namespace DarkUI.Controls
 
         [DefaultValue(false)]
         [Category("Misc")]
-        [Description("Toggles checkbox value on double-click in first encountered checkbox cell.")]
-        public bool ToggleCheckBoxOnDoubleClick { get; set; }
-
-        [DefaultValue(false)]
-        [Category("Misc")]
-        [Description("Toggles checkbox value on double-click in first encountered checkbox cell.")]
+        [Description("Toggles checkbox value on click in first encountered checkbox cell.")]
         public bool ToggleCheckBoxOnClick { get; set; }
 
         [DefaultValue(false)]
