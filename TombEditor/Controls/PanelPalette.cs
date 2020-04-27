@@ -12,31 +12,14 @@ namespace TombEditor.Controls
     public class PanelPalette : PictureBox
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public List<ColorC> Palette
-        {
-            get
-            {
-
-                return new List<ColorC>(_palette);
-
-            }
-        }
+        public List<ColorC> Palette => new List<ColorC>(_palette);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Color SelectedColor
-        {
-            get { return GetColorFromPalette(_selectedColorCoord); }
-        }
+        public Color SelectedColor => GetColorFromPalette(_selectedColorCoord);
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Size PaletteSize
-        {
-            get
-            {
-                return new Size((int)(Math.Floor((ClientSize.Width - Padding.Left - Padding.Right) / _paletteCellWidth)),
-                                (int)(Math.Floor((ClientSize.Height - Padding.Top - Padding.Bottom) / _paletteCellHeight)));
-            }
-        }
+        public Size PaletteSize => new Size((int)(Math.Floor((ClientSize.Width - Padding.Horizontal)  / _paletteCellWidth)),
+                                            (int)(Math.Floor((ClientSize.Height - Padding.Vertical) / _paletteCellHeight)));
 
         public bool Editable { get; set; } = true;
 
@@ -77,7 +60,7 @@ namespace TombEditor.Controls
         private Color GetColorFromPalette(Point point)
         {
             if (_palette == null)
-                return Color.Magenta;
+                return BackColor;
             int index = point.Y * PaletteSize.Width + point.X;
             if (index < 0 || index >= _palette.Count)
                 return BackColor;
@@ -147,17 +130,17 @@ namespace TombEditor.Controls
             }
         }
 
-        protected override void OnResize(EventArgs e)
+        protected override void OnSizeChanged(EventArgs e)
         {
-            base.OnResize(e);
+            base.OnSizeChanged(e);
 
             // Recalculate selected color coordinate
             if (_selectedColorCoord != new Point(-1))
             {
                 int colorIndex = _oldPaletteSize.Width * _selectedColorCoord.Y + _selectedColorCoord.X;
                 _selectedColorCoord = new Point((colorIndex % PaletteSize.Width), colorIndex / PaletteSize.Width);
-                _oldPaletteSize = PaletteSize;
             }
+            _oldPaletteSize = PaletteSize;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -166,8 +149,6 @@ namespace TombEditor.Controls
 
             var startX = Padding.Left;
             var startY = Padding.Top;
-            var endX = PaletteSize.Width * (int)_paletteCellWidth;
-            var endY = PaletteSize.Height * (int)_paletteCellHeight;
 
             // Draw colours
             for (int y = 0; y < PaletteSize.Height; y++)
