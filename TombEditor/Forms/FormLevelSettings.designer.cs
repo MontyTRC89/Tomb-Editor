@@ -1471,6 +1471,7 @@
             this.selectedSoundsDataGridView.ShowRowErrors = false;
             this.selectedSoundsDataGridView.Size = new System.Drawing.Size(769, 201);
             this.selectedSoundsDataGridView.TabIndex = 116;
+            this.selectedSoundsDataGridView.ToggleCheckBoxOnClick = true;
             this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
             // 
             // colSoundsEnabled
