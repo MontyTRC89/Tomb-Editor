@@ -17,7 +17,7 @@ namespace TombLib.GeometryIO
             Name = name;
         }
 
-        public IOMaterial(string name, Texture texture, string texturePath,bool additiveBlending, bool doubleSided, int shininess)
+        public IOMaterial(string name, Texture texture, string texturePath, bool additiveBlending, bool doubleSided, int shininess)
         {
             Name = name;
             Texture = texture;

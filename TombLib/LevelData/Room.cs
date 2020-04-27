@@ -1375,7 +1375,7 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(RectangleInt2 area,bool highQualityLighting = false)
+        public void SmartBuildGeometry(RectangleInt2 area, bool highQualityLighting = false)
         {
             area = area.Inflate(1); // Add margin
 
