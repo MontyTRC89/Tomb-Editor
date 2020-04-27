@@ -58,7 +58,7 @@ namespace TombEditor
         {
             var watch = new Stopwatch();
             watch.Start();
-            room.SmartBuildGeometry(area,_editor.Configuration.Geometry_HighQualityLightPreview);
+            room.SmartBuildGeometry(area, _editor.Configuration.Geometry_HighQualityLightPreview);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
             _editor.RoomGeometryChange(room);
@@ -365,7 +365,7 @@ namespace TombEditor
             }
         }
 
-        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj,Action<Vector3> newColorCallback)
+        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj, Action<Vector3> newColorCallback)
         {
             using (var colorDialog = new RealtimeColorDialog(
                 _editor.Configuration.ColorDialog_Position.X,
@@ -3905,7 +3905,7 @@ namespace TombEditor
             ExportRooms(new[] { _editor.SelectedRoom }, owner);
         }
 
-        private static Vector2 GetNormalizedUV(Vector2 uv,int textureWidth,int textureHeight)
+        private static Vector2 GetNormalizedUV(Vector2 uv, int textureWidth, int textureHeight)
         {
             return new Vector2(uv.X/textureWidth, uv.Y/textureHeight );
         }

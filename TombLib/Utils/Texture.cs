@@ -445,7 +445,7 @@ namespace TombLib.Utils
 
         public void Rotate(int iter = 1, bool isTriangle = false)
         {
-            for(int i = 0; i < iter; i++)
+            for (int i = 0; i < iter; i++)
             {
                 if (!isTriangle)
                 {

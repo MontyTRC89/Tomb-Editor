@@ -311,6 +311,9 @@ namespace TombLib.LevelData
 
             // Build color array
             VertexColors.Resize(VertexPositions.Count, room.AmbientLight);
+
+            // Lighting
+            Relight(room);
         }
 
         private enum FaceDirection
@@ -1789,7 +1792,8 @@ namespace TombLib.LevelData
                             {
                                 sampleSum += 1.0f;
                             }
-                        }else
+                        }
+                        else
                         {
                             sampleSum += 1;
                         }
@@ -1986,7 +1990,7 @@ namespace TombLib.LevelData
             return Vector3.Zero;
         }
 
-        public void Relight(Room room,bool highQuality = false)
+        public void Relight(Room room, bool highQuality = false)
         {
             // Collect lights
             List<LightInstance> lights = new List<LightInstance>();
