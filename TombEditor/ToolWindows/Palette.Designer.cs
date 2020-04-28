@@ -15,15 +15,59 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.paletteToolBar = new System.Windows.Forms.FlowLayoutPanel();
+            this.butResetToDefaults = new DarkUI.Controls.DarkButton();
+            this.butSampleFromTextures = new DarkUI.Controls.DarkButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.lightPalette = new TombEditor.Controls.PanelPalette();
+            this.paletteToolBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).BeginInit();
             this.SuspendLayout();
             // 
+            // paletteToolBar
+            // 
+            this.paletteToolBar.AutoSize = true;
+            this.paletteToolBar.Controls.Add(this.butResetToDefaults);
+            this.paletteToolBar.Controls.Add(this.butSampleFromTextures);
+            this.paletteToolBar.Dock = System.Windows.Forms.DockStyle.Left;
+            this.paletteToolBar.Location = new System.Drawing.Point(0, 25);
+            this.paletteToolBar.Name = "paletteToolBar";
+            this.paletteToolBar.Size = new System.Drawing.Size(28, 111);
+            this.paletteToolBar.TabIndex = 84;
+            // 
+            // butResetToDefaults
+            // 
+            this.butResetToDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butResetToDefaults.Checked = false;
+            this.butResetToDefaults.Image = global::TombEditor.Properties.Resources.actions_refresh_16;
+            this.butResetToDefaults.Location = new System.Drawing.Point(2, 2);
+            this.butResetToDefaults.Margin = new System.Windows.Forms.Padding(2);
+            this.butResetToDefaults.Name = "butResetToDefaults";
+            this.butResetToDefaults.Size = new System.Drawing.Size(24, 24);
+            this.butResetToDefaults.TabIndex = 5;
+            this.butResetToDefaults.Tag = "ResetPalette";
+            // 
+            // butSampleFromTextures
+            // 
+            this.butSampleFromTextures.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSampleFromTextures.Checked = false;
+            this.butSampleFromTextures.Image = global::TombEditor.Properties.Resources.actions_TextureMode_16;
+            this.butSampleFromTextures.Location = new System.Drawing.Point(2, 30);
+            this.butSampleFromTextures.Margin = new System.Windows.Forms.Padding(2);
+            this.butSampleFromTextures.Name = "butSampleFromTextures";
+            this.butSampleFromTextures.Size = new System.Drawing.Size(24, 24);
+            this.butSampleFromTextures.TabIndex = 6;
+            this.butSampleFromTextures.Tag = "SamplePaletteFromTextures";
+            // 
             // lightPalette
             // 
-            this.lightPalette.Location = new System.Drawing.Point(2, 28);
+            this.lightPalette.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lightPalette.Editable = true;
+            this.lightPalette.Location = new System.Drawing.Point(28, 25);
             this.lightPalette.Name = "lightPalette";
-            this.lightPalette.Size = new System.Drawing.Size(642, 99);
+            this.lightPalette.Padding = new System.Windows.Forms.Padding(2);
+            this.lightPalette.Size = new System.Drawing.Size(617, 111);
             this.lightPalette.TabIndex = 82;
             this.lightPalette.TabStop = false;
             // 
@@ -32,20 +76,27 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.lightPalette);
+            this.Controls.Add(this.paletteToolBar);
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
             this.DockText = "Palette";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(322, 128);
+            this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "Palette";
             this.SerializationKey = "Palette";
-            this.Size = new System.Drawing.Size(645, 128);
+            this.Size = new System.Drawing.Size(645, 136);
+            this.paletteToolBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.lightPalette)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private Controls.PanelPalette lightPalette;
+        private DarkUI.Controls.DarkButton butSampleFromTextures;
+        private DarkUI.Controls.DarkButton butResetToDefaults;
+        private System.Windows.Forms.FlowLayoutPanel paletteToolBar;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

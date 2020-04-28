@@ -141,6 +141,8 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
+                chunkIO.WriteChunkInt(Prj2Chunks.DefaultLightQuality, (long)settings.DefaultLightQuality);
+                chunkIO.WriteChunkBool(Prj2Chunks.OverrideLightQuality, settings.OverrideIndividualLightQualitySettings);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
@@ -257,7 +259,7 @@ namespace TombLib.LevelData.IO
                         }
                     chunkIO.WriteChunkEnd();
                 }
-                using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes,UInt16.MaxValue))
+                using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
                     foreach(var entry in settings.AutoStaticMeshMerges)
                         using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry3))
@@ -267,6 +269,17 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(entry.TintAsAmbient);
                             chunkIO.Raw.Write(entry.ClearShades);
                         }
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkPalette = chunkIO.WriteChunk(Prj2Chunks.Palette, UInt16.MaxValue))
+                {
+                    chunkIO.Raw.Write((ushort)settings.Palette.Count);
+                    foreach (var color in settings.Palette)
+                    {
+                        chunkIO.Raw.Write(color.R);
+                        chunkIO.Raw.Write(color.G);
+                        chunkIO.Raw.Write(color.B);
+                    }
                     chunkIO.WriteChunkEnd();
                 }
                 chunkIO.WriteChunkEnd();

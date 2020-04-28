@@ -337,8 +337,7 @@ namespace TombEditor.Controls
             // Update drawing
 
             if (_editor.Mode != EditorMode.Map2D)
-                if
-                    (obj is IEditorObjectChangedEvent ||
+                if (obj is IEditorObjectChangedEvent ||
                     obj is Editor.SelectedObjectChangedEvent ||
                     obj is IEditorRoomChangedEvent ||
                     obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
@@ -349,7 +348,8 @@ namespace TombEditor.Controls
                     obj is Editor.ModeChangedEvent ||
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
-                    obj is Editor.LoadedImportedGeometriesChangedEvent)
+                    obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                    obj is Editor.HideSelectionEvent)
                     Invalidate(false);
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
@@ -781,7 +781,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseEnter(e);
             if (!Focused)
+            {
                 Focus(); // Enable keyboard interaction
+                _editor.ToggleHiddenSelection(false); // Restore hidden selection, if any
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -2472,7 +2475,9 @@ namespace TombEditor.Controls
                 Room room = instance.Room;
 
                 skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
+                // FIXME: Check if Raildex's experimental moveable tint feature corresponds to visible results!
+                //skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (!disableSelection && _editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
@@ -2923,11 +2928,8 @@ namespace TombEditor.Controls
                     StateBuffer = _renderingStateBuffer
                 });
 
-            // Determine the window we're currently in. If no window is selected, it means
-            // we're in color dialog and have to disable selection highlight for convinience.
-
-            var drawSelection = Form.ActiveForm == null;
-
+            // Determine if selection should be visible or not.
+            var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
 
             // Draw moveables and static meshes
             {
@@ -2935,9 +2937,9 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 if (ShowMoveables)
-                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, drawSelection);
+                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, hiddenSelection);
                 if (ShowStatics)
-                    DrawStatics(viewProjection, staticsToDraw, textToDraw, drawSelection);
+                    DrawStatics(viewProjection, staticsToDraw, textToDraw, hiddenSelection);
 
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
@@ -2953,7 +2955,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 // Draw imported geometry
-                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, drawSelection);
+                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
 
                 // Reset GPU states
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);

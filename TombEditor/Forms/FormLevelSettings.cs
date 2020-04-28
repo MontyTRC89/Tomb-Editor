@@ -563,8 +563,10 @@ namespace TombEditor.Forms
                     row.Cells[1].Value = value;
             }
 
-            // Update the default ambient light
+            // Update light options
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
+            cbOverrideAllLightQuality.Checked = _levelSettings.OverrideIndividualLightQualitySettings;
+            cmbDefaultLightQuality.SelectedIndex = _levelSettings.DefaultLightQuality == LightQuality.Default ? 0 : ((int)_levelSettings.DefaultLightQuality) - 1;
 
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
@@ -1229,9 +1231,21 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
-        private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
+        private void cbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
+            UpdateDialog();
+        }
+
+        private void cbOverrideAllLightQuality_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.OverrideIndividualLightQualitySettings = cbOverrideAllLightQuality.Checked;
+            UpdateDialog();
+        }
+
+        private void cmbDefaultLightQuality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _levelSettings.DefaultLightQuality = (LightQuality)(cmbDefaultLightQuality.SelectedIndex + 1);
             UpdateDialog();
         }
 
