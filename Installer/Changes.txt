@@ -6,15 +6,16 @@ Tomb Editor:
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add "Clear Shades" option for merged statics, which ignores static mesh's own shades before applying lighting.
  * Add "Untextured Lighting" mode.
+ * Allow editing ghost blocks with QAWS keys.
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
  * Use two decimal places for flyby options.
  
 TombIDE:
  * Added OCB list to reference browser.
- * Disable persistent TRNG scripter notepad.exe nagging
+ * Disable persistent TRNG scripter notepad.exe nagging.
 
 WadTool:
- * Fix wrong copy animcommand behaviour
+ * Fix wrong copy animcommand behaviour.
  
 General:
  * Try to guess duplicated item IDs corrupted by StrPix after using it with v130 wads.
