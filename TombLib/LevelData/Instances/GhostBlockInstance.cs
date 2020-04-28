@@ -43,8 +43,6 @@ namespace TombLib.LevelData
 
         public void Move(int delta, bool? forceSurface = null)
         {
-            delta /= 256;
-
             if (SelectedCorner.HasValue)
                 Move(SelectedCorner.Value, delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
             else

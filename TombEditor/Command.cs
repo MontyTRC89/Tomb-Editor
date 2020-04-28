@@ -103,7 +103,7 @@ namespace TombEditor
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment * 256, 0), new Vector3(), true);
                 else if (args.Editor.SelectedObject is GhostBlockInstance)
                 {
-                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment * 256, surface == BlockVertical.Floor);
+                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment, surface == BlockVertical.Floor);
                     args.Editor.RoomSectorPropertiesChange(args.Editor.SelectedRoom);
                 }
             }
