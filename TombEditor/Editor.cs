@@ -37,7 +37,7 @@ namespace TombEditor
     {
         None,
         Block,
-        PositionBasedObject
+        SpatialObject
     }
 
     public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
@@ -296,8 +296,8 @@ namespace TombEditor
                         throw new ArgumentException("The object to be selected is not part of the level.");
                 }
 
-                if (value != null && value is PositionBasedObjectInstance)
-                    LastSelection = LastSelectionType.PositionBasedObject;
+                if (value != null && value is ISpatial)
+                    LastSelection = LastSelectionType.SpatialObject;
 
                 if (value == _selectedObject)
                     return;
