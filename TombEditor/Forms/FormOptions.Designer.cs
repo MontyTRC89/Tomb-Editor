@@ -1917,7 +1917,7 @@
             this.cbGeometryLightPreview.Name = "cbGeometryLightPreview";
             this.cbGeometryLightPreview.Size = new System.Drawing.Size(197, 17);
             this.cbGeometryLightPreview.TabIndex = 41;
-            this.cbGeometryLightPreview.Tag = "Geometry_HighQualityLightPreview";
+            this.cbGeometryLightPreview.Tag = "Rendering3D_HighQualityLightPreview";
             this.cbGeometryLightPreview.Text = "Use real Light Quality for preview";
             // 
             // darkCheckBox30
