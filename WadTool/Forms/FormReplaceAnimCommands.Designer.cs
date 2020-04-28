@@ -110,7 +110,6 @@
             this.dgvResults.Size = new System.Drawing.Size(772, 168);
             this.dgvResults.TabIndex = 9;
             this.dgvResults.ToggleCheckBoxOnClick = true;
-            this.dgvResults.ToggleCheckBoxOnDoubleClick = true;
             this.dgvResults.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvResults_CellValueChanged);
             // 
             // colReplaceFlag

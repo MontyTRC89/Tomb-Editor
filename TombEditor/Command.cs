@@ -91,6 +91,24 @@ namespace TombEditor
             }
         }
 
+        private static void GenericDirectionalControlCommand(CommandArgs args, BlockVertical surface, short increment, bool smooth, bool oppositeDiagonal)
+        {
+            if (args.Editor.LastSelection == LastSelectionType.Block && args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
+            {
+                EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, surface, increment, smooth, oppositeDiagonal);
+            }
+            else if (args.Editor.LastSelection == LastSelectionType.SpatialObject && (surface == BlockVertical.Floor || surface == BlockVertical.Ceiling) && !oppositeDiagonal && !smooth)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance && surface == BlockVertical.Floor)
+                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, increment * 256, 0), new Vector3(), true);
+                else if (args.Editor.SelectedObject is GhostBlockInstance)
+                {
+                    ((GhostBlockInstance)args.Editor.SelectedObject).Move(increment * 256, surface == BlockVertical.Floor);
+                    args.Editor.RoomSectorPropertiesChange(args.Editor.SelectedRoom);
+                }
+            }
+        }
+
         private static void AddCommand(string commandName, string friendlyName, CommandType type, Action<CommandArgs> command)
         {
             if (_commands.Any(cmd => cmd.Name.Equals(commandName, StringComparison.InvariantCultureIgnoreCase)))
@@ -394,253 +412,202 @@ namespace TombEditor
 
             AddCommand("RaiseQA1Click", "Raise selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false);
-                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 256, 0), new Vector3(), true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, 1, false, false);
             });
 
             AddCommand("RaiseQA4Click", "Raise selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false);
-                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, 1024, 0), new Vector3(), true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, 4, false, false);
             });
 
             AddCommand("LowerQA1Click", "Lower selected floor or item (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false);
-                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -256, 0), new Vector3(), true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, -1, false, false);
             });
 
             AddCommand("LowerQA4Click", "Lower selected floor or item (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid && args.Editor.LastSelection == LastSelectionType.Block)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false);
-                else if (args.Editor.LastSelection == LastSelectionType.PositionBasedObject && args.Editor.SelectedObject is PositionBasedObjectInstance)
-                    EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -1024, 0), new Vector3(), true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, -4, false, false);
             });
 
             AddCommand("RaiseWS1Click", "Raise selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 1, false, false);
             });
 
             AddCommand("RaiseWS4Click", "Raise selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 4, false, false);
             });
 
             AddCommand("LowerWS1Click", "Lower selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -1, false, false);
             });
 
             AddCommand("LowerWS4Click", "Lower selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -4, false, false);
             });
 
             AddCommand("RaiseED1Click", "Raise selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 1, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, 1, false, false);
             });
 
             AddCommand("RaiseED4Click", "Raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 4, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, 4, false, false);
             });
 
             AddCommand("LowerED1Click", "Lower selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -1, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, -1, false, false);
             });
 
             AddCommand("LowerED4Click", "Lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -4, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, -4, false, false);
             });
 
             AddCommand("RaiseRF1Click", "Raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 1, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, 1, false, false);
             });
 
             AddCommand("RaiseRF4Click", "Raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 4, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, 4, false, false);
             });
 
             AddCommand("LowerRF1Click", "Lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -1, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, -1, false, false);
             });
 
             AddCommand("LowerRF4Click", "Lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -4, false);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, -4, false, false);
             });
 
             AddCommand("RaiseQA1ClickSmooth", "Smoothly raise selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, 1, true, false);
             });
 
             AddCommand("RaiseQA4ClickSmooth", "Smoothly raise selected floor (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, 4, true, false);
             });
 
             AddCommand("LowerQA1ClickSmooth", "Smoothly lower selected floor (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, -1, true, false);
             });
 
             AddCommand("LowerQA4ClickSmooth", "Smoothly lower selected floor (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, -4, true, false);
             });
 
             AddCommand("RaiseWS1ClickSmooth", "Smoothly raise selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 1, true, false);
             });
 
             AddCommand("RaiseWS4ClickSmooth", "Smoothly raise selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 4, true, false);
             });
 
             AddCommand("LowerWS1ClickSmooth", "Smoothly lower selected ceiling (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -1, true, false);
             });
 
             AddCommand("LowerWS4ClickSmooth", "Smoothly lower selected ceiling (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -4, true, false);
             });
 
             AddCommand("RaiseED1ClickSmooth", "Smoothly raise selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, 1, true, false);
             });
 
             AddCommand("RaiseED4ClickSmooth", "Smoothly raise selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, 4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, 4, true, false);
             });
 
             AddCommand("LowerED1ClickSmooth", "Smoothly lower selected floor subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, -1, true, false);
             });
 
             AddCommand("LowerED4ClickSmooth", "Smoothly lower selected floor subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ed, -4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ed, -4, true, false);
             });
 
             AddCommand("RaiseRF1ClickSmooth", "Smoothly raise selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, 1, true, false);
             });
 
             AddCommand("RaiseRF4ClickSmooth", "Smoothly raise selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, 4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, 4, true, false);
             });
 
             AddCommand("LowerRF1ClickSmooth", "Smoothly lower selected ceiling subdivision (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -1, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, -1, true, false);
             });
 
             AddCommand("LowerRF4ClickSmooth", "Smoothly lower selected ceiling subdivision (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Rf, -4, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Rf, -4, true, false);
             });
 
             AddCommand("RaiseYH1Click", "Raise selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, 1, false, true);
             });
 
             AddCommand("RaiseYH4Click", "Raise selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, 4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, 4, false, true);
             });
 
             AddCommand("LowerYH1Click", "Lower selected floor diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, -1, false, true);
             });
 
             AddCommand("LowerYH4Click", "Lower selected floor diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Floor, -4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Floor, -4, false, true);
             });
 
             AddCommand("RaiseUJ1Click", "Raise selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 1, false, true);
             });
 
             AddCommand("RaiseUJ4Click", "Raise selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, 4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, 4, false, true);
             });
 
             AddCommand("LowerUJ1Click", "Lower selected ceiling diagonal step (1 click)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -1, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -1, false, true);
             });
 
             AddCommand("LowerUJ4Click", "Lower selected ceiling diagonal step (4 clicks)", CommandType.Geometry, delegate (CommandArgs args)
             {
-                if (args.Editor.Mode == EditorMode.Geometry && args.Editor.SelectedSectors.Valid)
-                    EditorActions.EditSectorGeometry(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, args.Editor.SelectedSectors.Arrow, BlockVertical.Ceiling, -4, false, true);
+                GenericDirectionalControlCommand(args, BlockVertical.Ceiling, -4, false, true);
             });
 
             AddCommand("RotateObject5", "Rotate object (5 degrees)", CommandType.Objects, delegate (CommandArgs args)
