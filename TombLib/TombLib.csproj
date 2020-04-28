@@ -55,6 +55,10 @@
       <HintPath>..\packages\CH.SipHash.1.0.2\lib\net45\CH.SipHash.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ColorThief.Desktop.v45, Version=1.1.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ksemenenko.ColorThief.1.1.1.4\lib\net45\ColorThief.Desktop.v45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MiniZ.Net, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniZ.Net.1.0.0\lib\MiniZ.Net.dll</HintPath>
@@ -356,6 +360,7 @@
     <None Include="ResourcesC\Extra.Tr5.pc.png" />
     <None Include="ResourcesC\font.bin" />
     <None Include="ResourcesC\Font.pc.png" />
+    <None Include="ResourcesC\palette.bin" />
     <None Include="ResourcesC\pcsky.raw.png" />
   </ItemGroup>
   <ItemGroup>

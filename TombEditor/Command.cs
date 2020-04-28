@@ -1491,6 +1491,17 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("SamplePaletteFromTextures", "Sample palette from textures", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Palette_TextureSamplingMode = !args.Editor.Configuration.Palette_TextureSamplingMode;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("ResetPalette", "Reset palette to defaults", CommandType.General, delegate (CommandArgs args)
+            {
+                args.Editor.RaiseEvent(new Editor.ResetPaletteEvent());
+            });
+
             AddCommand("ToggleFlipMap", "Toggle flip map", CommandType.Rooms, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedRoom.Alternated)
@@ -1519,32 +1530,32 @@ namespace TombEditor
 
             AddCommand("AddPointLight", "Add point light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point));
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Point) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
             AddCommand("AddShadow", "Add shadow", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow));
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Shadow) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
             AddCommand("AddSunLight", "Add sun light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun));
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Sun) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
             AddCommand("AddSpotLight", "Add directional (spot) light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot));
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Spot) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
             AddCommand("AddEffectLight", "Add effect light", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect));
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.Effect) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
             AddCommand("AddFogBulb", "Add fog bulb", CommandType.Lighting, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb));
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)

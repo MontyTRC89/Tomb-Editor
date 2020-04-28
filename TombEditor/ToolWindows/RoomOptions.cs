@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
-using TombEditor.Forms;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -270,7 +269,7 @@ namespace TombEditor.ToolWindows
                     break;
             }
 
-            if(_editor.SelectedRoom.Type != newType || _editor.SelectedRoom.TypeStrength != newStrength)
+            if (_editor.SelectedRoom.Type != newType || _editor.SelectedRoom.TypeStrength != newStrength)
             {
                 _editor.SelectedRoom.Type = newType;
                 _editor.SelectedRoom.TypeStrength = newStrength;

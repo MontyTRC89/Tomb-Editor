@@ -319,17 +319,11 @@
   <data name="sectortype_ClimbSouth_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_sectortype\sectortype_ClimbSouth_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="stones_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\stones-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="actions_compile_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_actions\actions_compile-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="sectortype_StepFloor_1_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_sectortype\sectortype_StepFloor_1-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="small_icons_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\small_icons-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="actions_horizon_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_actions\actions_horizon-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -492,9 +486,6 @@
   </data>
   <data name="actions_DrawAllRooms_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_actions\actions_DrawAllRooms-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Palette" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\misc\Palette.bin;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="toolbox_GridPaint2x2_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_toolbox\toolbox_GridPaint2x2-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

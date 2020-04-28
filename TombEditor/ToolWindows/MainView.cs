@@ -147,7 +147,7 @@ namespace TombEditor.ToolWindows
 
             // Update portal opacity controls
             if (obj is Editor.ObjectChangedEvent ||
-               obj is Editor.SelectedObjectChangedEvent)
+                obj is Editor.SelectedObjectChangedEvent)
             {
                 var portal = _editor.SelectedObject as PortalInstance;
                 butOpacityNone.Enabled = portal != null;

@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -227,6 +228,10 @@ namespace TombLib.LevelData.IO
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.DefaultLightQuality)
+                    settings.DefaultLightQuality = (LightQuality)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.OverrideLightQuality)
+                    settings.OverrideIndividualLightQualitySettings = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SelectedSounds)
@@ -458,7 +463,7 @@ namespace TombLib.LevelData.IO
                     });
                     settings.AnimatedTextureSets = animatedTextureSets;
                 }
-                else if(id == Prj2Chunks.AutoMergeStaticMeshes)
+                else if (id == Prj2Chunks.AutoMergeStaticMeshes)
                 {
                     chunkIO.ReadChunks((id2, size) => {
                         if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
@@ -487,6 +492,20 @@ namespace TombLib.LevelData.IO
                         }
                         else return false;
                     });
+                }
+                else if (id == Prj2Chunks.Palette)
+                {
+                    var colorCount = chunkIO.Raw.ReadUInt16();
+                    var colorList = new List<ColorC>();
+
+                    for (int i = 0; i < colorCount; i++)
+                    {
+                        var r = chunkIO.Raw.ReadByte();
+                        var g = chunkIO.Raw.ReadByte();
+                        var b = chunkIO.Raw.ReadByte();
+                        colorList.Add(new ColorC(r, g, b));
+                    }
+                    settings.Palette = colorList;
                 }
                 else
                     return false;
@@ -1065,14 +1084,12 @@ namespace TombLib.LevelData.IO
                         instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
                     else
                         instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
-                    if(id3 == Prj2Chunks.ObjectLight3)
-                    {
+
+                    if (id3 == Prj2Chunks.ObjectLight3)
                         instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
-                    }
                     else
-                    {
                         instance.Quality = LightQuality.Default;
-                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
