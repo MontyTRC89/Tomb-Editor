@@ -87,7 +87,7 @@ namespace TombEditor
         public bool Rendering3D_CursorWarping { get; set; } = true;
         public int Rendering3D_FlyModeMoveSpeed { get; set; } = 5;
         public bool Rendering3D_ShowLightRadius { get; set; } = true;
-        public bool Geometry_HighQualityLightPreview { get; set; } = false;
+        public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
 
         // 2D Map options 
 

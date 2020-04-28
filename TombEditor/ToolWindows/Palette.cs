@@ -30,7 +30,7 @@ namespace TombEditor.ToolWindows
                 {
                     var light = _editor.SelectedObject as LightInstance;
                     light.Color = lightPalette.SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                    _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.ObjectChange(light, ObjectChangeType.Change);
                 }
                 else if (_editor.SelectedObject is StaticInstance)
