@@ -159,8 +159,10 @@ namespace TombEditor.Controls
                         e.Graphics.FillRectangle(brush, startX + x * _paletteCellWidth, startY + y * _paletteCellHeight, _paletteCellWidth, _paletteCellHeight);
                 }
 
-            int sizeX = PaletteSize.Width * (int)_paletteCellWidth;
-            int sizeY = PaletteSize.Height * (int)_paletteCellHeight;
+            var rect = new Rectangle(startX, startY, PaletteSize.Width * (int)_paletteCellWidth, 
+                                                     PaletteSize.Height * (int)_paletteCellHeight);
+            // Draw outline rect
+            e.Graphics.DrawRectangle(_gridPen, rect);
 
             // Draw grid
             for (int y = 0; y < PaletteSize.Height; y++)
@@ -169,12 +171,9 @@ namespace TombEditor.Controls
                 int lineX = startX + x * (int)_paletteCellWidth;
                 int lineY = startY + y * (int)_paletteCellHeight;
 
-                e.Graphics.DrawLine(_gridPen, new Point(lineX, startY), new Point(lineX, sizeY + 1));
-                e.Graphics.DrawLine(_gridPen, new Point(startX, lineY), new Point(sizeX + 1, lineY));
+                e.Graphics.DrawLine(_gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
+                e.Graphics.DrawLine(_gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
             }
-
-            // Draw outline rect
-            e.Graphics.DrawRectangle(_gridPen, startX, startY, sizeX, sizeY);
 
             // Draw selection rect
             if (_selectedColorCoord.X >= 0 && _selectedColorCoord.Y >= 0 &&

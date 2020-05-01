@@ -544,10 +544,10 @@
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
             this.DockText = "Lighting";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(444, 136);
+            this.MinimumSize = new System.Drawing.Size(444, 139);
             this.Name = "Lighting";
             this.SerializationKey = "Lighting";
-            this.Size = new System.Drawing.Size(444, 136);
+            this.Size = new System.Drawing.Size(444, 139);
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numInnerRange)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numOuterRange)).EndInit();
