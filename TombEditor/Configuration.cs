@@ -290,7 +290,7 @@ namespace TombEditor
                             Contents = new List<string> { "Lighting" },
                             VisibleContent = "Lighting",
                             Order = 0,
-                            Size = new Size(444,136)
+                            Size = new Size(444,139)
                         },
                         new DockGroupState
                         {
