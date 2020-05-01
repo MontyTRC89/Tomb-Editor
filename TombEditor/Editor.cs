@@ -37,7 +37,7 @@ namespace TombEditor
     {
         None,
         Block,
-        PositionBasedObject
+        SpatialObject
     }
 
     public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
@@ -296,8 +296,8 @@ namespace TombEditor
                         throw new ArgumentException("The object to be selected is not part of the level.");
                 }
 
-                if (value != null && value is PositionBasedObjectInstance)
-                    LastSelection = LastSelectionType.PositionBasedObject;
+                if (value != null && value is ISpatial)
+                    LastSelection = LastSelectionType.SpatialObject;
 
                 if (value == _selectedObject)
                     return;
@@ -619,8 +619,34 @@ namespace TombEditor
         {
             RaiseEvent(new ToggleFlyModeEvent { FlyModeState = state });
         }
-
         public bool FlyMode { get; set; } = false;
+
+        // Toggle hidden selection (during color picking)
+        public class HideSelectionEvent : IEditorEvent
+        {
+            public bool HideSelection { get; set; }
+        }
+        public void ToggleHiddenSelection(bool state)
+        {
+            HiddenSelection = state;
+            RaiseEvent(new HideSelectionEvent { HideSelection = state });
+        }
+        public bool HiddenSelection { get; private set; } = false;
+        
+        // Last used palette colour
+        public class LastUsedPaletteColourChangedEvent : IEditorEvent
+        {
+            public ColorC Colour { get; set; }
+        }
+        public void LastUsedPaletteColourChange(ColorC color)
+        {
+            LastUsedPaletteColour = color;
+            RaiseEvent(new LastUsedPaletteColourChangedEvent { Colour = color });
+        }
+        public ColorC LastUsedPaletteColour { get; private set; } = new ColorC(128, 128, 128);
+
+        // For resetting global palette to default
+        public class ResetPaletteEvent : IEditorEvent { }
 
         // Select a texture and center the view
         public class SelectTextureAndCenterViewEvent : IEditorEvent
@@ -630,6 +656,16 @@ namespace TombEditor
         public void SelectTextureAndCenterView(TextureArea texture)
         {
             RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
+        }
+
+        // Select different texture set
+        public class SelectedLevelTextureChangedSetEvent : IEditorEvent
+        {
+            public LevelTexture Texture { get; internal set; }
+        }
+        public void SelectedLevelTextureChanged(LevelTexture texture)
+        {
+            RaiseEvent(new SelectedLevelTextureChangedSetEvent { Texture = texture });
         }
 
         // Send message
@@ -643,14 +679,13 @@ namespace TombEditor
             RaiseEvent(new MessageEvent { Message = message, Type = type });
         }
 
+        // Init / quit editor events
+        public class InitEvent : IEditorEvent { }
         public class EditorQuitEvent : IEditorEvent { }
         public void Quit()
         {
             RaiseEvent(new EditorQuitEvent());
         }
-
-        public class InitEvent : IEditorEvent { }
-
 
         // Undo-redo manager
         public EditorUndoManager UndoManager { get; private set; }

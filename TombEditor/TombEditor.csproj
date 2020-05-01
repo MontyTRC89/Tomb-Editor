@@ -248,6 +248,11 @@
       <DependentUpon>FormTextureRemap.cs</DependentUpon>
     </Compile>
     <Compile Include="KeyMessageFilter.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SectorColoringManager.cs" />
     <Compile Include="KeyboardLayout.cs" />
     <Compile Include="Controls\PanelRenderingItem.cs">
@@ -341,11 +346,6 @@
     </Compile>
     <Compile Include="Gizmo.cs" />
     <Compile Include="ObjectClipboardData.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="RoomClipboardData.cs" />
     <Compile Include="SectorsClipboardData.cs" />
     <Compile Include="ToolWindows\Lighting.cs">
@@ -594,11 +594,11 @@
     <None Include="Resources\icons_toolbox\toolbox_GridPaint3x3-16.png" />
     <None Include="Resources\icons_toolbox\toolbox_GridPaint4x4-16.png" />
     <None Include="Resources\icons_general\general_filter-16.png" />
-    <None Include="Resources\general_filter-16.png" />
     <None Include="Resources\icons_objects\objects_geometry-override-16.png" />
     <None Include="Resources\icons_actions\actions_back-16.png" />
     <None Include="Resources\icons_general\general_airplane-16.png" />
     <None Include="Resources\icons_general\general_search-and-replace-16.png" />
+    <None Include="Resources\icons_objects\objects_LightPoint-161.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">
