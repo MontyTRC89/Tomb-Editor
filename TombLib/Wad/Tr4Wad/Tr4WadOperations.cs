@@ -220,7 +220,41 @@ namespace TombLib.Wad.Tr4Wad
                                                                     Dictionary<int, WadTexture> textures)
         {
             wad_moveable oldMoveable = oldWad.Moveables[moveableIndex];
-            WadMoveable newMoveable = new WadMoveable(new WadMoveableId(oldMoveable.ObjectID));
+            var newId = new WadMoveableId(oldMoveable.ObjectID);
+
+            // A workaround to find out duplicated item IDs produced by StrPix unpatched for v130 wads.
+            // In such case, a legacy name is used to guess real item ID, if this fails - broken item is filtered out.
+            if (wad.Moveables.ContainsKey(newId))
+            {
+                var message = "Duplicated moveable ID " + oldMoveable.ObjectID + " was identified while loading " + oldWad.BaseName + ". ";
+                if (oldWad.LegacyNames.Count - oldWad.Statics.Count < moveableIndex)
+                {
+                    logger.Warn(message + "Can't restore real ID by name, name table is too short. Ignoring moveable.");
+                    return null;
+                }
+
+                bool isMoveable;
+                var guessedId = TrCatalog.GetItemIndex(TRVersion.Game.TR4, oldWad.LegacyNames[moveableIndex], out isMoveable);
+
+                if (isMoveable && guessedId.HasValue)
+                {
+                    newId = new WadMoveableId(guessedId.Value);
+                    if (wad.Moveables.ContainsKey(newId))
+                    {
+                        logger.Warn(message + "Can't restore real ID by name, name table is inconsistent. Ignoring moveable.");
+                        return null;
+                    }
+                    else
+                        logger.Warn(message + "Successfully restored real ID by name.");
+                }
+                else
+                {
+                    logger.Warn(message + "Can't find provided name in catalog. Ignoring moveable.");
+                    return null;
+                }
+            }
+
+            WadMoveable newMoveable = new WadMoveable(newId);
             var frameBases = new Dictionary<WadAnimation, ushort[]>();
 
             // Load meshes
@@ -483,7 +517,7 @@ namespace TombLib.Wad.Tr4Wad
                         stateChange.Dispatches[j] = animDispatch;
                     }
             }
-            //newMoveable.LinearizeSkeleton();
+            
             wad.Moveables.Add(newMoveable.Id, newMoveable);
             return newMoveable;
         }
@@ -492,8 +526,41 @@ namespace TombLib.Wad.Tr4Wad
                                                                   Dictionary<int, WadTexture> textures)
         {
             var oldStaticMesh = oldWad.Statics[staticIndex];
-            var staticMesh = new WadStatic(new WadStaticId(oldStaticMesh.ObjectId));
+            var newId = new WadStaticId(oldStaticMesh.ObjectId);
 
+            // A workaround to find out duplicated item IDs produced by StrPix unpatched for v130 wads.
+            // In such case, a legacy name is used to guess real item ID, if this fails - broken item is filtered out.
+            if (wad.Statics.ContainsKey(newId))
+            {
+                var message = "Duplicated static ID " + oldStaticMesh.ObjectId + " was identified while loading " + oldWad.BaseName + ". ";
+                if (oldWad.LegacyNames.Count - oldWad.Moveables.Count < staticIndex)
+                {
+                    logger.Warn(message + "Can't restore real ID by name, name table is too short. Ignoring static.");
+                    return null;
+                }
+
+                bool isMoveable;
+                var guessedId = TrCatalog.GetItemIndex(TRVersion.Game.TR4, oldWad.LegacyNames[oldWad.Moveables.Count + staticIndex], out isMoveable);
+
+                if (!isMoveable && guessedId.HasValue)
+                {
+                    newId = new WadStaticId(guessedId.Value);
+                    if (wad.Statics.ContainsKey(newId))
+                    {
+                        logger.Warn(message + "Can't restore real ID by name, name table is inconsistent. Ignoring static.");
+                        return null;
+                    }
+                    else
+                        logger.Warn(message + "Successfully restored real ID by name.");
+                }
+                else
+                {
+                    logger.Warn(message + "Can't find provided name in catalog. Ignoring static.");
+                    return null;
+                }
+            }
+
+            var staticMesh = new WadStatic(newId);
             //staticMesh.Name = TrCatalog.GetStaticName(WadTombRaiderVersion.TR4, oldStaticMesh.ObjectId);
 
             // First setup collisional and visibility bounding boxes

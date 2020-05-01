@@ -132,7 +132,7 @@ namespace TombLib.LevelData.Compilers
                         (!light.IsStaticallyUsed && !forImportedGeometry))
                         continue;
 
-                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false,false);                    
+                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);                    
                 }
 
             return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
@@ -335,13 +335,13 @@ namespace TombLib.LevelData.Compilers
                         }
                         else
                         {
-                            if(!clearShades)
-                            //If we have shades, use them as a factor for the resulting vertex color
-                            if (j < wadStatic.Mesh.VerticesShades.Count)
-                            {
-                                shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
-                                shade = 1.0f - shade;
-                            }
+                            if (!clearShades)
+                                //If we have shades, use them as a factor for the resulting vertex color
+                                if (j < wadStatic.Mesh.VerticesShades.Count)
+                                {
+                                    shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
+                                    shade = 1.0f - shade;
+                                }
                         }
                         Vector3 color;
                         if(!entry.TintAsAmbient)
@@ -351,9 +351,10 @@ namespace TombLib.LevelData.Compilers
                             color *= shade;
                             //Apply Instance Color
                             color *= staticMesh.Color;
-                        }else
+                        }
+                        else
                         {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color*128);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
                                 //Apply Shade factor
                                 color *= shade;
                         }

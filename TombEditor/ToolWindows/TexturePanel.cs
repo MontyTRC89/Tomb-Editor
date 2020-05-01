@@ -115,7 +115,11 @@ namespace TombEditor.ToolWindows
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
         {
             if (panelTextureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
+            {
+                var selectedTexture = comboCurrentTexture.SelectedItem as LevelTexture;
                 panelTextureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
+                _editor.SelectedLevelTextureChanged(selectedTexture);
+            }
 
             butDeleteTexture.Enabled = 
             butBrowseTexture.Enabled =

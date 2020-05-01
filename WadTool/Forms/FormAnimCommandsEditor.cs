@@ -43,7 +43,7 @@ namespace WadTool
         private void AnimCommandEditor_AnimCommandChanged(object sender, AnimCommandEditor.AnimCommandEventArgs e)
         {
             int index = gridViewCommands.SelectedRows[0].Index;
-            _animCommands[index] = e.Command;
+            _animCommands[index] = e.Command.Clone();
             Invalidate();
         }
 
@@ -157,7 +157,7 @@ namespace WadTool
         {
             WadAnimCommand newCmd = new WadAnimCommand() { Type = WadAnimCommandType.SetPosition };
             _animCommands.Add(newCmd);
-            for(int i = 0; i < _animCommands.Count-1;i++)
+            for (int i = 0; i < _animCommands.Count-1;i++)
             {
                 gridViewCommands.Rows[i].Selected = false;
             }
@@ -205,13 +205,9 @@ namespace WadTool
             foreach(DataGridViewRow row in gridViewCommands.Rows)
             {
                 if(_animCommands[row.Index].Equals(cmd))
-                {
                     row.Selected = true;
-                }else
-                {
+                else
                     row.Selected = false;
-                }
-               
             }
         }
     }

@@ -1568,7 +1568,7 @@ namespace TombLib.LevelData.IO
                         i += 6;
                         skippedBytes += 5;
                     }
-                    for(int i =0; i < skippedBytes;i++)
+                    for (int i = 0; i < skippedBytes;i++)
                     {
                         reader.ReadByte();
                     }
