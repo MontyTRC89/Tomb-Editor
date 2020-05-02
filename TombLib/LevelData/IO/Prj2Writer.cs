@@ -549,6 +549,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Size);
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.Write(instance.RotationY);
+                            chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write(instance.Enabled);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
