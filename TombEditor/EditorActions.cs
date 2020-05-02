@@ -666,6 +666,14 @@ namespace TombEditor
             _editor.UndoManager.PushGhostBlockCreated(ghostList);
         }
 
+        public static void AddVolume(VolumeShape shape)
+        {
+            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
+                _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TR5Main.", PopupType.Info);
+            else
+                _editor.Action = new EditorActionPlace(false, (l, r) => new TriggerVolumeInstance(shape));
+        }
+
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
         {
             if (modifierKeys.HasFlag(Keys.Control))
@@ -896,13 +904,16 @@ namespace TombEditor
             }
             else if (instance is TriggerVolumeInstance)
             {
-                using (var formVolume = new FormVolume(_editor.Level, (TriggerVolumeInstance)instance))
-                {
-                    if (formVolume.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    else
-                        _editor.ObjectChange(instance, ObjectChangeType.Change);
-                }
+                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                    using (var formVolume = new FormVolume(_editor.Level, (TriggerVolumeInstance)instance))
+                    {
+                        if (formVolume.ShowDialog(owner) != DialogResult.OK)
+                            return;
+                        else
+                            _editor.ObjectChange(instance, ObjectChangeType.Change);
+                    }
+                else
+                    _editor.SendMessage("This object is unavailable in this game version. Switch version to TR5Main.", PopupType.Error);
             }
         }
 

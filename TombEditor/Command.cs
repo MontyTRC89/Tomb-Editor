@@ -1012,17 +1012,17 @@ namespace TombEditor
 
             AddCommand("AddBoxVolume", "Add box volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new TriggerVolumeInstance(VolumeShape.Box));
+                EditorActions.AddVolume(VolumeShape.Box);
             });
 
             AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new TriggerVolumeInstance(VolumeShape.Prism));
+                EditorActions.AddVolume(VolumeShape.Prism);
             });
 
             AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new TriggerVolumeInstance(VolumeShape.Sphere));
+                EditorActions.AddVolume(VolumeShape.Sphere);
             });
 
             AddCommand("AddItem", "Add item", CommandType.Objects, delegate (CommandArgs args)

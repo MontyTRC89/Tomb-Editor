@@ -17,9 +17,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelTriggerTools = new System.Windows.Forms.Panel();
-            this.addSphereVolume = new DarkUI.Controls.DarkButton();
-            this.addPrismVolume = new DarkUI.Controls.DarkButton();
-            this.addBoxVolume = new DarkUI.Controls.DarkButton();
             this.butAddTrigger = new DarkUI.Controls.DarkButton();
             this.butEditTrigger = new DarkUI.Controls.DarkButton();
             this.butDeleteTrigger = new DarkUI.Controls.DarkButton();
@@ -32,9 +29,6 @@
             // 
             // panelTriggerTools
             // 
-            this.panelTriggerTools.Controls.Add(this.addSphereVolume);
-            this.panelTriggerTools.Controls.Add(this.addPrismVolume);
-            this.panelTriggerTools.Controls.Add(this.addBoxVolume);
             this.panelTriggerTools.Controls.Add(this.butAddTrigger);
             this.panelTriggerTools.Controls.Add(this.butEditTrigger);
             this.panelTriggerTools.Controls.Add(this.butDeleteTrigger);
@@ -43,39 +37,6 @@
             this.panelTriggerTools.Name = "panelTriggerTools";
             this.panelTriggerTools.Size = new System.Drawing.Size(284, 31);
             this.panelTriggerTools.TabIndex = 57;
-            // 
-            // addSphereVolume
-            // 
-            this.addSphereVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.addSphereVolume.Checked = false;
-            this.addSphereVolume.Image = global::TombEditor.Properties.Resources.objects_volume_sphere_16;
-            this.addSphereVolume.Location = new System.Drawing.Point(227, 4);
-            this.addSphereVolume.Name = "addSphereVolume";
-            this.addSphereVolume.Size = new System.Drawing.Size(24, 24);
-            this.addSphereVolume.TabIndex = 6;
-            this.addSphereVolume.Tag = "AddSphereVolume";
-            // 
-            // addPrismVolume
-            // 
-            this.addPrismVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.addPrismVolume.Checked = false;
-            this.addPrismVolume.Image = global::TombEditor.Properties.Resources.objects_volume_prism_16;
-            this.addPrismVolume.Location = new System.Drawing.Point(257, 4);
-            this.addPrismVolume.Name = "addPrismVolume";
-            this.addPrismVolume.Size = new System.Drawing.Size(24, 24);
-            this.addPrismVolume.TabIndex = 5;
-            this.addPrismVolume.Tag = "AddPrismVolume";
-            // 
-            // addBoxVolume
-            // 
-            this.addBoxVolume.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.addBoxVolume.Checked = false;
-            this.addBoxVolume.Image = global::TombEditor.Properties.Resources.objects_volume_box_16;
-            this.addBoxVolume.Location = new System.Drawing.Point(197, 4);
-            this.addBoxVolume.Name = "addBoxVolume";
-            this.addBoxVolume.Size = new System.Drawing.Size(24, 24);
-            this.addBoxVolume.TabIndex = 4;
-            this.addBoxVolume.Tag = "AddBoxVolume";
             // 
             // butAddTrigger
             // 
@@ -167,8 +128,5 @@
         private System.Windows.Forms.Panel panelTriggerList;
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkListView lstTriggers;
-        private DarkUI.Controls.DarkButton addBoxVolume;
-        private DarkUI.Controls.DarkButton addSphereVolume;
-        private DarkUI.Controls.DarkButton addPrismVolume;
     }
 }
