@@ -11,6 +11,17 @@ namespace TombLib.LevelData
         Box, Prism, Sphere
     }
 
+    // Possible activator flags. If none is set, volume is disabled.
+    [Flags]
+    public enum VolumeActivators : byte
+    {
+        Lara = 1,
+        NPCs = 2,
+        OtherMoveables = 4,
+        Statics = 8,
+        PhysicalObjects = 16 // Future-proofness for Bullet
+    }
+
     // Every volume's events can be reduced to these three.
     // If resulting volume should be one-shot trigger, we'll only use "OnEnter" event.
 
@@ -99,8 +110,7 @@ namespace TombLib.LevelData
         }
         private float _rotationX = 0.0f;
 
-
-        public bool Enabled { get; set; }
+        public VolumeActivators Activators { get; set; } = VolumeActivators.Lara;
 
         public VolumeScriptInstance Scripts { get; set; } = new VolumeScriptInstance() { Name = "New volume script" };
 

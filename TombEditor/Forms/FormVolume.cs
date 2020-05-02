@@ -10,8 +10,10 @@ namespace TombEditor.Forms
         private TriggerVolumeInstance _volume;
 
         private VolumeScriptInstance _backupScripts;
-        private bool _backupState;
+        private VolumeActivators _backupState;
         private int prevIndex = -1;
+
+        private bool _flagsLocked;
 
         public FormVolume(Level level, TriggerVolumeInstance volume)
         {
@@ -20,11 +22,11 @@ namespace TombEditor.Forms
             _level = level;
             _volume = volume;
             _backupScripts = _volume.Scripts.Clone();
-            _backupState = _volume.Enabled;
+            _backupState = _volume.Activators;
 
             cmbEvent.SelectedIndex = 0; // Select first script
             tbName.Text = _volume.Scripts.Name;
-            cbEnabled.Checked = _volume.Enabled;
+            UpdateFlags();
         }
 
         private void SaveCurrentScript()
@@ -46,6 +48,16 @@ namespace TombEditor.Forms
             }
         }
 
+        private void UpdateFlags()
+        {
+            _flagsLocked = true;
+            cbLara.Checked = _volume.Activators.HasFlag(VolumeActivators.Lara);
+            cbNPC.Checked = _volume.Activators.HasFlag(VolumeActivators.NPCs);
+            cbOtherMoveables.Checked = _volume.Activators.HasFlag(VolumeActivators.OtherMoveables);
+            cbStatics.Checked = _volume.Activators.HasFlag(VolumeActivators.Statics);
+            _flagsLocked = false;
+        }
+
         private void butOK_Click(object sender, EventArgs e)
         {
             SaveCurrentScript();
@@ -55,7 +67,7 @@ namespace TombEditor.Forms
         private void butCancel_Click(object sender, EventArgs e)
         {
             _volume.Scripts = _backupScripts;
-            _volume.Enabled = _backupState;
+            _volume.Activators = _backupState;
             Close();
         }
 
@@ -88,9 +100,32 @@ namespace TombEditor.Forms
                 _volume.Scripts.Name = tbName.Text;
         }
 
-        private void cbEnabled_CheckedChanged(object sender, EventArgs e)
+        private void cbLara_CheckedChanged(object sender, EventArgs e)
         {
-            _volume.Enabled = cbEnabled.Checked;
+            if (_flagsLocked) return;
+            _volume.Activators ^= VolumeActivators.Lara;
+            UpdateFlags();
+        }
+
+        private void cbNPC_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_flagsLocked) return;
+            _volume.Activators ^= VolumeActivators.NPCs;
+            UpdateFlags();
+        }
+
+        private void cbOtherMoveables_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_flagsLocked) return;
+            _volume.Activators ^= VolumeActivators.OtherMoveables;
+            UpdateFlags();
+        }
+
+        private void darkCheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_flagsLocked) return;
+            _volume.Activators ^= VolumeActivators.Statics;
+            UpdateFlags();
         }
     }
 }
