@@ -19,7 +19,8 @@ namespace TombLib.LevelData
         NPCs = 2,
         OtherMoveables = 4,
         Statics = 8,
-        PhysicalObjects = 16 // Future-proofness for Bullet
+        Flybys = 16,
+        PhysicalObjects = 32 // Future-proofness for Bullet
     }
 
     // Every volume's events can be reduced to these three.

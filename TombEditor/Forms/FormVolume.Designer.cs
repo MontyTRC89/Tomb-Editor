@@ -33,6 +33,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cbLara = new DarkUI.Controls.DarkCheckBox();
             this.panelControls = new System.Windows.Forms.Panel();
+            this.cbFlybys = new DarkUI.Controls.DarkCheckBox();
             this.cbStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbOtherMoveables = new DarkUI.Controls.DarkCheckBox();
             this.cbNPC = new DarkUI.Controls.DarkCheckBox();
@@ -94,6 +95,7 @@
             // 
             // panelControls
             // 
+            this.panelControls.Controls.Add(this.cbFlybys);
             this.panelControls.Controls.Add(this.cbStatics);
             this.panelControls.Controls.Add(this.cbOtherMoveables);
             this.panelControls.Controls.Add(this.cbNPC);
@@ -110,6 +112,16 @@
             this.panelControls.Size = new System.Drawing.Size(719, 390);
             this.panelControls.TabIndex = 87;
             // 
+            // cbFlybys
+            // 
+            this.cbFlybys.AutoSize = true;
+            this.cbFlybys.Location = new System.Drawing.Point(410, 368);
+            this.cbFlybys.Name = "cbFlybys";
+            this.cbFlybys.Size = new System.Drawing.Size(57, 17);
+            this.cbFlybys.TabIndex = 21;
+            this.cbFlybys.Text = "Flybys";
+            this.cbFlybys.CheckedChanged += new System.EventHandler(this.cbFlybys_CheckedChanged);
+            // 
             // cbStatics
             // 
             this.cbStatics.AutoSize = true;
@@ -118,7 +130,7 @@
             this.cbStatics.Size = new System.Drawing.Size(59, 17);
             this.cbStatics.TabIndex = 20;
             this.cbStatics.Text = "Statics";
-            this.cbStatics.CheckedChanged += new System.EventHandler(this.darkCheckBox1_CheckedChanged);
+            this.cbStatics.CheckedChanged += new System.EventHandler(this.cbStatics_CheckedChanged);
             // 
             // cbOtherMoveables
             // 
@@ -245,5 +257,6 @@
         private DarkUI.Controls.DarkCheckBox cbOtherMoveables;
         private DarkUI.Controls.DarkCheckBox cbNPC;
         private DarkUI.Controls.DarkCheckBox cbStatics;
+        private DarkUI.Controls.DarkCheckBox cbFlybys;
     }
 }
