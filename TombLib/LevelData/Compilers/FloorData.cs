@@ -61,10 +61,6 @@ namespace TombLib.LevelData.Compilers
             // Floordata sequence dictionary is used OPTIONALLY, if agressive floordata packing is on!
             var floorDataDictionary = new Dictionary<FloordataSequence, ushort>();
 
-            // Prepare LUA triggers eventually
-            if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                PrepareLuaTriggers();
-
             // Initialize the floordata list and add the dummy entry for walls and sectors without particular things
 
             if (_level.Settings.AgressiveFloordataPacking)
@@ -643,14 +639,6 @@ namespace TombLib.LevelData.Compilers
                             break;
                         case TriggerTargetType.FmvNg:
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
-                            outFloorData.Add(trigger2);
-                            break;
-                        case TriggerTargetType.LuaScript:
-                            trigger2 = (ushort)(0 | (11 << 10));
-                            outFloorData.Add(trigger2);
-                            // Using trigger parameter as function index would be too limiting (max 512 functions) so we add 
-                            // an extra short that allows 32768 functions
-                            trigger2 = (ushort)(_luaTriggers.IndexOf(trigger));
                             outFloorData.Add(trigger2);
                             break;
                         default:

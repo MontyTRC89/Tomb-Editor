@@ -545,12 +545,12 @@ namespace TombLib.LevelData.IO
                         {
                             var instance = (TriggerVolumeInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            LEB128.Write(chunkIO.Raw, (long)instance.Shape);
+                            chunkIO.Raw.Write((byte)instance.Shape);
                             chunkIO.Raw.Write(instance.Size);
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.Write(instance.RotationY);
                             chunkIO.Raw.Write(instance.RotationX);
-                            chunkIO.Raw.Write((byte)instance.Activators);
+                            chunkIO.Raw.Write((ushort)instance.Activators);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnEnter);
@@ -596,8 +596,6 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Extra, () => writeTriggerParameter(instance.Extra), 32);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2CodeBits, instance.CodeBits);
                             chunkIO.WriteChunkBool(Prj2Chunks.ObjectTrigger2OneShot, instance.OneShot);
-                            if (instance.TargetType == TriggerTargetType.LuaScript)
-                                chunkIO.WriteChunkString(Prj2Chunks.ObjectTrigger2LuaScript, instance.LuaScript);
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)

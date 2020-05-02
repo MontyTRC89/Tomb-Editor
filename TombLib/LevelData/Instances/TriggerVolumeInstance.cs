@@ -13,7 +13,7 @@ namespace TombLib.LevelData
 
     // Possible activator flags. If none is set, volume is disabled.
     [Flags]
-    public enum VolumeActivators : byte
+    public enum VolumeActivators : ushort
     {
         Lara = 1,
         NPCs = 2,

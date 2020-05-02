@@ -1200,8 +1200,6 @@ namespace TombLib.LevelData.IO
                             instance.CodeBits = unchecked((byte)chunkIO.ReadChunkLong(chunkSize4));
                         else if (id4 == Prj2Chunks.ObjectTrigger2OneShot)
                             instance.OneShot = chunkIO.ReadChunkBool(chunkSize4);
-                        else if (id4 == Prj2Chunks.ObjectTrigger2LuaScript)
-                            instance.LuaScript = chunkIO.ReadChunkString(chunkSize4);
                         else
                             return false;
                         return true;
@@ -1250,14 +1248,14 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
                 {
-                    var instance = new TriggerVolumeInstance((VolumeShape)LEB128.ReadLong(chunkIO.Raw));
+                    var instance = new TriggerVolumeInstance((VolumeShape)chunkIO.Raw.ReadByte());
                     var scripts = new VolumeScriptInstance();
 
                     instance.Size = chunkIO.Raw.ReadVector3();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.RotationX = chunkIO.Raw.ReadSingle();
-                    instance.Activators = (VolumeActivators)chunkIO.Raw.ReadByte();
+                    instance.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16();
                     scripts.Name = chunkIO.Raw.ReadStringUTF8();
                     scripts.Environment = chunkIO.Raw.ReadStringUTF8();
                     scripts.OnEnter = chunkIO.Raw.ReadStringUTF8();

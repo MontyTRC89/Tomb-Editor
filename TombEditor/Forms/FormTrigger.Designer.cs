@@ -56,9 +56,6 @@ namespace TombEditor.Forms
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelButtons = new System.Windows.Forms.Panel();
             this.panelClassicTriggerControls = new System.Windows.Forms.Panel();
-            this.labelLUA = new DarkUI.Controls.DarkLabel();
-            this.panelLuaScript = new System.Windows.Forms.Panel();
-            this.tbLuaScript = new TombLib.Controls.LuaTextBox();
             this.paramExtra = new TombLib.Controls.TriggerParameterControl();
             this.paramTriggerType = new TombLib.Controls.TriggerParameterControl();
             this.paramTargetType = new TombLib.Controls.TriggerParameterControl();
@@ -68,7 +65,6 @@ namespace TombEditor.Forms
             this.panelMain.SuspendLayout();
             this.panelButtons.SuspendLayout();
             this.panelClassicTriggerControls.SuspendLayout();
-            this.panelLuaScript.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -168,6 +164,7 @@ namespace TombEditor.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(606, 4);
             this.butCancel.Name = "butCancel";
@@ -180,6 +177,7 @@ namespace TombEditor.Forms
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOK.Checked = false;
             this.butOK.Location = new System.Drawing.Point(520, 4);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
@@ -220,6 +218,7 @@ namespace TombEditor.Forms
             // butCopyWithComments
             // 
             this.butCopyWithComments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCopyWithComments.Checked = false;
             this.butCopyWithComments.Image = global::TombEditor.Properties.Resources.general_copy_comments_16;
             this.butCopyWithComments.Location = new System.Drawing.Point(249, 0);
             this.butCopyWithComments.Name = "butCopyWithComments";
@@ -231,6 +230,7 @@ namespace TombEditor.Forms
             // butCopyToClipboard
             // 
             this.butCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCopyToClipboard.Checked = false;
             this.butCopyToClipboard.Image = global::TombEditor.Properties.Resources.general_copy_16;
             this.butCopyToClipboard.Location = new System.Drawing.Point(221, 0);
             this.butCopyToClipboard.Name = "butCopyToClipboard";
@@ -266,7 +266,6 @@ namespace TombEditor.Forms
             // panelMain
             // 
             this.panelMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panelMain.Controls.Add(this.panelLuaScript);
             this.panelMain.Controls.Add(this.panelButtons);
             this.panelMain.Controls.Add(this.panelClassicTriggerControls);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -274,7 +273,7 @@ namespace TombEditor.Forms
             this.panelMain.MinimumSize = new System.Drawing.Size(600, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Padding = new System.Windows.Forms.Padding(3, 5, 3, 3);
-            this.panelMain.Size = new System.Drawing.Size(695, 382);
+            this.panelMain.Size = new System.Drawing.Size(695, 220);
             this.panelMain.TabIndex = 82;
             // 
             // panelButtons
@@ -282,7 +281,7 @@ namespace TombEditor.Forms
             this.panelButtons.Controls.Add(this.butOK);
             this.panelButtons.Controls.Add(this.butCancel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(3, 348);
+            this.panelButtons.Location = new System.Drawing.Point(3, 186);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(689, 31);
             this.panelButtons.TabIndex = 85;
@@ -312,39 +311,6 @@ namespace TombEditor.Forms
             this.panelClassicTriggerControls.Name = "panelClassicTriggerControls";
             this.panelClassicTriggerControls.Size = new System.Drawing.Size(689, 181);
             this.panelClassicTriggerControls.TabIndex = 82;
-            // 
-            // labelLUA
-            // 
-            this.labelLUA.AutoSize = true;
-            this.labelLUA.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelLUA.Location = new System.Drawing.Point(1, 1);
-            this.labelLUA.Name = "labelLUA";
-            this.labelLUA.Size = new System.Drawing.Size(61, 13);
-            this.labelLUA.TabIndex = 80;
-            this.labelLUA.Text = "LUA script:";
-            // 
-            // panelLuaScript
-            // 
-            this.panelLuaScript.Controls.Add(this.tbLuaScript);
-            this.panelLuaScript.Controls.Add(this.labelLUA);
-            this.panelLuaScript.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelLuaScript.Location = new System.Drawing.Point(3, 186);
-            this.panelLuaScript.Name = "panelLuaScript";
-            this.panelLuaScript.Size = new System.Drawing.Size(689, 162);
-            this.panelLuaScript.TabIndex = 83;
-            // 
-            // tbLuaScript
-            // 
-            this.tbLuaScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaScript.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tbLuaScript.Code = "";
-            this.tbLuaScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbLuaScript.Location = new System.Drawing.Point(4, 17);
-            this.tbLuaScript.Name = "tbLuaScript";
-            this.tbLuaScript.Size = new System.Drawing.Size(682, 142);
-            this.tbLuaScript.TabIndex = 81;
             // 
             // paramExtra
             // 
@@ -411,7 +377,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(695, 382);
+            this.ClientSize = new System.Drawing.Size(695, 220);
             this.Controls.Add(this.panelMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
@@ -428,8 +394,6 @@ namespace TombEditor.Forms
             this.panelButtons.ResumeLayout(false);
             this.panelClassicTriggerControls.ResumeLayout(false);
             this.panelClassicTriggerControls.PerformLayout();
-            this.panelLuaScript.ResumeLayout(false);
-            this.panelLuaScript.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -464,8 +428,5 @@ namespace TombEditor.Forms
         private Panel panelButtons;
         private Panel panelClassicTriggerControls;
         private TriggerParameterControl paramExtra;
-        private Panel panelLuaScript;
-        private LuaTextBox tbLuaScript;
-        private DarkLabel labelLUA;
     }
 }
