@@ -65,6 +65,9 @@
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.butAddSphereVolume = new System.Windows.Forms.ToolStripButton();
+            this.butAddPrismVolume = new System.Windows.Forms.ToolStripButton();
+            this.butAddBoxVolume = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -109,6 +112,9 @@
             this.butCompileLevel,
             this.butCompileLevelAndPlay,
             this.butTextureFloor,
+            this.butAddBoxVolume,
+            this.butAddPrismVolume,
+            this.butAddSphereVolume,
             this.butTextureCeiling,
             this.butTextureWalls,
             this.butEditLevelSettings,
@@ -341,7 +347,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -353,7 +359,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -365,7 +371,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -377,7 +383,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -388,7 +394,7 @@
             this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawVolumes.Name = "butDrawVolumes";
-            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
+            this.butDrawVolumes.Size = new System.Drawing.Size(202, 22);
             this.butDrawVolumes.Tag = "DrawVolumes";
             this.butDrawVolumes.Text = "DrawVolumes";
             // 
@@ -400,7 +406,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -412,7 +418,7 @@
             this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
+            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
             this.butDrawLightRadius.Tag = "DrawLightRadius";
             this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
@@ -610,7 +616,7 @@
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.texture_Ceiling2_16;
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureCeiling.Name = "butTextureCeiling";
-            this.butTextureCeiling.Size = new System.Drawing.Size(23, 25);
+            this.butTextureCeiling.Size = new System.Drawing.Size(23, 20);
             this.butTextureCeiling.Tag = "TextureCeiling";
             // 
             // butTextureWalls
@@ -693,6 +699,39 @@
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
+            // butAddSphereVolume
+            // 
+            this.butAddSphereVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddSphereVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddSphereVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddSphereVolume.Image = global::TombEditor.Properties.Resources.objects_volume_sphere_16;
+            this.butAddSphereVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddSphereVolume.Name = "butAddSphereVolume";
+            this.butAddSphereVolume.Size = new System.Drawing.Size(23, 20);
+            this.butAddSphereVolume.Tag = "AddSphereVolume";
+            // 
+            // butAddPrismVolume
+            // 
+            this.butAddPrismVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddPrismVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddPrismVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddPrismVolume.Image = global::TombEditor.Properties.Resources.objects_volume_prism_16;
+            this.butAddPrismVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddPrismVolume.Name = "butAddPrismVolume";
+            this.butAddPrismVolume.Size = new System.Drawing.Size(23, 20);
+            this.butAddPrismVolume.Tag = "AddPrismVolume";
+            // 
+            // butAddBoxVolume
+            // 
+            this.butAddBoxVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddBoxVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddBoxVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddBoxVolume.Image = global::TombEditor.Properties.Resources.objects_volume_box_16;
+            this.butAddBoxVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddBoxVolume.Name = "butAddBoxVolume";
+            this.butAddBoxVolume.Size = new System.Drawing.Size(23, 25);
+            this.butAddBoxVolume.Tag = "AddBoxVolume";
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -762,5 +801,8 @@
         private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
         private System.Windows.Forms.ToolStripButton butDrawWhiteLighting;
         private System.Windows.Forms.ToolStripMenuItem butDrawVolumes;
+        private System.Windows.Forms.ToolStripButton butAddBoxVolume;
+        private System.Windows.Forms.ToolStripButton butAddPrismVolume;
+        private System.Windows.Forms.ToolStripButton butAddSphereVolume;
     }
 }
