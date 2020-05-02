@@ -396,6 +396,7 @@ namespace TombLib.LevelData
         }
 
         public IReadOnlyList<PositionBasedObjectInstance> Objects => _objects;
+        public IEnumerable<TriggerVolumeInstance> Volumes => _objects.OfType<TriggerVolumeInstance>();
 
         public IEnumerable<ObjectInstance> AnyObjects
         {

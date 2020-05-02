@@ -33,7 +33,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public class TriggerVolumeInstance : PositionBasedObjectInstance, ISpatial, ISizeable, IRotateableY
+    public class TriggerVolumeInstance : PositionBasedObjectInstance, ISpatial, ISizeable, IRotateableYX
     {
         private const float _defaultSize = 1024.0f;
         private const float _minBoxVolumeSize = 32.0f;
@@ -91,6 +91,14 @@ namespace TombLib.LevelData
             set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
         }
         private float _rotationY = 0.0f;
+
+        public float RotationX
+        {
+            get { return _rotationX; }
+            set { _rotationX = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+        }
+        private float _rotationX = 0.0f;
+
 
         public bool Enabled { get; set; }
 

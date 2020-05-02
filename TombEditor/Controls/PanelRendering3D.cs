@@ -2175,7 +2175,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
 
             foreach (Room room in roomsWhoseObjectsToDraw)
-                foreach (var instance in room.Objects.OfType<TriggerVolumeInstance>())
+                foreach (var instance in room.Volumes)
                 {
                     var selected = _editor.SelectedObject == instance;
                     var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;

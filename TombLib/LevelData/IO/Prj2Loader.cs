@@ -1256,6 +1256,7 @@ namespace TombLib.LevelData.IO
                     instance.Size = chunkIO.Raw.ReadVector3();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.RotationX = chunkIO.Raw.ReadSingle();
                     instance.Enabled = chunkIO.Raw.ReadBoolean();
                     scripts.Name = chunkIO.Raw.ReadStringUTF8();
                     scripts.Environment = chunkIO.Raw.ReadStringUTF8();
