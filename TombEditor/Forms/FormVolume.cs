@@ -55,6 +55,7 @@ namespace TombEditor.Forms
             cbNPC.Checked = _volume.Activators.HasFlag(VolumeActivators.NPCs);
             cbOtherMoveables.Checked = _volume.Activators.HasFlag(VolumeActivators.OtherMoveables);
             cbStatics.Checked = _volume.Activators.HasFlag(VolumeActivators.Statics);
+            cbFlybys.Checked = _volume.Activators.HasFlag(VolumeActivators.Flybys);
             _flagsLocked = false;
         }
 
@@ -121,10 +122,17 @@ namespace TombEditor.Forms
             UpdateFlags();
         }
 
-        private void darkCheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void cbStatics_CheckedChanged(object sender, EventArgs e)
         {
             if (_flagsLocked) return;
             _volume.Activators ^= VolumeActivators.Statics;
+            UpdateFlags();
+        }
+
+        private void cbFlybys_CheckedChanged(object sender, EventArgs e)
+        {
+            if (_flagsLocked) return;
+            _volume.Activators ^= VolumeActivators.Flybys;
             UpdateFlags();
         }
     }
