@@ -143,6 +143,11 @@ namespace TombLib.Graphics
                 return false;
 
             bool upside = Orientation == GizmoOrientation.UpsideDown;
+            bool flippedScale = false;
+
+            // Flip sizing dimensions if object is rotateable on Y axis
+            if ((_mode == GizmoMode.ScaleX || _mode == GizmoMode.ScaleZ) && SupportRotationY)
+                flippedScale = MathC.RadToDeg(RotationY) % 180.0f >= 45.0f;
 
             // First get the ray in 3D space from X, Y mouse coordinates
             switch (_mode)
@@ -181,7 +186,10 @@ namespace TombLib.Graphics
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
-                            GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                            if (flippedScale)
+                                GizmoScaleZ(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                            else
+                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
                     }
                     break;
                 case GizmoMode.ScaleY:
@@ -195,7 +203,10 @@ namespace TombLib.Graphics
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
-                            GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                            if (flippedScale)
+                                GizmoScaleX(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                            else
+                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
                     }
                     break;
                 case GizmoMode.RotateY:
