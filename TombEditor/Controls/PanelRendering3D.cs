@@ -2206,7 +2206,7 @@ namespace TombEditor.Controls
                     _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
                     _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
 
-                    effect.Parameters["ModelViewProjection"].SetValue((Matrix4x4.CreateTranslation(instance.Position) * viewProjection).ToSharpDX());
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
                     effect.Parameters["Color"].SetValue(normalColor);
                     effect.Techniques[0].Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
