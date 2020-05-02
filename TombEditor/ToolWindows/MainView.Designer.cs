@@ -38,8 +38,9 @@
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawGhostBlocks = new System.Windows.Forms.ToolStripMenuItem();
-            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawVolumes = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.butCopy = new System.Windows.Forms.ToolStripButton();
             this.butPaste = new System.Windows.Forms.ToolStripButton();
@@ -323,8 +324,9 @@
             this.butDrawStatics,
             this.butDrawImportedGeometry,
             this.butDrawGhostBlocks,
-            this.butDrawLightRadius,
-            this.butDrawOther});
+            this.butDrawVolumes,
+            this.butDrawOther,
+            this.butDrawLightRadius});
             this.butDrawObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawObjects.Image = global::TombEditor.Properties.Resources.actions_DrawObjects_16;
             this.butDrawObjects.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -379,17 +381,16 @@
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
-            // butDrawLightRadius
+            // butDrawVolumes
             // 
-            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawLightRadius.Checked = true;
-            this.butDrawLightRadius.CheckOnClick = true;
-            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
-            this.butDrawLightRadius.Tag = "DrawLightRadius";
-            this.butDrawLightRadius.Text = "DrawLightRadius";
+            this.butDrawVolumes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawVolumes.Checked = true;
+            this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawVolumes.Name = "butDrawVolumes";
+            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
+            this.butDrawVolumes.Tag = "DrawVolumes";
+            this.butDrawVolumes.Text = "DrawVolumes";
             // 
             // butDrawOther
             // 
@@ -402,6 +403,18 @@
             this.butDrawOther.Size = new System.Drawing.Size(176, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
+            // 
+            // butDrawLightRadius
+            // 
+            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawLightRadius.Checked = true;
+            this.butDrawLightRadius.CheckOnClick = true;
+            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawLightRadius.Name = "butDrawLightRadius";
+            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
+            this.butDrawLightRadius.Tag = "DrawLightRadius";
+            this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
             // butFlipMap
             // 
@@ -748,5 +761,6 @@
         private System.Windows.Forms.ToolStripButton butSearchAndReplaceObjects;
         private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
         private System.Windows.Forms.ToolStripButton butDrawWhiteLighting;
+        private System.Windows.Forms.ToolStripMenuItem butDrawVolumes;
     }
 }

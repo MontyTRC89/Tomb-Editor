@@ -335,10 +335,15 @@ namespace TombEditor
 
         public static void ResetObjectScale(PositionBasedObjectInstance obj)
         {
-            if (!(obj is IScaleable)) return;
+            if (!(obj is IScaleable || obj is ISizeable)) return;
+
             _editor.UndoManager.PushObjectTransformed(obj);
 
-            (obj as IScaleable).Scale = 1;
+            if (obj is IScaleable)
+                (obj as IScaleable).Scale = 1;
+            else if (obj is ISizeable)
+                (obj as ISizeable).Size = Vector3.One;
+
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
@@ -690,6 +695,18 @@ namespace TombEditor
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
+        public static void ResizeObject(ISizeable instance, Vector3 delta, double quantization)
+        {
+            if (quantization < 1.0f) quantization = 1.0f;
+
+            var newX = (float)MathC.Clamp(Math.Round((delta.X) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            var newY = (float)MathC.Clamp(Math.Round((delta.Y) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            var newZ = (float)MathC.Clamp(Math.Round((delta.Z) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            
+            instance.Size = new Vector3(newX, newY, newZ);
+            _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
+        }
+
         public static void MoveObject(PositionBasedObjectInstance instance, Vector3 pos, Keys modifierKeys)
         {
             MoveObject(instance, pos, GetMovementPrecision(modifierKeys), modifierKeys.HasFlag(Keys.Alt));
@@ -874,7 +891,19 @@ namespace TombEditor
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is LightInstance)
+            {
                 EditLightColor(owner);
+            }
+            else if (instance is TriggerVolumeInstance)
+            {
+                using (var formVolume = new FormVolume(_editor.Level, (TriggerVolumeInstance)instance))
+                {
+                    if (formVolume.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                    else
+                        _editor.ObjectChange(instance, ObjectChangeType.Change);
+                }
+            }
         }
 
         public static void PasteObject(VectorInt2 pos, Room room)

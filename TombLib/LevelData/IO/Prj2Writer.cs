@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -538,6 +539,22 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XnZp);
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZn);
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
+                        }
+                    else if (o is TriggerVolumeInstance)
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolumeTest, LEB128.MaximumSize2Byte))
+                        {
+                            var instance = (TriggerVolumeInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            LEB128.Write(chunkIO.Raw, (long)instance.Shape);
+                            chunkIO.Raw.Write(instance.Size);
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.RotationY);
+                            chunkIO.Raw.Write(instance.Enabled);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnEnter);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnInside);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnLeave);
                         }
                     else if (o is TriggerInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))
