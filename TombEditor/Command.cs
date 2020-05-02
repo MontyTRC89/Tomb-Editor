@@ -153,7 +153,7 @@ namespace TombEditor
                 args.Editor.ResetCamera();
             });
 
-            AddCommand("AddTrigger", "Add trigger", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("AddTrigger", "Add legacy trigger", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
                 {

@@ -387,7 +387,7 @@ namespace TombEditor.Forms
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Trigger editor";
+            this.Text = "Legacy trigger editor";
             this.scriptExportPanel.ResumeLayout(false);
             this.scriptExportPanel.PerformLayout();
             this.panelMain.ResumeLayout(false);
