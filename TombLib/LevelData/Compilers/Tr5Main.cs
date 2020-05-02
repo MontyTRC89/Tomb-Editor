@@ -263,10 +263,18 @@ namespace TombLib.LevelData.Compilers
                     {
                         var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(ms));
 
+                        int currRoom = 0;
                         foreach (var r in _level.Rooms.Where(r => r != null))
                         {
+                            // Add further extra data conditions here, otherwise compiler will skip this room altogether
+                            if (r.Volumes.Count() > 0)
+                                { } else continue;
+
                             using (var extraRoomDataChunk = chunkIO.WriteChunk(Tr5MainExtraRoomData))
                             {
+                                // First and only param after signature is internal room number
+                                chunkIO.Raw.Write(currRoom);
+
                                 using (var volumeListChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeList))
                                 {
                                     var trRoom = _tempRooms[r];
