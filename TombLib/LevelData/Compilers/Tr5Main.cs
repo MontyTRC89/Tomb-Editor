@@ -353,6 +353,8 @@ namespace TombLib.LevelData.Compilers
                                                 indent + script.OnInside.Replace("\n", "\n" + indent) + "\n" +
                                             "volscripts[" + i + "].OnLeave  = function(activator) \n" +
                                                 indent + script.OnLeave.Replace("\n", "\n" + indent) + "\n";
+
+                                        chunkIO.Raw.WriteStringUTF8(functionCode);
                                     }
                                 }
                             }
