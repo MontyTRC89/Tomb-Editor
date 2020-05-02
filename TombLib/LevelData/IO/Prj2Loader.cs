@@ -1248,6 +1248,26 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);                    
                 }
+                else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
+                {
+                    var instance = new TriggerVolumeInstance((VolumeShape)LEB128.ReadLong(chunkIO.Raw));
+                    var scripts = new VolumeScriptInstance();
+
+                    instance.Size = chunkIO.Raw.ReadVector3();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.Enabled = chunkIO.Raw.ReadBoolean();
+                    scripts.Name = chunkIO.Raw.ReadStringUTF8();
+                    scripts.Environment = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnEnter = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnInside = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnLeave = chunkIO.Raw.ReadStringUTF8();
+
+                    instance.Scripts = scripts;
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else
                     return false;
                 return true;

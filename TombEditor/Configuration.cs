@@ -62,6 +62,7 @@ namespace TombEditor
         public bool Rendering3D_ShowStatics { get; set; } = true;
         public bool Rendering3D_ShowImportedGeometry { get; set; } = true;
         public bool Rendering3D_ShowGhostBlocks { get; set; } = true;
+        public bool Rendering3D_ShowVolumes { get; set; } = true;
         public bool Rendering3D_ShowOtherObjects { get; set; } = true;
         public bool Rendering3D_ShowSlideDirections { get; set; } = false;
         public bool Rendering3D_ShowFPS { get; set; } = false;

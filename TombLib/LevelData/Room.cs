@@ -40,6 +40,7 @@ namespace TombLib.LevelData
         public string Name { get; set; }
         public VectorInt3 Position { get; set; }
         public Block[,] Blocks { get; private set; }
+
         private List<PositionBasedObjectInstance> _objects = new List<PositionBasedObjectInstance>();
 
         public Room AlternateBaseRoom { get; set; }
