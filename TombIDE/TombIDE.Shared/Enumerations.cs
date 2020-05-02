@@ -27,4 +27,16 @@
 		Include,
 		Define
 	}
+
+	public enum FileCreationMode
+	{
+		New,
+		Saving
+	}
+
+	public enum FindingOrder
+	{
+		Prev,
+		Next
+	}
 }

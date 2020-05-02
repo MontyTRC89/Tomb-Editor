@@ -37,9 +37,9 @@ namespace TombIDE.ScriptEditor
 		private FormNGCompilingStatus _formCompiling;
 
 		/// <summary>
-		/// The current tab's TextBox.
+		/// The current tab's TextEditor.
 		/// </summary>
-		private BaseTextEditor _textBox;
+		private BaseTextEditor _textEditor;
 
 		#region Construction and public methods
 
@@ -105,9 +105,9 @@ namespace TombIDE.ScriptEditor
 
 				string originalFilePath = GetOriginalFilePathFromBackupFile(file);
 
-				// Open the original file and replace the whole text of the TextBox with the .backup file content
+				// Open the original file and replace the whole text of the TextEditor with the .backup file content
 				OpenFile(originalFilePath);
-				_textBox.Text = backupFileContent;
+				_textEditor.Text = backupFileContent;
 
 				HandleTextChangedIndicator();
 			}
@@ -170,12 +170,12 @@ namespace TombIDE.ScriptEditor
 				TabPage scriptFileTab = FindTabPageOfFile(PathHelper.GetScriptFilePath(_ide.Project));
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
 				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened ?
-					GetTextBoxOfTab(scriptFileTab).IsTextChanged : false;
+					GetTextEditorOfTab(scriptFileTab).IsTextChanged : false;
 
 				TabPage languageFileTab = FindTabPageOfFile(PathHelper.GetLanguageFilePath(_ide.Project, GameLanguage.English));
 				bool wasLanguageFileAlreadyOpened = languageFileTab != null;
 				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened ?
-					GetTextBoxOfTab(languageFileTab).IsTextChanged : false;
+					GetTextEditorOfTab(languageFileTab).IsTextChanged : false;
 
 				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent)
 				{
@@ -236,17 +236,17 @@ namespace TombIDE.ScriptEditor
 
 			if (objectLine != null)
 			{
-				_textBox.Focus();
-				_textBox.ScrollToLine(objectLine.LineNumber);
-				_textBox.SelectLine(objectLine);
+				_textEditor.Focus();
+				_textEditor.ScrollToLine(objectLine.LineNumber);
+				_textEditor.SelectLine(objectLine);
 			}
 		}
 
 		private DocumentLine FindDocumentLineOfObject(string objectName, ObjectType type)
 		{
-			foreach (DocumentLine line in _textBox.Document.Lines)
+			foreach (DocumentLine line in _textEditor.Document.Lines)
 			{
-				string lineText = _textBox.Document.GetText(line.Offset, line.Length);
+				string lineText = _textEditor.Document.GetText(line.Offset, line.Length);
 
 				switch (type)
 				{
@@ -277,39 +277,39 @@ namespace TombIDE.ScriptEditor
 
 		private void AppendScriptLines(List<string> inputLines)
 		{
-			OpenScriptFile(true); // Changes the current _textBox as well
+			OpenScriptFile(true); // Changes the current _textEditor as well
 
-			// Join the messages into a single string and append it into the _textBox
-			_textBox.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
+			// Join the messages into a single string and append it into the _textEditor
+			_textEditor.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
 
 			// Scroll to the line where changes were made (the last line)
-			_textBox.ScrollToLine(_textBox.LineCount);
+			_textEditor.ScrollToLine(_textEditor.LineCount);
 
 			HandleTextChangedIndicator();
 		}
 
 		private void AddNewLevelNameString(string levelName)
 		{
-			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 1; i < _textBox.LineCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				DocumentLine currentLine = _textBox.Document.GetLineByNumber(i);
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
 
 				// Find a free "Level Name " string slot in the language file
-				if (_textBox.Document.GetText(currentLine.Offset, currentLine.Length).StartsWith("Level Name "))
+				if (_textEditor.Document.GetText(currentLine.Offset, currentLine.Length).StartsWith("Level Name "))
 				{
 					// Select the line and replace its text with the added level name
-					_textBox.SelectionStart = currentLine.Offset;
-					_textBox.SelectionLength = currentLine.Length;
+					_textEditor.SelectionStart = currentLine.Offset;
+					_textEditor.SelectionLength = currentLine.Length;
 
-					_textBox.SelectedText = levelName;
+					_textEditor.SelectedText = levelName;
 
 					break;
 				}
 
-				if (i == _textBox.LineCount)
+				if (i == _textEditor.LineCount)
 				{
 					DarkMessageBox.Show(this,
 						"Warning, you ran out of free Level Name String slots in the main Language File.\n" +
@@ -325,55 +325,55 @@ namespace TombIDE.ScriptEditor
 
 		private bool AddNewNGString(string ngString)
 		{
-			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
-			_textBox.SelectionStart = 0;
-			_textBox.SelectionLength = 0;
+			_textEditor.SelectionStart = 0;
+			_textEditor.SelectionLength = 0;
 
 			// Scan all lines
-			for (int i = 1; i <= _textBox.LineCount; i++)
+			for (int i = 1; i <= _textEditor.LineCount; i++)
 			{
-				DocumentLine iline = _textBox.Document.GetLineByNumber(i);
-				string ilineText = _textBox.Document.GetText(iline.Offset, iline.Length);
+				DocumentLine iline = _textEditor.Document.GetLineByNumber(i);
+				string ilineText = _textEditor.Document.GetText(iline.Offset, iline.Length);
 
 				if (ilineText.ToLower().StartsWith("[extrang]"))
 				{
 					// Check if the string isn't already defined
-					for (int j = _textBox.LineCount; j >= i; j--)
+					for (int j = _textEditor.LineCount; j >= i; j--)
 					{
-						DocumentLine jline = _textBox.Document.GetLineByNumber(j);
-						string jlineText = _textBox.Document.GetText(jline.Offset, jline.Length);
+						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
+						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
 
 						if (Regex.IsMatch(jlineText, @"\A\d*:\s*?" + ngString + @"(;.*)?"))
 							return false;
 					}
 
 					// Add the string
-					for (int j = _textBox.LineCount; j >= i; j--)
+					for (int j = _textEditor.LineCount; j >= i; j--)
 					{
-						DocumentLine jline = _textBox.Document.GetLineByNumber(j);
-						string jlineText = _textBox.Document.GetText(jline.Offset, jline.Length);
+						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
+						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
 
 						if (Regex.IsMatch(jlineText, @"\A\d*:.*"))
 						{
-							_textBox.CaretOffset = jline.EndOffset;
-							_textBox.TextArea.PerformTextInput(Environment.NewLine);
+							_textEditor.CaretOffset = jline.EndOffset;
+							_textEditor.TextArea.PerformTextInput(Environment.NewLine);
 
 							int prevNumber = int.Parse(Regex.Replace(jlineText, @"\A(\d*):.*", "$1"));
 
-							_textBox.SelectedText = prevNumber + 1 + ": " + ngString;
+							_textEditor.SelectedText = prevNumber + 1 + ": " + ngString;
 
-							_textBox.ScrollToLine(j + 1);
+							_textEditor.ScrollToLine(j + 1);
 							break;
 						}
 						else if (j == i)
 						{
-							_textBox.CaretOffset = jline.EndOffset;
-							_textBox.TextArea.PerformTextInput(Environment.NewLine);
+							_textEditor.CaretOffset = jline.EndOffset;
+							_textEditor.TextArea.PerformTextInput(Environment.NewLine);
 
-							_textBox.SelectedText = "0: " + ngString;
+							_textEditor.SelectedText = "0: " + ngString;
 
-							_textBox.ScrollToLine(j);
+							_textEditor.ScrollToLine(j);
 							break;
 						}
 					}
@@ -387,13 +387,13 @@ namespace TombIDE.ScriptEditor
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
 		{
-			OpenScriptFile(true); // Changes the current _textBox as well
+			OpenScriptFile(true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 1; i < _textBox.LineCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				DocumentLine currentLine = _textBox.Document.GetLineByNumber(i);
-				string line = Regex.Replace(_textBox.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
@@ -405,11 +405,11 @@ namespace TombIDE.ScriptEditor
 					if (scriptLevelName == oldName)
 					{
 						line = line.Replace(oldName, newName);
-						_textBox.SelectionStart = currentLine.Offset;
-						_textBox.SelectionLength = currentLine.Length;
-						_textBox.SelectedText = line;
+						_textEditor.SelectionStart = currentLine.Offset;
+						_textEditor.SelectionLength = currentLine.Length;
+						_textEditor.SelectedText = line;
 
-						_textBox.ScrollToLine(i);
+						_textEditor.ScrollToLine(i);
 						break;
 					}
 				}
@@ -420,22 +420,22 @@ namespace TombIDE.ScriptEditor
 
 		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 1; i < _textBox.LineCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				DocumentLine currentLine = _textBox.Document.GetLineByNumber(i);
-				string line = Regex.Replace(_textBox.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				if (line == oldName)
 				{
 					line = line.Replace(oldName, newName);
-					_textBox.SelectionStart = currentLine.Offset;
-					_textBox.SelectionLength = currentLine.Length;
-					_textBox.SelectedText = line;
+					_textEditor.SelectionStart = currentLine.Offset;
+					_textEditor.SelectionLength = currentLine.Length;
+					_textEditor.SelectedText = line;
 
-					_textBox.ScrollToLine(i);
+					_textEditor.ScrollToLine(i);
 					break;
 				}
 			}
@@ -445,13 +445,13 @@ namespace TombIDE.ScriptEditor
 
 		private bool IsLevelScriptDefined(string levelName)
 		{
-			OpenScriptFile(true); // Changes the current _textBox as well
+			OpenScriptFile(true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 1; i < _textBox.LineCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				DocumentLine currentLine = _textBox.Document.GetLineByNumber(i);
-				string line = Regex.Replace(_textBox.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
@@ -470,13 +470,13 @@ namespace TombIDE.ScriptEditor
 
 		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 1; i < _textBox.LineCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				DocumentLine currentLine = _textBox.Document.GetLineByNumber(i);
-				string line = Regex.Replace(_textBox.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				if (line == levelName)
 					return true;
@@ -508,27 +508,27 @@ namespace TombIDE.ScriptEditor
 		private void File_SaveAll_Click(object sender, EventArgs e) => SaveAll();
 		private void File_Build_Click(object sender, EventArgs e) => BuildScript();
 
-		private void Edit_Undo_Click(object sender, EventArgs e) => _textBox.Undo();
-		private void Edit_Redo_Click(object sender, EventArgs e) => _textBox.Redo();
-		private void Edit_Cut_Click(object sender, EventArgs e) => _textBox.Cut();
-		private void Edit_Copy_Click(object sender, EventArgs e) => _textBox.Copy();
-		private void Edit_Paste_Click(object sender, EventArgs e) => _textBox.Paste();
-		private void Edit_FindReplace_Click(object sender, EventArgs e) => _formFindReplace.Show(this, _textBox.SelectedText);
+		private void Edit_Undo_Click(object sender, EventArgs e) => _textEditor.Undo();
+		private void Edit_Redo_Click(object sender, EventArgs e) => _textEditor.Redo();
+		private void Edit_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
+		private void Edit_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
+		private void Edit_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
+		private void Edit_FindReplace_Click(object sender, EventArgs e) => _formFindReplace.Show(this, _textEditor.SelectedText);
 
 		private void Edit_SelectAll_Click(object sender, EventArgs e)
 		{
-			_textBox.SelectAll();
+			_textEditor.SelectAll();
 			DoStatusCounting(); // So it updates the status strip labels
 		}
 
-		private void Tools_CheckErrors_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textBox).ManuallyCheckForErrors();
-		private void Tools_Reindent_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textBox).TidyDocument();
-		private void Tools_Trim_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textBox).TidyDocument(true);
-		private void Tools_Comment_Click(object sender, EventArgs e) => _textBox.CommentLines();
-		private void Tools_Uncomment_Click(object sender, EventArgs e) => _textBox.UncommentLines();
-		private void Tools_ToggleBookmark_Click(object sender, EventArgs e) => _textBox.ToggleBookmark();
-		private void Tools_PrevBookmark_Click(object sender, EventArgs e) => _textBox.GoToPrevBookmark();
-		private void Tools_NextBookmark_Click(object sender, EventArgs e) => _textBox.GoToNextBookmark();
+		private void Tools_CheckErrors_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).ManuallyCheckForErrors();
+		private void Tools_Reindent_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).TidyDocument();
+		private void Tools_Trim_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).TidyDocument(true);
+		private void Tools_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
+		private void Tools_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
+		private void Tools_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
+		private void Tools_PrevBookmark_Click(object sender, EventArgs e) => _textEditor.GoToPrevBookmark();
+		private void Tools_NextBookmark_Click(object sender, EventArgs e) => _textEditor.GoToNextBookmark();
 		private void Tools_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
 		private void Tools_Settings_Click(object sender, EventArgs e) => ShowSettingsForm();
 
@@ -541,32 +541,32 @@ namespace TombIDE.ScriptEditor
 
 		private void Help_About_Click(object sender, EventArgs e) => ShowAboutForm();
 
-		private void ContextMenu_Cut_Click(object sender, EventArgs e) => _textBox.Cut();
-		private void ContextMenu_Copy_Click(object sender, EventArgs e) => _textBox.Copy();
-		private void ContextMenu_Paste_Click(object sender, EventArgs e) => _textBox.Paste();
-		private void ContextMenu_Comment_Click(object sender, EventArgs e) => _textBox.CommentLines();
-		private void ContextMenu_Uncomment_Click(object sender, EventArgs e) => _textBox.UncommentLines();
-		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => _textBox.ToggleBookmark();
+		private void ContextMenu_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
+		private void ContextMenu_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
+		private void ContextMenu_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
+		private void ContextMenu_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
+		private void ContextMenu_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
+		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
 
 		private void ToolStrip_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
 		private void ToolStrip_Save_Click(object sender, EventArgs e) => OnSaveButtonClicked();
 		private void ToolStrip_SaveAll_Click(object sender, EventArgs e) => SaveAll();
-		private void ToolStrip_Undo_Click(object sender, EventArgs e) => _textBox.Undo();
-		private void ToolStrip_Redo_Click(object sender, EventArgs e) => _textBox.Redo();
-		private void ToolStrip_Cut_Click(object sender, EventArgs e) => _textBox.Cut();
-		private void ToolStrip_Copy_Click(object sender, EventArgs e) => _textBox.Copy();
-		private void ToolStrip_Paste_Click(object sender, EventArgs e) => _textBox.Paste();
-		private void ToolStrip_Comment_Click(object sender, EventArgs e) => _textBox.CommentLines();
-		private void ToolStrip_Uncomment_Click(object sender, EventArgs e) => _textBox.UncommentLines();
-		private void ToolStrip_ToggleBookmark_Click(object sender, EventArgs e) => _textBox.ToggleBookmark();
-		private void ToolStrip_PrevBookmark_Click(object sender, EventArgs e) => _textBox.GoToPrevBookmark();
-		private void ToolStrip_NextBookmark_Click(object sender, EventArgs e) => _textBox.GoToNextBookmark();
+		private void ToolStrip_Undo_Click(object sender, EventArgs e) => _textEditor.Undo();
+		private void ToolStrip_Redo_Click(object sender, EventArgs e) => _textEditor.Redo();
+		private void ToolStrip_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
+		private void ToolStrip_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
+		private void ToolStrip_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
+		private void ToolStrip_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
+		private void ToolStrip_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
+		private void ToolStrip_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
+		private void ToolStrip_PrevBookmark_Click(object sender, EventArgs e) => _textEditor.GoToPrevBookmark();
+		private void ToolStrip_NextBookmark_Click(object sender, EventArgs e) => _textEditor.GoToNextBookmark();
 		private void ToolStrip_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
 		private void ToolStrip_Build_Click(object sender, EventArgs e) => BuildScript();
 
 		private void StatusStrip_ResetZoom_Click(object sender, EventArgs e)
 		{
-			_textBox.Zoom = 100;
+			_textEditor.Zoom = 100;
 			button_ResetZoom.Visible = false;
 
 			DoStatusCounting();
@@ -587,12 +587,12 @@ namespace TombIDE.ScriptEditor
 		{
 			if ((System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
 			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
-				_formFindReplace.Show(this, _textBox.SelectedText);
+				_formFindReplace.Show(this, _textEditor.SelectedText);
 		}
 
 		private void TextChangedDelayTimer_Tick(object sender, EventArgs e)
 		{
-			objectBrowser.UpdateContent(_textBox.Text);
+			objectBrowser.UpdateContent(_textEditor.Text);
 
 			DoStatusCounting();
 			UpdateUndoRedoSaveStates();
@@ -632,14 +632,14 @@ namespace TombIDE.ScriptEditor
 		{
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor tabTextBox = GetTextBoxOfTab(tab);
+				BaseTextEditor tabTextEditor = GetTextEditorOfTab(tab);
 
-				if (tabTextBox.Document.FileName == null)
+				if (tabTextEditor.Document.FileName == null)
 					continue;
 
 				SaveFile(tab);
 
-				HandleTextChangedIndicator(tab, tabTextBox);
+				HandleTextChangedIndicator(tab, tabTextEditor);
 				UpdateUndoRedoSaveStates();
 			}
 		}
@@ -656,34 +656,34 @@ namespace TombIDE.ScriptEditor
 			}
 		}
 
-		private void HandleTextChangedIndicator(TabPage tab = null, BaseTextEditor textBox = null)
+		private void HandleTextChangedIndicator(TabPage tab = null, BaseTextEditor textEditor = null)
 		{
 			if (tab == null)
 				tab = tabControl_Editor.SelectedTab;
 
-			if (textBox == null)
-				textBox = _textBox;
+			if (textEditor == null)
+				textEditor = _textEditor;
 
-			if (string.IsNullOrEmpty(textBox.Document.FileName))
+			if (string.IsNullOrEmpty(textEditor.Document.FileName))
 			{
-				if (!textBox.IsTextChanged)
+				if (!textEditor.IsTextChanged)
 					tab.Text = "Untitled";
 				else if (!tab.Text.EndsWith("*"))
 					tab.Text = "Untitled*";
 			}
 			else
 			{
-				if (!textBox.IsTextChanged)
+				if (!textEditor.IsTextChanged)
 					tab.Text = tab.Text.TrimEnd('*');
 				else if (!tab.Text.EndsWith("*"))
-					tab.Text = GetCorrectTabTitle(textBox.Document.FileName) + "*";
+					tab.Text = GetCorrectTabTitle(textEditor.Document.FileName) + "*";
 			}
 		}
 
 		private void UpdateUndoRedoSaveStates()
 		{
 			// Undo buttons
-			if (_textBox.CanUndo)
+			if (_textEditor.CanUndo)
 			{
 				menuItem_Undo.Enabled = true;
 				menuItem_Undo.Text = "&Undo";
@@ -697,7 +697,7 @@ namespace TombIDE.ScriptEditor
 			}
 
 			// Redo buttons
-			if (_textBox.CanRedo)
+			if (_textEditor.CanRedo)
 			{
 				menuItem_Redo.Enabled = true;
 				menuItem_Redo.Text = "&Redo";
@@ -711,7 +711,7 @@ namespace TombIDE.ScriptEditor
 			}
 
 			// Save buttons
-			if (_textBox.IsTextChanged)
+			if (_textEditor.IsTextChanged)
 			{
 				menuItem_Save.Enabled = true;
 				button_Save.Enabled = true;
@@ -728,19 +728,19 @@ namespace TombIDE.ScriptEditor
 
 		private void DoStatusCounting()
 		{
-			label_LineNumber.Text = "Line: " + _textBox.TextArea.Caret.Position.Line;
-			label_ColNumber.Text = "Column: " + _textBox.TextArea.Caret.Position.Column;
+			label_LineNumber.Text = "Line: " + _textEditor.TextArea.Caret.Position.Line;
+			label_ColNumber.Text = "Column: " + _textEditor.TextArea.Caret.Position.Column;
 
-			label_SelectedChars.Text = "Selected: " + _textBox.SelectedText.Length;
+			label_SelectedChars.Text = "Selected: " + _textEditor.SelectedText.Length;
 
-			label_Zoom.Text = "Zoom: " + _textBox.Zoom + "%";
-			button_ResetZoom.Visible = _textBox.Zoom != 100;
+			label_Zoom.Text = "Zoom: " + _textEditor.Zoom + "%";
+			button_ResetZoom.Visible = _textEditor.Zoom != 100;
 		}
 
 		private void UpdateSyntaxPreview()
 		{
-			syntaxPreview.CurrentArgumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(_textBox.Document, _textBox.CaretOffset);
-			syntaxPreview.Text = CommandHelper.GetCommandSyntax(_textBox.Document, _textBox.CaretOffset);
+			syntaxPreview.CurrentArgumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(_textEditor.Document, _textEditor.CaretOffset);
+			syntaxPreview.Text = CommandHelper.GetCommandSyntax(_textEditor.Document, _textEditor.CaretOffset);
 		}
 
 		private void ToggleObjBrowser(bool state)
@@ -827,9 +827,9 @@ namespace TombIDE.ScriptEditor
 				if (tab.Text.TrimEnd('*') == "Untitled")
 					continue;
 
-				BaseTextEditor tabTextBox = GetTextBoxOfTab(tab);
+				BaseTextEditor tabTextEditor = GetTextEditorOfTab(tab);
 
-				if (tabTextBox.IsTextChanged)
+				if (tabTextEditor.IsTextChanged)
 					return false;
 			}
 
@@ -896,27 +896,27 @@ namespace TombIDE.ScriptEditor
 				Size = tabControl_Editor.Size
 			};
 
-			// Create the TextBox
-			ScriptTextEditor newTextBox = new ScriptTextEditor
+			// Create the TextEditor
+			ScriptTextEditor newTextEditor = new ScriptTextEditor
 			{
 				ShowLineNumbers = _editorConfig.ClassicScriptConfiguration.ShowLineNumbers,
 				ShowSectionSeparators = _editorConfig.ClassicScriptConfiguration.ShowSectionSeparators
 			};
 
-			// Bind event methods to the TextBox
-			newTextBox.TextArea.Caret.PositionChanged += Caret_PositionChanged;
-			newTextBox.TextArea.SelectionChanged += Editor_StatusChanged;
-			newTextBox.TextChanged += Editor_TextChanged;
-			newTextBox.ZoomChanged += Editor_StatusChanged;
-			newTextBox.KeyDown += Editor_KeyDown;
+			// Bind event methods to the TextEditor
+			newTextEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
+			newTextEditor.TextArea.SelectionChanged += Editor_StatusChanged;
+			newTextEditor.TextChanged += Editor_TextChanged;
+			newTextEditor.ZoomChanged += Editor_StatusChanged;
+			newTextEditor.KeyDown += Editor_KeyDown;
 
 			ElementHost elementHost = new ElementHost
 			{
 				Size = new Size(newTabPage.Size.Width - 6, newTabPage.Size.Height),
 				Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
 				Location = new Point(6, 0),
-				Child = newTextBox,
-				ContextMenuStrip = contextMenu_TextBox
+				Child = newTextEditor,
+				ContextMenuStrip = contextMenu_TextEditor
 			};
 
 			// Add the host to the tab
@@ -926,8 +926,8 @@ namespace TombIDE.ScriptEditor
 			tabControl_Editor.TabPages.Add(newTabPage);
 			tabControl_Editor.SelectTab(newTabPage);
 
-			// Change the active TextBox and apply user settings to it
-			_textBox = newTextBox;
+			// Change the active TextEditor and apply user settings to it
+			_textEditor = newTextEditor;
 
 			ApplySavedSettings();
 		}
@@ -954,12 +954,12 @@ namespace TombIDE.ScriptEditor
 		{
 			if (tabControl_Editor.TabCount > 0)
 			{
-				// Change the active ScriptTextBox
-				_textBox = GetTextBoxOfTab(tabControl_Editor.SelectedTab);
+				// Change the active TextEditor
+				_textEditor = GetTextEditorOfTab(tabControl_Editor.SelectedTab);
 
 				// Update everything
 				UpdateUndoRedoSaveStates();
-				objectBrowser.UpdateContent(_textBox.Text);
+				objectBrowser.UpdateContent(_textEditor.Text);
 				DoStatusCounting();
 			}
 		}
@@ -1042,27 +1042,27 @@ namespace TombIDE.ScriptEditor
 
 		private void OpenFile(string filePath, bool silentAction = false)
 		{
-			CreateNewTabPage(GetCorrectTabTitle(filePath)); // Changes the current _textBox
-			_textBox.OpenFile(filePath, silentAction);
+			CreateNewTabPage(GetCorrectTabTitle(filePath)); // Changes the current _textEditor
+			_textEditor.OpenFile(filePath, silentAction);
 
 			menuItem_Save.Enabled = false;
 			button_Save.Enabled = false;
 
-			objectBrowser.UpdateContent(_textBox.Text);
+			objectBrowser.UpdateContent(_textEditor.Text);
 		}
 
 		private bool IsFileSaved(TabPage tab)
 		{
-			BaseTextEditor textBox = GetTextBoxOfTab(tab);
+			BaseTextEditor textEditor = GetTextEditorOfTab(tab);
 
-			if (textBox.IsTextChanged)
+			if (textEditor.IsTextChanged)
 			{
 				if (_ide.SelectedIDETab != IDETab.ScriptEditor)
 					_ide.SelectIDETab(IDETab.ScriptEditor);
 
 				tabControl_Editor.SelectTab(tab);
 
-				string fileName = string.IsNullOrEmpty(_textBox.Document.FileName) ? "Untitled" : Path.GetFileName(_textBox.Document.FileName);
+				string fileName = string.IsNullOrEmpty(_textEditor.Document.FileName) ? "Untitled" : Path.GetFileName(_textEditor.Document.FileName);
 
 				DialogResult result = DarkMessageBox.Show(this,
 					"Do you want save changes to " + fileName + " ?", "Unsaved changes!",
@@ -1080,14 +1080,14 @@ namespace TombIDE.ScriptEditor
 
 		private bool SaveFile(TabPage tab)
 		{
-			BaseTextEditor textBox = GetTextBoxOfTab(tab);
+			BaseTextEditor textEditor = GetTextEditorOfTab(tab);
 
-			//if (_ide.Configuration.Tidy_ReindentOnSave)
-			//	textBox.TidyDocument();
+			if (_ide.IDEConfiguration.Tidy_ReindentOnSave)
+				((ScriptTextEditor)textEditor).TidyDocument();
 
 			try
 			{
-				if (textBox.Document.FileName == null) // For "Untitled"
+				if (textEditor.Document.FileName == null) // For "Untitled"
 				{
 					string initialNodePath = null;
 					string initialFileName = null;
@@ -1109,7 +1109,7 @@ namespace TombIDE.ScriptEditor
 					{
 						if (form.ShowDialog(this) == DialogResult.OK)
 						{
-							textBox.Document.FileName = form.NewFilePath;
+							textEditor.Document.FileName = form.NewFilePath;
 							tab.Text = form.NewFilePath.Replace(_ide.Project.ScriptPath + "\\", "");
 						}
 						else
@@ -1117,7 +1117,7 @@ namespace TombIDE.ScriptEditor
 					}
 				}
 
-				textBox.Save(textBox.Document.FileName);
+				textEditor.Save(textEditor.Document.FileName);
 			}
 			catch (Exception ex) // Saving failed somehow
 			{
@@ -1148,6 +1148,7 @@ namespace TombIDE.ScriptEditor
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					_editorConfig = new TextEditorConfiguration();
+					syntaxPreview.ReloadSettings();
 					ApplySavedSettings();
 				}
 		}
@@ -1161,7 +1162,7 @@ namespace TombIDE.ScriptEditor
 
 			if (result == DialogResult.Yes)
 			{
-				foreach (DocumentLine line in _textBox.Document.Lines)
+				foreach (DocumentLine line in _textEditor.Document.Lines)
 				{
 					if (line.IsBookmarked)
 						line.IsBookmarked = false;
@@ -1200,12 +1201,12 @@ namespace TombIDE.ScriptEditor
 
 				try
 				{
-					DocumentLine line = _textBox.Document.GetLineByOffset(match.Index);
+					DocumentLine line = _textEditor.Document.GetLineByOffset(match.Index);
 
-					_textBox.SelectionStart = match.Index;
-					_textBox.SelectionLength = match.Length;
+					_textEditor.SelectionStart = match.Index;
+					_textEditor.SelectionLength = match.Length;
 
-					_textBox.ScrollToLine(line.LineNumber);
+					_textEditor.ScrollToLine(line.LineNumber);
 				}
 				catch { }
 			}
@@ -1251,16 +1252,16 @@ namespace TombIDE.ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor textBox = GetTextBoxOfTab(tab);
+				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
 
-				if (string.IsNullOrEmpty(textBox.Document.FileName))
+				if (string.IsNullOrEmpty(textEditor.Document.FileName))
 					continue;
 
-				if (!File.Exists(textBox.Document.FileName))
+				if (!File.Exists(textEditor.Document.FileName))
 				{
-					if (textBox.IsTextChanged)
+					if (textEditor.IsTextChanged)
 					{
-						textBox.Document.FileName = null;
+						textEditor.Document.FileName = null;
 						HandleTextChangedIndicator();
 					}
 					else
@@ -1278,11 +1279,11 @@ namespace TombIDE.ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor textBox = GetTextBoxOfTab(tab);
+				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
 
-				if (textBox.Document.FileName == e.OldFullPath)
+				if (textEditor.Document.FileName == e.OldFullPath)
 				{
-					textBox.Document.FileName = e.FullPath;
+					textEditor.Document.FileName = e.FullPath;
 					tab.Text = GetCorrectTabTitle(e.FullPath);
 
 					HandleTextChangedIndicator();
@@ -1294,26 +1295,26 @@ namespace TombIDE.ScriptEditor
 
 		private void ApplySavedSettings()
 		{
-			// TextBox specific settings
+			// TextEditor specific settings
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor textBox = GetTextBoxOfTab(tab);
+				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
 
-				if (textBox is ScriptTextEditor)
+				if (textEditor is ScriptTextEditor)
 				{
-					textBox.SyntaxHighlighting = new ScriptSyntaxHighlighting();
+					textEditor.SyntaxHighlighting = new ScriptSyntaxHighlighting();
 
 					System.Windows.Media.Color foregroundColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_editorConfig.ClassicScriptConfiguration.Colors_Values);
 
-					textBox.Foreground = new System.Windows.Media.SolidColorBrush(foregroundColor);
-					textBox.FontFamily = new System.Windows.Media.FontFamily(_editorConfig.ClassicScriptConfiguration.FontFamily);
-					textBox.FontSize = _editorConfig.ClassicScriptConfiguration.FontSize;
-					textBox.DefaultFontSize = _editorConfig.ClassicScriptConfiguration.FontSize;
-					textBox.LiveErrorUnderlining = _editorConfig.ClassicScriptConfiguration.LiveErrorUnderlining;
-					textBox.AutoCloseBrackets = _editorConfig.ClassicScriptConfiguration.AutoCloseBrackets;
-					textBox.AutoCloseQuotes = _editorConfig.ClassicScriptConfiguration.AutoCloseQuotes;
-					textBox.WordWrap = _editorConfig.ClassicScriptConfiguration.WordWrapping;
-					textBox.Document.UndoStack.SizeLimit = _editorConfig.ClassicScriptConfiguration.UndoStackSize;
+					textEditor.Foreground = new System.Windows.Media.SolidColorBrush(foregroundColor);
+					textEditor.FontFamily = new System.Windows.Media.FontFamily(_editorConfig.ClassicScriptConfiguration.FontFamily);
+					textEditor.FontSize = _editorConfig.ClassicScriptConfiguration.FontSize;
+					textEditor.DefaultFontSize = _editorConfig.ClassicScriptConfiguration.FontSize;
+					textEditor.LiveErrorUnderlining = _editorConfig.ClassicScriptConfiguration.LiveErrorUnderlining;
+					textEditor.AutoCloseBrackets = _editorConfig.ClassicScriptConfiguration.AutoCloseBrackets;
+					textEditor.AutoCloseQuotes = _editorConfig.ClassicScriptConfiguration.AutoCloseQuotes;
+					textEditor.WordWrap = _editorConfig.ClassicScriptConfiguration.WordWrapping;
+					textEditor.Document.UndoStack.SizeLimit = _editorConfig.ClassicScriptConfiguration.UndoStackSize;
 				}
 			}
 
@@ -1328,7 +1329,7 @@ namespace TombIDE.ScriptEditor
 			DoStatusCounting();
 		}
 
-		private BaseTextEditor GetTextBoxOfTab(TabPage tab)
+		private BaseTextEditor GetTextEditorOfTab(TabPage tab)
 		{
 			return (BaseTextEditor)tab.Controls.OfType<ElementHost>().First().Child;
 		}

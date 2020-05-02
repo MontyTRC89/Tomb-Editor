@@ -45,7 +45,7 @@ namespace TombIDE.ScriptEditor.Controls
 			DarkTreeNode fullFileListNode = FileHelper.CreateFullFileListNode(_ide.Project.ScriptPath, fileSearchPattern, treeView);
 			fullFileListNode.Expanded = true;
 
-			// Remove all nodes from the treeView and apply the node we just got
+			// Remove all nodes from the treeView and apply the node we just created
 			treeView.Nodes.Clear();
 			treeView.Nodes.Add(fullFileListNode);
 

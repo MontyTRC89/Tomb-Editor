@@ -42,6 +42,8 @@ namespace TombIDE.Shared
 		public bool View_ShowStatusStrip { get; set; } = true;
 		public bool View_SwapPanels { get; set; } = false;
 
+		public bool Tidy_ReindentOnSave { get; set; } = false;
+
 		public bool InfoBox_AlwaysOnTop { get; set; } = true;
 		public bool InfoBox_CloseTabsOnClose { get; set; } = false;
 

@@ -15,9 +15,9 @@ namespace TombIDE.ScriptEditor.Forms
 {
 	internal partial class FormMnemonicInfo : DarkForm
 	{
-		#region Construction and public methods
-
 		private IDE _ide;
+
+		#region Construction and public methods
 
 		public FormMnemonicInfo(IDE ide)
 		{
@@ -67,6 +67,16 @@ namespace TombIDE.ScriptEditor.Forms
 			if (e.Button == MouseButtons.Middle)
 				HandleMiddleMouseTabClosing(e);
 		}
+
+		private void checkBox_AlwaysTop_CheckedChanged(object sender, EventArgs e)
+		{
+			_ide.IDEConfiguration.InfoBox_AlwaysOnTop = checkBox_AlwaysTop.Checked;
+
+			TopMost = _ide.IDEConfiguration.InfoBox_AlwaysOnTop;
+		}
+
+		private void checkBox_CloseTabs_CheckedChanged(object sender, EventArgs e) =>
+			_ide.IDEConfiguration.InfoBox_CloseTabsOnClose = checkBox_CloseTabs.Checked;
 
 		#endregion Events
 
@@ -181,17 +191,5 @@ namespace TombIDE.ScriptEditor.Forms
 		}
 
 		#endregion Methods
-
-		private void checkBox_AlwaysTop_CheckedChanged(object sender, EventArgs e)
-		{
-			_ide.IDEConfiguration.InfoBox_AlwaysOnTop = checkBox_AlwaysTop.Checked;
-
-			TopMost = _ide.IDEConfiguration.InfoBox_AlwaysOnTop;
-		}
-
-		private void checkBox_CloseTabs_CheckedChanged(object sender, EventArgs e)
-		{
-			_ide.IDEConfiguration.InfoBox_CloseTabsOnClose = checkBox_CloseTabs.Checked;
-		}
 	}
 }
