@@ -274,7 +274,12 @@ namespace TombLib.Scripting.Controls
 			if (hoveredOffset == -1)
 				return;
 
-			string hoveredWord = GetWordFromOffset(hoveredOffset).Trim('[').Trim(']').Trim('=').Trim(',');
+			string hoveredWord = GetWordFromOffset(hoveredOffset);
+
+			if (string.IsNullOrEmpty(hoveredWord))
+				return;
+
+			hoveredWord = hoveredWord.Trim('[').Trim(']').Trim('=').Trim(',');
 
 			// Check if toolTips are enabled and if the hovered word is not just whitespace
 			if (ShowDefinitionToolTips && !string.IsNullOrWhiteSpace(hoveredWord))
