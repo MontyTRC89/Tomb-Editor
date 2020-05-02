@@ -35,7 +35,7 @@ namespace TombIDE.ScriptEditor
 			this.button_ToggleBookmark = new System.Windows.Forms.ToolStripButton();
 			this.button_Uncomment = new System.Windows.Forms.ToolStripButton();
 			this.button_Undo = new System.Windows.Forms.ToolStripButton();
-			this.contextMenu_TextBox = new DarkUI.Controls.DarkContextMenu();
+			this.contextMenu_TextEditor = new DarkUI.Controls.DarkContextMenu();
 			this.contextMenuItem_Cut = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuItem_Paste = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +120,7 @@ namespace TombIDE.ScriptEditor
 			this.objectBrowser = new TombIDE.ScriptEditor.Controls.ObjectBrowser();
 			this.fileList = new TombIDE.ScriptEditor.Controls.FileList();
 			this.scriptFolderWatcher = new System.IO.FileSystemWatcher();
-			this.contextMenu_TextBox.SuspendLayout();
+			this.contextMenu_TextEditor.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.panel_Editor.SuspendLayout();
 			this.panel_Syntax.SuspendLayout();
@@ -333,9 +333,9 @@ namespace TombIDE.ScriptEditor
 			// 
 			// contextMenu_TextBox
 			// 
-			this.contextMenu_TextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.contextMenu_TextBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.contextMenu_TextBox.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.contextMenu_TextEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.contextMenu_TextEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenu_TextEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.contextMenuItem_Cut,
             this.contextMenuItem_Copy,
             this.contextMenuItem_Paste,
@@ -344,8 +344,8 @@ namespace TombIDE.ScriptEditor
             this.contextMenuItem_Uncomment,
             this.separator_19,
             this.contextMenuItem_ToggleBookmark});
-			this.contextMenu_TextBox.Name = "editorContextMenu";
-			this.contextMenu_TextBox.Size = new System.Drawing.Size(180, 150);
+			this.contextMenu_TextEditor.Name = "editorContextMenu";
+			this.contextMenu_TextEditor.Size = new System.Drawing.Size(180, 150);
 			// 
 			// contextMenuItem_Cut
 			// 
@@ -1288,7 +1288,7 @@ namespace TombIDE.ScriptEditor
 			this.Controls.Add(this.menuStrip);
 			this.Name = "ScriptEditor";
 			this.Size = new System.Drawing.Size(960, 600);
-			this.contextMenu_TextBox.ResumeLayout(false);
+			this.contextMenu_TextEditor.ResumeLayout(false);
 			this.menuStrip.ResumeLayout(false);
 			this.menuStrip.PerformLayout();
 			this.panel_Editor.ResumeLayout(false);
@@ -1315,7 +1315,7 @@ namespace TombIDE.ScriptEditor
 		private Controls.ReferenceBrowser referenceBrowser;
 		private Controls.SyntaxPreview syntaxPreview;
 		private DarkUI.Controls.DarkButton button_ResetZoom;
-		private DarkUI.Controls.DarkContextMenu contextMenu_TextBox;
+		private DarkUI.Controls.DarkContextMenu contextMenu_TextEditor;
 		private DarkUI.Controls.DarkLabel label_Zoom;
 		private DarkUI.Controls.DarkMenuStrip menuStrip;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel_InfoBox;

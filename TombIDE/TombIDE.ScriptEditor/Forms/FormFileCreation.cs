@@ -8,12 +8,6 @@ using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptEditor.Forms
 {
-	internal enum FileCreationMode
-	{
-		New,
-		Saving
-	}
-
 	internal partial class FormFileCreation : DarkForm
 	{
 		public string NewFilePath { get; private set; }

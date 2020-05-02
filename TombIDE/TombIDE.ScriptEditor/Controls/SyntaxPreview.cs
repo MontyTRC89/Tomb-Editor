@@ -19,7 +19,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		/* Private fields */
 
-		private TextEditorConfiguration _config;
+		private TextEditorConfiguration _config = new TextEditorConfiguration();
 
 		private string _cachedText;
 		private int _cachedArgumentIndex;
@@ -28,12 +28,10 @@ namespace TombIDE.ScriptEditor.Controls
 
 		private const int CharacterWidth = 7; // For ("Consolas", 9.75f, FontStyle.Bold)
 
-		#region Construction
+		#region Construction and public methods
 
 		public SyntaxPreview()
 		{
-			_config = new TextEditorConfiguration();
-
 			Font = new Font("Consolas", 9.75f, FontStyle.Bold);
 
 			BackColor = Color.FromArgb(60, 63, 65);
@@ -46,7 +44,10 @@ namespace TombIDE.ScriptEditor.Controls
 			WordWrap = false;
 		}
 
-		#endregion Construction
+		public void ReloadSettings() =>
+			_config = new TextEditorConfiguration();
+
+		#endregion Construction and public methods
 
 		#region Events
 
@@ -85,9 +86,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		private void SetTextColor(string regexPattern, Color color)
 		{
-			MatchCollection collection = Regex.Matches(Text, regexPattern);
-
-			foreach (Match item in collection)
+			foreach (Match item in Regex.Matches(Text, regexPattern))
 			{
 				Select(item.Index, item.Length);
 				SelectionColor = color;

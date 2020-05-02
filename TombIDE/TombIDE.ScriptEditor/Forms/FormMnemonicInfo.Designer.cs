@@ -17,14 +17,36 @@
 
 		private void InitializeComponent()
 		{
+			this.checkBox_AlwaysTop = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_CloseTabs = new DarkUI.Controls.DarkCheckBox();
 			this.panel = new System.Windows.Forms.Panel();
 			this.tabControl = new System.Windows.Forms.CustomTabControl();
 			this.panel_Buttons = new System.Windows.Forms.Panel();
-			this.checkBox_CloseTabs = new DarkUI.Controls.DarkCheckBox();
-			this.checkBox_AlwaysTop = new DarkUI.Controls.DarkCheckBox();
 			this.panel.SuspendLayout();
 			this.panel_Buttons.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// checkBox_AlwaysTop
+			// 
+			this.checkBox_AlwaysTop.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.checkBox_AlwaysTop.Location = new System.Drawing.Point(198, 6);
+			this.checkBox_AlwaysTop.Margin = new System.Windows.Forms.Padding(190, 3, 12, 3);
+			this.checkBox_AlwaysTop.Name = "checkBox_AlwaysTop";
+			this.checkBox_AlwaysTop.Size = new System.Drawing.Size(180, 16);
+			this.checkBox_AlwaysTop.TabIndex = 0;
+			this.checkBox_AlwaysTop.Text = "Keep this window always on top";
+			this.checkBox_AlwaysTop.CheckedChanged += new System.EventHandler(this.checkBox_AlwaysTop_CheckedChanged);
+			// 
+			// checkBox_CloseTabs
+			// 
+			this.checkBox_CloseTabs.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.checkBox_CloseTabs.Location = new System.Drawing.Point(402, 6);
+			this.checkBox_CloseTabs.Margin = new System.Windows.Forms.Padding(12, 3, 190, 3);
+			this.checkBox_CloseTabs.Name = "checkBox_CloseTabs";
+			this.checkBox_CloseTabs.Size = new System.Drawing.Size(190, 16);
+			this.checkBox_CloseTabs.TabIndex = 1;
+			this.checkBox_CloseTabs.Text = "Close all tabs after window closes";
+			this.checkBox_CloseTabs.CheckedChanged += new System.EventHandler(this.checkBox_CloseTabs_CheckedChanged);
 			// 
 			// panel
 			// 
@@ -82,28 +104,6 @@
 			this.panel_Buttons.Size = new System.Drawing.Size(782, 30);
 			this.panel_Buttons.TabIndex = 1;
 			// 
-			// checkBox_CloseTabs
-			// 
-			this.checkBox_CloseTabs.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.checkBox_CloseTabs.Location = new System.Drawing.Point(402, 6);
-			this.checkBox_CloseTabs.Margin = new System.Windows.Forms.Padding(12, 3, 190, 3);
-			this.checkBox_CloseTabs.Name = "checkBox_CloseTabs";
-			this.checkBox_CloseTabs.Size = new System.Drawing.Size(190, 16);
-			this.checkBox_CloseTabs.TabIndex = 1;
-			this.checkBox_CloseTabs.Text = "Close all tabs after window closes";
-			this.checkBox_CloseTabs.CheckedChanged += new System.EventHandler(this.checkBox_CloseTabs_CheckedChanged);
-			// 
-			// checkBox_AlwaysTop
-			// 
-			this.checkBox_AlwaysTop.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.checkBox_AlwaysTop.Location = new System.Drawing.Point(198, 6);
-			this.checkBox_AlwaysTop.Margin = new System.Windows.Forms.Padding(190, 3, 12, 3);
-			this.checkBox_AlwaysTop.Name = "checkBox_AlwaysTop";
-			this.checkBox_AlwaysTop.Size = new System.Drawing.Size(180, 16);
-			this.checkBox_AlwaysTop.TabIndex = 0;
-			this.checkBox_AlwaysTop.Text = "Keep this window always on top";
-			this.checkBox_AlwaysTop.CheckedChanged += new System.EventHandler(this.checkBox_AlwaysTop_CheckedChanged);
-			// 
 			// FormMnemonicInfo
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -123,10 +123,10 @@
 
 		#endregion
 
-		private System.Windows.Forms.Panel panel;
-		private System.Windows.Forms.CustomTabControl tabControl;
-		private System.Windows.Forms.Panel panel_Buttons;
 		private DarkUI.Controls.DarkCheckBox checkBox_AlwaysTop;
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseTabs;
+		private System.Windows.Forms.CustomTabControl tabControl;
+		private System.Windows.Forms.Panel panel;
+		private System.Windows.Forms.Panel panel_Buttons;
 	}
 }
