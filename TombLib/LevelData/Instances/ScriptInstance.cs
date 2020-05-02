@@ -10,6 +10,10 @@ namespace TombLib.LevelData
     public abstract class ScriptInstance
     {
         public string Name = string.Empty;
-        public string Environment = string.Empty; // Global script assembly, e.g. activation mask, additional temp values etc must be put here.
+
+        // Global script assembly, e.g. activation mask, additional temp values etc must be put here.
+        // If subclassed script instance doesn't require any particular events, this should be main and only script code snippet.
+
+        public string Environment = string.Empty; 
     }
 }
