@@ -125,7 +125,7 @@ namespace TombLib.Graphics
                 var coords = poly.Texture.TexCoords;
                 var shape = (int)TextureExtensions.GetTextureShapeType(poly.Texture.TexCoords, poly.Shape == WadPolygonShape.Triangle);
 
-                for(int i = 0; i < (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/ ? 3 : 4); i++)
+                for (int i = 0; i < (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/ ? 3 : 4); i++)
                     if (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/)
                         coords[i] += TextureExtensions.CompensationTris[shape, i];
                     else

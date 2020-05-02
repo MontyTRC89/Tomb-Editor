@@ -135,6 +135,7 @@ namespace TombLib.LevelData
                 if (ReplaceMagentaWithTransparency)
                     image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
+                image.CalculatePalette();
                 Image = image;
 
                 // Resize sound array

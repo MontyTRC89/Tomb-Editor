@@ -144,10 +144,10 @@ namespace TombLib.Scripting.Compilers
 
 				Thread.Sleep(100);
 
-				foreach (Process fuckingDieAlreadyYouStupidFuck in Process.GetProcessesByName("notepad"))
+				foreach (Process notepadProcess in Process.GetProcessesByName("notepad"))
 				{
-					if (fuckingDieAlreadyYouStupidFuck.MainWindowTitle.Contains("script_log"))
-						fuckingDieAlreadyYouStupidFuck.Kill();
+					if (notepadProcess.MainWindowTitle.Contains("script_log"))
+                        notepadProcess.Kill();
 				}
 
 				return true;
