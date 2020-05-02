@@ -28,16 +28,27 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
+		private ScriptEditor.ScriptEditor scriptEditor;
+		private ProjectMaster.ProjectMaster projectMaster;
+
 		#region Initialization
 
 		public FormMain(IDE ide, Project project)
 		{
+			InitializeComponent();
+
 			_ide = ide;
 			_ide.Project = project;
 
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			InitializeComponent();
+			projectMaster = new ProjectMaster.ProjectMaster();
+			projectMaster.Dock = DockStyle.Fill;
+			tabPage_ProjectMaster.Controls.Add(projectMaster);
+
+			scriptEditor = new ScriptEditor.ScriptEditor();
+			scriptEditor.Dock = DockStyle.Fill;
+			tabPage_ScriptEditor.Controls.Add(scriptEditor);
 
 			// Add the current project name to the window title
 			Text = "TombIDE - " + _ide.Project.Name;
@@ -64,16 +75,10 @@ namespace TombIDE
 			{
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					// Initialize tabs
+					// Initialize the IDE interfaces
 					projectMaster.Initialize(_ide);
 					scriptEditor.Initialize(_ide);
 
-					// Run through all tabs to avoid validation glitches
-					SelectIDETab(IDETab.ProjectMaster);
-					SelectIDETab(IDETab.ScriptEditor);
-					SelectIDETab(IDETab.Tools);
-
-					// Always start with the Project Master
 					SelectIDETab(IDETab.ProjectMaster);
 
 					// Drop the panel
@@ -95,29 +100,29 @@ namespace TombIDE
 
 		private void ApplySavedSettings()
 		{
-			Size = _ide.Configuration.IDE_WindowSize;
+			Size = _ide.IDEConfiguration.IDE_WindowSize;
 
-			if (_ide.Configuration.IDE_OpenMaximized)
+			if (_ide.IDEConfiguration.IDE_OpenMaximized)
 				WindowState = FormWindowState.Maximized;
 		}
 
 		private void SaveSettings()
 		{
-			_ide.Configuration.IDE_OpenMaximized = WindowState == FormWindowState.Maximized;
+			_ide.IDEConfiguration.IDE_OpenMaximized = WindowState == FormWindowState.Maximized;
 
 			if (WindowState == FormWindowState.Normal)
-				_ide.Configuration.IDE_WindowSize = Size;
+				_ide.IDEConfiguration.IDE_WindowSize = Size;
 			else
-				_ide.Configuration.IDE_WindowSize = RestoreBounds.Size;
+				_ide.IDEConfiguration.IDE_WindowSize = RestoreBounds.Size;
 
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.Save();
 		}
 
 		private void AddPinnedPrograms()
 		{
-			if (_ide.Configuration.PinnedProgramPaths.Count > 0) // If there are any pinned program paths in the config
+			if (_ide.IDEConfiguration.PinnedProgramPaths.Count > 0) // If there are any pinned program paths in the config
 			{
-				foreach (string programPath in _ide.Configuration.PinnedProgramPaths)
+				foreach (string programPath in _ide.IDEConfiguration.PinnedProgramPaths)
 					AddProgramButton(programPath, false);
 			}
 			else
@@ -320,16 +325,16 @@ namespace TombIDE
 
 		private void SavePinnedPrograms()
 		{
-			_ide.Configuration.PinnedProgramPaths.Clear();
+			_ide.IDEConfiguration.PinnedProgramPaths.Clear();
 
 			// Use for() instead of foreach() to also save the positions of the buttons based on their name numbers
 			for (int i = 0; i < panel_Programs.Controls.OfType<DarkButton>().Count(); i++)
 			{
 				DarkButton button = (DarkButton)panel_Programs.Controls.Find(i.ToString(), false).First();
-				_ide.Configuration.PinnedProgramPaths.Add(button.Tag.ToString());
+				_ide.IDEConfiguration.PinnedProgramPaths.Add(button.Tag.ToString());
 			}
 
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.Save();
 			_ide.ProgramButtonsModified();
 		}
 
@@ -465,7 +470,7 @@ namespace TombIDE
 					LaunchFLEP();
 
 				if (e.KeyCode == Keys.F3)
-					SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
+					SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
 
 				if (e.KeyCode == Keys.F4)
 					LaunchGame();
@@ -477,7 +482,7 @@ namespace TombIDE
 		private void panelButton_Tools_Click(object sender, EventArgs e) => SelectIDETab(IDETab.Tools);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
-		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
+		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
 		private void button_LaunchGame_Click(object sender, EventArgs e) => LaunchGame();
 
 		private void timer_ScriptButtonBlinking_Tick(object sender, EventArgs e)

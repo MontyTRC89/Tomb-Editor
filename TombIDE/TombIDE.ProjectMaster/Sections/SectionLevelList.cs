@@ -28,7 +28,7 @@ namespace TombIDE.ProjectMaster
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			button_ViewFileNames.Checked = _ide.Configuration.ViewFileNames;
+			button_ViewFileNames.Checked = _ide.IDEConfiguration.ViewFileNames;
 
 			FillLevelList(); // With levels taken from the .trproj file (current _ide.Project)
 		}
@@ -68,7 +68,7 @@ namespace TombIDE.ProjectMaster
 
 			// Mark external levels
 			if (!level.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-				node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
+				node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 
 			// Add the node to the list
 			treeView.Nodes.Add(node);
@@ -98,7 +98,7 @@ namespace TombIDE.ProjectMaster
 
 				// Mark external levels
 				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-					treeView.SelectedNodes[0].Text = _ide.Configuration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
+					treeView.SelectedNodes[0].Text = _ide.IDEConfiguration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
 
 				// Update the node's Tag with the updated level
 				treeView.SelectedNodes[0].Tag = _ide.SelectedLevel;
@@ -136,7 +136,7 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(((ProjectLevel)treeView.SelectedNodes[0].Tag).FolderPath);
+			SharedMethods.OpenInExplorer(((ProjectLevel)treeView.SelectedNodes[0].Tag).FolderPath);
 
 		private void button_Refresh_Click(object sender, EventArgs e) => RefreshLevelList();
 
@@ -144,8 +144,8 @@ namespace TombIDE.ProjectMaster
 		{
 			button_ViewFileNames.Checked = !button_ViewFileNames.Checked;
 
-			_ide.Configuration.ViewFileNames = button_ViewFileNames.Checked;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.ViewFileNames = button_ViewFileNames.Checked;
+			_ide.IDEConfiguration.Save();
 
 			AdjustTextOfAllNodes();
 		}
@@ -241,7 +241,7 @@ namespace TombIDE.ProjectMaster
 
 			// Internal level paths always start with the project's LevelsPath
 			bool isInternalLevel = affectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase);
-			string message = string.Empty;
+			string message;
 
 			if (isInternalLevel)
 			{
@@ -327,7 +327,7 @@ namespace TombIDE.ProjectMaster
 
 					// Mark external levels
 					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-						node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
+						node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 				}
 			}
 			else
@@ -339,7 +339,7 @@ namespace TombIDE.ProjectMaster
 
 					// Mark external levels
 					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-						node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
+						node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 				}
 			}
 		}

@@ -2,25 +2,42 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Resources;
-using TombIDE.Shared;
+using TombLib.Scripting;
+using TombLib.Scripting.Resources;
 
 namespace TombIDE.ScriptEditor.Controls
 {
 	internal class SyntaxPreview : RichTextBox
 	{
+		/* Properties */
+
 		public int CurrentArgumentIndex { get; set; }
 
-		private Configuration _config;
+		public int SelectionEnd { get { return SelectionStart + SelectionLength; } }
+		public int VisibleCharCount { get { return Width / CharacterWidth; } }
+		public int ViewStart { get; private set; } = 0;
+
+		/* Private fields */
+
+		private TextEditorConfiguration _config;
+
+		private string _cachedText;
+		private int _cachedArgumentIndex;
+
+		/* Private constants */
+
+		private const int CharacterWidth = 7; // For ("Consolas", 9.75f, FontStyle.Bold)
+
+		#region Construction
 
 		public SyntaxPreview()
 		{
-			_config = Configuration.Load();
+			_config = new TextEditorConfiguration();
 
 			Font = new Font("Consolas", 9.75f, FontStyle.Bold);
 
 			BackColor = Color.FromArgb(60, 63, 65);
-			ForeColor = ColorTranslator.FromHtml(_config.ScriptColors_Value);
+			ForeColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Values);
 
 			BorderStyle = BorderStyle.None;
 			ScrollBars = RichTextBoxScrollBars.None;
@@ -29,41 +46,73 @@ namespace TombIDE.ScriptEditor.Controls
 			WordWrap = false;
 		}
 
+		#endregion Construction
+
+		#region Events
+
 		protected override void OnTextChanged(EventArgs e)
 		{
 			base.OnTextChanged(e);
 
-			// Clear all styles
-			SelectAll();
-			SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_Value);
+			DoSyntaxHighlighting();
 
-			HighlightSections();
-			HighlightOldCommands();
-			HighlightNewCommands();
-			HighlightSomeMnemonics();
-			HighlightCommandMnemonics();
-			HighlightSpecialWordsAndSymbols();
-			HighlightComments();
+			if (SelectAndUnderlineCurrentArgument() && (CurrentArgumentIndex != _cachedArgumentIndex || Text != _cachedText))
+				ScrollToSelectedArgument();
 
-			UnderlineCurrentArgument();
+			_cachedText = Text;
+			_cachedArgumentIndex = CurrentArgumentIndex;
 		}
 
-		private void UnderlineCurrentArgument()
+		#endregion Events
+
+		#region Methods
+
+		private void DoSyntaxHighlighting()
+		{
+			// Clear all styles
+			SelectAll();
+			SelectionColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Values);
+
+			// Set the colors
+			SetTextColor(@"\[\b(" + string.Join("|", ScriptKeyWords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Sections));
+			SetTextColor(ScriptPatterns.OldCommands, ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_StandardCommands));
+			SetTextColor(ScriptPatterns.NewCommands, ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_NewCommands));
+			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_References));
+			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_References));
+			SetTextColor(@"(,|/|\(\*Array\*\))", Color.Gainsboro);
+			SetTextColor(ScriptPatterns.Comments, ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Comments));
+		}
+
+		private void SetTextColor(string regexPattern, Color color)
+		{
+			MatchCollection collection = Regex.Matches(Text, regexPattern);
+
+			foreach (Match item in collection)
+			{
+				Select(item.Index, item.Length);
+				SelectionColor = color;
+			}
+		}
+
+		private bool SelectAndUnderlineCurrentArgument()
 		{
 			if (string.IsNullOrWhiteSpace(Text) || !Text.Contains("="))
-				return;
+				return false;
 
 			string[] arguments = Text.Split(',');
 
 			if (arguments.Length == 1)
-				return;
+				return false;
 
 			if (CurrentArgumentIndex >= arguments.Length)
-				return;
+				return false;
 
-			string currentArgument = Text.Split(',')[CurrentArgumentIndex];
+			if (CurrentArgumentIndex == -1)
+				return false;
 
-			string token = string.Empty;
+			string currentArgument = arguments[CurrentArgumentIndex];
+
+			string token;
 
 			if (CurrentArgumentIndex == 0)
 				token = currentArgument.Split('=')[1].Trim();
@@ -72,98 +121,57 @@ namespace TombIDE.ScriptEditor.Controls
 
 			Select(Text.IndexOf(token), token.Length);
 			SelectionFont = new Font(SelectionFont.FontFamily, SelectionFont.Size, FontStyle.Underline | FontStyle.Bold);
+
+			return true;
 		}
 
-		private void HighlightSections()
+		private void ScrollToSelectedArgument()
 		{
-			string tokens = @"\[\b(" + string.Join("|", KeyWords.Sections) + @"|Any)\b\]";
+			string textBeforeArgument = Text.Substring(0, SelectionStart);
+			string[] prevArguments = textBeforeArgument.Split(',');
 
-			Regex regex = new Regex(tokens);
-			MatchCollection collection = regex.Matches(Text);
+			string textAfterArgument = Text.Substring(SelectionEnd);
+			int nextArgumentTextLength = string.IsNullOrEmpty(textAfterArgument) ?
+				0 : textAfterArgument.Split(',')[1].Length + 2; // +2 because of the missing commas before and after the substring
 
-			foreach (Match item in collection)
+			int visibleRangeEnd = ViewStart + VisibleCharCount; // In characters
+
+			if (SelectionEnd > (visibleRangeEnd - nextArgumentTextLength))
 			{
-				Select(item.Index, item.Length);
-				SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_Section);
+				int selectionEnd_X_Location = SelectionEnd * CharacterWidth; // In pixels
+				int nextArgumentTextWidth = nextArgumentTextLength * CharacterWidth; // In pixels
+
+				if (selectionEnd_X_Location > (Width - nextArgumentTextWidth))
+				{
+					int charsToScroll = SelectionEnd - VisibleCharCount + nextArgumentTextLength;
+					PerformHorizontalScrollToIndex(charsToScroll);
+
+					ViewStart = charsToScroll;
+				}
+			}
+			else if (SelectionStart < ViewStart || prevArguments.Length == 1)
+			{
+				int charsToScroll = prevArguments.Length == 1 ? 0 : SelectionStart - 2; // -2 to prevent text cut-offs
+				PerformHorizontalScrollToIndex(charsToScroll);
+
+				ViewStart = charsToScroll;
 			}
 		}
 
-		private void HighlightOldCommands()
+		private void PerformHorizontalScrollToIndex(int characterIndex)
 		{
-			string tokens = "(" + string.Join("|", KeyWords.OldCommands) + @")\s*?=";
+			NativeMethods.BeginControlUpdate(Handle);
 
-			Regex regex = new Regex(tokens);
-			MatchCollection collection = regex.Matches(Text);
+			NativeMethods.PerformFullHorizontalScroll(Handle, ScrollDirection.Left);
 
-			foreach (Match item in collection)
-			{
-				Select(item.Index, item.Length);
-				SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_OldCommand);
-			}
+			for (int i = 0; i < characterIndex; i++)
+				NativeMethods.PerformSingleHorizontalScroll(Handle, ScrollDirection.Right);
+
+			NativeMethods.EndControlUpdate(Handle);
+
+			Invalidate();
 		}
 
-		private void HighlightNewCommands()
-		{
-			string tokens = "(" + string.Join("|", KeyWords.NewCommands) + @")\s*?=";
-
-			Regex regex = new Regex(tokens);
-			MatchCollection collection = regex.Matches(Text);
-
-			foreach (Match item in collection)
-			{
-				Select(item.Index, item.Length);
-				SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_NewCommand);
-			}
-		}
-
-		private void HighlightSomeMnemonics()
-		{
-			string tokens = @"(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)";
-
-			Regex regex = new Regex(tokens);
-			MatchCollection collection = regex.Matches(Text);
-
-			foreach (Match item in collection)
-			{
-				Select(item.Index, item.Length);
-				SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_Reference);
-			}
-		}
-
-		private void HighlightCommandMnemonics()
-		{
-			Regex regex = new Regex(@"\(.*?_\.*?\)");
-			MatchCollection collection = regex.Matches(Text);
-
-			foreach (Match item in collection)
-			{
-				Select(item.Index + 1, item.Length - 2);
-				SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_Reference);
-			}
-		}
-
-		private void HighlightSpecialWordsAndSymbols()
-		{
-			Regex regex = new Regex(@"(,|/|\(\*Array\*\))", RegexOptions.IgnoreCase);
-			MatchCollection collection = regex.Matches(Text);
-
-			foreach (Match item in collection)
-			{
-				Select(item.Index, item.Length);
-				SelectionColor = Color.Gainsboro;
-			}
-		}
-
-		private void HighlightComments()
-		{
-			Regex regex = new Regex(";.*$");
-			MatchCollection collection = regex.Matches(Text);
-
-			foreach (Match item in collection)
-			{
-				Select(item.Index, item.Length);
-				SelectionColor = ColorTranslator.FromHtml(_config.ScriptColors_Comment);
-			}
-		}
+		#endregion Methods
 	}
 }

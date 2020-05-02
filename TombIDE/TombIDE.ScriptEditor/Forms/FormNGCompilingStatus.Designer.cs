@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor
+﻿namespace TombIDE.ScriptEditor.Forms
 {
 	partial class FormNGCompilingStatus
 	{

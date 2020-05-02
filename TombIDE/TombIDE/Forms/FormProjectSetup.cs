@@ -193,7 +193,7 @@ namespace TombIDE
 			{
 				Name = projectName,
 				GameVersion = gameVersion,
-				DefaultLanguage = Language.English,
+				DefaultLanguage = GameLanguage.English,
 				LaunchFilePath = launchFilePath,
 				ProjectPath = projectPath,
 				EnginePath = enginePath,
