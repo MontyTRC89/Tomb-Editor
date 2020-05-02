@@ -113,16 +113,16 @@ namespace TombLib.LevelData
             switch (Shape)
             {
                 case VolumeShape.Box:
-                    desc = "Box Volume (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")";
+                    desc = "Box Volume '" + Scripts.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")";
                     break;
                 case VolumeShape.Sphere:
-                    desc = "Sphere Volume (d = " + Size.X + ")";
+                    desc = "Sphere Volume '" + Scripts.Name + "' (d = " + Size.X + ")";
                     break;
                 case VolumeShape.Prism:
-                    desc = "Prism Volume (h = " + Size.X + ")";
+                    desc = "Prism Volume '" + Scripts.Name + "' (h = " + Size.X + ")";
                     break;
                 default:
-                    desc = "Unknown Volume";
+                    desc = "Unknown Volume '" + Scripts.Name + "'";
                     break;
             }
 
