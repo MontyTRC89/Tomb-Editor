@@ -187,7 +187,7 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
                             if (flippedScale)
-                                GizmoScaleZ(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
                             else
                                 GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
                     }
@@ -204,7 +204,7 @@ namespace TombLib.Graphics
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
                             if (flippedScale)
-                                GizmoScaleX(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
                             else
                                 GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
                     }
