@@ -1137,7 +1137,10 @@ namespace TombEditor.Controls
             }
 
             if (redrawWindow)
+            {
                 Invalidate();
+                Update(); // Magic fix for gizmo stiffness!
+            }
 
             _lastMousePosition = e.Location;
         }
