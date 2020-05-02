@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3EAAFD71-DD96-427D-8793-643DADD2F3A3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TombLib.Scripting</RootNamespace>
+    <AssemblyName>TombLib.Scripting</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.AvalonEdit">
+      <HintPath>..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.XML" />
+    <Reference Include="TestStack.White, Version=0.13.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
+      <HintPath>..\packages\TestStack.White.0.13.3\lib\net40\TestStack.White.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Autocomplete\LuaAutocomplete.cs" />
+    <Compile Include="Autocomplete\ScriptAutocomplete.cs" />
+    <Compile Include="Configuration\LuaConfiguration.cs" />
+    <Compile Include="Compilers\NGCompiler.cs" />
+    <Compile Include="Controls\Settings\SettingsClassicScript.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Settings\SettingsClassicScript.Designer.cs">
+      <DependentUpon>SettingsClassicScript.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TablessTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\FormTextEditorSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormTextEditorSettings.Designer.cs">
+      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="MonospacedFonts.cs" />
+    <Compile Include="Configuration\ClassicScriptConfiguration.cs" />
+    <Compile Include="TextEditorConfiguration.cs" />
+    <Compile Include="Controls\BaseTextEditor.cs" />
+    <Compile Include="Controls\LuaTextEditor.cs" />
+    <Compile Include="Controls\ScriptTextEditor.cs" />
+    <Compile Include="ErrorChecking\LuaErrorChecking.cs" />
+    <Compile Include="ErrorChecking\ScriptErrorChecking.cs" />
+    <Compile Include="Helpers\ArgumentHelper.cs" />
+    <Compile Include="Helpers\CommandHelper.cs" />
+    <Compile Include="Helpers\LineHelper.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Objects\CompletionData.cs" />
+    <Compile Include="Objects\ErrorLine.cs" />
+    <Compile Include="Objects\PluginMnemonic.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rendering\BookmarkRenderer.cs" />
+    <Compile Include="Rendering\ErrorRenderer.cs" />
+    <Compile Include="Rendering\LuaSyntaxHighlighting.cs" />
+    <Compile Include="Rendering\ScriptSyntaxHighlighting.cs" />
+    <Compile Include="Rendering\SectionRenderer.cs" />
+    <Compile Include="Rendering\TextRendering.cs" />
+    <Compile Include="Resources\ScriptKeyWords.cs" />
+    <Compile Include="Resources\ScriptPatterns.cs" />
+    <Compile Include="Resources\Syntaxes\CustSyntaxes.Designer.cs">
+      <DependentUpon>CustSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Syntaxes\NewCommandSyntaxes.Designer.cs">
+      <DependentUpon>NewCommandSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Syntaxes\OldCommandSyntaxes.Designer.cs">
+      <DependentUpon>OldCommandSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\Syntaxes\ParamSyntaxes.Designer.cs">
+      <DependentUpon>ParamSyntaxes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\ToolTips\CommandToolTips.Designer.cs">
+      <DependentUpon>CommandToolTips.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Resources\ToolTips\SectionToolTips.Designer.cs">
+      <DependentUpon>SectionToolTips.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="SyntaxTidying\LuaCodeTidying.cs" />
+    <Compile Include="SyntaxTidying\ScriptTidying.cs" />
+    <Compile Include="SyntaxTidying\SharedMethods.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\Settings\SettingsClassicScript.resx">
+      <DependentUpon>SettingsClassicScript.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormTextEditorSettings.resx">
+      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\CustSyntaxes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CustSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\NewCommandSyntaxes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>NewCommandSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\OldCommandSyntaxes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OldCommandSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Syntaxes\ParamSyntaxes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ParamSyntaxes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolTips\CommandToolTips.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>CommandToolTips.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolTips\SectionToolTips.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SectionToolTips.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
+      <Project>{F19472F5-8C44-4C51-A8A0-B9DE5F555255}</Project>
+      <Name>DarkUI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

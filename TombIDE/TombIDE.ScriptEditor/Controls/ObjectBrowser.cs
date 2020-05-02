@@ -5,13 +5,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Resources;
 using TombIDE.Shared;
+using TombLib.Scripting.Resources;
 
 namespace TombIDE.ScriptEditor.Controls
 {
-	public partial class ObjectBrowser : UserControl
+	internal partial class ObjectBrowser : UserControl
 	{
+		// TODO: Refactor
+
 		private IDE _ide;
 
 		private string _editorText = string.Empty;
@@ -72,7 +74,26 @@ namespace TombIDE.ScriptEditor.Controls
 					return;
 			}
 
-			_ide.ScriptEditor_SelectObject(treeView.SelectedNodes[0].Text);
+			string objectType = treeView.SelectedNodes[0].FullPath.Split('\\')[0];
+
+			switch (objectType)
+			{
+				case "Sections":
+					_ide.ScriptEditor_SelectObject(treeView.SelectedNodes[0].Text, ObjectType.Section);
+					break;
+
+				case "Levels":
+					_ide.ScriptEditor_SelectObject(treeView.SelectedNodes[0].Text, ObjectType.Level);
+					break;
+
+				case "Includes":
+					_ide.ScriptEditor_SelectObject(treeView.SelectedNodes[0].Text, ObjectType.Include);
+					break;
+
+				case "Defines":
+					_ide.ScriptEditor_SelectObject(treeView.SelectedNodes[0].Text, ObjectType.Define);
+					break;
+			}
 		}
 
 		private void textBox_Search_Enter(object sender, EventArgs e)
@@ -153,7 +174,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		private DarkTreeNode GetSectionNode(string line, string filter)
 		{
-			foreach (string section in KeyWords.Sections)
+			foreach (string section in ScriptKeyWords.Sections)
 			{
 				// Exclude [Level] sections
 				if (section.ToLower() == "level")

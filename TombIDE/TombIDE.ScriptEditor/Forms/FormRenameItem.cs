@@ -4,13 +4,13 @@ using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptEditor.Forms
 {
-	public partial class FormRenameItem : DarkForm
+	internal partial class FormRenameItem : DarkForm
 	{
 		private string _targetItemPath;
 
-		#region Initialization
+		#region Construction
 
 		public FormRenameItem(string targetItemPath)
 		{
@@ -18,6 +18,10 @@ namespace TombIDE.ScriptEditor
 
 			_targetItemPath = targetItemPath;
 		}
+
+		#endregion Construction
+
+		#region Events
 
 		protected override void OnShown(EventArgs e)
 		{
@@ -27,20 +31,16 @@ namespace TombIDE.ScriptEditor
 			textBox_NewName.SelectAll();
 		}
 
-		#endregion Initialization
-
-		#region Events
-
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text).Trim();
 
 				if (string.IsNullOrWhiteSpace(newName))
 					throw new ArgumentException("Invalid name.");
 
-				if (newName == Path.GetFileName(_targetItemPath))
+				if (newName.Equals(Path.GetFileName(_targetItemPath), StringComparison.OrdinalIgnoreCase))
 					DialogResult = DialogResult.Cancel;
 				else
 				{

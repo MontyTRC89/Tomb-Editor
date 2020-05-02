@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE.Shared", "TombIDE\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE.REGSVR", "TombIDE\TombIDE.REGSVR\TombIDE.REGSVR.csproj", "{8F6B306B-3E55-4295-B822-BF29E7781B2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting", "TombLib.Scripting\TombLib.Scripting.csproj", "{3EAAFD71-DD96-427D-8793-643DADD2F3A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,10 @@ Global
 		{8F6B306B-3E55-4295-B822-BF29E7781B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F6B306B-3E55-4295-B822-BF29E7781B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F6B306B-3E55-4295-B822-BF29E7781B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EAAFD71-DD96-427D-8793-643DADD2F3A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EAAFD71-DD96-427D-8793-643DADD2F3A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EAAFD71-DD96-427D-8793-643DADD2F3A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EAAFD71-DD96-427D-8793-643DADD2F3A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

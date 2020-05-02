@@ -1,39 +1,87 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using TombIDE.ScriptEditor.Helpers;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE
+namespace TombIDE.ScriptEditor.Forms
 {
-	public enum FileCreationMode
+	internal enum FileCreationMode
 	{
 		New,
 		Saving
 	}
 
-	public partial class FormFileCreation : DarkForm
+	internal partial class FormFileCreation : DarkForm
 	{
 		public string NewFilePath { get; private set; }
 
 		private IDE _ide;
 
-		public FormFileCreation(IDE ide, string initialNodePath, FileCreationMode mode)
+		#region Construction
+
+		public FormFileCreation(IDE ide, FileCreationMode mode, string initialNodePath = null, string initialFileName = null)
 		{
 			InitializeComponent();
+			SwitchMode(mode);
 
 			_ide = ide;
 
-			UpdateFolderList();
+			FillFolderList();
 
-			if (string.IsNullOrEmpty(initialNodePath))
-				treeView.SelectNode(treeView.Nodes[0]);
-			else
-				treeView.SelectNode(treeView.FindNode(initialNodePath));
+			SetInitialNodePath(initialNodePath);
+			SetInitialFileName(initialFileName);
+		}
 
+		#endregion Construction
+
+		#region Events
+
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+
+			comboBox_FileFormat.SelectedIndex = 0;
+
+			textBox_NewFileName.SelectAll();
+		}
+
+		private void button_Create_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				string newFileName = PathHelper.RemoveIllegalPathSymbols(textBox_NewFileName.Text).Trim();
+
+				if (string.IsNullOrWhiteSpace(newFileName))
+					throw new ArgumentException("Invalid file name.");
+
+				newFileName += GetSelectedExtension();
+
+				string targetDirectory = ((DirectoryInfo)treeView.SelectedNodes[0].Tag).FullName;
+
+				foreach (string file in Directory.GetFiles(targetDirectory, "*.*", SearchOption.TopDirectoryOnly))
+					if (newFileName.Equals(Path.GetFileName(file), StringComparison.OrdinalIgnoreCase))
+						throw new ArgumentException("A file with the same name already exists in that directory.");
+
+				// // // //
+				NewFilePath = Path.Combine(targetDirectory, newFileName);
+				// // // //
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				DialogResult = DialogResult.None;
+			}
+		}
+
+		#endregion Events
+
+		#region Methods
+
+		private void SwitchMode(FileCreationMode mode)
+		{
 			switch (mode)
 			{
 				case FileCreationMode.New:
@@ -50,94 +98,39 @@ namespace TombIDE
 			}
 		}
 
-		protected override void OnShown(EventArgs e)
-		{
-			base.OnShown(e);
-
-			comboBox_FileFormat.SelectedIndex = 0;
-
-			textBox_NewFileName.Text = "untitled";
-			textBox_NewFileName.SelectAll();
-		}
-
-		private void button_Create_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				string newFileName = PathHelper.RemoveIllegalPathSymbols(textBox_NewFileName.Text.Trim());
-
-				if (string.IsNullOrWhiteSpace(newFileName))
-					throw new ArgumentException("Invalid file name.");
-
-				switch (comboBox_FileFormat.SelectedIndex)
-				{
-					case 0:
-						newFileName += ".txt";
-						break;
-
-					case 1:
-						newFileName += ".lua";
-						break;
-				}
-
-				string targetDirectory = ((DirectoryInfo)treeView.SelectedNodes[0].Tag).FullName;
-				string[] files = Directory.GetFiles(targetDirectory, "*.*", SearchOption.TopDirectoryOnly);
-
-				foreach (string file in files)
-				{
-					if (Path.GetFileName(file).ToLower() == newFileName.ToLower())
-						throw new ArgumentException("A file with the same name already exists in that directory.");
-				}
-
-				// // // //
-				NewFilePath = Path.Combine(targetDirectory, newFileName);
-				// // // //
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				DialogResult = DialogResult.None;
-			}
-		}
-
-		private void UpdateFolderList()
+		private void FillFolderList()
 		{
 			treeView.Nodes.Clear();
+			treeView.Nodes.Add(FileHelper.CreateFullFileListNode(_ide.Project.ScriptPath, true, true));
+		}
 
-			Stack<DarkTreeNode> stack = new Stack<DarkTreeNode>();
-			DirectoryInfo scriptDirectory = new DirectoryInfo(_ide.Project.ScriptPath);
+		private void SetInitialNodePath(string initialNodePath)
+		{
+			if (string.IsNullOrEmpty(initialNodePath))
+				treeView.SelectNode(treeView.Nodes[0]);
+			else
+				treeView.SelectNode(treeView.FindNode(initialNodePath));
+		}
 
-			DarkTreeNode node = new DarkTreeNode(Path.GetFileName(_ide.Project.ScriptPath))
+		private void SetInitialFileName(string initialFileName)
+		{
+			if (string.IsNullOrEmpty(initialFileName))
+				textBox_NewFileName.Text = "untitled";
+			else
+				textBox_NewFileName.Text = initialFileName;
+		}
+
+		private string GetSelectedExtension()
+		{
+			switch (comboBox_FileFormat.SelectedIndex)
 			{
-				Icon = ScriptEditor.Properties.Resources.folder.ToBitmap(),
-				Tag = scriptDirectory
-			};
-
-			stack.Push(node);
-
-			while (stack.Count > 0)
-			{
-				DarkTreeNode currentNode = stack.Pop();
-				DirectoryInfo info = (DirectoryInfo)currentNode.Tag;
-
-				foreach (DirectoryInfo directory in info.GetDirectories())
-				{
-					DarkTreeNode childDirectoryNode = new DarkTreeNode(directory.Name)
-					{
-						Icon = ScriptEditor.Properties.Resources.folder.ToBitmap(),
-						Tag = directory
-					};
-
-					currentNode.Nodes.Add(childDirectoryNode);
-					stack.Push(childDirectoryNode);
-
-					childDirectoryNode.Expanded = true;
-					currentNode.Expanded = true;
-				}
+				case 0: return ".txt";
+				case 1: return ".lua";
 			}
 
-			node.Expanded = true;
-			treeView.Nodes.Add(node);
+			return null;
 		}
+
+		#endregion Methods
 	}
 }

@@ -19,7 +19,7 @@ namespace TombIDE.Shared
 		/// </summary>
 		public TRVersion.Game GameVersion { get; set; }
 
-		public Language DefaultLanguage { get; set; } = Language.English;
+		public GameLanguage DefaultLanguage { get; set; } = GameLanguage.English;
 
 		/// <summary>
 		/// The path of the file, which launches the game.
