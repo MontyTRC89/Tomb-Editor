@@ -387,7 +387,7 @@ namespace TombLib.LevelData.Compilers.Util
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
                     // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
-                    if (version >= TRVersion.Game.TR4)
+                    if (version == TRVersion.Game.TR4 || version == TRVersion.Game.TR5)
                         coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
 
                     // Clamp coordinates that are possibly out of bounds
