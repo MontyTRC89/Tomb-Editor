@@ -104,6 +104,9 @@
             this.gridViewCommands.AllowUserToDragDropRows = false;
             this.gridViewCommands.AllowUserToOrderColumns = true;
             this.gridViewCommands.AllowUserToResizeColumns = false;
+            this.gridViewCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gridViewCommands.AutoGenerateColumns = false;
             this.gridViewCommands.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.gridViewCommands.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
@@ -112,12 +115,13 @@
             this.gridViewCommands.ColumnHeadersVisible = false;
             this.gridViewCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colCommands});
-            this.gridViewCommands.Location = new System.Drawing.Point(7, 12);
+            this.gridViewCommands.Location = new System.Drawing.Point(6, 6);
+            this.gridViewCommands.MultiSelect = false;
             this.gridViewCommands.Name = "gridViewCommands";
             this.gridViewCommands.ReadOnly = true;
             this.gridViewCommands.RowHeadersWidth = 41;
             this.gridViewCommands.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridViewCommands.Size = new System.Drawing.Size(328, 148);
+            this.gridViewCommands.Size = new System.Drawing.Size(329, 154);
             this.gridViewCommands.TabIndex = 100;
             this.gridViewCommands.SelectionChanged += new System.EventHandler(this.GridViewCommands_SelectionChanged);
             // 

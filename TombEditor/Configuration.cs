@@ -70,6 +70,7 @@ namespace TombEditor
         public bool Rendering3D_ShowCardinalDirections { get; set; } = true;
         public bool Rendering3D_ShowExtraBlendingModes { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
+        public bool Rendering3D_ShowLightingWhiteTextureOnly { get; set; } = false;
         public int Rendering3D_FontSize { get; set; } = 20;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
@@ -86,6 +87,7 @@ namespace TombEditor
         public bool Rendering3D_CursorWarping { get; set; } = true;
         public int Rendering3D_FlyModeMoveSpeed { get; set; } = 5;
         public bool Rendering3D_ShowLightRadius { get; set; } = true;
+        public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
 
         // 2D Map options 
 
@@ -110,6 +112,10 @@ namespace TombEditor
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
         public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
+
+        // Palette options
+
+        public bool Palette_TextureSamplingMode { get; set; } = false;
 
         // Gizmo options
 
@@ -142,8 +148,6 @@ namespace TombEditor
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
         public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
-        // Geometry options
-        public bool Geometry_HighQualityLightPreview { get; set; } = false;
 
         // Toolbar button order
 
@@ -286,14 +290,14 @@ namespace TombEditor
                             Contents = new List<string> { "Lighting" },
                             VisibleContent = "Lighting",
                             Order = 0,
-                            Size = new Size(432,128)
+                            Size = new Size(444,139)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "Palette" },
                             VisibleContent = "Palette",
                             Order = 1,
-                            Size = new Size(645,128)
+                            Size = new Size(645,136)
                         }
                     }
                 }
