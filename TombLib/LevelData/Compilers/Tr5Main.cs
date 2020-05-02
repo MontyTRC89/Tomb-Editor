@@ -348,11 +348,11 @@ namespace TombLib.LevelData.Compilers
 
                                         string functionCode =
                                             "volscripts[" + i + "].OnEnter  = function(activator) \n" +
-                                                indent + script.OnEnter.Replace("\n", "\n" + indent) + "\n" +
+                                                indent + script.OnEnter.Replace("\n", "\n" + indent) + "\n"  + "end;" + "\n\n" +
                                             "volscripts[" + i + "].OnInside = function(activator) \n" +
-                                                indent + script.OnInside.Replace("\n", "\n" + indent) + "\n" +
+                                                indent + script.OnInside.Replace("\n", "\n" + indent) + "\n" + "end;" + "\n\n" +
                                             "volscripts[" + i + "].OnLeave  = function(activator) \n" +
-                                                indent + script.OnLeave.Replace("\n", "\n" + indent) + "\n";
+                                                indent + script.OnLeave.Replace("\n", "\n" + indent) + "\n"  + "end;" + "\n\n";
 
                                         chunkIO.Raw.WriteStringUTF8(functionCode);
                                     }
