@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using TombLib.Scripting.Configuration;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Rendering;
 
@@ -115,7 +116,7 @@ namespace TombLib.Scripting.Controls
 
 			TextArea.Caret.CaretBrush = Brushes.White;
 			Background = new SolidColorBrush(Color.FromRgb(32, 32, 32));
-			Foreground = new SolidColorBrush(Colors.LightSalmon);
+			Foreground = new SolidColorBrush(Colors.Gainsboro);
 
 			ShowLineNumbers = true;
 
@@ -621,6 +622,32 @@ namespace TombLib.Scripting.Controls
 
 			SpecialToolTip.Content = content;
 			SpecialToolTip.IsOpen = true;
+		}
+
+		public void UpdateSettings(GlobalTextEditorConfiguration configuration)
+		{
+			FontSize = configuration.FontSize;
+			DefaultFontSize = configuration.FontSize;
+			FontFamily = new FontFamily(configuration.FontFamily);
+
+			AutocompleteEnabled = configuration.AutocompleteEnabled;
+			LiveErrorUnderlining = configuration.LiveErrorUnderlining;
+
+			AutoCloseParentheses = configuration.AutoCloseParentheses;
+			AutoCloseBraces = configuration.AutoCloseBraces;
+			AutoCloseBrackets = configuration.AutoCloseBrackets;
+			AutoCloseQuotes = configuration.AutoCloseQuotes;
+
+			WordWrap = configuration.WordWrapping;
+
+			ShowLineNumbers = configuration.ShowLineNumbers;
+
+			Options.ShowSpaces = configuration.ShowVisualSpaces;
+			Options.ShowTabs = configuration.ShowVisualTabs;
+
+			ShowDefinitionToolTips = configuration.ShowDefinitionToolTips;
+
+			Document.UndoStack.SizeLimit = configuration.UndoStackSize;
 		}
 
 		#endregion Other public methods

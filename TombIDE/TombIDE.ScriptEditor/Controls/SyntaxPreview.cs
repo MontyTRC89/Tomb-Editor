@@ -19,7 +19,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		/* Private fields */
 
-		private TextEditorConfiguration _config = new TextEditorConfiguration();
+		private TextEditorConfigurations _configs = new TextEditorConfigurations();
 
 		private string _cachedText;
 		private int _cachedArgumentIndex;
@@ -35,7 +35,7 @@ namespace TombIDE.ScriptEditor.Controls
 			Font = new Font("Consolas", 9.75f, FontStyle.Bold);
 
 			BackColor = Color.FromArgb(60, 63, 65);
-			ForeColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Values);
+			ForeColor = ColorTranslator.FromHtml(_configs.ClassicScript.Colors.Values);
 
 			BorderStyle = BorderStyle.None;
 			ScrollBars = RichTextBoxScrollBars.None;
@@ -45,7 +45,7 @@ namespace TombIDE.ScriptEditor.Controls
 		}
 
 		public void ReloadSettings() =>
-			_config = new TextEditorConfiguration();
+			_configs = new TextEditorConfigurations();
 
 		#endregion Construction and public methods
 
@@ -72,16 +72,16 @@ namespace TombIDE.ScriptEditor.Controls
 		{
 			// Clear all styles
 			SelectAll();
-			SelectionColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Values);
+			SelectionColor = ColorTranslator.FromHtml(_configs.ClassicScript.Colors.Values);
 
 			// Set the colors
-			SetTextColor(@"\[\b(" + string.Join("|", ScriptKeyWords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Sections));
-			SetTextColor(ScriptPatterns.OldCommands, ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_StandardCommands));
-			SetTextColor(ScriptPatterns.NewCommands, ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_NewCommands));
-			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_References));
-			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_References));
+			SetTextColor(@"\[\b(" + string.Join("|", ScriptKeyWords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_configs.ClassicScript.Colors.Sections));
+			SetTextColor(ScriptPatterns.OldCommands, ColorTranslator.FromHtml(_configs.ClassicScript.Colors.StandardCommands));
+			SetTextColor(ScriptPatterns.NewCommands, ColorTranslator.FromHtml(_configs.ClassicScript.Colors.NewCommands));
+			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_configs.ClassicScript.Colors.References));
+			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_configs.ClassicScript.Colors.References));
 			SetTextColor(@"(,|/|\(\*Array\*\))", Color.Gainsboro);
-			SetTextColor(ScriptPatterns.Comments, ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Comments));
+			SetTextColor(ScriptPatterns.Comments, ColorTranslator.FromHtml(_configs.ClassicScript.Colors.Comments));
 		}
 
 		private void SetTextColor(string regexPattern, Color color)

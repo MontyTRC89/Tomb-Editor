@@ -2,11 +2,11 @@
 {
 	internal static class ScriptTidying
 	{
-		private static TextEditorConfiguration _config;
+		private static TextEditorConfigurations _configs;
 
 		public static string ReindentScript(string editorContent)
 		{
-			_config = new TextEditorConfiguration();
+			_configs = new TextEditorConfigurations();
 
 			editorContent = HandleSpacesBeforeEquals(editorContent);
 			editorContent = HandleSpacesAfterEquals(editorContent);
@@ -21,7 +21,7 @@
 
 		private static string HandleSpacesBeforeEquals(string editorContent)
 		{
-			if (_config.ClassicScriptConfiguration.Tidy_PreEqualSpace)
+			if (_configs.ClassicScript.Tidy_PreEqualSpace)
 			{
 				editorContent = editorContent.Replace("=", " =");
 
@@ -37,7 +37,7 @@
 
 		private static string HandleSpacesAfterEquals(string editorContent)
 		{
-			if (_config.ClassicScriptConfiguration.Tidy_PostEqualSpace)
+			if (_configs.ClassicScript.Tidy_PostEqualSpace)
 			{
 				editorContent = editorContent.Replace("=", "= ");
 
@@ -53,7 +53,7 @@
 
 		private static string HandleSpacesBeforeCommas(string editorContent)
 		{
-			if (_config.ClassicScriptConfiguration.Tidy_PreCommaSpace)
+			if (_configs.ClassicScript.Tidy_PreCommaSpace)
 			{
 				editorContent = editorContent.Replace(",", " ,");
 
@@ -69,7 +69,7 @@
 
 		private static string HandleSpacesAfterCommas(string editorContent)
 		{
-			if (_config.ClassicScriptConfiguration.Tidy_PostCommaSpace)
+			if (_configs.ClassicScript.Tidy_PostCommaSpace)
 			{
 				editorContent = editorContent.Replace(",", ", ");
 
@@ -85,7 +85,7 @@
 
 		private static string HandleSpaceReduction(string editorContent)
 		{
-			if (_config.ClassicScriptConfiguration.Tidy_ReduceSpaces)
+			if (_configs.ClassicScript.Tidy_ReduceSpaces)
 				while (editorContent.Contains("  "))
 					editorContent = editorContent.Replace("  ", " ");
 
