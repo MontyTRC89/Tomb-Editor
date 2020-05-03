@@ -72,7 +72,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Prism Volume '" + Scripts.Name + "' (h = " + Scale + ")" +
+            return "Prism Volume '" + Scripts.Name + "' (h = " + Size + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
                    "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
         }
@@ -98,7 +98,7 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Sphere Volume '" + Scripts.Name + "' (d = " + Scale + ")" + 
+            return "Sphere Volume '" + Scripts.Name + "' (d = " + Size + ")" + 
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
                    "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
         }
