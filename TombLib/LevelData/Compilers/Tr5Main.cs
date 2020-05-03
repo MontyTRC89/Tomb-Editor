@@ -295,13 +295,14 @@ namespace TombLib.LevelData.Compilers
                                             var min = vol.Position - (vol.Size / 2.0f);
                                             var max = vol.Position + (vol.Size / 2.0f);
                                             var rad = vol.Size.X / 2.0f;
+                                            var add = vol.Shape == VolumeShape.Sphere ? 0.0f : (vol.Size.Y / 2.0f);
 
                                             var bv = new t5m_bounding_volume()
                                             {
                                                 VolumeType = (ushort)vol.Shape,
                                                 Activators = (byte)vol.Activators,
                                                 X = (int)Math.Round(trRoom.Info.X + vol.Position.X),
-                                                Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + (vol.Size.Y / 2.0f)),
+                                                Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add),
                                                 Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z),
                                                 RotationY = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                                                                     Math.Round(vol.RotationY * (65536.0 / 360.0)))),
