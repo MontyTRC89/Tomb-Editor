@@ -22,7 +22,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CustSyntaxes {
+    public class CustSyntaxes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Scripting.Resources.Syntaxes.CustSyntaxes", typeof(CustSyntaxes).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_ADD_DEATH_ANIMATION, SlotOfCreature, AnimNumber.
         /// </summary>
-        internal static string CUST_ADD_DEATH_ANIMATION {
+        public static string CUST_ADD_DEATH_ANIMATION {
             get {
                 return ResourceManager.GetString("CUST_ADD_DEATH_ANIMATION", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_AMMO, SlotOfAmmo, Ammo flags (AMMO_...), Damage, ShotsForBox, ShotsWithWeapon, Extra, IdTriggerGroupWhenHitEnemy, DamageForExplosion, Speed, Gravity, IdAddEffectToAmmo, IdTriggerGroupAtEnd.
         /// </summary>
-        internal static string CUST_AMMO {
+        public static string CUST_AMMO {
             get {
                 return ResourceManager.GetString("CUST_AMMO", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_BACKGROUND, BackGroundType (BKGDT_...), Flags (BKGDF_...), Parameter, ImageId.
         /// </summary>
-        internal static string CUST_BACKGROUND {
+        public static string CUST_BACKGROUND {
             get {
                 return ResourceManager.GetString("CUST_BACKGROUND", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_BAR, BarType (BAR_...), FlagsBar (FBAR_...), XOrigin, YOrigin, XSize, YSize, IdColor1, IdColor2, Extra.
         /// </summary>
-        internal static string CUST_BAR {
+        public static string CUST_BAR {
             get {
                 return ResourceManager.GetString("CUST_BAR", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_BIKE_VS_ENEMIES, Slot+(HIT_...) flag array.
         /// </summary>
-        internal static string CUST_BIKE_VS_ENEMIES {
+        public static string CUST_BIKE_VS_ENEMIES {
             get {
                 return ResourceManager.GetString("CUST_BIKE_VS_ENEMIES", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_BINOCULARS, FLAGS (BINF_...), Parameter, CompassImage, CompassRectAndFlags, SextantImage, SextantRectAndFlags, LightnessRectAndFlags, ZoomRectAndFlags, LightSwitchRectAndFlags, FontID.
         /// </summary>
-        internal static string CUST_BINOCULARS {
+        public static string CUST_BINOCULARS {
             get {
                 return ResourceManager.GetString("CUST_BINOCULARS", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_CAMERA, Flags (FCAM_...), DistanceChaseCam, VOrientChaseCam, HOrientChaseCam, DistanceCombatCam, VOrientCombatCam, DistanceLookCam, HeightLookCam, SpeedCamera.
         /// </summary>
-        internal static string CUST_CAMERA {
+        public static string CUST_CAMERA {
             get {
                 return ResourceManager.GetString("CUST_CAMERA", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_CD_SINGLE_PLAYBACK, CdMode value (CDM_...).
         /// </summary>
-        internal static string CUST_CD_SINGLE_PLAYBACK {
+        public static string CUST_CD_SINGLE_PLAYBACK {
             get {
                 return ResourceManager.GetString("CUST_CD_SINGLE_PLAYBACK", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_DARTS, IdCustDarts, Dart Flags (DRT_...), IdAddEffect, Speed, EmittingTimer, PrimaryColorIDRgb, SecondaryColorIDRgb, IdTriggerGroup.
         /// </summary>
-        internal static string CUST_DARTS {
+        public static string CUST_DARTS {
             get {
                 return ResourceManager.GetString("CUST_DARTS", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_DISABLE_FORCING_ANIM_96.
         /// </summary>
-        internal static string CUST_DISABLE_FORCING_ANIM_96 {
+        public static string CUST_DISABLE_FORCING_ANIM_96 {
             get {
                 return ResourceManager.GetString("CUST_DISABLE_FORCING_ANIM_96", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to ; Syntax for this command was not specified by its creator.
         /// </summary>
-        internal static string CUST_DISABLE_MISSING_SOUNDS {
+        public static string CUST_DISABLE_MISSING_SOUNDS {
             get {
                 return ResourceManager.GetString("CUST_DISABLE_MISSING_SOUNDS", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_DISABLE_MISSING_SOUNDS.
         /// </summary>
-        internal static string CUST_DISABLE_PUSH_AWAY_ANIMATION {
+        public static string CUST_DISABLE_PUSH_AWAY_ANIMATION {
             get {
                 return ResourceManager.GetString("CUST_DISABLE_PUSH_AWAY_ANIMATION", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_DISABLE_SCREAMING_HEAD.
         /// </summary>
-        internal static string CUST_DISABLE_SCREAMING_HEAD {
+        public static string CUST_DISABLE_SCREAMING_HEAD {
             get {
                 return ResourceManager.GetString("CUST_DISABLE_SCREAMING_HEAD", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_ESCAPE_FLY_CAMERA, ENABLED / DISABLED, KeyBoardScanCode.
         /// </summary>
-        internal static string CUST_ESCAPE_FLY_CAMERA {
+        public static string CUST_ESCAPE_FLY_CAMERA {
             get {
                 return ResourceManager.GetString("CUST_ESCAPE_FLY_CAMERA", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_FIX_BUGS, BugsToFix flags (BUGF_...).
         /// </summary>
-        internal static string CUST_FIX_BUGS {
+        public static string CUST_FIX_BUGS {
             get {
                 return ResourceManager.GetString("CUST_FIX_BUGS", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_FIX_WATER_FOG_BUG, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_FIX_WATER_FOG_BUG {
+        public static string CUST_FIX_WATER_FOG_BUG {
             get {
                 return ResourceManager.GetString("CUST_FIX_WATER_FOG_BUG", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_FLARE, Flags for Flare (FFL_...), SecondsOfLifeTime, Red, Green, Blue, Intensity.
         /// </summary>
-        internal static string CUST_FLARE {
+        public static string CUST_FLARE {
             get {
                 return ResourceManager.GetString("CUST_FLARE", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_FMV_CUTSCENE, Flags (FMV_...).
         /// </summary>
-        internal static string CUST_FMV_CUTSCENE {
+        public static string CUST_FMV_CUTSCENE {
             get {
                 return ResourceManager.GetString("CUST_FMV_CUTSCENE", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_HAIR_TYPE, HairType  (HAIR_...).
         /// </summary>
-        internal static string CUST_HAIR_TYPE {
+        public static string CUST_HAIR_TYPE {
             get {
                 return ResourceManager.GetString("CUST_HAIR_TYPE", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_HARPOON, HarpoonFlags (HRP_...), TopBorder, DistanceFromCam, Orient_X, Orient_Y, Orient_Z, HarpoonSpeed, HarpoonGravity.
         /// </summary>
-        internal static string CUST_HARPOON {
+        public static string CUST_HARPOON {
             get {
                 return ResourceManager.GetString("CUST_HARPOON", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_INNER_SCREENSHOT, QualityScreenshotFlags (QSF_...).
         /// </summary>
-        internal static string CUST_INNER_SCREENSHOT {
+        public static string CUST_INNER_SCREENSHOT {
             get {
                 return ResourceManager.GetString("CUST_INNER_SCREENSHOT", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_KEEP_DEAD_ENEMIES, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_KEEP_DEAD_ENEMIES {
+        public static string CUST_KEEP_DEAD_ENEMIES {
             get {
                 return ResourceManager.GetString("CUST_KEEP_DEAD_ENEMIES", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_KEEP_LARA_HP, TargetLevel.
         /// </summary>
-        internal static string CUST_KEEP_LARA_HP {
+        public static string CUST_KEEP_LARA_HP {
             get {
                 return ResourceManager.GetString("CUST_KEEP_LARA_HP", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_LIGHT_OBJECT 34, SlotLight, Red, Green, Blue, Intensity, Time ; Not sure what the author meant with that 34... Probably useless?.
         /// </summary>
-        internal static string CUST_LIGHT_OBJECT {
+        public static string CUST_LIGHT_OBJECT {
             get {
                 return ResourceManager.GetString("CUST_LIGHT_OBJECT", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_LOOK_TRASPARENT, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_LOOK_TRASPARENT {
+        public static string CUST_LOOK_TRASPARENT {
             get {
                 return ResourceManager.GetString("CUST_LOOK_TRASPARENT", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_NEW_SOUND_ENGINE, NewSoundEngine flags (NSE_...), SoundExtension (SEXT_...), LongFadeOut, ShortFadeOut.
         /// </summary>
-        internal static string CUST_NEW_SOUND_ENGINE {
+        public static string CUST_NEW_SOUND_ENGINE {
             get {
                 return ResourceManager.GetString("CUST_NEW_SOUND_ENGINE", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_NO_TIME_IN_SAVELIST, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_NO_TIME_IN_SAVELIST {
+        public static string CUST_NO_TIME_IN_SAVELIST {
             get {
                 return ResourceManager.GetString("CUST_NO_TIME_IN_SAVELIST", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_PARALLEL_BARS, FlagsParallelBar (PB_...), SpeedForSlide, MaxTurns.
         /// </summary>
-        internal static string CUST_PARALLEL_BARS {
+        public static string CUST_PARALLEL_BARS {
             get {
                 return ResourceManager.GetString("CUST_PARALLEL_BARS", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_PAUSE_FLY_CAMERA, ENABLED / DISABLED, KeyBoardScanCode.
         /// </summary>
-        internal static string CUST_PAUSE_FLY_CAMERA {
+        public static string CUST_PAUSE_FLY_CAMERA {
             get {
                 return ResourceManager.GetString("CUST_PAUSE_FLY_CAMERA", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_RAIN, FlagsForRain (FR_...), DropSize, SprinklerAmount, MaxRain, MinRain, Float1, Float4, Float8, Float16, Extra.
         /// </summary>
-        internal static string CUST_RAIN {
+        public static string CUST_RAIN {
             get {
                 return ResourceManager.GetString("CUST_RAIN", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_ROLLING_BOAT, SlotBoat, FlagsRollingBoats (FRB_...), SwingingSpeed, PitchingSpeed, RollingSFX.
         /// </summary>
-        internal static string CUST_ROLLING_BOAT {
+        public static string CUST_ROLLING_BOAT {
             get {
                 return ResourceManager.GetString("CUST_ROLLING_BOAT", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_ROLLINGBALL_PUSHING, Distance, PushAnim, FailedAnim, FrameOfMoving, FrameOfActivation, FramesOfInvulnerability, Speed.
         /// </summary>
-        internal static string CUST_ROLLINGBALL_PUSHING {
+        public static string CUST_ROLLINGBALL_PUSHING {
             get {
                 return ResourceManager.GetString("CUST_ROLLINGBALL_PUSHING", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SAVE_LOCUST, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_SAVE_LOCUST {
+        public static string CUST_SAVE_LOCUST {
             get {
                 return ResourceManager.GetString("CUST_SAVE_LOCUST", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SCREENSHOT_CAPTURE, SecondsOfDurate, FrameGap, QualityScreenshotFlag (QSF_...).
         /// </summary>
-        internal static string CUST_SCREENSHOT_CAPTURE {
+        public static string CUST_SCREENSHOT_CAPTURE {
             get {
                 return ResourceManager.GetString("CUST_SCREENSHOT_CAPTURE", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_CREDITS_LEVEL, NumberOfEndLevel.
         /// </summary>
-        internal static string CUST_SET_CREDITS_LEVEL {
+        public static string CUST_SET_CREDITS_LEVEL {
             get {
                 return ResourceManager.GetString("CUST_SET_CREDITS_LEVEL", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_INV_ITEM, SlotOfItem.
         /// </summary>
-        internal static string CUST_SET_INV_ITEM {
+        public static string CUST_SET_INV_ITEM {
             get {
                 return ResourceManager.GetString("CUST_SET_INV_ITEM", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_JEEP_KEY_SLOT, SlotForJeepKey.
         /// </summary>
-        internal static string CUST_SET_JEEP_KEY_SLOT {
+        public static string CUST_SET_JEEP_KEY_SLOT {
             get {
                 return ResourceManager.GetString("CUST_SET_JEEP_KEY_SLOT", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_OLD_CD_TRIGGER, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_SET_OLD_CD_TRIGGER {
+        public static string CUST_SET_OLD_CD_TRIGGER {
             get {
                 return ResourceManager.GetString("CUST_SET_OLD_CD_TRIGGER", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_SECRET_NUMBER, NumberOfSecrets.
         /// </summary>
-        internal static string CUST_SET_SECRET_NUMBER {
+        public static string CUST_SET_SECRET_NUMBER {
             get {
                 return ResourceManager.GetString("CUST_SET_SECRET_NUMBER", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_STATIC_DAMAGE, Damage, PoisonIntensity.
         /// </summary>
-        internal static string CUST_SET_STATIC_DAMAGE {
+        public static string CUST_SET_STATIC_DAMAGE {
             get {
                 return ResourceManager.GetString("CUST_SET_STATIC_DAMAGE", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_STILL_COLLISION, Collision Flags (COLL_...), LowerHeight, MoveableArray.
         /// </summary>
-        internal static string CUST_SET_STILL_COLLISION {
+        public static string CUST_SET_STILL_COLLISION {
             get {
                 return ResourceManager.GetString("CUST_SET_STILL_COLLISION", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SET_TEXT_COLOR, Text Type (TT_...), Color for Text (CL_...).
         /// </summary>
-        internal static string CUST_SET_TEXT_COLOR {
+        public static string CUST_SET_TEXT_COLOR {
             get {
                 return ResourceManager.GetString("CUST_SET_TEXT_COLOR", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SFX, TypeSound (TS_...), Sound Effect Number.
         /// </summary>
-        internal static string CUST_SFX {
+        public static string CUST_SFX {
             get {
                 return ResourceManager.GetString("CUST_SFX", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SHATTER_RANGE, FirstStaticAsShatter, LastStaticAsShatter.
         /// </summary>
-        internal static string CUST_SHATTER_RANGE {
+        public static string CUST_SHATTER_RANGE {
             get {
                 return ResourceManager.GetString("CUST_SHATTER_RANGE", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SHATTER_SPECIFIC, Slot1, Slot2, Slot3, SlotN.
         /// </summary>
-        internal static string CUST_SHATTER_SPECIFIC {
+        public static string CUST_SHATTER_SPECIFIC {
             get {
                 return ResourceManager.GetString("CUST_SHATTER_SPECIFIC", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SHOW_AMMO_COUNTER, Color, FormatFlags (FT_...) , BlinkTime, SizeCharacter (SC_...), ShowCounterFlags (SHOWC_...).
         /// </summary>
-        internal static string CUST_SHOW_AMMO_COUNTER {
+        public static string CUST_SHOW_AMMO_COUNTER {
             get {
                 return ResourceManager.GetString("CUST_SHOW_AMMO_COUNTER", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SLOT_FLAGS, Slot, FlagsForSlot (FFS_...).
         /// </summary>
-        internal static string CUST_SLOT_FLAGS {
+        public static string CUST_SLOT_FLAGS {
             get {
                 return ResourceManager.GetString("CUST_SLOT_FLAGS", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_SPEED_MOVING, Speed.
         /// </summary>
-        internal static string CUST_SPEED_MOVING {
+        public static string CUST_SPEED_MOVING {
             get {
                 return ResourceManager.GetString("CUST_SPEED_MOVING", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_STATIC_TRANSPARENCY, GlassOpacity, IceOpacity.
         /// </summary>
-        internal static string CUST_STATIC_TRANSPARENCY {
+        public static string CUST_STATIC_TRANSPARENCY {
             get {
                 return ResourceManager.GetString("CUST_STATIC_TRANSPARENCY", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_TEXT_ON_FLY_SCREEN, ENABLED / DISABLED.
         /// </summary>
-        internal static string CUST_TEXT_ON_FLY_SCREEN {
+        public static string CUST_TEXT_ON_FLY_SCREEN {
             get {
                 return ResourceManager.GetString("CUST_TEXT_ON_FLY_SCREEN", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_TITLE_FMV, FmvNumber, TestMultiPlay.
         /// </summary>
-        internal static string CUST_TITLE_FMV {
+        public static string CUST_TITLE_FMV {
             get {
                 return ResourceManager.GetString("CUST_TITLE_FMV", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_TR5_UNDERWATER_COLLISIONS.
         /// </summary>
-        internal static string CUST_TR5_UNDERWATER_COLLISIONS {
+        public static string CUST_TR5_UNDERWATER_COLLISIONS {
             get {
                 return ResourceManager.GetString("CUST_TR5_UNDERWATER_COLLISIONS", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_WATERFALL_SPEED, PixelScroll.
         /// </summary>
-        internal static string CUST_WATERFALL_SPEED {
+        public static string CUST_WATERFALL_SPEED {
             get {
                 return ResourceManager.GetString("CUST_WATERFALL_SPEED", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= CUST_WEAPON, SlotOfWeapon, Weapon flags (WEAP_...) , SoundForShot, FramesForRecharge, DurateFlash, Extra, MaxDistanceForAiming, FrameToTakeWeapon, FrameToLetWeapon, Random, VPositionOfWeapon, Unknown, FrameCounter, FrameMinRange, FrameMaxRange, OrigX, OrigY, OrigZ, OrigOrient.
         /// </summary>
-        internal static string CUST_WEAPON {
+        public static string CUST_WEAPON {
             get {
                 return ResourceManager.GetString("CUST_WEAPON", resourceCulture);
             }

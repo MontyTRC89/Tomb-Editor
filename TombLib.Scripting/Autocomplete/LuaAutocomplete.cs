@@ -1,6 +1,6 @@
 ﻿namespace TombLib.Scripting.Autocomplete
 {
-	internal class LuaAutocomplete
+	public static class LuaAutocomplete
 	{
 		// TODO
 	}

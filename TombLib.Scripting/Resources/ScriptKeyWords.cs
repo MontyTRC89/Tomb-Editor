@@ -4,8 +4,8 @@ using System.Data;
 using System.IO;
 using System.Text;
 using System.Xml;
+using TombLib.Scripting.CodeCleaners;
 using TombLib.Scripting.Objects;
-using TombLib.Scripting.SyntaxTidying;
 
 namespace TombLib.Scripting.Resources
 {
@@ -13,13 +13,13 @@ namespace TombLib.Scripting.Resources
 	{
 		#region Public variables
 
-		public static List<string> MnemonicConstants { get; internal set; }
-		public static List<PluginMnemonic> PluginMnemonics { get; internal set; }
+		public static List<string> MnemonicConstants { get; private set; }
+		public static List<PluginMnemonic> PluginMnemonics { get; private set; }
 
 		/// <summary>
 		/// All mnemonic flags combined into one list.
 		/// </summary>
-		public static List<string> AllMnemonics { get; internal set; }
+		public static List<string> AllMnemonics { get; private set; }
 
 		public static string[] Sections
 		{
@@ -278,7 +278,7 @@ namespace TombLib.Scripting.Resources
 
 							if (line.Contains(";"))
 							{
-								description = string.Join(Environment.NewLine, SharedTidyingMethods.TrimEndingWhitespaceOnLines(line.Split(';')[1].Trim().Split('>')));
+								description = string.Join(Environment.NewLine, new BasicCleaner().TrimEndingWhitespaceOnLines(line.Split(';')[1].Trim().Split('>')));
 								decimalString = line.Split(';')[0].Trim().Split(':')[1].Trim();
 							}
 							else

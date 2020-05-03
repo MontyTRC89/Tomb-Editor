@@ -22,7 +22,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CommandToolTips {
+    public class CommandToolTips {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Scripting.Resources.ToolTips.CommandToolTips", typeof(CommandToolTips).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///
         ///Usage [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string AnimatingMIP {
+        public static string AnimatingMIP {
             get {
                 return ResourceManager.GetString("AnimatingMIP", resourceCulture);
             }
@@ -85,7 +85,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///ColAddHorizon = ENABLED / DISABLED.
         /// </summary>
-        internal static string ColAddHorizon {
+        public static string ColAddHorizon {
             get {
                 return ResourceManager.GetString("ColAddHorizon", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///DemoDisc = ENABLED / DISABLED.
         /// </summary>
-        internal static string DemoDisc {
+        public static string DemoDisc {
             get {
                 return ResourceManager.GetString("DemoDisc", resourceCulture);
             }
@@ -116,7 +116,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The larger the number, the lower the object.
         ///You can also  [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Examine {
+        public static string Examine {
             get {
                 return ResourceManager.GetString("Examine", resourceCulture);
             }
@@ -128,7 +128,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///FlyCheat = ENABLED / DISABLED.
         /// </summary>
-        internal static string FlyCheat {
+        public static string FlyCheat {
             get {
                 return ResourceManager.GetString("FlyCheat", resourceCulture);
             }
@@ -142,7 +142,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Fog = {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}.
         /// </summary>
-        internal static string Fog {
+        public static string Fog {
             get {
                 return ResourceManager.GetString("Fog", resourceCulture);
             }
@@ -155,7 +155,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Horizon = ENABLED / DISABLED.
         /// </summary>
-        internal static string Horizon {
+        public static string Horizon {
             get {
                 return ResourceManager.GetString("Horizon", resourceCulture);
             }
@@ -167,7 +167,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///InputTimeout = {NUM_OF_FRAMES}.
         /// </summary>
-        internal static string InputTimeout {
+        public static string InputTimeout {
             get {
                 return ResourceManager.GetString("InputTimeout", resourceCulture);
             }
@@ -184,7 +184,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The larger the number, the lower the object.
         ///You can also use neg [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Key {
+        public static string Key {
             get {
                 return ResourceManager.GetString("Key", resourceCulture);
             }
@@ -200,7 +200,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The {HEIGHT} parameter adjusts the height of the object viewed in the inventory.
         ///It calculates the position of the center of the rotation from the top of the screen, converted in he [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string KeyCombo {
+        public static string KeyCombo {
             get {
                 return ResourceManager.GetString("KeyCombo", resourceCulture);
             }
@@ -212,7 +212,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///
         ///Layer1 = {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}.
         /// </summary>
-        internal static string Layer1 {
+        public static string Layer1 {
             get {
                 return ResourceManager.GetString("Layer1", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Legend = {MESSAGE_STRING}.
         /// </summary>
-        internal static string Legend {
+        public static string Legend {
             get {
                 return ResourceManager.GetString("Legend", resourceCulture);
             }
@@ -240,7 +240,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///LensFlare = {GLOBAL_COORD_X}, {GLOBAL_COORD_Y}, {GLOBAL_COORD_Z}, {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}.
         /// </summary>
-        internal static string LensFlare {
+        public static string LensFlare {
             get {
                 return ResourceManager.GetString("LensFlare", resourceCulture);
             }
@@ -253,7 +253,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Level = {LEVEL_PATH}, {SOUND_ID}.
         /// </summary>
-        internal static string LevelLevel {
+        public static string LevelLevel {
             get {
                 return ResourceManager.GetString("LevelLevel", resourceCulture);
             }
@@ -265,7 +265,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Level = .TR4.
         /// </summary>
-        internal static string LevelPC {
+        public static string LevelPC {
             get {
                 return ResourceManager.GetString("LevelPC", resourceCulture);
             }
@@ -277,7 +277,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Level = .PSX.
         /// </summary>
-        internal static string LevelPSX {
+        public static string LevelPSX {
             get {
                 return ResourceManager.GetString("LevelPSX", resourceCulture);
             }
@@ -290,7 +290,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Level = {LEVEL_PATH}, {SOUND_ID}.
         /// </summary>
-        internal static string LevelTitle {
+        public static string LevelTitle {
             get {
                 return ResourceManager.GetString("LevelTitle", resourceCulture);
             }
@@ -303,7 +303,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Lightning = ENABLED / DISABLED.
         /// </summary>
-        internal static string Lightning {
+        public static string Lightning {
             get {
                 return ResourceManager.GetString("Lightning", resourceCulture);
             }
@@ -317,7 +317,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///LoadCamera = {SOURCE_X_POS}, {SOURCE_Y_POS}, {SOURCE_Z_POS}, {TARGET_X_POS}, {TARGET_Y_POS}, {TARGET_Z_POS}, {ROOM_NUMBER}.
         /// </summary>
-        internal static string LoadCamera {
+        public static string LoadCamera {
             get {
                 return ResourceManager.GetString("LoadCamera", resourceCulture);
             }
@@ -329,7 +329,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///LoadSave = ENABLED / DISABLED.
         /// </summary>
-        internal static string LoadSave {
+        public static string LoadSave {
             get {
                 return ResourceManager.GetString("LoadSave", resourceCulture);
             }
@@ -341,7 +341,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Mirror = {ROOM_NUMBER}, {ROOM_ORIGIN}.
         /// </summary>
-        internal static string Mirror {
+        public static string Mirror {
             get {
                 return ResourceManager.GetString("Mirror", resourceCulture);
             }
@@ -354,7 +354,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Name = {NAME_STRING}.
         /// </summary>
-        internal static string Name {
+        public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
@@ -371,7 +371,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The larger the number, the lower the object.
         ///You can also us [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Pickup {
+        public static string Pickup {
             get {
                 return ResourceManager.GetString("Pickup", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The {HEIGHT} parameter adjusts the height of the object viewed in the inventory.
         ///It calculates the position of the center of the rotation from the top of the screen, conver [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string PickupCombo {
+        public static string PickupCombo {
             get {
                 return ResourceManager.GetString("PickupCombo", resourceCulture);
             }
@@ -400,7 +400,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///PlayAnyLevel = ENABLED / DISABLED.
         /// </summary>
-        internal static string PlayAnyLevel {
+        public static string PlayAnyLevel {
             get {
                 return ResourceManager.GetString("PlayAnyLevel", resourceCulture);
             }
@@ -417,7 +417,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The larger the number, the lower the object.
         ///You can also u [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string Puzzle {
+        public static string Puzzle {
             get {
                 return ResourceManager.GetString("Puzzle", resourceCulture);
             }
@@ -433,7 +433,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///The {HEIGHT} parameter adjusts the height of the object viewed in the inventory.
         ///It calculates the position of the center of the rotation from the top of the screen, conver [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string PuzzleCombo {
+        public static string PuzzleCombo {
             get {
                 return ResourceManager.GetString("PuzzleCombo", resourceCulture);
             }
@@ -445,7 +445,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///RemoveAmulet = ENABLED / DISABLED.
         /// </summary>
-        internal static string RemoveAmulet {
+        public static string RemoveAmulet {
             get {
                 return ResourceManager.GetString("RemoveAmulet", resourceCulture);
             }
@@ -463,7 +463,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///ResetHUB = {LEVEL_ID}.
         /// </summary>
-        internal static string ResetHUB {
+        public static string ResetHUB {
             get {
                 return ResourceManager.GetString("ResetHUB", resourceCulture);
             }
@@ -480,7 +480,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///ResidentCut = {TRIGGER_ID}, {CUTSCENE_ID}.
         /// </summary>
-        internal static string ResidentCut {
+        public static string ResidentCut {
             get {
                 return ResourceManager.GetString("ResidentCut", resourceCulture);
             }
@@ -493,7 +493,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Timer = ENABLED / DISABLED.
         /// </summary>
-        internal static string Timer {
+        public static string Timer {
             get {
                 return ResourceManager.GetString("Timer", resourceCulture);
             }
@@ -505,7 +505,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Title = ENABLED / DISABLED.
         /// </summary>
-        internal static string Title {
+        public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
             }
@@ -517,7 +517,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///Train = ENABLED / DISABLED.
         /// </summary>
-        internal static string Train {
+        public static string Train {
             get {
                 return ResourceManager.GetString("Train", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///UVrotate = {SPEED}.
         /// </summary>
-        internal static string UVRotate {
+        public static string UVRotate {
             get {
                 return ResourceManager.GetString("UVRotate", resourceCulture);
             }
@@ -544,7 +544,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///Usage:
         ///YoungLara = ENABLED / DISABLED.
         /// </summary>
-        internal static string YoungLara {
+        public static string YoungLara {
             get {
                 return ResourceManager.GetString("YoungLara", resourceCulture);
             }

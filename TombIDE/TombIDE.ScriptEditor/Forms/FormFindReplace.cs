@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using TombIDE.Shared;
-using TombLib.Scripting.Controls;
+using TombLib.Scripting.TextEditors.Controls;
 
 namespace TombIDE.ScriptEditor.Forms
 {
