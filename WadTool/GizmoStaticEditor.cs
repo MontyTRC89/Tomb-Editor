@@ -22,7 +22,7 @@ namespace WadTool
         protected override void GizmoRotateX(float newAngle) => _control.StaticRotation = new Vector3(newAngle, _control.StaticRotation.Y, _control.StaticRotation.Z);
         protected override void GizmoRotateY(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, newAngle, _control.StaticRotation.Z);
         protected override void GizmoRotateZ(float newAngle) => _control.StaticRotation = new Vector3(_control.StaticRotation.X, _control.StaticRotation.Y, newAngle);
-        protected override void GizmoScale(float newScale)
+        protected override void GizmoScaleX(float newScale)
         {
             // Set some limits to scale
             // TODO: object risks to be too small and to be not pickable. We should add some size check
@@ -33,12 +33,14 @@ namespace WadTool
 
             _control.StaticScale = newScale;
         }
+        protected override void GizmoScaleY(float newScale) => GizmoScaleX(newScale);
+        protected override void GizmoScaleZ(float newScale) => GizmoScaleX(newScale);
 
         protected override Vector3 Position => _control != null ? _control.StaticPosition : Vector3.Zero;
         protected override float RotationY => _control.StaticRotation.Y;
         protected override float RotationX => _control.StaticRotation.X;
         protected override float RotationZ => _control.StaticRotation.Z;
-        protected override float Scale => _control.StaticScale;
+        protected override Vector3 Scale => new Vector3(_control.StaticScale);
 
         protected override float CentreCubeSize => _configuration.GizmoStatic_CenterCubeSize;
         protected override float TranslationConeSize => _configuration.GizmoStatic_TranslationConeSize;
