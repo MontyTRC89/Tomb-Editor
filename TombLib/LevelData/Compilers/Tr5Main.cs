@@ -10,6 +10,8 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
+        private const string _indent = "    ";
+
         // Collections for volumes
         private List<VolumeScriptInstance> _volumeScripts;
         private Dictionary<int, int> _luaIdToItems;
@@ -285,7 +287,6 @@ namespace TombLib.LevelData.Compilers
                                     var trRoom = _tempRooms[r];
 
                                     foreach (var vol in r.Volumes)
-                                    {
                                         using (var volumeChunk = chunkIO.WriteChunk(Tr5MainChunkVolume))
                                         {
                                             int scriptIndex = 0;
@@ -297,57 +298,54 @@ namespace TombLib.LevelData.Compilers
                                                 scriptIndex = _volumeScripts.Count - 1;
                                             }
 
-                                            var min = vol.Position - (vol.Size / 2.0f);
-                                            var max = vol.Position + (vol.Size / 2.0f);
-                                            var rad = vol.Size.X / 2.0f;
-                                            var add = vol.Shape == VolumeShape.Sphere ? 0.0f : (vol.Size.Y / 2.0f);
+                                            var X = (int)Math.Round(trRoom.Info.X + vol.Position.X);
+                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + ((vol is BoxVolumeInstance) ? 0 : (int)((vol as BoxVolumeInstance).Size.Y / 2.0f))); // FIXME is it needed?
+                                            var Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z);
 
-                                            var bv = new t5m_bounding_volume()
+                                            if (vol is BoxVolumeInstance)
+                                                chunkIO.Raw.Write(0);
+                                            else if (vol is SphereVolumeInstance)
+                                                chunkIO.Raw.Write(1);
+                                            else if (vol is PrismVolumeInstance)
+                                                chunkIO.Raw.Write(2);
+
+                                            chunkIO.Raw.Write(X);
+                                            chunkIO.Raw.Write(Y);
+                                            chunkIO.Raw.Write(Z);
+                                            chunkIO.Raw.Write((short)vol.Activators);
+                                            chunkIO.Raw.Write(scriptIndex);
+
+                                            if (vol is BoxVolumeInstance)
                                             {
-                                                VolumeType = (ushort)vol.Shape,
-                                                Activators = (byte)vol.Activators,
-                                                X = (int)Math.Round(trRoom.Info.X + vol.Position.X),
-                                                Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add),
-                                                Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z),
-                                                RotationY = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
-                                                                    Math.Round(vol.RotationY * (65536.0 / 360.0)))),
-                                                RotationX = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
-                                                                    Math.Round(vol.RotationX * (65536.0 / 360.0)))),
-                                                Radius = (int)rad,
-                                                Bounding_box = new tr_bounding_box()
-                                                {
-                                                    X1 = (short)min.X,
-                                                    Y1 = (short)min.Y,
-                                                    Z1 = (short)min.Z,
-                                                    X2 = (short)max.X,
-                                                    Y2 = (short)max.Y,
-                                                    Z2 = (short)max.Z
-                                                },
-                                                ScriptIndex = scriptIndex
-                                            };
+                                                var bv = (BoxVolumeInstance)vol;
+                                                var min = vol.Position - (bv.Size / 2.0f);
+                                                var max = vol.Position + (bv.Size / 2.0f);
+                                                var rotY = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                                                   Math.Round(bv.RotationY * (65536.0 / 360.0))));
+                                                var rotX = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                                                   Math.Round(bv.RotationX * (65536.0 / 360.0))));
 
-                                            chunkIO.Raw.Write(bv.VolumeType);
-                                            chunkIO.Raw.Write(bv.Activators);
-                                            chunkIO.Raw.Write(bv.X);
-                                            chunkIO.Raw.Write(bv.Y);
-                                            chunkIO.Raw.Write(bv.Z);
-                                            chunkIO.Raw.Write(bv.RotationY);
-                                            chunkIO.Raw.Write(bv.RotationX);
-                                            chunkIO.Raw.Write(bv.Radius);
-                                            chunkIO.Raw.Write(bv.Bounding_box.X1);
-                                            chunkIO.Raw.Write(bv.Bounding_box.Y1);
-                                            chunkIO.Raw.Write(bv.Bounding_box.Z1);
-                                            chunkIO.Raw.Write(bv.Bounding_box.X2);
-                                            chunkIO.Raw.Write(bv.Bounding_box.Y2);
-                                            chunkIO.Raw.Write(bv.Bounding_box.Z2);
-                                            chunkIO.Raw.Write(bv.ScriptIndex);
+                                                chunkIO.Raw.Write(rotY);
+                                                chunkIO.Raw.Write(rotX);
+                                                chunkIO.Raw.Write((short)min.X);
+                                                chunkIO.Raw.Write((short)min.Y);
+                                                chunkIO.Raw.Write((short)min.Z);
+                                                chunkIO.Raw.Write((short)max.X);
+                                                chunkIO.Raw.Write((short)max.Y);
+                                                chunkIO.Raw.Write((short)max.Z);
+                                            }
+                                            else if (vol is SphereVolumeInstance)
+                                                chunkIO.Raw.Write((vol as SphereVolumeInstance).Size);
+                                            else if (vol is PrismVolumeInstance)
+                                            {
+                                                var pv = (PrismVolumeInstance)vol;
+                                                chunkIO.Raw.Write(pv.RotationY);
+                                                chunkIO.Raw.Write(pv.Size);
+                                            }
                                         }
-                                    }
                                 }
                             }
                         }
-
-                        string indent = "    ";
 
                         using (var extraDataChunk = chunkIO.WriteChunk(Tr5MainExtraData))
                         {
@@ -362,11 +360,11 @@ namespace TombLib.LevelData.Compilers
 
                                         string functionCode =
                                             "volscripts[" + i + "].OnEnter  = function(activator) \n" +
-                                                indent + script.OnEnter.Replace("\n", "\n" + indent) + "\n"  + "end;" + "\n\n" +
+                                                _indent + script.OnEnter.Replace("\n", "\n" + _indent) + "\n"  + "end;" + "\n\n" +
                                             "volscripts[" + i + "].OnInside = function(activator) \n" +
-                                                indent + script.OnInside.Replace("\n", "\n" + indent) + "\n" + "end;" + "\n\n" +
+                                                _indent + script.OnInside.Replace("\n", "\n" + _indent) + "\n" + "end;" + "\n\n" +
                                             "volscripts[" + i + "].OnLeave  = function(activator) \n" +
-                                                indent + script.OnLeave.Replace("\n", "\n" + indent) + "\n"  + "end;" + "\n\n";
+                                                _indent + script.OnLeave.Replace("\n", "\n" + _indent) + "\n"  + "end;" + "\n\n";
 
                                         chunkIO.Raw.WriteStringUTF8(functionCode);
                                     }

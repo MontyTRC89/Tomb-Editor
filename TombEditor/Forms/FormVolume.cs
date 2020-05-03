@@ -7,7 +7,7 @@ namespace TombEditor.Forms
     public partial class FormVolume : DarkForm
     {
         private Level _level;
-        private TriggerVolumeInstance _volume;
+        private VolumeInstance _volume;
 
         private VolumeScriptInstance _backupScripts;
         private VolumeActivators _backupState;
@@ -15,7 +15,7 @@ namespace TombEditor.Forms
 
         private bool _flagsLocked;
 
-        public FormVolume(Level level, TriggerVolumeInstance volume)
+        public FormVolume(Level level, VolumeInstance volume)
         {
             InitializeComponent();
 

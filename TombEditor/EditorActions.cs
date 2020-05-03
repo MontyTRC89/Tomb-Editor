@@ -671,7 +671,20 @@ namespace TombEditor
             if (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
                 _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TR5Main.", PopupType.Info);
             else
-                _editor.Action = new EditorActionPlace(false, (l, r) => new TriggerVolumeInstance(shape));
+            {
+                switch (shape)
+                {
+                    case VolumeShape.Box:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new BoxVolumeInstance());
+                        break;
+                    case VolumeShape.Prism:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new PrismVolumeInstance());
+                        break;
+                    case VolumeShape.Sphere:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new SphereVolumeInstance());
+                        break;
+                }
+            }
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -902,10 +915,10 @@ namespace TombEditor
             {
                 EditLightColor(owner);
             }
-            else if (instance is TriggerVolumeInstance)
+            else if (instance is VolumeInstance)
             {
                 if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                    using (var formVolume = new FormVolume(_editor.Level, (TriggerVolumeInstance)instance))
+                    using (var formVolume = new FormVolume(_editor.Level, (VolumeInstance)instance))
                     {
                         if (formVolume.ShowDialog(owner) != DialogResult.OK)
                             return;
