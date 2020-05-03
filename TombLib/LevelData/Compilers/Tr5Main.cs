@@ -298,8 +298,13 @@ namespace TombLib.LevelData.Compilers
                                                 scriptIndex = _volumeScripts.Count - 1;
                                             }
 
+                                            // FIXME is it needed?
+                                            int add = 0;
+                                            if (vol is BoxVolumeInstance)
+                                                add = (int)((vol as BoxVolumeInstance).Size.Y / 2.0f);
+
                                             var X = (int)Math.Round(trRoom.Info.X + vol.Position.X);
-                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + ((vol is BoxVolumeInstance) ? 0 : (int)((vol as BoxVolumeInstance).Size.Y / 2.0f))); // FIXME is it needed?
+                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add); 
                                             var Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z);
 
                                             if (vol is BoxVolumeInstance)
