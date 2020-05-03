@@ -1,6 +1,6 @@
-﻿using Ionic.Zlib;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
 {
@@ -14,7 +14,7 @@ namespace TombIDE.ProjectMaster
 				stream.Read(bytes, 0, (int)stream.Length);
 				bytes = bytes.Skip(4).ToArray();
 
-				return ZlibStream.UncompressBuffer(bytes);
+				return ZLib.DecompressData(bytes);
 			}
 		}
 
@@ -27,7 +27,7 @@ namespace TombIDE.ProjectMaster
 		private static byte[] CompressData(byte[] data)
 		{
 			byte[] prefix = { 0x00, 0x00, 0x06, 0x00 }; // These bytes are important, otherwise the game won't launch
-			byte[] compressedData = ZlibStream.CompressBuffer(data);
+			byte[] compressedData = ZLib.CompressData(data);
 
 			return prefix.Concat(compressedData).ToArray();
 		}
