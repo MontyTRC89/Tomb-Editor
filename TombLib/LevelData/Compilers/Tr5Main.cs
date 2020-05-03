@@ -268,7 +268,12 @@ namespace TombLib.LevelData.Compilers
                         {
                             // Add further extra data conditions here, otherwise compiler will skip this room altogether
                             if (r.Volumes.Count() > 0)
-                                { } else continue;
+                                currRoom++;
+                            else
+                            {
+                                currRoom++;
+                                continue;
+                            }
 
                             using (var extraRoomDataChunk = chunkIO.WriteChunk(Tr5MainExtraRoomData))
                             {
