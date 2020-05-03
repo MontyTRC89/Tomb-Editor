@@ -1643,11 +1643,11 @@ namespace TombEditor.Controls
                             }
                         }
                     }
-                    else if (instance is TriggerVolumeInstance) 
+                    else if (instance is VolumeInstance) 
                     {
                         if (ShowVolumes)
                         {
-                            var vol = (TriggerVolumeInstance)instance;
+                            var vol = (VolumeInstance)instance;
                             BoundingBox box = new BoundingBox(room.WorldPos + vol.Position - new Vector3(_littleCubeRadius),
                                                               room.WorldPos + vol.Position + new Vector3(_littleCubeRadius));
                             if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
@@ -2222,30 +2222,32 @@ namespace TombEditor.Controls
                         else
                             effect.Parameters["Color"].SetValue(normalColor);
 
-                        if (instance.Shape == VolumeShape.Box || instance.Shape == VolumeShape.Prism) // TODO: Draw prisms
+                        if (instance.Shape() == VolumeShape.Box) // TODO: Draw prisms
                         {
-                            model = Matrix4x4.CreateScale(instance.Size / _littleCubeRadius / 2.0f) *
-                                    Matrix4x4.CreateTranslation(new Vector3(0, instance.Size.Y / 2 + 8.0f, 0)) *
+                            var bv = instance as BoxVolumeInstance;
+                            model = Matrix4x4.CreateScale(bv.Size / _littleCubeRadius / 2.0f) *
+                                    Matrix4x4.CreateTranslation(new Vector3(0, bv.Size.Y / 2 + 8.0f, 0)) *
                                     instance.RotationPositionMatrix;
                             effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
 
                             effect.Techniques[0].Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                         }
-                        else if (instance.Shape == VolumeShape.Sphere)
+                        else if (instance.Shape() == VolumeShape.Sphere)
                         {
+                            var sv = instance as SphereVolumeInstance;
                             _legacyDevice.SetVertexBuffer(_sphere.VertexBuffer);
                             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
                             _legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
-                            model = Matrix4x4.CreateScale(instance.Size / (_littleSphereRadius * 8.0f)) *
+                            model = Matrix4x4.CreateScale(sv.Size / (_littleSphereRadius * 8.0f)) *
                                     instance.RotationPositionMatrix;
                             effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
 
                             effect.CurrentTechnique.Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                         }
-                        else if (instance.Shape == VolumeShape.Prism)
+                        else if (instance.Shape() == VolumeShape.Prism)
                         {
                             // TODO: Draw prisms
                         }

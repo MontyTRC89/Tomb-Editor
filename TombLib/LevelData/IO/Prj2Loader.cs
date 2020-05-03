@@ -1248,13 +1248,42 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
                 {
-                    var instance = new TriggerVolumeInstance((VolumeShape)chunkIO.Raw.ReadByte());
+                    var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
                     var scripts = new VolumeScriptInstance();
 
-                    instance.Size = chunkIO.Raw.ReadVector3();
+                    VolumeInstance instance;
+
+                    switch (instanceType)
+                    {
+                        case VolumeShape.Box:
+                            {
+                                instance = new BoxVolumeInstance();
+                                var bv = instance as BoxVolumeInstance;
+                                bv.Size = chunkIO.Raw.ReadVector3();
+                                bv.RotationY = chunkIO.Raw.ReadSingle();
+                                bv.RotationX = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        case VolumeShape.Prism:
+                            {
+                                instance = new PrismVolumeInstance();
+                                var pv = instance as PrismVolumeInstance;
+                                pv.Scale = chunkIO.Raw.ReadSingle();
+                                pv.RotationY = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        case VolumeShape.Sphere:
+                            {
+                                instance = new SphereVolumeInstance();
+                                var sv = instance as SphereVolumeInstance;
+                                sv.Scale = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        default:
+                            return false;
+                    }
+
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.RotationY = chunkIO.Raw.ReadSingle();
-                    instance.RotationX = chunkIO.Raw.ReadSingle();
                     instance.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16();
                     scripts.Name = chunkIO.Raw.ReadStringUTF8();
                     scripts.Environment = chunkIO.Raw.ReadStringUTF8();

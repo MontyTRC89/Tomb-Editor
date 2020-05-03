@@ -8,7 +8,7 @@ namespace TombLib.LevelData
     // If we need legacy "trigger" volume, it will be a box with one axis scale set to maximum.
     public enum VolumeShape : byte
     {
-        Box, Prism, Sphere
+        Box, Prism, Sphere, Undefined
     }
 
     // Possible activator flags. If none is set, volume is disabled.
@@ -45,54 +45,77 @@ namespace TombLib.LevelData
         }
     }
 
-    public class TriggerVolumeInstance : PositionBasedObjectInstance, ISpatial, ISizeable, IRotateableYX
+    public class PrismVolumeInstance : VolumeInstance, IScaleable, IRotateableY
     {
-        private const float _defaultSize = 1024.0f;
-        private const float _minBoxVolumeSize = 32.0f;
+        private const float _defaultScale = 8.0f;
         private const float _minPrismVolumeSize = 128.0f;
-        private const float _minSphereVolumeSize = 128.0f;
-        private const float _planeSize = 32.0f;
 
-        public VolumeShape Shape
+        public float Size => Scale * _minPrismVolumeSize;
+
+        public float Scale
         {
-            get { return _shape; }
+            get { return _scale; }
             set
             {
-                _shape = value;
-                Size = _size; // Re-clamp size on shape change
+                if (value >= 1.0f && value <= _minPrismVolumeSize)
+                    _scale = value;
             }
-
         }
-        private VolumeShape _shape = VolumeShape.Box;
+        private float _scale = _defaultScale;
+
+        public float RotationY
+        {
+            get { return _rotationY; }
+            set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+        }
+        private float _rotationY = 0.0f;
+
+        public override string ToString()
+        {
+            return "Prism Volume '" + Scripts.Name + "' (h = " + Scale + ")" +
+                   " in room '" + (Room?.ToString() ?? "NULL") + "' " +
+                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
+        }
+    }
+
+    public class SphereVolumeInstance : VolumeInstance, IScaleable
+    {
+        private const float _defaultScale = 8.0f;
+        private const float _minSphereVolumeSize = 128.0f;
+
+        public float Size => Scale * _minSphereVolumeSize;
+
+        public float Scale
+        {
+            get { return _scale; }
+            set
+            {
+                if (value >= 1.0f && value <= _minSphereVolumeSize)
+                    _scale = value;
+            }
+        }
+        private float _scale = _defaultScale;
+
+        public override string ToString()
+        {
+            return "Sphere Volume '" + Scripts.Name + "' (d = " + Scale + ")" + 
+                   " in room '" + (Room?.ToString() ?? "NULL") + "' " +
+                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
+        }
+    }
+
+    public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYX
+    {
+        private const float _minBoxVolumeSize = 32.0f;
+        private const float _planeSize = 32.0f;
 
         public Vector3 Size
         {
             get { return _size; }
             set
             {
-                // Clamp scale differently according to shape
-                switch (Shape)
-                {
-                    case VolumeShape.Box:
-                        if (value.Length() >= _minBoxVolumeSize) _size = value; break;
-                    case VolumeShape.Prism:
-                        if (value.Length() >= _minPrismVolumeSize) _size = value; break;
-                    case VolumeShape.Sphere:
-                        {
-                            float changedValue = 0.0f;
-                            if (value.X != _size.X) changedValue = value.X;
-                            if (value.Y != _size.X) changedValue = value.Y;
-                            if (value.Z != _size.X) changedValue = value.Z;
-                            if (changedValue >= _minSphereVolumeSize) _size.X = _size.Y = _size.Z = changedValue; break;
-                        }
-                    default:
-                        _size = value; break;
-                }
-
-                // Additionally clamp each axis to possible minimum
-                if (_size.X < _planeSize) _size.X = _planeSize;
-                if (_size.Y < _planeSize) _size.Y = _planeSize;
-                if (_size.Z < _planeSize) _size.Z = _planeSize;
+                if (value.Length() >= _minBoxVolumeSize)
+                    _size = value;
             }
         }
         private Vector3 _size = new Vector3(_defaultSize);
@@ -111,36 +134,27 @@ namespace TombLib.LevelData
         }
         private float _rotationX = 0.0f;
 
-        public VolumeActivators Activators { get; set; } = VolumeActivators.Lara;
-
-        public VolumeScriptInstance Scripts { get; set; } = new VolumeScriptInstance() { Name = "New volume script" };
-
-        public TriggerVolumeInstance() { }
-        public TriggerVolumeInstance(VolumeShape shape) { Shape = shape; }
-
         public override string ToString()
         {
-            string desc;
-            switch (Shape)
-            {
-                case VolumeShape.Box:
-                    desc = "Box Volume '" + Scripts.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")";
-                    break;
-                case VolumeShape.Sphere:
-                    desc = "Sphere Volume '" + Scripts.Name + "' (d = " + Size.X + ")";
-                    break;
-                case VolumeShape.Prism:
-                    desc = "Prism Volume '" + Scripts.Name + "' (h = " + Size.X + ")";
-                    break;
-                default:
-                    desc = "Unknown Volume '" + Scripts.Name + "'";
-                    break;
-            }
-
-
-            string text = desc + " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                          "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
-            return text;
+            return "Box Volume '" + Scripts.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
+                   " in room '" + (Room?.ToString() ?? "NULL") + "' " +
+                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
         }
+    }
+
+    public abstract class VolumeInstance : PositionBasedObjectInstance, ISpatial
+    {
+        protected const float _defaultSize = 1024.0f;
+
+        public VolumeShape Shape()
+        {
+            if (this is BoxVolumeInstance) return VolumeShape.Box;
+            if (this is SphereVolumeInstance) return VolumeShape.Sphere;
+            if (this is PrismVolumeInstance) return VolumeShape.Prism;
+            return VolumeShape.Undefined;
+        }
+
+        public VolumeActivators Activators { get; set; } = VolumeActivators.Lara;
+        public VolumeScriptInstance Scripts { get; set; } = new VolumeScriptInstance() { Name = "New volume script" };
     }
 }

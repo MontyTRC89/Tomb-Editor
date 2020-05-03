@@ -195,7 +195,7 @@ namespace TombEditor.ToolWindows
                 if (_editor.SelectedObject is GhostBlockInstance) _editor.SelectedObject = null;
 
             if (!settings.Rendering3D_ShowVolumes && panel3D.ShowVolumes)
-                if (_editor.SelectedObject is TriggerVolumeInstance) _editor.SelectedObject = null;
+                if (_editor.SelectedObject is VolumeInstance) _editor.SelectedObject = null;
 
             if (!settings.Rendering3D_ShowOtherObjects && panel3D.ShowOtherObjects)
                 if (_editor.SelectedObject is LightInstance ||

@@ -540,16 +540,38 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZn);
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
                         }
-                    else if (o is TriggerVolumeInstance)
+                    else if (o is VolumeInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolumeTest, LEB128.MaximumSize2Byte))
                         {
-                            var instance = (TriggerVolumeInstance)o;
+                            var instance = (VolumeInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write((byte)instance.Shape);
-                            chunkIO.Raw.Write(instance.Size);
+
+                            var shape = instance.Shape();
+                            chunkIO.Raw.Write((byte)shape);
+
+                            switch (shape)
+                            {
+                                case VolumeShape.Box:
+                                    {
+                                        var bv = instance as BoxVolumeInstance;
+                                        chunkIO.Raw.Write(bv.Size);
+                                        chunkIO.Raw.Write(bv.RotationY);
+                                        chunkIO.Raw.Write(bv.RotationX);
+                                    }
+                                    break;
+                                case VolumeShape.Prism:
+                                    {
+                                        var pv = instance as PrismVolumeInstance;
+                                        chunkIO.Raw.Write(pv.Scale);
+                                        chunkIO.Raw.Write(pv.RotationY);
+                                    }
+                                    break;
+                                case VolumeShape.Sphere:
+                                    chunkIO.Raw.Write((instance as SphereVolumeInstance).Scale);
+                                    break;
+                            }
+
                             chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.RotationY);
-                            chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write((ushort)instance.Activators);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
                             chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
