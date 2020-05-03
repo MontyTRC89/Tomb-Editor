@@ -44,6 +44,16 @@ namespace TombEditor
                 return 512.0f;
         }
 
+        private float ScaleQuantization()
+        {
+            if (Control.ModifierKeys.HasFlag(Keys.Shift))
+                return 1.5f;
+            else if (Control.ModifierKeys.HasFlag(Keys.Control))
+                return 2.0f;
+            else
+                return 0.0f;
+        }
+
         protected override void GizmoRotateY(float newAngle)
         {
             bool smoothRotationPreference = !(_editor.SelectedObject is MoveableInstance || _editor.SelectedObject is StaticInstance || _editor.SelectedObject is VolumeInstance);
@@ -65,8 +75,7 @@ namespace TombEditor
         {
             if (_editor.SelectedObject is IScaleable)
             {
-                bool quantized = Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift);
-                EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, quantized ? Math.Sqrt(2) : 0.0f);
+                EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, ScaleQuantization());
             }
             else if (_editor.SelectedObject is ISizeable)
             {
@@ -79,8 +88,7 @@ namespace TombEditor
         {
             if (_editor.SelectedObject is IScaleable)
             {
-                bool quantized = Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift);
-                EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, quantized ? Math.Sqrt(2) : 0.0f);
+                EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, ScaleQuantization());
             }
             else if (_editor.SelectedObject is ISizeable)
             {
@@ -93,8 +101,7 @@ namespace TombEditor
         {
             if (_editor.SelectedObject is IScaleable)
             {
-                bool quantized = Control.ModifierKeys.HasFlag(Keys.Control) | Control.ModifierKeys.HasFlag(Keys.Shift);
-                EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, quantized ? Math.Sqrt(2) : 0.0f);
+                EditorActions.ScaleObject(_editor.SelectedObject as IScaleable, scale, ScaleQuantization());
             }
             else if (_editor.SelectedObject is ISizeable)
             {
