@@ -363,13 +363,26 @@ namespace TombLib.LevelData.Compilers
                                     {
                                         chunkIO.Raw.WriteStringUTF8(script.Name);
 
+                                        string onEnter = string.Empty;
+                                        string onInside = string.Empty;
+                                        string onLeave = string.Empty;
+
+                                        if (script.OnEnter.Trim().Length > 0)
+                                            onEnter = "volscripts[" + i + "].OnEnter  = function(activator) \n" +
+                                                        _indent + script.OnEnter.Replace("\n", "\n" + _indent) + "\n" + "end;";
+
+                                        if (script.OnInside.Trim().Length > 0)
+                                            onInside = "volscripts[" + i + "].OnInside = function(activator) \n" +
+                                                        _indent + script.OnInside.Replace("\n", "\n" + _indent) + "\n" + "end;";
+
+                                        if (script.OnLeave.Trim().Length > 0)
+                                            onLeave  = "volscripts[" + i + "].OnLeave = function(activator) \n" +
+                                                        _indent + script.OnLeave.Replace("\n", "\n" + _indent) + "\n" + "end;";
+
                                         string functionCode =
-                                            "volscripts[" + i + "].OnEnter  = function(activator) \n" +
-                                                _indent + script.OnEnter.Replace("\n", "\n" + _indent) + "\n"  + "end;" + "\n\n" +
-                                            "volscripts[" + i + "].OnInside = function(activator) \n" +
-                                                _indent + script.OnInside.Replace("\n", "\n" + _indent) + "\n" + "end;" + "\n\n" +
-                                            "volscripts[" + i + "].OnLeave  = function(activator) \n" +
-                                                _indent + script.OnLeave.Replace("\n", "\n" + _indent) + "\n"  + "end;" + "\n\n";
+                                            onEnter  + (string.IsNullOrEmpty(onEnter)  ? string.Empty : "\n\n") +
+                                            onInside + (string.IsNullOrEmpty(onInside) ? string.Empty : "\n\n") +
+                                            onLeave  + (string.IsNullOrEmpty(onLeave)  ? string.Empty : "\n\n") ;
 
                                         chunkIO.Raw.WriteStringUTF8(functionCode);
                                     }
