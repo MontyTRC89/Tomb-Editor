@@ -1,11 +1,14 @@
 ﻿using ICSharpCode.AvalonEdit.Highlighting;
 using System;
 using System.Collections.Generic;
+using TombLib.Scripting.Configuration.TextEditors.Colors;
 
 namespace TombLib.Scripting.Rendering
 {
 	public class LuaSyntaxHighlighting : IHighlightingDefinition
 	{
+		private readonly LuaColors _colors = new LuaColors().Load<LuaColors>();
+
 		public string Name { get { return "LUA Rules"; } }
 
 		public HighlightingRuleSet MainRuleSet

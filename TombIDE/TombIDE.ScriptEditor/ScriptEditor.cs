@@ -31,7 +31,7 @@ namespace TombIDE.ScriptEditor
 	public partial class ScriptEditor : UserControl
 	{
 		private IDE _ide;
-		private TextEditorConfiguration _editorConfig = new TextEditorConfiguration();
+		private TextEditorConfigurations _editorConfigs = new TextEditorConfigurations();
 
 		private FormFindReplace _formFindReplace;
 		private FormNGCompilingStatus _formCompiling;
@@ -899,8 +899,8 @@ namespace TombIDE.ScriptEditor
 			// Create the TextEditor
 			ScriptTextEditor newTextEditor = new ScriptTextEditor
 			{
-				ShowLineNumbers = _editorConfig.ClassicScriptConfiguration.ShowLineNumbers,
-				ShowSectionSeparators = _editorConfig.ClassicScriptConfiguration.ShowSectionSeparators
+				ShowLineNumbers = _editorConfigs.ClassicScript.ShowLineNumbers,
+				ShowSectionSeparators = _editorConfigs.ClassicScript.ShowSectionSeparators
 			};
 
 			// Bind event methods to the TextEditor
@@ -1147,7 +1147,7 @@ namespace TombIDE.ScriptEditor
 			using (FormTextEditorSettings form = new FormTextEditorSettings())
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					_editorConfig = new TextEditorConfiguration();
+					_editorConfigs = new TextEditorConfigurations();
 					syntaxPreview.ReloadSettings();
 					ApplySavedSettings();
 				}
@@ -1300,22 +1300,10 @@ namespace TombIDE.ScriptEditor
 			{
 				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
 
-				if (textEditor is ScriptTextEditor)
-				{
-					textEditor.SyntaxHighlighting = new ScriptSyntaxHighlighting();
-
-					System.Windows.Media.Color foregroundColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_editorConfig.ClassicScriptConfiguration.Colors_Values);
-
-					textEditor.Foreground = new System.Windows.Media.SolidColorBrush(foregroundColor);
-					textEditor.FontFamily = new System.Windows.Media.FontFamily(_editorConfig.ClassicScriptConfiguration.FontFamily);
-					textEditor.FontSize = _editorConfig.ClassicScriptConfiguration.FontSize;
-					textEditor.DefaultFontSize = _editorConfig.ClassicScriptConfiguration.FontSize;
-					textEditor.LiveErrorUnderlining = _editorConfig.ClassicScriptConfiguration.LiveErrorUnderlining;
-					textEditor.AutoCloseBrackets = _editorConfig.ClassicScriptConfiguration.AutoCloseBrackets;
-					textEditor.AutoCloseQuotes = _editorConfig.ClassicScriptConfiguration.AutoCloseQuotes;
-					textEditor.WordWrap = _editorConfig.ClassicScriptConfiguration.WordWrapping;
-					textEditor.Document.UndoStack.SizeLimit = _editorConfig.ClassicScriptConfiguration.UndoStackSize;
-				}
+				if (textEditor is ScriptTextEditor scriptTextEditor)
+					UpdateTextEditorSettings(scriptTextEditor);
+				else if (textEditor is LuaTextEditor luaTextEditor)
+					UpdateTextEditorSettings(luaTextEditor);
 			}
 
 			// Editor settings
@@ -1327,6 +1315,28 @@ namespace TombIDE.ScriptEditor
 			SwapPanels(_ide.IDEConfiguration.View_SwapPanels);
 
 			DoStatusCounting();
+		}
+
+		private void UpdateTextEditorSettings(ScriptTextEditor scriptTextEditor)
+		{
+			scriptTextEditor.SyntaxHighlighting = new ScriptSyntaxHighlighting();
+
+			scriptTextEditor.Foreground = new System.Windows.Media.SolidColorBrush
+			(
+				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
+				(
+					_editorConfigs.ClassicScript.Colors.Values
+				)
+			);
+
+			scriptTextEditor.UpdateSettings(_editorConfigs.ClassicScript);
+		}
+
+		private void UpdateTextEditorSettings(LuaTextEditor luaTextEditor)
+		{
+			luaTextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting();
+
+			luaTextEditor.UpdateSettings(_editorConfigs.Lua);
 		}
 
 		private BaseTextEditor GetTextEditorOfTab(TabPage tab)

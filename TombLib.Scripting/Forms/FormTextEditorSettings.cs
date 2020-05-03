@@ -11,18 +11,18 @@ namespace TombLib.Scripting.Forms
 	{
 		private SettingsClassicScript settings_ClassicScript;
 
-		private TextEditorConfiguration _config;
-		private TextEditorConfiguration _configCopy;
+		private TextEditorConfigurations _configs;
+		private TextEditorConfigurations _configsCopy;
 
 		public FormTextEditorSettings()
 		{
 			InitializeComponent();
 
-			_config = new TextEditorConfiguration();
-			_configCopy = new TextEditorConfiguration();
+			_configs = new TextEditorConfigurations();
+			_configsCopy = new TextEditorConfigurations();
 
 			List<string> monospacedFonts = MonospacedFonts.GetMonospacedFontNames();
-			settings_ClassicScript = new SettingsClassicScript(_config, monospacedFonts);
+			settings_ClassicScript = new SettingsClassicScript(_configs, monospacedFonts);
 
 			settings_ClassicScript.Dock = DockStyle.Fill;
 			tabPage_ClassicScript.Controls.Add(settings_ClassicScript);
@@ -53,16 +53,16 @@ namespace TombLib.Scripting.Forms
 			}
 			else
 			{
-				_config = _configCopy;
+				_configs = _configsCopy;
 
-				_config.ClassicScriptConfiguration.Save();
-				_config.LuaConfiguration.Save();
+				_configs.ClassicScript.Save();
+				_configs.Lua.Save();
 			}
 		}
 
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
-			_config.ClassicScriptConfiguration.Save();
+			_configs.ClassicScript.Save();
 		}
 
 		private void button_ResetDefault_Click(object sender, EventArgs e)

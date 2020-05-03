@@ -56,7 +56,11 @@
   <ItemGroup>
     <Compile Include="Autocomplete\LuaAutocomplete.cs" />
     <Compile Include="Autocomplete\ScriptAutocomplete.cs" />
-    <Compile Include="Configuration\LuaConfiguration.cs" />
+    <Compile Include="Configuration\TextEditors\Colors\LuaColors.cs" />
+    <Compile Include="Configuration\TextEditors\Colors\ClassicScriptColors.cs" />
+    <Compile Include="Configuration\ConfigurationBase.cs" />
+    <Compile Include="Configuration\GlobalTextEditorConfiguration.cs" />
+    <Compile Include="Configuration\TextEditors\LuaConfiguration.cs" />
     <Compile Include="Compilers\NGCompiler.cs" />
     <Compile Include="Controls\Settings\SettingsClassicScript.cs">
       <SubType>UserControl</SubType>
@@ -75,8 +79,8 @@
     </Compile>
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="MonospacedFonts.cs" />
-    <Compile Include="Configuration\ClassicScriptConfiguration.cs" />
-    <Compile Include="TextEditorConfiguration.cs" />
+    <Compile Include="Configuration\TextEditors\ClassicScriptConfiguration.cs" />
+    <Compile Include="TextEditorConfigurations.cs" />
     <Compile Include="Controls\BaseTextEditor.cs" />
     <Compile Include="Controls\LuaTextEditor.cs" />
     <Compile Include="Controls\ScriptTextEditor.cs" />

@@ -147,7 +147,7 @@ namespace TombLib.Scripting.Compilers
 				foreach (Process notepadProcess in Process.GetProcessesByName("notepad"))
 				{
 					if (notepadProcess.MainWindowTitle.Contains("script_log"))
-                        notepadProcess.Kill();
+						notepadProcess.Kill();
 				}
 
 				return true;

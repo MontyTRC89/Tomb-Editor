@@ -12,9 +12,9 @@ namespace TombLib.Scripting.Controls.Settings
 	{
 		private ScriptTextEditor textBox;
 
-		private TextEditorConfiguration _config;
+		private TextEditorConfigurations _config;
 
-		public SettingsClassicScript(TextEditorConfiguration config, List<string> monospacedFontList)
+		public SettingsClassicScript(TextEditorConfigurations config, List<string> monospacedFontList)
 		{
 			InitializeComponent();
 
@@ -25,6 +25,7 @@ namespace TombLib.Scripting.Controls.Settings
 			textBox = new ScriptTextEditor
 			{
 				Text = "[Level]\nRain=ENABLED,12   ; Has error\nLayer1=128,128,>\n\t\t128,-8\nMirror=69,$2137\n[Level]",
+				Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values)),
 				ShowLineNumbers = false,
 				IsReadOnly = true,
 				HorizontalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Hidden,
@@ -41,34 +42,34 @@ namespace TombLib.Scripting.Controls.Settings
 		public void UpdateControlsWithSettings()
 		{
 			/* General */
-			numeric_FontSize.Value = (decimal)_config.ClassicScriptConfiguration.FontSize - 4; // -4 because WPF has a different font size scale
-			comboBox_FontFamily.SelectedItem = _config.ClassicScriptConfiguration.FontFamily;
-			numeric_UndoStackSize.Value = _config.ClassicScriptConfiguration.UndoStackSize;
-			checkBox_Autocomplete.Checked = _config.ClassicScriptConfiguration.AutocompleteEnabled;
-			checkBox_LiveErrors.Checked = _config.ClassicScriptConfiguration.LiveErrorUnderlining;
-			checkBox_CloseBrackets.Checked = _config.ClassicScriptConfiguration.AutoCloseBrackets;
-			checkBox_CloseQuotes.Checked = _config.ClassicScriptConfiguration.AutoCloseQuotes;
-			checkBox_WordWrapping.Checked = _config.ClassicScriptConfiguration.WordWrapping;
-			checkBox_LineNumbers.Checked = _config.ClassicScriptConfiguration.ShowLineNumbers;
-			checkBox_SectionSeparators.Checked = _config.ClassicScriptConfiguration.ShowSectionSeparators;
-			checkBox_VisibleSpaces.Checked = _config.ClassicScriptConfiguration.ShowVisualSpaces;
-			checkBox_VisibleTabs.Checked = _config.ClassicScriptConfiguration.ShowVisualTabs;
-			checkBox_ToolTips.Checked = _config.ClassicScriptConfiguration.ShowDefinitionToolTips;
+			numeric_FontSize.Value = (decimal)_config.ClassicScript.FontSize - 4; // -4 because WPF has a different font size scale
+			comboBox_FontFamily.SelectedItem = _config.ClassicScript.FontFamily;
+			numeric_UndoStackSize.Value = _config.ClassicScript.UndoStackSize;
+			checkBox_Autocomplete.Checked = _config.ClassicScript.AutocompleteEnabled;
+			checkBox_LiveErrors.Checked = _config.ClassicScript.LiveErrorUnderlining;
+			checkBox_CloseBrackets.Checked = _config.ClassicScript.AutoCloseBrackets;
+			checkBox_CloseQuotes.Checked = _config.ClassicScript.AutoCloseQuotes;
+			checkBox_WordWrapping.Checked = _config.ClassicScript.WordWrapping;
+			checkBox_LineNumbers.Checked = _config.ClassicScript.ShowLineNumbers;
+			checkBox_SectionSeparators.Checked = _config.ClassicScript.ShowSectionSeparators;
+			checkBox_VisibleSpaces.Checked = _config.ClassicScript.ShowVisualSpaces;
+			checkBox_VisibleTabs.Checked = _config.ClassicScript.ShowVisualTabs;
+			checkBox_ToolTips.Checked = _config.ClassicScript.ShowDefinitionToolTips;
 
 			/* Syntax colors */
-			button_SectionsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Sections);
-			button_ValuesColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Values);
-			button_ReferencesColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_References);
-			button_StandardCommandsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_StandardCommands);
-			button_NewCommandsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_NewCommands);
-			button_CommentsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScriptConfiguration.Colors_Comments);
+			button_SectionsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScript.Colors.Sections);
+			button_ValuesColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScript.Colors.Values);
+			button_ReferencesColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScript.Colors.References);
+			button_StandardCommandsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScript.Colors.StandardCommands);
+			button_NewCommandsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScript.Colors.NewCommands);
+			button_CommentsColor.BackColor = ColorTranslator.FromHtml(_config.ClassicScript.Colors.Comments);
 
 			/* Identation */
-			checkBox_PreEqualSpace.Checked = _config.ClassicScriptConfiguration.Tidy_PreEqualSpace;
-			checkBox_PostEqualSpace.Checked = _config.ClassicScriptConfiguration.Tidy_PostEqualSpace;
-			checkBox_PreCommaSpace.Checked = _config.ClassicScriptConfiguration.Tidy_PreCommaSpace;
-			checkBox_PostCommaSpace.Checked = _config.ClassicScriptConfiguration.Tidy_PostCommaSpace;
-			checkBox_ReduceSpaces.Checked = _config.ClassicScriptConfiguration.Tidy_ReduceSpaces;
+			checkBox_PreEqualSpace.Checked = _config.ClassicScript.Tidy_PreEqualSpace;
+			checkBox_PostEqualSpace.Checked = _config.ClassicScript.Tidy_PostEqualSpace;
+			checkBox_PreCommaSpace.Checked = _config.ClassicScript.Tidy_PreCommaSpace;
+			checkBox_PostCommaSpace.Checked = _config.ClassicScript.Tidy_PostCommaSpace;
+			checkBox_ReduceSpaces.Checked = _config.ClassicScript.Tidy_ReduceSpaces;
 		}
 
 		public void ResetToDefault()
@@ -105,7 +106,7 @@ namespace TombLib.Scripting.Controls.Settings
 
 			ApplySettings();
 
-			textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_Values));
+			textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values));
 			textBox.SyntaxHighlighting = new ScriptSyntaxHighlighting();
 		}
 
@@ -151,43 +152,43 @@ namespace TombLib.Scripting.Controls.Settings
 
 			ApplySettings();
 
-			textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_Values));
+			textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values));
 			textBox.SyntaxHighlighting = new ScriptSyntaxHighlighting();
 		}
 
 		public void ApplySettings()
 		{
 			/* General */
-			_config.ClassicScriptConfiguration.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because WPF has a different font size scale
-			_config.ClassicScriptConfiguration.FontFamily = comboBox_FontFamily.SelectedItem.ToString();
-			_config.ClassicScriptConfiguration.UndoStackSize = (int)numeric_UndoStackSize.Value;
-			_config.ClassicScriptConfiguration.AutocompleteEnabled = checkBox_Autocomplete.Checked;
-			_config.ClassicScriptConfiguration.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
-			_config.ClassicScriptConfiguration.AutoCloseBrackets = checkBox_CloseBrackets.Checked;
-			_config.ClassicScriptConfiguration.AutoCloseQuotes = checkBox_CloseQuotes.Checked;
-			_config.ClassicScriptConfiguration.WordWrapping = checkBox_WordWrapping.Checked;
-			_config.ClassicScriptConfiguration.ShowLineNumbers = checkBox_LineNumbers.Checked;
-			_config.ClassicScriptConfiguration.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
-			_config.ClassicScriptConfiguration.ShowVisualSpaces = checkBox_VisibleSpaces.Checked;
-			_config.ClassicScriptConfiguration.ShowVisualTabs = checkBox_VisibleTabs.Checked;
-			_config.ClassicScriptConfiguration.ShowDefinitionToolTips = checkBox_ToolTips.Checked;
+			_config.ClassicScript.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because WPF has a different font size scale
+			_config.ClassicScript.FontFamily = comboBox_FontFamily.SelectedItem.ToString();
+			_config.ClassicScript.UndoStackSize = (int)numeric_UndoStackSize.Value;
+			_config.ClassicScript.AutocompleteEnabled = checkBox_Autocomplete.Checked;
+			_config.ClassicScript.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
+			_config.ClassicScript.AutoCloseBrackets = checkBox_CloseBrackets.Checked;
+			_config.ClassicScript.AutoCloseQuotes = checkBox_CloseQuotes.Checked;
+			_config.ClassicScript.WordWrapping = checkBox_WordWrapping.Checked;
+			_config.ClassicScript.ShowLineNumbers = checkBox_LineNumbers.Checked;
+			_config.ClassicScript.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
+			_config.ClassicScript.ShowVisualSpaces = checkBox_VisibleSpaces.Checked;
+			_config.ClassicScript.ShowVisualTabs = checkBox_VisibleTabs.Checked;
+			_config.ClassicScript.ShowDefinitionToolTips = checkBox_ToolTips.Checked;
 
 			/* Syntax colors */
-			_config.ClassicScriptConfiguration.Colors_Sections = ColorTranslator.ToHtml(button_SectionsColor.BackColor);
-			_config.ClassicScriptConfiguration.Colors_Values = ColorTranslator.ToHtml(button_ValuesColor.BackColor);
-			_config.ClassicScriptConfiguration.Colors_References = ColorTranslator.ToHtml(button_ReferencesColor.BackColor);
-			_config.ClassicScriptConfiguration.Colors_StandardCommands = ColorTranslator.ToHtml(button_StandardCommandsColor.BackColor);
-			_config.ClassicScriptConfiguration.Colors_NewCommands = ColorTranslator.ToHtml(button_NewCommandsColor.BackColor);
-			_config.ClassicScriptConfiguration.Colors_Comments = ColorTranslator.ToHtml(button_CommentsColor.BackColor);
+			_config.ClassicScript.Colors.Sections = ColorTranslator.ToHtml(button_SectionsColor.BackColor);
+			_config.ClassicScript.Colors.Values = ColorTranslator.ToHtml(button_ValuesColor.BackColor);
+			_config.ClassicScript.Colors.References = ColorTranslator.ToHtml(button_ReferencesColor.BackColor);
+			_config.ClassicScript.Colors.StandardCommands = ColorTranslator.ToHtml(button_StandardCommandsColor.BackColor);
+			_config.ClassicScript.Colors.NewCommands = ColorTranslator.ToHtml(button_NewCommandsColor.BackColor);
+			_config.ClassicScript.Colors.Comments = ColorTranslator.ToHtml(button_CommentsColor.BackColor);
 
 			/* Identation */
-			_config.ClassicScriptConfiguration.Tidy_PreEqualSpace = checkBox_PreEqualSpace.Checked;
-			_config.ClassicScriptConfiguration.Tidy_PostEqualSpace = checkBox_PostEqualSpace.Checked;
-			_config.ClassicScriptConfiguration.Tidy_PreCommaSpace = checkBox_PreCommaSpace.Checked;
-			_config.ClassicScriptConfiguration.Tidy_PostCommaSpace = checkBox_PostCommaSpace.Checked;
-			_config.ClassicScriptConfiguration.Tidy_ReduceSpaces = checkBox_ReduceSpaces.Checked;
+			_config.ClassicScript.Tidy_PreEqualSpace = checkBox_PreEqualSpace.Checked;
+			_config.ClassicScript.Tidy_PostEqualSpace = checkBox_PostEqualSpace.Checked;
+			_config.ClassicScript.Tidy_PreCommaSpace = checkBox_PreCommaSpace.Checked;
+			_config.ClassicScript.Tidy_PostCommaSpace = checkBox_PostCommaSpace.Checked;
+			_config.ClassicScript.Tidy_ReduceSpaces = checkBox_ReduceSpaces.Checked;
 
-			_config.ClassicScriptConfiguration.Save();
+			_config.ClassicScript.Save();
 		}
 
 		public void UpdatePreview()

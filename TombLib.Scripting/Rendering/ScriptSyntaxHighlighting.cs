@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using TombLib.Scripting.Configuration.TextEditors.Colors;
 using TombLib.Scripting.Resources;
 
 namespace TombLib.Scripting.Rendering
 {
 	public class ScriptSyntaxHighlighting : IHighlightingDefinition
 	{
-		private readonly TextEditorConfiguration _config = new TextEditorConfiguration();
+		private readonly ClassicScriptColors _colors = new ClassicScriptColors().Load<ClassicScriptColors>();
 
 		public string Name { get { return "Script Rules"; } }
 
@@ -26,7 +27,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.Comments),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_Comments))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.Comments))
 					}
 				});
 
@@ -36,7 +37,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.Sections, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_Sections)),
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.Sections)),
 						FontWeight = FontWeights.Bold
 					}
 				});
@@ -47,7 +48,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.OldCommands, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_StandardCommands))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.StandardCommands))
 					}
 				});
 
@@ -57,7 +58,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.NewCommands, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_NewCommands))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.NewCommands))
 					}
 				});
 
@@ -67,7 +68,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.NextLineKey),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_NewCommands)),
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.NewCommands)),
 						FontWeight = FontWeights.Bold
 					}
 				});
@@ -89,7 +90,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.Mnemonics, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_References))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.References))
 					}
 				});
 
@@ -99,7 +100,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.HexValues, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_References))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.References))
 					}
 				});
 
@@ -109,7 +110,7 @@ namespace TombLib.Scripting.Rendering
 					Regex = new Regex(ScriptPatterns.Directives, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ClassicScriptConfiguration.Colors_References))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.References))
 					}
 				});
 
