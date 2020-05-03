@@ -9,7 +9,7 @@ using TombLib.Scripting.Resources;
 
 namespace TombLib.Scripting.Autocomplete
 {
-	internal static class ScriptAutocomplete
+	public static class ScriptAutocomplete
 	{
 		public static List<ICompletionData> GetNewLineAutocompleteList()
 		{

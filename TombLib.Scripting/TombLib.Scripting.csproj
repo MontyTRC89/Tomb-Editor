@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\BuildRelease\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -38,54 +38,25 @@
       <HintPath>..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml" />
     <Reference Include="TestStack.White, Version=0.13.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
       <HintPath>..\packages\TestStack.White.0.13.3\lib\net40\TestStack.White.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autocomplete\LuaAutocomplete.cs" />
     <Compile Include="Autocomplete\ScriptAutocomplete.cs" />
-    <Compile Include="Configuration\TextEditors\Colors\LuaColors.cs" />
-    <Compile Include="Configuration\TextEditors\Colors\ClassicScriptColors.cs" />
-    <Compile Include="Configuration\ConfigurationBase.cs" />
-    <Compile Include="Configuration\GlobalTextEditorConfiguration.cs" />
-    <Compile Include="Configuration\TextEditors\LuaConfiguration.cs" />
     <Compile Include="Compilers\NGCompiler.cs" />
-    <Compile Include="Controls\Settings\SettingsClassicScript.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\Settings\SettingsClassicScript.Designer.cs">
-      <DependentUpon>SettingsClassicScript.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TablessTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Forms\FormTextEditorSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormTextEditorSettings.Designer.cs">
-      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Helpers\PathHelper.cs" />
+    <Compile Include="DefaultPaths.cs" />
     <Compile Include="MonospacedFonts.cs" />
-    <Compile Include="Configuration\TextEditors\ClassicScriptConfiguration.cs" />
-    <Compile Include="TextEditorConfigurations.cs" />
-    <Compile Include="Controls\BaseTextEditor.cs" />
-    <Compile Include="Controls\LuaTextEditor.cs" />
-    <Compile Include="Controls\ScriptTextEditor.cs" />
-    <Compile Include="ErrorChecking\LuaErrorChecking.cs" />
-    <Compile Include="ErrorChecking\ScriptErrorChecking.cs" />
+    <Compile Include="ErrorDetection\LuaErrorDetection.cs" />
+    <Compile Include="ErrorDetection\ScriptErrorDetection.cs" />
     <Compile Include="Helpers\ArgumentHelper.cs" />
     <Compile Include="Helpers\CommandHelper.cs" />
     <Compile Include="Helpers\LineHelper.cs" />
@@ -94,12 +65,6 @@
     <Compile Include="Objects\ErrorLine.cs" />
     <Compile Include="Objects\PluginMnemonic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Rendering\BookmarkRenderer.cs" />
-    <Compile Include="Rendering\ErrorRenderer.cs" />
-    <Compile Include="Rendering\LuaSyntaxHighlighting.cs" />
-    <Compile Include="Rendering\ScriptSyntaxHighlighting.cs" />
-    <Compile Include="Rendering\SectionRenderer.cs" />
-    <Compile Include="Rendering\TextRendering.cs" />
     <Compile Include="Resources\ScriptKeyWords.cs" />
     <Compile Include="Resources\ScriptPatterns.cs" />
     <Compile Include="Resources\Syntaxes\CustSyntaxes.Designer.cs">
@@ -132,50 +97,38 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="SyntaxTidying\LuaCodeTidying.cs" />
-    <Compile Include="SyntaxTidying\ScriptTidying.cs" />
-    <Compile Include="SyntaxTidying\SharedMethods.cs" />
+    <Compile Include="CodeCleaners\LuaCodeCleaner.cs" />
+    <Compile Include="CodeCleaners\ClassicScriptCleaner.cs" />
+    <Compile Include="CodeCleaners\BasicCleaner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\Settings\SettingsClassicScript.resx">
-      <DependentUpon>SettingsClassicScript.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormTextEditorSettings.resx">
-      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Syntaxes\CustSyntaxes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CustSyntaxes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Syntaxes\NewCommandSyntaxes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>NewCommandSyntaxes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Syntaxes\OldCommandSyntaxes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>OldCommandSyntaxes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Syntaxes\ParamSyntaxes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ParamSyntaxes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ToolTips\CommandToolTips.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CommandToolTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ToolTips\SectionToolTips.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>SectionToolTips.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
-      <Project>{F19472F5-8C44-4C51-A8A0-B9DE5F555255}</Project>
-      <Name>DarkUI</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

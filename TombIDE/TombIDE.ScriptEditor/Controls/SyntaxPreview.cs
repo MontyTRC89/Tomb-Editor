@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using TombLib.Scripting;
 using TombLib.Scripting.Resources;
+using TombLib.Scripting.TextEditors;
 
 namespace TombIDE.ScriptEditor.Controls
 {

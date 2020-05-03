@@ -18,13 +18,13 @@ using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Forms;
 using TombLib.LevelData;
-using TombLib.Scripting;
 using TombLib.Scripting.Compilers;
-using TombLib.Scripting.Controls;
-using TombLib.Scripting.Forms;
 using TombLib.Scripting.Helpers;
-using TombLib.Scripting.Rendering;
 using TombLib.Scripting.Resources;
+using TombLib.Scripting.TextEditors;
+using TombLib.Scripting.TextEditors.Controls;
+using TombLib.Scripting.TextEditors.Forms;
+using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
 namespace TombIDE.ScriptEditor
 {
@@ -1328,6 +1328,12 @@ namespace TombIDE.ScriptEditor
 					_editorConfigs.ClassicScript.Colors.Values
 				)
 			);
+
+			scriptTextEditor.Cleaner.PreEqualSpace = _editorConfigs.ClassicScript.Tidy_PreEqualSpace;
+			scriptTextEditor.Cleaner.PostEqualSpace = _editorConfigs.ClassicScript.Tidy_PostEqualSpace;
+			scriptTextEditor.Cleaner.PreCommaSpace = _editorConfigs.ClassicScript.Tidy_PreCommaSpace;
+			scriptTextEditor.Cleaner.PostCommaSpace = _editorConfigs.ClassicScript.Tidy_PostCommaSpace;
+			scriptTextEditor.Cleaner.ReduceSpaces = _editorConfigs.ClassicScript.Tidy_ReduceSpaces;
 
 			scriptTextEditor.UpdateSettings(_editorConfigs.ClassicScript);
 		}

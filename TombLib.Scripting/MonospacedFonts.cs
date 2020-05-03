@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace TombLib.Scripting
 {
-	internal class MonospacedFonts
+	public class MonospacedFonts
 	{
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		private class LOGFONT

@@ -9,7 +9,7 @@ namespace TombLib.Scripting.Objects
 	/// <summary>
 	/// Implements AvalonEdit ICompletionData interface to provide the entries in the completion drop down.
 	/// </summary>
-	internal class CompletionData : ICompletionData
+	public sealed class CompletionData : ICompletionData
 	{
 		public CompletionData(string text)
 		{

@@ -22,7 +22,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class ParamSyntaxes {
+    public class ParamSyntaxes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Scripting.Resources.Syntaxes.ParamSyntaxes", typeof(ParamSyntaxes).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_ACTOR_SPEECH, SpeechId, SpeechFlags (SPCF_...), Parameter, FrameRate, SpeechSlot, HeadSlotMesh, FirstMeshIndex, SpeechMeshAmount, CommandArray.
         /// </summary>
-        internal static string PARAM_ACTOR_SPEECH {
+        public static string PARAM_ACTOR_SPEECH {
             get {
                 return ResourceManager.GetString("PARAM_ACTOR_SPEECH", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_BIG_NUMBERS, Many Numbers separeted by commas.
         /// </summary>
-        internal static string PARAM_BIG_NUMBERS {
+        public static string PARAM_BIG_NUMBERS {
             get {
                 return ResourceManager.GetString("PARAM_BIG_NUMBERS", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_CIRCLE, IdParamList, xCenter, yCenter, Radius.
         /// </summary>
-        internal static string PARAM_CIRCLE {
+        public static string PARAM_CIRCLE {
             get {
                 return ResourceManager.GetString("PARAM_CIRCLE", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_COLOR_ITEM, IdParamList, ColorType (COLTYPE_...), ItemIndex, Index1ColorRGB, Index2ColorRGB, SpeedChange.
         /// </summary>
-        internal static string PARAM_COLOR_ITEM {
+        public static string PARAM_COLOR_ITEM {
             get {
                 return ResourceManager.GetString("PARAM_COLOR_ITEM", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_INPUT_BOX, InputBoxId, BckImageId, WFontId, MaxChars, SfxSound, Flags (RIB_...), ExtraParam.
         /// </summary>
-        internal static string PARAM_INPUT_BOX {
+        public static string PARAM_INPUT_BOX {
             get {
                 return ResourceManager.GetString("PARAM_INPUT_BOX", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_LIGHTNING, IdParamList, Lightning flags (LGTN_...), SourcePosItem, TargetPosItem, IdColorRGB, Intensity, SoundEffect, Size, ParticleDurate, IntervalTime, Alfa, Beta.
         /// </summary>
-        internal static string PARAM_LIGHTNING {
+        public static string PARAM_LIGHTNING {
             get {
                 return ResourceManager.GetString("PARAM_LIGHTNING", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_MOVE_ITEM, IdParamList, Flags (FMOV_...), IndexItem, Direction (DIR_...), Distance, Speed, MovingSound, FinalSound, Extra.
         /// </summary>
-        internal static string PARAM_MOVE_ITEM {
+        public static string PARAM_MOVE_ITEM {
             get {
                 return ResourceManager.GetString("PARAM_MOVE_ITEM", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_PRINT_TEXT, IdPrintText, Color (CL_...), FontType (FT_...), BlinkTime, DurateTime, X_Position, Y_Position.
         /// </summary>
-        internal static string PARAM_PRINT_TEXT {
+        public static string PARAM_PRINT_TEXT {
             get {
                 return ResourceManager.GetString("PARAM_PRINT_TEXT", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_QUADRILATERAL, IdParamList, Xa, Ya, Xb, Yb, Xc, Yc, Xd, Yd.
         /// </summary>
-        internal static string PARAM_QUADRILATERAL {
+        public static string PARAM_QUADRILATERAL {
             get {
                 return ResourceManager.GetString("PARAM_QUADRILATERAL", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_RECT, RectId, XOrigin, YOrigin, Width, Height, ForeColor, BackColor.
         /// </summary>
-        internal static string PARAM_RECT {
+        public static string PARAM_RECT {
             get {
                 return ResourceManager.GetString("PARAM_RECT", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_ROTATE_ITEM, IdParamList, FlagsRotation (FROT_...), ItemIndex, DirHRotation (ROTH_...), HRotationAngle, SpeedHRotation, DirVRotation (ROTV_...), VRotationAngle, SpeedVRotation, MovingSound, FinalSound.
         /// </summary>
-        internal static string PARAM_ROTATE_ITEM {
+        public static string PARAM_ROTATE_ITEM {
             get {
                 return ResourceManager.GetString("PARAM_ROTATE_ITEM", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_SCALE_ITEM, IdScaling, ItemIndex, Flags Scaling (FSCA_...), BeginSizePercentage, FinalSizePercentage, PercentageSpeed.
         /// </summary>
-        internal static string PARAM_SCALE_ITEM {
+        public static string PARAM_SCALE_ITEM {
             get {
                 return ResourceManager.GetString("PARAM_SCALE_ITEM", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_SET_CAMERA, IdSetCamera, Flags (FSCAM_...), DistanceCam, VOrientCam, HOrientCam, SpeedCamera.
         /// </summary>
-        internal static string PARAM_SET_CAMERA {
+        public static string PARAM_SET_CAMERA {
             get {
                 return ResourceManager.GetString("PARAM_SET_CAMERA", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_SHOW_SPRITE, IdParamShowSprite, Flags Show Sprites (FSS_...), OriginX, OriginY, Width, Height, SlotSprite, SpriteIndex, IdColorRGB, GridX, GridY, Extra Value.
         /// </summary>
-        internal static string PARAM_SHOW_SPRITE {
+        public static string PARAM_SHOW_SPRITE {
             get {
                 return ResourceManager.GetString("PARAM_SHOW_SPRITE", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_SWAP_ANIMATIONS, ASwapId, SourceFirstAnim, TargetFirstAnim, NumberOfAnimations.
         /// </summary>
-        internal static string PARAM_SWAP_ANIMATIONS {
+        public static string PARAM_SWAP_ANIMATIONS {
             get {
                 return ResourceManager.GetString("PARAM_SWAP_ANIMATIONS", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_TRIANGLE, IdParamList, Xa, Ya, Xb, Yb, Xc, Yc.
         /// </summary>
-        internal static string PARAM_TRIANGLE {
+        public static string PARAM_TRIANGLE {
             get {
                 return ResourceManager.GetString("PARAM_TRIANGLE", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= PARAM_WTEXT, IdParameter, Flags (WTF_...), WindowsFontId, TimeDurate, Left, Top, Right, Bottom.
         /// </summary>
-        internal static string PARAM_WTEXT {
+        public static string PARAM_WTEXT {
             get {
                 return ResourceManager.GetString("PARAM_WTEXT", resourceCulture);
             }

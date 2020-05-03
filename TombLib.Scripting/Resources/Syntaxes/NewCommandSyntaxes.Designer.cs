@@ -22,7 +22,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class NewCommandSyntaxes {
+    public class NewCommandSyntaxes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Scripting.Resources.Syntaxes.NewCommandSyntaxes", typeof(NewCommandSyntaxes).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Any] #DEFINE {CONSTANT_NAME} {VALUE}.
         /// </summary>
-        internal static string _DEFINE {
+        public static string _DEFINE {
             get {
                 return ResourceManager.GetString("#DEFINE", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] #FIRST_ID {COMMAND_NAME}={FIRST_ID}.
         /// </summary>
-        internal static string _FIRST_ID {
+        public static string _FIRST_ID {
             get {
                 return ResourceManager.GetString("#FIRST_ID", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Any] #INCLUDE &quot;{FILE_NAME}.TXT&quot;.
         /// </summary>
-        internal static string _INCLUDE {
+        public static string _INCLUDE {
             get {
                 return ResourceManager.GetString("#INCLUDE", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] AddEffect= {ID}, {Effect Type (ADD_...)}, {Effect Flag (FADD_...)}, {Joint Type (JOINT_...)}, {ORIGIN_X_DISTANCE}, {ORIGIN_Y_DISTANCE}, {ORIGIN_Z_DISTANCE}, {EMIT_DURATION}, {PAUSE_DURATION}, {Extra Params (*Array*)}.
         /// </summary>
-        internal static string AddEffect {
+        public static string AddEffect {
             get {
                 return ResourceManager.GetString("AddEffect", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Animation= AnimIndex, (KEY1_...), (KEY2_...), (FAN_...) flags, (ENV_...) Environment, Distance for Env, Extra, StateId (STATE_...) or (-)AnimationIndex (*Array*).
         /// </summary>
-        internal static string Animation {
+        public static string Animation {
             get {
                 return ResourceManager.GetString("Animation", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] AnimationSlot= Slot, AnimSlotFlags (ASF_...), AnimIndex, (KEY1_...), (KEY2_...), (FAN_...) flags, (ENV_...) Environment, Distance for Env, Extra, StateId (STATE_...) or (-)AnimationIndex (*Array*).
         /// </summary>
-        internal static string AnimationSlot {
+        public static string AnimationSlot {
             get {
                 return ResourceManager.GetString("AnimationSlot", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] AssignSlot= MyUsedSlot, OBJ_Type.
         /// </summary>
-        internal static string AssignSlot {
+        public static string AssignSlot {
             get {
                 return ResourceManager.GetString("AssignSlot", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] ColorRGB= IdColor, Red, Green, Blue.
         /// </summary>
-        internal static string ColorRGB {
+        public static string ColorRGB {
             get {
                 return ResourceManager.GetString("ColorRGB", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] CombineItems= FirstItem (slot), SecondItem (slot), FinalItem (slot).
         /// </summary>
-        internal static string CombineItems {
+        public static string CombineItems {
             get {
                 return ResourceManager.GetString("CombineItems", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] CRS= ENABLED / DISABLED.
         /// </summary>
-        internal static string CRS {
+        public static string CRS {
             get {
                 return ResourceManager.GetString("CRS", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Customize= {TYPE (CUST_...)}, {Arguments (*Array*)}.
         /// </summary>
-        internal static string Customize {
+        public static string Customize {
             get {
                 return ResourceManager.GetString("Customize", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] CutScene= ENABLED.
         /// </summary>
-        internal static string CutScene {
+        public static string CutScene {
             get {
                 return ResourceManager.GetString("CutScene", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Damage= Flags (DMG_...), SecondsForDeath, SecondsForBarRestore, BarColor, BarName, BlinkPercentage.
         /// </summary>
-        internal static string Damage {
+        public static string Damage {
             get {
                 return ResourceManager.GetString("Damage", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Title] DefaultWindowsFont= IdWindowsFont, FLAGS (DWF_...), LineSpacing, MainMenuOffsets, NewGameTitle, LoadGameTitle, NewGameList, LoadGameList, OptionSettings, OptionCmdList, PauseScreen, StatList, InventoryItemName, ExamineText.
         /// </summary>
-        internal static string DefaultWindowsFont {
+        public static string DefaultWindowsFont {
             get {
                 return ResourceManager.GetString("DefaultWindowsFont", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Demo= DemoFlags (DEMF_...), Parameter, InfoText , DemoLegendText, WaitingTime, DemoIndex (*Array*).
         /// </summary>
-        internal static string Demo {
+        public static string Demo {
             get {
                 return ResourceManager.GetString("Demo", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Detector= Flags (DTF_...), MetricScale, MetersOfRange, Target Items (*Array*).
         /// </summary>
-        internal static string Detector {
+        public static string Detector {
             get {
                 return ResourceManager.GetString("Detector", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] Diagnostic= ENABLED / DISABLED.
         /// </summary>
-        internal static string Diagnostic {
+        public static string Diagnostic {
             get {
                 return ResourceManager.GetString("Diagnostic", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] DiagnosticType= DiagnosticType (DGX_...), Extra Dgx flags (EDGX_...).
         /// </summary>
-        internal static string DiagnosticType {
+        public static string DiagnosticType {
             get {
                 return ResourceManager.GetString("DiagnosticType", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Diary= Id Diary, SlotDiaryItem, LaraDiaryFlags (LDF_...), BackGroundImageID, Default PageLayout (PL_...), FirstString, TitleWFontId, CommonTextWFontId.
         /// </summary>
-        internal static string Diary {
+        public static string Diary {
             get {
                 return ResourceManager.GetString("Diary", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Elevator= ElevatorIndex, ClickFloorDistance, NumberOfFloors, Elevator flags (EF_...), FirstDoorIndex, InnerKeyPadIndex, Speed, Frame items (*Array*).
         /// </summary>
-        internal static string Elevator {
+        public static string Elevator {
             get {
                 return ResourceManager.GetString("Elevator", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Enemy= Slot, HP (vitality), (NEF_...) flags, TombFlags (TCF_...), (EXTRA_...) flags, Damage1, Damage2, Damage3.
         /// </summary>
-        internal static string Enemy {
+        public static string Enemy {
             get {
                 return ResourceManager.GetString("Enemy", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Equipment= SLOT item, Amount.
         /// </summary>
-        internal static string Equipment {
+        public static string Equipment {
             get {
                 return ResourceManager.GetString("Equipment", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] FMV= NumberFmv, EnableEscape.
         /// </summary>
-        internal static string FMVLevel {
+        public static string FMVLevel {
             get {
                 return ResourceManager.GetString("FMVLevel", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] FogRange= StartLimitDistanceFog, EndLimitDistanceFog.
         /// </summary>
-        internal static string FogRange {
+        public static string FogRange {
             get {
                 return ResourceManager.GetString("FogRange", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] ForceBumpMapping= ENABLED / DISABLED.
         /// </summary>
-        internal static string ForceBumpMapping {
+        public static string ForceBumpMapping {
             get {
                 return ResourceManager.GetString("ForceBumpMapping", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] ForceVolumetricFX= ENABLED / DISABLED.
         /// </summary>
-        internal static string ForceVolumetricFX {
+        public static string ForceVolumetricFX {
             get {
                 return ResourceManager.GetString("ForceVolumetricFX", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] GlobalTrigger= IdGlobalTrigger, Flags Global Trigger (FGT_...), Global Trigger (GT_...), Parameter, IdConditionTriggerGroup, IdPerformTriggerGroup, IdOnFalseTriggerGroup.
         /// </summary>
-        internal static string GlobalTrigger {
+        public static string GlobalTrigger {
             get {
                 return ResourceManager.GetString("GlobalTrigger", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Image= IdImageCommand, IdImageFile, ImageFlags (IF_...), EffectTime, AudioTrack, XPosition, YPosition, SizeX, SizeY.
         /// </summary>
-        internal static string Image {
+        public static string Image {
             get {
                 return ResourceManager.GetString("Image", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] ImportFile= IdImport, PathFile, FileType (FTYPE_...), ImportType (IMPORT_...).
         /// </summary>
-        internal static string ImportFile {
+        public static string ImportFile {
             get {
                 return ResourceManager.GetString("ImportFile", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] ItemGroup= IdGroup, FirstIndexItem, {Other indices for items (*Array*)}.
         /// </summary>
-        internal static string ItemGroup {
+        public static string ItemGroup {
             get {
                 return ResourceManager.GetString("ItemGroup", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] KeyPad= AtStartAnimation, FrameStartPopUp, AtEndAnimation, ClickSound.
         /// </summary>
-        internal static string KeyPad {
+        public static string KeyPad {
             get {
                 return ResourceManager.GetString("KeyPad", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] LaraStartPos= RoomOfLSP, OcbOfLSP.
         /// </summary>
-        internal static string LaraStartPos {
+        public static string LaraStartPos {
             get {
                 return ResourceManager.GetString("LaraStartPos", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] LevelFarView= NumberOfBlocks.
         /// </summary>
-        internal static string LevelFarView {
+        public static string LevelFarView {
             get {
                 return ResourceManager.GetString("LevelFarView", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] LogItem= FlagsLogItem (FLI_...), IndexOfItem.
         /// </summary>
-        internal static string LogItem {
+        public static string LogItem {
             get {
                 return ResourceManager.GetString("LogItem", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] MirrorEffect= InFrontRoom, HiddenRoom, MirrorType (MIR_...), {Animating array + (FMIR_...) flags (*Array*)}.
         /// </summary>
-        internal static string MirrorEffect {
+        public static string MirrorEffect {
             get {
                 return ResourceManager.GetString("MirrorEffect", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] MultEnvCondition= IdMultCondition, (ENV_...) condition, DistanceForEnv, Extra field, array of tripled of {(ENV_...) Condition, DistanceForEnv, Extra field}.
         /// </summary>
-        internal static string MultEnvCondition {
+        public static string MultEnvCondition {
             get {
                 return ResourceManager.GetString("MultEnvCondition", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] NewSoundEngine= ENABLED / DISABLED.
         /// </summary>
-        internal static string NewSoundEngine {
+        public static string NewSoundEngine {
             get {
                 return ResourceManager.GetString("NewSoundEngine", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Organizer= IdOrganizer, Flags Organizer (FO_...), Parameter, FirstTime, PerformFirstIdTriggerGroup, SecondTime, PerformSecondIdTriggerGroup, {Time and TriggerGroup (*Array*)}.
         /// </summary>
-        internal static string Organizer {
+        public static string Organizer {
             get {
                 return ResourceManager.GetString("Organizer", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Parameters= {TYPE (PARAM_...)}, {PARAM_LIST_ID}, {Parameters (*Array*)}.
         /// </summary>
-        internal static string Parameters {
+        public static string Parameters {
             get {
                 return ResourceManager.GetString("Parameters", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] Plugin= PluginId, PluginName, MainPluginSettings (MPS_...), {DisableFeature (*Array*)}.
         /// </summary>
-        internal static string Plugin {
+        public static string Plugin {
             get {
                 return ResourceManager.GetString("Plugin", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] PreserveInventory= ENABLED / DISABLED.
         /// </summary>
-        internal static string PreserveInventory {
+        public static string PreserveInventory {
             get {
                 return ResourceManager.GetString("PreserveInventory", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Rain= (RAIN_...) constant.
         /// </summary>
-        internal static string Rain {
+        public static string Rain {
             get {
                 return ResourceManager.GetString("Rain", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] SavegamePanel= SavegamePanelFlags (SPF_...), BackGroundImageId, NumberOfSave, NumberOfVisibleSave, SavegamePanelLayout (SPL_...), InfoFormatString, IdListWindowsFont, IdInfoWindowsFont, InTitleWindowsFont.
         /// </summary>
-        internal static string SavegamePanel {
+        public static string SavegamePanel {
             get {
                 return ResourceManager.GetString("SavegamePanel", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] Settings= (SET_...) constants.
         /// </summary>
-        internal static string Settings {
+        public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] ShowLaraInTitle= ENABLED / DISABLED.
         /// </summary>
-        internal static string ShowLaraInTitle {
+        public static string ShowLaraInTitle {
             get {
                 return ResourceManager.GetString("ShowLaraInTitle", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Snow= (SNOW_...) constant.
         /// </summary>
-        internal static string Snow {
+        public static string Snow {
             get {
                 return ResourceManager.GetString("Snow", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] SoundSettings= Sound Quality (SQ_...), MusicVolume, SoundEffectVolume.
         /// </summary>
-        internal static string SoundSettings {
+        public static string SoundSettings {
             get {
                 return ResourceManager.GetString("SoundSettings", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] StandBy= IdStandBY, Type StandBy (TSB_...), WaitTime, Flags StandBy (FSB_...), Text, NumTexts, AudioTrack, VAngle, RotateSpeed, Distance, IdTriggerGroupBegin, IdTriggerGroupEnd.
         /// </summary>
-        internal static string StandBy {
+        public static string StandBy {
             get {
                 return ResourceManager.GetString("StandBy", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] StaticMIP= MainStaticSlot, BStaticLimit, BStaticSlot, CStaticLimit, CStaticSlot.
         /// </summary>
-        internal static string StaticMIP {
+        public static string StaticMIP {
             get {
                 return ResourceManager.GetString("StaticMIP", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Switch= SwitchId, VariablePlaceFolder, FlagsSwitch (SWT_...), {Trigger Group Indices (*Array*)}.
         /// </summary>
-        internal static string Switch {
+        public static string Switch {
             get {
                 return ResourceManager.GetString("Switch", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] TestPosition= IdTestPosition, Flags (TPOS_...), Slot Moveable, XDistanceMin, XDistanceMax, YDistanceMin, YDistanceMax, ZDistanceMin, ZDistanceMax,  HOrientDiffMin, HOrientDiffMax, VOrientDiffMin, VOrientDiffMax, ROrientDiffMin, ROrientDiffMax.
         /// </summary>
-        internal static string TestPosition {
+        public static string TestPosition {
             get {
                 return ResourceManager.GetString("TestPosition", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] TextFormat= Color (CL_...), FormatFlags (FT_...), BlinkTime, SizeCharacterMenu (SC_...).
         /// </summary>
-        internal static string TextFormat {
+        public static string TextFormat {
             get {
                 return ResourceManager.GetString("TextFormat", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] TextureSequence= IdTexSeq, FramePerSec, (SEQ_...) flags, {Tex Indices (*Array*)}.
         /// </summary>
-        internal static string TextureSequence {
+        public static string TextureSequence {
             get {
                 return ResourceManager.GetString("TextureSequence", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] TriggerGroup= IdGroup, ExportValue1 + (TGROUP_...) flags, ExportValue2, ExportValue3, {Other Values 1/2/3 of exported triggers or conditions (*Array*)}.
         /// </summary>
-        internal static string TriggerGroup {
+        public static string TriggerGroup {
             get {
                 return ResourceManager.GetString("TriggerGroup", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Turbo= Flags (TRB_...), FPStoKeep.
         /// </summary>
-        internal static string Turbo {
+        public static string Turbo {
             get {
                 return ResourceManager.GetString("Turbo", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] WindowsFont= IdWindowFont, WindowFontName, WindowsFontFlags (WFF_...), SizeFont, ColorRbgId, ShadowColorRgbId.
         /// </summary>
-        internal static string WindowsFont {
+        public static string WindowsFont {
             get {
                 return ResourceManager.GetString("WindowsFont", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] WindowTitle= NameOfCurrentLevel.
         /// </summary>
-        internal static string WindowTitle {
+        public static string WindowTitle {
             get {
                 return ResourceManager.GetString("WindowTitle", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] WorldFarView= MaxSectorDistance.
         /// </summary>
-        internal static string WorldFarView {
+        public static string WorldFarView {
             get {
                 return ResourceManager.GetString("WorldFarView", resourceCulture);
             }

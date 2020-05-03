@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Windows.Automation;
 using System.Windows.Forms;
-using TombLib.Scripting.Helpers;
 
 namespace TombLib.Scripting.Compilers
 {
@@ -17,16 +16,16 @@ namespace TombLib.Scripting.Compilers
 
 		public static bool AreLibrariesRegistered()
 		{
-			string MSCOMCTL = Path.Combine(PathHelper.GetSystemDirectory(), "Mscomctl.ocx");
-			string RICHTX32 = Path.Combine(PathHelper.GetSystemDirectory(), "Richtx32.ocx");
-			string PICFORMAT32 = Path.Combine(PathHelper.GetSystemDirectory(), "PicFormat32.ocx");
-			string COMDLG32 = Path.Combine(PathHelper.GetSystemDirectory(), "Comdlg32.ocx");
+			string MSCOMCTL = Path.Combine(DefaultPaths.GetSystemDirectory(), "Mscomctl.ocx");
+			string RICHTX32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "Richtx32.ocx");
+			string PICFORMAT32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "PicFormat32.ocx");
+			string COMDLG32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "Comdlg32.ocx");
 
 			if (!File.Exists(MSCOMCTL) || !File.Exists(RICHTX32) || !File.Exists(PICFORMAT32) || !File.Exists(COMDLG32))
 			{
 				ProcessStartInfo startInfo = new ProcessStartInfo
 				{
-					FileName = Path.Combine(PathHelper.GetProgramDirectory(), "TombIDE Library Registration.exe")
+					FileName = Path.Combine(DefaultPaths.GetProgramDirectory(), "TombIDE Library Registration.exe")
 				};
 
 				try
@@ -46,7 +45,7 @@ namespace TombLib.Scripting.Compilers
 			AdjustFormatting(projectScriptPath);
 
 			// Run NG_Center.exe
-			var application = TestStack.White.Application.Launch(Path.Combine(PathHelper.GetInternalNGCPath(), "NG_Center.exe"));
+			var application = TestStack.White.Application.Launch(Path.Combine(DefaultPaths.GetInternalNGCPath(), "NG_Center.exe"));
 
 			// Do some actions in NG Center
 			return RunScriptedNGCenterEvents(projectEnginePath, application);
@@ -124,17 +123,17 @@ namespace TombLib.Scripting.Compilers
 				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
 
 				// Read the logs
-				string logFilePath = Path.Combine(PathHelper.GetVGEScriptPath(), "script_log.txt");
+				string logFilePath = Path.Combine(DefaultPaths.GetVGEScriptPath(), "script_log.txt");
 				string logFileContent = File.ReadAllText(logFilePath);
 
 				// Replace the VGE paths in the log file with the current project ones
-				File.WriteAllText(logFilePath, logFileContent.Replace(PathHelper.GetVGEPath(), projectEnginePath), Encoding.GetEncoding(1252));
+				File.WriteAllText(logFilePath, logFileContent.Replace(DefaultPaths.GetVGEPath(), projectEnginePath), Encoding.GetEncoding(1252));
 
 				application.Close(); // Done!
 
 				// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-				string compiledScriptFilePath = Path.Combine(PathHelper.GetVGEPath(), "Script.dat");
-				string compiledEnglishFilePath = Path.Combine(PathHelper.GetVGEPath(), "English.dat");
+				string compiledScriptFilePath = Path.Combine(DefaultPaths.GetVGEPath(), "Script.dat");
+				string compiledEnglishFilePath = Path.Combine(DefaultPaths.GetVGEPath(), "English.dat");
 
 				if (File.Exists(compiledScriptFilePath))
 					File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
@@ -161,7 +160,7 @@ namespace TombLib.Scripting.Compilers
 
 		private static void CopyFilesToVGEScriptFolder(string projectScriptPath)
 		{
-			string vgeScriptPath = PathHelper.GetVGEScriptPath();
+			string vgeScriptPath = DefaultPaths.GetVGEScriptPath();
 
 			// Delete the old /Script/ directory in the VGE if it exists
 			if (Directory.Exists(vgeScriptPath))
@@ -181,7 +180,7 @@ namespace TombLib.Scripting.Compilers
 
 		private static void AdjustFormatting(string projectScriptPath)
 		{
-			string vgeScriptFilePath = Path.Combine(PathHelper.GetVGEScriptPath(), "Script.txt");
+			string vgeScriptFilePath = Path.Combine(DefaultPaths.GetVGEScriptPath(), "Script.txt");
 
 			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
 			lines = ReplaceIncludesWithFileContents(lines, projectScriptPath);
@@ -191,7 +190,7 @@ namespace TombLib.Scripting.Compilers
 			while (newFileContent.Contains(" ="))
 				newFileContent = newFileContent.Replace(" =", "=");
 
-			File.WriteAllText(Path.Combine(PathHelper.GetVGEScriptPath(), "Script.txt"), newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(Path.Combine(DefaultPaths.GetVGEScriptPath(), "Script.txt"), newFileContent, Encoding.GetEncoding(1252));
 		}
 
 		private static string[] ReplaceIncludesWithFileContents(string[] lines, string projectScriptPath)

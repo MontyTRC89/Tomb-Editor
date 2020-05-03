@@ -22,7 +22,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class OldCommandSyntaxes {
+    public class OldCommandSyntaxes {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Scripting.Resources.Syntaxes.OldCommandSyntaxes", typeof(OldCommandSyntaxes).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] AnimatingMIP= {SLOT (1-16)}, {DISTANCE (Sectors)}.
         /// </summary>
-        internal static string AnimatingMIP {
+        public static string AnimatingMIP {
             get {
                 return ResourceManager.GetString("AnimatingMIP", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] ColAddHorizon= ENABLED / DISABLED.
         /// </summary>
-        internal static string ColAddHorizon {
+        public static string ColAddHorizon {
             get {
                 return ResourceManager.GetString("ColAddHorizon", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [PCExtensions] Cut= .TR4 ; Default value.
         /// </summary>
-        internal static string CutPC {
+        public static string CutPC {
             get {
                 return ResourceManager.GetString("CutPC", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [PSXExtensions] Cut= .CUT ; Default value.
         /// </summary>
-        internal static string CutPSX {
+        public static string CutPSX {
             get {
                 return ResourceManager.GetString("CutPSX", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] DemoDisc= ENABLED / DISABLED.
         /// </summary>
-        internal static string DemoDisc {
+        public static string DemoDisc {
             get {
                 return ResourceManager.GetString("DemoDisc", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Examine= {TYPE (1-3)}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string Examine {
+        public static string Examine {
             get {
                 return ResourceManager.GetString("Examine", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Language] File= {UNIQUE_ID}, {FILE_NAME}.TXT.
         /// </summary>
-        internal static string File {
+        public static string File {
             get {
                 return ResourceManager.GetString("File", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] FlyCheat= ENABLED / DISABLED.
         /// </summary>
-        internal static string FlyCheat {
+        public static string FlyCheat {
             get {
                 return ResourceManager.GetString("FlyCheat", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [PCExtensions] FMV= .BIK ; Default value.
         /// </summary>
-        internal static string FMVPC {
+        public static string FMVPC {
             get {
                 return ResourceManager.GetString("FMVPC", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [PSXExtensions] FMV= .FMV ; Default value.
         /// </summary>
-        internal static string FMVPSX {
+        public static string FMVPSX {
             get {
                 return ResourceManager.GetString("FMVPSX", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Fog= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}.
         /// </summary>
-        internal static string Fog {
+        public static string Fog {
             get {
                 return ResourceManager.GetString("Fog", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Horizon= ENABLED / DISABLED.
         /// </summary>
-        internal static string Horizon {
+        public static string Horizon {
             get {
                 return ResourceManager.GetString("Horizon", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] InputTimeout= {NUM_OF_FRAMES}.
         /// </summary>
-        internal static string InputTimeout {
+        public static string InputTimeout {
             get {
                 return ResourceManager.GetString("InputTimeout", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Key= {1-12}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string Key {
+        public static string Key {
             get {
                 return ResourceManager.GetString("Key", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] KeyCombo= {1-8}, {1-2}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string KeyCombo {
+        public static string KeyCombo {
             get {
                 return ResourceManager.GetString("KeyCombo", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Layer1= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}.
         /// </summary>
-        internal static string Layer1 {
+        public static string Layer1 {
             get {
                 return ResourceManager.GetString("Layer1", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Legend= {MESSAGE_STRING}.
         /// </summary>
-        internal static string Legend {
+        public static string Legend {
             get {
                 return ResourceManager.GetString("Legend", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] LensFlare= {GLOBAL_COORD_X}, {GLOBAL_COORD_Y}, {GLOBAL_COORD_Z}, {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}.
         /// </summary>
-        internal static string LensFlare {
+        public static string LensFlare {
             get {
                 return ResourceManager.GetString("LensFlare", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Level= {LEVEL_PATH}, {SOUND_ID}.
         /// </summary>
-        internal static string LevelLevel {
+        public static string LevelLevel {
             get {
                 return ResourceManager.GetString("LevelLevel", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [PCExtensions] Level= .TR4 ; Default value.
         /// </summary>
-        internal static string LevelPC {
+        public static string LevelPC {
             get {
                 return ResourceManager.GetString("LevelPC", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [PSXExtensions] Level= .PSX ; Default value.
         /// </summary>
-        internal static string LevelPSX {
+        public static string LevelPSX {
             get {
                 return ResourceManager.GetString("LevelPSX", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Lightning= ENABLED / DISABLED.
         /// </summary>
-        internal static string Lightning {
+        public static string Lightning {
             get {
                 return ResourceManager.GetString("Lightning", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] LoadCamera= {SOURCE_X_POS}, {SOURCE_Y_POS}, {SOURCE_Z_POS}, {TARGET_X_POS}, {TARGET_Y_POS}, {TARGET_Z_POS}, {ROOM_NUMBER}.
         /// </summary>
-        internal static string LoadCamera {
+        public static string LoadCamera {
             get {
                 return ResourceManager.GetString("LoadCamera", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] LoadSave= ENABLED / DISABLED.
         /// </summary>
-        internal static string LoadSave {
+        public static string LoadSave {
             get {
                 return ResourceManager.GetString("LoadSave", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Mirror= {ROOM_NUMBER}, {ROOM_ORIGIN}.
         /// </summary>
-        internal static string Mirror {
+        public static string Mirror {
             get {
                 return ResourceManager.GetString("Mirror", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Name= {NAME_STRING}.
         /// </summary>
-        internal static string Name {
+        public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Pickup= {1-4}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string Pickup {
+        public static string Pickup {
             get {
                 return ResourceManager.GetString("Pickup", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] PickupCombo= {1-4}, {1-2}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string PickupCombo {
+        public static string PickupCombo {
             get {
                 return ResourceManager.GetString("PickupCombo", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] PlayAnyLevel= ENABLED / DISABLED.
         /// </summary>
-        internal static string PlayAnyLevel {
+        public static string PlayAnyLevel {
             get {
                 return ResourceManager.GetString("PlayAnyLevel", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Puzzle= {1-12}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string Puzzle {
+        public static string Puzzle {
             get {
                 return ResourceManager.GetString("Puzzle", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] PuzzleCombo= {1-8}, {1-2}, {NAME}, {HEIGHT}, {SIZE}, {X_ORIENT}, {Y_ORIENT}, {Z_ORIENT}, {BIT_MASK}.
         /// </summary>
-        internal static string PuzzleCombo {
+        public static string PuzzleCombo {
             get {
                 return ResourceManager.GetString("PuzzleCombo", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] RemoveAmulet= ENABLED / DISABLED.
         /// </summary>
-        internal static string RemoveAmulet {
+        public static string RemoveAmulet {
             get {
                 return ResourceManager.GetString("RemoveAmulet", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] ResetHUB= {LEVEL_ID}.
         /// </summary>
-        internal static string ResetHUB {
+        public static string ResetHUB {
             get {
                 return ResourceManager.GetString("ResetHUB", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] ResidentCut= {TRIGGER_ID}, {CUTSCENE_ID}.
         /// </summary>
-        internal static string ResidentCut {
+        public static string ResidentCut {
             get {
                 return ResourceManager.GetString("ResidentCut", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Timer= ENABLED / DISABLED.
         /// </summary>
-        internal static string Timer {
+        public static string Timer {
             get {
                 return ResourceManager.GetString("Timer", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Options] Title= ENABLED / DISABLED.
         /// </summary>
-        internal static string Title {
+        public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] Train= ENABLED / DISABLED.
         /// </summary>
-        internal static string Train {
+        public static string Train {
             get {
                 return ResourceManager.GetString("Train", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] UVrotate= {SPEED}.
         /// </summary>
-        internal static string UVRotate {
+        public static string UVRotate {
             get {
                 return ResourceManager.GetString("UVRotate", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         /// <summary>
         ///   Looks up a localized string similar to [Level] YoungLara= ENABLED / DISABLED.
         /// </summary>
-        internal static string YoungLara {
+        public static string YoungLara {
             get {
                 return ResourceManager.GetString("YoungLara", resourceCulture);
             }

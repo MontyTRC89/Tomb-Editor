@@ -22,7 +22,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class SectionToolTips {
+    public class SectionToolTips {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Scripting.Resources.ToolTips.SectionToolTips", typeof(SectionToolTips).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         /// <summary>
         ///   Looks up a localized string similar to This section indicates the names of the various language files..
         /// </summary>
-        internal static string Language {
+        public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         /// <summary>
         ///   Looks up a localized string similar to This section describes the contents of a playable level..
         /// </summary>
-        internal static string Level {
+        public static string Level {
             get {
                 return ResourceManager.GetString("Level", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         /// <summary>
         ///   Looks up a localized string similar to This section specifies various game-related options..
         /// </summary>
-        internal static string Options {
+        public static string Options {
             get {
                 return ResourceManager.GetString("Options", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         /// <summary>
         ///   Looks up a localized string similar to This section defines the file extensions for the PC version of the game..
         /// </summary>
-        internal static string PCExtensions {
+        public static string PCExtensions {
             get {
                 return ResourceManager.GetString("PCExtensions", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         /// <summary>
         ///   Looks up a localized string similar to This section defines the file extensions for the PSX version of the game..
         /// </summary>
-        internal static string PSXExtensions {
+        public static string PSXExtensions {
             get {
                 return ResourceManager.GetString("PSXExtensions", resourceCulture);
             }
@@ -109,7 +109,7 @@ namespace TombLib.Scripting.Resources.ToolTips {
         ///   Looks up a localized string similar to This section describes the fly-by level displayed in the main menu.
         ///Most of the [Level] commands are valid for this section..
         /// </summary>
-        internal static string Title {
+        public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
             }
