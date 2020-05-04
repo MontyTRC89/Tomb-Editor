@@ -445,7 +445,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 					break;
 				}
 
-				if (i == Document.LineCount)
+				if (i == Document.LineCount - 1)
 					for (int j = 1; j < Document.LineCount; j++)
 					{
 						DocumentLine jLine = Document.GetLineByNumber(j);
@@ -464,10 +464,10 @@ namespace TombLib.Scripting.TextEditors.Controls
 		{
 			DocumentLine currentLine = Document.GetLineByOffset(CaretOffset);
 
-			for (int i = Document.LineCount - 1; i >= 0; i--)
+			for (int i = Document.LineCount - 1; i > 0; i--)
 			{
-				if (i == 0)
-					for (int j = Document.LineCount - 1; j > 0; j++)
+				if (i == 1)
+					for (int j = Document.LineCount - 1; j > 0; j--)
 					{
 						DocumentLine jLine = Document.GetLineByNumber(j);
 

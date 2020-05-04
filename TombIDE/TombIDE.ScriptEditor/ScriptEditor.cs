@@ -1,6 +1,7 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -1167,6 +1168,8 @@ namespace TombIDE.ScriptEditor
 					if (line.IsBookmarked)
 						line.IsBookmarked = false;
 				}
+
+				_textEditor.TextArea.TextView.InvalidateLayer(KnownLayer.Background);
 			}
 		}
 
