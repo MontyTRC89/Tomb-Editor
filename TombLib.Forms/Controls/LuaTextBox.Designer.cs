@@ -40,6 +40,8 @@
         ']'};
             this.textEditor.AutoIndent = false;
             this.textEditor.AutoIndentChars = false;
+            this.textEditor.AutoIndentCharsPatterns = "^\\s*[\\w\\.]+(\\s\\w+)?\\s*(?<range>=)\\s*(?<range>[^;=]+);\r\n^\\s*(case|default)\\s*[^:]*" +
+    "(?<range>:)\\s*(?<range>[^;]+);";
             this.textEditor.AutoIndentExistingLines = false;
             this.textEditor.AutoScrollMinSize = new System.Drawing.Size(43, 18);
             this.textEditor.BackBrush = null;
@@ -74,9 +76,12 @@
             this.textEditor.TabIndex = 4;
             this.textEditor.Zoom = 100;
             this.textEditor.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.textEditor_TextChanged);
+            this.textEditor.DragDrop += new System.Windows.Forms.DragEventHandler(this.textEditor_DragDrop);
+            this.textEditor.DragEnter += new System.Windows.Forms.DragEventHandler(this.textEditor_DragEnter);
             // 
             // LuaTextBox
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.textEditor);

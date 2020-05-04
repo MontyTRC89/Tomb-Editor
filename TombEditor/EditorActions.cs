@@ -852,7 +852,7 @@ namespace TombEditor
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
-                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || 
+                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
                     Control.ModifierKeys.HasFlag(Keys.Control) ||
                     Control.ModifierKeys.HasFlag(Keys.Alt))
                     EditStaticMeshColor(owner, (StaticInstance)instance);
@@ -918,13 +918,19 @@ namespace TombEditor
             else if (instance is VolumeInstance)
             {
                 if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                    using (var formVolume = new FormVolume((VolumeInstance)instance))
+                {
+                    var existingWindow = Application.OpenForms["FormVolume"];
+                    if (existingWindow == null)
                     {
-                        if (formVolume.ShowDialog(owner) != DialogResult.OK)
-                            return;
-                        else
-                            _editor.ObjectChange(instance, ObjectChangeType.Change);
+                        var volForm = new FormVolume((VolumeInstance)instance);
+                        volForm.Show(owner);
                     }
+                    else
+                    {
+                        (existingWindow as FormVolume).SaveAndReopenVolume((VolumeInstance)instance);
+                        existingWindow.Focus();
+                    }
+                }
                 else
                     _editor.SendMessage("This object is unavailable in this game version. Switch version to TR5Main.", PopupType.Error);
             }

@@ -92,6 +92,8 @@ namespace TombEditor.Controls
         private BaseContextMenu _currentContextMenu;
         private ToolHandler _toolHandler;
         private readonly MovementTimer _movementTimer;
+        private bool _dragObjectPicked = false;
+        private bool _dragObjectMoved  = false;
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
@@ -704,14 +706,21 @@ namespace TombEditor.Controls
                     if (obj.Room != _editor.SelectedRoom && _editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
                         _editor.SelectedRoom = obj.Room;
 
-                    // Select or bookmark object
-                    if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
-                        _editor.ChosenItem = ((ItemInstance)obj).ItemType;
-                    else
+                    // Auto-bookmark any object
+                    if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance) && !ModifierKeys.HasFlag(Keys.Alt))
+                        EditorActions.BookmarkObject(obj);
+
+                    // Select object
+                    _editor.SelectedObject = obj;
+
+                    if (obj is ItemInstance)
                     {
-                        if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance))
-                            EditorActions.BookmarkObject(obj);
-                        _editor.SelectedObject = obj;
+                        if (ModifierKeys.HasFlag(Keys.Alt))
+                            // Pick item in browser
+                            _editor.ChosenItem = ((ItemInstance)obj).ItemType;
+                        else
+                            // Prepare for drag-n-drop
+                            _dragObjectPicked = true;
                     }
                 }
                 else if (newPicking == null)
@@ -783,7 +792,7 @@ namespace TombEditor.Controls
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            if (!Focused)
+            if (!Focused && Form.ActiveForm == FindForm())
             {
                 Focus(); // Enable keyboard interaction
                 _editor.ToggleHiddenSelection(false); // Restore hidden selection, if any
@@ -1102,6 +1111,12 @@ namespace TombEditor.Controls
                                 }
                             }
                         }
+                        else if (_dragObjectPicked && !_dragObjectMoved && _editor.SelectedObject != null)
+                        {
+                            // Do drag-n-drop tasks, if any
+                            Update();
+                            DoDragDrop(_editor.SelectedObject, DragDropEffects.Copy);
+                        }
                     }
                     break;
                 default:
@@ -1254,6 +1269,8 @@ namespace TombEditor.Controls
             _toolHandler.Disengage();
             _doSectorSelection = false;
             _gizmoEnabled = false;
+            _dragObjectMoved = false;
+            _dragObjectPicked = false;
             if (_gizmo.MouseUp())
                 Invalidate();
             Capture = false;
