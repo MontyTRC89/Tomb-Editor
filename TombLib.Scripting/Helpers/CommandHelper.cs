@@ -196,12 +196,12 @@ namespace TombLib.Scripting.Helpers
 			if (section == null)
 				return "LevelLevel";
 
-			switch (section.ToLower())
+			switch (section.ToUpper())
 			{
-				case "pcextensions":
+				case "PCEXTENSIONS":
 					return "LevelPC";
 
-				case "psxextensions":
+				case "PSXEXTENSIONS":
 					return "LevelPSX";
 
 				default:
@@ -216,12 +216,12 @@ namespace TombLib.Scripting.Helpers
 			if (section == null)
 				return null;
 
-			switch (section.ToLower())
+			switch (section.ToUpper())
 			{
-				case "pcextensions":
+				case "PCEXTENSIONS":
 					return "CutPC";
 
-				case "psxextensions":
+				case "PSXEXTENSIONS":
 					return "CutPSX";
 
 				default:
@@ -236,12 +236,12 @@ namespace TombLib.Scripting.Helpers
 			if (section == null)
 				return "FMVLevel";
 
-			switch (section.ToLower())
+			switch (section.ToUpper())
 			{
-				case "pcextensions":
+				case "PCEXTENSIONS":
 					return "FMVPC";
 
-				case "psxextensions":
+				case "PSXEXTENSIONS":
 					return "FMVPSX";
 
 				default:
@@ -253,7 +253,7 @@ namespace TombLib.Scripting.Helpers
 
 		#region Other methods
 
-		public static int FindCommandStartLineNumber(TextDocument document, DocumentLine searchStartingLine)
+		private static int FindCommandStartLineNumber(TextDocument document, DocumentLine searchStartingLine)
 		{
 			DocumentLine previousLine;
 			string previousLineText;

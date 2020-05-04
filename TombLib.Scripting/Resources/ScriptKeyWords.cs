@@ -11,6 +11,8 @@ namespace TombLib.Scripting.Resources
 {
 	public static class ScriptKeyWords
 	{
+		// TODO: Refactor
+
 		#region Public variables
 
 		public static List<string> MnemonicConstants { get; private set; }

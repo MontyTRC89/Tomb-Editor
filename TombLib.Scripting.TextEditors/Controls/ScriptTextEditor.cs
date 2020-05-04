@@ -26,6 +26,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 	{
 		#region Properties, fields and objects
 
+		public ClassicScriptCleaner Cleaner = new ClassicScriptCleaner();
+
 		public bool ShowSectionSeparators
 		{
 			get { return _showSectionSeparators; }
@@ -50,8 +52,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private bool _showSectionSeparators;
 
-		public ClassicScriptCleaner Cleaner = new ClassicScriptCleaner();
-
 		private BackgroundWorker _autocompleteWorker = new BackgroundWorker();
 		private BackgroundWorker _errorDetectionWorker = new BackgroundWorker();
 
@@ -72,9 +72,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			BindEventMethods();
 
 			SyntaxHighlighting = new ScriptSyntaxHighlighting();
-
-			if (ShowSectionSeparators)
-				TextArea.TextView.BackgroundRenderers.Add(_sectionRenderer);
 		}
 
 		private void InitializeBackgroundWorkers()
@@ -95,6 +92,9 @@ namespace TombLib.Scripting.TextEditors.Controls
 		private void InitializeRenderers()
 		{
 			_sectionRenderer = new SectionRenderer(this);
+
+			if (ShowSectionSeparators)
+				TextArea.TextView.BackgroundRenderers.Add(_sectionRenderer);
 		}
 
 		private void BindEventMethods()
@@ -127,6 +127,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 		#endregion Events
 
 		#region Autocomplete
+
+		// TODO: Recheck
 
 		private void HandleAutocomplete(TextCompositionEventArgs e)
 		{
@@ -266,6 +268,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		#region ToolTips
 
+		// TODO: Recheck
+
 		private void HandleDefinitionToolTips(MouseEventArgs e)
 		{
 			int hoveredOffset = GetOffsetFromPoint(e.GetPosition(this));
@@ -304,7 +308,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 				if (entry.Key.ToString().Equals(hoveredWord, StringComparison.OrdinalIgnoreCase))
 				{
 					string content = "[" + entry.Key.ToString() + "]\n\n" + entry.Value.ToString();
-					ShowDefinitionToolTip(content);
+					ShowToolTip(content);
 					return;
 				}
 		}
@@ -315,7 +319,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			ResourceManager commandToolTipResource = new ResourceManager(typeof(CommandToolTips));
 			ResourceSet resourceSet = commandToolTipResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-			if (hoveredWord.ToLower() == "level")
+			if (hoveredWord.Equals("level", StringComparison.OrdinalIgnoreCase))
 				HandleLevelToolTip(currentLineNumber); // There are different definitions for the "Level" command, so handle them all
 			else
 				// Check if the hovered word exists in the file, if so, display the toolTip
@@ -323,7 +327,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 					if (hoveredWord == entry.Key.ToString())
 					{
 						string content = entry.Key.ToString() + "=\n\n" + entry.Value.ToString();
-						ShowDefinitionToolTip(content);
+						ShowToolTip(content);
 						return;
 					}
 		}
@@ -353,7 +357,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 				if (!string.IsNullOrEmpty(content))
 				{
-					ShowDefinitionToolTip(content);
+					ShowToolTip(content);
 					return;
 				}
 

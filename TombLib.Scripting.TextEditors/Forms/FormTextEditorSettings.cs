@@ -7,6 +7,8 @@ using TombLib.Scripting.TextEditors.Controls.Settings;
 
 namespace TombLib.Scripting.TextEditors.Forms
 {
+	// TODO: Refactor
+
 	public partial class FormTextEditorSettings : DarkForm
 	{
 		private SettingsClassicScript settings_ClassicScript;

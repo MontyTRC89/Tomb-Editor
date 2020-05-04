@@ -8,8 +8,6 @@ namespace TombLib.Scripting.TextEditors
 		public LuaConfiguration Lua = new LuaConfiguration().Load<LuaConfiguration>();
 
 		public static TextEditorConfigurations Load()
-		{
-			return new TextEditorConfigurations();
-		}
+		{ return new TextEditorConfigurations(); }
 	}
 }
