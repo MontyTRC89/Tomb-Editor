@@ -57,7 +57,7 @@ namespace TombIDE
 				if (!IsProjectOnList(openedProject))
 					AddProjectToList(openedProject, true);
 
-				_ide.Configuration.RememberedProject = openedProject.Name;
+				_ide.IDEConfiguration.RememberedProject = openedProject.Name;
 
 				// Continue code in Program.cs
 			}
@@ -70,9 +70,9 @@ namespace TombIDE
 		protected override void OnLoad(EventArgs e)
 		{
 			// Automatically open remembered project (if there is one)
-			if (!string.IsNullOrWhiteSpace(_ide.Configuration.RememberedProject))
+			if (!string.IsNullOrWhiteSpace(_ide.IDEConfiguration.RememberedProject))
 			{
-				SelectProjectOnList(_ide.Configuration.RememberedProject);
+				SelectProjectOnList(_ide.IDEConfiguration.RememberedProject);
 
 				if (_selectedProject != null) // If the project was found on the list
 				{
@@ -93,22 +93,22 @@ namespace TombIDE
 
 		private void ApplySavedSettings()
 		{
-			Size = _ide.Configuration.Start_WindowSize;
+			Size = _ide.IDEConfiguration.Start_WindowSize;
 
-			if (_ide.Configuration.Start_OpenMaximized)
+			if (_ide.IDEConfiguration.Start_OpenMaximized)
 				WindowState = FormWindowState.Maximized;
 		}
 
 		private void SaveSettings()
 		{
-			_ide.Configuration.Start_OpenMaximized = WindowState == FormWindowState.Maximized;
+			_ide.IDEConfiguration.Start_OpenMaximized = WindowState == FormWindowState.Maximized;
 
 			if (WindowState == FormWindowState.Normal)
-				_ide.Configuration.Start_WindowSize = Size;
+				_ide.IDEConfiguration.Start_WindowSize = Size;
 			else
-				_ide.Configuration.Start_WindowSize = RestoreBounds.Size;
+				_ide.IDEConfiguration.Start_WindowSize = RestoreBounds.Size;
 
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.Save();
 		}
 
 		private void FillProjectList()
@@ -153,7 +153,7 @@ namespace TombIDE
 		}
 
 		private void button_OpenFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(((Project)treeView.SelectedNodes[0].Tag).ProjectPath);
+			SharedMethods.OpenInExplorer(((Project)treeView.SelectedNodes[0].Tag).ProjectPath);
 
 		private void button_OpenProject_Click(object sender, EventArgs e) => OpenSelectedProject();
 
@@ -350,7 +350,7 @@ namespace TombIDE
 
 			// Set RememberedProject if checkBox_Remember is checked
 			if (checkBox_Remember.Checked)
-				_ide.Configuration.RememberedProject = _selectedProject.Name;
+				_ide.IDEConfiguration.RememberedProject = _selectedProject.Name;
 
 			// Save settings and hide the current window
 			SaveSettings();
@@ -364,8 +364,8 @@ namespace TombIDE
 				if (result == DialogResult.OK) // OK means the user wants to switch projects
 				{
 					// Reset the RememberedProject setting
-					_ide.Configuration.RememberedProject = string.Empty;
-					_ide.Configuration.Save();
+					_ide.IDEConfiguration.RememberedProject = string.Empty;
+					_ide.IDEConfiguration.Save();
 
 					// Restart the application (without any arguments)
 					Application.Exit();

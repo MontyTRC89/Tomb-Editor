@@ -25,8 +25,8 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			radioButton_Wide.Checked = !_ide.Configuration.StandardAspectRatioPreviewEnabled;
-			radioButton_Standard.Checked = _ide.Configuration.StandardAspectRatioPreviewEnabled;
+			radioButton_Wide.Checked = !_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
+			radioButton_Standard.Checked = _ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
 
 			UpdatePreview();
 		}
@@ -44,8 +44,8 @@ namespace TombIDE.ProjectMaster
 					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
 						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
 
-					_ide.Configuration.StandardAspectRatioPreviewEnabled = false;
-					_ide.Configuration.Save();
+					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = false;
+					_ide.IDEConfiguration.Save();
 				}
 				catch (Exception ex)
 				{
@@ -63,8 +63,8 @@ namespace TombIDE.ProjectMaster
 					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
 						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
 
-					_ide.Configuration.StandardAspectRatioPreviewEnabled = true;
-					_ide.Configuration.Save();
+					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = true;
+					_ide.IDEConfiguration.Save();
 				}
 				catch (Exception ex)
 				{

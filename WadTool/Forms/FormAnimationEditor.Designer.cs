@@ -1582,7 +1582,6 @@ namespace WadTool
             this.dgvBoundingMeshList.RowHeadersWidth = 41;
             this.dgvBoundingMeshList.Size = new System.Drawing.Size(192, 314);
             this.dgvBoundingMeshList.TabIndex = 25;
-            this.dgvBoundingMeshList.ToggleCheckBoxOnDoubleClick = true;
             this.dgvBoundingMeshList.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvBoundingMeshList_CellMouseDoubleClick);
             this.dgvBoundingMeshList.SelectionChanged += new System.EventHandler(this.dgvBoundingMeshList_SelectionChanged);
             // 

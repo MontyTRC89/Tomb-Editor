@@ -53,7 +53,7 @@
 			// 
 			// checkBox_RenameDirectory
 			// 
-			this.checkBox_RenameDirectory.Location = new System.Drawing.Point(11, 8);
+			this.checkBox_RenameDirectory.Location = new System.Drawing.Point(11, 9);
 			this.checkBox_RenameDirectory.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_RenameDirectory.Name = "checkBox_RenameDirectory";
 			this.checkBox_RenameDirectory.Size = new System.Drawing.Size(185, 23);
@@ -101,7 +101,7 @@
 			this.panel_02.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel_02.Location = new System.Drawing.Point(0, 55);
 			this.panel_02.Name = "panel_02";
-			this.panel_02.Size = new System.Drawing.Size(464, 41);
+			this.panel_02.Size = new System.Drawing.Size(464, 42);
 			this.panel_02.TabIndex = 2;
 			// 
 			// FormRenameProject
@@ -110,7 +110,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.button_Cancel;
-			this.ClientSize = new System.Drawing.Size(464, 96);
+			this.ClientSize = new System.Drawing.Size(464, 97);
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;

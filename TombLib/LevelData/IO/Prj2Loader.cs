@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -227,6 +228,10 @@ namespace TombLib.LevelData.IO
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.DefaultLightQuality)
+                    settings.DefaultLightQuality = (LightQuality)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.OverrideLightQuality)
+                    settings.OverrideIndividualLightQualitySettings = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SelectedSounds)
@@ -458,14 +463,14 @@ namespace TombLib.LevelData.IO
                     });
                     settings.AnimatedTextureSets = animatedTextureSets;
                 }
-                else if(id == Prj2Chunks.AutoMergeStaticMeshes)
+                else if (id == Prj2Chunks.AutoMergeStaticMeshes)
                 {
                     chunkIO.ReadChunks((id2, size) => {
                         if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
                         {
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades,false,false, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, false, false, settings));
                             return true;
                         }
                         else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry2)
@@ -473,7 +478,7 @@ namespace TombLib.LevelData.IO
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
                             bool tintAsAmbient = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient,false, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient, false, settings));
                             return true;
                         }
                         else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry3)
@@ -487,7 +492,22 @@ namespace TombLib.LevelData.IO
                         }
                         else return false;
                     });
-                }else
+                }
+                else if (id == Prj2Chunks.Palette)
+                {
+                    var colorCount = chunkIO.Raw.ReadUInt16();
+                    var colorList = new List<ColorC>();
+
+                    for (int i = 0; i < colorCount; i++)
+                    {
+                        var r = chunkIO.Raw.ReadByte();
+                        var g = chunkIO.Raw.ReadByte();
+                        var b = chunkIO.Raw.ReadByte();
+                        colorList.Add(new ColorC(r, g, b));
+                    }
+                    settings.Palette = colorList;
+                }
+                else
                     return false;
                 return true;
             });
@@ -855,8 +875,8 @@ namespace TombLib.LevelData.IO
                     instance.CodeBits = chunkIO.Raw.ReadByte();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
-                }else 
-                if (id3 == Prj2Chunks.ObjectMovable2)
+                }
+                else if (id3 == Prj2Chunks.ObjectMovable2)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -878,7 +898,8 @@ namespace TombLib.LevelData.IO
                     });
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
-                }else if (id3 == Prj2Chunks.ObjectMovable3)
+                }
+                else if (id3 == Prj2Chunks.ObjectMovable3)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -889,6 +910,7 @@ namespace TombLib.LevelData.IO
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.ReadChunks((id4, chunkSize4) =>
                     {
                         if (id4 == Prj2Chunks.ObjectItemLuaId)
@@ -898,7 +920,6 @@ namespace TombLib.LevelData.IO
                         }
                         return false;
                     });
-                    instance.Color = chunkIO.Raw.ReadVector3();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1063,13 +1084,12 @@ namespace TombLib.LevelData.IO
                         instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
                     else
                         instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
-                    if(id3 == Prj2Chunks.ObjectLight3)
-                    {
+
+                    if (id3 == Prj2Chunks.ObjectLight3)
                         instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
-                    }else
-                    {
+                    else
                         instance.Quality = LightQuality.Default;
-                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

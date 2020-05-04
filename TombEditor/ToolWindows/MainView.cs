@@ -147,7 +147,7 @@ namespace TombEditor.ToolWindows
 
             // Update portal opacity controls
             if (obj is Editor.ObjectChangedEvent ||
-               obj is Editor.SelectedObjectChangedEvent)
+                obj is Editor.SelectedObjectChangedEvent)
             {
                 var portal = _editor.SelectedObject as PortalInstance;
                 butOpacityNone.Enabled = portal != null;
@@ -217,6 +217,7 @@ namespace TombEditor.ToolWindows
             panel3D.ShowExtraBlendingModes = butDrawExtraBlendingModes.Checked = settings.Rendering3D_ShowExtraBlendingModes;
             panel3D.DisablePickingForImportedGeometry = butDisableGeometryPicking.Checked = settings.Rendering3D_DisablePickingForImportedGeometry;
             panel3D.ShowLightMeshes = butDrawLightRadius.Checked = settings.Rendering3D_ShowLightRadius;
+            panel3D.ShowLightingWhiteTextureOnly = butDrawWhiteLighting.Checked = settings.Rendering3D_ShowLightingWhiteTextureOnly;
             panel3D.Invalidate();
         }
 

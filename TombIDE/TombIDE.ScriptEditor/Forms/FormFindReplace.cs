@@ -8,19 +8,20 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using TombIDE.ScriptEditor.Controls;
+using TombIDE.Shared;
+using TombLib.Scripting.TextEditors.Controls;
 
 namespace TombIDE.ScriptEditor.Forms
 {
-	public partial class FormFindReplace : DarkForm
+	internal partial class FormFindReplace : DarkForm
 	{
 		private CustomTabControl _editorTabControl;
 		private CustomTabControl _infoTabControl;
 		private DarkTreeView _searchResults;
 
-		#region Initialization
+		#region Construction and public methods
 
-		public FormFindReplace(CustomTabControl editorTabControl, CustomTabControl infoTabControl)
+		public FormFindReplace(ref CustomTabControl editorTabControl, ref CustomTabControl infoTabControl)
 		{
 			InitializeComponent();
 
@@ -30,51 +31,51 @@ namespace TombIDE.ScriptEditor.Forms
 			_searchResults = infoTabControl.TabPages[2].Controls.OfType<DarkTreeView>().First();
 		}
 
-		public void Show(IWin32Window owner, string selectedText)
+		public void Show(IWin32Window owner, string initialFindText)
 		{
 			if (!Visible)
 			{
 				Show(owner);
 
-				label_Status.Text = string.Empty;
-
-				textBox_Find.Text = selectedText;
+				textBox_Find.Text = initialFindText;
 				textBox_Find.SelectAll();
+
+				label_Status.Text = string.Empty;
 			}
 		}
+
+		#endregion Construction and public methods
+
+		#region Events
 
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			Hide();
-			e.Cancel = true;
+			e.Cancel = true; // This form should never be closed during runtime
 
 			base.OnClosing(e);
 		}
 
-		#endregion Initialization
-
-		#region Events
-
-		private void button_FindPrev_Click(object sender, EventArgs e) => FindPrev();
-		private void button_FindNext_Click(object sender, EventArgs e) => FindNext();
+		private void button_FindPrev_Click(object sender, EventArgs e) => Find(FindingOrder.Prev);
+		private void button_FindNext_Click(object sender, EventArgs e) => Find(FindingOrder.Next);
 
 		private void button_Find_Click(object sender, EventArgs e)
 		{
 			if (radioButton_Up.Checked)
-				FindPrev();
+				Find(FindingOrder.Prev);
 			else if (radioButton_Down.Checked)
-				FindNext();
+				Find(FindingOrder.Next);
 		}
 
-		private void button_ReplacePrev_Click(object sender, EventArgs e) => ReplacePrev();
-		private void button_ReplaceNext_Click(object sender, EventArgs e) => ReplaceNext();
+		private void button_ReplacePrev_Click(object sender, EventArgs e) => Replace(FindingOrder.Prev);
+		private void button_ReplaceNext_Click(object sender, EventArgs e) => Replace(FindingOrder.Next);
 
 		private void button_Replace_Click(object sender, EventArgs e)
 		{
 			if (radioButton_Up.Checked)
-				ReplacePrev();
+				Replace(FindingOrder.Prev);
 			else if (radioButton_Down.Checked)
-				ReplaceNext();
+				Replace(FindingOrder.Next);
 		}
 
 		private void button_FindAll_Click(object sender, EventArgs e) => FindAll();
@@ -84,7 +85,7 @@ namespace TombIDE.ScriptEditor.Forms
 
 		#region Find methods
 
-		private bool FindPrev()
+		private bool Find(FindingOrder order)
 		{
 			if (string.IsNullOrWhiteSpace(textBox_Find.Text))
 			{
@@ -92,135 +93,77 @@ namespace TombIDE.ScriptEditor.Forms
 				return false;
 			}
 
-			AvalonTextBox currentTabTextBox = GetCurrentTabTextBox();
+			TextEditorBase currentTabTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
 			string pattern = GetCurrentPattern();
 			RegexOptions options = GetCurrentRegexOptions();
 
-			MatchCollection documentMatchCollection = Regex.Matches(currentTabTextBox.Text, pattern, options);
-
-			if (documentMatchCollection.Count == 0) // If no matches were found in the current document
+			if (Regex.Matches(currentTabTextEditor.Text, pattern, options).Count == 0) // If no matches were found in the current document
 			{
 				if (radioButton_Current.Checked)
 					ShowError("No matches found in the current document."); // Search cancelled
 				else if (radioButton_AllTabs.Checked)
-				{
-					if (GetAllTabsMatchCount(pattern, options) == 0) // If no matches were found in any tab
-						ShowError("No matches found."); // Search cancelled
-					else
-						FindPrevInPrevTab(); // Go to the previous tab to find matches there
-				}
+					FindMatchInAnotherTab(order, pattern, options);
 			}
 			else // Matches were found in the current document
+				return FindMatch(order, currentTabTextEditor, pattern, options);
+
+			return false;
+		}
+
+		private bool FindMatch(FindingOrder order, TextEditorBase textEditor, string pattern, RegexOptions options)
+		{
+			MatchCollection sectionMatchCollection = GetMatchCollectionFromSection(order, textEditor, pattern, options);
+
+			if (sectionMatchCollection.Count == 0) // If no matches were found in that section of the document
 			{
-				string textBeforeSelection = GetTextBeforeSelection(currentTabTextBox.Text, currentTabTextBox.SelectionStart);
-				MatchCollection sectionMatchCollection = Regex.Matches(textBeforeSelection, pattern, options);
+				if (radioButton_Current.Checked)
+					EndSuccessfulSearch(order, textEditor);
+				else if (radioButton_AllTabs.Checked)
+					FindMatchInAnotherTab(order, pattern, options);
+			}
+			else // Matches were found in that section of the document
+			{
+				SelectMatch(order, textEditor, sectionMatchCollection);
 
-				if (sectionMatchCollection.Count == 0) // If no matches were found in that section of the document
-				{
-					if (radioButton_Current.Checked)
-					{
-						MoveCaretToDocumentStart(currentTabTextBox);
-						ShowWarning("Reached the start of the document with no more matches found."); // Search ends here
-					}
-					else if (radioButton_AllTabs.Checked)
-						FindPrevInPrevTab(); // Go to the previous tab to find more matches
-				}
-				else // Matches were found in that section of the document
-				{
-					// Get the last match of that section, since we're going upwards
-					Match match = sectionMatchCollection[sectionMatchCollection.Count - 1];
-
-					// Select the match and scroll to its position
-					currentTabTextBox.Select(match.Index, match.Length);
-					currentTabTextBox.ScrollTo(currentTabTextBox.TextArea.Caret.Position.Line, currentTabTextBox.TextArea.Caret.Position.Column);
-
-					UpdateStatusLabel(currentTabTextBox.Text, pattern, options);
-
-					return true;
-				}
+				UpdateStatusLabel(textEditor.Text, pattern, options);
+				return true;
 			}
 
 			return false;
 		}
 
-		private bool FindNext()
+		private void FindMatchInAnotherTab(FindingOrder order, string pattern, RegexOptions options)
 		{
-			if (string.IsNullOrWhiteSpace(textBox_Find.Text))
-			{
-				ShowError("Invalid input.");
-				return false;
-			}
-
-			AvalonTextBox currentTabTextBox = GetCurrentTabTextBox();
-			string pattern = GetCurrentPattern();
-			RegexOptions options = GetCurrentRegexOptions();
-
-			MatchCollection documentMatchCollection = Regex.Matches(currentTabTextBox.Text, pattern, options);
-
-			if (documentMatchCollection.Count == 0) // If no matches were found in the current document
-			{
-				if (radioButton_Current.Checked)
-					ShowError("No matches found in the current document."); // Search cancelled
-				else if (radioButton_AllTabs.Checked)
+			if (GetAllTabsMatchCount(pattern, options) == 0) // If no matches were found in any tab
+				ShowError("No matches found."); // Search cancelled
+			else
+				switch (order)
 				{
-					if (GetAllTabsMatchCount(pattern, options) == 0) // If no matches were found in any tab
-						ShowError("No matches found."); // Search cancelled
-					else
+					case FindingOrder.Prev:
+						FindPrevInPrevTab(); // Go to the previous tab to find matches there
+						break;
+
+					case FindingOrder.Next:
 						FindNextInNextTab(); // Go to the next tab to find matches there
+						break;
 				}
-			}
-			else // Matches were found in the current document
-			{
-				int selectionEnd = currentTabTextBox.SelectionStart + currentTabTextBox.SelectionLength;
-				string textAfterSelection = GetTextAfterSelection(currentTabTextBox.Text, selectionEnd);
-
-				MatchCollection sectionMatchCollection = Regex.Matches(textAfterSelection, pattern, options);
-
-				if (sectionMatchCollection.Count == 0) // If no matches were found in that section of the document
-				{
-					if (radioButton_Current.Checked)
-					{
-						MoveCaretToDocumentEnd(currentTabTextBox);
-						ShowWarning("Reached the end of the document with no more matches found."); // Search ends here
-					}
-					else if (radioButton_AllTabs.Checked)
-						FindNextInNextTab(); // Go to the next tab to find more matches there
-				}
-				else // Matches were found in that section of the document
-				{
-					// Get the first match of that section, since we're going downwards
-					Match match = sectionMatchCollection[0];
-
-					int cutStringLength = currentTabTextBox.Document.TextLength - textAfterSelection.Length;
-
-					// Select the match and scroll to its position
-					currentTabTextBox.Select(cutStringLength + match.Index, match.Length);
-					currentTabTextBox.ScrollTo(currentTabTextBox.TextArea.Caret.Position.Line, currentTabTextBox.TextArea.Caret.Position.Column);
-
-					UpdateStatusLabel(currentTabTextBox.Text, pattern, options);
-
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		private void FindPrevInPrevTab()
 		{
 			if (_editorTabControl.SelectedIndex == 0)
 			{
-				MoveCaretToDocumentStart(GetCurrentTabTextBox());
+				MoveCaretToDocumentStart(GetTextEditorOfTab(_editorTabControl.SelectedTab));
 				ShowWarning("Reached the start of the first tab document with no more matches found."); // Search ends here
 			}
 			else
 			{
-				_editorTabControl.SelectedIndex -= 1;
+				_editorTabControl.SelectedIndex--;
 
-				AvalonTextBox nextTarget = GetCurrentTabTextBox(); // The tab has changed, therefore we can get the current tab's TextBox
-
+				TextEditorBase nextTarget = GetTextEditorOfTab(_editorTabControl.SelectedTab); // The tab has changed, therefore we can get the current tab's TextEditor
 				MoveCaretToDocumentEnd(nextTarget);
-				FindPrev();
+
+				Find(FindingOrder.Prev);
 			}
 		}
 
@@ -228,36 +171,89 @@ namespace TombIDE.ScriptEditor.Forms
 		{
 			if (_editorTabControl.SelectedIndex == _editorTabControl.TabCount - 1)
 			{
-				MoveCaretToDocumentEnd(GetCurrentTabTextBox());
+				MoveCaretToDocumentEnd(GetTextEditorOfTab(_editorTabControl.SelectedTab));
 				ShowWarning("Reached the end of the last tab document with no more matches found."); // Search ends here
 			}
 			else
 			{
-				_editorTabControl.SelectedIndex += 1;
+				_editorTabControl.SelectedIndex++;
 
-				AvalonTextBox nextTarget = GetCurrentTabTextBox(); // The tab has changed, therefore we can get the current tab's TextBox
-
+				TextEditorBase nextTarget = GetTextEditorOfTab(_editorTabControl.SelectedTab); // The tab has changed, therefore we can get the current tab's TextEditor
 				MoveCaretToDocumentStart(nextTarget);
-				FindNext();
+
+				Find(FindingOrder.Next);
 			}
+		}
+
+		private void SelectMatch(FindingOrder order, TextEditorBase textEditor, MatchCollection sectionMatchCollection)
+		{
+			switch (order)
+			{
+				case FindingOrder.Prev:
+				{
+					// Get the last match of that section, since we're going upwards
+					Match lastMatch = sectionMatchCollection[sectionMatchCollection.Count - 1];
+
+					textEditor.Select(lastMatch.Index, lastMatch.Length); // Select the match
+					break;
+				}
+				case FindingOrder.Next:
+				{
+					// Get the first match of that section, since we're going downwards
+					Match firstMatch = sectionMatchCollection[0];
+
+					int selectionEnd = textEditor.SelectionStart + textEditor.SelectionLength;
+					string textAfterSelection = GetTextAfterSelection(textEditor.Text, selectionEnd);
+					int cutStringLength = textEditor.Document.TextLength - textAfterSelection.Length;
+
+					textEditor.Select(cutStringLength + firstMatch.Index, firstMatch.Length); // Select the match
+					break;
+				}
+			}
+
+			textEditor.ScrollTo(textEditor.TextArea.Caret.Position.Line, textEditor.TextArea.Caret.Position.Column);
+		}
+
+		private void EndSuccessfulSearch(FindingOrder order, TextEditorBase textEditor)
+		{
+			switch (order)
+			{
+				case FindingOrder.Prev:
+					MoveCaretToDocumentStart(textEditor);
+					ShowWarning("Reached the start of the document with no more matches found."); // Search ends here
+					break;
+
+				case FindingOrder.Next:
+					MoveCaretToDocumentEnd(textEditor);
+					ShowWarning("Reached the end of the document with no more matches found."); // Search ends here
+					break;
+			}
+		}
+
+		private MatchCollection GetMatchCollectionFromSection(FindingOrder order, TextEditorBase textEditor, string pattern, RegexOptions options)
+		{
+			switch (order)
+			{
+				case FindingOrder.Prev:
+					string textBeforeSelection = GetTextBeforeSelection(textEditor.Text, textEditor.SelectionStart);
+					return Regex.Matches(textBeforeSelection, pattern, options);
+
+				case FindingOrder.Next:
+					int selectionEnd = textEditor.SelectionStart + textEditor.SelectionLength;
+					string textAfterSelection = GetTextAfterSelection(textEditor.Text, selectionEnd);
+					return Regex.Matches(textAfterSelection, pattern, options);
+			}
+
+			return null;
 		}
 
 		#endregion Find methods
 
 		#region Replace methods
 
-		private bool ReplacePrev()
+		private bool Replace(FindingOrder order)
 		{
-			if (!FindPrev())
-				return false;
-
-			ReplaceMatch();
-			return true;
-		}
-
-		private bool ReplaceNext()
-		{
-			if (!FindNext())
+			if (!Find(order))
 				return false;
 
 			ReplaceMatch();
@@ -266,43 +262,52 @@ namespace TombIDE.ScriptEditor.Forms
 
 		private void ReplaceMatch()
 		{
-			AvalonTextBox currentTextBox = GetCurrentTabTextBox();
+			TextEditorBase currentTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
 
 			if (radioButton_Normal.Checked)
-				currentTextBox.SelectedText = textBox_Replace.Text;
+				currentTextEditor.SelectedText = textBox_Replace.Text;
 			else if (radioButton_Regex.Checked)
 			{
-				Match match = Regex.Match(currentTextBox.SelectedText, textBox_Find.Text, RegexOptions.IgnoreCase);
+				string pattern = GetCurrentPattern();
+				RegexOptions options = GetCurrentRegexOptions();
 
-				currentTextBox.SelectedText = textBox_Replace.Text;
+				currentTextEditor.SelectedText = AdvancedRegexReplace(currentTextEditor.SelectedText, pattern, textBox_Replace.Text, options);
+			}
+		}
 
-				if (match.Success)
+		/// <summary>
+		/// Implements group replacement support.
+		/// </summary>
+		private string AdvancedRegexReplace(string input, string pattern, string replacement, RegexOptions options)
+		{
+			string result = input;
+
+			foreach (Match match in Regex.Matches(input, pattern, options))
+			{
+				GroupCollection groups = match.Groups;
+
+				for (int i = 0; i < groups.Count; i++)
 				{
-					GroupCollection groups = match.Groups;
-
-					if (groups.Count > 0)
+					if (i == 0)
 					{
-						for (int i = 1; i < groups.Count; i++)
-						{
-							MatchCollection groupMatches = Regex.Matches(currentTextBox.SelectedText, @"\$\d*");
-
-							if (groupMatches.Count == 0)
-								break;
-
-							Group group = groups[i];
-							Match groupMatch = groupMatches[0];
-
-							if (groupMatch.Value.Trim('$').Trim() == i.ToString())
-								currentTextBox.SelectedText = currentTextBox.SelectedText.Replace(groupMatch.Value, group.Value);
-						}
+						result = Regex.Replace(result, pattern, replacement, options);
+						continue;
 					}
+
+					Group group = groups[i];
+
+					foreach (Match groupMatch in Regex.Matches(replacement, @"\$\d*"))
+						if (groupMatch.Value.Trim('$').Trim() == i.ToString())
+							result = Regex.Replace(result, pattern, replacement.Replace(groupMatch.Value, group.Value), options);
 				}
 			}
+
+			return result;
 		}
 
 		#endregion Replace methods
 
-		#region Bulk methods
+		#region Find All methods
 
 		private void FindAll()
 		{
@@ -320,74 +325,79 @@ namespace TombIDE.ScriptEditor.Forms
 			RegexOptions options = GetCurrentRegexOptions();
 
 			if (radioButton_Current.Checked)
-			{
-				AvalonTextBox currentTabTextBox = GetCurrentTabTextBox();
-				MatchCollection documentMatchCollection = Regex.Matches(currentTabTextBox.Text, pattern, options);
-
-				if (documentMatchCollection.Count == 0)
-				{
-					ShowError("No matches found.");
-					return;
-				}
-
-				DarkTreeNode fileNode = new DarkTreeNode(_editorTabControl.SelectedTab.Text + " (Matches: " + documentMatchCollection.Count + ")");
-
-				foreach (Match match in documentMatchCollection)
-				{
-					DocumentLine line = currentTabTextBox.Document.GetLineByOffset(match.Index);
-					string lineText = currentTabTextBox.Document.GetText(line.Offset, line.Length);
-
-					fileNode.Nodes.Add(new DarkTreeNode
-					{
-						Text = "(" + line.LineNumber + ") " + lineText,
-						Tag = match
-					});
-				}
-
-				fileNode.Expanded = true;
-				_searchResults.Nodes.Add(fileNode);
-
-				ShowStatusInfo(fileNode.Nodes.Count + " matches found in the current document.");
-			}
+				FindAllInCurrentTab(pattern, options);
 			else if (radioButton_AllTabs.Checked)
-			{
-				if (GetAllTabsMatchCount(pattern, options) == 0)
-				{
-					ShowError("No matches found.");
-					return;
-				}
+				FindAllInAllTabs(pattern, options);
+		}
 
+		private void FindAllInCurrentTab(string pattern, RegexOptions options)
+		{
+			DarkTreeNode fileNode = GetNodeForAllTabMatches(_editorTabControl.SelectedTab, pattern, options);
+
+			if (fileNode == null)
+			{
+				ShowError("No matches found.");
+				return;
+			}
+
+			_searchResults.Nodes.Add(fileNode);
+			ShowStatusInfo(fileNode.Nodes.Count + " matches found in the current document.");
+		}
+
+		private void FindAllInAllTabs(string pattern, RegexOptions options)
+		{
+			int allMatchCount = GetAllTabsMatchCount(pattern, options);
+
+			if (allMatchCount == 0)
+				ShowError("No matches found.");
+			else
+			{
 				foreach (TabPage tab in _editorTabControl.TabPages)
 				{
-					AvalonTextBox tabTextBox = (AvalonTextBox)tab.Controls.OfType<ElementHost>().First().Child;
-					MatchCollection documentMatchCollection = Regex.Matches(tabTextBox.Text, pattern, options);
+					DarkTreeNode fileNode = GetNodeForAllTabMatches(tab, pattern, options);
 
-					if (documentMatchCollection.Count == 0)
+					if (fileNode == null)
 						continue;
 
-					DarkTreeNode fileNode = new DarkTreeNode(tab.Text + " (Matches: " + documentMatchCollection.Count + ")");
-
-					foreach (Match match in documentMatchCollection)
-					{
-						DocumentLine line = tabTextBox.Document.GetLineByOffset(match.Index);
-						string lineText = tabTextBox.Document.GetText(line.Offset, line.Length);
-
-						fileNode.Nodes.Add(new DarkTreeNode
-						{
-							Text = "(" + line.LineNumber + ") " + lineText,
-							Tag = match
-						});
-					}
-
-					fileNode.Expanded = true;
 					_searchResults.Nodes.Add(fileNode);
 				}
 
-				ShowStatusInfo(GetAllTabsMatchCount(pattern, options) + " matches found in " + _searchResults.Nodes.Count + " tabs.");
+				ShowStatusInfo(allMatchCount + " matches found in " + _searchResults.Nodes.Count + " tabs.");
 			}
 		}
 
-		private void ReplaceAll()
+		private DarkTreeNode GetNodeForAllTabMatches(TabPage tab, string pattern, RegexOptions options)
+		{
+			TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
+			MatchCollection documentMatchCollection = Regex.Matches(tabTextEditor.Text, pattern, options);
+
+			if (documentMatchCollection.Count == 0)
+				return null;
+
+			DarkTreeNode fileNode = new DarkTreeNode(tab.Text + " (Matches: " + documentMatchCollection.Count + ")");
+
+			foreach (Match match in documentMatchCollection)
+			{
+				DocumentLine line = tabTextEditor.Document.GetLineByOffset(match.Index);
+				string lineText = tabTextEditor.Document.GetText(line.Offset, line.Length);
+
+				fileNode.Nodes.Add(new DarkTreeNode
+				{
+					Text = "(" + line.LineNumber + ") " + lineText,
+					Tag = match
+				});
+			}
+
+			fileNode.Expanded = true;
+
+			return fileNode;
+		}
+
+		#endregion Find All methods
+
+		#region Replace All methods
+
+		private void ReplaceAll() // TODO: Refactor
 		{
 			if (string.IsNullOrWhiteSpace(textBox_Find.Text))
 			{
@@ -398,69 +408,51 @@ namespace TombIDE.ScriptEditor.Forms
 			string pattern = GetCurrentPattern();
 			RegexOptions options = GetCurrentRegexOptions();
 
-			int replacedItemCount = 0;
+			int matchCount = 0;
 
 			if (radioButton_Current.Checked)
 			{
-				AvalonTextBox currentTabTextBox = GetCurrentTabTextBox();
-				MatchCollection documentMatchCollection = Regex.Matches(currentTabTextBox.Text, pattern, options);
+				TextEditorBase currentTabTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
+				matchCount = Regex.Matches(currentTabTextEditor.Text, pattern, options).Count;
 
-				MoveCaretToDocumentStart(currentTabTextBox);
-
-				foreach (Match match in documentMatchCollection)
+				if (matchCount > 0)
 				{
-					if (!ReplaceNext())
-						break;
-
-					replacedItemCount++;
+					currentTabTextEditor.SelectAll();
+					currentTabTextEditor.SelectedText = AdvancedRegexReplace(currentTabTextEditor.Text, pattern, textBox_Replace.Text, options);
+					MoveCaretToDocumentStart(currentTabTextEditor);
 				}
 			}
 			else if (radioButton_AllTabs.Checked)
 			{
-				if (GetAllTabsMatchCount(pattern, options) == 0)
+				matchCount = GetAllTabsMatchCount(pattern, options);
+
+				if (matchCount > 0)
 				{
-					ShowError("No matches found.");
-					return;
-				}
+					DialogResult result = DarkMessageBox.Show(this,
+						"Are you sure you want to replace all matching items across all tabs?", "Are you sure?",
+						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-				DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to replace all matching items across all tabs?", "Are you sure?",
-					MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-				if (result == DialogResult.Yes)
-				{
-					TabPage cachedTab = _editorTabControl.SelectedTab;
-
-					foreach (TabPage tab in _editorTabControl.TabPages)
-					{
-						_editorTabControl.SelectTab(tab);
-
-						AvalonTextBox currentTabTextBox = GetCurrentTabTextBox();
-						MatchCollection documentMatchCollection = Regex.Matches(currentTabTextBox.Text, pattern, options);
-
-						MoveCaretToDocumentStart(currentTabTextBox);
-
-						foreach (Match match in documentMatchCollection)
+					if (result == DialogResult.Yes)
+						foreach (TabPage tab in _editorTabControl.TabPages)
 						{
-							if (!ReplaceNext())
-								break;
+							TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
 
-							replacedItemCount++;
+							tabTextEditor.SelectAll();
+							tabTextEditor.SelectedText = AdvancedRegexReplace(tabTextEditor.Text, pattern, textBox_Replace.Text, options);
+							MoveCaretToDocumentStart(tabTextEditor);
 						}
-					}
-
-					_editorTabControl.SelectTab(cachedTab);
+					else
+						return;
 				}
-				else
-					return;
 			}
 
-			if (replacedItemCount == 0)
+			if (matchCount == 0)
 				ShowError("No matches found.");
 			else
-				ShowStatusInfo("Replaced " + replacedItemCount + " matches.");
+				ShowStatusInfo("Replaced " + matchCount + " matches.");
 		}
 
-		#endregion Bulk methods
+		#endregion Replace All methods
 
 		#region Other methods
 
@@ -471,7 +463,8 @@ namespace TombIDE.ScriptEditor.Forms
 			if (radioButton_Current.Checked)
 				ShowStatusInfo(currentDocumentMatchCount + " matches found in the current document.");
 			else if (radioButton_AllTabs.Checked)
-				ShowStatusInfo(currentDocumentMatchCount + " matches found in the current document. " + GetAllTabsMatchCount(pattern, options) + " in all tabs combined.");
+				ShowStatusInfo(currentDocumentMatchCount + " matches found in the current document. "
+					+ GetAllTabsMatchCount(pattern, options) + " in all tabs combined.");
 		}
 
 		private int GetAllTabsMatchCount(string pattern, RegexOptions options)
@@ -479,10 +472,7 @@ namespace TombIDE.ScriptEditor.Forms
 			int matchCount = 0;
 
 			foreach (TabPage tab in _editorTabControl.TabPages)
-			{
-				AvalonTextBox tabTextBox = (AvalonTextBox)tab.Controls.OfType<ElementHost>().First().Child;
-				matchCount += Regex.Matches(tabTextBox.Text, pattern, options).Count;
-			}
+				matchCount += Regex.Matches(GetTextEditorOfTab(tab).Text, pattern, options).Count;
 
 			return matchCount;
 		}
@@ -505,31 +495,34 @@ namespace TombIDE.ScriptEditor.Forms
 			label_Status.Text = message;
 		}
 
-		private void MoveCaretToDocumentStart(AvalonTextBox documentTextBox)
+		private void MoveCaretToDocumentStart(TextEditorBase documentTextEditor)
 		{
-			documentTextBox.SelectionStart = 0;
-			documentTextBox.SelectionLength = 0;
+			documentTextEditor.SelectionStart = 0;
+			documentTextEditor.SelectionLength = 0;
 
-			documentTextBox.CaretOffset = 0;
+			documentTextEditor.CaretOffset = 0;
 		}
 
-		private void MoveCaretToDocumentEnd(AvalonTextBox documentTextBox)
+		private void MoveCaretToDocumentEnd(TextEditorBase documentTextEditor)
 		{
-			documentTextBox.SelectionStart = 0;
-			documentTextBox.SelectionLength = 0;
+			documentTextEditor.SelectionStart = 0;
+			documentTextEditor.SelectionLength = 0;
 
-			documentTextBox.CaretOffset = documentTextBox.Document.TextLength;
+			documentTextEditor.CaretOffset = documentTextEditor.Document.TextLength;
 		}
 
-		private AvalonTextBox GetCurrentTabTextBox()
+		private TextEditorBase GetTextEditorOfTab(TabPage tab)
 		{
-			return (AvalonTextBox)_editorTabControl.SelectedTab.Controls.OfType<ElementHost>().First().Child;
+			return (TextEditorBase)tab.Controls.OfType<ElementHost>().First().Child;
 		}
 
 		private string GetCurrentPattern()
 		{
 			// Check if "Regular Expressions" mode is enabled
 			string pattern = radioButton_Regex.Checked ? textBox_Find.Text : Regex.Escape(textBox_Find.Text);
+
+			if (pattern.StartsWith("*"))
+				return string.Empty;
 
 			// Check if "Match Whole Words" is checked
 			pattern = checkBox_WholeWords.Checked ? @"\b" + pattern + @"\b" : pattern;
@@ -560,7 +553,7 @@ namespace TombIDE.ScriptEditor.Forms
 			// Without such a substring, we would always end up in the first match occurrence of the entire document,
 			// which means that we wouldn't move at all.
 
-			return documentText.Substring(selectionEndIndex, documentText.Length - selectionEndIndex);
+			return documentText.Substring(selectionEndIndex);
 		}
 
 		#endregion Other methods

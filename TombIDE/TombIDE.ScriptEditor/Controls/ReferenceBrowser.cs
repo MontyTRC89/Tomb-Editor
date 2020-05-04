@@ -5,19 +5,30 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using TombIDE.ScriptEditor.Resources;
-using TombIDE.Shared.Scripting;
+using TombIDE.ScriptEditor.Forms;
+using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.Scripting.Objects;
+using TombLib.Scripting.Resources;
 
 namespace TombIDE.ScriptEditor.Controls
 {
 	internal partial class ReferenceBrowser : UserControl
 	{
+		// TODO: Refactor
+
+		private FormMnemonicInfo _mnemonicInfoForm;
+
 		public ReferenceBrowser()
 		{
 			InitializeComponent();
 
 			comboBox_References.SelectedItem = "Mnemonic Constants";
+		}
+
+		public void Initialize(IDE ide)
+		{
+			_mnemonicInfoForm = new FormMnemonicInfo(ide);
 		}
 
 		private void comboBox_References_SelectedIndexChanged(object sender, EventArgs e) => UpdateDataGrid();
@@ -133,12 +144,12 @@ namespace TombIDE.ScriptEditor.Controls
 			dataTable.Columns.Add("hex", typeof(string));
 			dataTable.Columns.Add("flag", typeof(string));
 
-			foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
+			foreach (PluginMnemonic mnemonic in ScriptKeyWords.PluginMnemonics)
 			{
 				DataRow row = dataTable.NewRow();
-				row["decimal"] = mnemonic.Decimal;
-				row["hex"] = mnemonic.Hex;
-				row["flag"] = mnemonic.Flag;
+				row["decimal"] = mnemonic.DecimalValue;
+				row["hex"] = mnemonic.HexValue;
+				row["flag"] = mnemonic.FlagName;
 
 				dataTable.Rows.Add(row);
 			}
@@ -234,15 +245,9 @@ namespace TombIDE.ScriptEditor.Controls
 		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
 			if (comboBox_References.SelectedIndex == 0 && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
-			{
-				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString()))
-					form.ShowDialog(this);
-			}
+				_mnemonicInfoForm.Show(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString());
 			else if (comboBox_References.SelectedItem.ToString() == "OCB List" && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
-			{
-				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), true))
-					form.ShowDialog(this);
-			}
+				_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), true);
 		}
 	}
 }

@@ -27,8 +27,8 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			radioButton_Dark.Checked = !_ide.Configuration.LightModePreviewEnabled;
-			radioButton_Light.Checked = _ide.Configuration.LightModePreviewEnabled;
+			radioButton_Dark.Checked = !_ide.IDEConfiguration.LightModePreviewEnabled;
+			radioButton_Light.Checked = _ide.IDEConfiguration.LightModePreviewEnabled;
 
 			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
 			{
@@ -51,8 +51,8 @@ namespace TombIDE.ProjectMaster
 			{
 				panel_PreviewBackground.BackColor = Color.FromArgb(48, 48, 48);
 
-				_ide.Configuration.LightModePreviewEnabled = false;
-				_ide.Configuration.Save();
+				_ide.IDEConfiguration.LightModePreviewEnabled = false;
+				_ide.IDEConfiguration.Save();
 			}
 		}
 
@@ -62,8 +62,8 @@ namespace TombIDE.ProjectMaster
 			{
 				panel_PreviewBackground.BackColor = Color.White;
 
-				_ide.Configuration.LightModePreviewEnabled = true;
-				_ide.Configuration.Save();
+				_ide.IDEConfiguration.LightModePreviewEnabled = true;
+				_ide.IDEConfiguration.Save();
 			}
 		}
 

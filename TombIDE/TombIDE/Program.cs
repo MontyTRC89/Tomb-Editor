@@ -22,11 +22,11 @@ namespace TombIDE
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			Configuration configuration = Configuration.Load();
+			IDEConfiguration ideConfiguration = IDEConfiguration.Load();
 			List<Project> availableProjects = XmlHandling.GetProjectsFromXml();
 			List<Plugin> availablePlugins = XmlHandling.GetPluginsFromXml();
 
-			using (IDE ide = new IDE(configuration, availableProjects, availablePlugins))
+			using (IDE ide = new IDE(ideConfiguration, availableProjects, availablePlugins))
 			{
 				using (FormStart form = new FormStart(ide))
 				{
@@ -40,17 +40,17 @@ namespace TombIDE
 							return;
 						}
 
-						ide.Configuration.RememberedProject = string.Empty;
+						ide.IDEConfiguration.RememberedProject = string.Empty;
 						form.OpenTrprojWithTombIDE(args[0]); // Changes ide.Configuration.RememberedProject to the opened project on success
 
-						if (string.IsNullOrEmpty(ide.Configuration.RememberedProject))
+						if (string.IsNullOrEmpty(ide.IDEConfiguration.RememberedProject))
 							return; // Opening project failed
 
 						Application.Run(form);
 
 						// Reset the RememberedProject setting after closing
-						ide.Configuration.RememberedProject = string.Empty;
-						ide.Configuration.Save();
+						ide.IDEConfiguration.RememberedProject = string.Empty;
+						ide.IDEConfiguration.Save();
 					}
 					else
 						Application.Run(form);
