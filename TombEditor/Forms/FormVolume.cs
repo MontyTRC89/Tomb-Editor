@@ -1,5 +1,6 @@
 ﻿using DarkUI.Forms;
 using System;
+using System.Windows.Forms;
 using TombLib.LevelData;
 
 namespace TombEditor.Forms
@@ -17,17 +18,48 @@ namespace TombEditor.Forms
         public FormVolume(VolumeInstance volume)
         {
             InitializeComponent();
+            LoadVolume(volume);
+            Editor.Instance.EditorEventRaised += EditorEventRaised;
+        }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                Editor.Instance.EditorEventRaised -= EditorEventRaised;
+            base.Dispose(disposing);
+        }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is Editor.LevelChangedEvent)
+                Close();
+
+            if (obj is Editor.ObjectChangedEvent)
+            {
+                var o = (Editor.ObjectChangedEvent)obj;
+                if (o.Object == _volume && o.ChangeType == ObjectChangeType.Remove)
+                    Close();
+            }
+        }
+
+        public void SaveAndReopenVolume(VolumeInstance volume)
+        {
+            SaveCurrentScript();
+            LoadVolume(volume);
+        }
+
+        private void LoadVolume(VolumeInstance volume)
+        {
             _volume = volume;
             _backupScripts = _volume.Scripts.Clone();
             _backupState = _volume.Activators;
-
             cmbEvent.SelectedIndex = 0; // Select first script
+            tbScript.Code = _volume.Scripts.OnEnter; // Force 
             tbName.Text = _volume.Scripts.Name;
             UpdateFlags();
         }
 
-        private void SaveCurrentScript()
+        private void SaveCurrentScript(bool callEvent = true)
         {
             switch (prevIndex)
             {
@@ -44,6 +76,9 @@ namespace TombEditor.Forms
                     _volume.Scripts.Environment = tbScript.Code;
                     break;
             }
+
+            if (callEvent)
+                Editor.Instance.ObjectChange(_volume, ObjectChangeType.Change);
         }
 
         private void UpdateFlags()
@@ -72,7 +107,7 @@ namespace TombEditor.Forms
 
         private void cmbEvent_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SaveCurrentScript();
+            SaveCurrentScript(false);
 
             switch (cmbEvent.SelectedIndex)
             {
@@ -132,6 +167,44 @@ namespace TombEditor.Forms
             if (_flagsLocked) return;
             _volume.Activators ^= VolumeActivators.Flybys;
             UpdateFlags();
+        }
+
+        private void tbScript_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(MoveableInstance)) ||
+                e.Data.GetDataPresent(typeof(StaticInstance)))
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void tbScript_DragDrop(object sender, DragEventArgs e)
+        {
+            string prefix = string.Empty;
+            string postfix = string.Empty;
+            string data = string.Empty;
+
+            if (e.Data.GetDataPresent(typeof(MoveableInstance)))
+            {
+                prefix = "GetItemByID(";
+                postfix = ")";
+                data = ((MoveableInstance)e.Data.GetData(typeof(MoveableInstance))).LuaId.ToString();
+            }
+            else if (e.Data.GetDataPresent(typeof(StaticInstance)))
+            {
+                prefix = "GetStaticByID(";
+                postfix = ")";
+                data = ((StaticInstance)e.Data.GetData(typeof(StaticInstance))).LuaId.ToString();
+            }
+
+            var finalResult = (prefix + data + postfix).Trim();
+
+            if (!string.IsNullOrEmpty(finalResult))
+            {
+                tbScript.Paste(finalResult);
+                tbScript.Focus();
+            }
+                
         }
     }
 }
