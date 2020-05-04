@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using NLog;
 using System;
+using System.Drawing;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -58,7 +59,7 @@ namespace TombEditor
         {
             var watch = new Stopwatch();
             watch.Start();
-            room.SmartBuildGeometry(area,_editor.Configuration.Geometry_HighQualityLightPreview);
+            room.SmartBuildGeometry(area, _editor.Configuration.Rendering3D_HighQualityLightPreview);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
             _editor.RoomGeometryChange(room);
@@ -355,8 +356,14 @@ namespace TombEditor
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
+                // Temporarily hide selection
+                _editor.ToggleHiddenSelection(true);
+
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+
+                // Unhide selection
+                _editor.ToggleHiddenSelection(false);
 
                 obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
@@ -365,7 +372,7 @@ namespace TombEditor
             }
         }
 
-        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj,Action<Vector3> newColorCallback)
+        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj, Action<Vector3> newColorCallback)
         {
             using (var colorDialog = new RealtimeColorDialog(
                 _editor.Configuration.ColorDialog_Position.X,
@@ -379,8 +386,14 @@ namespace TombEditor
                 colorDialog.Color = (obj.Color).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
+                // Temporarily hide selection
+                _editor.ToggleHiddenSelection(true);
+
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+
+                // Unhide selection
+                _editor.ToggleHiddenSelection(false);
 
                 obj.Color = colorDialog.Color.ToFloat3Color();
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
@@ -715,7 +728,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -747,7 +760,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -781,7 +794,11 @@ namespace TombEditor
                     break;
             }
             if (instance is LightInstance)
+            {
                 instance.Room.BuildGeometry();
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
+                
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -923,26 +940,31 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
             {
-                room.RebuildLighting(true);
-                //_editor.RoomGeometryChange(room);
+
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                _editor.RoomGeometryChange(room);
             }
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 if (adjoiningRoom != null)
                 {
                     adjoiningRoom.BuildGeometry();
+                    adjoiningRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(adjoiningRoom);
 
                     if (adjoiningRoom.AlternateOpposite != null)
                     {
                         adjoiningRoom.AlternateOpposite.BuildGeometry();
+                        adjoiningRoom.AlternateOpposite.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _editor.RoomSectorPropertiesChange(adjoiningRoom.AlternateOpposite);
                     }
                 }
                 if (room.AlternateOpposite != null)
                 {
                     room.AlternateOpposite.BuildGeometry();
+                    room.AlternateOpposite.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
                 }
             }
@@ -997,6 +1019,7 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1012,6 +1035,7 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1301,6 +1325,7 @@ namespace TombEditor
             if (textureApplied)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomTextureChange(room);
             }
             return textureApplied;
@@ -1677,6 +1702,7 @@ namespace TombEditor
             }
 
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1714,6 +1740,7 @@ namespace TombEditor
                 }
 
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1763,7 +1790,10 @@ namespace TombEditor
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
-                room.BuildGeometry(); // Rebuild lighting!
+            {
+                room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
@@ -1840,6 +1870,7 @@ namespace TombEditor
             foreach (Room adjoiningRoom in adjoiningRooms)
             {
                 adjoiningRoom?.BuildGeometry();
+                adjoiningRoom?.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
 
@@ -1881,7 +1912,11 @@ namespace TombEditor
                 room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.AlternateOpposite.GetLowestCorner(), (short)room.AlternateOpposite.GetHighestCorner(), useFloor);
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
             Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             // Cleanup
             if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
@@ -2377,7 +2412,11 @@ namespace TombEditor
 
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
+            {
                 portalRoom.BuildGeometry();
+                portalRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
+                
             foreach (PortalInstance portal in portals)
                 _editor.ObjectChange(portal, ObjectChangeType.Add);
 
@@ -2404,6 +2443,7 @@ namespace TombEditor
 
             newRoom.Name = "Flipped of " + room;
             newRoom.BuildGeometry();
+            newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
             // Assign room
             _editor.Level.AssignRoomToFree(newRoom);
@@ -2786,7 +2826,15 @@ namespace TombEditor
             _editor.RoomListChange();
 
             // Build the geometry of the new room
-            Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
+            Parallel.Invoke(() =>
+            {
+                newRoom.BuildGeometry();
+                newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }, () =>
+            {
+                room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
                 _editor.SelectedRoom = newRoom; //Don't center
@@ -3077,7 +3125,11 @@ namespace TombEditor
             if (alternated)
                 performMergeAction(newRoom.AlternateOpposite, mergeRooms?.Select(room => room.AlternateOpposite ?? room), alternateNewSectorMap, true);
             Room.FixupNeighborPortals(_editor.Level, new[] { newRoom }, new[] { newRoom }.Concat(mergeRooms), ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             // Add room and update the editor
             foreach (Room room in mergeRooms)
@@ -3111,7 +3163,11 @@ namespace TombEditor
             relevantRooms.Add(room);
             relevantRooms.Add(splitRoom);
             Room.FixupNeighborPortals(_editor.Level, new[] { room, splitRoom }, new[] { room, splitRoom }, ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             // Cleanup
             if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
@@ -3158,6 +3214,7 @@ namespace TombEditor
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = cutName + " (copy" + buffer + ")";
             newRoom.BuildGeometry();
+            newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.UndoManager.PushRoomCreated(newRoom);
@@ -3218,6 +3275,7 @@ namespace TombEditor
                     {
                         room.AmbientLight = c.ToFloat3Color() * 2.0f;
                         room.BuildGeometry();
+                        room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _editor.RoomPropertiesChange(room);
                     }
                 }, _editor.Configuration.UI_ColorScheme))
@@ -3238,6 +3296,7 @@ namespace TombEditor
             foreach (Room room in _editor.SelectedRooms)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomPropertiesChange(room);
             }
 
@@ -3248,7 +3307,7 @@ namespace TombEditor
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 room.AmbientLight = _editor.SelectedRoom.AmbientLight;
-            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview); });
+            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview); });
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
         }
@@ -3264,7 +3323,7 @@ namespace TombEditor
                 return;
 
             setLightValue(light, newValue.Value);
-            light.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -3274,7 +3333,7 @@ namespace TombEditor
             if (light == null)
                 return;
             light.Quality = newQuality;
-            light.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -3605,7 +3664,11 @@ namespace TombEditor
                 return false;
             var newRooms = _editor.Level.TransformRooms(_editor.SelectedRooms, transformation);
             foreach (Room room in newRooms)
+            {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
+
             _editor.SelectRoomsAndResetCamera(newRooms);
 
             _editor.RoomListChange();
@@ -3694,6 +3757,7 @@ namespace TombEditor
             portals.Select(p => p.AdjoiningRoom).ToList().ForEach(room => { room.BuildGeometry(); _editor.RoomGeometryChange(room); });
 
             _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -3780,6 +3844,7 @@ namespace TombEditor
 
             portal.Opacity = opacity;
             portal.Room.BuildGeometry();
+            portal.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
@@ -3853,9 +3918,9 @@ namespace TombEditor
             ExportRooms(new[] { _editor.SelectedRoom }, owner);
         }
 
-        private static Vector2 GetNormalizedUV(Vector2 uv)
+        private static Vector2 GetNormalizedUV(Vector2 uv, int textureWidth, int textureHeight)
         {
-            return new Vector2((int)Math.Round(uv.X), (int)Math.Round(uv.Y) % 256);
+            return new Vector2(uv.X/textureWidth, uv.Y/textureHeight );
         }
 
         public static void ExportRooms(IEnumerable<Room> rooms, IWin32Window owner)
@@ -3892,7 +3957,6 @@ namespace TombEditor
 
                             // Prepare data for export
                             var model = new IOModel();
-                            var texture = _editor.Level.Settings.Textures[0];
 
                             // Collect all used textures
                             var usedTextures = new List<Texture>();
@@ -3919,61 +3983,47 @@ namespace TombEditor
                             // Now fragment textures in pages
                             for (int j = 0; j < usedTextures.Count; j++)
                             {
-                                var t = usedTextures[j];
-                                string baseName = Path.GetFileNameWithoutExtension(t.Image.FileName);
-                                int pageSize = t.Image.Width;
-                                int numPages = (int)Math.Ceiling((float)t.Image.Height / pageSize);
-
-                                for (int i = 0; i < numPages; i++)
+                                if (usedTextures[j].Image.Width > 8192)
                                 {
-                                    string fileName = baseName + "_" + i + ".png";
-                                    int startX = 0;
-                                    int width = pageSize;
-                                    int startY = i * pageSize;
-                                    int height = (i * pageSize + pageSize > t.Image.Height ? t.Image.Height - i * pageSize : pageSize);
-
-                                    ImageC newImage = ImageC.CreateNew(pageSize, pageSize);
-                                    newImage.CopyFrom(0, 0, t.Image, startX, startY, width, height);
-                                    newImage.Save(fileName);
-
-                                    // Build materials for this texture pahe
-                                    var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + i,
-                                                                   texture,
-                                                                   fileName,
-                                                                   i,
-                                                                   false,
-                                                                   false,
-                                                                   0);
-
-                                    var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + i, 
-                                                                              texture,
-                                                                              fileName,
-                                                                              i,
-                                                                              false,
-                                                                              true,
-                                                                              0);
-
-                                    var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + i, 
-                                                                             texture,
-                                                                             fileName,
-                                                                             i, 
-                                                                             true, 
-                                                                             false, 
-                                                                             0);
-
-                                    var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + i, 
-                                                                                        texture, 
-                                                                                        fileName,
-                                                                                        i,
-                                                                                        true, 
-                                                                                        true, 
-                                                                                        0);
-
-                                    model.Materials.Add(matOpaque);
-                                    model.Materials.Add(matOpaqueDoubleSided);
-                                    model.Materials.Add(matAdditiveBlending);
-                                    model.Materials.Add(matAdditiveBlendingDoubleSided);
+                                    _editor.SendMessage("The Texture " + usedTextures[j].Image.FileName + "Has a width higher than 8192. Possible UV Coordinate precision loss!");
                                 }
+                                if (usedTextures[j].Image.Height > 8192)
+                                {
+                                    _editor.SendMessage("The Texture " + usedTextures[j].Image.FileName + "Has a height higher than 8192. Possible UV Coordinate precision loss!");
+                                }
+                                // Build materials for this texture pahe
+                                var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j,
+                                                               usedTextures[j],
+                                                               usedTextures[j].Image.FileName,
+                                                               false,
+                                                               false,
+                                                               0);
+
+                                var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j,
+                                                                          usedTextures[j],
+                                                                          usedTextures[j].Image.FileName,
+                                                                          false,
+                                                                          true,
+                                                                          0);
+
+                                var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j,
+                                                                         usedTextures[j],
+                                                                         usedTextures[j].Image.FileName,
+                                                                         true,
+                                                                         false,
+                                                                         0);
+
+                                var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j,
+                                                                                    usedTextures[j],
+                                                                                    usedTextures[j].Image.FileName,
+                                                                                    true,
+                                                                                    true,
+                                                                                    0);
+
+                                model.Materials.Add(matOpaque);
+                                model.Materials.Add(matOpaqueDoubleSided);
+                                model.Materials.Add(matAdditiveBlending);
+                                model.Materials.Add(matAdditiveBlendingDoubleSided);
                             }
                             
                             bool normalizePosition = rooms.Count() == 1;
@@ -4026,31 +4076,51 @@ namespace TombEditor
                                                 poly.Indices.Add(lastIndex + 1);
                                                 poly.Indices.Add(lastIndex + 2);
                                                 poly.Indices.Add(lastIndex + 3);
-
-                                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] - deltaPos + room.WorldPos);
-                                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 0] - deltaPos + room.WorldPos);
-                                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] - deltaPos + room.WorldPos);
-                                                mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 3] - deltaPos + room.WorldPos);
-
                                                 var uvFactor = new Vector2(0.5f / (float)textureArea1.Texture.Image.Width, 0.5f / (float)textureArea1.Texture.Image.Height);
-                                                                      
-                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord2 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord0 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord1 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea2.TexCoord0 - uvFactor));
+                                                int textureWidth = textureArea1.Texture.Image.Width;
+                                                int textureHeight = textureArea1.Texture.Image.Height;
+                                                
 
-                                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
-                                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 0], 1.0f));
-                                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
-                                                mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 3], 1.0f));
+                                                
+                                                if (faceType != (int)BlockFace.Ceiling)
+                                                {
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 3] - deltaPos + room.WorldPos);
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] - deltaPos + room.WorldPos);
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 0] - deltaPos + room.WorldPos);
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] - deltaPos + room.WorldPos);
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea2.TexCoord0, textureWidth, textureHeight));
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord2, textureWidth, textureHeight));
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord0, textureWidth, textureHeight));
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord1, textureWidth, textureHeight));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 3], 1.0f));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 0], 1.0f));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
+                                                }
+                                                else
+                                                {
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 1] - deltaPos + room.WorldPos);
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] - deltaPos + room.WorldPos);
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 0] - deltaPos + room.WorldPos);
+                                                    mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 5] - deltaPos + room.WorldPos);
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord1, textureWidth, textureHeight));
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord2, textureWidth, textureHeight));
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea1.TexCoord0, textureWidth, textureHeight));
+                                                    mesh.UV.Add(GetNormalizedUV(textureArea2.TexCoord2, textureWidth, textureHeight));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 0], 1.0f));
+                                                    mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 5], 1.0f));
+                                                }
+                                                
 
-                                                // Get the right submesh
-                                                int tile = (int)((textureArea1.TexCoord2 - uvFactor).Y / 256);
+                                                
+
                                                 var mat = model.GetMaterial(textureArea1.Texture,
-                                                                            tile,
                                                                             textureArea1.BlendMode == BlendMode.Additive,
                                                                             textureArea1.DoubleSided,
                                                                             0);
+
                                                 var submesh = mesh.Submeshes[mat];
                                                 submesh.Polygons.Add(poly);
 
@@ -4076,19 +4146,18 @@ namespace TombEditor
                                                 mesh.Positions.Add(room.RoomGeometry.VertexPositions[i + 2] - deltaPos + room.WorldPos);
 
                                                 var uvFactor = new Vector2(0.5f / (float)textureArea.Texture.Image.Width, 0.5f / (float)textureArea.Texture.Image.Height);
-
-                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord0 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord1 - uvFactor));
-                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord2 - uvFactor));
+                                                int textureWidth = textureArea.Texture.Image.Width;
+                                                int textureHeight = textureArea.Texture.Image.Height;
+                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord0, textureWidth, textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord1, textureWidth, textureHeight));
+                                                mesh.UV.Add(GetNormalizedUV(textureArea.TexCoord2, textureWidth, textureHeight));
                                                 
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 1], 1.0f));
                                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
 
                                                 // Get the right submesh
-                                                int tile = (int)((textureArea.TexCoord0 - uvFactor).Y / 256);
                                                 var mat = model.GetMaterial(textureArea.Texture,
-                                                                            tile,
                                                                             textureArea.BlendMode == BlendMode.Additive,
                                                                             textureArea.DoubleSided,
                                                                             0);
@@ -4290,10 +4359,14 @@ namespace TombEditor
                         }
                     }
 
+                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                        r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+
                     _editor.Level = newLevel;
                     newLevel = null;
                     AddProjectToRecent(fileName);
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
+
                 }
             }
             catch (Exception exc)
@@ -4360,6 +4433,9 @@ namespace TombEditor
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
 
+                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                        r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+
                     _editor.Level = newLevel;
                     newLevel = null;
                 }
@@ -4397,6 +4473,7 @@ namespace TombEditor
             foreach (Room room in roomsToUpdate)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomSectorPropertiesChange(room);
             }
 
@@ -4454,7 +4531,11 @@ namespace TombEditor
             {
                 var relevantRooms = new HashSet<Room> { room, ((PortalInstance)@object).AdjoiningRoom };
                 Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
-                Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+                Parallel.ForEach(relevantRooms, relevantRoom =>
+                {
+                    relevantRoom.BuildGeometry();
+                    relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                });
                 foreach (Room relevantRoom in relevantRooms)
                     _editor.RoomPropertiesChange(relevantRoom);
             }

@@ -120,7 +120,7 @@ namespace WadTool
 
         private void chosenId_ValueChanged(object sender, EventArgs e)
         {
-            for(int i = 0; i < lstSlots.Items.Count; i++)
+            for (int i = 0; i < lstSlots.Items.Count; i++)
                 if (lstSlots.Items[i].Tag is uint)
                     if ((uint)lstSlots.Items[i].Tag == (uint)chosenId.Value)
                     {

@@ -12,7 +12,7 @@ namespace TombIDE.Shared.SharedClasses
 		/// </summary>
 		public static List<Project> GetProjectsFromXml()
 		{
-			string xmlPath = Path.Combine(PathHelper.GetProgramDirectory(), "TombIDEProjects.xml");
+			string xmlPath = Path.Combine(PathHelper.GetConfigsPath(), "TombIDEProjects.xml");
 
 			if (File.Exists(xmlPath))
 			{
@@ -39,7 +39,7 @@ namespace TombIDE.Shared.SharedClasses
 
 		public static List<Plugin> GetPluginsFromXml()
 		{
-			string xmlPath = Path.Combine(PathHelper.GetProgramDirectory(), "TombIDEPlugins.xml");
+			string xmlPath = Path.Combine(PathHelper.GetConfigsPath(), "TombIDEPlugins.xml");
 
 			if (File.Exists(xmlPath))
 			{
@@ -75,13 +75,13 @@ namespace TombIDE.Shared.SharedClasses
 			foreach (Project project in projects)
 				projectFilePaths.Add(project.GetTrprojFilePath());
 
-			string xmlPath = Path.Combine(PathHelper.GetProgramDirectory(), "TombIDEProjects.xml");
+			string xmlPath = Path.Combine(PathHelper.GetConfigsPath(), "TombIDEProjects.xml");
 			SaveXmlFile(xmlPath, typeof(List<string>), projectFilePaths);
 		}
 
 		public static void UpdatePluginsXml(List<Plugin> pluginList)
 		{
-			string xmlPath = Path.Combine(PathHelper.GetProgramDirectory(), "TombIDEPlugins.xml");
+			string xmlPath = Path.Combine(PathHelper.GetConfigsPath(), "TombIDEPlugins.xml");
 			SaveXmlFile(xmlPath, typeof(List<Plugin>), pluginList);
 		}
 

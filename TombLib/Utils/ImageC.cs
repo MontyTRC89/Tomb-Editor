@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using ColorThiefDotNet;
 
 namespace TombLib.Utils
 {
@@ -24,6 +25,16 @@ namespace TombLib.Utils
             A = a;
         }
 
+        public static implicit operator System.Drawing.Color(ColorC this_)
+        {
+            return System.Drawing.Color.FromArgb(255, this_.R, this_.G, this_.B);
+        }
+
+        public static implicit operator ColorC(System.Drawing.Color this_)
+        {
+            return new ColorC(this_.R, this_.G, this_.B);
+        }
+
         public static implicit operator Vector4(ColorC this_)
         {
             const float _floatFactor = 1.0f / 255.0f;
@@ -34,6 +45,18 @@ namespace TombLib.Utils
         {
             this_ = Vector4.Min(Vector4.Max(this_ * 255.99998f, new Vector4()), new Vector4(255.0f));
             return new ColorC((byte)this_.X, (byte)this_.Y, (byte)this_.Z, (byte)this_.W);
+        }
+
+        public static implicit operator Vector3(ColorC this_)
+        {
+            const float _floatFactor = 1.0f / 255.0f;
+            return new Vector3(this_.R * _floatFactor, this_.G * _floatFactor, this_.B * _floatFactor);
+        }
+
+        public static explicit operator ColorC(Vector3 this_)
+        {
+            this_ = Vector3.Min(Vector3.Max(this_ * 255.99998f, new Vector3()), new Vector3(255.0f));
+            return new ColorC((byte)this_.X, (byte)this_.Y, (byte)this_.Z);
         }
 
         public static Vector4 Mix(Vector4 background, Vector4 foreground)
@@ -66,6 +89,7 @@ namespace TombLib.Utils
         public string FileName { get; set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public List<ColorC> Palette { get; private set; }
         private byte[] _data { get; set; }
 
         private ImageC(int width, int height, byte[] data)
@@ -74,6 +98,7 @@ namespace TombLib.Utils
             Height = height;
             _data = data;
             FileName = "";
+            Palette = new List<ColorC>();
         }
 
         public static bool operator ==(ImageC first, ImageC second) =>
@@ -146,6 +171,28 @@ namespace TombLib.Utils
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                     SetPixel(x, y, color);
+        }
+
+        public void CalculatePalette(int colorCount = 256)
+        {
+            if (colorCount > 256) colorCount = 256; // For some reason it fails with more...
+            var colorThief = new ColorThief();
+
+            var palette = new List<QuantizedColor>();
+            using (var image = ToBitmap())
+                palette = colorThief.GetPalette(image, colorCount, 10, false);
+
+            // Sort colours by YIQ luma so they align nicely
+            var sortedPalette = palette.OrderBy(entry => entry.CalculateYiqLuma(entry.Color));
+
+            Palette.Clear();
+            foreach (var color in sortedPalette)
+                if (color.Color.ToHsl().L > 0.009) // Filter out dark values
+                {
+                    var newColor = new ColorC(color.Color.R, color.Color.G, color.Color.B);
+                    if (!Palette.Contains(newColor)) // Filter out duplicates
+                        Palette.Add(newColor);
+                }
         }
 
         public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int [,] kernel)

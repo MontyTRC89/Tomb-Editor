@@ -153,6 +153,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_DrawUntexturedLights_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_DrawUntexturedLights_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_generic_text_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_generic_text_16", resourceCulture);
@@ -741,16 +751,6 @@ namespace TombEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Palette {
-            get {
-                object obj = ResourceManager.GetObject("Palette", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap sectortype_Beetle_16 {
@@ -1006,26 +1006,6 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap sectortype_Wall_neg_16 {
             get {
                 object obj = ResourceManager.GetObject("sectortype_Wall_neg_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap small_icons_16 {
-            get {
-                object obj = ResourceManager.GetObject("small_icons_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap stones_16 {
-            get {
-                object obj = ResourceManager.GetObject("stones_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

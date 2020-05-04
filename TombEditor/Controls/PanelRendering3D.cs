@@ -62,6 +62,7 @@ namespace TombEditor.Controls
         public bool DisablePickingForImportedGeometry { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
+        public bool ShowLightingWhiteTextureOnly { get; set; }
 
         private Camera _oldCamera;
 
@@ -317,7 +318,7 @@ namespace TombEditor.Controls
             {
                 var value = (Editor.ObjectChangedEvent)obj;
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
-                    _renderingCachedRooms.Remove(((Editor.ObjectChangedEvent)obj).Object.Room);
+                    _renderingCachedRooms.Remove(value.Object.Room);
             }
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
@@ -336,8 +337,7 @@ namespace TombEditor.Controls
             // Update drawing
 
             if (_editor.Mode != EditorMode.Map2D)
-                if
-                    (obj is IEditorObjectChangedEvent ||
+                if (obj is IEditorObjectChangedEvent ||
                     obj is Editor.SelectedObjectChangedEvent ||
                     obj is IEditorRoomChangedEvent ||
                     obj is SectorColoringManager.ChangeSectorColoringInfoEvent ||
@@ -348,7 +348,8 @@ namespace TombEditor.Controls
                     obj is Editor.ModeChangedEvent ||
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
-                    obj is Editor.LoadedImportedGeometriesChangedEvent)
+                    obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                    obj is Editor.HideSelectionEvent)
                     Invalidate(false);
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
@@ -705,7 +706,7 @@ namespace TombEditor.Controls
                         _editor.ChosenItem = ((ItemInstance)obj).ItemType;
                     else
                     {
-                        if(_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance))
+                        if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance))
                             EditorActions.BookmarkObject(obj);
                         _editor.SelectedObject = obj;
                     }
@@ -743,13 +744,13 @@ namespace TombEditor.Controls
                         Room pickedRoom = block.Room;
                         if (pickedRoom != _editor.SelectedRoom)
                         {
-                            if(Control.ModifierKeys == Keys.Shift)
+                            if (Control.ModifierKeys == Keys.Shift)
                             {
                                 List<Room> newlySelectedRooms = _editor.SelectedRooms.ToList();
-                                if (newlySelectedRooms.Contains(pickedRoom) )
+                                if (newlySelectedRooms.Contains(pickedRoom))
 
                                     newlySelectedRooms.Remove(pickedRoom);
-                                 else
+                                else
                                     newlySelectedRooms.Add(pickedRoom);
 
                                 _editor.SelectRooms(newlySelectedRooms);
@@ -765,7 +766,7 @@ namespace TombEditor.Controls
                                     AnimateCamera(nextPos);
                                 }
                             }
-                            
+
                         }
                     }
                     break;
@@ -780,7 +781,10 @@ namespace TombEditor.Controls
         {
             base.OnMouseEnter(e);
             if (!Focused)
+            {
                 Focus(); // Enable keyboard interaction
+                _editor.ToggleHiddenSelection(false); // Restore hidden selection, if any
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1091,7 +1095,7 @@ namespace TombEditor.Controls
                                                 true);
                                             redrawWindow = true;
                                         }
-                                    }                                    
+                                    }
                                 }
                             }
                         }
@@ -1747,8 +1751,8 @@ namespace TombEditor.Controls
 
             if (drawRoomBounds)
             {
-                if(_editor.SelectedRooms.Count > 0)
-                    foreach(Room room in _editor.SelectedRooms)
+                if (_editor.SelectedRooms.Count > 0)
+                    foreach (Room room in _editor.SelectedRooms)
                         // Draw room bounding box around every selected Room
                         DrawRoomBoundingBox(viewProjection, solidEffect, room);
                 else
@@ -1983,13 +1987,13 @@ namespace TombEditor.Controls
                             var vPos = instance.ControlPositions(floor, false);
                             var vOrg = instance.ControlPositions(floor, true);
 
-                            
+
                             bool[] shift = new bool[4];
                             shift[0] = split == DiagonalSplit.XpZp || split == DiagonalSplit.XpZn;
                             shift[1] = split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp;
                             shift[2] = split == DiagonalSplit.XnZn || split == DiagonalSplit.XnZp;
                             shift[3] = split == DiagonalSplit.XnZn || split == DiagonalSplit.XpZn;
-                                
+
                             for (int i = 0; i < 4; i++)
                             {
                                 Vector3[] fPos = new Vector3[4];
@@ -2097,7 +2101,7 @@ namespace TombEditor.Controls
 
                                 ch = (i == 0 ? (toggled ? 3 : 0) : (toggled ? 1 : 2));
                                 equal[0] = vPos[ch] == vOrg[ch];
-                                vtxs[c].Position = vPos[ch];                                
+                                vtxs[c].Position = vPos[ch];
                                 if (triShift) vtxs[c].Position.Y = vOrg[r].Y + (vPos[ch] - vOrg[ch]).Y;
                                 vtxs[c].Color = i == 1 ? p1c : p2c;
                                 c++;
@@ -2140,7 +2144,7 @@ namespace TombEditor.Controls
                         effect.Parameters["Color"].SetValue(Vector4.One);
                         effect.CurrentTechnique.Passes[0].Apply();
                         _legacyDevice.Draw(PrimitiveType.TriangleList, 84);
-                        
+
                         // Bring back old vb or forthcoming code may crash
                         _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
                         _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
@@ -2201,7 +2205,7 @@ namespace TombEditor.Controls
                             instance.RotationPositionMatrix * viewProjection,
                             "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") " +
                                 "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
-                                "\nRoll = " + instance.Roll + ", XRot = " + instance.RotationX + ", YRot = " + instance.RotationY + 
+                                "\nRoll = " + instance.Roll + ", XRot = " + instance.RotationX + ", YRot = " + instance.RotationY +
                                 "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2277,7 +2281,7 @@ namespace TombEditor.Controls
                 }
 
 
-            
+
 
             if (_editor.SelectedRoom != null)
             {
@@ -2471,7 +2475,9 @@ namespace TombEditor.Controls
                 Room room = instance.Room;
 
                 skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
+                // FIXME: Check if Raildex's experimental moveable tint feature corresponds to visible results!
+                //skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                 if (!disableSelection && _editor.SelectedObject == instance) // Selection
                     skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
@@ -2592,7 +2598,7 @@ namespace TombEditor.Controls
                     // Add text message
                     textToDraw.Add(CreateTextTagForObject(
                         instance.RotationPositionMatrix * viewProjection,
-                        instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" + 
+                        instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
                         "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
 
                     // Add the line height of the object
@@ -2836,7 +2842,8 @@ namespace TombEditor.Controls
                 RoomGridForce = _editor.Mode == EditorMode.Geometry,
                 RoomDisableVertexColors = _editor.Mode == EditorMode.FaceEdit,
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
-                TransformMatrix = viewProjection
+                TransformMatrix = viewProjection,
+                ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly
             });
 
             // Reset
@@ -2921,11 +2928,8 @@ namespace TombEditor.Controls
                     StateBuffer = _renderingStateBuffer
                 });
 
-            // Determine the window we're currently in. If no window is selected, it means
-            // we're in color dialog and have to disable selection highlight for convinience.
-
-            var drawSelection = Form.ActiveForm == null;
-
+            // Determine if selection should be visible or not.
+            var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
 
             // Draw moveables and static meshes
             {
@@ -2933,9 +2937,9 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 if (ShowMoveables)
-                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, drawSelection);
+                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, hiddenSelection);
                 if (ShowStatics)
-                    DrawStatics(viewProjection, staticsToDraw, textToDraw, drawSelection);
+                    DrawStatics(viewProjection, staticsToDraw, textToDraw, hiddenSelection);
 
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
@@ -2951,7 +2955,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 // Draw imported geometry
-                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, drawSelection);
+                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
 
                 // Reset GPU states
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
