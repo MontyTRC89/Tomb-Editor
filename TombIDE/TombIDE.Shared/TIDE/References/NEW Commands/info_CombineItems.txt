@@ -1,0 +1,61 @@
+Syntax: CombineItems=FirstItem (slot), SecondItem (slot), FinalItem (slot)
+Scope: To use in [Level] section
+Max number of instances for level section: 92
+
+FirstItem, SecondItem, FinalItem fields
+---------------------------------------
+All fields accept a slot value that you can find in ReferencePancel in the "SLOT MOVEABLES indices list" section.
+Remark: in the reality you cann't use ANY slot but only slot corresponding to inventory items.
+You can easily recognize these slots because they have in their name the word "_ITEM".
+For example you cann't use PISTOLS_ANIM or LARA_HOLSTERS_PISTOLS but you can use PISTOLS_ITEM or PISTOLS_AMMO_ITEM.
+
+Description
+-----------
+This command allows to create a new combining rule about inventory items to get a new item.
+You had already the chance to combine two items, like "PUZZLE_ITEM1_COMBO1" with "PUZZLE_ITEM1_COMBO2" to get in inventory the new item "PUZZLE_ITEM1", or, to combine the "LASERSIGHT_ITEM" with "CROSSBOW_ITEM" to get the crossbow with laser-sight.
+
+However, using the CombineItems command you can get other targets alike:
+
+1) To create any coupling, and not only with specific "combo" items or with laser_sight + weapon.
+For example you can combine "Puzzle1" with "Key2" to get any other new item.
+
+2) You can set as final item not only the Puzzles items but also weapons, medipacks, examine items and all other inventory items.
+
+Thanks to above chance you could, for example
+, build a weapon letting to the player the target to pick up different pieces of this weapon, and only when he picked up all pieces he will be able to buil a working weapon.
+
+You can create a final item got with 2 but also 3, 4, 5 and more, pieces.
+To realize this target just you type two or more CombineItems command in same [Level] section.
+For example if you wish that your final weapon was the Grenade Gun, and you wish there will be necessary three pieces to build it, you could type following script commands:
+
+CombineItems= PUZZLE_ITEM1, PUZZLE_ITEM2, PUZZLE_ITEM3
+
+CombineItem = 
+PUZZLE_ITEM3, PUZZLE_ITEM4, GRENADE_GUN_ITEM
+
+In above commands we use the PUZZLE_ITEM3 only as intermediate item, therefore the 3 pieces to build the grenade gun will be: 
+
+(PUZZLE_ITEM1 + PUZZLE_ITEM2) + PUZZLE_ITEM4 =  GRENADE_GUN_ITEM
+
+Remark: in spite of above example, it's not logical got a Puzzle_Item3 with Puzzle_item1+PuzzleItem2, since there are already two combos to build a PuzzleItem.
+I used above example only to clear the progressive aggregate, but it should be more logical have our three pieces of weapon using some default combo items, for example:
+
+ PUZZLE_ITEM1_COMBO1 + PUZZLE_ITEM1_COMBO2 + KEY_ITEM1_COMBO1
+
+
+
+Then, about the  script command to use, since the combine rule to get the PUZZLE_ITEM1 with (PUZZLE_ITEM1_COMBO1 + PUZZLE_ITEM1_COMBO2) is already present, you'll have to type simply this only command:
+
+CombineItems=  PUZZLE_ITEM1, KEY_ITEM1_COMBO1, GRENADE_GUN_ITEM
+
+In this way, the player will pickup combo1 and combo2 for puzzle item1.
+He will pickup also the third piece, the KEY_ITEM1_COMBO1, and at end when he combined (with standard combine rule) the combo1+combo2 for puzzle item1, then he will be able to combine furtherly the new Puzzle1 item with the third piece of the weapon, stored in KEY_ITEM1_COMBO1
+ item.
+
+
+Remarks:
+* You cann't use IGNORE null value in this command
+* If you type unvalid slot values the corresponding CombineItems command will be ignored by TRNG engine.
+* The max number of CombineItems in same [Level] section is of 67 instances.
+
+

@@ -1,0 +1,6 @@
+Syntax: ShowLaraInTitle=ENABLED/DISABLED
+Scope: to use in [Options] section
+
+By default lara is not visible in Title level but using this command:
+ShowLaraInTitle=ENABLED in [Options] section, lara will be drawn.
+

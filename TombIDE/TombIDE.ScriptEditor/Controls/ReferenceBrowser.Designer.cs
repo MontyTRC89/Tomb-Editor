@@ -34,9 +34,9 @@
             "Enemy Damage List",
             "Keyboard Scancodes",
             "OCB List",
-            "SCRIPT NEW COMMANDS (Unavailable)",
-            "SCRIPT OLD COMMANDS (Unavailable)",
-            "SOUND SFX INDICES LIST (Unavailable)",
+            "OLD Commands List",
+            "NEW Commands List",
+            "Sound SFX Indices",
             "Moveable Slot Indices",
             "Static Object Indices",
             "Variable Placeholders"});

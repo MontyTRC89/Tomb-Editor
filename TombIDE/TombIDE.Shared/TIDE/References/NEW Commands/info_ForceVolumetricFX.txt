@@ -1,0 +1,11 @@
+Syntax: ForceVolumetricFX=ENABLED/DISABLED
+Scope: To use in [Level] section
+
+With ForceVolumetricFX command you can enable or disable volumtric fx setting in current level.
+This command is useful if you want to mix fog bulbs with distance fog.
+
+Remark:
+(1) You can also enable or disable volumtric fx in dynamic way using some new flipeffects of NGLE in game.
+This trick culd be interesting to "switch off" the fog bulb and "switch on" them when you want create an effect of gas or smoke after an explosion.
+(2) If no ForceVolumetricFX command is used for current level then it will be used the setting set in tomb4 setup window from player.
+

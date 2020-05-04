@@ -1,0 +1,9 @@
+Syntax: Lightning= ENABLED/DISABLED
+
+To use in [Level] section
+
+Enables or disables thunders (sound) and lightning (white flashes) on the sky.
+You'll enable this effect for levels where there is a storm
+
+
+

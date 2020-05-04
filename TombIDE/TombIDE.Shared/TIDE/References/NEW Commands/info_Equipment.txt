@@ -1,0 +1,29 @@
+Syntax: Equipment= SLOT item, Amount
+Scope: To use in [Level] section
+Max number of instances for level section: 100
+
+Equipment force the amout of specific Slot item in inventory.
+By default lara starts the first level, or a level after a ResetHub command, with the same equipment for medipack, weapons, binocular ect.
+Using Equipment command you can force a different amout for each inventory item.
+
+SLOT Item field
+---------------
+Type in this field a value to identify the slot corresponding to item you want set.
+You find the full list of slot items in SLOT MOVEABLES of References panel of NG Center program.
+
+Remark: not all slot names will be accepted, you should use only slot name with the word "Item" at right.
+
+Amout field
+-----------
+In amout field you set the quantity of specific item in inventory.
+For example if you want give no medipack to lara at start of current level you can use these two following commands:
+
+Equipment= BIGMEDI_ITEM, 0
+Equipment= SMALLMEDI_ITEM, 0
+
+If the item you are using is a weapon you can add to the Amount field one or more LOAD_ flag to set the currently loaded ammo type and the further lasersight already mounted on the weapon.
+Read the LOAD_... constant description in Mnemonic Constants section for more infos.
+
+Remark: the range of value for Amount field is from -1 (unlimited) as min value and 127 like max value. If you pass over the 127 you'll get negative numbers with unpredictable results.
+
+

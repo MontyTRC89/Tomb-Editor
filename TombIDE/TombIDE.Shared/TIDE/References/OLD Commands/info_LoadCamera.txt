@@ -1,0 +1,27 @@
+Syntax: LoadCamera= SourceX,SourceY,SourceZ,TargetX,TargetY,TargetZ,SourceRoom
+
+Set the position of cam to create an image to use in 'load game' screen in game.
+
+To use in [Level] section
+
+Arguments:
+
+1 - Source X position of cam in game units ("76406")
+2 - Source Y position of cam in game units ("-3880")
+3 - Source Z position of cam in game units ("40584")
+4 - Target (where the cam is watching) X position ("75794")
+5 - Target Y position ("-3220")
+6 - Target Z position ("40328")
+7 - Number of room where is placed the cam ("23")
+
+It's not reasonable set manually these value.
+You must read them and copy them in script.txt file using F1 key (1) while you are in game.
+In top left corner of screen will be showed above numbers that are in according with current view the game in that moment.
+
+Remark:
+(1) F1 feature works only when in script.txt the command FlyCheat =	ENABLED.
+
+(2) If there are two LoadCamera= commands in same [level] section, the game will use the second LoadCamera= command to set screen for loading savegame and reload screen after the death of lara.
+Probably the first LoadCamera= will be used in some circustances with Finish trigger to jump to next level but I'm not sure.
+
+

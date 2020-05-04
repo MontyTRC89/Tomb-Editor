@@ -13,6 +13,16 @@ using TombLib.Scripting.Resources;
 
 namespace TombIDE.ScriptEditor.Forms
 {
+	// TODO: Refactor !!!
+
+	internal enum ReferenceType
+	{
+		OCB,
+		OLDCommands,
+		NEWCommands,
+		Other
+	}
+
 	internal partial class FormMnemonicInfo : DarkForm
 	{
 		private IDE _ide;
@@ -29,12 +39,12 @@ namespace TombIDE.ScriptEditor.Forms
 			checkBox_CloseTabs.Checked = _ide.IDEConfiguration.InfoBox_CloseTabsOnClose;
 		}
 
-		public void Show(string flag, bool isOCB = false)
+		public void Show(string flag, ReferenceType type)
 		{
 			if (!Visible)
 				Show();
 
-			OpenDescriptionFile(flag, isOCB);
+			OpenDescriptionFile(flag, type);
 
 			Focus();
 		}
@@ -82,7 +92,7 @@ namespace TombIDE.ScriptEditor.Forms
 
 		#region Methods
 
-		private void OpenDescriptionFile(string flag, bool isOCB) // TODO: Refactor
+		private void OpenDescriptionFile(string flag, ReferenceType type) // TODO: Refactor
 		{
 			foreach (TabPage tab in tabControl.TabPages)
 				if (tab.Text.Equals(flag, StringComparison.OrdinalIgnoreCase))
@@ -106,9 +116,27 @@ namespace TombIDE.ScriptEditor.Forms
 				Font = new Font("Microsoft Sans Serif", 12f),
 				BorderStyle = BorderStyle.None,
 				Dock = DockStyle.Fill,
-				Text = isOCB ? GetOCBDescription(flag) : GetFlagDescription(flag),
 				ReadOnly = true
 			};
+
+			switch (type)
+			{
+				case ReferenceType.OCB:
+					textBox.Text = GetOCBDescription(flag);
+					break;
+
+				case ReferenceType.OLDCommands:
+					textBox.Text = GetCommandDescription(flag.TrimEnd('='), type);
+					break;
+
+				case ReferenceType.NEWCommands:
+					textBox.Text = GetCommandDescription(flag.TrimEnd('='), type);
+					break;
+
+				default:
+					textBox.Text = GetFlagDescription(flag);
+					break;
+			}
 
 			newTabPage.Controls.Add(textBox);
 			tabControl.TabPages.Add(newTabPage);
@@ -127,6 +155,43 @@ namespace TombIDE.ScriptEditor.Forms
 
 			if (tabControl.TabPages.Count == 0)
 				Hide();
+		}
+
+		private string GetCommandDescription(string flag, ReferenceType type)
+		{
+			string result = string.Empty;
+
+			try
+			{
+				string filePath = Path.Combine(PathHelper.GetMnemonicDefinitionsPath(), "info_" + flag + ".txt");
+
+				switch (type)
+				{
+					case ReferenceType.OLDCommands:
+						filePath = Path.Combine(PathHelper.GetOLDCommandDefinitionsPath(), "info_" + flag + ".txt");
+						break;
+
+					case ReferenceType.NEWCommands:
+						filePath = Path.Combine(PathHelper.GetNEWCommandDefinitionsPath(), "info_" + flag + ".txt");
+						break;
+
+					default:
+						return null;
+				}
+
+				if (File.Exists(filePath))
+					result = File.ReadAllText(filePath, Encoding.GetEncoding(1252));
+
+				// Fix Nickelony's persistent problems with line endings
+				if (!string.IsNullOrEmpty(result))
+					result = Regex.Replace(result, @"\r\n?|\n", "\n");
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+
+			return result;
 		}
 
 		private string GetFlagDescription(string flag)
