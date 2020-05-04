@@ -351,6 +351,7 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
                     obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                    obj is Editor.GameVersionChangedEvent ||
                     obj is Editor.HideSelectionEvent)
                     Invalidate(false);
             // Update cursor

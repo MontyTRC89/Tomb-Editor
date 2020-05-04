@@ -42,6 +42,9 @@ namespace TombEditor.Forms
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
+            // Initialize everything needed
+            _editor.RaiseEvent(new Editor.InitEvent());
+
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
@@ -138,6 +141,20 @@ namespace TombEditor.Forms
                 gridWallsIn3SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = _editor.SelectedObject is SectorBasedObjectInstance && validSectorSelection;
+            }
+
+            // Update version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+            {
+                bool isNG  = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+
+                addSphereVolumeToolStripMenuItem.Enabled    = isT5M;
+                addPrismVolumeToolStripMenuItem.Enabled     = isT5M;
+                addBoxVolumeToolStripMenuItem.Enabled       = isT5M;
+                makeQuickItemGroupToolStripMenuItem.Enabled = isNG;
             }
 
             // Update compilation statistics

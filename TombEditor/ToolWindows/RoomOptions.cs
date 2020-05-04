@@ -21,7 +21,6 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-            EditorEventRaised(new Editor.InitEvent());
 
             // A hack to edit textbox size
             tbRoomTags.AutoSize = false;

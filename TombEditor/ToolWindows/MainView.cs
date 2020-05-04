@@ -159,6 +159,20 @@ namespace TombEditor.ToolWindows
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
             }
 
+            // Update version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+            {
+                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+
+                butAddBoxVolume.Enabled = isT5M;
+                butAddSphereVolume.Enabled = isT5M;
+                butAddPrismVolume.Enabled = isT5M;
+                butDrawVolumes.Enabled = isT5M;
+            }
+
+
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
