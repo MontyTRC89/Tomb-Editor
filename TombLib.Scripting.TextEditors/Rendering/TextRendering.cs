@@ -18,7 +18,7 @@ namespace TombLib.Scripting.TextEditors.Rendering
 			List<PointF> zigZagPoints = GenerateZigZagPatternPoints(textWidth);
 
 			Bitmap bitmap = new Bitmap(textWidth, 4);
-			DrawPatternLines(ref bitmap, zigZagPoints, color);
+			DrawPatternLines(bitmap, zigZagPoints, color);
 
 			IntPtr handle = bitmap.GetHbitmap();
 
@@ -44,7 +44,7 @@ namespace TombLib.Scripting.TextEditors.Rendering
 			return zigZagPoints;
 		}
 
-		private static void DrawPatternLines(ref Bitmap bitmap, List<PointF> points, Color color)
+		private static void DrawPatternLines(Bitmap bitmap, List<PointF> points, Color color)
 		{
 			using (Graphics graphics = Graphics.FromImage(bitmap))
 			{

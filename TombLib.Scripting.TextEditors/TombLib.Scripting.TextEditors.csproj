@@ -47,12 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ConfigurationBase.cs" />
-    <Compile Include="Configuration\GlobalTextEditorConfiguration.cs" />
+    <Compile Include="Configuration\TextEditorConfigurationBase.cs" />
     <Compile Include="Configuration\ClassicScriptConfiguration.cs" />
     <Compile Include="Configuration\Colors\ClassicScriptColors.cs" />
     <Compile Include="Configuration\Colors\LuaColors.cs" />
     <Compile Include="Configuration\LuaConfiguration.cs" />
-    <Compile Include="Controls\BaseTextEditor.cs" />
+    <Compile Include="Controls\TextEditorBase.cs" />
     <Compile Include="Controls\LuaTextEditor.cs" />
     <Compile Include="Controls\ScriptTextEditor.cs" />
     <Compile Include="Controls\Settings\SettingsClassicScript.cs">

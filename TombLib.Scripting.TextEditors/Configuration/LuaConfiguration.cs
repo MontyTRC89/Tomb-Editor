@@ -4,7 +4,7 @@ using TombLib.Scripting.TextEditors.Configuration.Colors;
 
 namespace TombLib.Scripting.TextEditors.Configuration
 {
-	public sealed class LuaConfiguration : GlobalTextEditorConfiguration
+	public sealed class LuaConfiguration : TextEditorConfigurationBase
 	{
 		public override string DefaultPath { get; }
 
@@ -14,7 +14,7 @@ namespace TombLib.Scripting.TextEditors.Configuration
 		// TODO
 
 		public LuaConfiguration() =>
-			DefaultPath = Path.Combine(TextEditors.DefaultPaths.GetTextEditorConfigsPath(), "LuaConfiguration.xml");
+			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), "LuaConfiguration.xml");
 
 		public new void Save()
 		{

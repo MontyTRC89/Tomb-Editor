@@ -18,7 +18,7 @@ using TombLib.Scripting.TextEditors.Rendering;
 
 namespace TombLib.Scripting.TextEditors.Controls
 {
-	public class BaseTextEditor : TextEditor
+	public class TextEditorBase : TextEditor
 	{
 		#region Properties, fields and objects
 
@@ -63,7 +63,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		#region Construction
 
-		public BaseTextEditor()
+		public TextEditorBase()
 		{
 			InitializeRenderers();
 			InitializeBackgroundWorkers();
@@ -197,7 +197,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 			IsSilentSession = silentSession;
 		}
 
-		public void SaveCurrentFile() => Save(Document.FileName);
+		public void SaveCurrentFile() =>
+			Save(Document.FileName);
 
 		public new void Save(string fileName)
 		{
@@ -455,7 +456,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 				}
 
 				if (i == Document.LineCount)
-				{
 					for (int j = 1; j < Document.LineCount; j++)
 					{
 						DocumentLine jLine = Document.GetLineByNumber(j);
@@ -467,7 +467,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 							break;
 						}
 					}
-				}
 			}
 		}
 
@@ -478,7 +477,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			for (int i = Document.LineCount - 1; i >= 0; i--)
 			{
 				if (i == 0)
-				{
 					for (int j = Document.LineCount - 1; j > 0; j++)
 					{
 						DocumentLine jLine = Document.GetLineByNumber(j);
@@ -490,7 +488,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 							break;
 						}
 					}
-				}
 
 				DocumentLine iLine = Document.GetLineByNumber(i);
 
@@ -545,10 +542,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		public event EventHandler ZoomChanged;
 
-		protected virtual void OnZoomChanged(EventArgs e)
-		{
+		protected virtual void OnZoomChanged(EventArgs e) =>
 			ZoomChanged?.Invoke(this, e);
-		}
 
 		#endregion Zoom
 
@@ -624,7 +619,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			SpecialToolTip.IsOpen = true;
 		}
 
-		public void UpdateSettings(GlobalTextEditorConfiguration configuration)
+		public void UpdateSettings(TextEditorConfigurationBase configuration)
 		{
 			FontSize = configuration.FontSize;
 			DefaultFontSize = configuration.FontSize;

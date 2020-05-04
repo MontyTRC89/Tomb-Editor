@@ -22,7 +22,7 @@ using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
 namespace TombLib.Scripting.TextEditors.Controls
 {
-	public sealed class ScriptTextEditor : BaseTextEditor
+	public sealed class ScriptTextEditor : TextEditorBase
 	{
 		#region Properties, fields and objects
 
@@ -130,7 +130,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void HandleAutocomplete(TextCompositionEventArgs e)
 		{
-			if (CompletionWindow == null) // Prevent window duplicates
+			if (CompletionWindow == null) // Prevents window duplicates
 			{
 				if (e.Text == " " && CaretOffset > 1)
 					HandleAutocompleteAfterSpace();
@@ -168,10 +168,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 				CompletionWindow.StartOffset = wordStartOffset;
 
 				foreach (string mnemonicConstant in ScriptKeyWords.AllMnemonics)
-				{
 					if (mnemonicConstant.StartsWith(word, StringComparison.OrdinalIgnoreCase))
 						CompletionWindow.CompletionList.CompletionData.Add(new CompletionData(mnemonicConstant));
-				}
 
 				ShowCompletionWindow();
 			}
@@ -244,10 +242,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 			_errorUpdateTimer.Stop();
 		}
 
-		private void ErrorWorker_DoWork(object sender, DoWorkEventArgs e)
-		{
+		private void ErrorWorker_DoWork(object sender, DoWorkEventArgs e) =>
 			e.Result = ScriptErrorDetection.DetectErrorLines(new TextDocument(e.Argument.ToString()));
-		}
 
 		private void ErrorWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{

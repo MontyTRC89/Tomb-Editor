@@ -39,7 +39,7 @@ namespace TombIDE.ScriptEditor
 		/// <summary>
 		/// The current tab's TextEditor.
 		/// </summary>
-		private BaseTextEditor _textEditor;
+		private TextEditorBase _textEditor;
 
 		#region Construction and public methods
 
@@ -632,7 +632,7 @@ namespace TombIDE.ScriptEditor
 		{
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor tabTextEditor = GetTextEditorOfTab(tab);
+				TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
 
 				if (tabTextEditor.Document.FileName == null)
 					continue;
@@ -656,7 +656,7 @@ namespace TombIDE.ScriptEditor
 			}
 		}
 
-		private void HandleTextChangedIndicator(TabPage tab = null, BaseTextEditor textEditor = null)
+		private void HandleTextChangedIndicator(TabPage tab = null, TextEditorBase textEditor = null)
 		{
 			if (tab == null)
 				tab = tabControl_Editor.SelectedTab;
@@ -827,7 +827,7 @@ namespace TombIDE.ScriptEditor
 				if (tab.Text.TrimEnd('*') == "Untitled")
 					continue;
 
-				BaseTextEditor tabTextEditor = GetTextEditorOfTab(tab);
+				TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
 
 				if (tabTextEditor.IsTextChanged)
 					return false;
@@ -1053,7 +1053,7 @@ namespace TombIDE.ScriptEditor
 
 		private bool IsFileSaved(TabPage tab)
 		{
-			BaseTextEditor textEditor = GetTextEditorOfTab(tab);
+			TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
 			if (textEditor.IsTextChanged)
 			{
@@ -1080,7 +1080,7 @@ namespace TombIDE.ScriptEditor
 
 		private bool SaveFile(TabPage tab)
 		{
-			BaseTextEditor textEditor = GetTextEditorOfTab(tab);
+			TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
 			if (_ide.IDEConfiguration.Tidy_ReindentOnSave)
 				((ScriptTextEditor)textEditor).TidyDocument();
@@ -1252,7 +1252,7 @@ namespace TombIDE.ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
+				TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
 				if (string.IsNullOrEmpty(textEditor.Document.FileName))
 					continue;
@@ -1279,7 +1279,7 @@ namespace TombIDE.ScriptEditor
 
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
+				TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
 				if (textEditor.Document.FileName == e.OldFullPath)
 				{
@@ -1298,7 +1298,7 @@ namespace TombIDE.ScriptEditor
 			// TextEditor specific settings
 			foreach (TabPage tab in tabControl_Editor.TabPages)
 			{
-				BaseTextEditor textEditor = GetTextEditorOfTab(tab);
+				TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
 				if (textEditor is ScriptTextEditor scriptTextEditor)
 					UpdateTextEditorSettings(scriptTextEditor);
@@ -1345,9 +1345,9 @@ namespace TombIDE.ScriptEditor
 			luaTextEditor.UpdateSettings(_editorConfigs.Lua);
 		}
 
-		private BaseTextEditor GetTextEditorOfTab(TabPage tab)
+		private TextEditorBase GetTextEditorOfTab(TabPage tab)
 		{
-			return (BaseTextEditor)tab.Controls.OfType<ElementHost>().First().Child;
+			return (TextEditorBase)tab.Controls.OfType<ElementHost>().First().Child;
 		}
 	}
 }

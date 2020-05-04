@@ -8,17 +8,10 @@ namespace TombLib.Scripting.TextEditors.Rendering
 {
 	public sealed class ErrorRenderer : IBackgroundRenderer
 	{
-		private BaseTextEditor _editor;
+		private TextEditorBase _editor;
 
-		public ErrorRenderer(BaseTextEditor e)
-		{
-			_editor = e;
-		}
-
-		public KnownLayer Layer
-		{
-			get { return KnownLayer.Caret; }
-		}
+		public ErrorRenderer(TextEditorBase e) => _editor = e;
+		public KnownLayer Layer { get { return KnownLayer.Caret; } }
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
 		{

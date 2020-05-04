@@ -93,7 +93,7 @@ namespace TombIDE.ScriptEditor.Forms
 				return false;
 			}
 
-			BaseTextEditor currentTabTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
+			TextEditorBase currentTabTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
 			string pattern = GetCurrentPattern();
 			RegexOptions options = GetCurrentRegexOptions();
 
@@ -110,7 +110,7 @@ namespace TombIDE.ScriptEditor.Forms
 			return false;
 		}
 
-		private bool FindMatch(FindingOrder order, BaseTextEditor textEditor, string pattern, RegexOptions options)
+		private bool FindMatch(FindingOrder order, TextEditorBase textEditor, string pattern, RegexOptions options)
 		{
 			MatchCollection sectionMatchCollection = GetMatchCollectionFromSection(order, textEditor, pattern, options);
 
@@ -160,7 +160,7 @@ namespace TombIDE.ScriptEditor.Forms
 			{
 				_editorTabControl.SelectedIndex--;
 
-				BaseTextEditor nextTarget = GetTextEditorOfTab(_editorTabControl.SelectedTab); // The tab has changed, therefore we can get the current tab's TextEditor
+				TextEditorBase nextTarget = GetTextEditorOfTab(_editorTabControl.SelectedTab); // The tab has changed, therefore we can get the current tab's TextEditor
 				MoveCaretToDocumentEnd(nextTarget);
 
 				Find(FindingOrder.Prev);
@@ -178,14 +178,14 @@ namespace TombIDE.ScriptEditor.Forms
 			{
 				_editorTabControl.SelectedIndex++;
 
-				BaseTextEditor nextTarget = GetTextEditorOfTab(_editorTabControl.SelectedTab); // The tab has changed, therefore we can get the current tab's TextEditor
+				TextEditorBase nextTarget = GetTextEditorOfTab(_editorTabControl.SelectedTab); // The tab has changed, therefore we can get the current tab's TextEditor
 				MoveCaretToDocumentStart(nextTarget);
 
 				Find(FindingOrder.Next);
 			}
 		}
 
-		private void SelectMatch(FindingOrder order, BaseTextEditor textEditor, MatchCollection sectionMatchCollection)
+		private void SelectMatch(FindingOrder order, TextEditorBase textEditor, MatchCollection sectionMatchCollection)
 		{
 			switch (order)
 			{
@@ -214,7 +214,7 @@ namespace TombIDE.ScriptEditor.Forms
 			textEditor.ScrollTo(textEditor.TextArea.Caret.Position.Line, textEditor.TextArea.Caret.Position.Column);
 		}
 
-		private void EndSuccessfulSearch(FindingOrder order, BaseTextEditor textEditor)
+		private void EndSuccessfulSearch(FindingOrder order, TextEditorBase textEditor)
 		{
 			switch (order)
 			{
@@ -230,7 +230,7 @@ namespace TombIDE.ScriptEditor.Forms
 			}
 		}
 
-		private MatchCollection GetMatchCollectionFromSection(FindingOrder order, BaseTextEditor textEditor, string pattern, RegexOptions options)
+		private MatchCollection GetMatchCollectionFromSection(FindingOrder order, TextEditorBase textEditor, string pattern, RegexOptions options)
 		{
 			switch (order)
 			{
@@ -262,7 +262,7 @@ namespace TombIDE.ScriptEditor.Forms
 
 		private void ReplaceMatch()
 		{
-			BaseTextEditor currentTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
+			TextEditorBase currentTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
 
 			if (radioButton_Normal.Checked)
 				currentTextEditor.SelectedText = textBox_Replace.Text;
@@ -368,7 +368,7 @@ namespace TombIDE.ScriptEditor.Forms
 
 		private DarkTreeNode GetNodeForAllTabMatches(TabPage tab, string pattern, RegexOptions options)
 		{
-			BaseTextEditor tabTextEditor = GetTextEditorOfTab(tab);
+			TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
 			MatchCollection documentMatchCollection = Regex.Matches(tabTextEditor.Text, pattern, options);
 
 			if (documentMatchCollection.Count == 0)
@@ -412,7 +412,7 @@ namespace TombIDE.ScriptEditor.Forms
 
 			if (radioButton_Current.Checked)
 			{
-				BaseTextEditor currentTabTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
+				TextEditorBase currentTabTextEditor = GetTextEditorOfTab(_editorTabControl.SelectedTab);
 				matchCount = Regex.Matches(currentTabTextEditor.Text, pattern, options).Count;
 
 				if (matchCount > 0)
@@ -435,7 +435,7 @@ namespace TombIDE.ScriptEditor.Forms
 					if (result == DialogResult.Yes)
 						foreach (TabPage tab in _editorTabControl.TabPages)
 						{
-							BaseTextEditor tabTextEditor = GetTextEditorOfTab(tab);
+							TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
 
 							tabTextEditor.SelectAll();
 							tabTextEditor.SelectedText = AdvancedRegexReplace(tabTextEditor.Text, pattern, textBox_Replace.Text, options);
@@ -495,7 +495,7 @@ namespace TombIDE.ScriptEditor.Forms
 			label_Status.Text = message;
 		}
 
-		private void MoveCaretToDocumentStart(BaseTextEditor documentTextEditor)
+		private void MoveCaretToDocumentStart(TextEditorBase documentTextEditor)
 		{
 			documentTextEditor.SelectionStart = 0;
 			documentTextEditor.SelectionLength = 0;
@@ -503,7 +503,7 @@ namespace TombIDE.ScriptEditor.Forms
 			documentTextEditor.CaretOffset = 0;
 		}
 
-		private void MoveCaretToDocumentEnd(BaseTextEditor documentTextEditor)
+		private void MoveCaretToDocumentEnd(TextEditorBase documentTextEditor)
 		{
 			documentTextEditor.SelectionStart = 0;
 			documentTextEditor.SelectionLength = 0;
@@ -511,9 +511,9 @@ namespace TombIDE.ScriptEditor.Forms
 			documentTextEditor.CaretOffset = documentTextEditor.Document.TextLength;
 		}
 
-		private BaseTextEditor GetTextEditorOfTab(TabPage tab)
+		private TextEditorBase GetTextEditorOfTab(TabPage tab)
 		{
-			return (BaseTextEditor)tab.Controls.OfType<ElementHost>().First().Child;
+			return (TextEditorBase)tab.Controls.OfType<ElementHost>().First().Child;
 		}
 
 		private string GetCurrentPattern()

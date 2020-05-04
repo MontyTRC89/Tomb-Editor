@@ -76,7 +76,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 			// Set the colors
 			SetTextColor(@"\[\b(" + string.Join("|", ScriptKeyWords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_configs.ClassicScript.Colors.Sections));
-			SetTextColor(ScriptPatterns.OldCommands, ColorTranslator.FromHtml(_configs.ClassicScript.Colors.StandardCommands));
+			SetTextColor(ScriptPatterns.StandardCommands, ColorTranslator.FromHtml(_configs.ClassicScript.Colors.StandardCommands));
 			SetTextColor(ScriptPatterns.NewCommands, ColorTranslator.FromHtml(_configs.ClassicScript.Colors.NewCommands));
 			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_configs.ClassicScript.Colors.References));
 			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_configs.ClassicScript.Colors.References));
