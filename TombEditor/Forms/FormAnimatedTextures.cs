@@ -98,7 +98,7 @@ namespace TombEditor.Forms
             InitializeComponent();
 
             _editor = editor;
-            _editor.EditorEventRaised += _editor_EditorEventRaised;
+            _editor.EditorEventRaised += EditorEventRaised;
 
             _previewTimer.Tick += _previewTimer_Tick;
             previewImage.Paint += _onPicturePreviewPaint;
@@ -125,7 +125,6 @@ namespace TombEditor.Forms
             texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(editor.Level.Settings.Textures);
             
             // Init state
-            _editor_EditorEventRaised(new Editor.InitEvent());
             if (comboAnimatedTextureSets.Items.Count > 0)
                 comboAnimatedTextureSets.SelectedIndex = 0;
 
@@ -147,14 +146,14 @@ namespace TombEditor.Forms
         {
             if (disposing)
             {
-                _editor.EditorEventRaised -= _editor_EditorEventRaised;
+                _editor.EditorEventRaised -= EditorEventRaised;
                 _previewTimer?.Dispose();
                 _imageCache?.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        private void _editor_EditorEventRaised(IEditorEvent obj)
+        private void EditorEventRaised(IEditorEvent obj)
         {
             // @FIXME: Proper event handling for these events was removed, because there were
             // serious issues with DarkDataGridView on level reloading or unloading textures.
@@ -176,7 +175,7 @@ namespace TombEditor.Forms
             }
 
             // Update animated texture set combo box
-            if (obj is Editor.InitEvent || obj is Editor.AnimatedTexturesChanged)
+            if (obj is Editor.InitEvent || obj is Editor.AnimatedTexturesChangedEvent)
             {
                 while (comboAnimatedTextureSets.Items.Count > _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.RemoveAt(comboAnimatedTextureSets.Items.Count - 1);
@@ -196,7 +195,7 @@ namespace TombEditor.Forms
             }
 
             // Invalidate texture view
-            if (obj is Editor.AnimatedTexturesChanged)
+            if (obj is Editor.AnimatedTexturesChangedEvent)
                 textureMap.Invalidate();
         }
 

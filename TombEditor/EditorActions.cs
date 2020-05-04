@@ -918,7 +918,7 @@ namespace TombEditor
             else if (instance is VolumeInstance)
             {
                 if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                    using (var formVolume = new FormVolume(_editor.Level, (VolumeInstance)instance))
+                    using (var formVolume = new FormVolume((VolumeInstance)instance))
                     {
                         if (formVolume.ShowDialog(owner) != DialogResult.OK)
                             return;
