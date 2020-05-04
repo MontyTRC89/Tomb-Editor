@@ -7,19 +7,13 @@ namespace TombLib.Scripting.Helpers
 	public static class LineHelper
 	{
 		public static string RemoveComments(string lineText)
-		{
-			return Regex.Replace(lineText, ";.*$", string.Empty).TrimEnd();
-		}
+		{ return Regex.Replace(lineText, ";.*$", string.Empty).TrimEnd(); }
 
 		public static bool IsEmptyLine(string lineText)
-		{
-			return string.IsNullOrWhiteSpace(lineText) || lineText.TrimStart().StartsWith(";");
-		}
+		{ return string.IsNullOrWhiteSpace(lineText) || lineText.TrimStart().StartsWith(";"); }
 
 		public static bool IsSectionHeaderLine(string lineText)
-		{
-			return Regex.IsMatch(lineText, @"^\[\b.*\b\]\s*?(;.*)?$");
-		}
+		{ return Regex.IsMatch(lineText, @"^\[\b.*\b\]\s*?(;.*)?$"); }
 
 		public static bool IsLineInStandardStringSection(TextDocument document, DocumentLine line)
 		{

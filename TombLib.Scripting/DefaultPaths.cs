@@ -8,24 +8,16 @@ namespace TombLib.Scripting
 	internal static class DefaultPaths
 	{
 		public static string GetInternalNGCPath()
-		{
-			return Path.Combine(GetProgramDirectory(), "TIDE", "NGC");
-		}
+		{ return Path.Combine(GetProgramDirectory(), "TIDE", "NGC"); }
 
 		public static string GetVGEPath()
-		{
-			return Path.Combine(GetProgramDirectory(), "TIDE", "NGC", "VGE");
-		}
+		{ return Path.Combine(GetProgramDirectory(), "TIDE", "NGC", "VGE"); }
 
 		public static string GetVGEScriptPath()
-		{
-			return Path.Combine(GetProgramDirectory(), "TIDE", "NGC", "VGE", "Script");
-		}
+		{ return Path.Combine(GetProgramDirectory(), "TIDE", "NGC", "VGE", "Script"); }
 
 		public static string GetProgramDirectory()
-		{
-			return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-		}
+		{ return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
 
 		/// <summary>
 		/// Returns either the "System32" path or the "SysWOW64" path.

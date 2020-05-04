@@ -42,7 +42,7 @@ namespace TombLib.Scripting.Autocomplete
 
 			Regex regex = new Regex(@"\(.*?_\.*?\)"); // (CMD_...)
 
-			if (!regex.IsMatch(syntax) && !syntax.ToLower().Contains("enabled") && !syntax.ToLower().Contains("disabled"))
+			if (!regex.IsMatch(syntax) && !syntax.ToUpper().Contains("ENABLED") && !syntax.ToUpper().Contains("DISABLED"))
 				return null;
 
 			string[] arguments = syntax.Split(',');
@@ -58,12 +58,10 @@ namespace TombLib.Scripting.Autocomplete
 				string mnemonicPrefix = currentArgument.Split('(')[1].Split(')')[0].Trim('.').Trim();
 
 				foreach (string mnemonicConstant in ScriptKeyWords.AllMnemonics)
-				{
 					if (mnemonicConstant.StartsWith(mnemonicPrefix, StringComparison.OrdinalIgnoreCase))
 						completionData.Add(new CompletionData(mnemonicConstant));
-				}
 			}
-			else if (currentArgument.ToLower().Contains("enabled") || currentArgument.ToLower().Contains("disabled"))
+			else if (currentArgument.ToUpper().Contains("ENABLED") || currentArgument.ToUpper().Contains("DISABLED"))
 			{
 				completionData.Add(new CompletionData("ENABLED"));
 				completionData.Add(new CompletionData("DISABLED"));

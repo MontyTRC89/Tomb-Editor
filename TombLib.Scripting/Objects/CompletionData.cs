@@ -11,10 +11,7 @@ namespace TombLib.Scripting.Objects
 	/// </summary>
 	public sealed class CompletionData : ICompletionData
 	{
-		public CompletionData(string text)
-		{
-			Text = text;
-		}
+		public CompletionData(string text) => Text = text;
 
 		public ImageSource Image { get { return null; } }
 

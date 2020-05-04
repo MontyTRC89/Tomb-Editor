@@ -336,7 +336,7 @@ namespace TombIDE.ScriptEditor
 				DocumentLine iline = _textEditor.Document.GetLineByNumber(i);
 				string ilineText = _textEditor.Document.GetText(iline.Offset, iline.Length);
 
-				if (ilineText.ToLower().StartsWith("[extrang]"))
+				if (ilineText.StartsWith("[extrang]", StringComparison.OrdinalIgnoreCase))
 				{
 					// Check if the string isn't already defined
 					for (int j = _textEditor.LineCount; j >= i; j--)
@@ -1092,7 +1092,7 @@ namespace TombIDE.ScriptEditor
 					string initialNodePath = null;
 					string initialFileName = null;
 
-					if (tab.Text.ToLower().TrimEnd('*') != "untitled")
+					if (!tab.Text.TrimEnd('*').Equals("untitled", StringComparison.OrdinalIgnoreCase))
 					{
 						initialFileName = tab.Text.TrimEnd('*').Split('.')[0];
 

@@ -10,6 +10,8 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 {
 	internal partial class SettingsClassicScript : UserControl
 	{
+		// TODO: Refactor
+
 		private ScriptTextEditor textBox;
 
 		private TextEditorConfigurations _config;

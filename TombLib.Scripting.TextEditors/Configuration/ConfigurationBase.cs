@@ -11,9 +11,7 @@ namespace TombLib.Scripting.TextEditors.Configuration
 		#region Loading
 
 		public T Load<T>(Stream stream) where T : ConfigurationBase
-		{
-			return (T)new XmlSerializer(GetType()).Deserialize(stream);
-		}
+		{ return (T)new XmlSerializer(GetType()).Deserialize(stream); }
 
 		public T Load<T>(string filePath) where T : ConfigurationBase
 		{
@@ -35,9 +33,7 @@ namespace TombLib.Scripting.TextEditors.Configuration
 		}
 
 		public T Load<T>() where T : ConfigurationBase
-		{
-			return Load<T>(DefaultPath);
-		}
+		{ return Load<T>(DefaultPath); }
 
 		#endregion Loading
 

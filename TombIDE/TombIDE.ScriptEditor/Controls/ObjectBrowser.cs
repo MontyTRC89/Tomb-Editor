@@ -177,7 +177,7 @@ namespace TombIDE.ScriptEditor.Controls
 			foreach (string section in ScriptKeyWords.Sections)
 			{
 				// Exclude [Level] sections
-				if (section.ToLower() == "level")
+				if (section.Equals("level", StringComparison.OrdinalIgnoreCase))
 					continue;
 
 				string sectionName = "[" + section + "]";
@@ -186,7 +186,7 @@ namespace TombIDE.ScriptEditor.Controls
 				if (line.Trim().StartsWith(sectionName, StringComparison.OrdinalIgnoreCase))
 				{
 					// Add the node if the section name matches the filter (it always does if there's nothing in the search bar)
-					if (sectionName.ToLower().Contains(filter.ToLower()))
+					if (sectionName.ToUpper().Contains(filter.ToUpper()))
 						return new DarkTreeNode(sectionName);
 				}
 			}
@@ -207,7 +207,7 @@ namespace TombIDE.ScriptEditor.Controls
 				string levelName = regex.Replace(line, string.Empty).Trim();
 
 				// Add the node if the level name matches the filter (it always does if there's nothing in the search bar)
-				if (!string.IsNullOrWhiteSpace(levelName) && levelName.ToLower().Contains(filter.ToLower()))
+				if (!string.IsNullOrWhiteSpace(levelName) && levelName.ToUpper().Contains(filter.ToUpper()))
 					return new DarkTreeNode(levelName);
 			}
 
@@ -226,7 +226,7 @@ namespace TombIDE.ScriptEditor.Controls
 				string includeFileName = line.Replace("#include", string.Empty).Trim().Split('"')[1];
 
 				// Add the node if the included file name matches the filter (it always does if there's nothing in the search bar)
-				if (!string.IsNullOrWhiteSpace(includeFileName) && includeFileName.ToLower().Contains(filter.ToLower()))
+				if (!string.IsNullOrWhiteSpace(includeFileName) && includeFileName.ToUpper().Contains(filter.ToUpper()))
 					return new DarkTreeNode(includeFileName);
 			}
 
@@ -245,7 +245,7 @@ namespace TombIDE.ScriptEditor.Controls
 				string definedConstantName = line.Replace("#define", string.Empty).Trim().Split(' ')[0];
 
 				// Add the node if the defined constant name matches the filter (it always does if there's nothing in the search bar)
-				if (!string.IsNullOrWhiteSpace(definedConstantName) && definedConstantName.ToLower().Contains(filter.ToLower()))
+				if (!string.IsNullOrWhiteSpace(definedConstantName) && definedConstantName.ToUpper().Contains(filter.ToUpper()))
 					return new DarkTreeNode(definedConstantName);
 			}
 

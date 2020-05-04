@@ -1,4 +1,5 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -117,18 +118,14 @@ namespace TombLib.Scripting.ErrorDetection
 			string section = sectionHeaderLineText.Split('[')[1].Split(']')[0];
 
 			foreach (string entry in ScriptKeyWords.Sections)
-			{
-				if (section.ToLower() == entry.ToLower())
+				if (section.Equals(entry, StringComparison.OrdinalIgnoreCase))
 					return true;
-			}
 
 			return false;
 		}
 
 		private static bool IsNGStringLineWellFormatted(string lineText)
-		{
-			return Regex.IsMatch(lineText, @"^\d*:.*?");
-		}
+		{ return Regex.IsMatch(lineText, @"^\d*:.*?"); }
 
 		private static bool IsValidCommandKey(string commandKey)
 		{
@@ -136,10 +133,8 @@ namespace TombLib.Scripting.ErrorDetection
 				return false;
 
 			foreach (DictionaryEntry entry in CommandHelper.GetCommandSyntaxResources())
-			{
-				if (commandKey.ToLower() == entry.Key.ToString().ToLower())
+				if (commandKey.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
 					return true;
-			}
 
 			return false;
 		}
@@ -149,15 +144,13 @@ namespace TombLib.Scripting.ErrorDetection
 			string correctSection = string.Empty;
 
 			foreach (DictionaryEntry entry in CommandHelper.GetCommandSyntaxResources())
-			{
-				if (command.ToLower() == entry.Key.ToString().ToLower())
+				if (command.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
 				{
 					correctSection = entry.Value.ToString().Split('[')[1].Split(']')[0].Trim();
 					break;
 				}
-			}
 
-			if (correctSection.ToLower() == "any")
+			if (correctSection.Equals("any", StringComparison.OrdinalIgnoreCase))
 				return true;
 
 			for (int i = lineNumber - 1; i > 0; i--)
@@ -167,7 +160,7 @@ namespace TombLib.Scripting.ErrorDetection
 
 				if (currentLineText.StartsWith("["))
 				{
-					if (correctSection.ToLower() == "level")
+					if (correctSection.Equals("level", StringComparison.OrdinalIgnoreCase))
 					{
 						if (Regex.IsMatch(currentLineText, @"\[(level|title)\]", RegexOptions.IgnoreCase))
 							return true;
@@ -204,24 +197,19 @@ namespace TombLib.Scripting.ErrorDetection
 
 			int argumentCount = LineHelper.RemoveComments(lineText).Split('=')[1].Split(',').Length;
 
-			if (argumentCount == 1)
-			{
-				if (string.IsNullOrEmpty(lineText.Split('=')[1].Trim()))
-					argumentCount = 0;
-			}
+			if (argumentCount == 1 && string.IsNullOrEmpty(lineText.Split('=')[1].Trim()))
+				argumentCount = 0;
 
 			foreach (DictionaryEntry entry in CommandHelper.GetCommandSyntaxResources())
-			{
-				if (command.ToLower() == entry.Key.ToString().ToLower())
+				if (command.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
 				{
 					int correctArgumentCount = entry.Value.ToString().Split(']')[1].Split(',').Length;
 
-					if (entry.Value.ToString().ToLower().Contains("array"))
+					if (entry.Value.ToString().ToUpper().Contains("ARRAY"))
 						return argumentCount >= correctArgumentCount - 1; // TODO: Check if -1 is correct
 					else
 						return argumentCount == correctArgumentCount;
 				}
-			}
 
 			return false;
 		}

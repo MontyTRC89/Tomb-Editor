@@ -49,9 +49,7 @@ namespace TombLib.Scripting
 		}
 
 		private static bool IsSuitableFont(string fontName)
-		{
-			return !fontName.StartsWith("ESRI") && !fontName.StartsWith("Oc_") && !fontName.Contains("MDL2");
-		}
+		{ return !fontName.StartsWith("ESRI") && !fontName.StartsWith("Oc_") && !fontName.Contains("MDL2"); }
 
 		public static List<string> GetMonospacedFontNames()
 		{
@@ -63,7 +61,6 @@ namespace TombLib.Scripting
 				Graphics graphics = Graphics.FromImage(bitmap);
 
 				foreach (FontFamily fontFamily in fontCollection.Families)
-				{
 					if (fontFamily.IsStyleAvailable(FontStyle.Regular) && fontFamily.IsStyleAvailable(FontStyle.Bold)
 						&& fontFamily.IsStyleAvailable(FontStyle.Italic) && IsSuitableFont(fontFamily.Name))
 					{
@@ -72,7 +69,6 @@ namespace TombLib.Scripting
 						if (IsMonospaced(graphics, font) && !IsSymbolFont(font))
 							fontList.Add(fontFamily.Name);
 					}
-				}
 
 				return fontList;
 			}

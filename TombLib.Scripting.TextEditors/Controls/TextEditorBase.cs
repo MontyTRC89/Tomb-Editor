@@ -83,6 +83,9 @@ namespace TombLib.Scripting.TextEditors.Controls
 		{
 			_bookmarkRenderer = new BookmarkRenderer(this);
 			_errorRenderer = new ErrorRenderer(this);
+
+			TextArea.TextView.BackgroundRenderers.Add(_bookmarkRenderer);
+			TextArea.TextView.BackgroundRenderers.Add(_errorRenderer);
 		}
 
 		private void BindEventMethods()
@@ -101,16 +104,13 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void SetNewDefaultSettings()
 		{
-			FontFamily = new FontFamily("Consolas");
 			FontSize = 16d;
+			FontFamily = new FontFamily("Consolas");
 			FontWeight = FontWeights.Normal;
 
 			TextArea.Options.HighlightCurrentLine = true;
 			TextArea.TextView.CurrentLineBackground = new SolidColorBrush(Color.FromArgb(16, 160, 160, 160));
 			TextArea.TextView.CurrentLineBorder = new Pen(new SolidColorBrush(Color.FromArgb(24, 192, 192, 192)), 1);
-
-			TextArea.TextView.BackgroundRenderers.Add(_bookmarkRenderer);
-			TextArea.TextView.BackgroundRenderers.Add(_errorRenderer);
 
 			TextArea.SelectionCornerRadius = 0; // Why does this even exist?
 
@@ -218,9 +218,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 		}
 
 		public bool IsUntitledDocument()
-		{
-			return string.IsNullOrEmpty(Document.FileName);
-		}
+		{ return string.IsNullOrEmpty(Document.FileName); }
 
 		#endregion File I/O
 
@@ -253,10 +251,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 			string fileContent = File.ReadAllText(currentFilePath, Encoding.GetEncoding(1252));
 
-			if (text == fileContent) // If the editor content is identical to the file content
-				e.Result = false;
-			else
-				e.Result = true;
+			e.Result = text != fileContent;
 		}
 
 		private void ContentChangedWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -271,29 +266,15 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		#region Error Handling
 
-		private void HandleErrorToolTips(MouseEventArgs e)
+		public void ApplyErrorsToLines(List<ErrorLine> errorLines)
 		{
-			int hoveredOffset = GetOffsetFromPoint(e.GetPosition(this));
+			foreach (ErrorLine line in errorLines)
+			{
+				DocumentLine documentLine = Document.GetLineByNumber(line.LineNumber);
 
-			if (hoveredOffset == -1)
-				return;
-
-			DocumentLine hoveredLine = Document.GetLineByOffset(hoveredOffset);
-
-			if (!string.IsNullOrEmpty(hoveredLine.ErrorMessage))
-				ShowErrorToolTip(hoveredLine.ErrorMessage);
-		}
-
-		private void ShowErrorToolTip(string errorMessage)
-		{
-			SpecialToolTip.PlacementTarget = this; // Required for property inheritance
-
-			SpecialToolTip.Background = new SolidColorBrush(Color.FromRgb(96, 64, 64));
-			SpecialToolTip.BorderBrush = new SolidColorBrush(Color.FromRgb(128, 96, 96));
-			SpecialToolTip.Foreground = new SolidColorBrush(Colors.Gainsboro);
-
-			SpecialToolTip.Content = "Error:\n" + errorMessage;
-			SpecialToolTip.IsOpen = true;
+				documentLine.ErrorMessage = line.Message;
+				documentLine.ErrorSegmentText = line.ErrorSegmentText;
+			}
 		}
 
 		public void ResetErrorsOnAllLines()
@@ -305,15 +286,20 @@ namespace TombLib.Scripting.TextEditors.Controls
 			}
 		}
 
-		public void ApplyErrorsToLines(List<ErrorLine> errorLines)
+		private void HandleErrorToolTips(MouseEventArgs e)
 		{
-			foreach (ErrorLine line in errorLines)
-			{
-				DocumentLine documentLine = Document.GetLineByNumber(line.LineNumber);
+			int hoveredOffset = GetOffsetFromPoint(e.GetPosition(this));
 
-				documentLine.ErrorMessage = line.Message;
-				documentLine.ErrorSegmentText = line.ErrorSegmentText;
-			}
+			if (hoveredOffset == -1)
+				return;
+
+			DocumentLine hoveredLine = Document.GetLineByOffset(hoveredOffset);
+
+			if (!string.IsNullOrEmpty(hoveredLine.ErrorMessage))
+				ShowToolTip("Error:\n" + hoveredLine.ErrorMessage,
+					new SolidColorBrush(Color.FromRgb(128, 96, 96)),
+					new SolidColorBrush(Color.FromRgb(96, 64, 64)),
+					new SolidColorBrush(Colors.Gainsboro));
 		}
 
 		#endregion Error Handling
@@ -347,6 +333,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 		#endregion Auto bracket closing
 
 		#region Multiline commenting
+
+		// TODO: Refactor
 
 		public void CommentLines()
 		{
@@ -431,6 +419,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 		#endregion Multiline commenting
 
 		#region Bookmarks
+
+		// TODO: Refactor
 
 		public void ToggleBookmark()
 		{
@@ -607,13 +597,19 @@ namespace TombLib.Scripting.TextEditors.Controls
 			return null;
 		}
 
-		public void ShowDefinitionToolTip(string content)
+		public void ShowToolTip(string content) =>
+			ShowToolTip(content,
+				new SolidColorBrush(Color.FromRgb(96, 96, 96)),
+				new SolidColorBrush(Color.FromRgb(64, 64, 64)),
+				new SolidColorBrush(Colors.Gainsboro));
+
+		public void ShowToolTip(string content, SolidColorBrush border, SolidColorBrush background, SolidColorBrush foreground)
 		{
 			SpecialToolTip.PlacementTarget = this; // Required for property inheritance
 
-			SpecialToolTip.Background = new SolidColorBrush(Color.FromRgb(64, 64, 64));
-			SpecialToolTip.BorderBrush = new SolidColorBrush(Color.FromRgb(96, 96, 96));
-			SpecialToolTip.Foreground = new SolidColorBrush(Colors.Gainsboro);
+			SpecialToolTip.BorderBrush = border;
+			SpecialToolTip.Background = background;
+			SpecialToolTip.Foreground = foreground;
 
 			SpecialToolTip.Content = content;
 			SpecialToolTip.IsOpen = true;
@@ -624,6 +620,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 			FontSize = configuration.FontSize;
 			DefaultFontSize = configuration.FontSize;
 			FontFamily = new FontFamily(configuration.FontFamily);
+
+			Document.UndoStack.SizeLimit = configuration.UndoStackSize;
 
 			AutocompleteEnabled = configuration.AutocompleteEnabled;
 			LiveErrorUnderlining = configuration.LiveErrorUnderlining;
@@ -641,8 +639,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			Options.ShowTabs = configuration.ShowVisualTabs;
 
 			ShowDefinitionToolTips = configuration.ShowDefinitionToolTips;
-
-			Document.UndoStack.SizeLimit = configuration.UndoStackSize;
 		}
 
 		#endregion Other public methods
