@@ -1,0 +1,25 @@
+Start the Level section.
+Each tr4 file must have its own [level] section, where you set audio track, level name, puzzle item reference and more.
+
+Syntax:
+
+
+[Level]
+Name=		Playable Tutorial Level
+Legend=		The year 2000, somewhere in Egypt...
+Horizon=	ENABLED
+Layer1=		160,160,192,7
+PuzzleCombo=	3,1,Cartouche Piece 1,	$0000,$0400,$0000,$0000,$0000,$0002
+PuzzleCombo=	3,2,Cartouche Piece 2,	$0000,$0400,$0000,$0000,$0000,$0002
+Puzzle=		3,Ba Cartouche,		$0000,$0400,$0000,$c000,$8000,$0002
+Puzzle=		5,Eye Of Horus,		$0017,$0500,$0000,$0000,$0000,$0002
+PuzzleCombo=	5,1,Eye Piece,		$0017,$0500,$0000,$0000,$0000,$0002
+PuzzleCombo=	5,2,Eye Piece,		$0017,$0500,$0000,$0000,$0000,$0002
+Puzzle=		6,The Hand Of Orion,	$0000,$0400,$8000,$c000,$0000,$0002
+Puzzle=		8,The Hand Of Sirius,	$0000,$0400,$8000,$c000,$0000,$0002
+LoadCamera=	0,0,0,0,0,0,255
+LoadCamera=	11088,-1100,28896,11119,-1399,31486,0
+Level=		DATA\TUT1,107
+
+For descriptions of [Level] statements see statement names in current table
+

@@ -1,0 +1,66 @@
+Syntax: Plugin= PluginId, PluginName, MainPluginSettings (MPS_...), DisableFeatureArray
+Scope: To use in [Options] section
+
+You have to use a Plugin command for each plugin you mean use.
+This command has some differences respect other commands.
+
+- You cann't type it into an include file but only in plane way in the [Options] section.
+
+- You cann't use a variable defined with #define directive for its PluginID field.
+
+- It could happen that some plugin command was inserted in your script from ng_center program, itself, only because it found a Plugin_SomeName.script file in ng_center folder.
+
+Please, read carefully also description of PluginId field, because it's most important than other IDs of commands.
+
+PluginId field
+--------------
+The id of plugin is very important about the exported (from ngle) triggers that you use in TriggerGroup commands.
+When NGLE export a trigger (for the script), and that trigger was possessed of a plugin, in the three numbers exported (only in the first, really) there is hidden also the Id of that plugin.
+The problem, is that the Id is only a number but to link this id to an effective plugin_Name.dll library, it's necessary some more work.
+NGLE program, just a moment before exporting the trigger, will read the script.txt to discover the Id of plugin (this field, we are describing now) to set in exported trigger the right id, corresponding to the plugin name that owns that trigger.
+
+A complicated matter...
+
+Anyway you should remember only some rules:
+
+- Type always in plane way the ID of plugin in Plugin= command, because the ability of NGLE program to parse the script is not so advanced like that of NG_Center. NGLE is not able to parse #define values or texts in #include files.
+
+- Before exporting triggers from ngle, take care to have already saved on disk the script.txt ([save] or [build] buttons of ng_center will do this) otherwise ngle will read an old script.txt from disk.
+
+- Do not change easily the IDs of plugin commands (you should do never that, you can only add a new Plugin= command for a plugin not yet loaded), because in this way the value inserted in previous triggergroups could not work since this value remained that of old plugin Id but it will be no updated to that new.
+
+- When you take triggergroups commands from some friend, in the case these triggergroups used triggers from some plugin, you have to know wich plugin was, and what is its pluginId in the script of the friend, and then use the #define @plugin... directive to give these infos to ng_center in your script.
+See also the description of #define command, in particular way the section about @plugin_name and #define "clear" attribute.
+
+- Everytime you'll export a trigger from NGLE, handled by some plugin, NGLE, in its exporting report, will add also infos about #define @plugin directive to use to enclose the triggergroup that will host that trigger.
+That directive is not really necessary when you mean use that trigger only for you, in your script, but it will become useful when you wish giving to someone that triggergroup. In this case the receiver will need of infos about the id of plugin stored in the triggers and for this reason it's better you keep that infos (about #define @plugin directive) also if only as comments closed to that triggergroup.
+As just said, it's not necessary for your script, because NGLE will place in the trigger the same plugin id that it read from your script.txt file, so in that case it will work fine also omitting the #define @plugin directive.
+Read infos about #define @plugin directive in [New Script commands] section of reference panel of NG_Center.
+
+PluginName field
+----------------
+In this field you type the name of given plugin.
+Since this is a text, you have to type same text also in the strings, of course.
+The name should not contain any extension.
+The extensions are like ".dll", ".script" and others that some plugin files could have.
+For instance for plugin "Plugin_Marble.dll" you'll type as name only:
+Plugin_Marble
+
+MainPluginSettings (MPS_...) field
+----------------------------------
+In this field you can type MPS_ flags to customize some basic features of the given plugin.
+The description of MPS_ values you can find, as usual, in Mnemonic Constants list of Reference panel, anwyay you should take care to use only the MPS_ flags thought for that plugin and not for others.
+Each author of plugin will set his MPS_ flags, and if you have, for instance, a plugin named Plugin_Alfa, in the Plugin= script command for this plugin you should type only MPS_ flags handled by Plugin_Alfa.
+In the Mnemonic constants list, when you click on some item, in the description (green) box, you'll read, at top-left corner, the plugin name in bracked parenthesis that owns that constant.
+Another way to locate quickly these constnats, is to go in [Plugin] panel of NG_Center, choose from the combo box the "Plugin_Alfa" name (in our example) and then see ONLY the constants of that plugin.
+
+The only exception to this rule (about the owner) is for the MPS_DISABLE value, that is from trng, and it disable (temporarily, I suppose) that plugin to verify if some problem was affected by it.
+ 
+DisableFeatureArray fields
+--------------------------
+DisableFeatureArray is an array, and this means that from this field you can type one, more (or no one) values in same format.
+The format for each item of this array is a sum between a CODE_ constant + one operand value.
+The generic use of this fields is to disable some changes (about standard trng features) that didn't please you.
+
+See the description of CODE_ constants for more infos.
+

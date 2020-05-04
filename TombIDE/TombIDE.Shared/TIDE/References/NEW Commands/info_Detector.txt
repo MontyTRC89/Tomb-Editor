@@ -1,0 +1,129 @@
+Syntax: Detector= Flags (DTF_..), MetricScale, MetersOfRange, Target Items array
+
+Scope: To use in [Level] section.
+
+In tr next generation engine there is a new object called "Detector".
+With detector lara is able to locate position of some targets in real time.
+There are two models of detector: 
+The pointer detector that you find in ng2.wad and 
+the radar detector that you find in ng.wad.
+For both detector you must set a Detector script command in script.txt to enable it and set its features.
+
+Fields of Detector script command:
+
+Flags (DTF_..) field
+
+You can add different DTF_ values in first field of detector command to set its features.
+
+Currently there are following DTF_ flags:
+
+DTF_ENGAGE_ALWAYS
+DTF_ENGAGE_IN_RANGE
+DTF_ENGAGE_INVENTORY
+The DTF flags starting with "ENGAGE" set what is the way to start in game the detector.
+You have to choose only one of above flags.
+
+If you set DTF_ENGAGE_ALWAYS the detector will be always present on screen, at least until some of targets exits yet in the level.
+
+Using DTF_ENGAGE_IN_RANGE the detector will be automatically showed when lara is closed to some target, within the given range (see following fields)
+With engage_in_range you can set for example 50 meters and the detector will be showed when lara is to 50 meter or less from nearest target.
+When lara will be more far the detector will be hidden.
+
+The engage mode DTF_ENGAGE_INVENTORY set detector like other equipment of lara. She has to pick up it (the detector is in amulet of horus slot, i.e. quest1)
+ the item will go in inventory, then when lara select it in inventory the detector will be showed while to remove from screen just select it newly from inventory choosing "Cancel" text.
+
+
+DTF_REQUIRED_ITEM
+This flag may work togheter with above engange flags to set that the Quest1 item is necessary it was present to enable detector.
+For example if you use the flags DTF_ENGAGE_ALWAYS + DTF_REQUIRED_ITEM the detector will be showed (always) only if lara picked up it, while, until it's absent from inventory it will be not showed.
+Note: If you choose as engage mode the DTF_ENGAGE_INVENTORY flags it's not necessary set also DTF_REQUIRED_ITEM flag because it will be added  by game engine byself.
+
+Used with engage DTF_ENGAGE_IN_RANGE, the flag DTF_REQUIRED_ITEM requires two conditions to show detector: the quest1 item has to be in inventory (lara picked up it) and some target item is within the specified range.
+
+
+DTF_RADAR_MODE
+This flag set the detector in radar mode. If you omit to set this flag the detector will work in Pointer mode.
+There are big differences between two modes and some fields and flags will work only for a specific detector mode.
+In pointer mode the detector has a pointer like a compass that shows where is the current target (current target is the first target in the list yet present in game).
+Pointer mode works only on one target at time: when the first target has been picked up (or killed) the detector will start to point second target in the list and go on.
+In radar mode detector is able to scan all targets in same moment just they are in the range of radar. 
+Note: Remember that the range of radar is different of range for activation. The range of radar is given by formula 6 * MetricScale, where the digit "6" is the (fixed) number of grid sectors of radar. For example if you set 2 meter for metric scale the target will be showed on radar only when it is to 12 meters from lara or less.
+To understand radar mode is bit more difficultous than pointer mode, because the target in radar mode will be showed always with up side = north, while in pointer mode the pointer is always relative to where lara is looking. In fact, in pointer mode, when the pointer is on red sign this means lara is looking in correct direction of target, while in radar mode it's advisable that lara looks to north to understand if targerts are at her left or right.
+
+DTF_FAST_RADAR_SCAN
+This flag used only with detector in radar mode. If you set DTF_FAST_RADAR_SCAN flag the scanning of targets will be faster.
+Remember that in radar mode the position and distance of targets will be updated only when the hand of radar "touchs" the target.
+
+DTF_SWINGING_POINTER
+
+This flag works only in Pointer mode.
+By default the pointer points exactly to target, anyway if you want you can add a swinging simulation of pointer like the compass in inventory to get more realistic detector.
+
+DTF_INVERSE_VPOINTER
+Current flag works only in pointer mode.
+You can invert the position of line in vertical scale (at right of detector)
+By default (when you DON'T use this flag) the floating line shows where is lara, while the fixed red pointed line at center shows the position of target.
+If you think it's not logical this relation you can use this flag to invert the situation. With the DTF_INVERSE_VPOINTER flag the floating point is the vertical position of target, while the fixed red line is the vertical position of Lara.
+
+DTF_NONE
+If you don't want set any flag in this field you can use DTF_NONE flag.
+
+MetricScale field
+In this field you can type a value in meters that will be used to assign what is the distance for each sign of vertical scale or grid table (for radar).
+If you set IGNORE in this field the default value used will be 2 meters.
+Since a block in game is 2 meters, setting 2 as metric scale each line in detector will define a distance of 1 block (and 2 meters).
+For example se in radar mode the detector show a target at 3 squares (in radar) from lara (center of radar panel) this means that target is 3 sectors and 6 meters from lara.
+In pointer mode the metric scale works only for vertical panel (the vertical strip at right of detector).
+Differently, in radar mode is very important the value set as metric scale, because only target in the radius of 6 * MetricScale meters.
+The six value is the number of square of radius of detector.
+For example if you want that in radar will be showen also targets very far, for example at 100 meters of distance (50 blocks) you should set as metric scale a value like (100 / 6) = (about) 16 meters.
+So, while for pointer mode it's better to use a low value for metric scale (the default value "2" is normally good) with radar mode it's better to use big values at least you wished permit to player to see target only when him is very closed to them.
+
+MetersOfRange field.
+This field will be used only if you set the flag DTF_ENGAGE_IN_RANGE as engage mode.
+When you use engange in range as activation mode the value in this field is the distance (in meters) of targets necessary to show in game the detector.
+If you use radar detector could be reasonable set meters of range with same value of range visibility computed on MetricScale.
+For example if you set 2 (default) as metric scale this means will be showed targets only when they are in (2*6) 12 meters from lara, now you could set same value (12) also for MetersOfRange, so the detector will be showed only when there is something to show (a target in visibility range).
+
+Target Items array fields
+In field of Target Items Array, you can type one or more indices of items (only moveables) you see in NGLE program.
+If you type two or more indices you have to split them with commas.
+
+Example:
+
+Detector=	DTF_REQUIRED_ITEM+DTF_ENGAGE_IN_RANGE+DTF_SWINGING_POINTER + DTF_INVERSE_VPOINTER, 2, 30, 365, 372, 373, 375, 377 
+
+In above row the "2" value is metricScale, the "30" is MetersOfRange, while all other numeric values (365, 372, 373, 375, 377 ) are indices of moveables to monitor.
+
+Remark.
+The list of item array works in different way in according if you are using Radar Mode or Pointer Mode.
+
+Pointer Mode.
+In Pointer Mode, the detector will show the position only of one single item at time.
+In above example the first position showed will be that of target with index 365, indifferently by position of different targets (near or far).
+
+Only when first index (365 in above sample) will be picked up or killed (if it's a baddy) the detector will start to follow second item (372 index in above example).
+Knowning this mode of work is clear that you should don't use non-killable/pickable items (like a door or an animating) because in this case the next item in the list will be never followed by detector.
+If you want set anyway as target a non killable/pickuble item you have following chances:
+- You can use radar mode detector because it (as you'll see) works in same moment on all targets of list
+- Or you place the index of non killable item at end of list.
+- There is also another chance: you use an ACTION trigger (in special trigger of NGLE) to remove (kill) this item when lara reaches it (or pass it) walking on same square with kill trigger.
+
+Radar Mode.
+In radar mode all targets will be followed in same time, anyway only targets, enough closed to enter in visibility range (MetricScale * 6), will be showed on radar screen.
+
+
+
+The radar panel show targets in different ways in according with them vertical position.
+When a target is at same height (floor) of Lara, the target will be showed like a little blinking circle.
+
+Differently, when target is upper than lara (of 4 or more meters) it will be showed like a triangle with apex pointing to north, while when target is downstairs of lara than 4 meters or more) the triangle will point to south.
+Same shapes will be showed in vertical panel (the row at right of detector)
+
+Reading above description you may understand that the circle (for targets at same height of lara) will be really showed also when target is only a bit up or down of lara (+2 / -2 sectors).
+
+
+
+
+
+

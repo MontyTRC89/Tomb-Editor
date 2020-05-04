@@ -1,0 +1,23 @@
+Syntax: NewSoundEngine=ENABLED/DISABLED
+Scope: To use in [Option] section
+
+The new sound engine should be the BASS 2.4 sound library created by Un4seen Developments Ltd.
+This new engine is based on Bass.dll and it permits to have two channels for CD audio sound  (backgroup and foreground or channel1 and channel2) in same time.
+Other features supported are:
+- Play sound file different than .wav like .mp3 or .ogg files
+- Fade out effect to close sweetly the previous sound before starting another cd track
+- Dynamic change of frequency or volume in game wherey new flipeffect triggers.
+
+ENABLED/DISABLED field
+----------------------
+By default the new sound engine is enabled, this means that, if you don't type any NewSoundEngine command in your script.dat, the new sound engine will be used.
+For this reason you should use this command only if you want disable it with the command:
+
+NewSoundEngine=DISABLED
+
+Remarks:
+
+* It's not necessary change the sound format when you use the new sound engine. The bass.dll is able to support the common ADPCM wav files you find in AUDIO folder.
+* It's not advisable to add to your level file the bass.dll library, because TRNG uses a build-in bass.dll library and another bass.dll library could create conflicts other the fact it could be a wrong version number. (The bass.dll used by tomb_nextgeneration.dll is the version 2.4.0.1, and it's better to let this version of bass.dll)
+The internal bass.dll library will be extracted at-fly when tomb4 will be started.  
+

@@ -1,0 +1,15 @@
+Syntax: DiagnosticType =DiagnosticType (DGX_...), Extra Dgx flags (EDGX_...)
+Scope: To use in [Options] section
+
+This command works in according wit Diagnostic=ENABLED.
+When you enable the diagnostic you can set what type of diagnostic infos show using the DiagnosticType command
+
+DiagnosticType (DGX_...) field
+------------------------------
+In this field you can type one or more DGX_ constants to enable the specific diagnostic informations you wish see.
+
+Extra Dgx flags (EDGX_...) field
+--------------------------------
+In this extra filed could be required some EDGX_ value to furtherly customize the diagnostic type you chose.
+See the description of DGX_ constants to kwnow if they accept some EDGX value in this field.
+

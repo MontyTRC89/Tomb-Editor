@@ -1,0 +1,38 @@
+Syntax: #FIRST_ID  CommandName=FirstId
+Scope: To use in [Title] or [Level] sections
+
+This directive it has been studied to be used in the include files of the script.
+The only disadvantage using include files is the problem of IDs conflicts.
+Many script commands have an ID as first argument and these IDs have to be univoque for the same type of command.
+In spite ng_Center is able to discover these conflicts and singal them as errors after the compiling, it should be fine to use in a include files always IDs in a range of values that is surely different than that used in main script or in other include files.
+The #FIRST_ID directive tries to reach this target.
+When you create an include file you should type in the first row one or more of directive like following:
+
+#FIRST_ID  TriggerGroup=40
+#FIRST_ID  GlobalTrigger=30
+
+Thanks to above directives, when you are typing a new script command and you hit F1 to discover the first available ID for that command, NG_Center will compute the first available ID beginning in the counting form the value you type in the specific FIRST_ID directive.
+So, looking the above example, if we are typing the first TriggerGroup command in this include file (but many other could exist in main script or in other include files) the ng_center will give you the value "40" as first ID for TriggerGroup.
+And when you type a second triggergroup the first id will be "41"
+In this way you can decide from what id will begin all script commands in your include files, reducing the risk of conflicts between different include files and/or main script file.
+More, the first_id directives place at top of the include files have also an informative value when in the future you mean use newly that feature to discover immediatly the ID ranges used in that old include file.
+ 
+Remarks:
+
+- You can use defined by you menmonic constant:
+
+#DEFINE BS_TG 30
+
+#FIRST_ID TriggerGroup=BS_TG+10
+
+- Don't let spaces between the operands at right of "=" sign:
+
+This is uncorrect:
+
+#FIRST_ID TriggerGroup=BS_TG+ 10
+
+- The #first_id directive is local, this means it works only in same source file where it is
+
+- To enhance the id range swapping, see also the description of #define directive
+
+

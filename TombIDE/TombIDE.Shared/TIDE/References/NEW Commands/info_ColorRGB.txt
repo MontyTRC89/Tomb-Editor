@@ -1,0 +1,24 @@
+Syntax: ColorRGB=IdColor, Red, Green, Blue
+Scope: To use in [Level] section
+Max number of instances for level section: 199
+
+With ColorRBG you can insert a RGB value to use in second moment with some flipeffect or actions using the IdColor as reference to locate it.
+
+IdColor field
+-------------
+Progressive number to identify this color from other color you set in same [Level] section.
+When you use some flipeffect or action requiring a script color you have to insert this IdColor number in trigger to locate the wished color
+Valid range for IDs: 1 / 1999
+
+Red field
+---------
+Intensity of Red. You can type value between 0 and 255
+
+Green field
+-----------
+Intensity of green. You can type value between 0 and 255
+
+Blue field
+----------
+Intensity of blue. You can type value between 0 and 255
+

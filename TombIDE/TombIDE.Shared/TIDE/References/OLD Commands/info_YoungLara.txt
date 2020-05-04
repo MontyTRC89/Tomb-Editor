@@ -1,0 +1,8 @@
+Syntax: YoungLara = ENABLED/DISABLED
+
+To use in [Level] section
+
+Used to "inform" the game engine that in current level will be used the young lara.
+Since young lara is very different by old lara (young has not weapons, and she has two hair trix while the old lara has only one) it's necessary advise the game engine.
+
+

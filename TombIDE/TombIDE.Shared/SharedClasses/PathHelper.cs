@@ -97,6 +97,16 @@ namespace TombIDE.Shared.SharedClasses
 			return Path.Combine(GetProgramDirectory(), "TIDE", "References", "OCBs");
 		}
 
+		public static string GetOLDCommandDefinitionsPath()
+		{
+			return Path.Combine(GetProgramDirectory(), "TIDE", "References", "OLD Commands");
+		}
+
+		public static string GetNEWCommandDefinitionsPath()
+		{
+			return Path.Combine(GetProgramDirectory(), "TIDE", "References", "NEW Commands");
+		}
+
 		public static string GetEngineTemplatesPath()
 		{
 			return Path.Combine(GetProgramDirectory(), "TIDE", "Templates", "Engines");

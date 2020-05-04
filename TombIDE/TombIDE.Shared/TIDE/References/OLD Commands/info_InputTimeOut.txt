@@ -1,0 +1,11 @@
+Syntax: InputTimeout=FramesBy60
+
+To use in [Options] section.
+
+Set the frame rate of the game.
+The argument is computed as Frames * seconds.
+For example 18000 = 60 x 30 (30 frame per second)
+
+It's better don't change this value because there are many old and slow computers that could have trouble using too high frame rates.
+
+
