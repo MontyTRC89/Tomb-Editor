@@ -4,7 +4,7 @@ using TombLib.Scripting.TextEditors.Configuration.Colors;
 
 namespace TombLib.Scripting.TextEditors.Configuration
 {
-	public sealed class ClassicScriptConfiguration : GlobalTextEditorConfiguration
+	public sealed class ClassicScriptConfiguration : TextEditorConfigurationBase
 	{
 		public override string DefaultPath { get; }
 
@@ -21,7 +21,7 @@ namespace TombLib.Scripting.TextEditors.Configuration
 
 		public ClassicScriptConfiguration()
 		{
-			DefaultPath = Path.Combine(TextEditors.DefaultPaths.GetTextEditorConfigsPath(), "ClassicScriptConfiguration.xml");
+			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), "ClassicScriptConfiguration.xml");
 
 			// These type of brackets aren't being used while writing in Classic Script, therefore auto closing should be disabled for them
 			AutoCloseParentheses = false;

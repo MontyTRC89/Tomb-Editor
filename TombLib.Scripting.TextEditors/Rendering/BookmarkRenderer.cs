@@ -8,17 +8,10 @@ namespace TombLib.Scripting.TextEditors.Rendering
 {
 	public sealed class BookmarkRenderer : IBackgroundRenderer
 	{
-		private BaseTextEditor _editor;
+		private TextEditorBase _editor;
 
-		public BookmarkRenderer(BaseTextEditor e)
-		{
-			_editor = e;
-		}
-
-		public KnownLayer Layer
-		{
-			get { return KnownLayer.Background; }
-		}
+		public BookmarkRenderer(TextEditorBase e) => _editor = e;
+		public KnownLayer Layer { get { return KnownLayer.Background; } }
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
 		{

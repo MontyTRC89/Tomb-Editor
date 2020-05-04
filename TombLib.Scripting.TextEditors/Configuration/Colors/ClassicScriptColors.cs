@@ -16,6 +16,6 @@ namespace TombLib.Scripting.TextEditors.Configuration.Colors
 		public string UnknownCommands { get; set; } = ColorTranslator.ToHtml(Color.Red);
 
 		public ClassicScriptColors() =>
-			DefaultPath = Path.Combine(TextEditors.DefaultPaths.GetTextEditorConfigsPath(), "Colors", "ClassicScript.xml");
+			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorColorConfigsPath(), "ClassicScript.xml");
 	}
 }

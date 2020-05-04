@@ -45,7 +45,7 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 				/* Standard commands */
 				ruleSet.Rules.Add(new HighlightingRule
 				{
-					Regex = new Regex(ScriptPatterns.OldCommands, RegexOptions.IgnoreCase),
+					Regex = new Regex(ScriptPatterns.StandardCommands, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
 						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_colors.StandardCommands))

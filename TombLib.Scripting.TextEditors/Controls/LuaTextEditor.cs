@@ -2,7 +2,7 @@ using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
 namespace TombLib.Scripting.TextEditors.Controls
 {
-	public sealed class LuaTextEditor : BaseTextEditor
+	public sealed class LuaTextEditor : TextEditorBase
 	{
 		public LuaTextEditor()
 		{
