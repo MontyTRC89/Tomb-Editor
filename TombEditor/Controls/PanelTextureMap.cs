@@ -264,7 +264,7 @@ namespace TombEditor.Controls
         {
             base.OnMouseEnter(e);
 
-            if (!Focused)
+            if (!Focused && Form.ActiveForm == FindForm())
                 Focus(); // Enable keyboard interaction
         }
 
