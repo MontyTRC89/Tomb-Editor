@@ -21,11 +21,13 @@ namespace TombLib.LevelData
 
     public interface IScaleable
     {
+        float DefaultScale { get; }
         float Scale { get; set; }
     }
 
     public interface ISizeable
     {
+        Vector3 DefaultSize { get; }
         Vector3 Size { get; set; }
     }
 

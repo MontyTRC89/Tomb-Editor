@@ -12,7 +12,8 @@ namespace TombLib.LevelData
     public class ImportedGeometryInstance : PositionBasedObjectInstance, IReplaceable, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
-        public float Scale { get; set; } = 1;
+        public float DefaultScale => 1.0f;
+        public float Scale { get; set; } = 1.0f;
         public string MeshFilter { get; set; } = "";
         public ImportedGeometryLightingModel LightingModel { get; set; } = ImportedGeometryLightingModel.CalculateFromLightsInRoom;
 

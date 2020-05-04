@@ -342,7 +342,10 @@ namespace TombEditor
             if (obj is IScaleable)
                 (obj as IScaleable).Scale = 1;
             else if (obj is ISizeable)
-                (obj as ISizeable).Size = Vector3.One;
+            {
+                var o = (ISizeable)obj;
+                o.Size = o.DefaultSize;
+            }
 
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }

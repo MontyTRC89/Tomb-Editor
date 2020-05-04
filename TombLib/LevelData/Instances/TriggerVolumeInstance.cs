@@ -47,17 +47,20 @@ namespace TombLib.LevelData
 
     public class PrismVolumeInstance : VolumeInstance, IScaleable, IRotateableY
     {
-        private const float _defaultScale = 8.0f;
-        private const float _minPrismVolumeSize = 128.0f;
+        private const float _defaultScale = 32.0f;
+        private const float _maxScale = 256.0f;
+        private const float _scaleStep = 32.0f;
 
-        public float Size => Scale * _minPrismVolumeSize;
 
+        public float Size => Scale * _scaleStep;
+
+        public float DefaultScale => 32.0f;
         public float Scale
         {
             get { return _scale; }
             set
             {
-                if (value >= 1.0f && value <= _minPrismVolumeSize)
+                if (value >= 1.0f && value <= _maxScale)
                     _scale = value;
             }
         }
@@ -81,16 +84,17 @@ namespace TombLib.LevelData
     public class SphereVolumeInstance : VolumeInstance, IScaleable
     {
         private const float _defaultScale = 8.0f;
-        private const float _minSphereVolumeSize = 128.0f;
+        private const float _minSize = 128.0f;
 
-        public float Size => Scale * _minSphereVolumeSize;
+        public float Size => Scale * _minSize;
 
+        public float DefaultScale => 1024.0f;
         public float Scale
         {
             get { return _scale; }
             set
             {
-                if (value >= 1.0f && value <= _minSphereVolumeSize)
+                if (value >= 1.0f && value <= _minSize)
                     _scale = value;
             }
         }
@@ -106,19 +110,22 @@ namespace TombLib.LevelData
 
     public class BoxVolumeInstance : VolumeInstance, ISizeable, IRotateableYX
     {
-        private const float _minBoxVolumeSize = 32.0f;
-        private const float _planeSize = 32.0f;
+        protected const float _maxSize = ushort.MaxValue;
+        protected const float _minSize = 32.0f;
+
+        public Vector3 DefaultSize => new Vector3(1024.0f);
 
         public Vector3 Size
         {
             get { return _size; }
             set
             {
-                if (value.Length() >= _minBoxVolumeSize)
-                    _size = value;
+                _size = new Vector3(MathC.Clamp(value.X, _minSize, _maxSize),
+                                    MathC.Clamp(value.Y, _minSize, _maxSize),
+                                    MathC.Clamp(value.Z, _minSize, _maxSize));
             }
         }
-        private Vector3 _size = new Vector3(_defaultSize);
+        private Vector3 _size = new Vector3(1024.0f);
 
         public float RotationY
         {
@@ -144,8 +151,6 @@ namespace TombLib.LevelData
 
     public abstract class VolumeInstance : PositionBasedObjectInstance, ISpatial
     {
-        protected const float _defaultSize = 1024.0f;
-
         public VolumeShape Shape()
         {
             if (this is BoxVolumeInstance) return VolumeShape.Box;
