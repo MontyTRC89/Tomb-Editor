@@ -28,8 +28,8 @@
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.cmbEvent = new DarkUI.Controls.DarkComboBox();
             this.tbScript = new TombLib.Controls.LuaTextBox();
+            this.cmbEvent = new DarkUI.Controls.DarkComboBox();
             this.panelButtons.SuspendLayout();
             this.panelControls.SuspendLayout();
             this.SuspendLayout();
@@ -181,6 +181,20 @@
             this.darkLabel1.TabIndex = 2;
             this.darkLabel1.Text = "Event:";
             // 
+            // tbScript
+            // 
+            this.tbScript.AllowDrop = true;
+            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbScript.Code = "";
+            this.tbScript.Location = new System.Drawing.Point(3, 35);
+            this.tbScript.Name = "tbScript";
+            this.tbScript.Size = new System.Drawing.Size(713, 296);
+            this.tbScript.TabIndex = 1;
+            this.tbScript.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbScript_DragDrop);
+            this.tbScript.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbScript_DragEnter);
+            // 
             // cmbEvent
             // 
             this.cmbEvent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -197,25 +211,13 @@
             this.cmbEvent.TabIndex = 0;
             this.cmbEvent.SelectedIndexChanged += new System.EventHandler(this.cmbEvent_SelectedIndexChanged);
             // 
-            // tbScript
-            // 
-            this.tbScript.AllowDrop = true;
-            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.Code = "";
-            this.tbScript.Location = new System.Drawing.Point(3, 35);
-            this.tbScript.Name = "tbScript";
-            this.tbScript.Size = new System.Drawing.Size(713, 296);
-            this.tbScript.TabIndex = 1;
-            this.tbScript.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbScript_DragDrop);
-            this.tbScript.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbScript_DragEnter);
-            // 
             // FormVolume
             // 
+            this.AcceptButton = this.butOK;
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(719, 421);
             this.Controls.Add(this.panelControls);
             this.Controls.Add(this.panelButtons);
