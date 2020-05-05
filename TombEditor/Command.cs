@@ -122,10 +122,14 @@ namespace TombEditor
         {
             AddCommand("CancelAnyAction", "Cancel any action", CommandType.General, delegate (CommandArgs args)
             {
-                args.Editor.Action = null;
-                args.Editor.SelectedSectors = SectorSelection.None;
-                args.Editor.SelectedObject = null;
-                args.Editor.SelectedRooms = new[] { args.Editor.SelectedRoom };
+                if (args.Editor.Action != null)
+                    args.Editor.Action = null;
+                else
+                {
+                    args.Editor.SelectedSectors = SectorSelection.None;
+                    args.Editor.SelectedObject = null;
+                    args.Editor.SelectedRooms = new[] { args.Editor.SelectedRoom };
+                }
             });
 
             AddCommand("Switch2DMode", "Switch to 2D map", CommandType.General, delegate (CommandArgs args)
