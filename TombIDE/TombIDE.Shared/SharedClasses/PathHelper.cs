@@ -37,7 +37,7 @@ namespace TombIDE.Shared.SharedClasses
 		}
 
 		/// <exception cref="FileNotFoundException" />
-		public static string GetLanguageFilePath(Project targetProject, Language language)
+		public static string GetLanguageFilePath(Project targetProject, GameLanguage language)
 		{
 			string languageFilePath = string.Empty;
 
@@ -57,19 +57,14 @@ namespace TombIDE.Shared.SharedClasses
 			return languageFilePath;
 		}
 
+		public static string GetConfigsPath()
+		{
+			return Path.Combine(GetProgramDirectory(), "Configs");
+		}
+
 		public static string GetTIDESubFolderPath()
 		{
 			return Path.Combine(GetProgramDirectory(), "TIDE");
-		}
-
-		public static string GetInternalTempPath()
-		{
-			return Path.Combine(GetProgramDirectory(), "TIDE", "~TEMP");
-		}
-
-		public static string GetScriptBackupFolderPath(Project targetProject)
-		{
-			return Path.Combine(GetProgramDirectory(), "TIDE", "~TEMP", targetProject.Name, "Script");
 		}
 
 		public static string GetInternalNGCPath()
@@ -100,6 +95,16 @@ namespace TombIDE.Shared.SharedClasses
 		public static string GetOCBDefinitionsPath()
 		{
 			return Path.Combine(GetProgramDirectory(), "TIDE", "References", "OCBs");
+		}
+
+		public static string GetOLDCommandDefinitionsPath()
+		{
+			return Path.Combine(GetProgramDirectory(), "TIDE", "References", "OLD Commands");
+		}
+
+		public static string GetNEWCommandDefinitionsPath()
+		{
+			return Path.Combine(GetProgramDirectory(), "TIDE", "References", "NEW Commands");
 		}
 
 		public static string GetEngineTemplatesPath()

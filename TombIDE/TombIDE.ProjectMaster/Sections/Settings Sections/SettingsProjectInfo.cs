@@ -23,7 +23,7 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			checkBox_FullPaths.Checked = _ide.Configuration.ViewFullFolderPaths;
+			checkBox_FullPaths.Checked = _ide.IDEConfiguration.ViewFullFolderPaths;
 
 			UpdateProjectInfo();
 		}
@@ -34,23 +34,23 @@ namespace TombIDE.ProjectMaster
 
 		private void checkBox_FullPaths_CheckedChanged(object sender, EventArgs e)
 		{
-			_ide.Configuration.ViewFullFolderPaths = checkBox_FullPaths.Checked;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.ViewFullFolderPaths = checkBox_FullPaths.Checked;
+			_ide.IDEConfiguration.Save();
 
 			UpdateProjectInfo();
 		}
 
 		private void button_OpenProjectFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(_ide.Project.ProjectPath);
+			SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
 
 		private void button_OpenEngineFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(_ide.Project.EnginePath);
+			SharedMethods.OpenInExplorer(_ide.Project.EnginePath);
 
 		private void button_OpenScriptFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(_ide.Project.ScriptPath);
+			SharedMethods.OpenInExplorer(_ide.Project.ScriptPath);
 
 		private void button_OpenLevelsFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(_ide.Project.LevelsPath);
+			SharedMethods.OpenInExplorer(_ide.Project.LevelsPath);
 
 		private void button_ChangeScriptPath_Click(object sender, EventArgs e)
 		{

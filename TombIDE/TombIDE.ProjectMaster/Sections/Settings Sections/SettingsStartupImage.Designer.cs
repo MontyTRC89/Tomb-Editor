@@ -34,6 +34,7 @@
 			// 
 			this.button_Change.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Change.Checked = false;
 			this.button_Change.Location = new System.Drawing.Point(442, 175);
 			this.button_Change.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Change.Name = "button_Change";
@@ -46,6 +47,7 @@
 			// 
 			this.button_Reset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Reset.Checked = false;
 			this.button_Reset.Location = new System.Drawing.Point(442, 245);
 			this.button_Reset.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Reset.Name = "button_Reset";
@@ -58,6 +60,7 @@
 			// 
 			this.button_UseBlank.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_UseBlank.Checked = false;
 			this.button_UseBlank.Location = new System.Drawing.Point(442, 210);
 			this.button_UseBlank.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_UseBlank.Name = "button_UseBlank";

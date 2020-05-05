@@ -69,7 +69,7 @@ namespace TombIDE.ProjectMaster
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)
 		{
 			Plugin selectedPlugin = (Plugin)treeView.SelectedNodes[0].Tag;
-			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
+			SharedMethods.OpenInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
 		}
 
 		private void treeView_SelectedNodesChanged(object sender, EventArgs e)

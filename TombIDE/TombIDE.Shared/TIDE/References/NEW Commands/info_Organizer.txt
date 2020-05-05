@@ -1,0 +1,71 @@
+Syntax: Organizer=IdOrganizer, Flags Organizer (FO_..), Parameter, FirstTime, PerformFirstIdTriggerGroup, SecondTime, PerformSecondIdTriggerGroup, {Time and TriggerGroup Array }
+
+Scope: to use in [Level] section
+Max number of instances for level section: 499
+
+Organizer permit to perform a list of trigger, organized in TriggerGroup script commands, at specific wished time.
+For example you can create a list of trigger group, organized with Organizer command, to get to open a door and after 4 seconds, activate a baddy, after other 22 seconds enable a flipmap ect.
+
+Parameters
+----------
+
+IdOrganizer  field
+-------------------
+Specify the id of current organizer. This number will be used to locate this organizer command with flipeffects to enable or disable organizer.
+You should assign 1 at your first Organizer in that level section, and 2 for second organizer, ect.
+
+Note: the valid range for IdOrganizer field is 1 / 4999
+
+
+Flags Organizer (FO_..) field
+-----------------------------
+In this field you can add one or more FO_ constants to control the behavior of Organizer command.
+
+You can get infos about FO_ constants from Reference panel of NG_center program, in _MNEMONIC CONSTANTS section.
+
+Parameter field
+---------------
+Currently unused. It could be used in future versions.
+You can type IGNORE in this field.
+
+Couples of Time + IdTriggerGroup
+---------------------------------
+After Parameter field, you can two one or more couple of field to store:
+
+Time to wait before starting ...
+
+TriggerGroup
+
+You can imaginate these appointment infos.
+At this hour, remember to do this
+at other hour, to do this other...
+
+But in our case we'll use the seconds, of course, anyway the method is the same.
+
+For example if we create this Organizer command:
+
+Organizer=1,  IGNORE, IGNORE, 
+6, 1, 5, 2, 4, 3
+
+
+We should read above data in following way:
+
+
+After 6 seconds from enabling of Organizer, it will be performed the TriggerGroup
+ 1
+After other 5 seconds, it will be performed the TriggerGroup 2
+After other 4 seconds, it will be performed the TriggerGroup 3
+
+We can understand better these data using a table:
+<PRE>
+Time     TRiggerGroup
+-----------------------
+6        TriggerGroup=1
+5        TriggerGroup=2
+4        TriggerGroup=3
+------------------------
+</PRE>
+
+Remark: in time field you can type number up to 65535, i.e. about 18 hours.
+
+

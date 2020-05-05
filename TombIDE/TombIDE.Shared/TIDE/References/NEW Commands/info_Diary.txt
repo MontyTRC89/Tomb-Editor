@@ -1,0 +1,319 @@
+Syntax: Diary= Id Diary, SlotDiaryItem, LaraDiaryFlags (LDF_...), BackGroundImageID, Default PageLayout (PL_...), FirstString, TitleWFontId, CommonTextWFontId
+Scope: To use in [Level] section
+Max number of instances for level section: 99
+
+This command enable the Lara's diary, and permits to set some settings about Diary.
+The Lara's diary should be like a log where there are texts and images to describe the adventure while it's going on.
+There are flipeffects to add new pages to Lara's diary, to update the diary in according with the evolution of adventure.
+The player will be able to select in inventory this item like it was an examine object, entering in Diary mode, where player can browse and read unlimited number of pages, texts and images.
+
+Remark: at bottom of the description of Diary= command, there will be also a description about special text formatters you can insert in text to show with diary. Please, give a look also to those descriptions.
+
+Id Diary field
+--------------
+You can have upto 10 different diary in all your adventure.
+Each diary will continue in further levels.
+For this reason it's important you type, in any [Level] section where you wish use a previous defined Diary command, the same Diary command with same ID value. The only difference it will be for the FirstString field that it will be ignored for the Diary commands
+ used in further Level sections.
+
+To distinguish the diary to use in some flipeffect trigger you have to specify its ID.
+Remark: the chance to have many diary, permits to use diary like an advanced Examine item, with many infos and images you can continuosly update or increase.
+Valid range for IDs: 1 / 999
+
+SlotDiaryItem field
+--------------------
+In this field you type the slot corresponding to Lara's diary item.
+You cann't chose any slot item, the slot has to be an inventory item, and it's suggested to use a quest item like:
+
+QUEST_ITEM1
+QUEST_ITEM2
+QUEST_ITEM3
+QUEST_ITEM4
+QUEST_ITEM5
+QUEST_ITEM6
+
+In example "Lara's diary" on trng website, I used the QUEST_ITEM2.
+
+LaraDiaryFlags (LDF_...) field
+--------------------------------
+In this field you can type one or more LDF_ flags to set how work with background audio track when the diary will be showed.
+If you type IGNORE, no change will be performed about audio tracks, and the previous audio track of game will continue like it happens in Inventory.
+Differently, if you wish stop game audio track and set another custom background music while player is watching the Diary you'll have to set the correct LDF_ flags.
+
+See description of LDF_ constants in Reference panel of NG_Center program.
+
+BackGroundImageID field
+-----------------------
+The Lara's diary in examine mode is a bidimensional item and for this reason it's necessary set the image for background, because this is the effective visible Diary in examine mode.
+In this field you type a number and this number correspond to a bmp image in this format:
+
+IMAGE4.bmp
+
+For example to use above image as background, you'll type in BackGroundImageID field the value 4
+
+Remarks:
+
+- The bitmap image could have any size and it will be resized to fit the screen, anyway it's advisable to use an image of at least 640x480 pixel, or, better, 800 x 600 or higher
+
+- If trng detect a wide-screen monitor, the background image will be NOT resized to full screen, but it will be enlarged to fit the heigth of screen, while for width, trng will try to preserve the size ratio, to avoid distorsions of image. In this circustance it could happen there were two short vertical columns at sides of Diary image, in these two external columns it will be visible the previous tomb raider background.
+
+- You have to supply the image#.bmp with your level files. If the level will be installed using TRLM 2009 (Tr Level Manager 1.5) it will be able to handle in correct way the bitmap images, while for information about manual installation to give to users, trng is able to find images in different folders:
+
+TRLE folder (i.e. in same folder of tomb4.exe)
+TRLE\PIX subfolder
+ (this was used also by trep, and also trlm2009 will place all bitmap images (different by Load.bmp, of course) in PIX subfolder)
+
+
+- Currently trng supports only images in bitmap (.bmp) format, anyway you can insert the images in jpg format to safe space, and then add also the little utility CONVERTER.exe in PIX folderf to permit the conversion to .jpg format
+
+Note: Trng tomb4 engine will call byself the converter.exe when it finds this utility in  PIX folder and some impage .jpg or .jpeg in same PIX folder.
+
+Default PageLayout (PL_...) field
+---------------------------------
+In this field you can type the PL_ flags to choose the layout used for Diary as default.
+For "layout" we mean the disposition (positions) of text, title and further little image to show on same page.
+The differet layouts set where show above elements.
+You should try to create a background image in according with the wished layout.
+See description of PL_... constants in Reference panel of NG_Center for more infos.
+
+FirstString field
+-----------------
+If you wish initialize the diary with a first text you can type in this field the text of first string.
+The text you type in this field has to be the same in some extra ng string. 
+Remark: since it's comfortable type a long text in this field you could type in extra ng string a file-string in the form: "@MyText.txt" and then type the effective text in a file named "MyText.txt" saving it in SCRIPT folder. In this example you'll type in this field the text "@MyText.txt"
+If you don't wish type any first string you can type IGNORE in this field.
+
+Remark: in this first string or in other strings you add to diary using flipeffect "Diary. Add (&)NG String to Diary" it can type one or more pages in same moment, just in that extra ng string there is some #END_PAGE# tag to separate differente pages in same NG string.
+
+TitleWFontId and CommonTextWFontId fields
+-----------------------------------------
+To set color and size of text, you have to type a WindowsFont= command script and then place in our Diary command the Identifier of that WindowsFont command.
+Remember that, the WindowsFont commands used by our Diary command, have to be typed before that Diary command.
+In TitleWFontId field you type the id to choose the preference for title. The title will have a big size than common text, of course.
+In CommonTextWFontId field, you type the id to be used for common text
+
+The text formatters to use in text pages
+----------------------------------------
+The settings you typed in Diary command will work as default values but if you wish, you can change all these settings for each page.
+In each page you can insert some special formatters used to inform trng about some change about settings of diary.
+The text used to give these settings will be not displayed on screen, of course.
+All testual settings have to be enclosed in a couple of tag <FORMAT> and <END_FORMAT>.
+You have to type one and only once the <FORMAT> tag for each page.
+You can type a FORMAT section in each page, anyway remember that, if you omit to type a FORMAT section in some page, in that page will be used the default settings you typed in Diary command and not the FORMAT setting of previous page.
+Within the FORMAT section you can type one or more of following text tags:
+
+#TITLE_FONT#=(Id of WindowsFont for title)
+#TEXT_FONT#=(Id of WindowsFont for common text)
+#PAGE_LAYOUT#=(PL_.. constants)
+#BG_AUDIO#= (identifier of audio track to play in background for this page)
+#BG_IMAGE#= (identifier of image to use as new background)
+#POP_IMAGE#= (identifier of image to show in this page)
+#TITLE#= (Text to show at start of this page as title)
+
+How set end page signal
+-----------------------
+A very important tag to use always in diary text is the end page tag.
+You can type in same text many different pages but it's necessary to give an indication about when a page ends and when starts new page.
+To reach this target you can insert in some point of your text a little tag formatter to signal the end page/new page in that point.
+Just you type in your text the tag:
+
+#END_PAGE#
+
+Remark: it's important you place the #end_page# on a single empty row, this means you cann't place the end page in this way:
+-------------- WRONG METHOD --------
+The key is yet in bottomless pit. #END_PAGE#
+Now Lara should find the key but to reach the pit she has to search...
+-----------
+
+Above position is wrong.
+The correct mode to place the end page is this:
+
+-------------- RIGHT METHOD -----------
+The key is yet in bottomless pit. 
+#END_PAGE#
+Now Lara should find the key but to reach the pit she has to search...
+--------
+
+Example of text used for diary
+------------------------------
+To give an idea about how it should appear a correct text to use for Diary you can see following sample:
+
+-------- example of text used for diary ---------
+<FORMAT>
+#TITLE_FONT#=1
+#TEXT_FONT#=2
+#PAGE_LAYOUT#=PL_WIDE_IMAGE+PL_ADD_INFO_BAR
+#BG_IMAGE#=1
+#POP_IMAGE#=2
+#TITLE#=Mission Organizer
+<END_FORMAT>
+This is the Mission Organizer of Lara
+In this pages you can verify the targets Lara has to reach.
+New pages will be adedd while the mission goes on, so remember to come back to read this document also in future, you could get many important informations
+#END_PAGE#
+<FORMAT>
+#TITLE_FONT#=3
+#PAGE_LAYOUT#=PL_DOUBLE_PAGE+PL_ADD_INFO_BAR
+#BG_IMAGE#=3
+#POP_IMAGE#=4
+#TITLE#=Beginning...
+#BG_AUDIO#=56
+#FRAME_IMG#=20,10,400,500
+#FRAME_T1#=520,10,400,500
+#FRAME_T2#=20,600,400,400
+<END_FORMAT>
+Lara has to find the man stole the security key.
+Last time he has been seen in the dark castel on the hill.
+... other text ....
+Tha man is very dangerous because he has a misterious power...
+#END_PAGE#
+------------- end of example of text for Lara's diary ------------
+
+Above is a short sample of text diary with two pages and different tag formatters.
+Looking above text we could describe the meaning of formatting tag.
+In first page we had:
+
+<FORMAT>
+#TITLE_FONT#=1
+#TEXT_FONT#=2
+#PAGE_LAYOUT#=PL_WIDE_IMAGE+PL_ADD_INFO_BAR
+#BG_IMAGE#=1
+#POP_IMAGE#=2
+#TITLE#=Mission Organizer
+
+<END_FORMAT>
+
+And we could read above settings in this way:
+"#TITLE_FONT#=1"
+Print the title using font setting stored in script command:
+
+WindowsFont=1, ....
+
+"#TEXT_FONT#=2"
+Print the common text using settings stored in script command:
+
+WindowsFont=2, ...
+
+"#PAGE_LAYOUT#=PL_WIDE_IMAGE+PL_ADD_INFO_BAR"
+For first page use a layout with a wide image at top of the screen in centra position, and let at bottom of screen the space to host my info bar (drawn in background image used for this first page)
+
+"#BG_IMAGE#=1"
+As background image use the file:
+
+IMAGE1.BMP
+
+"#POP_IMAGE#=2"
+Display in top half of screen the wide image of file:
+
+IMAGE2.BMP
+
+"#TITLE#=Mission Organizer"
+At top of wide image2.bmp, place the title:
+
+Mission Organizer
+
+Then it will be displayed the text:
+<<
+This is the Mission Organizer of Lara
+In this pages you can verify the targets Lara has to reach.
+New pages will be adedd while the mission goes on, so remember to come back to read this document also in future, you could get many important informations
+>>
+
+And all above are the stuff of first introductive page od Lara's Diary.
+
+Then there is the #END_PAGE# tag, and trng will wait the player hit RIGHT arrow to pass to second page.
+
+The setting of second page are:
+
+<FORMAT>
+#TITLE_FONT#=3
+#PAGE_LAYOUT#=PL_DOUBLE_PAGE+PL_ADD_INFO_BAR
+#BG_IMAGE#=3
+#POP_IMAGE#=4
+#TITLE#=Beginning...
+#BG_AUDIO#=56
+#FRAME_IMG#=20,10,400,500
+#FRAME_T1#=520,10,400,500
+#FRAME_T2#=20,600,400,400
+<END_FORMAT>
+
+The meanings are:
+
+"#TITLE_FONT#=3"
+Disaply the title using font (color and size) set in script command:
+
+WindowsFont=3
+
+"#PAGE_LAYOUT#=PL_DOUBLE_PAGE+PL_ADD_INFO_BAR"
+The layout now will a double page, where the further image will be showed at top of left page
+Keep the info bar at bottom of screen, too.
+
+"#BG_IMAGE#=3"
+Use as background image the image stored in file:
+
+IMAGE3.BMP
+
+"#POP_IMAGE#=4"
+Show at top of left page the image:
+
+IMAGE4.BMP
+
+"#TITLE#=Beginning..."
+Show over the image4.bmp, the title:
+
+Beginning...
+
+"#BG_AUDIO#=56"
+Play the audio track stored in the file:
+
+TRLE\AUDIO\056.wav
+
+(but it could be also 056.mp3 or 056.ogg in according with effective presence of files)
+
+"#FRAME_IMG#=20,10,400,500"
+
+Set the position and size where show further little image in this page.
+If in diary layoutpage flags you set the PL_CUSTOM_LAYOUT this setting will reamin also for following pages, while if you set some other PL_ layout, this setting of "#FRAME_IMG#=" will be used only for this page, while for other pages will be used the PL_ layout set in diary command.
+The values of this tag (20,10,400,500) are in micro units, where 1 = 1/1000 of widht or heght of screen size.
+To compute these values you can use the utility [Get Screen Frames] you find in Tools panel of NG_Center program.
+
+"#FRAME_T1#=520,10,400,500
+"
+
+
+Set the position and size of first frame used by text in this page.
+For "first" frame we mean the frame where place first block of text of this page.
+In some layout you can have two text frame, in this case the "
+#FRAME_T1#=" tag set the first of two text frames, or the unique text frame when there a single text frame.
+Also this tag requires micro units, see descript of "#FRAME_IMG#=" tag for more infos.
+
+"#FRAME_T2#=20,600,400,400
+"
+
+Set the position and size for second text frame.
+When your layout foreseen two text frames you'll use the #FRAME_T2#= tag to set the position of second block of text for this page.
+Also this tag requires micro units, see descript of "#FRAME_IMG#=" tag for more infos.
+
+
+
+Remarks:
+
+1) The background sounds in Diary mode will work only if you enabled the BASS features in your level
+
+2) If you mistake placing an #END_PAGE# too low respect to effective visible text on the screen, the player will be not able to view some rows of current page, but no extra text will be showed over info bar
+
+3) When some tag formatter is missing it will be used the default setting you set with Diary script command
+
+4) If you want stop a background sound set in previous page, but you don't wish start any other audio track, you have to type the tag formatter:
+#BG_AUDIO#=-1
+In this way, the previous audio track will be stopped and further default audio track, set in Diary script command, will be played.
+
+5) To host big texts in NG_Center you should use the trick to set in extra ng strings only the file reference, in this way:
+
+45: @FirstPages.txt
+
+Then NG_Center inserts as "exta ng string number 45" all text present in text file "FirstPages.txt"
+The "FirstPages.txt" has to be present in SCRIPT folder while you build the script.dat.
+While, once you builded the script.dat and english.dat, the file "FirstPages.txt" it's no more necessary and you don't should enclose it in your level files because its contents are already present in english.dat (or other language.dat file)
+
+

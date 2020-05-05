@@ -1,0 +1,14 @@
+Syntax: WorldFarView=MaxSectorDistance
+Scope: To use in [Options] section
+
+Default value in tomb4:
+WorldFarView=MaxSectorDistance = 20 sectors
+
+Valid range: Min=1  Max=127
+
+With WorldFarView you set the max distance you'll could use in any level of your game.
+You should set a bigger number with WorldFarView and littler or equal values with LevelFarView in different level in according with further speed troubles for two wide and complex scenes.
+
+Remark:
+See also LevelFarView command and FogRange command for more infos.
+

@@ -1,0 +1,8 @@
+Syntax: ForceBumpMapping=ENABLED/DISABLED
+Scope: To use in [Options] section
+
+If you prepared bump map textures for your game, you can use this command to override settings in tomb4 setup and to force enabling of BumpMap in game.
+
+Remark:
+(1) Differntly by ForceVolumetricFx this command works only in [Options] section because it affectes all levels of your game in same moment.
+

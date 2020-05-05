@@ -15,7 +15,7 @@ namespace TombIDE.Shared
 		public void RaiseEvent(IIDEEvent eventObj) =>
 			SynchronizationContext.Current.Send(eventObj_ => IDEEventRaised?.Invoke((IIDEEvent)eventObj_), eventObj);
 
-		public Configuration Configuration { get; }
+		public IDEConfiguration IDEConfiguration { get; }
 		public List<Project> AvailableProjects { get; }
 		public List<Plugin> AvailablePlugins { get; }
 
@@ -207,10 +207,11 @@ namespace TombIDE.Shared
 		public class ScriptEditor_SelectObjectEvent : IIDEEvent
 		{
 			public string ObjectName { get; internal set; }
+			public ObjectType ObjectType { get; internal set; }
 		}
 
-		public void ScriptEditor_SelectObject(string objectName) =>
-			RaiseEvent(new ScriptEditor_SelectObjectEvent { ObjectName = objectName });
+		public void ScriptEditor_SelectObject(string objectName, ObjectType type) =>
+			RaiseEvent(new ScriptEditor_SelectObjectEvent { ObjectName = objectName, ObjectType = type });
 
 		#endregion ScriptEditor_SelectObject
 
@@ -309,9 +310,9 @@ namespace TombIDE.Shared
 		#endregion ScriptEditor_RenameLevel
 
 		// Construction and destruction
-		public IDE(Configuration configuration, List<Project> availableProjects, List<Plugin> availablePlugins)
+		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects, List<Plugin> availablePlugins)
 		{
-			Configuration = configuration;
+			IDEConfiguration = ideConfiguration;
 			AvailableProjects = availableProjects;
 			AvailablePlugins = availablePlugins;
 		}

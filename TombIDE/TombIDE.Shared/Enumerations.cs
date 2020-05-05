@@ -7,7 +7,7 @@
 		Tools
 	}
 
-	public enum Language
+	public enum GameLanguage
 	{
 		// Default TR4 languages
 
@@ -17,6 +17,26 @@
 		Italian,
 		Spanish,
 		Japanese,
-		Dutch,
+		Dutch
+	}
+
+	public enum ObjectType
+	{
+		Section,
+		Level,
+		Include,
+		Define
+	}
+
+	public enum FileCreationMode
+	{
+		New,
+		Saving
+	}
+
+	public enum FindingOrder
+	{
+		Prev,
+		Next
 	}
 }
