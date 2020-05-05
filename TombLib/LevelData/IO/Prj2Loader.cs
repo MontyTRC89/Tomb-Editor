@@ -982,7 +982,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectFlyBy2)
+                else if (id3 == Prj2Chunks.ObjectFlyBy2) // Obsolete; LuaScript is unused with new script concept.
                 {
                     var instance = new FlybyCameraInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -999,7 +999,7 @@ namespace TombLib.LevelData.IO
                     {
                         if (id4 == Prj2Chunks.ObjectFlyBy2LuaScript)
                         {
-                            instance.LuaScript = chunkIO.ReadChunkString(chunkSize4);
+                            chunkIO.ReadChunkString(chunkSize4);
                             return true;
                         }
                         return false;
