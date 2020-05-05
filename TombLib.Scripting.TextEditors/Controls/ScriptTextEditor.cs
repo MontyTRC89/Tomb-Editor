@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using TombLib.Scripting.Autocomplete;
 using TombLib.Scripting.CodeCleaners;
 using TombLib.Scripting.ErrorDetection;
+using TombLib.Scripting.Helpers;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
 using TombLib.Scripting.Resources.ToolTips;
@@ -99,29 +100,104 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void BindEventMethods()
 		{
-			TextArea.TextEntered += TextArea_TextEntered;
-			TextChanged += TextBox_TextChanged;
+			TextArea.TextEntered += TextEditor_TextEntered;
+			TextChanged += TextEditor_TextChanged;
 
-			MouseHover += TextBox_MouseHover;
+			MouseHover += TextEditor_MouseHover;
+			KeyDown += TextEditor_KeyDown;
+		}
+
+		private void TextEditor_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.F1)
+			{
+				string commandKey = CommandHelper.GetCommandKey(Document, CaretOffset);
+
+				if (string.IsNullOrEmpty(commandKey))
+					return;
+
+				if (commandKey.Equals("AddEffect", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("ColorRGB", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("GlobalTrigger", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("Image", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("ItemGroup", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("MultiEnvCondition", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("Organizer", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("Parameters", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("TestPosition", StringComparison.OrdinalIgnoreCase)
+					|| commandKey.Equals("TriggerGroup", StringComparison.OrdinalIgnoreCase))
+				{
+					List<int> takenIndicesList = new List<int>();
+
+					if (DocumentHelper.DocumentContainsSections(Document))
+					{
+						int sectionStartLineNumber = DocumentHelper.GetSectionStartLine(Document, CaretOffset).LineNumber;
+
+						for (int i = sectionStartLineNumber + 1; i < Document.LineCount; i++)
+						{
+							DocumentLine processedLine = Document.GetLineByNumber(i);
+							string processedLineText = Document.GetText(processedLine.Offset, processedLine.Length);
+
+							if (processedLineText.Contains("="))
+							{
+								if (CommandHelper.GetCommandKey(Document, processedLine.Offset).Equals(commandKey, StringComparison.OrdinalIgnoreCase))
+								{
+									int takenIndex;
+
+									if (int.TryParse(processedLineText.Split('=')[1].Split(',')[0].Trim(), out takenIndex))
+										takenIndicesList.Add(takenIndex);
+								}
+							}
+						}
+					}
+					else
+					{
+						foreach (DocumentLine processedLine in Document.Lines)
+						{
+							string processedLineText = Document.GetText(processedLine.Offset, processedLine.Length);
+
+							if (processedLineText.Contains("="))
+							{
+								if (CommandHelper.GetCommandKey(Document, processedLine.Offset).Equals(commandKey, StringComparison.OrdinalIgnoreCase))
+								{
+									int takenIndex;
+
+									if (int.TryParse(processedLineText.Split('=')[1].Split(',')[0].Trim(), out takenIndex))
+										takenIndicesList.Add(takenIndex);
+								}
+							}
+						}
+					}
+
+					for (int i = 1; i < 1024; i++)
+					{
+						if (!takenIndicesList.Contains(i))
+						{
+							TextArea.PerformTextInput(i.ToString());
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		#endregion Construction
 
 		#region Events
 
-		private void TextArea_TextEntered(object sender, TextCompositionEventArgs e)
+		private void TextEditor_TextEntered(object sender, TextCompositionEventArgs e)
 		{
 			if (!IsSilentSession && AutocompleteEnabled)
 				HandleAutocomplete(e);
 		}
 
-		private void TextBox_TextChanged(object sender, EventArgs e)
+		private void TextEditor_TextChanged(object sender, EventArgs e)
 		{
 			if (!IsSilentSession && LiveErrorUnderlining)
 				ResetErrorUpdateTimer();
 		}
 
-		private void TextBox_MouseHover(object sender, MouseEventArgs e) =>
+		private void TextEditor_MouseHover(object sender, MouseEventArgs e) =>
 			HandleDefinitionToolTips(e);
 
 		#endregion Events

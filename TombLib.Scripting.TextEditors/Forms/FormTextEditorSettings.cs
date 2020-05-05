@@ -2,6 +2,8 @@
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Text;
 using System.Windows.Forms;
 using TombLib.Scripting.TextEditors.Controls.Settings;
 
@@ -23,8 +25,12 @@ namespace TombLib.Scripting.TextEditors.Forms
 			_configs = new TextEditorConfigurations();
 			_configsCopy = new TextEditorConfigurations();
 
-			List<string> monospacedFonts = MonospacedFonts.GetMonospacedFontNames();
-			settings_ClassicScript = new SettingsClassicScript(_configs, monospacedFonts);
+			List<string> fontList = new List<string>();
+
+			foreach (FontFamily font in new InstalledFontCollection().Families)
+				fontList.Add(font.Name);
+
+			settings_ClassicScript = new SettingsClassicScript(_configs, fontList);
 
 			settings_ClassicScript.Dock = DockStyle.Fill;
 			tabPage_ClassicScript.Controls.Add(settings_ClassicScript);

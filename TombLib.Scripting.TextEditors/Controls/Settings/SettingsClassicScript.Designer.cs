@@ -327,9 +327,9 @@
 			this.darkLabel2.Location = new System.Drawing.Point(7, 76);
 			this.darkLabel2.Margin = new System.Windows.Forms.Padding(6, 3, 3, 0);
 			this.darkLabel2.Name = "darkLabel2";
-			this.darkLabel2.Size = new System.Drawing.Size(118, 13);
+			this.darkLabel2.Size = new System.Drawing.Size(60, 13);
 			this.darkLabel2.TabIndex = 2;
-			this.darkLabel2.Text = "Font family: (Mono only)";
+			this.darkLabel2.Text = "Font family:";
 			// 
 			// darkLabel3
 			// 
