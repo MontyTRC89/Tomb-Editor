@@ -32,7 +32,7 @@
 			this.OwO = new DarkUI.Controls.DarkLabel();
 			this.panel_CoverLoading = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
-			this.tablessTabControl = new TombIDE.TablessTabControl();
+			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.tabPage_ProjectMaster = new System.Windows.Forms.TabPage();
 			this.tabPage_ScriptEditor = new System.Windows.Forms.TabPage();
 			this.tabPage_Tools = new System.Windows.Forms.TabPage();
@@ -365,6 +365,6 @@
 		private System.Windows.Forms.Timer timer_ScriptButtonBlinking;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_DeleteButton;
 		private System.Windows.Forms.ToolTip toolTip;
-		private TablessTabControl tablessTabControl;
+		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 	}
 }

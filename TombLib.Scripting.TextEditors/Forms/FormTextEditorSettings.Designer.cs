@@ -22,7 +22,7 @@
 			this.button_ResetDefault = new DarkUI.Controls.DarkButton();
 			this.panel_Buttons = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
-			this.tablessTabControl = new TombLib.Scripting.TextEditors.Controls.TablessTabControl();
+			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.tabPage_Global = new System.Windows.Forms.TabPage();
 			this.tabPage_ClassicScript = new System.Windows.Forms.TabPage();
 			this.tabPage_Lua = new System.Windows.Forms.TabPage();
@@ -174,7 +174,7 @@
 
 		#endregion
 
-		private Controls.TablessTabControl tablessTabControl;
+		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 		private DarkUI.Controls.DarkButton button_Apply;
 		private DarkUI.Controls.DarkButton button_Cancel;
 		private DarkUI.Controls.DarkButton button_ResetDefault;

@@ -21,9 +21,9 @@ namespace TombEditor.Forms
         {
             InitializeComponent();
             InitializeTextEditor();
+            Editor.Instance.EditorEventRaised += EditorEventRaised;
 
             LoadVolume(volume);
-            Editor.Instance.EditorEventRaised += EditorEventRaised;
         }
 
         protected override void Dispose(bool disposing)
@@ -48,11 +48,11 @@ namespace TombEditor.Forms
 
         private void InitializeTextEditor()
         {
-            _textEditor = new LuaTextEditor { };
+            _textEditor = new LuaTextEditor();
             _textEditor.AllowDrop = true;
-            ehLuaTextEditor.Child = _textEditor;
             _textEditor.DragEnter += textEditor_DragEnter;
             _textEditor.Drop += textEditor_DragDrop;
+            ehLuaTextEditor.Child = _textEditor;
         }
 
         public void SaveAndReopenVolume(VolumeInstance volume)
