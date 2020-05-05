@@ -72,7 +72,7 @@ namespace TombLib.Graphics
         private static readonly float _arrowHeadOffsetMultiplier = 1.13f;
 
         private GizmoMode _mode;
-        private float _scaleBase;
+        private Vector3 _scaleBase;
         private float _rotationLastMouseAngle;
         private float _rotationLastMouseRadius;
         private float _rotationPickAngle;
@@ -143,6 +143,11 @@ namespace TombLib.Graphics
                 return false;
 
             bool upside = Orientation == GizmoOrientation.UpsideDown;
+            bool flippedScale = false;
+
+            // Flip sizing dimensions if object is rotateable on Y axis
+            if ((_mode == GizmoMode.ScaleX || _mode == GizmoMode.ScaleZ) && SupportRotationY)
+                flippedScale = MathC.RadToDeg(RotationY) % 180.0f >= 45.0f;
 
             // First get the ray in 3D space from X, Y mouse coordinates
             switch (_mode)
@@ -181,21 +186,27 @@ namespace TombLib.Graphics
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitY, Vector3.UnitZ, out intersection))
-                            GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                            if (flippedScale)
+                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
+                            else
+                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * (intersection.X - Position.X)));
                     }
                     break;
                 case GizmoMode.ScaleY:
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitZ, out intersection))
-                            GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed * (intersection.Y - Position.Y)));
+                            GizmoScaleY(_scaleBase.Y * (float)Math.Exp(_scaleSpeed * (intersection.Y - Position.Y)));
                     }
                     break;
                 case GizmoMode.ScaleZ:
                     {
                         Vector3 intersection;
                         if (ConstructPlaneIntersection(Position, viewProjection, ray, Vector3.UnitX, Vector3.UnitY, out intersection))
-                            GizmoScale(_scaleBase * (float)Math.Exp(_scaleSpeed / (intersection.Z - Position.Z)));
+                            if (flippedScale)
+                                GizmoScaleX(_scaleBase.X * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
+                            else
+                                GizmoScaleZ(_scaleBase.Z * (float)Math.Exp(_scaleSpeed * -(intersection.Z - Position.Z)));
                     }
                     break;
                 case GizmoMode.RotateY:
@@ -377,7 +388,7 @@ namespace TombLib.Graphics
         {
             _mode = pickingResult.Mode;
 
-            _scaleBase = SupportScale ? Scale : 1.0f;
+            _scaleBase = SupportScale ? Scale : Vector3.One;
             _rotationPickAngle = SimplifyAngle(pickingResult.RotationPickAngle);
             _rotationPickAngleOffset = SimplifyAngle(
                 (pickingResult.Mode == GizmoMode.RotateY ? RotationY :
@@ -743,7 +754,9 @@ namespace TombLib.Graphics
         // They are called both, just leave the implementation empty if not needed, don't use exceptions
         protected abstract void GizmoMove(Vector3 newPos);
         protected abstract void GizmoMoveDelta(Vector3 delta);
-        protected abstract void GizmoScale(float newScale);
+        protected abstract void GizmoScaleY(float newScale);
+        protected abstract void GizmoScaleX(float newScale);
+        protected abstract void GizmoScaleZ(float newScale);
         protected abstract void GizmoRotateY(float newAngle);
         protected abstract void GizmoRotateX(float newAngle);
         protected abstract void GizmoRotateZ(float newAngle);
@@ -752,7 +765,7 @@ namespace TombLib.Graphics
         protected abstract float RotationY { get; }
         protected abstract float RotationX { get; }
         protected abstract float RotationZ { get; }
-        protected abstract float Scale { get; }
+        protected abstract Vector3 Scale { get; }
         protected abstract float CentreCubeSize { get; }
         protected abstract float TranslationConeSize { get; }
         protected abstract float ScaleCubeSize { get; }

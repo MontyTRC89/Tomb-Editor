@@ -1,154 +1,104 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading;
-using TombLib.Projects;
 
 namespace TombIDE.Shared
 {
 	public interface IIDEEvent { }
 
-	public interface IProjectMasterEvent : IIDEEvent { }
-
 	public class IDE : IDisposable
 	{
-		// The IDE event
+		/* Initialization */
+
 		public event Action<IIDEEvent> IDEEventRaised;
 
 		public void RaiseEvent(IIDEEvent eventObj) =>
 			SynchronizationContext.Current.Send(eventObj_ => IDEEventRaised?.Invoke((IIDEEvent)eventObj_), eventObj);
 
-		// The configuration
 		public Configuration Configuration { get; }
-
 		public List<Project> AvailableProjects { get; }
-
 		public List<Plugin> AvailablePlugins { get; }
 
-		#region ProjectAdded
+		/// <summary>
+		/// The currently opened TombIDE project.
+		/// <para>Note: Set this before the FormMain initialization is finished. DO NOT change it afterwards.</para>
+		/// </summary>
+		public Project Project { get; set; }
 
-		public class ProjectAddedEvent : IIDEEvent
-		{
-			public Project AddedProject { get; internal set; }
-		}
-
-		public void AddProjectToList(Project project) =>
-			RaiseEvent(new ProjectAddedEvent { AddedProject = project });
-
-		#endregion ProjectAdded
-
-		#region ActiveProjectChanged
-
-		public class ActiveProjectChangedEvent : IIDEEvent // Will probably never be used
-		{
-			public Project Previous { get; internal set; }
-			public Project Current { get; internal set; }
-		}
-
-		private Project _project;
-
-		public Project Project
-		{
-			get { return _project; }
-			set
-			{
-				if (_project != value)
-				{
-					Project previous = _project;
-					_project = value;
-
-					RaiseEvent(new ActiveProjectChangedEvent { Previous = previous, Current = value });
-				}
-			}
-		}
-
-		#endregion ActiveProjectChanged
-
-		#region ActiveProjectRenamed
-
-		public class ActiveProjectRenamedEvent : IIDEEvent
-		{ }
-
-		#endregion ActiveProjectRenamed
+		/* Main IDE events */
 
 		#region SelectedIDETabChanged
 
 		public class SelectedIDETabChangedEvent : IIDEEvent
 		{
-			public string Previous { get; internal set; }
-			public string Current { get; internal set; }
+			public IDETab Previous { get; internal set; }
+			public IDETab Current { get; internal set; }
 		}
 
-		public string SelectedIDETab { get; internal set; }
+		public IDETab SelectedIDETab { get; internal set; }
 
-		/// <summary>
-		/// Either "Project Master", "Script Editor" or "Tools"
-		/// </summary>
-		public void SelectIDETab(string tabName)
+		public void SelectIDETab(IDETab tab)
 		{
-			if (SelectedIDETab != tabName)
+			if (SelectedIDETab != tab)
 			{
-				string previous = SelectedIDETab;
-				SelectedIDETab = tabName;
+				IDETab previous = SelectedIDETab;
+				SelectedIDETab = tab;
 
-				RaiseEvent(new SelectedIDETabChangedEvent { Previous = previous, Current = tabName });
+				RaiseEvent(new SelectedIDETabChangedEvent { Previous = previous, Current = tab });
 			}
 		}
 
 		#endregion SelectedIDETabChanged
 
-		#region ProgramButtonsChanged
+		#region ProgramButtonsModified
 
-		public class ProgramButtonsChangedEvent : IIDEEvent
-		{ }
+		public class ProgramButtonsModifiedEvent : IIDEEvent { }
 
-		#endregion ProgramButtonsChanged
+		public void ProgramButtonsModified() =>
+			RaiseEvent(new ProgramButtonsModifiedEvent());
 
-		#region RequestedApplicationRestart
+		#endregion ProgramButtonsModified
 
-		public class RequestedApplicationRestartEvent : IProjectMasterEvent
-		{ }
+		#region ApplicationRestarting
 
-		public void RestartApplication() => RaiseEvent(new RequestedApplicationRestartEvent());
+		public class ApplicationRestartingEvent : IIDEEvent { }
 
-		#endregion RequestedApplicationRestart
+		/// <summary>
+		/// WARNING: This method doesn't ask IDE.CanClose() for closing permissions !!!
+		/// </summary>
+		public void RestartApplication() =>
+			RaiseEvent(new ApplicationRestartingEvent());
+
+		#endregion ApplicationRestarting
 
 		#region ProgramClosing
 
 		public class ProgramClosingEvent : IIDEEvent
-		{ }
+		{
+			public bool CanClose { get; set; } // Result
+		}
 
-		public bool ClosingCancelled { get; set; }
+		/// <summary>
+		/// Asks the Script Editor if all files are saved and if the application can be safely closed.
+		/// </summary>
+		public bool CanClose()
+		{
+			ProgramClosingEvent closingEvent = new ProgramClosingEvent();
+
+			RaiseEvent(closingEvent);
+
+			return closingEvent.CanClose;
+		}
 
 		#endregion ProgramClosing
 
-		/* IProjectMasterEvent */
-
-		#region LevelAdded
-
-		public class LevelAddedEvent : IProjectMasterEvent
-		{
-			public ProjectLevel AddedLevel { get; internal set; }
-			public List<string> ScriptMessages { get; internal set; }
-		}
-
-		public void AddLevelToProject(ProjectLevel projectLevel) => AddLevelToProject(projectLevel, new List<string>());
-
-		public void AddLevelToProject(ProjectLevel projectLevel, List<string> scriptMessages) =>
-			RaiseEvent(new LevelAddedEvent { AddedLevel = projectLevel, ScriptMessages = scriptMessages });
-
-		#endregion LevelAdded
+		/* Project Master Events */
 
 		#region SelectedLevelChanged
 
-		public class SelectedLevelChangedEvent : IProjectMasterEvent
-		{
-			public ProjectLevel Previous { get; internal set; }
-			public ProjectLevel Current { get; internal set; }
-		}
-
-		private ProjectLevel _selectedLevel;
-
+		/// <summary>
+		/// The currently selected level in the "Level List" section.
+		/// </summary>
 		public ProjectLevel SelectedLevel
 		{
 			get { return _selectedLevel; }
@@ -156,26 +106,30 @@ namespace TombIDE.Shared
 			{
 				if (_selectedLevel != value)
 				{
-					ProjectLevel previous = _selectedLevel;
 					_selectedLevel = value;
-
-					RaiseEvent(new SelectedLevelChangedEvent { Previous = previous, Current = value });
+					RaiseEvent(new SelectedLevelChangedEvent());
 				}
 			}
 		}
+
+		private ProjectLevel _selectedLevel;
+
+		public class SelectedLevelChangedEvent : IIDEEvent { }
 
 		#endregion SelectedLevelChanged
 
 		#region SelectedLevelSettingsChanged
 
-		public class SelectedLevelSettingsChangedEvent : IProjectMasterEvent
-		{ }
+		public class SelectedLevelSettingsChangedEvent : IIDEEvent { }
+
+		public void SelectedLevelSettingsChanged() =>
+			RaiseEvent(new SelectedLevelSettingsChangedEvent());
 
 		#endregion SelectedLevelSettingsChanged
 
 		#region ProjectScriptPathChanged
 
-		public class ProjectScriptPathChangedEvent : IProjectMasterEvent
+		public class ProjectScriptPathChangedEvent : IIDEEvent
 		{
 			public string OldPath { get; internal set; }
 			public string NewPath { get; internal set; }
@@ -193,7 +147,7 @@ namespace TombIDE.Shared
 
 		#region ProjectLevelsPathChanged
 
-		public class ProjectLevelsPathChangedEvent : IProjectMasterEvent
+		public class ProjectLevelsPathChangedEvent : IIDEEvent
 		{
 			public string OldPath { get; internal set; }
 			public string NewPath { get; internal set; }
@@ -209,98 +163,150 @@ namespace TombIDE.Shared
 
 		#endregion ProjectLevelsPathChanged
 
+		#region RequestedPluginListRefresh
+
+		public class RequestedPluginListRefreshEvent : IIDEEvent { }
+
+		public void RefreshPluginLists() =>
+			RaiseEvent(new RequestedPluginListRefreshEvent());
+
+		#endregion RequestedPluginListRefresh
+
+		#region PluginListsUpdated
+
+		public class PluginListsUpdatedEvent : IIDEEvent { }
+
+		public void FinishPluginListUpdate() =>
+			RaiseEvent(new PluginListsUpdatedEvent());
+
+		#endregion PluginListsUpdated
+
 		#region PRJ2FileDeleted
 
-		public class PRJ2FileDeletedEvent : IProjectMasterEvent
+		public class PRJ2FileDeletedEvent : IIDEEvent
 		{ }
 
 		#endregion PRJ2FileDeleted
 
-		#region NewPluginsInstalled
+		/* Script Editor Events */
 
-		public class NewPluginsInstalledEvent : IProjectMasterEvent
-		{ }
+		#region ScriptEditor_OpenFile
 
-		#endregion NewPluginsInstalled
+		public class ScriptEditor_OpenFileEvent : IIDEEvent
+		{
+			public string RequestedFilePath { get; internal set; }
+		}
 
-		#region PluginListsUpdated
+		public void ScriptEditor_OpenFile(string requestedFilePath) =>
+			RaiseEvent(new ScriptEditor_OpenFileEvent { RequestedFilePath = requestedFilePath });
 
-		public class PluginListsUpdatedEvent : IProjectMasterEvent
-		{ }
+		#endregion ScriptEditor_OpenFile
 
-		#endregion PluginListsUpdated
+		#region ScriptEditor_SelectObject
 
-		#region RequestedPluginListRefresh
+		public class ScriptEditor_SelectObjectEvent : IIDEEvent
+		{
+			public string ObjectName { get; internal set; }
+		}
 
-		public class RequestedPluginListRefreshEvent : IProjectMasterEvent
-		{ }
+		public void ScriptEditor_SelectObject(string objectName) =>
+			RaiseEvent(new ScriptEditor_SelectObjectEvent { ObjectName = objectName });
 
-		public void RefreshPluginLists() => RaiseEvent(new RequestedPluginListRefreshEvent());
+		#endregion ScriptEditor_SelectObject
 
-		#endregion RequestedPluginListRefresh
+		#region ScriptEditor_AppendScriptLines
 
-		#region RequestedPresenceCheck
+		public class ScriptEditor_AppendScriptLinesEvent : IIDEEvent
+		{
+			public List<string> Lines { get; internal set; }
+		}
 
-		public class RequestedScriptPresenceCheckEvent : IProjectMasterEvent
+		/// <summary>
+		/// Sends a request to the Script Editor to append new lines of code at the end of the main script file.
+		/// </summary>
+		public void ScriptEditor_AppendScriptLines(List<string> lines) =>
+			RaiseEvent(new ScriptEditor_AppendScriptLinesEvent { Lines = lines });
+
+		#endregion ScriptEditor_AppendScriptLines
+
+		#region ScriptEditor_AddNewLevelString
+
+		public class ScriptEditor_AddNewLevelStringEvent : IIDEEvent
 		{
 			public string LevelName { get; internal set; }
 		}
 
-		public bool IsLevelScriptDefined(string levelName)
+		public void ScriptEditor_AddNewLevelString(string levelName) =>
+			RaiseEvent(new ScriptEditor_AddNewLevelStringEvent { LevelName = levelName });
+
+		#endregion ScriptEditor_AddNewLevelString
+
+		#region ScriptEditor_AddNewNGString
+
+		public class ScriptEditor_AddNewNGStringEvent : IIDEEvent
 		{
-			RaiseEvent(new RequestedScriptPresenceCheckEvent { LevelName = levelName });
-			return LevelScriptDefined;
+			public string NGString { get; internal set; }
 		}
 
-		public class RequestedLanguageStringPresenceCheckEvent : IProjectMasterEvent
+		/// <summary>
+		/// Sends a request to the Script Editor to add a new ExtraNG string at the end of the main {LANGUAGE}.txt file.
+		/// <para>Note: It automatically adds index prefixes, like "0: {STRING}", "1: {STRING}" etc.</para>
+		/// </summary>
+		public void ScriptEditor_AddNewNGString(string ngString) =>
+			RaiseEvent(new ScriptEditor_AddNewNGStringEvent { NGString = ngString });
+
+		#endregion ScriptEditor_AddNewNGString
+
+		#region ScriptEditor_ContentChanged
+
+		public class ScriptEditor_ContentChangedEvent : IIDEEvent { }
+
+		public void ScriptEditor_IndicateExternalChange() =>
+			RaiseEvent(new ScriptEditor_ContentChangedEvent());
+
+		#endregion ScriptEditor_ContentChanged
+
+		#region ScriptEditor_PresenceCheck
+
+		public class ScriptEditor_ScriptPresenceCheckEvent : IIDEEvent
 		{
 			public string LevelName { get; internal set; }
 		}
 
-		public bool IsLanguageStringDefined(string levelName)
+		public bool ScriptEditor_IsScriptDefined(string levelName)
 		{
-			RaiseEvent(new RequestedLanguageStringPresenceCheckEvent { LevelName = levelName });
-			return LevelLanguageStringDefined;
+			RaiseEvent(new ScriptEditor_ScriptPresenceCheckEvent { LevelName = levelName });
+			return ScriptDefined;
 		}
 
-		public bool LevelScriptDefined { get; set; }
-		public bool LevelLanguageStringDefined { get; set; }
-
-		#endregion RequestedPresenceCheck
-
-		#region RequestedScriptEntryRename
-
-		public class RequestedScriptEntryRenameEvent : IProjectMasterEvent
+		public class ScriptEditor_StringPresenceCheckEvent : IIDEEvent
 		{
-			public string PreviousName { get; internal set; }
-			public string CurrentName { get; internal set; }
+			public string LevelName { get; internal set; }
 		}
 
-		public void RenameSelectedLevelScriptEntry(string newName) =>
-			RaiseEvent(new RequestedScriptEntryRenameEvent { PreviousName = SelectedLevel.Name, CurrentName = newName });
-
-		#endregion RequestedScriptEntryRename
-
-		#region RequestedPluginLanguageEntryAddition
-
-		public class RequestedPluginLanguageEntryAdditionEvent : IProjectMasterEvent
+		public bool ScriptEditor_IsStringDefined(string levelName)
 		{
-			public string PluginFileName { get; internal set; }
+			RaiseEvent(new ScriptEditor_StringPresenceCheckEvent { LevelName = levelName });
+			return StringDefined;
 		}
 
-		public void AddPluginToLanguageFile(Plugin plugin) =>
-			RaiseEvent(new RequestedPluginLanguageEntryAdditionEvent { PluginFileName = Path.GetFileNameWithoutExtension(plugin.InternalDllPath) });
+		public bool ScriptDefined { get; set; }
+		public bool StringDefined { get; set; }
 
-		#endregion RequestedPluginLanguageEntryAddition
+		#endregion ScriptEditor_PresenceCheck
 
-		#region ScriptEditorContentChanged
+		#region ScriptEditor_RenameLevel
 
-		public class ScriptEditorContentChangedEvent : IProjectMasterEvent
-		{ }
+		public class ScriptEditor_RenameLevelEvent : IIDEEvent
+		{
+			public string OldName { get; internal set; }
+			public string NewName { get; internal set; }
+		}
 
-		public void IndicateScriptEditorChange() => RaiseEvent(new ScriptEditorContentChangedEvent());
+		public void ScriptEditor_RenameLevel(string targetLevelName, string newName) =>
+			RaiseEvent(new ScriptEditor_RenameLevelEvent { OldName = targetLevelName, NewName = newName });
 
-		#endregion ScriptEditorContentChanged
+		#endregion ScriptEditor_RenameLevel
 
 		// Construction and destruction
 		public IDE(Configuration configuration, List<Project> availableProjects, List<Plugin> availablePlugins)

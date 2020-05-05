@@ -465,24 +465,31 @@ namespace TombEditor
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class AnimatedTexturesChanged : IEditorEventCausesUnsavedChanges { }
+        public class AnimatedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void AnimatedTexturesChange()
         {
-            RaiseEvent(new AnimatedTexturesChanged());
+            RaiseEvent(new AnimatedTexturesChangedEvent());
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class TextureSoundsChanged : IEditorEventCausesUnsavedChanges { }
+        public class TextureSoundsChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void TextureSoundsChange()
         {
-            RaiseEvent(new TextureSoundsChanged());
+            RaiseEvent(new TextureSoundsChangedEvent());
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class BumpmapsChanged : IEditorEventCausesUnsavedChanges { }
+        public class BumpmapsChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void BumpmapsChange()
         {
-            RaiseEvent(new BumpmapsChanged());
+            RaiseEvent(new BumpmapsChangedEvent());
+        }
+
+        // This is invoked if game version is changed for the level.
+        public class GameVersionChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void GameVersionChange()
+        {
+            RaiseEvent(new GameVersionChangedEvent());
         }
 
         // This is invoked after an autosave
@@ -772,6 +779,7 @@ namespace TombEditor
             bool soundsChanged = !newSettings.SoundsCatalogs.SequenceEqual(_level.Settings.SoundsCatalogs);
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
+            bool gameVersionChanged = newSettings.GameVersion != _level.Settings.GameVersion;
 
             // Update the current settings
             _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));
@@ -794,6 +802,9 @@ namespace TombEditor
 
             if (levelFilenameChanged)
                 LevelFileNameChange();
+
+            if (gameVersionChanged)
+                GameVersionChange();
 
             // Update file watchers
             if (importedGeometryChanged || texturesChanged || wadsChanged || soundsChanged)

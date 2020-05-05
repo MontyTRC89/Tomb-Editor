@@ -1200,8 +1200,6 @@ namespace TombLib.LevelData.IO
                             instance.CodeBits = unchecked((byte)chunkIO.ReadChunkLong(chunkSize4));
                         else if (id4 == Prj2Chunks.ObjectTrigger2OneShot)
                             instance.OneShot = chunkIO.ReadChunkBool(chunkSize4);
-                        else if (id4 == Prj2Chunks.ObjectTrigger2LuaScript)
-                            instance.LuaScript = chunkIO.ReadChunkString(chunkSize4);
                         else
                             return false;
                         return true;
@@ -1247,6 +1245,56 @@ namespace TombLib.LevelData.IO
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);                    
+                }
+                else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
+                {
+                    var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
+                    var scripts = new VolumeScriptInstance();
+
+                    VolumeInstance instance;
+
+                    switch (instanceType)
+                    {
+                        case VolumeShape.Box:
+                            {
+                                instance = new BoxVolumeInstance();
+                                var bv = instance as BoxVolumeInstance;
+                                bv.Size = chunkIO.Raw.ReadVector3();
+                                bv.RotationY = chunkIO.Raw.ReadSingle();
+                                bv.RotationX = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        case VolumeShape.Prism:
+                            {
+                                instance = new PrismVolumeInstance();
+                                var pv = instance as PrismVolumeInstance;
+                                pv.Scale = chunkIO.Raw.ReadSingle();
+                                pv.RotationY = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        case VolumeShape.Sphere:
+                            {
+                                instance = new SphereVolumeInstance();
+                                var sv = instance as SphereVolumeInstance;
+                                sv.Scale = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16();
+                    scripts.Name = chunkIO.Raw.ReadStringUTF8();
+                    scripts.Environment = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnEnter = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnInside = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnLeave = chunkIO.Raw.ReadStringUTF8();
+
+                    instance.Scripts = scripts;
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
                 }
                 else
                     return false;

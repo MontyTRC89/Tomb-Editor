@@ -5,21 +5,24 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
-using TombLib.Projects;
 
 namespace TombIDE.ProjectMaster
 {
 	public partial class FormLevelSetup : DarkForm
 	{
-		private IDE _ide;
+		public ProjectLevel CreatedLevel { get; private set; }
+		public List<string> GeneratedScriptLines { get; private set; }
+
+		private Project _targetProject;
 
 		#region Initialization
 
-		public FormLevelSetup(IDE ide)
+		public FormLevelSetup(Project targetProject)
 		{
-			_ide = ide;
+			_targetProject = targetProject;
 
 			InitializeComponent();
 		}
@@ -59,14 +62,14 @@ namespace TombIDE.ProjectMaster
 
 			try
 			{
-				string levelName = SharedMethods.RemoveIllegalPathSymbols(textBox_LevelName.Text.Trim());
+				string levelName = PathHelper.RemoveIllegalPathSymbols(textBox_LevelName.Text.Trim());
 				levelName = LevelHandling.RemoveIllegalNameSymbols(levelName);
 
 				if (string.IsNullOrWhiteSpace(levelName))
 					throw new ArgumentException("You must enter a valid name for your level.");
 
 				// Check for name duplicates
-				foreach (ProjectLevel projectLevel in _ide.Project.Levels)
+				foreach (ProjectLevel projectLevel in _targetProject.Levels)
 				{
 					if (projectLevel.Name.ToLower() == levelName.ToLower())
 						throw new ArgumentException("A level with the same name already exists on the list.");
@@ -77,7 +80,7 @@ namespace TombIDE.ProjectMaster
 				if (string.IsNullOrWhiteSpace(dataFileName))
 					throw new ArgumentException("You must specify the custom PRJ2 / DATA file name.");
 
-				string levelFolderPath = Path.Combine(_ide.Project.LevelsPath, levelName);
+				string levelFolderPath = Path.Combine(_targetProject.LevelsPath, levelName);
 
 				// Create the level folder
 				if (!Directory.Exists(levelFolderPath))
@@ -87,7 +90,7 @@ namespace TombIDE.ProjectMaster
 					throw new ArgumentException("A folder with the same name as the \"Level name\" already exists in\n" +
 						"the project's /Levels/ folder and it's not empty.");
 
-				ProjectLevel addedProjectLevel = new ProjectLevel
+				ProjectLevel createdLevel = new ProjectLevel
 				{
 					Name = levelName,
 					DataFileName = dataFileName,
@@ -97,17 +100,17 @@ namespace TombIDE.ProjectMaster
 				// Create a simple .prj2 file with pre-set project settings (game paths etc.)
 				Level level = Level.CreateSimpleLevel();
 
-				string prj2FilePath = Path.Combine(addedProjectLevel.FolderPath, addedProjectLevel.DataFileName) + ".prj2";
-				string exeFilePath = Path.Combine(_ide.Project.EnginePath, _ide.Project.GetExeFileName());
+				string prj2FilePath = Path.Combine(createdLevel.FolderPath, createdLevel.DataFileName) + ".prj2";
+				string exeFilePath = Path.Combine(_targetProject.EnginePath, _targetProject.GetExeFileName());
 
-				string dataFilePath = Path.Combine(_ide.Project.EnginePath, "data", addedProjectLevel.DataFileName + _ide.Project.GetLevelFileExtension());
+				string dataFilePath = Path.Combine(_targetProject.EnginePath, "data", createdLevel.DataFileName + _targetProject.GetLevelFileExtension());
 
 				level.Settings.LevelFilePath = prj2FilePath;
 
-				level.Settings.GameDirectory = level.Settings.MakeRelative(_ide.Project.EnginePath, VariableType.LevelDirectory);
+				level.Settings.GameDirectory = level.Settings.MakeRelative(_targetProject.EnginePath, VariableType.LevelDirectory);
 				level.Settings.GameExecutableFilePath = level.Settings.MakeRelative(exeFilePath, VariableType.LevelDirectory);
 				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
-				level.Settings.GameVersion = _ide.Project.GameVersion;
+				level.Settings.GameVersion = _targetProject.GameVersion;
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
@@ -116,12 +119,14 @@ namespace TombIDE.ProjectMaster
 					int ambientSoundID = (int)numeric_SoundID.Value;
 					bool horizon = checkBox_EnableHorizon.Checked;
 
-					List<string> scriptMessages = LevelHandling.GenerateSectionMessages(addedProjectLevel, ambientSoundID, horizon);
-
-					_ide.AddLevelToProject(addedProjectLevel, scriptMessages);
+					// // // //
+					GeneratedScriptLines = LevelHandling.GenerateScriptLines(createdLevel, ambientSoundID, horizon);
+					// // // //
 				}
-				else
-					_ide.AddLevelToProject(addedProjectLevel);
+
+				// // // //
+				CreatedLevel = createdLevel;
+				// // // //
 			}
 			catch (Exception ex)
 			{
@@ -139,18 +144,18 @@ namespace TombIDE.ProjectMaster
 			{
 				panel_ScriptSettings.Visible = true;
 				panel_01.Height = 108;
-				Height = 245;
+				Height = 277;
 			}
 			else
 			{
 				panel_ScriptSettings.Visible = false;
 				panel_01.Height = 35;
-				Height = 172;
+				Height = 204;
 			}
 		}
 
 		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(Path.Combine(_ide.Project.EnginePath, "audio"));
+			SharedMethods.OpenFolderInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
 
 		#endregion Events
 	}

@@ -114,7 +114,7 @@ namespace TombEditor.Controls.ContextMenus
                 }
             }
 
-            if (targetObject is PositionBasedObjectInstance && (targetObject is IScaleable))
+            if (targetObject is PositionBasedObjectInstance && (targetObject is IScaleable || targetObject is ISizeable))
             {
                 Items.Add(new ToolStripMenuItem("Reset scale", null, (o, e) =>
                 {

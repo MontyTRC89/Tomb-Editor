@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows.Forms;
 using FastColoredTextBoxNS;
 using System.Text.RegularExpressions;
@@ -59,6 +52,8 @@ namespace TombLib.Controls
             e.ChangedRange.SetStyle(keywordsColor, @"(" + string.Join("|", keywords) + @")");
         }
 
+        public void Paste(string text) => textEditor.InsertText(text);
+
         public string Code
         {
             get { return textEditor.Text; }
@@ -69,6 +64,17 @@ namespace TombLib.Controls
         {
             DoSyntaxHighlighting(e);
             textEditor.Invalidate();
+        }
+
+        private void textEditor_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.All;
+            OnDragEnter(e);
+        }
+
+        private void textEditor_DragDrop(object sender, DragEventArgs e)
+        {
+            OnDragDrop(e);
         }
     }
 }

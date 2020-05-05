@@ -335,10 +335,18 @@ namespace TombEditor
 
         public static void ResetObjectScale(PositionBasedObjectInstance obj)
         {
-            if (!(obj is IScaleable)) return;
+            if (!(obj is IScaleable || obj is ISizeable)) return;
+
             _editor.UndoManager.PushObjectTransformed(obj);
 
-            (obj as IScaleable).Scale = 1;
+            if (obj is IScaleable)
+                (obj as IScaleable).Scale = 1;
+            else if (obj is ISizeable)
+            {
+                var o = (ISizeable)obj;
+                o.Size = o.DefaultSize;
+            }
+
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
@@ -661,6 +669,27 @@ namespace TombEditor
             _editor.UndoManager.PushGhostBlockCreated(ghostList);
         }
 
+        public static void AddVolume(VolumeShape shape)
+        {
+            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
+                _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TR5Main.", PopupType.Info);
+            else
+            {
+                switch (shape)
+                {
+                    case VolumeShape.Box:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new BoxVolumeInstance());
+                        break;
+                    case VolumeShape.Prism:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new PrismVolumeInstance());
+                        break;
+                    case VolumeShape.Sphere:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new SphereVolumeInstance());
+                        break;
+                }
+            }
+        }
+
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
         {
             if (modifierKeys.HasFlag(Keys.Control))
@@ -687,6 +716,18 @@ namespace TombEditor
                 newScale = 128.0f;
             instance.Scale = newScale;
 
+            _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
+        }
+
+        public static void ResizeObject(ISizeable instance, Vector3 delta, double quantization)
+        {
+            if (quantization < 1.0f) quantization = 1.0f;
+
+            var newX = (float)MathC.Clamp(Math.Round((delta.X) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            var newY = (float)MathC.Clamp(Math.Round((delta.Y) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            var newZ = (float)MathC.Clamp(Math.Round((delta.Z) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            
+            instance.Size = new Vector3(newX, newY, newZ);
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
@@ -814,7 +855,7 @@ namespace TombEditor
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
-                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || 
+                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
                     Control.ModifierKeys.HasFlag(Keys.Control) ||
                     Control.ModifierKeys.HasFlag(Keys.Alt))
                     EditStaticMeshColor(owner, (StaticInstance)instance);
@@ -874,7 +915,28 @@ namespace TombEditor
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is LightInstance)
+            {
                 EditLightColor(owner);
+            }
+            else if (instance is VolumeInstance)
+            {
+                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                {
+                    var existingWindow = Application.OpenForms["FormVolume"];
+                    if (existingWindow == null)
+                    {
+                        var volForm = new FormVolume((VolumeInstance)instance);
+                        volForm.Show(owner);
+                    }
+                    else
+                    {
+                        (existingWindow as FormVolume).SaveAndReopenVolume((VolumeInstance)instance);
+                        existingWindow.Focus();
+                    }
+                }
+                else
+                    _editor.SendMessage("This object is unavailable in this game version. Switch version to TR5Main.", PopupType.Error);
+            }
         }
 
         public static void PasteObject(VectorInt2 pos, Room room)

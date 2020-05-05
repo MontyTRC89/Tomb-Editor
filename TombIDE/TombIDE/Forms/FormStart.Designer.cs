@@ -20,9 +20,9 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormStart));
 			this.button_Delete = new System.Windows.Forms.ToolStripButton();
 			this.button_Import = new System.Windows.Forms.ToolStripButton();
-			this.button_Main_Import = new DarkUI.Controls.DarkButton();
-			this.button_Main_New = new DarkUI.Controls.DarkButton();
-			this.button_Main_Open = new DarkUI.Controls.DarkButton();
+			this.button_Main_Import = new System.Windows.Forms.Button();
+			this.button_Main_New = new System.Windows.Forms.Button();
+			this.button_Main_Open = new System.Windows.Forms.Button();
 			this.button_MoveDown = new System.Windows.Forms.ToolStripButton();
 			this.button_MoveUp = new System.Windows.Forms.ToolStripButton();
 			this.button_New = new System.Windows.Forms.ToolStripButton();
@@ -73,43 +73,58 @@
 			// button_Main_Import
 			// 
 			this.button_Main_Import.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Main_Import.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.button_Main_Import.Image = global::TombIDE.Properties.Resources.import_52;
+			this.button_Main_Import.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Main_Import.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.button_Main_Import.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_Import.ForeColor = System.Drawing.Color.Gainsboro;
+			this.button_Main_Import.Image = global::TombIDE.Properties.Resources.import_48;
 			this.button_Main_Import.Location = new System.Drawing.Point(16, 271);
 			this.button_Main_Import.Margin = new System.Windows.Forms.Padding(9, 9, 9, 17);
 			this.button_Main_Import.Name = "button_Main_Import";
 			this.button_Main_Import.Size = new System.Drawing.Size(460, 109);
 			this.button_Main_Import.TabIndex = 2;
 			this.button_Main_Import.Text = "Import Project from .exe";
-			this.button_Main_Import.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_Main_Import.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.button_Main_Import.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+			this.button_Main_Import.UseVisualStyleBackColor = false;
 			this.button_Main_Import.Click += new System.EventHandler(this.button_Main_Import_Click);
 			// 
 			// button_Main_New
 			// 
 			this.button_Main_New.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Main_New.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.button_Main_New.Image = global::TombIDE.Properties.Resources.plus_math_60;
+			this.button_Main_New.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Main_New.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.button_Main_New.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_New.ForeColor = System.Drawing.Color.Gainsboro;
+			this.button_Main_New.Image = global::TombIDE.Properties.Resources.add_48;
 			this.button_Main_New.Location = new System.Drawing.Point(16, 17);
 			this.button_Main_New.Margin = new System.Windows.Forms.Padding(9, 17, 9, 9);
 			this.button_Main_New.Name = "button_Main_New";
 			this.button_Main_New.Size = new System.Drawing.Size(460, 109);
 			this.button_Main_New.TabIndex = 0;
-			this.button_Main_New.Text = "Create New Project...";
-			this.button_Main_New.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_Main_New.Text = "Create New Project";
+			this.button_Main_New.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.button_Main_New.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+			this.button_Main_New.UseVisualStyleBackColor = false;
 			this.button_Main_New.Click += new System.EventHandler(this.button_Main_New_Click);
 			// 
 			// button_Main_Open
 			// 
 			this.button_Main_Open.Anchor = System.Windows.Forms.AnchorStyles.None;
-			this.button_Main_Open.Font = new System.Drawing.Font("Century Gothic", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.button_Main_Open.Image = global::TombIDE.Properties.Resources.opened_folder_50;
+			this.button_Main_Open.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Main_Open.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.button_Main_Open.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_Main_Open.ForeColor = System.Drawing.Color.Gainsboro;
+			this.button_Main_Open.Image = global::TombIDE.Properties.Resources.open_48;
 			this.button_Main_Open.Location = new System.Drawing.Point(16, 144);
 			this.button_Main_Open.Margin = new System.Windows.Forms.Padding(9);
 			this.button_Main_Open.Name = "button_Main_Open";
 			this.button_Main_Open.Size = new System.Drawing.Size(460, 109);
 			this.button_Main_Open.TabIndex = 1;
 			this.button_Main_Open.Text = "Open .trproj File";
-			this.button_Main_Open.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_Main_Open.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.button_Main_Open.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+			this.button_Main_Open.UseVisualStyleBackColor = false;
 			this.button_Main_Open.Click += new System.EventHandler(this.button_Main_Open_Click);
 			// 
 			// button_MoveDown
@@ -178,6 +193,7 @@
 			// button_OpenProject
 			// 
 			this.button_OpenProject.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_OpenProject.Checked = false;
 			this.button_OpenProject.Enabled = false;
 			this.button_OpenProject.Location = new System.Drawing.Point(358, 5);
 			this.button_OpenProject.Margin = new System.Windows.Forms.Padding(3, 3, 0, 6);
@@ -226,9 +242,9 @@
 			// 
 			this.panel_Main_Buttons.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.panel_Main_Buttons.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel_Main_Buttons.Controls.Add(this.button_Main_New);
 			this.panel_Main_Buttons.Controls.Add(this.button_Main_Import);
 			this.panel_Main_Buttons.Controls.Add(this.button_Main_Open);
+			this.panel_Main_Buttons.Controls.Add(this.button_Main_New);
 			this.panel_Main_Buttons.Location = new System.Drawing.Point(0, 30);
 			this.panel_Main_Buttons.Margin = new System.Windows.Forms.Padding(0);
 			this.panel_Main_Buttons.Name = "panel_Main_Buttons";
@@ -335,13 +351,13 @@
 
 		#endregion
 
-		private DarkUI.Controls.DarkButton button_Main_Import;
-		private DarkUI.Controls.DarkButton button_Main_New;
-		private DarkUI.Controls.DarkButton button_Main_Open;
 		private DarkUI.Controls.DarkButton button_OpenProject;
 		private DarkUI.Controls.DarkCheckBox checkBox_Remember;
 		private DarkUI.Controls.DarkToolStrip toolStrip;
 		private DarkUI.Controls.DarkTreeView treeView;
+		private System.Windows.Forms.Button button_Main_Import;
+		private System.Windows.Forms.Button button_Main_New;
+		private System.Windows.Forms.Button button_Main_Open;
 		private System.Windows.Forms.Panel panel_01;
 		private System.Windows.Forms.Panel panel_02;
 		private System.Windows.Forms.Panel panel_Main_Buttons;

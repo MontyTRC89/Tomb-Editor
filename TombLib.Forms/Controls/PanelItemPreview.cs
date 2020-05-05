@@ -221,9 +221,11 @@ namespace TombLib.Controls
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            // Make this control able to receive scroll and key board events...
             base.OnMouseEnter(e);
-            Focus();
+
+            // Make this control able to receive scroll and key board events...
+            if (!Focused && Form.ActiveForm == FindForm())
+                Focus();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

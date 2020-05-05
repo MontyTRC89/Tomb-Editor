@@ -159,6 +159,20 @@ namespace TombEditor.ToolWindows
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
             }
 
+            // Update version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+            {
+                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+
+                butAddBoxVolume.Enabled = isT5M;
+                butAddSphereVolume.Enabled = isT5M;
+                butAddPrismVolume.Enabled = isT5M;
+                butDrawVolumes.Enabled = isT5M;
+            }
+
+
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
@@ -194,6 +208,9 @@ namespace TombEditor.ToolWindows
             if (!settings.Rendering3D_ShowGhostBlocks && panel3D.ShowGhostBlocks)
                 if (_editor.SelectedObject is GhostBlockInstance) _editor.SelectedObject = null;
 
+            if (!settings.Rendering3D_ShowVolumes && panel3D.ShowVolumes)
+                if (_editor.SelectedObject is VolumeInstance) _editor.SelectedObject = null;
+
             if (!settings.Rendering3D_ShowOtherObjects && panel3D.ShowOtherObjects)
                 if (_editor.SelectedObject is LightInstance ||
                     _editor.SelectedObject is CameraInstance ||
@@ -213,6 +230,7 @@ namespace TombEditor.ToolWindows
             panel3D.ShowImportedGeometry = butDrawImportedGeometry.Checked = settings.Rendering3D_ShowImportedGeometry;
             panel3D.ShowGhostBlocks = butDrawGhostBlocks.Checked = settings.Rendering3D_ShowGhostBlocks;
             panel3D.ShowOtherObjects = butDrawOther.Checked = settings.Rendering3D_ShowOtherObjects;
+            panel3D.ShowVolumes = butDrawVolumes.Checked = settings.Rendering3D_ShowVolumes;
             panel3D.ShowSlideDirections = butDrawSlideDirections.Checked = settings.Rendering3D_ShowSlideDirections;
             panel3D.ShowExtraBlendingModes = butDrawExtraBlendingModes.Checked = settings.Rendering3D_ShowExtraBlendingModes;
             panel3D.DisablePickingForImportedGeometry = butDisableGeometryPicking.Checked = settings.Rendering3D_DisablePickingForImportedGeometry;

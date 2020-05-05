@@ -8,7 +8,6 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
-using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -41,17 +40,9 @@ namespace TombEditor.Forms
                 control.Click += scriptExportPanel_Click;
             scriptExportPanel.Click += scriptExportPanel_Click;
 
-            if (_level.Settings.GameVersion != TRVersion.Game.TR5Main)
-            {
-                panelLuaScript.Visible = false;
-                MaximizeBox = false;
-                Height = panelClassicTriggerControls.Height + panelButtons.Height + panelMain.Padding.Top + panelMain.Padding.Bottom;
-                MaximumSize = new Size(2000, Height);
-            }
-
             // Calculate the sizes at runtime since they actually depend on the choosen layout.
             // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(611, Size.Height) + (Size - ClientSize);
+            MinimumSize = new Size(600, 220) + (Size - ClientSize);
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
@@ -84,8 +75,6 @@ namespace TombEditor.Forms
             }
 
             paramExtra.Parameter = _trigger.Extra;
-
-            tbLuaScript.Code = _trigger.LuaScript;
         }
 
         public void UpdateDialog()
@@ -99,7 +88,6 @@ namespace TombEditor.Forms
             paramTriggerType.ParameterRange = NgParameterInfo.GetTriggerTypeRange(_level.Settings).ToParameterRange();
             paramTargetType.ParameterRange = NgParameterInfo.GetTargetTypeRange(_level.Settings, TriggerType).ToParameterRange();
             
-            bool isLuaScript = TargetType == TriggerTargetType.LuaScript;
             bool isConditionNg = TriggerType == TriggerType.ConditionNg;
 
             // HACK: Change order of population based on target type.
@@ -118,9 +106,6 @@ namespace TombEditor.Forms
             paramExtra.ParameterRange = NgParameterInfo.GetExtraRange(_level.Settings, TriggerType, TargetType, paramTarget.Parameter, paramTimer.Parameter);
 
             _dialogIsUpdating = false;
-            
-            tbLuaScript.Enabled =  isLuaScript;
-            paramTarget.Enabled = !isLuaScript;
 
             cbBit1.Enabled = !isConditionNg;
             cbBit2.Enabled = !isConditionNg;
@@ -178,7 +163,6 @@ namespace TombEditor.Forms
             _trigger.Extra = paramExtra.Parameter;
             _trigger.CodeBits = CodeBits;
             _trigger.OneShot = cbOneShot.Checked;
-            _trigger.LuaScript = tbLuaScript.Code;
 
             // Close
             DialogResult = DialogResult.OK;
