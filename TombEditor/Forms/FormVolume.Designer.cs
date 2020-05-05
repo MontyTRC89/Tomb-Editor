@@ -20,6 +20,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cbLara = new DarkUI.Controls.DarkCheckBox();
             this.panelControls = new System.Windows.Forms.Panel();
+            this.ehLuaTextEditor = new System.Windows.Forms.Integration.ElementHost();
             this.cbFlybys = new DarkUI.Controls.DarkCheckBox();
             this.cbStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbOtherMoveables = new DarkUI.Controls.DarkCheckBox();
@@ -28,7 +29,6 @@
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.tbScript = new TombLib.Controls.LuaTextBox();
             this.cmbEvent = new DarkUI.Controls.DarkComboBox();
             this.panelButtons.SuspendLayout();
             this.panelControls.SuspendLayout();
@@ -39,7 +39,7 @@
             this.panelButtons.Controls.Add(this.butOK);
             this.panelButtons.Controls.Add(this.butCancel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 390);
+            this.panelButtons.Location = new System.Drawing.Point(0, 393);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(719, 31);
             this.panelButtons.TabIndex = 86;
@@ -49,7 +49,7 @@
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
             this.butOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.butOK.Location = new System.Drawing.Point(550, 4);
+            this.butOK.Location = new System.Drawing.Point(548, 3);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 15;
@@ -62,7 +62,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(636, 4);
+            this.butCancel.Location = new System.Drawing.Point(634, 3);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 16;
@@ -82,6 +82,7 @@
             // 
             // panelControls
             // 
+            this.panelControls.Controls.Add(this.ehLuaTextEditor);
             this.panelControls.Controls.Add(this.cbFlybys);
             this.panelControls.Controls.Add(this.cbStatics);
             this.panelControls.Controls.Add(this.cbOtherMoveables);
@@ -91,13 +92,24 @@
             this.panelControls.Controls.Add(this.tbName);
             this.panelControls.Controls.Add(this.darkLabel2);
             this.panelControls.Controls.Add(this.darkLabel1);
-            this.panelControls.Controls.Add(this.tbScript);
             this.panelControls.Controls.Add(this.cmbEvent);
             this.panelControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControls.Location = new System.Drawing.Point(0, 0);
             this.panelControls.Name = "panelControls";
-            this.panelControls.Size = new System.Drawing.Size(719, 390);
+            this.panelControls.Size = new System.Drawing.Size(719, 393);
             this.panelControls.TabIndex = 87;
+            // 
+            // ehLuaTextEditor
+            // 
+            this.ehLuaTextEditor.AllowDrop = true;
+            this.ehLuaTextEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ehLuaTextEditor.Location = new System.Drawing.Point(6, 37);
+            this.ehLuaTextEditor.Name = "ehLuaTextEditor";
+            this.ehLuaTextEditor.Size = new System.Drawing.Size(708, 294);
+            this.ehLuaTextEditor.TabIndex = 22;
+            this.ehLuaTextEditor.Child = null;
             // 
             // cbFlybys
             // 
@@ -144,7 +156,7 @@
             this.darkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(3, 369);
+            this.darkLabel3.Location = new System.Drawing.Point(3, 372);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(104, 13);
             this.darkLabel3.TabIndex = 5;
@@ -154,9 +166,9 @@
             // 
             this.tbName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbName.Location = new System.Drawing.Point(83, 9);
+            this.tbName.Location = new System.Drawing.Point(74, 9);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(633, 22);
+            this.tbName.Size = new System.Drawing.Size(640, 22);
             this.tbName.TabIndex = 4;
             this.tbName.TextChanged += new System.EventHandler(this.tbName_TextChanged);
             // 
@@ -164,7 +176,7 @@
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(7, 11);
+            this.darkLabel2.Location = new System.Drawing.Point(3, 11);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(70, 13);
             this.darkLabel2.TabIndex = 3;
@@ -175,25 +187,11 @@
             this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 340);
+            this.darkLabel1.Location = new System.Drawing.Point(3, 343);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(38, 13);
             this.darkLabel1.TabIndex = 2;
             this.darkLabel1.Text = "Event:";
-            // 
-            // tbScript
-            // 
-            this.tbScript.AllowDrop = true;
-            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.Code = "";
-            this.tbScript.Location = new System.Drawing.Point(3, 35);
-            this.tbScript.Name = "tbScript";
-            this.tbScript.Size = new System.Drawing.Size(713, 296);
-            this.tbScript.TabIndex = 1;
-            this.tbScript.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbScript_DragDrop);
-            this.tbScript.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbScript_DragEnter);
             // 
             // cmbEvent
             // 
@@ -205,9 +203,9 @@
             "On Leave",
             "On Inside",
             "Global Environment"});
-            this.cmbEvent.Location = new System.Drawing.Point(47, 337);
+            this.cmbEvent.Location = new System.Drawing.Point(47, 340);
             this.cmbEvent.Name = "cmbEvent";
-            this.cmbEvent.Size = new System.Drawing.Size(669, 23);
+            this.cmbEvent.Size = new System.Drawing.Size(667, 23);
             this.cmbEvent.TabIndex = 0;
             this.cmbEvent.SelectedIndexChanged += new System.EventHandler(this.cmbEvent_SelectedIndexChanged);
             // 
@@ -218,7 +216,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(719, 421);
+            this.ClientSize = new System.Drawing.Size(719, 424);
             this.Controls.Add(this.panelControls);
             this.Controls.Add(this.panelButtons);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -241,7 +239,6 @@
         private DarkUI.Controls.DarkButton butCancel;
         private System.Windows.Forms.Panel panelControls;
         private DarkUI.Controls.DarkComboBox cmbEvent;
-        private TombLib.Controls.LuaTextBox tbScript;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkTextBox tbName;
@@ -251,5 +248,6 @@
         private DarkUI.Controls.DarkCheckBox cbNPC;
         private DarkUI.Controls.DarkCheckBox cbStatics;
         private DarkUI.Controls.DarkCheckBox cbFlybys;
+        private System.Windows.Forms.Integration.ElementHost ehLuaTextEditor;
     }
 }

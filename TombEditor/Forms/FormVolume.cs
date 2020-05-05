@@ -1,12 +1,14 @@
 ﻿using DarkUI.Forms;
 using System;
-using System.Windows.Forms;
+using System.Windows;
 using TombLib.LevelData;
+using TombLib.Scripting.TextEditors.Controls;
 
 namespace TombEditor.Forms
 {
     public partial class FormVolume : DarkForm
     {
+        private LuaTextEditor _textEditor;
         private VolumeInstance _volume;
 
         private VolumeScriptInstance _backupScripts;
@@ -18,6 +20,8 @@ namespace TombEditor.Forms
         public FormVolume(VolumeInstance volume)
         {
             InitializeComponent();
+            InitializeTextEditor();
+
             LoadVolume(volume);
             Editor.Instance.EditorEventRaised += EditorEventRaised;
         }
@@ -42,6 +46,15 @@ namespace TombEditor.Forms
             }
         }
 
+        private void InitializeTextEditor()
+        {
+            _textEditor = new LuaTextEditor { };
+            _textEditor.AllowDrop = true;
+            ehLuaTextEditor.Child = _textEditor;
+            _textEditor.DragEnter += textEditor_DragEnter;
+            _textEditor.Drop += textEditor_DragDrop;
+        }
+
         public void SaveAndReopenVolume(VolumeInstance volume)
         {
             SaveCurrentScript();
@@ -54,7 +67,7 @@ namespace TombEditor.Forms
             _backupScripts = _volume.Scripts.Clone();
             _backupState = _volume.Activators;
             cmbEvent.SelectedIndex = 0; // Select first script
-            tbScript.Code = _volume.Scripts.OnEnter; // Force 
+            _textEditor.Text = _volume.Scripts.OnEnter; // Force 
             tbName.Text = _volume.Scripts.Name;
             UpdateFlags();
         }
@@ -64,16 +77,16 @@ namespace TombEditor.Forms
             switch (prevIndex)
             {
                 case 0:
-                    _volume.Scripts.OnEnter = tbScript.Code;
+                    _volume.Scripts.OnEnter = _textEditor.Text;
                     break;
                 case 1:
-                    _volume.Scripts.OnLeave = tbScript.Code;
+                    _volume.Scripts.OnLeave = _textEditor.Text;
                     break;
                 case 2:
-                    _volume.Scripts.OnInside = tbScript.Code;
+                    _volume.Scripts.OnInside = _textEditor.Text;
                     break;
                 case 3:
-                    _volume.Scripts.Environment = tbScript.Code;
+                    _volume.Scripts.Environment = _textEditor.Text;
                     break;
             }
 
@@ -112,16 +125,16 @@ namespace TombEditor.Forms
             switch (cmbEvent.SelectedIndex)
             {
                 case 0:
-                    tbScript.Code = _volume.Scripts.OnEnter;
+                    _textEditor.Text = _volume.Scripts.OnEnter;
                     break;
                 case 1:
-                    tbScript.Code = _volume.Scripts.OnLeave;
+                    _textEditor.Text = _volume.Scripts.OnLeave;
                     break;
                 case 2:
-                    tbScript.Code = _volume.Scripts.OnInside;
+                    _textEditor.Text = _volume.Scripts.OnInside;
                     break;
                 case 3:
-                    tbScript.Code = _volume.Scripts.Environment;
+                    _textEditor.Text = _volume.Scripts.Environment;
                     break;
             }
 
@@ -169,16 +182,16 @@ namespace TombEditor.Forms
             UpdateFlags();
         }
 
-        private void tbScript_DragEnter(object sender, DragEventArgs e)
+        private void textEditor_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(typeof(MoveableInstance)) ||
                 e.Data.GetDataPresent(typeof(StaticInstance)))
-                e.Effect = DragDropEffects.Copy;
+                e.Effects = DragDropEffects.Copy;
             else
-                e.Effect = DragDropEffects.None;
+                e.Effects = DragDropEffects.None;
         }
 
-        private void tbScript_DragDrop(object sender, DragEventArgs e)
+        private void textEditor_DragDrop(object sender, DragEventArgs e)
         {
             string prefix = string.Empty;
             string postfix = string.Empty;
@@ -201,10 +214,9 @@ namespace TombEditor.Forms
 
             if (!string.IsNullOrEmpty(finalResult))
             {
-                tbScript.Paste(finalResult);
-                tbScript.Focus();
+                _textEditor.Text.Insert(_textEditor.SelectionStart, finalResult);
+                _textEditor.Focus();
             }
-                
         }
     }
 }
