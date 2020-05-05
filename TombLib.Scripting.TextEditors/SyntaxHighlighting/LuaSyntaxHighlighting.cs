@@ -21,8 +21,17 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 				HighlightingRuleSet ruleSet = new HighlightingRuleSet();
 
 				ruleSet.Name = "LUA Rules";
+                
+                ruleSet.Rules.Add(new HighlightingRule
+                {
+                    Regex = new Regex(LuaPatterns.Comments),
+                    Color = new HighlightingColor
+                    {
+                        Foreground = new SimpleHighlightingBrush(Colors.Green)
+                    }
+                });
 
-				ruleSet.Rules.Add(new HighlightingRule
+                ruleSet.Rules.Add(new HighlightingRule
 				{
 					Regex = new Regex(LuaPatterns.Values, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
@@ -49,21 +58,12 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					}
 				});
 
-				ruleSet.Rules.Add(new HighlightingRule
+                ruleSet.Rules.Add(new HighlightingRule
 				{
 					Regex = new Regex(LuaPatterns.SpecialOperators, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
 						Foreground = new SimpleHighlightingBrush(Colors.Orange)
-					}
-				});
-
-				ruleSet.Rules.Add(new HighlightingRule
-				{
-					Regex = new Regex(LuaPatterns.Comments),
-					Color = new HighlightingColor
-					{
-						Foreground = new SimpleHighlightingBrush(Colors.DarkGreen)
 					}
 				});
 
