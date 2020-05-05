@@ -69,7 +69,11 @@ namespace TombLib.LevelData
         public float RotationY
         {
             get { return _rotationY; }
-            set { _rotationY = (float)(value - Math.Floor(value / 360.0) * 360.0); }
+            set 
+            {
+                var roundedValue = Math.Round(value / 90.0f) * 90.0f;
+                _rotationY = (float)(roundedValue - Math.Floor(roundedValue / 360.0) * 360.0); 
+            }
         }
         private float _rotationY = 0.0f;
 
