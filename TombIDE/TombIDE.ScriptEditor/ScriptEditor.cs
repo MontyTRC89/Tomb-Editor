@@ -140,9 +140,10 @@ namespace TombIDE.ScriptEditor
 
 		private void IDEEvent_HandleFileOpening(IIDEEvent obj)
 		{
-			if (obj is IDE.ScriptEditor_OpenFileEvent e)
+			if (obj is IDE.ScriptEditor_OpenFileEvent)
 			{
-				TabPage fileTab = FindTabPageOfFile(e.RequestedFilePath);
+                var e = obj as IDE.ScriptEditor_OpenFileEvent;
+                var fileTab = FindTabPageOfFile(e.RequestedFilePath);
 
 				if (fileTab != null) // If the requested file is already opened
 					tabControl_Editor.SelectTab(fileTab);
@@ -153,8 +154,11 @@ namespace TombIDE.ScriptEditor
 
 		private void IDEEvent_HandleObjectSelection(IIDEEvent obj)
 		{
-			if (obj is IDE.ScriptEditor_SelectObjectEvent e)
-				SelectObject(e.ObjectName, e.ObjectType);
+			if (obj is IDE.ScriptEditor_SelectObjectEvent)
+            {
+                var e = (IDE.ScriptEditor_SelectObjectEvent)obj;
+                SelectObject(e.ObjectName, e.ObjectType);
+            }
 		}
 
 		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
@@ -223,8 +227,8 @@ namespace TombIDE.ScriptEditor
 
 		private void IDEEvent_HandleProgramClosing(IIDEEvent obj)
 		{
-			if (obj is IDE.ProgramClosingEvent e)
-				e.CanClose = AreAllFilesSaved();
+			if (obj is IDE.ProgramClosingEvent)
+				(obj as IDE.ProgramClosingEvent).CanClose = AreAllFilesSaved();
 		}
 
 		#endregion IDE Events
@@ -1303,10 +1307,10 @@ namespace TombIDE.ScriptEditor
 			{
 				TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
-				if (textEditor is ScriptTextEditor scriptTextEditor)
-					UpdateTextEditorSettings(scriptTextEditor);
-				else if (textEditor is LuaTextEditor luaTextEditor)
-					UpdateTextEditorSettings(luaTextEditor);
+				if (textEditor is ScriptTextEditor)
+                    UpdateTextEditorSettings((ScriptTextEditor)textEditor);
+                else if (textEditor is LuaTextEditor)
+					UpdateTextEditorSettings((LuaTextEditor)textEditor);
 			}
 
 			// Editor settings

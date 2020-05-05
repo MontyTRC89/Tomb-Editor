@@ -11,7 +11,7 @@ namespace TombLib.Scripting.TextEditors.Rendering
 	{
 		private ScriptTextEditor _editor;
 
-		public SectionRenderer(ScriptTextEditor e) => _editor = e;
+        public SectionRenderer(ScriptTextEditor e) { _editor = e; }
 		public KnownLayer Layer { get { return KnownLayer.Caret; } }
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
