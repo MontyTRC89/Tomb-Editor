@@ -1,9 +1,9 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using System.ComponentModel;
 using DarkUI.Config;
 using DarkUI.Forms;
 using TombLib.Scripting.TextEditors.Controls;
-using System;
 
 namespace TombLib.Scripting.Forms.Controls
 {
@@ -97,6 +97,5 @@ namespace TombLib.Scripting.Forms.Controls
             _overlayForm.Hide();
             OnDragLeave(e);
         }
-
     }
 }
