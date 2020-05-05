@@ -9,7 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 using TombLib.Utils;
 
 namespace TombIDE.ProjectMaster
@@ -149,14 +149,20 @@ namespace TombIDE.ProjectMaster
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)
 		{
-			string pluginFolderPath = string.Empty;
+			Plugin selectedPlugin = null;
 
 			if (treeView_Installed.SelectedNodes.Count == 1)
-				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Installed.SelectedNodes[0].Tag).InternalDllPath);
+				selectedPlugin = (Plugin)treeView_Installed.SelectedNodes[0].Tag;
 			else if (treeView_Available.SelectedNodes.Count == 1)
-				pluginFolderPath = Path.GetDirectoryName(((Plugin)treeView_Available.SelectedNodes[0].Tag).InternalDllPath);
+				selectedPlugin = (Plugin)treeView_Available.SelectedNodes[0].Tag;
 
-			SharedMethods.OpenFolderInExplorer(pluginFolderPath);
+			if (string.IsNullOrEmpty(selectedPlugin.InternalDllPath))
+			{
+				DarkMessageBox.Show(this, "Invalid plugin folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
 		}
 
 		private void treeView_Available_SelectedNodesChanged(object sender, EventArgs e)
@@ -251,7 +257,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins"); // Internal TombIDE folder
+				string pluginsFolderPath = PathHelper.GetTRNGPluginsPath(); // Internal TombIDE folder
 
 				if (!Directory.Exists(pluginsFolderPath))
 					Directory.CreateDirectory(pluginsFolderPath);

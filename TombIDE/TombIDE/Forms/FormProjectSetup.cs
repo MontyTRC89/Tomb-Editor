@@ -5,22 +5,20 @@ using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
-using TombLib.Projects;
 using TombLib.Utils;
 
 namespace TombIDE
 {
 	public partial class FormProjectSetup : DarkForm
 	{
-		private IDE _ide;
+		public Project CreatedProject { get; private set; }
 
 		#region Initialization
 
-		public FormProjectSetup(IDE ide)
+		public FormProjectSetup()
 		{
-			_ide = ide;
-
 			InitializeComponent();
 
 			comboBox_EngineType.SelectedIndex = 0;
@@ -67,7 +65,7 @@ namespace TombIDE
 				dialog.Title = "Choose where you want to install your project";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
-					textBox_ProjectPath.Text = Path.Combine(dialog.Folder, SharedMethods.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim()));
+					textBox_ProjectPath.Text = Path.Combine(dialog.Folder, PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim()));
 			}
 		}
 
@@ -95,18 +93,12 @@ namespace TombIDE
 
 		private void button_Create_Click(object sender, EventArgs e)
 		{
-			if (comboBox_EngineType.SelectedIndex == 4) // Temporary TR5Main disable
-			{
-				DialogResult = DialogResult.None;
-				return;
-			}
-
 			button_Create.Text = "Installing...";
 			button_Create.Enabled = false;
 
 			try
 			{
-				string projectName = SharedMethods.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
+				string projectName = PathHelper.RemoveIllegalPathSymbols(textBox_ProjectName.Text.Trim());
 
 				if (string.IsNullOrWhiteSpace(projectName))
 					throw new ArgumentException("You must enter a valid name for your project.");
@@ -123,12 +115,8 @@ namespace TombIDE
 				if (radio_Levels_02.Checked && string.IsNullOrWhiteSpace(textBox_LevelsPath.Text))
 					throw new ArgumentException("You must specify the custom /Levels/ folder path.");
 
-				// Check for name duplicates
-				foreach (Project project in _ide.AvailableProjects)
-				{
-					if (project.Name.ToLower() == projectName.ToLower())
-						throw new ArgumentException("A project with the same name already exists on the list.");
-				}
+				if (ProjectChecker.IsProjectNameDuplicate(projectName))
+					throw new ArgumentException("A project with the same name already exists on the list.");
 
 				if (comboBox_EngineType.SelectedIndex == 0)
 					throw new ArgumentException("You must specify the engine type of the project.");
@@ -165,8 +153,9 @@ namespace TombIDE
 				DarkMessageBox.Show(this, "Project installation finished successfully.", "Success",
 					MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-				// Trigger IDE.ProjectAddedEvent
-				_ide.AddProjectToList(createdProject);
+				// // // // // // // //
+				CreatedProject = createdProject;
+				// // // // // // // //
 			}
 			catch (Exception ex)
 			{
@@ -190,19 +179,11 @@ namespace TombIDE
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					gameVersion = TRVersion.Game.TR4;
+					gameVersion = TRVersion.Game.TRNG;
 					break;
 
 				case 2:
 					gameVersion = TRVersion.Game.TRNG;
-					break;
-
-				case 3:
-					gameVersion = TRVersion.Game.TRNG;
-					break;
-
-				case 4:
-					gameVersion = TRVersion.Game.TR5Main;
 					break;
 			}
 
@@ -212,6 +193,7 @@ namespace TombIDE
 			{
 				Name = projectName,
 				GameVersion = gameVersion,
+				DefaultLanguage = Language.English,
 				LaunchFilePath = launchFilePath,
 				ProjectPath = projectPath,
 				EnginePath = enginePath,
@@ -222,33 +204,20 @@ namespace TombIDE
 
 		private void InstallEngine(Project project)
 		{
-			string engineBasePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\Engines");
+			string engineBasePath = PathHelper.GetEngineTemplatesPath();
 
 			switch (comboBox_EngineType.SelectedIndex)
 			{
 				case 1:
-					engineBasePath = Path.Combine(engineBasePath, "TR4.zip");
-					break;
-
-				case 2:
 					engineBasePath = Path.Combine(engineBasePath, "TRNG.zip");
 					break;
 
-				case 3:
+				case 2:
 					engineBasePath = Path.Combine(engineBasePath, "TRNG + FLEP.zip");
-					break;
-
-				case 4:
-					engineBasePath = Path.Combine(engineBasePath, "TR5Main.zip");
 					break;
 			}
 
-			string sharedArchivePath = string.Empty;
-
-			if (project.GameVersion == TRVersion.Game.TR4 || project.GameVersion == TRVersion.Game.TRNG)
-				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Shared.zip");
-			else if (project.GameVersion == TRVersion.Game.TR5Main)
-				sharedArchivePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Shared.zip");
+			string sharedArchivePath = Path.Combine(PathHelper.GetSharedTemplatesPath(project.GameVersion), "Shared.zip");
 
 			// Extract the engine base into the ProjectPath folder
 			using (ZipArchive engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))
@@ -279,8 +248,8 @@ namespace TombIDE
 				}
 			}
 
-			// Create the .trproj file
-			XmlHandling.SaveTRPROJ(project); // .trproj = .xml but .trproj can be opened with TombIDE
+			// Save the .trproj file
+			project.Save(); // .trproj = .xml but .trproj can be opened with TombIDE
 
 			progressBar.Increment(1); // 100%
 		}

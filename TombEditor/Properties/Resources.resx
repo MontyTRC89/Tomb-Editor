@@ -514,4 +514,13 @@
   <data name="actions_DrawUntexturedLights_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons_actions\actions_DrawUntexturedLights-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="objects_volume_box_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_objects\objects_volume-box-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="objects_volume_prism_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_objects\objects_volume-prism-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="objects_volume_sphere_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons_objects\objects_volume-sphere-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

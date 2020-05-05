@@ -190,6 +190,12 @@
     <Compile Include="Forms\FormToolBarLayout.Designer.cs">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormVolume.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormVolume.Designer.cs">
+      <DependentUpon>FormVolume.cs</DependentUpon>
+    </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
@@ -485,6 +491,9 @@
     <EmbeddedResource Include="Forms\FormToolBarLayout.resx">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormVolume.resx">
+      <DependentUpon>FormVolume.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
       <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </EmbeddedResource>
@@ -599,6 +608,9 @@
     <None Include="Resources\icons_general\general_airplane-16.png" />
     <None Include="Resources\icons_general\general_search-and-replace-16.png" />
     <None Include="Resources\icons_objects\objects_LightPoint-161.png" />
+    <None Include="Resources\icons_objects\objects_volume-box-16.png" />
+    <None Include="Resources\icons_objects\objects_volume-sphere-16.png" />
+    <None Include="Resources\icons_objects\objects_volume-prism-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">

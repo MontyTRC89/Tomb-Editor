@@ -121,6 +121,7 @@ namespace TombEditor
 
         // Optional fields for various interface types
 
+        private Vector3? Size = null;
         private float? Scale = null;
         private float? RotationY = null;
         private float? RotationX = null;
@@ -131,6 +132,7 @@ namespace TombEditor
             UndoObject = obj;
             Position = obj.Position;
 
+            if (obj is ISizeable) Size = ((ISizeable)obj).Size;
             if (obj is IScaleable) Scale = ((IScaleable)obj).Scale;
             if (obj is IRotateableY) RotationY = ((IRotateableY)obj).RotationY;
             if (obj is IRotateableYX) RotationX = ((IRotateableYX)obj).RotationX;
@@ -155,6 +157,7 @@ namespace TombEditor
                 }
 
                 UndoObject.Position = Position;
+                if (UndoObject is ISizeable && Size.HasValue) ((ISizeable)obj).Size = Size.Value;
                 if (UndoObject is IScaleable && Scale.HasValue) ((IScaleable)obj).Scale = Scale.Value;
                 if (UndoObject is IRotateableY && RotationY.HasValue) ((IRotateableY)obj).RotationY = RotationY.Value;
                 if (UndoObject is IRotateableYX && RotationX.HasValue) ((IRotateableYX)obj).RotationX = RotationX.Value;

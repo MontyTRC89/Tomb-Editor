@@ -60,7 +60,9 @@ namespace WadTool
             }
         }
 
-        protected override void GizmoScale(float newScale) { }
+        protected override void GizmoScaleX(float newScale) { }
+        protected override void GizmoScaleY(float newScale) { }
+        protected override void GizmoScaleZ(float newScale) { }
 
         protected override void GizmoMoveDelta(Vector3 delta)
         {
@@ -136,7 +138,7 @@ namespace WadTool
             }
         }
 
-        protected override float Scale => 1.0f;
+        protected override Vector3 Scale => Vector3.One;
         protected override GizmoOrientation Orientation => GizmoOrientation.Normal;
 
         protected override float CentreCubeSize => _configuration.GizmoAnimationEditor_CenterCubeSize;

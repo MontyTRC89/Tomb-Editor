@@ -138,6 +138,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="LevelData\Instances\ScriptInstance.cs" />
+    <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
@@ -247,9 +249,6 @@
     <Compile Include="LevelData\Instances\StaticInstance.cs" />
     <Compile Include="LevelData\TextureFootStepSound.cs" />
     <Compile Include="LevelData\Instances\TriggerInstance.cs" />
-    <Compile Include="Projects\Plugin.cs" />
-    <Compile Include="Projects\Project.cs" />
-    <Compile Include="Projects\ProjectLevel.cs" />
     <Compile Include="Script\IScriptCompiler.cs" />
     <Compile Include="Script\LanguageScript.cs" />
     <Compile Include="Script\LevelScript.cs" />

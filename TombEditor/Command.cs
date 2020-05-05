@@ -153,7 +153,7 @@ namespace TombEditor
                 args.Editor.ResetCamera();
             });
 
-            AddCommand("AddTrigger", "Add trigger", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("AddTrigger", "Add legacy trigger", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (EditorActions.CheckForRoomAndBlockSelection(args.Window))
                 {
@@ -1010,6 +1010,20 @@ namespace TombEditor
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new ImportedGeometryInstance());
             });
 
+            AddCommand("AddBoxVolume", "Add box volume", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.AddVolume(VolumeShape.Box);
+            });
+
+            AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.AddVolume(VolumeShape.Prism);
+            });
+
+            AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
+            {
+                EditorActions.AddVolume(VolumeShape.Sphere);
+            });
 
             AddCommand("AddItem", "Add item", CommandType.Objects, delegate (CommandArgs args)
             {
@@ -1444,14 +1458,22 @@ namespace TombEditor
                 args.Editor.Configuration.Rendering3D_ShowGhostBlocks = !args.Editor.Configuration.Rendering3D_ShowGhostBlocks;
                 args.Editor.ConfigurationChange();
             });
-            AddCommand("DrawLightRadius", "Draw light radius", CommandType.View, delegate (CommandArgs args)
+
+            AddCommand("DrawVolumes", "Draw volumes", CommandType.View, delegate (CommandArgs args)
             {
-                args.Editor.Configuration.Rendering3D_ShowLightRadius = !args.Editor.Configuration.Rendering3D_ShowLightRadius;
+                args.Editor.Configuration.Rendering3D_ShowVolumes = !args.Editor.Configuration.Rendering3D_ShowVolumes;
                 args.Editor.ConfigurationChange();
             });
+
             AddCommand("DrawOtherObjects", "Draw other objects", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowOtherObjects = !args.Editor.Configuration.Rendering3D_ShowOtherObjects;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("DrawLightRadius", "Draw light radius", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowLightRadius = !args.Editor.Configuration.Rendering3D_ShowLightRadius;
                 args.Editor.ConfigurationChange();
             });
 

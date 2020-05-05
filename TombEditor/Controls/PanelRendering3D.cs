@@ -52,6 +52,8 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowGhostBlocks { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowVolumes { get; set; } = true;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowLightMeshes { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowOtherObjects { get; set; } = true;
@@ -90,6 +92,8 @@ namespace TombEditor.Controls
         private BaseContextMenu _currentContextMenu;
         private ToolHandler _toolHandler;
         private readonly MovementTimer _movementTimer;
+        private bool _dragObjectPicked = false;
+        private bool _dragObjectMoved  = false;
 
         // Legacy rendering state
         private WadRenderer _wadRenderer;
@@ -349,6 +353,7 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
                     obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                    obj is Editor.GameVersionChangedEvent ||
                     obj is Editor.HideSelectionEvent)
                     Invalidate(false);
             // Update cursor
@@ -701,14 +706,21 @@ namespace TombEditor.Controls
                     if (obj.Room != _editor.SelectedRoom && _editor.Configuration.Rendering3D_AutoswitchCurrentRoom)
                         _editor.SelectedRoom = obj.Room;
 
-                    // Select or bookmark object
-                    if (ModifierKeys.HasFlag(Keys.Alt) && obj is ItemInstance)
-                        _editor.ChosenItem = ((ItemInstance)obj).ItemType;
-                    else
+                    // Auto-bookmark any object
+                    if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance) && !ModifierKeys.HasFlag(Keys.Alt))
+                        EditorActions.BookmarkObject(obj);
+
+                    // Select object
+                    _editor.SelectedObject = obj;
+
+                    if (obj is ItemInstance)
                     {
-                        if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance))
-                            EditorActions.BookmarkObject(obj);
-                        _editor.SelectedObject = obj;
+                        if (ModifierKeys.HasFlag(Keys.Alt))
+                            // Pick item in browser
+                            _editor.ChosenItem = ((ItemInstance)obj).ItemType;
+                        else
+                            // Prepare for drag-n-drop
+                            _dragObjectPicked = true;
                     }
                 }
                 else if (newPicking == null)
@@ -780,7 +792,7 @@ namespace TombEditor.Controls
         protected override void OnMouseEnter(EventArgs e)
         {
             base.OnMouseEnter(e);
-            if (!Focused)
+            if (!Focused && Form.ActiveForm == FindForm())
             {
                 Focus(); // Enable keyboard interaction
                 _editor.ToggleHiddenSelection(false); // Restore hidden selection, if any
@@ -1099,6 +1111,12 @@ namespace TombEditor.Controls
                                 }
                             }
                         }
+                        else if (_dragObjectPicked && !_dragObjectMoved && _editor.SelectedObject != null)
+                        {
+                            // Do drag-n-drop tasks, if any
+                            Update();
+                            DoDragDrop(_editor.SelectedObject, DragDropEffects.Copy);
+                        }
                     }
                     break;
                 default:
@@ -1251,6 +1269,8 @@ namespace TombEditor.Controls
             _toolHandler.Disengage();
             _doSectorSelection = false;
             _gizmoEnabled = false;
+            _dragObjectMoved = false;
+            _dragObjectPicked = false;
             if (_gizmo.MouseUp())
                 Invalidate();
             Capture = false;
@@ -1639,6 +1659,17 @@ namespace TombEditor.Controls
                                 if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
                                     result = new PickingResultObject(distance, instance);
                             }
+                        }
+                    }
+                    else if (instance is VolumeInstance) 
+                    {
+                        if (ShowVolumes)
+                        {
+                            var vol = (VolumeInstance)instance;
+                            BoundingBox box = new BoundingBox(room.WorldPos + vol.Position - new Vector3(_littleCubeRadius),
+                                                              room.WorldPos + vol.Position + new Vector3(_littleCubeRadius));
+                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                                result = new PickingResultObject(distance, instance);
                         }
                     }
                     else if (ShowOtherObjects)
@@ -2152,6 +2183,92 @@ namespace TombEditor.Controls
                         _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
                         _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
                         _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
+                    }
+                }
+        }
+
+
+        private void DrawVolumes(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
+        {
+            bool drawVolume = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+            Effect effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
+
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Volumes)
+                {
+                    var selected = _editor.SelectedObject == instance;
+                    var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
+                    var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.45f);
+                    var selectColor = new Vector4(baseColor.To3(), 0.7f);
+
+                    Matrix4x4 model;
+
+                    // Draw center cube
+
+                    if (selected)
+                    {
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe); // As wireframe if selected
+
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            "Volume " + "\n" + GetObjectPositionString(room, instance)));
+                    }
+                    else
+                        _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
+
+                    _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+                    _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
+
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(normalColor);
+                    effect.Techniques[0].Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+
+                    // Draw 3D volume (only for TR5Main version, otherwise we show only disabled center cube)
+
+                    if (drawVolume)
+                    {
+                        _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
+
+                        if (selected)
+                            effect.Parameters["Color"].SetValue(selectColor);
+                        else
+                            effect.Parameters["Color"].SetValue(normalColor);
+
+                        if (instance.Shape() == VolumeShape.Box) // TODO: Draw prisms
+                        {
+                            var bv = instance as BoxVolumeInstance;
+                            model = Matrix4x4.CreateScale(bv.Size / _littleCubeRadius / 2.0f) *
+                                    Matrix4x4.CreateTranslation(new Vector3(0, bv.Size.Y / 2 + 8.0f, 0)) *
+                                    instance.RotationPositionMatrix;
+                            effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+
+                            effect.Techniques[0].Passes[0].Apply();
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                        }
+                        else if (instance.Shape() == VolumeShape.Sphere)
+                        {
+                            var sv = instance as SphereVolumeInstance;
+                            _legacyDevice.SetVertexBuffer(_sphere.VertexBuffer);
+                            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _sphere.VertexBuffer));
+                            _legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
+
+                            model = Matrix4x4.CreateScale(sv.Size / (_littleSphereRadius * 8.0f)) *
+                                    instance.RotationPositionMatrix;
+                            effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+
+                            effect.CurrentTechnique.Passes[0].Apply();
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+                        }
+                        else if (instance.Shape() == VolumeShape.Prism)
+                        {
+                            // TODO: Draw prisms
+                        }
                     }
                 }
         }
@@ -2969,6 +3086,10 @@ namespace TombEditor.Controls
             // Draw ghost blocks
             if (ShowGhostBlocks)
                 DrawGhostBlocks(viewProjection, roomsToDraw, textToDraw);
+
+            // Draw volumes
+            if (ShowVolumes)
+                DrawVolumes(viewProjection, roomsToDraw, textToDraw);
 
             if (ShowOtherObjects)
             {

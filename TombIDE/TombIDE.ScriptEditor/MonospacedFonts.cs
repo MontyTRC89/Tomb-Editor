@@ -34,6 +34,7 @@ namespace TombIDE.ScriptEditor
 
 			w1 = g.MeasureString("i", f).Width;
 			w2 = g.MeasureString("W", f).Width;
+
 			return w1 == w2;
 		}
 
@@ -43,6 +44,7 @@ namespace TombIDE.ScriptEditor
 
 			LOGFONT logicalFont = new LOGFONT();
 			font.ToLogFont(logicalFont);
+
 			return logicalFont.lfCharSet == SYMBOL_FONT;
 		}
 
@@ -53,25 +55,27 @@ namespace TombIDE.ScriptEditor
 
 		public static List<string> GetMonospacedFontNames()
 		{
-			List<string> fontList = new List<string>();
-			InstalledFontCollection fontCollection = new InstalledFontCollection();
-
-			Bitmap bitmap = new Bitmap(1, 1);
-			Graphics graphics = Graphics.FromImage(bitmap);
-
-			foreach (FontFamily fontFamily in fontCollection.Families)
+			using (InstalledFontCollection fontCollection = new InstalledFontCollection())
 			{
-				if (fontFamily.IsStyleAvailable(FontStyle.Regular) && fontFamily.IsStyleAvailable(FontStyle.Bold)
-					&& fontFamily.IsStyleAvailable(FontStyle.Italic) && IsSuitableFont(fontFamily.Name))
+				List<string> fontList = new List<string>();
+
+				Bitmap bitmap = new Bitmap(1, 1);
+				Graphics graphics = Graphics.FromImage(bitmap);
+
+				foreach (FontFamily fontFamily in fontCollection.Families)
 				{
-					Font font = new Font(fontFamily, 10);
+					if (fontFamily.IsStyleAvailable(FontStyle.Regular) && fontFamily.IsStyleAvailable(FontStyle.Bold)
+						&& fontFamily.IsStyleAvailable(FontStyle.Italic) && IsSuitableFont(fontFamily.Name))
+					{
+						Font font = new Font(fontFamily, 10);
 
-					if (IsMonospaced(graphics, font) && !IsSymbolFont(font))
-						fontList.Add(fontFamily.Name);
+						if (IsMonospaced(graphics, font) && !IsSymbolFont(font))
+							fontList.Add(fontFamily.Name);
+					}
 				}
-			}
 
-			return fontList;
+				return fontList;
+			}
 		}
 	}
 }

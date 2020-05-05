@@ -41,8 +41,7 @@ namespace TombLib.LevelData
         FlyByCamera = 12,
         ParameterNg = 13,
         FmvNg = 14,
-        TimerfieldNg = 15,
-        LuaScript = 16
+        TimerfieldNg = 15
     }
 
     public interface ITriggerParameter : IEquatable<ITriggerParameter>
@@ -141,13 +140,6 @@ namespace TombLib.LevelData
         {
             get { return _extra; }
             set { UpdateEvents(ref _extra, value); }
-        }
-
-        private string _luaScript;
-        public string LuaScript
-        {
-            get { return _luaScript; }
-            set { _luaScript = value; }
         }
 
         public bool OneShot { get; set; } = false;
