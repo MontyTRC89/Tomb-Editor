@@ -9,10 +9,12 @@ Tomb Editor:
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
  * Use two decimal places for flyby options.
  * Fix lagging gizmo movement.
+ * Don't deselect current object when cancelling object placement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
  
 TombIDE:
+ * Major refactoring and performance improvemets.
  * Added OCB list to reference browser.
  * Disable persistent TRNG scripter notepad.exe nagging.
 
