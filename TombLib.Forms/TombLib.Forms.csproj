@@ -119,12 +119,6 @@
     <Compile Include="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\LuaTextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\LuaTextBox.Designer.cs">
-      <DependentUpon>LuaTextBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PanelItemPreview.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -208,9 +202,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\LuaTextBox.resx">
-      <DependentUpon>LuaTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
