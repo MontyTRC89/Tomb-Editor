@@ -51,14 +51,14 @@ namespace TombIDE.ProjectMaster
 
 				splitContainer_Info.Panel2Collapsed = true;
 			}
-			else if (_ide.Configuration.PluginsPanelHidden)
+			else if (_ide.IDEConfiguration.PluginsPanelHidden)
 			{
 				button_ShowPlugins.Enabled = true;
 				button_ShowPlugins.Visible = true;
 
 				splitContainer_Info.Panel2Collapsed = true;
 			}
-			else if (!_ide.Configuration.PluginsPanelHidden)
+			else if (!_ide.IDEConfiguration.PluginsPanelHidden)
 			{
 				button_ShowPlugins.Enabled = false;
 				button_ShowPlugins.Visible = false;
@@ -86,8 +86,8 @@ namespace TombIDE.ProjectMaster
 			button_ShowPlugins.Enabled = false;
 			button_ShowPlugins.Visible = false;
 
-			_ide.Configuration.PluginsPanelHidden = false;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.PluginsPanelHidden = false;
+			_ide.IDEConfiguration.Save();
 		}
 
 		private void button_HidePlugins_Click(object sender, System.EventArgs e)
@@ -101,8 +101,8 @@ namespace TombIDE.ProjectMaster
 			button_ShowPlugins.Enabled = true;
 			button_ShowPlugins.Visible = true;
 
-			_ide.Configuration.PluginsPanelHidden = true;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.PluginsPanelHidden = true;
+			_ide.IDEConfiguration.Save();
 
 			animationTimer.Start();
 		}

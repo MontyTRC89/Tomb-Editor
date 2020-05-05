@@ -1,0 +1,26 @@
+Syntax: Rain= RAIN_... constant
+Scope: To use in [Level] section
+
+You can have rain room in current level only if in current [Level] section is present the command "Rain=", otherwise the setting for Raing in ngle will be ignored.
+
+Argument:
+RAIN_ Constant
+You can choose one of following constants:
+RAIN_DISABLED
+It's the same that don't insert any Rain= command in script
+
+RAIN_SINGLE_ROOMS 
+With this setting the rain will be showed only in specific rooms signed as "Rain" in ngle and with outside status.
+
+RAIN_ALL_OUTSIDE
+If you want have rain in all outside rooms without set "Rain" button for each room in ngle, you have to use rain_all_outside setting.
+
+
+Remarks:
+(1) If you use RAIN_ALL_OUTSIDE setting the trick to set the rain in intensity is simply to enable "Rain" button in first room that will be visited by lara and set in Water Intensity field (at right of multistate button water/rain/snow...) the intensity (from 1 to 4)
+In this way the intensity for all level will be that you chose in that room.
+Anyway if you set another "rain" room with different intensity, when lara will enter in that room the rain intensity will change like you set.
+
+(2) If you don't mean to use rain rooms in current level it's better use command "Rain=RAIN_DISABLED" (or omit to type Rain= command) to inform trng engine to avoid a lot of computes to locate further rain rooms.
+
+

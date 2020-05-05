@@ -45,6 +45,7 @@
 			// 
 			// button_Close
 			// 
+			this.button_Close.Checked = false;
 			this.button_Close.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button_Close.Location = new System.Drawing.Point(646, 5);
 			this.button_Close.Margin = new System.Windows.Forms.Padding(0, 3, 0, 6);
@@ -68,6 +69,7 @@
 			// 
 			// button_Download
 			// 
+			this.button_Download.Checked = false;
 			this.button_Download.Location = new System.Drawing.Point(8, 5);
 			this.button_Download.Margin = new System.Windows.Forms.Padding(0, 3, 0, 6);
 			this.button_Download.Name = "button_Download";
@@ -79,6 +81,7 @@
 			// button_Install
 			// 
 			this.button_Install.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Install.Checked = false;
 			this.button_Install.Enabled = false;
 			this.button_Install.Location = new System.Drawing.Point(376, 8);
 			this.button_Install.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
@@ -115,6 +118,7 @@
 			// 
 			// button_OpenInExplorer
 			// 
+			this.button_OpenInExplorer.Checked = false;
 			this.button_OpenInExplorer.Enabled = false;
 			this.button_OpenInExplorer.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenInExplorer.ImagePadding = 6;
@@ -143,6 +147,7 @@
 			// button_Uninstall
 			// 
 			this.button_Uninstall.Anchor = System.Windows.Forms.AnchorStyles.None;
+			this.button_Uninstall.Checked = false;
 			this.button_Uninstall.Enabled = false;
 			this.button_Uninstall.Location = new System.Drawing.Point(376, 262);
 			this.button_Uninstall.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
@@ -180,12 +185,16 @@
 			// 
 			this.treeView_Installed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Installed.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView_Installed.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
+			this.treeView_Installed.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView_Installed.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView_Installed.ItemHeight = 40;
 			this.treeView_Installed.Location = new System.Drawing.Point(1, 25);
 			this.treeView_Installed.MaxDragChange = 40;
 			this.treeView_Installed.MultiSelect = true;
 			this.treeView_Installed.Name = "treeView_Installed";
+			this.treeView_Installed.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+			this.treeView_Installed.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Installed.Size = new System.Drawing.Size(368, 492);
 			this.treeView_Installed.TabIndex = 0;
 			this.treeView_Installed.SelectedNodesChanged += new System.EventHandler(this.treeView_Installed_SelectedNodesChanged);
@@ -205,12 +214,16 @@
 			// 
 			this.treeView_Available.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Available.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.treeView_Available.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
+			this.treeView_Available.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView_Available.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView_Available.ItemHeight = 40;
 			this.treeView_Available.Location = new System.Drawing.Point(1, 53);
 			this.treeView_Available.MaxDragChange = 40;
 			this.treeView_Available.MultiSelect = true;
 			this.treeView_Available.Name = "treeView_Available";
+			this.treeView_Available.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+			this.treeView_Available.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView_Available.Size = new System.Drawing.Size(368, 464);
 			this.treeView_Available.TabIndex = 0;
 			this.treeView_Available.SelectedNodesChanged += new System.EventHandler(this.treeView_Available_SelectedNodesChanged);

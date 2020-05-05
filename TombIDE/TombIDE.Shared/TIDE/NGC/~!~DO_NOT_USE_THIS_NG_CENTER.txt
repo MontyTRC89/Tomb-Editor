@@ -1,0 +1,1 @@
+﻿It is only meant for script compilation. NEVER use it for anything else!

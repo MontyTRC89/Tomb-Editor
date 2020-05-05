@@ -328,7 +328,7 @@ namespace TombIDE.ProjectMaster
 		}
 
 		private void button_OpenAudioFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
+			SharedMethods.OpenInExplorer(Path.Combine(_targetProject.EnginePath, "audio"));
 
 		#endregion Script section generating
 	}

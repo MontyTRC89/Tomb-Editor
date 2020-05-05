@@ -39,7 +39,7 @@ namespace TombIDE.ProjectMaster
 
 		private void AddPinnedProgramsToContextMenu()
 		{
-			foreach (string programPath in _ide.Configuration.PinnedProgramPaths)
+			foreach (string programPath in _ide.IDEConfiguration.PinnedProgramPaths)
 			{
 				string exeFileName = Path.GetFileName(programPath).ToLower();
 
@@ -204,7 +204,7 @@ namespace TombIDE.ProjectMaster
 		private void menuItem_Open_Click(object sender, EventArgs e) => OpenSelectedResource();
 
 		private void menuItem_OpenFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(treeView_Resources.SelectedNodes[0].Text));
+			SharedMethods.OpenInExplorer(Path.GetDirectoryName(treeView_Resources.SelectedNodes[0].Text));
 
 		private void OpenSelectedResource()
 		{

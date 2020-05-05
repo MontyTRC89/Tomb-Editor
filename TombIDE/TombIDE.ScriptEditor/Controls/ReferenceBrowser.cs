@@ -5,19 +5,30 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using TombIDE.ScriptEditor.Resources;
-using TombIDE.Shared.Scripting;
+using TombIDE.ScriptEditor.Forms;
+using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.Scripting.Objects;
+using TombLib.Scripting.Resources;
 
 namespace TombIDE.ScriptEditor.Controls
 {
 	internal partial class ReferenceBrowser : UserControl
 	{
+		// TODO: Refactor !!!
+
+		private FormMnemonicInfo _mnemonicInfoForm;
+
 		public ReferenceBrowser()
 		{
 			InitializeComponent();
 
 			comboBox_References.SelectedItem = "Mnemonic Constants";
+		}
+
+		public void Initialize(IDE ide)
+		{
+			_mnemonicInfoForm = new FormMnemonicInfo(ide);
 		}
 
 		private void comboBox_References_SelectedIndexChanged(object sender, EventArgs e) => UpdateDataGrid();
@@ -27,22 +38,21 @@ namespace TombIDE.ScriptEditor.Controls
 		{
 			dataGrid.Columns.Clear();
 
-			if (comboBox_References.SelectedItem.ToString().Contains("(Unavailable)")) // TEMPORARY
-				return;
-
 			// TEMP !!!
 
-			if (comboBox_References.SelectedItem.ToString() == "OCB List")
+			if (comboBox_References.SelectedItem.ToString() == "OCB List"
+				|| comboBox_References.SelectedItem.ToString() == "OLD Commands List"
+				|| comboBox_References.SelectedItem.ToString() == "NEW Commands List")
 			{
-				DataTable ocbListTable = GetOCBListTable();
+				DataTable listTable = GetListTableFromTextFile(Path.Combine(PathHelper.GetReferencesPath(), comboBox_References.SelectedItem.ToString() + ".txt"), "Items");
 
-				DataColumn dcRowString = ocbListTable.Columns.Add("_RowString", typeof(string));
+				DataColumn dcRowString = listTable.Columns.Add("_RowString", typeof(string));
 
-				foreach (DataRow dataRow in ocbListTable.Rows)
+				foreach (DataRow dataRow in listTable.Rows)
 				{
 					StringBuilder builder = new StringBuilder();
 
-					for (int i = 0; i < ocbListTable.Columns.Count - 1; i++)
+					for (int i = 0; i < listTable.Columns.Count - 1; i++)
 					{
 						builder.Append(dataRow[i].ToString());
 						builder.Append("\t");
@@ -56,9 +66,9 @@ namespace TombIDE.ScriptEditor.Controls
 				if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search references...")
 					filter = textBox_Search.Text.Trim();
 
-				ocbListTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
+				listTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
 
-				dataGrid.DataSource = ocbListTable;
+				dataGrid.DataSource = listTable;
 				dataGrid.Columns["_RowString"].Visible = false;
 
 				return;
@@ -133,12 +143,12 @@ namespace TombIDE.ScriptEditor.Controls
 			dataTable.Columns.Add("hex", typeof(string));
 			dataTable.Columns.Add("flag", typeof(string));
 
-			foreach (PluginMnemonic mnemonic in KeyWords.PluginMnemonics)
+			foreach (PluginMnemonic mnemonic in ScriptKeyWords.PluginMnemonics)
 			{
 				DataRow row = dataTable.NewRow();
-				row["decimal"] = mnemonic.Decimal;
-				row["hex"] = mnemonic.Hex;
-				row["flag"] = mnemonic.Flag;
+				row["decimal"] = mnemonic.DecimalValue;
+				row["hex"] = mnemonic.HexValue;
+				row["flag"] = mnemonic.FlagName;
 
 				dataTable.Rows.Add(row);
 			}
@@ -146,19 +156,18 @@ namespace TombIDE.ScriptEditor.Controls
 			return dataTable;
 		}
 
-		private DataTable GetOCBListTable()
+		private DataTable GetListTableFromTextFile(string filePath, string listHeaderTitle)
 		{
 			DataTable dataTable = new DataTable();
 
-			dataTable.Columns.Add("OCBs", typeof(string));
+			dataTable.Columns.Add(listHeaderTitle, typeof(string));
 
-			string ocbListPath = Path.Combine(PathHelper.GetReferencesPath(), "OCB List.txt");
-			string[] entries = File.ReadAllLines(ocbListPath);
+			string[] entries = File.ReadAllLines(filePath);
 
 			foreach (string entry in entries)
 			{
 				DataRow row = dataTable.NewRow();
-				row["OCBs"] = entry;
+				row[listHeaderTitle] = entry;
 
 				dataTable.Rows.Add(row);
 			}
@@ -203,6 +212,10 @@ namespace TombIDE.ScriptEditor.Controls
 					case "description":
 						dataGrid.Columns[column.Index].HeaderText = "Description";
 						break;
+
+					case "sounds":
+						dataGrid.Columns[column.Index].HeaderText = "Sounds";
+						break;
 				}
 			}
 		}
@@ -233,15 +246,29 @@ namespace TombIDE.ScriptEditor.Controls
 
 		private void dataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
 		{
-			if (comboBox_References.SelectedIndex == 0 && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
+			if (e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
 			{
-				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString()))
-					form.ShowDialog(this);
-			}
-			else if (comboBox_References.SelectedItem.ToString() == "OCB List" && e.RowIndex == dataGrid.SelectedCells[0].RowIndex)
-			{
-				using (FormMnemonicInfo form = new FormMnemonicInfo(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), true))
-					form.ShowDialog(this);
+				string comboBoxItem = comboBox_References.SelectedItem.ToString();
+
+				if (comboBox_References.SelectedIndex == 0)
+					_mnemonicInfoForm.Show(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.Other);
+				else if (comboBoxItem == "OCB List" || comboBoxItem == "OLD Commands List" || comboBoxItem == "NEW Commands List")
+				{
+					switch (comboBoxItem)
+					{
+						case "OCB List":
+							_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OCB);
+							break;
+
+						case "OLD Commands List":
+							_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OLDCommands);
+							break;
+
+						case "NEW Commands List":
+							_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.NEWCommands);
+							break;
+					}
+				}
 			}
 		}
 	}

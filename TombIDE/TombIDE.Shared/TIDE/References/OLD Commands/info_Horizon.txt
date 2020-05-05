@@ -1,0 +1,9 @@
+Syntax: Horizon= ENABLED/DISABLED
+
+To use in [Level] section
+
+Set the use of Horizon around current level.
+If you set ENABLED the horizon will be visible.
+If you set DISABLED the orizon will be not used and around the level will be the black color.
+
+

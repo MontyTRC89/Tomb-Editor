@@ -162,7 +162,7 @@ namespace TombIDE.ProjectMaster
 				return;
 			}
 
-			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
+			SharedMethods.OpenInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
 		}
 
 		private void treeView_Available_SelectedNodesChanged(object sender, EventArgs e)

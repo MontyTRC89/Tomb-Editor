@@ -1,0 +1,10 @@
+Syntax: Train= ENABLED/DISABLED
+
+To use in [Level] section
+
+Enables / disable the train effect.
+With train effect the train is still while the horizon rounds in loop to give the idea of the train movement.
+
+If you use Train=Enabled you should use also AddColHorizon and Layer1 command.
+
+

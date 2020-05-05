@@ -42,6 +42,7 @@
 			// 
 			// button_ChangeLevelsPath
 			// 
+			this.button_ChangeLevelsPath.Checked = false;
 			this.button_ChangeLevelsPath.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_ChangeLevelsPath.Location = new System.Drawing.Point(573, 257);
 			this.button_ChangeLevelsPath.Name = "button_ChangeLevelsPath";
@@ -52,6 +53,7 @@
 			// 
 			// button_ChangeScriptPath
 			// 
+			this.button_ChangeScriptPath.Checked = false;
 			this.button_ChangeScriptPath.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_ChangeScriptPath.Location = new System.Drawing.Point(573, 206);
 			this.button_ChangeScriptPath.Name = "button_ChangeScriptPath";
@@ -62,6 +64,7 @@
 			// 
 			// button_OpenEngineFolder
 			// 
+			this.button_OpenEngineFolder.Checked = false;
 			this.button_OpenEngineFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenEngineFolder.Location = new System.Drawing.Point(605, 155);
 			this.button_OpenEngineFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
@@ -73,6 +76,7 @@
 			// 
 			// button_OpenLevelsFolder
 			// 
+			this.button_OpenLevelsFolder.Checked = false;
 			this.button_OpenLevelsFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenLevelsFolder.Location = new System.Drawing.Point(605, 257);
 			this.button_OpenLevelsFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
@@ -84,6 +88,7 @@
 			// 
 			// button_OpenProjectFolder
 			// 
+			this.button_OpenProjectFolder.Checked = false;
 			this.button_OpenProjectFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenProjectFolder.Location = new System.Drawing.Point(605, 104);
 			this.button_OpenProjectFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
@@ -95,6 +100,7 @@
 			// 
 			// button_OpenScriptFolder
 			// 
+			this.button_OpenScriptFolder.Checked = false;
 			this.button_OpenScriptFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenScriptFolder.Location = new System.Drawing.Point(605, 206);
 			this.button_OpenScriptFolder.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
