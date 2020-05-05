@@ -91,15 +91,15 @@ namespace TombLib.Scripting.TextEditors.Controls
 		private void BindEventMethods()
 		{
 			TextArea.TextEntered += TextArea_TextEntered;
-			TextChanged += TextBox_TextChanged;
+			TextChanged += TextEditor_TextChanged;
 
-			MouseHover += TextBox_MouseHover;
-			MouseHoverStopped += TextBox_MouseHoverStopped;
+			MouseHover += TextEditor_MouseHover;
+			MouseHoverStopped += TextEditor_MouseHoverStopped;
 
-			PreviewMouseWheel += TextBox_PreviewMouseWheel;
-			MouseRightButtonDown += TextBox_MouseRightButtonDown;
+			PreviewMouseWheel += TextEditor_PreviewMouseWheel;
+			MouseRightButtonDown += TextEditor_MouseRightButtonDown;
 
-			Unloaded += TextBox_Unloaded;
+			Unloaded += TextEditor_Unloaded;
 		}
 
 		private void SetNewDefaultSettings()
@@ -137,7 +137,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			}
 		}
 
-		private void TextBox_TextChanged(object sender, EventArgs e)
+		private void TextEditor_TextChanged(object sender, EventArgs e)
 		{
 			if (!IsSilentSession)
 			{
@@ -148,22 +148,22 @@ namespace TombLib.Scripting.TextEditors.Controls
 			}
 		}
 
-		private void TextBox_MouseHover(object sender, MouseEventArgs e) =>
+		private void TextEditor_MouseHover(object sender, MouseEventArgs e) =>
 			HandleErrorToolTips(e);
 
-		private void TextBox_MouseHoverStopped(object sender, MouseEventArgs e) =>
+		private void TextEditor_MouseHoverStopped(object sender, MouseEventArgs e) =>
 			CloseDefinitionToolTip();
 
-		private void TextBox_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		private void TextEditor_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
 		{
 			if (Keyboard.Modifiers == ModifierKeys.Control)
 				HandleZoom(e);
 		}
 
-		private void TextBox_MouseRightButtonDown(object sender, MouseButtonEventArgs e) =>
+		private void TextEditor_MouseRightButtonDown(object sender, MouseButtonEventArgs e) =>
 			MoveCaretToMousePosition(e);
 
-		private void TextBox_Unloaded(object sender, RoutedEventArgs e) =>
+		private void TextEditor_Unloaded(object sender, RoutedEventArgs e) =>
 			DeleteBackupFile();
 
 		private void CloseDefinitionToolTip()

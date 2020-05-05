@@ -25,15 +25,15 @@ namespace TombLib.Scripting.Helpers
 
 		public static string GetCommandSyntax(TextDocument document, int offset)
 		{
-			string wholeCommandLine = GetWholeCommandLine(document, offset);
+			string wholeCommandLineText = GetWholeCommandLineText(document, offset);
 
-			if (wholeCommandLine == null)
+			if (string.IsNullOrEmpty(wholeCommandLineText))
 				return null;
 
-			if (Regex.IsMatch(wholeCommandLine, @"Customize\s*?=.*?,", RegexOptions.IgnoreCase)) // "Customize  =  CUST_CMD,"
-				return GetSubcommandSyntax(wholeCommandLine, SubcommandType.Cust);
-			else if (Regex.IsMatch(wholeCommandLine, @"Parameters\s*?=.*?,", RegexOptions.IgnoreCase)) // "Parameters  =  PARAM_CMD,"
-				return GetSubcommandSyntax(wholeCommandLine, SubcommandType.Param);
+			if (Regex.IsMatch(wholeCommandLineText, @"Customize\s*?=.*?,", RegexOptions.IgnoreCase)) // "Customize  =  CUST_CMD,"
+				return GetSubcommandSyntax(wholeCommandLineText, SubcommandType.Cust);
+			else if (Regex.IsMatch(wholeCommandLineText, @"Parameters\s*?=.*?,", RegexOptions.IgnoreCase)) // "Parameters  =  PARAM_CMD,"
+				return GetSubcommandSyntax(wholeCommandLineText, SubcommandType.Param);
 			else
 			{
 				string commandKey = GetCommandKey(document, offset);
@@ -46,68 +46,52 @@ namespace TombLib.Scripting.Helpers
 			return null;
 		}
 
-		public static string GetWholeCommandLine(TextDocument document, int offset)
+		public static string GetWholeCommandLineText(TextDocument document, int offset)
 		{
-			int commandStartLineNumber = GetCommandStartLineNumber(document, offset);
+			DocumentLine commandStartLine = GetCommandStartLine(document, offset);
 
-			if (commandStartLineNumber == 0)
+			if (commandStartLine == null)
 				return null;
 
-			DocumentLine commandStartLine = document.GetLineByNumber(commandStartLineNumber);
 			string commandStartLineText = document.GetText(commandStartLine.Offset, commandStartLine.Length);
 
 			if (!Regex.IsMatch(commandStartLineText, ScriptPatterns.NextLineKey)) // If commandStartLineText is not multiline
 				return commandStartLineText;
 			else
 			{
-				List<string> linesToMerge = GetLinesToMerge(document, commandStartLine);
+				IEnumerable<DocumentLine> linesToMerge = GetLinesToMerge(document, commandStartLine);
 
 				if (linesToMerge == null)
 					return null;
 
-				return MergeLines(linesToMerge);
+				return MergeLines(document, linesToMerge);
 			}
 		}
 
-		public static int GetCommandStartLineNumber(TextDocument document, int offset)
+		public static DocumentLine GetCommandStartLine(TextDocument document, int offset)
 		{
 			DocumentLine offsetLine = document.GetLineByOffset(offset);
 			string offsetLineText = document.GetText(offsetLine.Offset, offsetLine.Length);
 
 			if (offsetLineText.Contains("=") || offsetLineText.Trim().StartsWith("#"))
-				return offsetLine.LineNumber;
+				return offsetLine;
 			else if (LineHelper.IsSectionHeaderLine(offsetLineText))
-				return 0;
+				return null;
 			else
-				return FindCommandStartLineNumber(document, offsetLine);
-		}
-
-		public static string GetSectionNameFromLine(TextDocument document, int lineNumber)
-		{
-			for (int i = lineNumber; i > 0; i--)
-			{
-				DocumentLine currentLine = document.GetLineByNumber(i);
-				string currentLineText = document.GetText(currentLine.Offset, currentLine.Length);
-
-				if (currentLineText.Trim().StartsWith("["))
-					return currentLineText.Split('[')[1].Split(']')[0].Trim();
-			}
-
-			return null;
+				return FindCommandStartLine(document, offsetLine);
 		}
 
 		public static string GetCommandKey(TextDocument document, int offset)
 		{
-			int commandStartLineNumber = GetCommandStartLineNumber(document, offset);
+			DocumentLine commandStartLine = GetCommandStartLine(document, offset);
 
-			if (commandStartLineNumber == 0)
+			if (commandStartLine == null)
 				return null;
 
-			DocumentLine commandStartLine = document.GetLineByNumber(commandStartLineNumber);
 			string commandStartLineText = document.GetText(commandStartLine.Offset, commandStartLine.Length);
 
 			if (commandStartLineText.Contains("="))
-				return GetCorrectCommandVariation(document, commandStartLineNumber, commandStartLineText.Split('=')[0].Trim());
+				return GetCorrectCommandVariation(document, commandStartLine.Offset, commandStartLineText.Split('=')[0].Trim());
 			else if (commandStartLineText.Trim().StartsWith("#"))
 				return commandStartLineText.Split(' ')[0].Trim();
 
@@ -136,7 +120,7 @@ namespace TombLib.Scripting.Helpers
 
 		#region Subcommands
 
-		private static string GetSubcommandSyntax(string wholeCommandLine, SubcommandType subcommandType)
+		private static string GetSubcommandSyntax(string wholeCommandLineText, SubcommandType subcommandType)
 		{
 			ResourceManager syntaxResource = null;
 
@@ -153,7 +137,7 @@ namespace TombLib.Scripting.Helpers
 
 			ResourceSet resourceSet = syntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-			string key = wholeCommandLine.Split('=')[1].Split(',')[0].Trim();
+			string key = wholeCommandLineText.Split('=')[1].Split(',')[0].Trim();
 
 			return FindCustParamSyntaxByKey(resourceSet, key);
 		}
@@ -177,26 +161,23 @@ namespace TombLib.Scripting.Helpers
 
 		#region Command variations
 
-		private static string GetCorrectCommandVariation(TextDocument document, int lineNumber, string command)
+		private static string GetCorrectCommandVariation(TextDocument document, int offset, string command)
 		{
+			string sectionName = DocumentHelper.GetSectionName(document, offset);
+
 			if (command.Equals("level", StringComparison.OrdinalIgnoreCase))
-				return GetCorrectLevelCommand(document, lineNumber);
+				return GetCorrectLevelCommandForSection(sectionName);
 			else if (command.Equals("cut", StringComparison.OrdinalIgnoreCase))
-				return GetCorrectCutCommand(document, lineNumber);
+				return GetCorrectCutCommandForSection(sectionName);
 			else if (command.Equals("fmv", StringComparison.OrdinalIgnoreCase))
-				return GetCorrectFMVCommand(document, lineNumber);
+				return GetCorrectFMVCommandForSection(sectionName);
 			else
 				return command;
 		}
 
-		private static string GetCorrectLevelCommand(TextDocument document, int lineNumber)
+		private static string GetCorrectLevelCommandForSection(string sectionName)
 		{
-			string section = GetSectionNameFromLine(document, lineNumber);
-
-			if (section == null)
-				return "LevelLevel";
-
-			switch (section.ToUpper())
+			switch (sectionName.ToUpper())
 			{
 				case "PCEXTENSIONS":
 					return "LevelPC";
@@ -209,14 +190,9 @@ namespace TombLib.Scripting.Helpers
 			}
 		}
 
-		private static string GetCorrectCutCommand(TextDocument document, int lineNumber)
+		private static string GetCorrectCutCommandForSection(string sectionName)
 		{
-			string section = GetSectionNameFromLine(document, lineNumber);
-
-			if (section == null)
-				return null;
-
-			switch (section.ToUpper())
+			switch (sectionName.ToUpper())
 			{
 				case "PCEXTENSIONS":
 					return "CutPC";
@@ -225,18 +201,13 @@ namespace TombLib.Scripting.Helpers
 					return "CutPSX";
 
 				default:
-					return "CutPC";
+					return null;
 			}
 		}
 
-		private static string GetCorrectFMVCommand(TextDocument document, int lineNumber)
+		private static string GetCorrectFMVCommandForSection(string sectionName)
 		{
-			string section = GetSectionNameFromLine(document, lineNumber);
-
-			if (section == null)
-				return "FMVLevel";
-
-			switch (section.ToUpper())
+			switch (sectionName.ToUpper())
 			{
 				case "PCEXTENSIONS":
 					return "FMVPC";
@@ -253,7 +224,7 @@ namespace TombLib.Scripting.Helpers
 
 		#region Other methods
 
-		private static int FindCommandStartLineNumber(TextDocument document, DocumentLine searchStartingLine)
+		private static DocumentLine FindCommandStartLine(TextDocument document, DocumentLine searchStartingLine)
 		{
 			DocumentLine previousLine;
 			string previousLineText;
@@ -263,27 +234,24 @@ namespace TombLib.Scripting.Helpers
 			do
 			{
 				if (i <= 0)
-					return 0;
+					return null;
 
 				previousLine = document.GetLineByNumber(i);
 				previousLineText = document.GetText(previousLine.Offset, previousLine.Length);
 
 				if (Regex.IsMatch(previousLineText, ScriptPatterns.NextLineKey) && previousLineText.Contains("="))
-					return i;
+					return previousLine;
 
 				i--;
 			}
 			while (Regex.IsMatch(previousLineText, ScriptPatterns.NextLineKey));
 
-			return 0;
+			return null;
 		}
 
-		private static List<string> GetLinesToMerge(TextDocument document, DocumentLine startingLine)
+		private static IEnumerable<DocumentLine> GetLinesToMerge(TextDocument document, DocumentLine startingLine)
 		{
-			List<string> linesToMerge = new List<string>();
-
-			string startingLineText = document.GetText(startingLine.Offset, startingLine.Length);
-			linesToMerge.Add(startingLineText);
+			yield return startingLine;
 
 			DocumentLine nextLine;
 			string nextLineText;
@@ -293,25 +261,24 @@ namespace TombLib.Scripting.Helpers
 			do
 			{
 				if (i > document.LineCount)
-					return null;
+					yield break;
 
 				nextLine = document.GetLineByNumber(i);
 				nextLineText = document.GetText(nextLine.Offset, nextLine.Length);
 
-				linesToMerge.Add(nextLineText);
+				yield return nextLine;
+
 				i++;
 			}
 			while (Regex.IsMatch(nextLineText, ScriptPatterns.NextLineKey));
-
-			return linesToMerge;
 		}
 
-		private static string MergeLines(List<string> lines)
+		private static string MergeLines(TextDocument document, IEnumerable<DocumentLine> lines)
 		{
 			StringBuilder builder = new StringBuilder();
 
-			foreach (string line in lines)
-				builder.Append(line + Environment.NewLine);
+			foreach (DocumentLine line in lines)
+				builder.Append(document.GetText(line.Offset, line.Length) + Environment.NewLine);
 
 			return builder.ToString();
 		}

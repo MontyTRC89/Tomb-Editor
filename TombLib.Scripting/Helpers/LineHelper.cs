@@ -17,7 +17,7 @@ namespace TombLib.Scripting.Helpers
 
 		public static bool IsLineInStandardStringSection(TextDocument document, DocumentLine line)
 		{
-			string lineSectionName = CommandHelper.GetSectionNameFromLine(document, line.LineNumber);
+			string lineSectionName = DocumentHelper.GetSectionName(document, line.Offset);
 
 			if (string.IsNullOrEmpty(lineSectionName))
 				return false;
@@ -29,7 +29,7 @@ namespace TombLib.Scripting.Helpers
 
 		public static bool IsLineInNGStringSection(TextDocument document, DocumentLine line)
 		{
-			string lineSectionName = CommandHelper.GetSectionNameFromLine(document, line.LineNumber);
+			string lineSectionName = DocumentHelper.GetSectionName(document, line.Offset);
 
 			if (string.IsNullOrEmpty(lineSectionName))
 				return false;

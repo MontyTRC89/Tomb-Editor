@@ -331,7 +331,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Undo.Text = "Undo (Ctrl+Z)";
 			this.button_Undo.Click += new System.EventHandler(this.ToolStrip_Undo_Click);
 			// 
-			// contextMenu_TextBox
+			// contextMenu_TextEditor
 			// 
 			this.contextMenu_TextEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.contextMenu_TextEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
@@ -655,8 +655,7 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_About.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_About.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_AboutIcon_16;
 			this.menuItem_About.Name = "menuItem_About";
-			this.menuItem_About.ShortcutKeys = System.Windows.Forms.Keys.F1;
-			this.menuItem_About.Size = new System.Drawing.Size(135, 22);
+			this.menuItem_About.Size = new System.Drawing.Size(180, 22);
 			this.menuItem_About.Text = "&About...";
 			this.menuItem_About.Click += new System.EventHandler(this.Help_About_Click);
 			// 
