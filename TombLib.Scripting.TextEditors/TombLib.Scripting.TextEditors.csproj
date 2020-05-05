@@ -37,6 +37,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -52,6 +53,12 @@
     <Compile Include="Configuration\Colors\ClassicScriptColors.cs" />
     <Compile Include="Configuration\Colors\LuaColors.cs" />
     <Compile Include="Configuration\LuaConfiguration.cs" />
+    <Compile Include="Controls\LuaTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LuaTextBox.Designer.cs">
+      <DependentUpon>LuaTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TextEditorBase.cs" />
     <Compile Include="Controls\LuaTextEditor.cs" />
     <Compile Include="Controls\ScriptTextEditor.cs" />
@@ -79,6 +86,9 @@
     <Compile Include="TextEditorConfigurations.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\LuaTextBox.resx">
+      <DependentUpon>LuaTextBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Settings\SettingsClassicScript.resx">
       <DependentUpon>SettingsClassicScript.cs</DependentUpon>
     </EmbeddedResource>

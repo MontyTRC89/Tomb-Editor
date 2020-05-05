@@ -20,7 +20,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cbLara = new DarkUI.Controls.DarkCheckBox();
             this.panelControls = new System.Windows.Forms.Panel();
-            this.ehLuaTextEditor = new System.Windows.Forms.Integration.ElementHost();
+            this.tbScript = new TombLib.Scripting.Forms.Controls.LuaTextBox();
             this.cbFlybys = new DarkUI.Controls.DarkCheckBox();
             this.cbStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbOtherMoveables = new DarkUI.Controls.DarkCheckBox();
@@ -82,7 +82,7 @@
             // 
             // panelControls
             // 
-            this.panelControls.Controls.Add(this.ehLuaTextEditor);
+            this.panelControls.Controls.Add(this.tbScript);
             this.panelControls.Controls.Add(this.cbFlybys);
             this.panelControls.Controls.Add(this.cbStatics);
             this.panelControls.Controls.Add(this.cbOtherMoveables);
@@ -99,17 +99,16 @@
             this.panelControls.Size = new System.Drawing.Size(719, 393);
             this.panelControls.TabIndex = 87;
             // 
-            // ehLuaTextEditor
+            // tbScript
             // 
-            this.ehLuaTextEditor.AllowDrop = true;
-            this.ehLuaTextEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ehLuaTextEditor.Location = new System.Drawing.Point(6, 37);
-            this.ehLuaTextEditor.Name = "ehLuaTextEditor";
-            this.ehLuaTextEditor.Size = new System.Drawing.Size(708, 294);
-            this.ehLuaTextEditor.TabIndex = 22;
-            this.ehLuaTextEditor.Child = null;
+            this.tbScript.AllowDrop = true;
+            this.tbScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tbScript.Location = new System.Drawing.Point(6, 37);
+            this.tbScript.Name = "tbScript";
+            this.tbScript.Size = new System.Drawing.Size(708, 297);
+            this.tbScript.TabIndex = 22;
+            this.tbScript.DragDrop += new System.Windows.Forms.DragEventHandler(this.textEditor_DragDrop);
+            this.tbScript.DragEnter += new System.Windows.Forms.DragEventHandler(this.textEditor_DragEnter);
             // 
             // cbFlybys
             // 
@@ -248,6 +247,6 @@
         private DarkUI.Controls.DarkCheckBox cbNPC;
         private DarkUI.Controls.DarkCheckBox cbStatics;
         private DarkUI.Controls.DarkCheckBox cbFlybys;
-        private System.Windows.Forms.Integration.ElementHost ehLuaTextEditor;
+        private TombLib.Scripting.Forms.Controls.LuaTextBox tbScript;
     }
 }
