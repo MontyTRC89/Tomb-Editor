@@ -87,9 +87,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="ProjectChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\TablessTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

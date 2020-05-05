@@ -61,9 +61,6 @@
     <Compile Include="Controls\Settings\SettingsClassicScript.Designer.cs">
       <DependentUpon>SettingsClassicScript.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TablessTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Forms\FormTextEditorSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +90,10 @@
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TombLib.Forms\TombLib.Forms.csproj">
+      <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
+      <Name>TombLib.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombLib.Scripting\TombLib.Scripting.csproj">
       <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
