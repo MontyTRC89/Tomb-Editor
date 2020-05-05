@@ -6,12 +6,12 @@ using System.Windows.Media;
 
 namespace TombLib.Scripting.Objects
 {
-	/// <summary>
-	/// Implements AvalonEdit ICompletionData interface to provide the entries in the completion drop down.
-	/// </summary>
-	public sealed class CompletionData : ICompletionData
-	{
-		public CompletionData(string text) => Text = text;
+    /// <summary>
+    /// Implements AvalonEdit ICompletionData interface to provide the entries in the completion drop down.
+    /// </summary>
+    public sealed class CompletionData : ICompletionData
+    {
+        public CompletionData(string text) { Text = text; }
 
 		public ImageSource Image { get { return null; } }
 

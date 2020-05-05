@@ -119,9 +119,10 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 			}
 		}
 
-		public IEnumerable<HighlightingColor> NamedHighlightingColors => throw new NotImplementedException();
-		public IDictionary<string, string> Properties => throw new NotImplementedException();
-		public HighlightingColor GetNamedColor(string name) => throw new NotImplementedException();
-		public HighlightingRuleSet GetNamedRuleSet(string name) => throw new NotImplementedException();
-	}
+        public IEnumerable<HighlightingColor> NamedHighlightingColors { get { throw new NotImplementedException(); } }
+        public IDictionary<string, string> Properties { get { throw new NotImplementedException(); } }
+
+        public HighlightingColor GetNamedColor(string name) { throw new NotImplementedException(); }
+        public HighlightingRuleSet GetNamedRuleSet(string name) { throw new NotImplementedException(); }
+    }
 }
