@@ -51,6 +51,7 @@ namespace TombLib.Scripting.Forms.Controls
             {
                 _textEditor = new LuaTextEditor();
                 _textEditor.AllowDrop = true;
+                _textEditor.WordWrap = true;
                 _textEditor.DragEnter += textEditor_DragEnter;
                 ehTextEditor.Child = _textEditor;
 
