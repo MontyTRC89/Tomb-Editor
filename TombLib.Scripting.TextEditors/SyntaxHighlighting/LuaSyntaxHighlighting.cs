@@ -22,50 +22,66 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 
 				ruleSet.Name = "LUA Rules";
 
-                ruleSet.Rules.Add(new HighlightingRule
-                {
-                    Regex = new Regex(LuaPatterns.Values, RegexOptions.IgnoreCase),
-                    Color = new HighlightingColor
-                    {
-                        Foreground = new SimpleHighlightingBrush(Colors.SpringGreen)
-                    }
-                });
+				ruleSet.Rules.Add(new HighlightingRule
+				{
+					Regex = new Regex(LuaPatterns.Values, RegexOptions.IgnoreCase),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush(Colors.SpringGreen)
+					}
+				});
 
-                ruleSet.Rules.Add(new HighlightingRule
-                {
-                    Regex = new Regex(LuaPatterns.Keywords, RegexOptions.IgnoreCase),
-                    Color = new HighlightingColor
-                    {
-                        Foreground = new SimpleHighlightingBrush(Colors.MediumAquamarine)
-                    }
-                });
+				ruleSet.Rules.Add(new HighlightingRule
+				{
+					Regex = new Regex(LuaPatterns.Keywords, RegexOptions.IgnoreCase),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush(Colors.MediumAquamarine)
+					}
+				});
 
-                ruleSet.Rules.Add(new HighlightingRule
-                {
-                    Regex = new Regex(LuaPatterns.Operators, RegexOptions.IgnoreCase),
-                    Color = new HighlightingColor
-                    {
-                        Foreground = new SimpleHighlightingBrush(Colors.Orange)
-                    }
-                });
+				ruleSet.Rules.Add(new HighlightingRule
+				{
+					Regex = new Regex(LuaPatterns.Operators, RegexOptions.IgnoreCase),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush(Colors.Orange)
+					}
+				});
 
-                ruleSet.Rules.Add(new HighlightingRule
-                {
-                    Regex = new Regex(LuaPatterns.Comments),
-                    Color = new HighlightingColor
-                    {
-                        Foreground = new SimpleHighlightingBrush(Colors.DarkGreen)
-                    }
-                });
+				ruleSet.Rules.Add(new HighlightingRule
+				{
+					Regex = new Regex(LuaPatterns.SpecialOperators, RegexOptions.IgnoreCase),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush(Colors.Orange)
+					}
+				});
 
-                return ruleSet;
+				ruleSet.Rules.Add(new HighlightingRule
+				{
+					Regex = new Regex(LuaPatterns.Comments),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush(Colors.DarkGreen)
+					}
+				});
+
+				return ruleSet;
 			}
 		}
 
 		public IEnumerable<HighlightingColor> NamedHighlightingColors { get { throw new NotImplementedException(); } }
 		public IDictionary<string, string> Properties { get { throw new NotImplementedException(); } }
 
-        public HighlightingColor GetNamedColor(string name) { throw new NotImplementedException(); }
-        public HighlightingRuleSet GetNamedRuleSet(string name) { throw new NotImplementedException(); }
+		public HighlightingColor GetNamedColor(string name)
+		{
+			throw new NotImplementedException();
+		}
+
+		public HighlightingRuleSet GetNamedRuleSet(string name)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
