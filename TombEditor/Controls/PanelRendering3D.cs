@@ -2767,10 +2767,6 @@ namespace TombEditor.Controls
                 if (instance.Model?.DirectXModel == null)
                     continue;
 
-                var room = instance.Room;
-                var roomIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
-
-
                 if (k != 0 && (lastPass || _lastObject.Model.UniqueID != instance.Model.UniqueID))
                 {
                     var currentInstance = geoGroup.Last();
