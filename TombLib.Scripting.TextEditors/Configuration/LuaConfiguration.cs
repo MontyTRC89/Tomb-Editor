@@ -11,10 +11,12 @@ namespace TombLib.Scripting.TextEditors.Configuration
 		[XmlIgnore]
 		public LuaColors Colors = new LuaColors().Load<LuaColors>();
 
-		// TODO
+        // TODO
 
-		public LuaConfiguration() =>
-			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), "LuaConfiguration.xml");
+        public LuaConfiguration()
+        {
+            DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), "LuaConfiguration.xml");
+        }
 
 		public new void Save()
 		{

@@ -10,7 +10,7 @@ namespace TombLib.Scripting.TextEditors.Rendering
 	{
 		private TextEditorBase _editor;
 
-		public ErrorRenderer(TextEditorBase e) => _editor = e;
+        public ErrorRenderer(TextEditorBase e) { _editor = e; }
 		public KnownLayer Layer { get { return KnownLayer.Caret; } }
 
 		public void Draw(TextView textView, DrawingContext drawingContext)

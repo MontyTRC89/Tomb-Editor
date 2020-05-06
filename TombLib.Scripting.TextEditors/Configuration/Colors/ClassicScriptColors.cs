@@ -15,7 +15,9 @@ namespace TombLib.Scripting.TextEditors.Configuration.Colors
 		public string Comments { get; set; } = ColorTranslator.ToHtml(Color.Green);
 		public string UnknownCommands { get; set; } = ColorTranslator.ToHtml(Color.Red);
 
-		public ClassicScriptColors() =>
-			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorColorConfigsPath(), "ClassicScript.xml");
+        public ClassicScriptColors()
+        {
+            DefaultPath = Path.Combine(DefaultPaths.GetTextEditorColorConfigsPath(), "ClassicScript.xml");
+        }
 	}
 }
