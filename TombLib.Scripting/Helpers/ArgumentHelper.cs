@@ -6,15 +6,14 @@ namespace TombLib.Scripting.Helpers
 	{
 		public static int GetArgumentIndexAtOffset(TextDocument document, int offset)
 		{
-			string wholeLineText = CommandHelper.GetWholeCommandLine(document, offset);
+			string wholeLineText = CommandHelper.GetWholeCommandLineText(document, offset);
 
 			if (wholeLineText == null)
 				return -1;
 
 			int totalArgumentCount = wholeLineText.Split(',').Length;
 
-			int commandStartLineNumber = CommandHelper.GetCommandStartLineNumber(document, offset);
-			DocumentLine commandStartLine = document.GetLineByNumber(commandStartLineNumber);
+			DocumentLine commandStartLine = CommandHelper.GetCommandStartLine(document, offset);
 			int wholeLineSubstringOffsetIndex = offset - commandStartLine.Offset;
 
 			string textAfterOffset = wholeLineText.Remove(0, wholeLineSubstringOffsetIndex);

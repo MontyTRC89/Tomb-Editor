@@ -17,7 +17,7 @@ namespace TombLib.Scripting.ErrorDetection
 		{
 			List<ErrorLine> errorLines = new List<ErrorLine>();
 
-			bool commandSectionCheckRequired = DocumentContainsSections(document);
+			bool commandSectionCheckRequired = DocumentHelper.DocumentContainsSections(document);
 
 			foreach (DocumentLine processedLine in document.Lines)
 			{
@@ -179,7 +179,7 @@ namespace TombLib.Scripting.ErrorDetection
 
 		private static bool IsArgumentCountValid(TextDocument document, int lineOffset)
 		{
-			string lineText = CommandHelper.GetWholeCommandLine(document, lineOffset);
+			string lineText = CommandHelper.GetWholeCommandLineText(document, lineOffset);
 
 			if (lineText == null)
 				return false;
@@ -206,7 +206,7 @@ namespace TombLib.Scripting.ErrorDetection
 					int correctArgumentCount = entry.Value.ToString().Split(']')[1].Split(',').Length;
 
 					if (entry.Value.ToString().ToUpper().Contains("ARRAY"))
-						return argumentCount >= correctArgumentCount - 1; // TODO: Check if -1 is correct
+						return true; // Whatever.
 					else
 						return argumentCount == correctArgumentCount;
 				}
@@ -215,22 +215,5 @@ namespace TombLib.Scripting.ErrorDetection
 		}
 
 		#endregion Error detection methods
-
-		#region Boolean region
-
-		private static bool DocumentContainsSections(TextDocument document)
-		{
-			foreach (DocumentLine processedLine in document.Lines)
-			{
-				string processedLineText = document.GetText(processedLine.Offset, processedLine.Length);
-
-				if (LineHelper.IsSectionHeaderLine(processedLineText))
-					return true;
-			}
-
-			return false;
-		}
-
-		#endregion Boolean region
 	}
 }
