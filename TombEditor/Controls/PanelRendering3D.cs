@@ -2705,7 +2705,7 @@ namespace TombEditor.Controls
                             if (!disableSelection && _editor.SelectedObject == mov) // Selection
                                 skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                             else
-                                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? currentInstance.Color : new Vector3(1.0f));
+                                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? mov.Color : new Vector3(1.0f));
 
                             Matrix4x4 world = model.AnimationTransforms[i] * mov.ObjectMatrix;
                             skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -2888,7 +2888,7 @@ namespace TombEditor.Controls
                             if (!disableSelection && _editor.SelectedObject == st)
                                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                             else
-                                staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? instance.Color : new Vector3(1.0f));
+                                staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? st.Color : new Vector3(1.0f));
 
                             staticMeshEffect.Parameters["ModelViewProjection"].SetValue((st.ObjectMatrix * viewProjection).ToSharpDX());
                             staticMeshEffect.Techniques[0].Passes[0].Apply();
