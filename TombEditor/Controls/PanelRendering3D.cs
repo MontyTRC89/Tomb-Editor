@@ -3097,7 +3097,7 @@ namespace TombEditor.Controls
             List<MoveableInstance> moveablesToDraw = new List<MoveableInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
                 moveablesToDraw.AddRange(roomsToDraw[i].Objects.OfType<MoveableInstance>());
-            moveablesToDraw.Sort(new Comparer(_editor.Level));
+            moveablesToDraw.Sort(new Comparer());
             return moveablesToDraw;
         }
 
@@ -3106,7 +3106,7 @@ namespace TombEditor.Controls
             List<StaticInstance> staticsToDraw = new List<StaticInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
                 staticsToDraw.AddRange(roomsToDraw[i].Objects.OfType<StaticInstance>());
-            staticsToDraw.Sort(new Comparer(_editor.Level));
+            staticsToDraw.Sort(new Comparer());
             return staticsToDraw;
         }
 
@@ -3115,7 +3115,8 @@ namespace TombEditor.Controls
             List<ImportedGeometryInstance> importedGeometryToDraw = new List<ImportedGeometryInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
                 importedGeometryToDraw.AddRange(roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>());
-            return importedGeometryToDraw.OrderBy(item => item.Model.UniqueID).ToList();
+            importedGeometryToDraw.Sort(new Comparer());
+            return importedGeometryToDraw;
         }
 
         // Do NOT call this method to redraw the scene!
@@ -3386,17 +3387,8 @@ namespace TombEditor.Controls
             _drawFlybyPath = true;
         }
 
-        private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>
+        private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>, IComparer<ImportedGeometryInstance>
         {
-            private readonly Dictionary<Room, int> _rooms = new Dictionary<Room, int>();
-
-            public Comparer(Level level)
-            {
-                for (int i = 0; i < level.Rooms.Length; ++i)
-                    if (level.Rooms[i] != null)
-                        _rooms.Add(level.Rooms[i], i);
-            }
-
             public int Compare(StaticInstance x, StaticInstance y)
             {
                 return x.WadObjectId.TypeId.CompareTo(y.WadObjectId.TypeId);
@@ -3405,6 +3397,11 @@ namespace TombEditor.Controls
             public int Compare(MoveableInstance x, MoveableInstance y)
             {
                 return x.WadObjectId.TypeId.CompareTo(y.WadObjectId.TypeId);
+            }
+
+            public int Compare(ImportedGeometryInstance x, ImportedGeometryInstance y)
+            {
+                return x.Model.UniqueID.GetHashCode().CompareTo(y.Model.UniqueID.GetHashCode());
             }
         }
 
