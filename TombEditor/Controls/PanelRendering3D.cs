@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
