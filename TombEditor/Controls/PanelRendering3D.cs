@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
@@ -3077,6 +3078,46 @@ namespace TombEditor.Controls
                 _editor.Configuration.UI_ColorScheme.ColorFlipRoom :
                 (ShowHorizon ? new Vector4(0) : _editor.Configuration.UI_ColorScheme.Color3DBackground);
 
+        Room[] CollectRoomsToDraw()
+        {
+            // Collect rooms to draw
+            Room[] roomsToDraw = CollectRoomsToDraw(_editor.SelectedRoom).ToArray();
+            float[] roomsToDrawDistanceSquared = new float[roomsToDraw.Length];
+            for (int i = 0; i < roomsToDraw.Length; ++i)
+                roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(Camera.GetPosition(), roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
+
+            Array.Sort(roomsToDrawDistanceSquared, roomsToDraw);
+            Array.Reverse(roomsToDraw);
+
+            return roomsToDraw;
+        }
+
+        List<MoveableInstance> CollectMoveablesToDraw(Room[] roomsToDraw)
+        {
+            List<MoveableInstance> moveablesToDraw = new List<MoveableInstance>();
+            for (int i = 0; i < roomsToDraw.Length; i++)
+                moveablesToDraw.AddRange(roomsToDraw[i].Objects.OfType<MoveableInstance>());
+            moveablesToDraw.Sort(new Comparer(_editor.Level));
+            return moveablesToDraw;
+        }
+
+        List<StaticInstance> CollectStaticsToDraw(Room[] roomsToDraw)
+        {
+            List<StaticInstance> staticsToDraw = new List<StaticInstance>();
+            for (int i = 0; i < roomsToDraw.Length; i++)
+                staticsToDraw.AddRange(roomsToDraw[i].Objects.OfType<StaticInstance>());
+            staticsToDraw.Sort(new Comparer(_editor.Level));
+            return staticsToDraw;
+        }
+
+        List<ImportedGeometryInstance> CollectImportedGeometryToDraw(Room[] roomsToDraw)
+        {
+            List<ImportedGeometryInstance> importedGeometryToDraw = new List<ImportedGeometryInstance>();
+            for (int i = 0; i < roomsToDraw.Length; i++)
+                importedGeometryToDraw.AddRange(roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>());
+            return importedGeometryToDraw.OrderBy(item => item.Model.UniqueID).ToList();
+        }
+
         // Do NOT call this method to redraw the scene!
         // Call Invalidate() instead to schedule a redraw in the message loop.
         protected override void OnDraw()
@@ -3107,29 +3148,12 @@ namespace TombEditor.Controls
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-            // Collect rooms to draw
-            Room[] roomsToDraw = CollectRoomsToDraw(_editor.SelectedRoom).ToArray();
-            float[] roomsToDrawDistanceSquared = new float[roomsToDraw.Length];
-            for (int i = 0; i < roomsToDraw.Length; ++i)
-                roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(Camera.GetPosition(), roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
-
-            Array.Sort(roomsToDrawDistanceSquared, roomsToDraw);
-            Array.Reverse(roomsToDraw);
-
-            // Collect objects to draw
-            List<MoveableInstance> moveablesToDraw = new List<MoveableInstance>();
-            List<StaticInstance> staticsToDraw = new List<StaticInstance>();
-            List<ImportedGeometryInstance> importedGeometryToDraw = new List<ImportedGeometryInstance>();
-            for (int i = 0; i < roomsToDraw.Length; i++)
-            {
-                moveablesToDraw.AddRange(roomsToDraw[i].Objects.OfType<MoveableInstance>());
-                staticsToDraw.AddRange(roomsToDraw[i].Objects.OfType<StaticInstance>());
-                importedGeometryToDraw.AddRange(roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>());
-            }
-            var comparer = new Comparer(_editor.Level);
-            moveablesToDraw.Sort(comparer);
-            staticsToDraw.Sort(comparer);
+            
+            // Collect stuff to draw
+            var roomsToDraw = CollectRoomsToDraw();
+            var moveablesToDraw = CollectMoveablesToDraw(roomsToDraw);
+            var staticsToDraw = CollectStaticsToDraw(roomsToDraw);
+            var importedGeometryToDraw = CollectImportedGeometryToDraw(roomsToDraw);
 
             // Draw room names
             if (ShowRoomNames)
