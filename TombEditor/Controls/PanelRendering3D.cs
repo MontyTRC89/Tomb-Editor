@@ -1954,11 +1954,10 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
-        private int DrawGhostBlocks(Matrix4x4 viewProjection, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw)
+        private void DrawGhostBlocks(Matrix4x4 viewProjection, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw)
         {
-            int result = 0;
             if (ghostBlocksToDraw.Count == 0)
-                return 0;
+                return;
 
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
@@ -1966,6 +1965,9 @@ namespace TombEditor.Controls
             var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
 
             int selectedIndex = -1;
+            int lastIndex     = -1;
+            bool selectedCornerDrawn = false;
+            bool lastSelectedCorner  = false;
 
             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
@@ -1980,9 +1982,6 @@ namespace TombEditor.Controls
             for (int i = 0; i < ghostBlocksToDraw.Count; i++)
             {
                 var instance = ghostBlocksToDraw[i];
-                int lastIndex = -1;
-                bool selectedCornerDrawn = false;
-                bool lastSelectedCorner = false;
 
                 if (_editor.SelectedObject == instance)
                     selectedIndex = i;
@@ -2016,7 +2015,6 @@ namespace TombEditor.Controls
                             effect.Parameters["ModelViewProjection"].SetValue((instance.ControlMatrixes(floor)[j] * viewProjection).ToSharpDX());
                             effect.Techniques[0].Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-                            result += _littleCube.IndexBuffer.ElementCount;
 
                             // Bring back solid state and lock it forever
                             if (lastSelectedCorner != selectedCornerDrawn)
@@ -2032,7 +2030,6 @@ namespace TombEditor.Controls
                     effect.Parameters["ModelViewProjection"].SetValue((instance.CenterMatrix(true) * viewProjection).ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-                    result += _littleCube.IndexBuffer.ElementCount;
                 }
             }
 
@@ -2214,22 +2211,16 @@ namespace TombEditor.Controls
                 effect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
                 effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.TriangleList, 84);
-
-                result += vtxs.Length;
             }
 
             // Bring back old vb or forthcoming code may crash
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-
-            return result;
         }
 
-        private int DrawVolumes(Matrix4x4 viewProjection, List<VolumeInstance> volumesToDraw, List<Text> textToDraw)
+        private void DrawVolumes(Matrix4x4 viewProjection, List<VolumeInstance> volumesToDraw, List<Text> textToDraw)
         {
-            int result = 0;
-
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
             var drawVolume = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
@@ -2239,8 +2230,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
 
-            VolumeShape currentShape = VolumeShape.Box;
-
+            var currentShape = VolumeShape.Box;
             int selectedIndex = -1;
             int lastIndex = -1;
             int elementCount = _littleCube.IndexBuffer.ElementCount;
@@ -2277,7 +2267,6 @@ namespace TombEditor.Controls
                 effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
                 effect.Techniques[0].Passes[0].Apply();
                 _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
-                result += elementCount;
             }
 
             // Reset last index back to default
@@ -2293,7 +2282,6 @@ namespace TombEditor.Controls
                     Matrix4x4 model;
                     var instance = volumesToDraw[i];
                     var shape = instance.Shape();
-                    var selected = i == selectedIndex;
 
                     // Switch colours
                     if (selectedIndex >= 0 && i == selectedIndex)
@@ -2358,18 +2346,11 @@ namespace TombEditor.Controls
                     effect.CurrentTechnique.Passes[0].Apply();
 
                     if (shape == VolumeShape.Prism)
-                    {
                         _legacyDevice.Draw(PrimitiveType.TriangleList, 24);
-                        result += 24;
-                    }
                     else
-                    {
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
-                        result += elementCount;
-                    }
                 }
             }
-            return result;
         }
 
         private void DrawObjects(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
@@ -2661,12 +2642,10 @@ namespace TombEditor.Controls
             SwapChain.ClearDepth();
         }
 
-        private int DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw, bool disableSelection = false)
+        private void DrawMoveables(Matrix4x4 viewProjection, List<MoveableInstance> moveablesToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
-            int result = 0;
-
             if (moveablesToDraw.Count == 0)
-                return 0;
+                return;
 
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
@@ -2720,10 +2699,7 @@ namespace TombEditor.Controls
                             skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                             foreach (var submesh in mesh.Submeshes)
-                            {
                                 _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                                result += submesh.Value.NumIndices;
-                            }
                         }
                     }
 
@@ -2759,15 +2735,12 @@ namespace TombEditor.Controls
 
                 _lastObject = instance;
             }
-            return result;
         }
 
-        private int DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw, bool disableSelection = false)
+        private void DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
-            int result = 0;
-
             if (importedGeometryToDraw.Count == 0)
-                return 0;
+                return;
 
             var geometryEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
 
@@ -2832,7 +2805,6 @@ namespace TombEditor.Controls
 
                                 geometryEffect.Techniques[0].Passes[0].Apply();
                                 _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                                result += submesh.Value.NumIndices;
                             }
                         }
                     }
@@ -2858,14 +2830,12 @@ namespace TombEditor.Controls
 
                 _lastObject = instance;
             }
-            return result;
         }
 
-        private int DrawStatics(Matrix4x4 viewProjection, List<StaticInstance> staticsToDraw, List<Text> textToDraw, bool disableSelection = false)
+        private void DrawStatics(Matrix4x4 viewProjection, List<StaticInstance> staticsToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             if (staticsToDraw.Count == 0)
-                return 0;
-            int result = 0;
+                return;
 
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
@@ -2911,10 +2881,7 @@ namespace TombEditor.Controls
                             staticMeshEffect.Techniques[0].Passes[0].Apply();
 
                             foreach (var submesh in mesh.Submeshes)
-                            {
                                 _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                                result += submesh.Value.NumIndices;
-                            }
                         }
                     }
 
@@ -2947,7 +2914,6 @@ namespace TombEditor.Controls
 
                 _lastObject = instance;
             }
-            return result;
         }
 
         private Text CreateTextTagForObject(Matrix4x4 matrix, string message)
@@ -3151,7 +3117,7 @@ namespace TombEditor.Controls
         {
             var ghostBlocksToDraw = new List<GhostBlockInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
-                ghostBlocksToDraw.AddRange(roomsToDraw[i].GhostBlocks.Where(g => g.Valid == true));
+                ghostBlocksToDraw.AddRange(roomsToDraw[i].GhostBlocks);
             return ghostBlocksToDraw;
         }
 
@@ -3162,8 +3128,6 @@ namespace TombEditor.Controls
             // Verify that editor is ready
             if (_editor == null || _editor.Level == null || _editor.SelectedRoom == null || _legacyDevice == null)
                 return;
-
-            int vertexCount = 0;
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -3256,9 +3220,9 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 if (ShowMoveables)
-                    vertexCount += DrawMoveables(viewProjection, moveablesToDraw, textToDraw, hiddenSelection);
+                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, hiddenSelection);
                 if (ShowStatics)
-                    vertexCount += DrawStatics(viewProjection, staticsToDraw, textToDraw, hiddenSelection);
+                    DrawStatics(viewProjection, staticsToDraw, textToDraw, hiddenSelection);
 
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
@@ -3274,7 +3238,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 // Draw imported geometry
-                vertexCount += DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
+                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
 
                 // Reset GPU states
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -3284,11 +3248,11 @@ namespace TombEditor.Controls
 
             // Draw ghost blocks
             if (ShowGhostBlocks)
-                vertexCount += DrawGhostBlocks(viewProjection, ghostBlocksToDraw, textToDraw);
+                DrawGhostBlocks(viewProjection, ghostBlocksToDraw, textToDraw);
 
             // Draw volumes
             if (ShowVolumes)
-                vertexCount += DrawVolumes(viewProjection, volumesToDraw, textToDraw);
+                DrawVolumes(viewProjection, volumesToDraw, textToDraw);
 
             if (ShowOtherObjects)
             {
@@ -3313,7 +3277,7 @@ namespace TombEditor.Controls
 
             string DebugString = "";
             if (_editor.Configuration.Rendering3D_ShowFPS)
-                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", vertices: " + (vertexCount + roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count)) + "\n";
+                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Room vertices: " + (roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count)) + "\n";
 
             if (_editor.Configuration.Rendering3D_ShowRenderingStatistics)
                 DebugString += "Rooms: " + roomsToDraw.Length + ", Moveables: " + moveablesToDraw.Count + ", Static Meshes: " + staticsToDraw.Count + "\n";
