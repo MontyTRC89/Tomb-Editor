@@ -2016,7 +2016,7 @@ namespace TombEditor.Controls
                             effect.Parameters["ModelViewProjection"].SetValue((instance.ControlMatrixes(floor)[j] * viewProjection).ToSharpDX());
                             effect.Techniques[0].Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-                            result += _littleCube.IndexBuffer.ElementCount / 3;
+                            result += _littleCube.IndexBuffer.ElementCount;
 
                             // Bring back solid state and lock it forever
                             if (lastSelectedCorner != selectedCornerDrawn)
@@ -2032,7 +2032,7 @@ namespace TombEditor.Controls
                     effect.Parameters["ModelViewProjection"].SetValue((instance.CenterMatrix(true) * viewProjection).ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-                    result += _littleCube.IndexBuffer.ElementCount / 3;
+                    result += _littleCube.IndexBuffer.ElementCount;
                 }
             }
 
@@ -2277,7 +2277,7 @@ namespace TombEditor.Controls
                 effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
                 effect.Techniques[0].Passes[0].Apply();
                 _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
-                result += elementCount / 3;
+                result += elementCount;
             }
 
             // Reset last index back to default
@@ -2360,12 +2360,12 @@ namespace TombEditor.Controls
                     if (shape == VolumeShape.Prism)
                     {
                         _legacyDevice.Draw(PrimitiveType.TriangleList, 24);
-                        result += 24 / 3;
+                        result += 24;
                     }
                     else
                     {
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
-                        result += elementCount / 3;
+                        result += elementCount;
                     }
                 }
             }
@@ -2720,9 +2720,10 @@ namespace TombEditor.Controls
                             skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                             foreach (var submesh in mesh.Submeshes)
+                            {
                                 _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-
-                            result += mesh.Vertices.Count;
+                                result += submesh.Value.NumIndices;
+                            }
                         }
                     }
 
@@ -2831,8 +2832,8 @@ namespace TombEditor.Controls
 
                                 geometryEffect.Techniques[0].Passes[0].Apply();
                                 _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                                result += submesh.Value.NumIndices;
                             }
-                            result += mesh.Vertices.Count;
                         }
                     }
 
@@ -2910,9 +2911,10 @@ namespace TombEditor.Controls
                             staticMeshEffect.Techniques[0].Passes[0].Apply();
 
                             foreach (var submesh in mesh.Submeshes)
+                            {
                                 _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-
-                            result += mesh.Vertices.Count;
+                                result += submesh.Value.NumIndices;
+                            }
                         }
                     }
 
