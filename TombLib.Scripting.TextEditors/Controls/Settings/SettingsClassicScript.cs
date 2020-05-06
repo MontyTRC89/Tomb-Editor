@@ -12,7 +12,7 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 	{
 		// TODO: Refactor
 
-		private ScriptTextEditor textBox;
+		private ScriptTextEditor editorPreview;
 
 		private TextEditorConfigurations _config;
 
@@ -24,7 +24,7 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			comboBox_FontFamily.Items.AddRange(monospacedFontList.ToArray());
 
-			textBox = new ScriptTextEditor
+			editorPreview = new ScriptTextEditor
 			{
 				Text = "[Level]\nRain=ENABLED,12   ; Has error\nLayer1=128,128,>\n\t\t128,-8\nMirror=69,$2137\n[Level]",
 				Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values)),
@@ -34,9 +34,9 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 				VerticalScrollBarVisibility = System.Windows.Controls.ScrollBarVisibility.Hidden
 			};
 
-			textBox.TextArea.Margin = new Thickness(6);
+			editorPreview.TextArea.Margin = new Thickness(6);
 
-			elementHost.Child = textBox;
+			elementHost.Child = editorPreview;
 
 			UpdateControlsWithSettings();
 		}
@@ -108,38 +108,38 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			ApplySettings();
 
-			textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values));
-			textBox.SyntaxHighlighting = new ScriptSyntaxHighlighting();
+			editorPreview.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values));
+			editorPreview.SyntaxHighlighting = new ScriptSyntaxHighlighting();
 		}
 
 		private void checkBox_PreEqualSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Text = checkBox_PreEqualSpace.Checked ? textBox.Text.Replace("=", " =") : textBox.Text.Replace(" =", "=");
-			textBox.Focus();
+			editorPreview.Text = checkBox_PreEqualSpace.Checked ? editorPreview.Text.Replace("=", " =") : editorPreview.Text.Replace(" =", "=");
+			editorPreview.Focus();
 		}
 
 		private void checkBox_PostEqualSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Text = checkBox_PostEqualSpace.Checked ? textBox.Text.Replace("=", "= ") : textBox.Text.Replace("= ", "=");
-			textBox.Focus();
+			editorPreview.Text = checkBox_PostEqualSpace.Checked ? editorPreview.Text.Replace("=", "= ") : editorPreview.Text.Replace("= ", "=");
+			editorPreview.Focus();
 		}
 
 		private void checkBox_PreCommaSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Text = checkBox_PreCommaSpace.Checked ? textBox.Text.Replace(",", " ,") : textBox.Text.Replace(" ,", ",");
-			textBox.Focus();
+			editorPreview.Text = checkBox_PreCommaSpace.Checked ? editorPreview.Text.Replace(",", " ,") : editorPreview.Text.Replace(" ,", ",");
+			editorPreview.Focus();
 		}
 
 		private void checkBox_PostCommaSpace_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Text = checkBox_PostCommaSpace.Checked ? textBox.Text.Replace(",", ", ") : textBox.Text.Replace(", ", ",");
-			textBox.Focus();
+			editorPreview.Text = checkBox_PostCommaSpace.Checked ? editorPreview.Text.Replace(",", ", ") : editorPreview.Text.Replace(", ", ",");
+			editorPreview.Focus();
 		}
 
 		private void checkBox_ReduceSpaces_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Text = checkBox_ReduceSpaces.Checked ? textBox.Text.Replace("  ;", ";") : textBox.Text.Replace(";", "  ;");
-			textBox.Focus();
+			editorPreview.Text = checkBox_ReduceSpaces.Checked ? editorPreview.Text.Replace("  ;", ";") : editorPreview.Text.Replace(";", "  ;");
+			editorPreview.Focus();
 		}
 
 		private void button_Color_Click(object sender, EventArgs e) =>
@@ -154,8 +154,8 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			ApplySettings();
 
-			textBox.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values));
-			textBox.SyntaxHighlighting = new ScriptSyntaxHighlighting();
+			editorPreview.Foreground = new System.Windows.Media.SolidColorBrush((System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(_config.ClassicScript.Colors.Values));
+			editorPreview.SyntaxHighlighting = new ScriptSyntaxHighlighting();
 		}
 
 		public void ApplySettings()
@@ -195,67 +195,67 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 		public void UpdatePreview()
 		{
-			textBox.Focus();
+			editorPreview.Focus();
 		}
 
 		private void checkBox_LiveErrors_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
+			editorPreview.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
 
-			if (textBox.LiveErrorUnderlining)
-				textBox.ManuallyCheckForErrors();
+			if (editorPreview.LiveErrorUnderlining)
+				editorPreview.ManuallyCheckForErrors();
 			else
-				textBox.ResetErrorsOnAllLines();
+				editorPreview.ResetErrorsOnAllLines();
 
-			textBox.Focus();
+			editorPreview.Focus();
 		}
 
 		private void checkBox_LineNumbers_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.ShowLineNumbers = checkBox_LineNumbers.Checked;
-			textBox.Focus();
+			editorPreview.ShowLineNumbers = checkBox_LineNumbers.Checked;
+			editorPreview.Focus();
 		}
 
 		private void checkBox_SectionSeparators_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
-			textBox.Focus();
+			editorPreview.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
+			editorPreview.Focus();
 		}
 
 		private void checkBox_VisibleSpaces_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Options.ShowSpaces = checkBox_VisibleSpaces.Checked;
-			textBox.Focus();
+			editorPreview.Options.ShowSpaces = checkBox_VisibleSpaces.Checked;
+			editorPreview.Focus();
 		}
 
 		private void checkBox_VisibleTabs_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.Options.ShowTabs = checkBox_VisibleTabs.Checked;
-			textBox.Focus();
+			editorPreview.Options.ShowTabs = checkBox_VisibleTabs.Checked;
+			editorPreview.Focus();
 		}
 
 		private void checkBox_ToolTips_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.ShowDefinitionToolTips = checkBox_ToolTips.Checked;
-			textBox.Focus();
+			editorPreview.ShowDefinitionToolTips = checkBox_ToolTips.Checked;
+			editorPreview.Focus();
 		}
 
 		private void comboBox_FontFamily_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			textBox.FontFamily = new System.Windows.Media.FontFamily(comboBox_FontFamily.SelectedItem.ToString());
-			textBox.Focus();
+			editorPreview.FontFamily = new System.Windows.Media.FontFamily(comboBox_FontFamily.SelectedItem.ToString());
+			editorPreview.Focus();
 		}
 
 		private void numeric_FontSize_ValueChanged(object sender, EventArgs e)
 		{
-			textBox.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because WPF has a different font size scale
-			textBox.Focus();
+			editorPreview.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because WPF has a different font size scale
+			editorPreview.Focus();
 		}
 
 		private void checkBox_WordWrapping_CheckedChanged(object sender, EventArgs e)
 		{
-			textBox.WordWrap = checkBox_WordWrapping.Checked;
-			textBox.Focus();
+			editorPreview.WordWrap = checkBox_WordWrapping.Checked;
+			editorPreview.Focus();
 		}
 	}
 }
