@@ -931,13 +931,6 @@ namespace TombIDE.ScriptEditor
 			_textEditor = newTextEditor;
 
 			ApplySavedSettings();
-
-			_textEditor.Drop += NewTextEditor_Drop;
-		}
-
-		private void NewTextEditor_Drop(object sender, System.Windows.DragEventArgs e)
-		{
-			DarkMessageBox.Show("FMAP");
 		}
 
 		private TabPage FindTabPageOfFile(string filePath)

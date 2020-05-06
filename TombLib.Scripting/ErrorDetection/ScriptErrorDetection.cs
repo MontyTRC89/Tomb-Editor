@@ -206,7 +206,7 @@ namespace TombLib.Scripting.ErrorDetection
 					int correctArgumentCount = entry.Value.ToString().Split(']')[1].Split(',').Length;
 
 					if (entry.Value.ToString().ToUpper().Contains("ARRAY"))
-						return argumentCount >= correctArgumentCount - 1; // TODO: Check if -1 is correct
+						return true; // Whatever.
 					else
 						return argumentCount == correctArgumentCount;
 				}
