@@ -59,6 +59,8 @@ namespace TombEditor.Controls.ContextMenus
                         editor.Level.Settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(stat.WadObjectId.TypeId, true, false, false, false, editor.Level.Settings));
                     else
                         editor.Level.Settings.AutoStaticMeshMerges.RemoveAll(item => item.meshId == stat.WadObjectId.TypeId);
+
+                    _editor.MergedStaticsChange();
                 })
                 { Checked = isMerged });
             }

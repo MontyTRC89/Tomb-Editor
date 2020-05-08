@@ -5,6 +5,7 @@ Tomb Editor:
  * Refactored palette and added ability to sample palette from selected texture set.
  * Add "Clear Shades" option for merged statics, which ignores static mesh's own shades before applying lighting.
  * Add "Untextured Lighting" mode.
+ * Show real tint for merged static meshes.
  * Optimized 3D rendering: now up to 6 times more FPS in complex levels with lots of similar objects.
  * Allow editing ghost blocks with QAWS keys.
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
