@@ -106,7 +106,7 @@ namespace TombEditor.Controls
 
             if (Editable && e.Button == MouseButtons.Left)
             {
-                using (var colorDialog = new RealtimeColorDialog())
+                using (var colorDialog = new RealtimeColorDialog(Editor.Instance.Configuration.UI_ColorScheme))
                 {
                     colorDialog.Color = GetColorFromPalette(_selectedColorCoord);
                     if (colorDialog.ShowDialog(FindForm()) == DialogResult.OK)
