@@ -1839,7 +1839,7 @@ namespace TombLib.LevelData
 
                         // Do raytracing
                         float sampleSum = 0;
-                        if(dotN <= 0 || forRooms)
+                        if (dotN <= 0 || forRooms)
                         {
                             int numSamples;
                             if (highQuality)
@@ -1903,7 +1903,7 @@ namespace TombLib.LevelData
                         // Calculate the light direction
                         lightDirection = light.GetDirection();
 
-                        // calcolo la luce diffusa
+                        // Calculate diffuse lighting
                         float diffuse = -Vector3.Dot(lightDirection, normal);
 
                         if (diffuse <= 0)
@@ -1911,7 +1911,6 @@ namespace TombLib.LevelData
 
                         if (diffuse > 1)
                             diffuse = 1.0f;
-
 
                         float finalIntensity = diffuse * light.Intensity * 8192.0f * sampleSum;
                         if (finalIntensity < 0)

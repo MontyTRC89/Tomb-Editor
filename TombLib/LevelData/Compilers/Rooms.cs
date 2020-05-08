@@ -14,7 +14,7 @@ namespace TombLib.LevelData.Compilers
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
-        private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
+        private Dictionary<WadPolygon, Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
 
         private void BuildRooms()
@@ -303,7 +303,7 @@ namespace TombLib.LevelData.Compilers
 
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
-                    //check if static Mesh is in the Auto Merge list
+                    // Сheck if static Mesh is in the Auto Merge list
                     var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
                         mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
                     if (entry == null)
@@ -335,27 +335,26 @@ namespace TombLib.LevelData.Compilers
                         }
                         else
                         {
-                            if (!clearShades)
-                                //If we have shades, use them as a factor for the resulting vertex color
-                                if (j < wadStatic.Mesh.VerticesShades.Count)
-                                {
-                                    shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
-                                    shade = 1.0f - shade;
-                                }
+                            // If we have shades, use them as a factor for the resulting vertex color
+                            if (!clearShades && j < wadStatic.Mesh.VerticesShades.Count)
+                            {
+                                shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
+                                shade = 1.0f - shade;
+                            }
                         }
                         Vector3 color;
                         if(!entry.TintAsAmbient)
                         {
                             color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
-                            //Apply Shade factor
+                            // Apply Shade factor
                             color *= shade;
-                            //Apply Instance Color
+                            // Apply Instance Color
                             color *= staticMesh.Color;
                         }
                         else
                         {
                                 color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                                //Apply Shade factor
+                                // Apply Shade factor
                                 color *= shade;
                         }
                         
@@ -472,7 +471,7 @@ namespace TombLib.LevelData.Compilers
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true,room.AmbientLight*128));
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128));
                                 else
                                     trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
 
