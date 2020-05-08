@@ -421,6 +421,32 @@ namespace TombEditor.Forms
             base.Dispose(disposing);
         }
 
+        private void UpdateLevelSettings()
+        {
+            LevelSettings settings = _levelSettings.Clone();
+
+            settings.Wads.Clear();
+            foreach (var reference in _objectFileDataGridViewDataSource)
+                settings.Wads.Add(reference.Wad);
+
+            settings.SoundsCatalogs.Clear();
+            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
+                settings.SoundsCatalogs.Add(reference.Sounds);
+
+            settings.Textures.Clear();
+            foreach (var reference in _textureFileDataGridViewDataSource)
+                settings.Textures.Add(reference.Texture);
+
+            settings.AutoStaticMeshMerges.Clear();
+            foreach (var entry in _staticMeshMergeGridViewDataSource)
+            {
+                if (entry.Merge)
+                    settings.AutoStaticMeshMerges.Add(entry.Clone()); // HACK: Clone(), otherwise merge entries won't update!!!
+            }
+
+            _editor.UpdateLevelSettings(settings);
+        }
+
         private void UpdateDialog()
         {
             levelFilePathTxt.Text = _levelSettings.LevelFilePath;
@@ -1119,35 +1145,11 @@ namespace TombEditor.Forms
         }
 
         // Dialog buttons
-        private void butApply_Click(object sender, EventArgs e)
-        {
-            _editor.UpdateLevelSettings(_levelSettings.Clone());
-        }
+        private void butApply_Click(object sender, EventArgs e) => UpdateLevelSettings();
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            LevelSettings settings = _levelSettings.Clone();
-
-            settings.Wads.Clear();
-            foreach (var reference in _objectFileDataGridViewDataSource)
-                settings.Wads.Add(reference.Wad);
-
-            settings.SoundsCatalogs.Clear();
-            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
-                settings.SoundsCatalogs.Add(reference.Sounds);
-
-            settings.Textures.Clear();
-            foreach (var reference in _textureFileDataGridViewDataSource)
-                settings.Textures.Add(reference.Texture);
-
-            settings.AutoStaticMeshMerges.Clear();
-            foreach (var entry in _staticMeshMergeGridViewDataSource)
-            {
-                if (entry.Merge)
-                    settings.AutoStaticMeshMerges.Add(entry);
-            }
-
-            _editor.UpdateLevelSettings(settings);
+            UpdateLevelSettings();
             Close();
         }
 

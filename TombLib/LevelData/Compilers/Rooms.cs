@@ -342,7 +342,7 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
                         Vector3 color;
-                        if(!entry.TintAsAmbient)
+                        if (!entry.TintAsAmbient)
                         {
                             color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
                             // Apply Shade factor
