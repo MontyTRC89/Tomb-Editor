@@ -227,7 +227,7 @@ namespace TombEditor
                 else if (UndoObject is LightInstance)
                 {
                     ((LightInstance)UndoObject).Color = (Vector3)Property;
-                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport);
+                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 }
                 else if (UndoObject is SinkInstance)
                     ((SinkInstance)UndoObject).Strength = (short)Property;
