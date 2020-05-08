@@ -1788,14 +1788,10 @@ namespace TombLib.LevelData
                         if (light.IsObstructedByRoomGeometry)
                         {
                             if (!LightRayTrace(room, position, light.Position + samplePos))
-                            {
                                 sampleSum += 1.0f;
-                            }
                         }
                         else
-                        {
-                            sampleSum += 1;
-                        }
+                            sampleSum += 1.0f;
 
                     }
             sampleSum /= (numSamples * 1 * numSamples);
@@ -1838,7 +1834,7 @@ namespace TombLib.LevelData
                         float dotN = Vector3.Dot((!forRooms ? -lightVector : normal), normal);
 
                         // Do raytracing
-                        float sampleSum = 1;
+                        float sampleSum = 1.0f;
                         if (dotN <= 0 || forRooms)
                         {
                             int numSamples;
@@ -1886,7 +1882,7 @@ namespace TombLib.LevelData
                 case LightType.Sun:
                     {
                         // Do raytracing now for saving CPU later
-                        float sampleSum = 1;
+                        float sampleSum = 1.0f;
                         if (forRooms)
                         {
                             int numSamples;
@@ -1942,7 +1938,7 @@ namespace TombLib.LevelData
                         if (d < cosO2)
                             return Vector3.Zero;
 
-                        float sampleSum = 0;
+                        float sampleSum = 1.0f;
                         if (forRooms)
                         {
                             int numSamples;
