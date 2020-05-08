@@ -187,6 +187,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\AboutScreen_800.png" />
     <Content Include="Resources\Images\forward-arrow-16.png" />
     <Content Include="Resources\Images\general_create_new-16.png" />
     <Content Include="Resources\Images\general_edit-16.png" />
