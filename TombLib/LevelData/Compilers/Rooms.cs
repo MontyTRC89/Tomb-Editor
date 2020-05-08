@@ -23,13 +23,16 @@ namespace TombLib.LevelData.Compilers
             Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
                 room.RebuildLighting(true);
             });
-            ReportProgress(15, "Building rooms");
 
+            ReportProgress(15, "Building rooms");
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
                 _roomsUnmapping.Add(room);
             }
+
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
+
 
             // TODO Enable parallization
             //Parallel.ForEach(_roomsRemappingDictionary.Keys, (Room room) =>
@@ -39,18 +42,14 @@ namespace TombLib.LevelData.Compilers
             //        _tempRooms.Add(room, trRoom);
             //});
 
-            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
-
             foreach (var room in _roomsRemappingDictionary.Keys)
-            {
                 _tempRooms.Add(room, BuildRoom(room));
-            }
 
             // Remove WaterScheme values for water rooms
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
 #if DEBUG
-                using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
+            using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
             {
                 for (int r = 0; r < _tempRooms.Count; r++)
                 {

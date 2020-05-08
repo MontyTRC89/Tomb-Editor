@@ -107,9 +107,7 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             if (_textureInfoManager.TexInfoCount > 32767)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
-
-            var taskSoundSources = Task.Factory.StartNew(PrepareSoundSources);
-
+            
             GetAllReachableRooms();
             BuildPathFindingData();
             PrepareSoundSources();
