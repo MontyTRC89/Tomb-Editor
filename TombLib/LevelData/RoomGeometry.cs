@@ -1838,7 +1838,7 @@ namespace TombLib.LevelData
                         float dotN = Vector3.Dot((!forRooms ? -lightVector : normal), normal);
 
                         // Do raytracing
-                        float sampleSum = 0;
+                        float sampleSum = 1;
                         if (dotN <= 0 || forRooms)
                         {
                             int numSamples;
@@ -1886,7 +1886,7 @@ namespace TombLib.LevelData
                 case LightType.Sun:
                     {
                         // Do raytracing now for saving CPU later
-                        float sampleSum = 0;
+                        float sampleSum = 1;
                         if (forRooms)
                         {
                             int numSamples;
@@ -1982,7 +1982,6 @@ namespace TombLib.LevelData
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
                     break;
-
             }
 
             return Vector3.Zero;
