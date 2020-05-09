@@ -4,26 +4,52 @@ namespace TombLib.Scripting.TextEditors.ColorSchemes
 {
 	public sealed class ClassicScriptColorScheme
 	{
-		public string Sections { get; set; } = "White";
-		public string Values { get; set; } = "White";
-		public string References { get; set; } = "White";
-		public string StandardCommands { get; set; } = "White";
-		public string NewCommands { get; set; } = "White";
-		public string Comments { get; set; } = "White";
+		public HighlightingObject Sections { get; set; } = new HighlightingObject();
+		public HighlightingObject Values { get; set; } = new HighlightingObject();
+		public HighlightingObject References { get; set; } = new HighlightingObject();
+		public HighlightingObject StandardCommands { get; set; } = new HighlightingObject();
+		public HighlightingObject NewCommands { get; set; } = new HighlightingObject();
+		public HighlightingObject Comments { get; set; } = new HighlightingObject();
 
 		public string Background { get; set; } = "Black";
 		public string Foreground { get; set; } = "White";
 
-		public bool Equals(ClassicScriptColorScheme schemeToCompare)
+		#region Operators
+
+		public static bool operator ==(ClassicScriptColorScheme a, ClassicScriptColorScheme b)
 		{
-			return Sections.Equals(schemeToCompare.Sections, StringComparison.OrdinalIgnoreCase)
-				&& Values.Equals(schemeToCompare.Values, StringComparison.OrdinalIgnoreCase)
-				&& References.Equals(schemeToCompare.References, StringComparison.OrdinalIgnoreCase)
-				&& StandardCommands.Equals(schemeToCompare.StandardCommands, StringComparison.OrdinalIgnoreCase)
-				&& NewCommands.Equals(schemeToCompare.NewCommands, StringComparison.OrdinalIgnoreCase)
-				&& Comments.Equals(schemeToCompare.Comments, StringComparison.OrdinalIgnoreCase)
-				&& Background.Equals(schemeToCompare.Background, StringComparison.OrdinalIgnoreCase)
-				&& Foreground.Equals(schemeToCompare.Foreground, StringComparison.OrdinalIgnoreCase);
+			return a.Equals(b);
 		}
+
+		public static bool operator !=(ClassicScriptColorScheme a, ClassicScriptColorScheme b)
+		{
+			return !a.Equals(b);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null || !(obj is ClassicScriptColorScheme))
+				return false;
+			else
+			{
+				ClassicScriptColorScheme objectToCompare = obj as ClassicScriptColorScheme;
+
+				return Sections == objectToCompare.Sections
+					&& Values == objectToCompare.Values
+					&& References == objectToCompare.References
+					&& StandardCommands == objectToCompare.StandardCommands
+					&& NewCommands == objectToCompare.NewCommands
+					&& Comments == objectToCompare.Comments
+					&& Background.Equals(objectToCompare.Background, StringComparison.OrdinalIgnoreCase)
+					&& Foreground.Equals(objectToCompare.Foreground, StringComparison.OrdinalIgnoreCase);
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			return ToString().GetHashCode();
+		}
+
+		#endregion Operators
 	}
 }

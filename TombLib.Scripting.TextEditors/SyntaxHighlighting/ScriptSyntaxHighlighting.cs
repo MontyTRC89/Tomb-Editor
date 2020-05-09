@@ -27,7 +27,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.Comments),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Comments))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Comments.HtmlColor)),
+						FontWeight = _config.ColorScheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -37,8 +39,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.Sections, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Sections)),
-						FontWeight = FontWeights.Bold
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Sections.HtmlColor)),
+						FontWeight = _config.ColorScheme.Sections.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.Sections.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -48,7 +51,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.StandardCommands, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.StandardCommands))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.StandardCommands.HtmlColor)),
+						FontWeight = _config.ColorScheme.StandardCommands.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.StandardCommands.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -58,7 +63,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.NewCommands, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.NewCommands))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.NewCommands.HtmlColor)),
+						FontWeight = _config.ColorScheme.NewCommands.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.NewCommands.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -68,8 +75,8 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.NextLineKey),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.NewCommands)),
-						FontWeight = FontWeights.Bold
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.NewCommands.HtmlColor)),
+						FontWeight = FontWeights.Bold // Always bold
 					}
 				});
 
@@ -80,7 +87,6 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Color = new HighlightingColor
 					{
 						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Foreground)),
-						FontWeight = FontWeights.Bold
 					}
 				});
 
@@ -90,7 +96,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.Mnemonics, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.References))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.References.HtmlColor)),
+						FontWeight = _config.ColorScheme.References.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.References.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -100,7 +108,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.HexValues, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.References))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.References.HtmlColor)),
+						FontWeight = _config.ColorScheme.References.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.References.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -110,7 +120,21 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(ScriptPatterns.Directives, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.References))
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.References.HtmlColor)),
+						FontWeight = _config.ColorScheme.References.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.References.IsItalic ? FontStyles.Italic : FontStyles.Normal
+					}
+				});
+
+				/* Values */
+				ruleSet.Rules.Add(new HighlightingRule
+				{
+					Regex = new Regex("[a-z]|[A-Z]|[0-9]"),
+					Color = new HighlightingColor
+					{
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Values.HtmlColor)),
+						FontWeight = _config.ColorScheme.Values.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _config.ColorScheme.Values.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
