@@ -23,6 +23,9 @@ TombIDE:
  * Added OCB list to reference browser.
  * Disable persistent TRNG scripter notepad.exe nagging.
 
+SoundTool:
+ * Allow multiple instances option.
+ 
 WadTool:
  * Fix wrong copy animcommand behaviour.
  
