@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
+using TombLib.LevelData;
 using TombLib.Utils;
 
 namespace TombEditor.Controls
@@ -23,9 +24,6 @@ namespace TombEditor.Controls
 
         public bool Editable { get; set; } = true;
 
-        public event EventHandler SelectedColorChanged;
-        public event EventHandler PaletteChanged;
-
         private static readonly Pen _selectionPen = Pens.White;
         private static readonly Pen _gridPen = Pens.Black;
         private const float _paletteCellWidth = 10;
@@ -34,6 +32,7 @@ namespace TombEditor.Controls
         private Point _selectedColorCoord = new Point(-1, -1);
         private Size _oldPaletteSize = new Size();
 
+        private Editor _editor = Editor.Instance;
         private List<ColorC> _palette { get; } = new List<ColorC>();
 
         public PanelPalette()
@@ -89,15 +88,90 @@ namespace TombEditor.Controls
                 Focus();
                 _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1),
                                                 (int)MathC.Clamp((e.Y / _paletteCellHeight), 0, PaletteSize.Height - 1));
-                SelectedColorChanged?.Invoke(this, EventArgs.Empty);
+
+                if (_editor.SelectedObject is LightInstance)
+                {
+                    var light = _editor.SelectedObject as LightInstance;
+                    light.Color = SelectedColor.ToFloat3Color() * 2.0f;
+                    _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    _editor.ObjectChange(light, ObjectChangeType.Change);
+                }
+                else if (_editor.SelectedObject is StaticInstance)
+                {
+                    var instance = _editor.SelectedObject as StaticInstance;
+                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
+                    _editor.ObjectChange(instance, ObjectChangeType.Change);
+                }
+                else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main && _editor.SelectedObject is MoveableInstance)
+                {
+                    var instance = _editor.SelectedObject as MoveableInstance;
+                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
+                    _editor.ObjectChange(instance, ObjectChangeType.Change);
+                }
+
+                _editor.LastUsedPaletteColourChange(SelectedColor);
                 Invalidate();
+            }
+        }
+
+        private void PickColour(bool onlyFromPalette = true)
+        {
+            using (var colorDialog = new RealtimeColorDialog(
+                _editor.Configuration.ColorDialog_Position.X,
+                _editor.Configuration.ColorDialog_Position.Y,
+                null,
+                _editor.Configuration.UI_ColorScheme))
+            {
+                colorDialog.Color = GetColorFromPalette(_selectedColorCoord);
+
+                if (!onlyFromPalette)
+                {
+                    var obj = _editor.SelectedObject;
+                    if (obj is LightInstance)
+                        colorDialog.Color = ((obj as LightInstance).Color * 0.5f).ToWinFormsColor();
+                    else if (obj is StaticInstance)
+                        colorDialog.Color = ((obj as StaticInstance).Color * 0.5f).ToWinFormsColor();
+                    else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main && obj is MoveableInstance)
+                        colorDialog.Color = (obj as MoveableInstance).Color.ToWinFormsColor();
+                }
+
+                if (colorDialog.ShowDialog(FindForm()) == DialogResult.OK)
+                {
+                    SetColorToPalette(colorDialog.Color, _selectedColorCoord);
+                    _editor.Level.Settings.Palette = Palette;
+                    Invalidate();
+                }
+
+                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
-            ChangeColorByMouse(e);
+
+            if (e.Button == MouseButtons.Left)
+            {
+                if (Control.ModifierKeys.HasFlag(Keys.Alt))
+                    PickColour(false);
+                else
+                {
+                    // Save undo in case we're editing selected light colour
+                    if (_editor.SelectedObject is LightInstance ||
+                        _editor.SelectedObject is StaticInstance ||
+                        _editor.SelectedObject is MoveableInstance)
+                        _editor.UndoManager.PushObjectPropertyChanged((PositionBasedObjectInstance)_editor.SelectedObject);
+
+                    _editor.ToggleHiddenSelection(true);
+                    ChangeColorByMouse(e);
+                }
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+            _editor.ToggleHiddenSelection(false);
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -105,18 +179,7 @@ namespace TombEditor.Controls
             base.OnMouseDoubleClick(e);
 
             if (Editable && e.Button == MouseButtons.Left)
-            {
-                using (var colorDialog = new RealtimeColorDialog(Editor.Instance.Configuration.UI_ColorScheme))
-                {
-                    colorDialog.Color = GetColorFromPalette(_selectedColorCoord);
-                    if (colorDialog.ShowDialog(FindForm()) == DialogResult.OK)
-                    {
-                        SetColorToPalette(colorDialog.Color, _selectedColorCoord);
-                        PaletteChanged?.Invoke(this, EventArgs.Empty);
-                        Invalidate();
-                    }
-                }
-            }
+                PickColour();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

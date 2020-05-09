@@ -1,7 +1,6 @@
 ﻿using DarkUI.Forms;
 using NLog;
 using System;
-using System.Drawing;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -367,7 +366,12 @@ namespace TombEditor
                 // Temporarily hide selection
                 _editor.ToggleHiddenSelection(true);
 
-                if (colorDialog.ShowDialog(owner) != DialogResult.OK)
+                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
+                    _editor.UndoManager.PushObjectPropertyChanged(obj);
+                }
+                else
                     colorDialog.Color = oldLightColor;
 
                 // Unhide selection
