@@ -102,7 +102,7 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_staticMeshes);
 
                 // Write object textures
-                _objectTextureManager.WriteObjectTextures(writer, _level);
+                _textureInfoManager.WriteTextureInfos(writer, _level);
 
                 // Sprites
                 writer.Write((uint)_spriteTextures.Count);
@@ -147,7 +147,7 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 // Write animated textures
-                _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
+                _textureInfoManager.WriteAnimatedTextures(writer);
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
@@ -159,11 +159,17 @@ namespace TombLib.LevelData.Compilers
 
                 // TODO Figure out 'cinematic frames'
                 writer.Write((ushort)0);
-
+                // TODO Figure out 'cinematic frames'
+                writer.Write((ushort)0);
+                // TODO Figure out 'cinematic frames'
+                writer.Write((ushort)0);
+                // TODO Figure out 'cinematic frames'
+                writer.Write((ushort)0);
                 // Write sounds
-                _soundManager.WriteSoundMetadata(writer);
+                PrepareSoundsData();
+                WriteSoundMetadata(writer);
 
-                _soundManager.UpdateMainSfx();
+                //_soundManager.UpdateMainSfx();
             }
         }
     }

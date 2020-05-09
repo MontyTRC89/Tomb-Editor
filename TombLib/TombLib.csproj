@@ -134,6 +134,8 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="LevelData\Compilers\Tr2.cs" />
+    <Compile Include="LevelData\Compilers\Tr3.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
