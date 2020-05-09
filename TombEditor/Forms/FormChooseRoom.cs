@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -14,11 +14,8 @@ namespace TombEditor.Forms
         public FormChooseRoom(string why, IEnumerable<Room> rooms, Action<Room> roomSelectionChanged)
         {
             InitializeComponent();
+            this.SetActualSize();
 
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(399, 244) + (Size - ClientSize);
-            
             // Populate lists
             titelLabel.Text = why;
             foreach (Room room in rooms)

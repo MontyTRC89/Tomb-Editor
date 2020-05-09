@@ -51,9 +51,7 @@ namespace TombEditor.Forms
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = Debugger.IsAttached;
 
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
+            this.SetActualSize();
 
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
