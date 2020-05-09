@@ -1,17 +1,19 @@
-Version 1.3
-===========
+Version 1.2.12
+==============
 Tomb Editor:
- * Add "Lighting Quality" feature to create natural smooth shadows during raytracing.
+ * Add "Lighting Quality" feature to create natural smooth shadows with multipass raytracing.
  * Refactored palette and added ability to sample palette from selected texture set.
  * Add "Clear Shades" option for merged statics, which ignores static mesh's own shades before applying lighting.
  * Add "Untextured Lighting" mode.
- * Show real tint for merged static meshes.
+ * An option to show real tint for merged static meshes.
  * Optimized 3D rendering: now up to 6 times more FPS in complex levels with lots of similar objects.
  * Allow editing ghost blocks with QAWS keys.
+ * Allow undo while editing static and moveable properties, such as colour, OCB and such.
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
  * Use two decimal places for flyby options.
- * Fix lagging gizmo movement.
  * Don't deselect current object when cancelling object placement.
+ * Fix epic bug because of which every sound source was created twice.
+ * Fix lagging gizmo movement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
  
@@ -25,6 +27,7 @@ WadTool:
  
 General:
  * Try to guess duplicated item IDs corrupted by StrPix or WadMerger after using it with v130 wads.
+ * Easily select multiple checkboxes in lists by dragging mouse across them.
 
 Version 1.2.11
 ==============
