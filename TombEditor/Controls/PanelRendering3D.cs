@@ -458,7 +458,7 @@ namespace TombEditor.Controls
             _lastCameraDist = oldDist;
             _nextCameraDist = newDist;
 
-            _movementTimer.Animate(speed);
+            _movementTimer.Animate(AnimationMode.Snap, speed);
         }
         private void AnimateCamera(Vector3 newPos, Vector2 newRot, float newDist, float speed = 0.5f)
             => AnimateCamera(Camera.Target, newPos, new Vector2(Camera.RotationX, Camera.RotationY), newRot, Camera.Distance, newDist, speed);
@@ -725,8 +725,15 @@ namespace TombEditor.Controls
                     if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance) && !ModifierKeys.HasFlag(Keys.Alt))
                         EditorActions.BookmarkObject(obj);
 
-                    // Select object
-                    _editor.SelectedObject = obj;
+                    if (_editor.SelectedObject != obj)
+                    {
+                        // Animate objects about to be selected
+                        if (obj is GhostBlockInstance)
+                            _movementTimer.Animate(AnimationMode.GhostBlockUnfold, 0.4f);
+
+                        // Select object
+                        _editor.SelectedObject = obj;
+                    }
 
                     if (obj is ItemInstance)
                     {
@@ -1376,7 +1383,8 @@ namespace TombEditor.Controls
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
-            if (_movementTimer.Animating)
+            if (_movementTimer.Animating &&
+                _movementTimer.Mode == AnimationMode.Snap)
             {
                 var lerpedRot = Vector2.Lerp(_lastCameraRot, _nextCameraRot, _movementTimer.MoveMultiplier);
                 Camera.Target = Vector3.Lerp(_lastCameraPos, _nextCameraPos, _movementTimer.MoveMultiplier);
@@ -2011,10 +2019,17 @@ namespace TombEditor.Controls
                         for (int j = 0; j < 4; j++)
                         {
                             lastSelectedCorner = (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == j && instance.SelectedFloor == floor);
-                            if (lastSelectedCorner == true)
+                            if (lastSelectedCorner == true || j == 4)
                                 _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                            effect.Parameters["ModelViewProjection"].SetValue((instance.ControlMatrixes(floor)[j] * viewProjection).ToSharpDX());
+                            Matrix4x4 currCubeMatrix;
+                            if (_movementTimer.Mode == AnimationMode.GhostBlockUnfold && !instance.SelectedCorner.HasValue)
+                                currCubeMatrix = Matrix4x4.Lerp(instance.CenterMatrix(true), instance.ControlMatrixes(floor)[j], _movementTimer.MoveMultiplier);
+                            else
+                                currCubeMatrix = instance.ControlMatrixes(floor)[j];
+                            currCubeMatrix *= viewProjection;
+
+                            effect.Parameters["ModelViewProjection"].SetValue((currCubeMatrix).ToSharpDX());
                             effect.Techniques[0].Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
 
@@ -2045,6 +2060,9 @@ namespace TombEditor.Controls
                 var instance = ghostBlocksToDraw[j];
                 var selected = j == selectedIndex;
 
+                if (!instance.Valid)
+                    continue;
+
                 // Create a vertex array
                 SolidVertex[] vtxs = new SolidVertex[84]; // 78 with diagonal steps
 
@@ -2056,6 +2074,10 @@ namespace TombEditor.Controls
                 for (int f = 0, c = 0; f < 2; f++)
                 {
                     bool floor = f == 0;
+
+                    if ((floor && !instance.ValidFloor) || (!floor && !instance.ValidCeiling))
+                        continue;
+
                     var split = floor ? instance.Block.Floor.DiagonalSplit : instance.Block.Ceiling.DiagonalSplit;
                     bool toggled = floor ? instance.FloorSplitToggled : instance.CeilingSplitToggled;
                     var vPos = instance.ControlPositions(floor, false);
@@ -3419,6 +3441,9 @@ namespace TombEditor.Controls
 
             public int Compare(ImportedGeometryInstance x, ImportedGeometryInstance y)
             {
+                if (x == null && y == null) return  0;
+                if (x == null && x != null) return  1;
+                if (x != null && y == null) return -1;
                 return x.Model.UniqueID.GetHashCode().CompareTo(y.Model.UniqueID.GetHashCode());
             }
         }
