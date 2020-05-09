@@ -1,4 +1,5 @@
-﻿using DarkUI.Controls;
+﻿using DarkUI.Config;
+using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,10 @@ namespace TombLib.Forms
                             panel.BackColor = colorDialog.Color;
                     }
                 };
+
+            // Reset color for all tab pages
+            foreach (var tab in tabbedContainer.TabPages)
+                ((TabPage)tab).BackColor = Colors.GreyBackground;
 
             ReadConfigIntoControls(this);
         }

@@ -21,6 +21,7 @@ namespace TombEditor.Forms
             InitializeComponent();
             InitializeDialog();
             this.SetActualSize(630, 540);
+            this.LockWidth();
 
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;

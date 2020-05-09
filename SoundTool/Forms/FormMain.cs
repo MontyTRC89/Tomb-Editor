@@ -31,18 +31,12 @@ namespace SoundTool
         private bool _saved = true;
         private string _currentArchive = null;
 
-        public FormMain(string archive = null, string refLevel = null)
+        public FormMain(Configuration config, string archive = null, string refLevel = null)
         {
             // Load config
-            _configuration = new Configuration().LoadOrUseDefault<Configuration>();
-
-            // Account for brightness loaded from config
-            Colors.Brightness = _configuration.UI_FormColor_Brightness / 100.0f;
-            BackColor = Colors.GreyBackground;
-
-            // Do Designer stuff only now, when color config is loaded
+            _configuration = config;
+            
             InitializeComponent();
-
             Configuration.LoadWindowProperties(this, _configuration);
 
             // Load either specified ref level or from config (if exists)
@@ -57,7 +51,6 @@ namespace SoundTool
 
             UpdateUI();
         }
-        public FormMain(Level level, string archive) : this(archive) { ReferenceLevel = level; }
 
         private void CreateNewArchive()
         {
@@ -388,19 +381,8 @@ namespace SoundTool
 
         private void optionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var formInput = new FormInputBox("UI brightness", "Specify UI brightness (50-100, requires restart):", _configuration.UI_FormColor_Brightness.ToString()))
-            {
-                formInput.StartPosition = FormStartPosition.CenterParent;
-                if (formInput.ShowDialog(this) != DialogResult.Cancel)
-                {
-                    float newBrightness = _configuration.UI_FormColor_Brightness;
-                    if (float.TryParse(formInput.Result, out newBrightness))
-                    {
-                        newBrightness = Math.Max(Math.Min(newBrightness, 100), 50);
-                        _configuration.UI_FormColor_Brightness = newBrightness;
-                    }
-                }
-            }
+            using (var formOptions = new FormOptions(_configuration))
+                formOptions.ShowDialog();
         }
     }
 }

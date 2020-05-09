@@ -12,6 +12,7 @@ namespace WadTool
             InitializeComponent();
             InitializeDialog();
             this.SetActualSize(630, 458);
+            this.LockWidth();
 
             _tool = tool;
             _tool.EditorEventRaised += EditorEventRaised;

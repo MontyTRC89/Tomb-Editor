@@ -1,4 +1,5 @@
-﻿using DarkUI.Win32;
+﻿using DarkUI.Config;
+using DarkUI.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,7 +53,14 @@ namespace SoundTool
                 }
             }
 
-            if (mutex.WaitOne(TimeSpan.Zero, true))
+            // Load configuration
+            var configuration = new Configuration().LoadOrUseDefault<Configuration>();
+
+            // Update DarkUI configuration
+            Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
+
+            if (configuration.SoundTool_AllowMultipleInstances || 
+                mutex.WaitOne(TimeSpan.Zero, true))
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
@@ -65,7 +73,7 @@ namespace SoundTool
                 }
                 TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TRCatalog.xml");
 
-                using (FormMain form = new FormMain(startFile, refLevel))
+                using (FormMain form = new FormMain(configuration, startFile, refLevel))
                 {
                     form.Show();
                     Application.Run(form);
