@@ -19,6 +19,7 @@ Tomb Editor:
  
 TombIDE:
  * Major refactoring and performance improvemets.
+ * Added F1 functionality similar to NG Center.
  * Added OCB list to reference browser.
  * Disable persistent TRNG scripter notepad.exe nagging.
 
