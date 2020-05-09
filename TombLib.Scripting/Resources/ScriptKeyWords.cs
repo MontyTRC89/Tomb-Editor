@@ -9,7 +9,7 @@ using TombLib.Scripting.Objects;
 
 namespace TombLib.Scripting.Resources
 {
-	public static class ScriptKeyWords
+	public static class ScriptKeywords
 	{
 		// TODO: Refactor
 

@@ -174,7 +174,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		private DarkTreeNode GetSectionNode(string line, string filter)
 		{
-			foreach (string section in ScriptKeyWords.Sections)
+			foreach (string section in ScriptKeywords.Sections)
 			{
 				// Exclude [Level] sections
 				if (section.Equals("level", StringComparison.OrdinalIgnoreCase))

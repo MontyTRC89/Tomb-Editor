@@ -205,7 +205,7 @@ namespace TombIDE.ScriptEditor.Forms
 				if (File.Exists(mnemonicPath))
 					result = File.ReadAllText(mnemonicPath, Encoding.GetEncoding(1252));
 				else
-					foreach (PluginMnemonic mnemonic in ScriptKeyWords.PluginMnemonics) // Search for a definition in the plugin mnemonics list
+					foreach (PluginMnemonic mnemonic in ScriptKeywords.PluginMnemonics) // Search for a definition in the plugin mnemonics list
 						if (mnemonic.FlagName == flag)
 							result = mnemonic.Description;
 

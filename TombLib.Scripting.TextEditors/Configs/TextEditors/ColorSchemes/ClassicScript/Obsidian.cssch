@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ClassicScriptColorScheme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Sections>#A082BD</Sections>
+  <Values>#D97640</Values>
+  <References>#FFCD22</References>
+  <StandardCommands>#93C763</StandardCommands>
+  <NewCommands>#668BB0</NewCommands>
+  <Comments>#66747B</Comments>
+  <Background>#283032</Background>
+  <Foreground>GainsBoro</Foreground>
+</ClassicScriptColorScheme>

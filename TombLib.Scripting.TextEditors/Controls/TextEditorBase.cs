@@ -13,7 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.Objects;
-using TombLib.Scripting.TextEditors.Configuration;
+using TombLib.Scripting.TextEditors.Configs;
 using TombLib.Scripting.TextEditors.Rendering;
 
 namespace TombLib.Scripting.TextEditors.Controls
@@ -615,7 +615,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			SpecialToolTip.IsOpen = true;
 		}
 
-		public void UpdateSettings(TextEditorConfigurationBase configuration)
+		public void UpdateSettings(TextEditorConfigBase configuration)
 		{
 			FontSize = configuration.FontSize;
 			DefaultFontSize = configuration.FontSize;

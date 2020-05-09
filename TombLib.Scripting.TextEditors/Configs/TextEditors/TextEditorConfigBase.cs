@@ -1,6 +1,6 @@
-﻿namespace TombLib.Scripting.TextEditors.Configuration
+﻿namespace TombLib.Scripting.TextEditors.Configs
 {
-	public abstract class TextEditorConfigurationBase : ConfigurationBase
+	public abstract class TextEditorConfigBase : ConfigurationBase
 	{
 		public abstract override string DefaultPath { get; }
 

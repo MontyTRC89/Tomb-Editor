@@ -65,8 +65,9 @@
     <Compile Include="Objects\ErrorLine.cs" />
     <Compile Include="Objects\PluginMnemonic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\LuaKeyWordsAndPatterns.cs" />
-    <Compile Include="Resources\ScriptKeyWords.cs" />
+    <Compile Include="Resources\LuaKeywords.cs" />
+    <Compile Include="Resources\LuaPatterns.cs" />
+    <Compile Include="Resources\ScriptKeywords.cs" />
     <Compile Include="Resources\ScriptPatterns.cs" />
     <Compile Include="Resources\Syntaxes\CustSyntaxes.Designer.cs">
       <DependentUpon>CustSyntaxes.resx</DependentUpon>
