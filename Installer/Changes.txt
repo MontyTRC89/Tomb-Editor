@@ -11,6 +11,7 @@ Tomb Editor:
  * Allow undo while editing static and moveable properties, such as colour, OCB and such.
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
  * Use two decimal places for flyby options.
+ * Animate ghost blocks on selection.
  * Don't deselect current object when cancelling object placement.
  * Fix epic bug because of which every sound source was created twice.
  * Fix lagging gizmo movement.
@@ -23,6 +24,9 @@ TombIDE:
  * Added OCB list to reference browser.
  * Disable persistent TRNG scripter notepad.exe nagging.
 
+SoundTool:
+ * Allow multiple instances option.
+ 
 WadTool:
  * Fix wrong copy animcommand behaviour.
  

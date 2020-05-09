@@ -8,6 +8,7 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -40,9 +41,8 @@ namespace TombEditor.Forms
                 control.Click += scriptExportPanel_Click;
             scriptExportPanel.Click += scriptExportPanel_Click;
 
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(600, 220) + (Size - ClientSize);
+            this.SetActualSize();
+            this.LockHeight();
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);

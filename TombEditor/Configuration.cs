@@ -79,6 +79,7 @@ namespace TombEditor
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnRelocation { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnReset { get; set; } = true;
+        public bool Rendering3D_AnimateGhostBlockUnfolding { get; set; } = true;
         public bool Rendering3D_AllowTexturingInLightingMode { get; set; } = true;
         public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
         public bool Rendering3D_SelectObjectsInAnyRoom { get; set; } = true;
