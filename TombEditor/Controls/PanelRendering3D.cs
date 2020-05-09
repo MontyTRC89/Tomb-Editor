@@ -728,7 +728,7 @@ namespace TombEditor.Controls
                     if (_editor.SelectedObject != obj)
                     {
                         // Animate objects about to be selected
-                        if (obj is GhostBlockInstance)
+                        if (obj is GhostBlockInstance && _editor.Configuration.Rendering3D_AnimateGhostBlockUnfolding)
                             _movementTimer.Animate(AnimationMode.GhostBlockUnfold, 0.4f);
 
                         // Select object
