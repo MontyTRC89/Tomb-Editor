@@ -8,6 +8,8 @@ namespace SoundTool
         public override string ConfigName { get { return "SoundToolConfiguration.xml"; } }
 
         public string SoundTool_ReferenceProject { get; set; } = string.Empty;
+        public bool SoundTool_AllowMultipleInstances { get; set; } = false;
+
         public float UI_FormColor_Brightness { get; set; } = 100.0f;
 
         public Point Window_FormMain_Position { get; set; } = new Point(-1);
