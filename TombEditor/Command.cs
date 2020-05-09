@@ -1298,8 +1298,8 @@ namespace TombEditor
 
             AddCommand("EditOptions", "Editor options...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (FormOptions form = new FormOptions(args.Editor))
-                    form.ShowDialog(args.Window);
+                using (Forms.FormOptions form = new Forms.FormOptions((Editor)args.Editor))
+                    form.ShowDialog((IWin32Window)args.Window);
             });
 
             AddCommand("StartWadTool", "Start Wad Tool...", CommandType.Settings, delegate (CommandArgs args)
