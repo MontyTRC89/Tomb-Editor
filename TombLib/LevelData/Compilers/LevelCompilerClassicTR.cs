@@ -125,12 +125,12 @@ namespace TombLib.LevelData.Compilers
             //Write the level
             switch (_level.Settings.GameVersion)
             {
-                // case TRVersion.Game.TR2:
-                //     WriteLevelTr2();
-                //     break;
-                // case TRVersion.Game.TR3:
-                //     WriteLevelTr3();
-                //     break;
+                 case TRVersion.Game.TR2:
+                     WriteLevelTr2();
+                     break;
+                 case TRVersion.Game.TR3:
+                     WriteLevelTr3();
+                     break;
 
                 case TRVersion.Game.TR4:
                     WriteLevelTr4();
