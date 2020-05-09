@@ -283,6 +283,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_StaticTint_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_StaticTint_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_TextureMode_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_TextureMode_16", resourceCulture);

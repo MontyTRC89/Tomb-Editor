@@ -62,12 +62,13 @@ namespace TombEditor.Forms
             // Initialize panels
             MainView.InitializeRendering(_editor.RenderingDevice);
             ItemBrowser.InitializeRendering(_editor.RenderingDevice);
-            
-            // Restore window settings
+
+            // Restore window settings and prepare UI
             Configuration.LoadWindowProperties(this, _editor.Configuration);
             LoadWindowLayout(_editor.Configuration);
             GenerateMenusRecursive(menuStrip.Items);
             UpdateUIColours();
+            UpdateControls();
 
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
@@ -97,7 +98,7 @@ namespace TombEditor.Forms
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Gray out menu options that do not apply
-            if (obj is Editor.SelectedObjectChangedEvent || 
+            if (obj is Editor.SelectedObjectChangedEvent ||
                 obj is Editor.ModeChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -116,7 +117,7 @@ namespace TombEditor.Forms
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
             }
 
-            if(obj is Editor.UndoStackChangedEvent)
+            if (obj is Editor.UndoStackChangedEvent)
             {
                 var stackEvent = (Editor.UndoStackChangedEvent)obj;
                 undoToolStripMenuItem.Enabled = stackEvent.UndoPossible;
@@ -240,6 +241,7 @@ namespace TombEditor.Forms
                 if (e.UpdateLayout)
                     LoadWindowLayout(_editor.Configuration);
                 UpdateUIColours();
+                UpdateControls();
             }
 
             // Update texture controls
@@ -283,6 +285,12 @@ namespace TombEditor.Forms
                 foreach (var form in Application.OpenForms)
                     if (form is DarkForm) ((DarkForm)form).Refresh();
             }
+        }
+
+        private void UpdateControls()
+        {
+            showRealTintForMergedStaticsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForMergedStatics;
+            drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
         }
 
         private void RefreshRecentProjectsList()
