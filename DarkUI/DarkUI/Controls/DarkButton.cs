@@ -180,6 +180,10 @@ namespace DarkUI.Controls
             get { return false; }
         }
 
+        [Category("Appearance")]
+        [DefaultValue(false)]
+        public bool UseForeColor { get; set; }
+
         #endregion
 
         #region Constructor Region
@@ -358,7 +362,7 @@ namespace DarkUI.Controls
             var g = e.Graphics;
             var rect = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
 
-            var textColor = Colors.LightText;
+            var textColor = UseForeColor? ForeColor : Colors.LightText;
             var borderColor = Colors.GreySelection;
             var fillColor = _useGenericBackColor ? (_isDefault ? Colors.DarkBlueBackground : Colors.LightBackground) : BackColor.Multiply(Colors.Brightness);
             var hoverColor = _useGenericBackColor ? (_isDefault ? Colors.BlueBackground : Colors.LighterBackground) : ControlPaint.Light(BackColor.Multiply(Colors.Brightness));
