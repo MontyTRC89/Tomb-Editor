@@ -1144,7 +1144,7 @@ namespace TombIDE.ScriptEditor
 
 		private void ShowAboutForm()
 		{
-			using (FormAbout form = new FormAbout(null))
+			using (FormAbout form = new FormAbout(Properties.Resources.AboutScreen_800))
 				form.ShowDialog(this);
 		}
 

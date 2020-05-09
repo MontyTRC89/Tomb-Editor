@@ -471,6 +471,13 @@ namespace TombEditor
             RaiseEvent(new AnimatedTexturesChangedEvent());
         }
 
+        // This is invoked if merged static list was changed for the level.
+        public class MergedStaticsChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void MergedStaticsChange()
+        {
+            RaiseEvent(new MergedStaticsChangedEvent());
+        }
+
         // This is invoked if the animated texture sets changed for the level.
         public class TextureSoundsChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void TextureSoundsChange()
@@ -778,6 +785,7 @@ namespace TombEditor
             bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
             bool soundsChanged = !newSettings.SoundsCatalogs.SequenceEqual(_level.Settings.SoundsCatalogs);
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
+            bool mergedStaticsChanged = !newSettings.AutoStaticMeshMerges.SequenceEqual(_level.Settings.AutoStaticMeshMerges);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
             bool gameVersionChanged = newSettings.GameVersion != _level.Settings.GameVersion;
 
@@ -799,6 +807,9 @@ namespace TombEditor
 
             if (animatedTexturesChanged)
                 AnimatedTexturesChange();
+
+            if (mergedStaticsChanged)
+                MergedStaticsChange();
 
             if (levelFilenameChanged)
                 LevelFileNameChange();

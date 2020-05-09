@@ -55,6 +55,8 @@ namespace TombEditor.Forms
                 return;
             }
 
+            _editor.UndoManager.PushObjectPropertyChanged(_movable);
+
             byte CodeBits = 0;
             CodeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);
             CodeBits |= (byte)(cbBit2.Checked ? 1 << 1 : 0);

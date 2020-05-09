@@ -236,6 +236,7 @@ namespace TombEditor.ToolWindows
             panel3D.DisablePickingForImportedGeometry = butDisableGeometryPicking.Checked = settings.Rendering3D_DisablePickingForImportedGeometry;
             panel3D.ShowLightMeshes = butDrawLightRadius.Checked = settings.Rendering3D_ShowLightRadius;
             panel3D.ShowLightingWhiteTextureOnly = butDrawWhiteLighting.Checked = settings.Rendering3D_ShowLightingWhiteTextureOnly;
+            panel3D.ShowRealTintForMergedStatics = butDrawStaticTint.Checked = settings.Rendering3D_ShowRealTintForMergedStatics;
             panel3D.Invalidate();
         }
 

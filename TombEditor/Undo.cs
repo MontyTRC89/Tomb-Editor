@@ -177,7 +177,7 @@ namespace TombEditor
     {
         private PositionBasedObjectInstance UndoObject;
         private object Base;
-        private object Property;
+        private List<object> Properties;
 
         public ChangeObjectPropertyUndoInstance(EditorUndoManager parent, PositionBasedObjectInstance obj) : base(parent, obj.Room)
         {
@@ -185,25 +185,28 @@ namespace TombEditor
 
             if (UndoObject is MoveableInstance)
             {
-                Base = ((MoveableInstance)UndoObject).WadObjectId;
-                Property = ((MoveableInstance)UndoObject).Ocb;
+                var uo = (MoveableInstance)UndoObject;
+                Base = uo.WadObjectId;
+                Properties = new List<object> { uo.Ocb, uo.Invisible, uo.ClearBody, uo.CodeBits, uo.Color };
             }
             else if (UndoObject is StaticInstance)
             {
-                Base = ((StaticInstance)UndoObject).WadObjectId;
-                Property = ((StaticInstance)UndoObject).Ocb;
+                var uo = (StaticInstance)UndoObject;
+                Base = uo.WadObjectId;
+                Properties = new List<object> { uo.Ocb, uo.Color };
             }
             else if (UndoObject is ImportedGeometryInstance)
             {
-                Base = ((ImportedGeometryInstance)UndoObject).Model;
-                Property = ((ImportedGeometryInstance)UndoObject).Scale;
+                var uo = (ImportedGeometryInstance)UndoObject;
+                Base = uo.Model;
+                Properties = new List<object> { uo.Scale };
             }
             else if (UndoObject is LightInstance)
-                Property = ((LightInstance)UndoObject).Color;
+                Properties = new List<object> { ((LightInstance)UndoObject).Color };
             else if (UndoObject is SinkInstance)
-                Property = ((SinkInstance)UndoObject).Strength;
+                Properties = new List<object> { ((SinkInstance)UndoObject).Strength };
             else if (UndoObject is SoundSourceInstance)
-                Property = ((SoundSourceInstance)UndoObject).SoundId;
+                Properties = new List<object> { ((SoundSourceInstance)UndoObject).SoundId };
 
             Valid = () => UndoObject != null && UndoObject.Room != null && Room.ExistsInLevel;
 
@@ -211,28 +214,36 @@ namespace TombEditor
             {
                 if (UndoObject is MoveableInstance)
                 {
-                    ((MoveableInstance)UndoObject).WadObjectId = (WadMoveableId)Base;
-                    ((MoveableInstance)UndoObject).Ocb = (short)Property;
+                    var uo = ((MoveableInstance)UndoObject);
+                    uo.WadObjectId = (WadMoveableId)Base;
+                    uo.Ocb = (short)Properties[0];
+                    uo.Invisible = (bool)Properties[1];
+                    uo.ClearBody = (bool)Properties[2];
+                    uo.CodeBits = (byte)Properties[3];
+                    uo.Color = (Vector3)Properties[4];
                 }
                 else if (UndoObject is StaticInstance)
                 {
-                    ((StaticInstance)UndoObject).WadObjectId = (WadStaticId)Base;
-                    ((StaticInstance)UndoObject).Ocb = (short)Property;
+                    var uo = ((StaticInstance)UndoObject);
+                    uo.WadObjectId = (WadStaticId)Base;
+                    uo.Ocb = (short)Properties[0];
+                    uo.Color = (Vector3)Properties[1];
                 }
                 else if (UndoObject is ImportedGeometryInstance)
                 {
-                    ((ImportedGeometryInstance)UndoObject).Model = (ImportedGeometry)Base;
-                    ((ImportedGeometryInstance)UndoObject).Scale = (float)Property;
+                    var uo = ((ImportedGeometryInstance)UndoObject);
+                    uo.Model = (ImportedGeometry)Base;
+                    uo.Scale = (float)Properties[0];
                 }
                 else if (UndoObject is LightInstance)
                 {
-                    ((LightInstance)UndoObject).Color = (Vector3)Property;
-                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport);
+                    ((LightInstance)UndoObject).Color = (Vector3)Properties[0];
+                    UndoObject.Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 }
                 else if (UndoObject is SinkInstance)
-                    ((SinkInstance)UndoObject).Strength = (short)Property;
+                    ((SinkInstance)UndoObject).Strength = (short)Properties[0];
                 else if (UndoObject is SoundSourceInstance)
-                    ((SoundSourceInstance)UndoObject).SoundId = (short)Property;
+                    ((SoundSourceInstance)UndoObject).SoundId = (short)Properties[0];
 
                 parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
             };
