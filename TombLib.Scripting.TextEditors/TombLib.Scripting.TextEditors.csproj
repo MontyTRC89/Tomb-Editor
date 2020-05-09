@@ -81,6 +81,7 @@
     <Compile Include="Forms\FormTextEditorSettings.Designer.cs">
       <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="HighlightingObject.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="DefaultPaths.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -132,6 +133,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="Resources\forward-arrow-16.png" />
+    <Content Include="Resources\general_Import-16.png" />
+    <Content Include="Resources\general_Save-16.png" />
+    <Content Include="Resources\general_trash-16.png" />
+    <None Include="Configs\TextEditors\ColorSchemes\ClassicScript\NG_Center.cssch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Configs\TextEditors\ColorSchemes\ClassicScript\Obsidian.cssch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -141,10 +149,6 @@
     <None Include="Configs\TextEditors\ColorSchemes\ClassicScript\VS15.cssch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Content Include="Resources\forward-arrow-16.png" />
-    <Content Include="Resources\general_Import-16.png" />
-    <Content Include="Resources\general_Save-16.png" />
-    <Content Include="Resources\general_trash-16.png" />
     <None Include="Configs\TextEditors\ColorSchemes\Lua\Monokai.luasch">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

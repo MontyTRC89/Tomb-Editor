@@ -1341,7 +1341,7 @@ namespace TombIDE.ScriptEditor
 			(
 				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
 				(
-					_editorConfigs.ClassicScript.ColorScheme.Values
+					_editorConfigs.ClassicScript.ColorScheme.Values.HtmlColor
 				)
 			);
 
@@ -1357,7 +1357,6 @@ namespace TombIDE.ScriptEditor
 		private void UpdateTextEditorSettings(LuaTextEditor luaTextEditor)
 		{
 			luaTextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting();
-
 			luaTextEditor.UpdateSettings(_editorConfigs.Lua);
 		}
 

@@ -58,9 +58,9 @@ namespace TombLib.Scripting.Resources
 					@"<",
 					@":",
 					@"\.",
-                    @"\[",
-                    @"\]"
-                };
+					@"\[",
+					@"\]"
+				};
 			}
 		}
 

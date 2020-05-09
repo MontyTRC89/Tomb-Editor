@@ -27,7 +27,7 @@ namespace TombLib.Scripting.TextEditors.Configs
 
 				string colorSchemeFilePath = Path.Combine(DefaultPaths.GetClassicScriptColorConfigsPath(), value + ".cssch");
 
-				if(!File.Exists(colorSchemeFilePath))
+				if (!File.Exists(colorSchemeFilePath))
 					ColorScheme = new ClassicScriptColorScheme();
 				else
 					ColorScheme = XmlHandling.ReadXmlFile<ClassicScriptColorScheme>(colorSchemeFilePath);

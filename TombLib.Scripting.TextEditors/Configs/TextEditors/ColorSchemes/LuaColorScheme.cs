@@ -4,24 +4,50 @@ namespace TombLib.Scripting.TextEditors.ColorSchemes
 {
 	public sealed class LuaColorScheme
 	{
-		public string Comments { get; set; }
-		public string Values { get; set; }
-		public string Statements { get; set; }
-		public string Operators { get; set; }
-		public string SpecialOperators { get; set; }
+		public HighlightingObject Comments { get; set; } = new HighlightingObject();
+		public HighlightingObject Values { get; set; } = new HighlightingObject();
+		public HighlightingObject Statements { get; set; } = new HighlightingObject();
+		public HighlightingObject Operators { get; set; } = new HighlightingObject();
+		public HighlightingObject SpecialOperators { get; set; } = new HighlightingObject();
 
-		public string Background { get; set; }
-		public string Foreground { get; set; }
+		public string Background { get; set; } = "Black";
+		public string Foreground { get; set; } = "White";
 
-		public bool Equals(LuaColorScheme schemeToCompare)
+		#region Operators
+
+		public static bool operator ==(LuaColorScheme a, LuaColorScheme b)
 		{
-			return Comments.Equals(schemeToCompare.Comments, StringComparison.OrdinalIgnoreCase)
-				&& Values.Equals(schemeToCompare.Values, StringComparison.OrdinalIgnoreCase)
-				&& Statements.Equals(schemeToCompare.Statements, StringComparison.OrdinalIgnoreCase)
-				&& Operators.Equals(schemeToCompare.Operators, StringComparison.OrdinalIgnoreCase)
-				&& SpecialOperators.Equals(schemeToCompare.SpecialOperators, StringComparison.OrdinalIgnoreCase)
-				&& Background.Equals(schemeToCompare.Background, StringComparison.OrdinalIgnoreCase)
-				&& Foreground.Equals(schemeToCompare.Foreground, StringComparison.OrdinalIgnoreCase);
+			return a.Equals(b);
 		}
+
+		public static bool operator !=(LuaColorScheme a, LuaColorScheme b)
+		{
+			return !a.Equals(b);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (obj == null || !(obj is LuaColorScheme))
+				return false;
+			else
+			{
+				LuaColorScheme objectToCompare = obj as LuaColorScheme;
+
+				return Comments == objectToCompare.Comments
+					&& Values == objectToCompare.Values
+					&& Statements == objectToCompare.Statements
+					&& Operators == objectToCompare.Operators
+					&& SpecialOperators == objectToCompare.SpecialOperators
+					&& Background.Equals(objectToCompare.Background, StringComparison.OrdinalIgnoreCase)
+					&& Foreground.Equals(objectToCompare.Foreground, StringComparison.OrdinalIgnoreCase);
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			return ToString().GetHashCode();
+		}
+
+		#endregion Operators
 	}
 }

@@ -18,7 +18,11 @@ namespace TombLib.Scripting.TextEditors.Configs
 				_selectedColorSchemeName = value;
 
 				string colorSchemeFilePath = Path.Combine(DefaultPaths.GetLuaColorConfigsPath(), value + ".luasch");
-				ColorScheme = XmlHandling.ReadXmlFile<LuaColorScheme>(colorSchemeFilePath);
+
+				if (!File.Exists(colorSchemeFilePath))
+					ColorScheme = new LuaColorScheme();
+				else
+					ColorScheme = XmlHandling.ReadXmlFile<LuaColorScheme>(colorSchemeFilePath);
 			}
 		}
 
