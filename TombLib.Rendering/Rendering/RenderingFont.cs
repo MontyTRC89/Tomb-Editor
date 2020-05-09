@@ -15,18 +15,19 @@ namespace TombLib.Rendering
             public ImageC Image;
         }
 
-        public RenderingTextureAllocator TextureAllocator { get; }
+        public RenderingTextureAllocator TextureAllocator { get; private set; }
         private readonly Dictionary<GlyphIndex, WeakReference<GlyphData>> _glyphDictionary = new Dictionary<GlyphIndex, WeakReference<GlyphData>>();
 
-        private readonly IntPtr _gdiHdc;
-        private readonly IntPtr _gdiFont;
-        private readonly IntPtr _gdiGetCharacterPlacementOrder;
-        private readonly IntPtr _gdiGetCharacterPlacementDx;
-        private readonly IntPtr _gdiGetCharacterPlacementGlpyhs;
+        private IntPtr _gdiHdc;
+        private IntPtr _gdiFont;
+        private IntPtr _gdiGetCharacterPlacementOrder;
+        private IntPtr _gdiGetCharacterPlacementDx;
+        private IntPtr _gdiGetCharacterPlacementGlpyhs;
         private const int _gdiGetCharacterPlacementGlyphCount = 512;
+
         private bool _disposed = false;
-        private readonly int _lineAscent;
-        private readonly int _lineSpaceing;
+        private int _lineAscent;
+        private int _lineSpaceing;
         private const int _marginInTexture = 1;
 
         public class Description
@@ -45,51 +46,70 @@ namespace TombLib.Rendering
         {
             try
             {
-                TextureAllocator = description.TextureAllocator;
-                TextureAllocator.GarbageCollectionCollectEvent.Add(delegate (RenderingTextureAllocator allocator, RenderingTextureAllocator.Map map, HashSet<RenderingTextureAllocator.Map.Entry> inOutUsedTextures)
+                try
                 {
-                    // Clean dictionary for weak references that died.
-                    List<GlyphIndex> GlyphKeysToRemove = new List<GlyphIndex>();
-                    GlyphData unused;
-                    foreach (KeyValuePair<GlyphIndex, WeakReference<GlyphData>> glyph in _glyphDictionary)
-                        if (!glyph.Value.TryGetTarget(out unused))
-                            GlyphKeysToRemove.Add(glyph.Key);
-                    foreach (GlyphIndex GlyphKeyToRemove in GlyphKeysToRemove)
-                        _glyphDictionary.Remove(GlyphKeyToRemove);
-                    return null;
-                });
-
-                // Setup GDI device and font
-                _gdiHdc = GDI.CreateCompatibleDC(IntPtr.Zero);
-                if (_gdiHdc == IntPtr.Zero)
-                    throw new GDI.GDIException("CreateCompatibleDC");
-                _gdiFont = GDI.CreateFontW((int)(description.FontSize + 0.5f), 0, 0, 0, description.FontIsBold ? 700 : 0,
-                    description.FontIsItalic ? 1u : 0u, description.FontIsUnderline ? 1u : 0u, description.FontIsStrikeout ? 1u : 0u, 0, 0, 0,
-                    GDI.FontQuality.CLEARTYPE_QUALITY, 0, description.FontName);
-                if (_gdiFont == IntPtr.Zero)
-                    throw new GDI.GDIException("CreateFont");
-                IntPtr selectObjectResult = GDI.SelectObject(_gdiHdc, _gdiFont);
-                if (selectObjectResult == IntPtr.Zero || selectObjectResult == new IntPtr(65535))
-                    throw new GDI.GDIException("SelectObject");
-                _gdiGetCharacterPlacementOrder = Marshal.AllocHGlobal(sizeof(uint) * _gdiGetCharacterPlacementGlyphCount);
-                _gdiGetCharacterPlacementDx = Marshal.AllocHGlobal(sizeof(int) * _gdiGetCharacterPlacementGlyphCount);
-                _gdiGetCharacterPlacementGlpyhs = Marshal.AllocHGlobal(sizeof(GlyphIndex) * _gdiGetCharacterPlacementGlyphCount);
-                GDI.TEXTMETRICW textMetric;
-                if (!GDI.GetTextMetricsW(_gdiHdc, out textMetric))
-                    throw new GDI.GDIException("GetTextMetricsW");
-                _lineAscent = textMetric.tmAscent;
-                _lineSpaceing = textMetric.tmAscent + textMetric.tmDescent + textMetric.tmExternalLeading;
-                if (GDI.SetBkColor(_gdiHdc, 0x00ffffff) == 0xffffffff) // White background (GDI does not support alpha though)
-                    throw new GDI.GDIException("SetBkColor");
-
-                // Preload characters
-                ParseString(description.PreLoadedCharacters, false, new List<GlyphRenderInfo>());
+                    // Load specified font
+                    Create(description);
+                }  
+                catch (Exception ex)
+                {
+                    // Fall back to default font
+                    GDI.DeleteObject(_gdiFont);
+                    GDI.DeleteDC(_gdiHdc);
+                    Marshal.FreeHGlobal(_gdiGetCharacterPlacementOrder);
+                    Marshal.FreeHGlobal(_gdiGetCharacterPlacementDx);
+                    Marshal.FreeHGlobal(_gdiGetCharacterPlacementGlpyhs);
+                    Create(new Description() { TextureAllocator = TextureAllocator } );
+                }  
             }
-            catch
+            catch (Exception ex)
             {
                 Dispose();
                 throw;
             }
+        }
+
+        private void Create(Description description)
+        {
+            TextureAllocator = description.TextureAllocator;
+            TextureAllocator.GarbageCollectionCollectEvent.Add(delegate (RenderingTextureAllocator allocator, RenderingTextureAllocator.Map map, HashSet<RenderingTextureAllocator.Map.Entry> inOutUsedTextures)
+            {
+                // Clean dictionary for weak references that died.
+                List<GlyphIndex> GlyphKeysToRemove = new List<GlyphIndex>();
+                GlyphData unused;
+                foreach (KeyValuePair<GlyphIndex, WeakReference<GlyphData>> glyph in _glyphDictionary)
+                    if (!glyph.Value.TryGetTarget(out unused))
+                        GlyphKeysToRemove.Add(glyph.Key);
+                foreach (GlyphIndex GlyphKeyToRemove in GlyphKeysToRemove)
+                    _glyphDictionary.Remove(GlyphKeyToRemove);
+                return null;
+            });
+
+            // Setup GDI device and font
+            _gdiHdc = GDI.CreateCompatibleDC(IntPtr.Zero);
+            if (_gdiHdc == IntPtr.Zero)
+                throw new GDI.GDIException("CreateCompatibleDC");
+            _gdiFont = GDI.CreateFontW((int)(description.FontSize + 0.5f), 0, 0, 0, description.FontIsBold ? 700 : 0,
+                description.FontIsItalic ? 1u : 0u, description.FontIsUnderline ? 1u : 0u, description.FontIsStrikeout ? 1u : 0u, 0, 0, 0,
+                GDI.FontQuality.CLEARTYPE_QUALITY, 0, description.FontName);
+            if (_gdiFont == IntPtr.Zero)
+                throw new GDI.GDIException("CreateFont");
+            IntPtr selectObjectResult = GDI.SelectObject(_gdiHdc, _gdiFont);
+            if (selectObjectResult == IntPtr.Zero || selectObjectResult == new IntPtr(65535))
+                throw new GDI.GDIException("SelectObject");
+            _gdiGetCharacterPlacementOrder = Marshal.AllocHGlobal(sizeof(uint) * _gdiGetCharacterPlacementGlyphCount);
+            _gdiGetCharacterPlacementDx = Marshal.AllocHGlobal(sizeof(int) * _gdiGetCharacterPlacementGlyphCount);
+            _gdiGetCharacterPlacementGlpyhs = Marshal.AllocHGlobal(sizeof(GlyphIndex) * _gdiGetCharacterPlacementGlyphCount);
+            GDI.TEXTMETRICW textMetric;
+            if (!GDI.GetTextMetricsW(_gdiHdc, out textMetric))
+                throw new GDI.GDIException("GetTextMetricsW");
+            _lineAscent = textMetric.tmAscent;
+            _lineSpaceing = textMetric.tmAscent + textMetric.tmDescent + textMetric.tmExternalLeading;
+            if (GDI.SetBkColor(_gdiHdc, 0x00ffffff) == 0xffffffff) // White background (GDI does not support alpha though)
+                throw new GDI.GDIException("SetBkColor");
+
+            // Preload characters
+            ParseString(description.PreLoadedCharacters, false, new List<GlyphRenderInfo>());
         }
 
         private unsafe GlyphData GdiCreateGlyph(GlyphIndex glyphIndex)
