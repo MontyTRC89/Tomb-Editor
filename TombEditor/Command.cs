@@ -1499,6 +1499,12 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("ShowRealTintForMergedStatics", "Show real tint for merged statics", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_ShowRealTintForMergedStatics = !args.Editor.Configuration.Rendering3D_ShowRealTintForMergedStatics;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DisableGeometryPicking", "Disable geometry picking", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_DisablePickingForImportedGeometry = !args.Editor.Configuration.Rendering3D_DisablePickingForImportedGeometry;

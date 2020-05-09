@@ -30,7 +30,7 @@ namespace TombLib.LevelData
         SoundEngineVersion
     }
 
-    public class AutoStaticMeshMergeEntry : ICloneable
+    public class AutoStaticMeshMergeEntry : ICloneable, IEquatable<AutoStaticMeshMergeEntry>
     {
         public string StaticMesh
         {
@@ -63,23 +63,23 @@ namespace TombLib.LevelData
             return Clone();
         }
 
-        public override bool Equals(object obj)
-        {
-            if(obj is AutoStaticMeshMergeEntry)
-            {
-                AutoStaticMeshMergeEntry other = (AutoStaticMeshMergeEntry)obj;
-                if(other.meshId == meshId)
-                {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
-
         public override int GetHashCode()
         {
-            return (int)meshId;
+            return ("merged" + meshId + ClearShades + InterpretShadesAsEffect + Merge + TintAsAmbient).GetHashCode();
+        }
+
+        public override bool Equals(Object other) => Equals(other as AutoStaticMeshMergeEntry);
+
+        public bool Equals(AutoStaticMeshMergeEntry other)
+        {
+            if (other == null)
+                return false;
+
+            return (other.meshId == meshId &&
+                    other.ClearShades == ClearShades &&
+                    other.InterpretShadesAsEffect == InterpretShadesAsEffect &&
+                    other.Merge == Merge &&
+                    other.TintAsAmbient == TintAsAmbient);
         }
     }
 
@@ -512,9 +512,7 @@ namespace TombLib.LevelData
             return null;
         }
 
-        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) 
-        {
-            return (AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any());
-        }
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) => AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any();
+        public AutoStaticMeshMergeEntry GetStaticMergeEntry(WadStaticId staticMeshId) => AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
     }
 }

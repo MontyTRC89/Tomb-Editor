@@ -65,6 +65,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
         public bool ShowLightingWhiteTextureOnly { get; set; }
+        public bool ShowRealTintForMergedStatics { get; set; }
 
         private Camera _oldCamera;
 
@@ -366,6 +367,7 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedWadsChangedEvent ||
                     obj is Editor.LoadedTexturesChangedEvent ||
                     obj is Editor.LoadedImportedGeometriesChangedEvent ||
+                    obj is Editor.MergedStaticsChangedEvent ||
                     obj is Editor.GameVersionChangedEvent ||
                     obj is Editor.HideSelectionEvent)
                     Invalidate(false);
@@ -2875,7 +2877,19 @@ namespace TombEditor.Controls
                             if (!disableSelection && _editor.SelectedObject == st)
                                 staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                             else
-                                staticMeshEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? st.Color : new Vector3(1.0f));
+                            {
+                                if (_editor.Mode == EditorMode.Lighting)
+                                {
+                                    var entry = _editor.Level.Settings.GetStaticMergeEntry(st.WadObjectId);
+
+                                    if (!ShowRealTintForMergedStatics || entry == null || (entry.Merge && entry.TintAsAmbient))
+                                        staticMeshEffect.Parameters["Color"].SetValue(st.Color);
+                                    else
+                                        staticMeshEffect.Parameters["Color"].SetValue(st.Color * st.Room.AmbientLight);
+                                }
+                                else
+                                    staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
+                            }
 
                             staticMeshEffect.Parameters["ModelViewProjection"].SetValue((st.ObjectMatrix * viewProjection).ToSharpDX());
                             staticMeshEffect.Techniques[0].Passes[0].Apply();
