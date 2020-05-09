@@ -22,48 +22,6 @@ namespace TombEditor.ToolWindows
             // Reset palette to default and prepare controls
             lightPalette.LoadPalette(LevelSettings.LoadPalette());
             UpdateControls(false);
-
-            // Update palette
-            lightPalette.SelectedColorChanged += delegate
-            {
-                if (_editor.SelectedObject is LightInstance)
-                {
-                    var light = _editor.SelectedObject as LightInstance;
-                    light.Color = lightPalette.SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                    _editor.ObjectChange(light, ObjectChangeType.Change);
-                }
-                else if (_editor.SelectedObject is StaticInstance)
-                {
-                    var instance = _editor.SelectedObject as StaticInstance;
-                    instance.Color = lightPalette.SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.ObjectChange(instance, ObjectChangeType.Change);
-                }
-                else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main && _editor.SelectedObject is MoveableInstance)
-                {
-                    var instance = _editor.SelectedObject as MoveableInstance;
-                    instance.Color = lightPalette.SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.ObjectChange(instance, ObjectChangeType.Change);
-                }
-                _editor.LastUsedPaletteColourChange(lightPalette.SelectedColor);
-            };
-
-            // Copy palette into level settings on update
-            lightPalette.PaletteChanged += delegate { _editor.Level.Settings.Palette = lightPalette.Palette; };
-
-            // Hook into palette mouse events to temporarily hide selection highlight
-            lightPalette.MouseDown += delegate 
-            {
-                // Additionally save undo in case we're editing selected light colour
-                if (_editor.SelectedObject is LightInstance)
-                    _editor.UndoManager.PushObjectPropertyChanged((LightInstance)_editor.SelectedObject);
-                _editor.ToggleHiddenSelection(true);
-            };
-
-            lightPalette.MouseUp += delegate 
-            {
-                _editor.ToggleHiddenSelection(false);
-            };
         }
 
         protected override void Dispose(bool disposing)

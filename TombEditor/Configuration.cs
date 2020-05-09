@@ -1,7 +1,6 @@
 ﻿using DarkUI.Docking;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
