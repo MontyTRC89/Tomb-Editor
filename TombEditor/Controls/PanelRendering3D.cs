@@ -65,6 +65,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
         public bool ShowLightingWhiteTextureOnly { get; set; }
+        public bool ShowRealTintForMergedStatics { get; set; }
 
         private Camera _oldCamera;
 
@@ -2881,7 +2882,7 @@ namespace TombEditor.Controls
                                 {
                                     var entry = _editor.Level.Settings.GetStaticMergeEntry(st.WadObjectId);
 
-                                    if (entry == null || (entry.Merge && entry.TintAsAmbient))
+                                    if (!ShowRealTintForMergedStatics || entry == null || (entry.Merge && entry.TintAsAmbient))
                                         staticMeshEffect.Parameters["Color"].SetValue(st.Color);
                                     else
                                         staticMeshEffect.Parameters["Color"].SetValue(st.Color * st.Room.AmbientLight);

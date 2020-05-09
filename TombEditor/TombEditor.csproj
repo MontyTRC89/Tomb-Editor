@@ -618,6 +618,7 @@
     <None Include="Resources\icons_objects\objects_volume-box-16.png" />
     <None Include="Resources\icons_objects\objects_volume-sphere-16.png" />
     <None Include="Resources\icons_objects\objects_volume-prism-16.png" />
+    <None Include="Resources\icons_actions\actions_StaticTint-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">
