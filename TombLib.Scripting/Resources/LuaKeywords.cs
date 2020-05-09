@@ -1,10 +1,8 @@
 namespace TombLib.Scripting.Resources
 {
-	public static class LuaKeyWords
+	public static class LuaKeywords
 	{
-		#region Public variables
-
-		public static string[] Keywords
+		public static string[] Statements
 		{
 			get
 			{
@@ -50,15 +48,15 @@ namespace TombLib.Scripting.Resources
 				{
 					"%",
 					@"\+",
-					@"\-",
+					@"-",
 					@"\*",
 					"/",
 					@"\^",
 					@"\=",
 					@"~\=",
-					@"\>",
-					@"\<",
-					@"\:",
+					@">",
+					@"<",
+					@":",
 					@"\.",
                     @"\[",
                     @"\]"
@@ -78,16 +76,5 @@ namespace TombLib.Scripting.Resources
 				};
 			}
 		}
-
-		#endregion Public variables
-	}
-
-	public struct LuaPatterns
-	{
-		public static string Comments { get { return @"--.*$"; } }
-		public static string Operators { get { return @"(" + string.Join("|", LuaKeyWords.Operators) + @")"; } }
-		public static string SpecialOperators { get { return @"\b(" + string.Join("|", LuaKeyWords.SpecialOperators) + @")\b"; } }
-		public static string Keywords { get { return @"\b(" + string.Join("|", LuaKeyWords.Keywords) + @")\b"; } }
-		public static string Values { get { return @"\b(" + string.Join("|", LuaKeyWords.Values) + @")\b"; } }
 	}
 }

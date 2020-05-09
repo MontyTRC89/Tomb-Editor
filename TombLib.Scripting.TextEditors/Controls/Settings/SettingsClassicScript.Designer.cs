@@ -17,11 +17,18 @@
 
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			this.button_BackgroundColor = new DarkUI.Controls.DarkButton();
 			this.button_CommentsColor = new DarkUI.Controls.DarkButton();
+			this.button_DeleteScheme = new DarkUI.Controls.DarkButton();
+			this.button_ImportScheme = new DarkUI.Controls.DarkButton();
 			this.button_NewCommandsColor = new DarkUI.Controls.DarkButton();
+			this.button_OpenSchemesFolder = new DarkUI.Controls.DarkButton();
 			this.button_ReferencesColor = new DarkUI.Controls.DarkButton();
+			this.button_SaveScheme = new DarkUI.Controls.DarkButton();
 			this.button_SectionsColor = new DarkUI.Controls.DarkButton();
 			this.button_StandardCommandsColor = new DarkUI.Controls.DarkButton();
+			this.button_TextColor = new DarkUI.Controls.DarkButton();
 			this.button_ValuesColor = new DarkUI.Controls.DarkButton();
 			this.checkBox_Autocomplete = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_CloseBrackets = new DarkUI.Controls.DarkCheckBox();
@@ -39,8 +46,12 @@
 			this.checkBox_VisibleTabs = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_WordWrapping = new DarkUI.Controls.DarkCheckBox();
 			this.colorDialog = new System.Windows.Forms.ColorDialog();
+			this.comboBox_ColorSchemes = new DarkUI.Controls.DarkComboBox();
 			this.comboBox_FontFamily = new DarkUI.Controls.DarkComboBox();
 			this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+			this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+			this.darkLabel11 = new DarkUI.Controls.DarkLabel();
+			this.darkLabel12 = new DarkUI.Controls.DarkLabel();
 			this.darkLabel2 = new DarkUI.Controls.DarkLabel();
 			this.darkLabel3 = new DarkUI.Controls.DarkLabel();
 			this.darkLabel4 = new DarkUI.Controls.DarkLabel();
@@ -59,6 +70,7 @@
 			this.numeric_FontSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.numeric_UndoStackSize = new DarkUI.Controls.DarkNumericUpDown();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.groupBox_AddSpaces.SuspendLayout();
 			this.groupBox_Colors.SuspendLayout();
 			this.groupBox_Identation.SuspendLayout();
@@ -68,48 +80,109 @@
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
+			// button_BackgroundColor
+			// 
+			this.button_BackgroundColor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(32)))), ((int)(((byte)(32)))), ((int)(((byte)(32)))));
+			this.button_BackgroundColor.BackColorUseGeneric = false;
+			this.button_BackgroundColor.Checked = false;
+			this.button_BackgroundColor.Location = new System.Drawing.Point(370, 59);
+			this.button_BackgroundColor.Margin = new System.Windows.Forms.Padding(6, 0, 9, 3);
+			this.button_BackgroundColor.Name = "button_BackgroundColor";
+			this.button_BackgroundColor.Size = new System.Drawing.Size(169, 25);
+			this.button_BackgroundColor.TabIndex = 14;
+			this.button_BackgroundColor.Click += new System.EventHandler(this.button_Color_Click);
+			// 
 			// button_CommentsColor
 			// 
 			this.button_CommentsColor.BackColor = System.Drawing.Color.Green;
 			this.button_CommentsColor.BackColorUseGeneric = false;
 			this.button_CommentsColor.Checked = false;
-			this.button_CommentsColor.Location = new System.Drawing.Point(283, 130);
+			this.button_CommentsColor.Location = new System.Drawing.Point(191, 141);
+			this.button_CommentsColor.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_CommentsColor.Name = "button_CommentsColor";
-			this.button_CommentsColor.Size = new System.Drawing.Size(256, 25);
+			this.button_CommentsColor.Size = new System.Drawing.Size(170, 25);
 			this.button_CommentsColor.TabIndex = 11;
 			this.button_CommentsColor.Click += new System.EventHandler(this.button_Color_Click);
+			// 
+			// button_DeleteScheme
+			// 
+			this.button_DeleteScheme.Checked = false;
+			this.button_DeleteScheme.Image = global::TombLib.Scripting.TextEditors.Properties.Resources.general_trash_16;
+			this.button_DeleteScheme.Location = new System.Drawing.Point(444, 16);
+			this.button_DeleteScheme.Name = "button_DeleteScheme";
+			this.button_DeleteScheme.Size = new System.Drawing.Size(25, 25);
+			this.button_DeleteScheme.TabIndex = 18;
+			this.toolTip.SetToolTip(this.button_DeleteScheme, "Delete Scheme");
+			this.button_DeleteScheme.Click += new System.EventHandler(this.button_DeleteScheme_Click);
+			// 
+			// button_ImportScheme
+			// 
+			this.button_ImportScheme.Checked = false;
+			this.button_ImportScheme.Image = global::TombLib.Scripting.TextEditors.Properties.Resources.general_Import_16;
+			this.button_ImportScheme.Location = new System.Drawing.Point(483, 16);
+			this.button_ImportScheme.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.button_ImportScheme.Name = "button_ImportScheme";
+			this.button_ImportScheme.Size = new System.Drawing.Size(25, 25);
+			this.button_ImportScheme.TabIndex = 21;
+			this.toolTip.SetToolTip(this.button_ImportScheme, "Import Scheme...");
+			this.button_ImportScheme.Click += new System.EventHandler(this.button_ImportScheme_Click);
 			// 
 			// button_NewCommandsColor
 			// 
 			this.button_NewCommandsColor.BackColor = System.Drawing.Color.SpringGreen;
 			this.button_NewCommandsColor.BackColorUseGeneric = false;
 			this.button_NewCommandsColor.Checked = false;
-			this.button_NewCommandsColor.Location = new System.Drawing.Point(283, 86);
+			this.button_NewCommandsColor.Location = new System.Drawing.Point(191, 100);
+			this.button_NewCommandsColor.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_NewCommandsColor.Name = "button_NewCommandsColor";
-			this.button_NewCommandsColor.Size = new System.Drawing.Size(256, 25);
+			this.button_NewCommandsColor.Size = new System.Drawing.Size(170, 25);
 			this.button_NewCommandsColor.TabIndex = 9;
 			this.button_NewCommandsColor.Click += new System.EventHandler(this.button_Color_Click);
+			// 
+			// button_OpenSchemesFolder
+			// 
+			this.button_OpenSchemesFolder.Checked = false;
+			this.button_OpenSchemesFolder.Image = global::TombLib.Scripting.TextEditors.Properties.Resources.forward_arrow_16;
+			this.button_OpenSchemesFolder.Location = new System.Drawing.Point(514, 16);
+			this.button_OpenSchemesFolder.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+			this.button_OpenSchemesFolder.Name = "button_OpenSchemesFolder";
+			this.button_OpenSchemesFolder.Size = new System.Drawing.Size(25, 25);
+			this.button_OpenSchemesFolder.TabIndex = 17;
+			this.toolTip.SetToolTip(this.button_OpenSchemesFolder, "Open Schemes Folder");
+			this.button_OpenSchemesFolder.Click += new System.EventHandler(this.button_OpenSchemesFolder_Click);
 			// 
 			// button_ReferencesColor
 			// 
 			this.button_ReferencesColor.BackColor = System.Drawing.Color.Orchid;
 			this.button_ReferencesColor.BackColorUseGeneric = false;
 			this.button_ReferencesColor.Checked = false;
-			this.button_ReferencesColor.Location = new System.Drawing.Point(12, 130);
+			this.button_ReferencesColor.Location = new System.Drawing.Point(12, 141);
+			this.button_ReferencesColor.Margin = new System.Windows.Forms.Padding(9, 0, 3, 8);
 			this.button_ReferencesColor.Name = "button_ReferencesColor";
-			this.button_ReferencesColor.Size = new System.Drawing.Size(256, 25);
+			this.button_ReferencesColor.Size = new System.Drawing.Size(170, 25);
 			this.button_ReferencesColor.TabIndex = 5;
 			this.button_ReferencesColor.Click += new System.EventHandler(this.button_Color_Click);
+			// 
+			// button_SaveScheme
+			// 
+			this.button_SaveScheme.Checked = false;
+			this.button_SaveScheme.Image = global::TombLib.Scripting.TextEditors.Properties.Resources.general_Save_16;
+			this.button_SaveScheme.Location = new System.Drawing.Point(413, 16);
+			this.button_SaveScheme.Name = "button_SaveScheme";
+			this.button_SaveScheme.Size = new System.Drawing.Size(25, 25);
+			this.button_SaveScheme.TabIndex = 19;
+			this.toolTip.SetToolTip(this.button_SaveScheme, "Save Scheme As...");
+			this.button_SaveScheme.Click += new System.EventHandler(this.button_SaveScheme_Click);
 			// 
 			// button_SectionsColor
 			// 
 			this.button_SectionsColor.BackColor = System.Drawing.Color.SteelBlue;
 			this.button_SectionsColor.BackColorUseGeneric = false;
 			this.button_SectionsColor.Checked = false;
-			this.button_SectionsColor.Location = new System.Drawing.Point(12, 42);
-			this.button_SectionsColor.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+			this.button_SectionsColor.Location = new System.Drawing.Point(12, 59);
+			this.button_SectionsColor.Margin = new System.Windows.Forms.Padding(9, 0, 3, 3);
 			this.button_SectionsColor.Name = "button_SectionsColor";
-			this.button_SectionsColor.Size = new System.Drawing.Size(256, 25);
+			this.button_SectionsColor.Size = new System.Drawing.Size(170, 25);
 			this.button_SectionsColor.TabIndex = 1;
 			this.button_SectionsColor.Click += new System.EventHandler(this.button_Color_Click);
 			// 
@@ -118,21 +191,34 @@
 			this.button_StandardCommandsColor.BackColor = System.Drawing.Color.MediumAquamarine;
 			this.button_StandardCommandsColor.BackColorUseGeneric = false;
 			this.button_StandardCommandsColor.Checked = false;
-			this.button_StandardCommandsColor.Location = new System.Drawing.Point(283, 42);
-			this.button_StandardCommandsColor.Margin = new System.Windows.Forms.Padding(3, 3, 9, 3);
+			this.button_StandardCommandsColor.Location = new System.Drawing.Point(191, 59);
+			this.button_StandardCommandsColor.Margin = new System.Windows.Forms.Padding(6, 0, 3, 3);
 			this.button_StandardCommandsColor.Name = "button_StandardCommandsColor";
-			this.button_StandardCommandsColor.Size = new System.Drawing.Size(256, 25);
+			this.button_StandardCommandsColor.Size = new System.Drawing.Size(170, 25);
 			this.button_StandardCommandsColor.TabIndex = 7;
 			this.button_StandardCommandsColor.Click += new System.EventHandler(this.button_Color_Click);
+			// 
+			// button_TextColor
+			// 
+			this.button_TextColor.BackColor = System.Drawing.Color.Gainsboro;
+			this.button_TextColor.BackColorUseGeneric = false;
+			this.button_TextColor.Checked = false;
+			this.button_TextColor.Location = new System.Drawing.Point(370, 100);
+			this.button_TextColor.Margin = new System.Windows.Forms.Padding(6, 0, 9, 3);
+			this.button_TextColor.Name = "button_TextColor";
+			this.button_TextColor.Size = new System.Drawing.Size(169, 25);
+			this.button_TextColor.TabIndex = 16;
+			this.button_TextColor.Click += new System.EventHandler(this.button_Color_Click);
 			// 
 			// button_ValuesColor
 			// 
 			this.button_ValuesColor.BackColor = System.Drawing.Color.LightSalmon;
 			this.button_ValuesColor.BackColorUseGeneric = false;
 			this.button_ValuesColor.Checked = false;
-			this.button_ValuesColor.Location = new System.Drawing.Point(12, 85);
+			this.button_ValuesColor.Location = new System.Drawing.Point(12, 100);
+			this.button_ValuesColor.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_ValuesColor.Name = "button_ValuesColor";
-			this.button_ValuesColor.Size = new System.Drawing.Size(256, 25);
+			this.button_ValuesColor.Size = new System.Drawing.Size(170, 25);
 			this.button_ValuesColor.TabIndex = 3;
 			this.button_ValuesColor.Click += new System.EventHandler(this.button_Color_Click);
 			// 
@@ -299,6 +385,16 @@
 			this.colorDialog.AnyColor = true;
 			this.colorDialog.FullOpen = true;
 			// 
+			// comboBox_ColorSchemes
+			// 
+			this.comboBox_ColorSchemes.FormattingEnabled = true;
+			this.comboBox_ColorSchemes.Location = new System.Drawing.Point(12, 19);
+			this.comboBox_ColorSchemes.Margin = new System.Windows.Forms.Padding(9, 3, 3, 3);
+			this.comboBox_ColorSchemes.Name = "comboBox_ColorSchemes";
+			this.comboBox_ColorSchemes.Size = new System.Drawing.Size(395, 21);
+			this.comboBox_ColorSchemes.TabIndex = 12;
+			this.comboBox_ColorSchemes.SelectedIndexChanged += new System.EventHandler(this.comboBox_ColorSchemes_SelectedIndexChanged);
+			// 
 			// comboBox_FontFamily
 			// 
 			this.comboBox_FontFamily.FormattingEnabled = true;
@@ -319,6 +415,36 @@
 			this.darkLabel1.Size = new System.Drawing.Size(52, 13);
 			this.darkLabel1.TabIndex = 0;
 			this.darkLabel1.Text = "Font size:";
+			// 
+			// darkLabel10
+			// 
+			this.darkLabel10.AutoSize = true;
+			this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.darkLabel10.Location = new System.Drawing.Point(370, 46);
+			this.darkLabel10.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+			this.darkLabel10.Name = "darkLabel10";
+			this.darkLabel10.Size = new System.Drawing.Size(68, 13);
+			this.darkLabel10.TabIndex = 13;
+			this.darkLabel10.Text = "Background:";
+			// 
+			// darkLabel11
+			// 
+			this.darkLabel11.AutoSize = true;
+			this.darkLabel11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.darkLabel11.Location = new System.Drawing.Point(370, 87);
+			this.darkLabel11.Name = "darkLabel11";
+			this.darkLabel11.Size = new System.Drawing.Size(89, 13);
+			this.darkLabel11.TabIndex = 15;
+			this.darkLabel11.Text = "Normal text color:";
+			// 
+			// darkLabel12
+			// 
+			this.darkLabel12.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.darkLabel12.Location = new System.Drawing.Point(475, 17);
+			this.darkLabel12.Name = "darkLabel12";
+			this.darkLabel12.Size = new System.Drawing.Size(2, 23);
+			this.darkLabel12.TabIndex = 20;
 			// 
 			// darkLabel2
 			// 
@@ -346,8 +472,8 @@
 			// 
 			this.darkLabel4.AutoSize = true;
 			this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel4.Location = new System.Drawing.Point(12, 26);
-			this.darkLabel4.Margin = new System.Windows.Forms.Padding(6, 9, 3, 0);
+			this.darkLabel4.Location = new System.Drawing.Point(12, 46);
+			this.darkLabel4.Margin = new System.Windows.Forms.Padding(9, 3, 3, 0);
 			this.darkLabel4.Name = "darkLabel4";
 			this.darkLabel4.Size = new System.Drawing.Size(51, 13);
 			this.darkLabel4.TabIndex = 0;
@@ -357,7 +483,7 @@
 			// 
 			this.darkLabel5.AutoSize = true;
 			this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel5.Location = new System.Drawing.Point(12, 70);
+			this.darkLabel5.Location = new System.Drawing.Point(12, 87);
 			this.darkLabel5.Name = "darkLabel5";
 			this.darkLabel5.Size = new System.Drawing.Size(42, 13);
 			this.darkLabel5.TabIndex = 2;
@@ -367,7 +493,7 @@
 			// 
 			this.darkLabel6.AutoSize = true;
 			this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel6.Location = new System.Drawing.Point(12, 114);
+			this.darkLabel6.Location = new System.Drawing.Point(12, 128);
 			this.darkLabel6.Name = "darkLabel6";
 			this.darkLabel6.Size = new System.Drawing.Size(65, 13);
 			this.darkLabel6.TabIndex = 4;
@@ -377,7 +503,8 @@
 			// 
 			this.darkLabel7.AutoSize = true;
 			this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel7.Location = new System.Drawing.Point(282, 26);
+			this.darkLabel7.Location = new System.Drawing.Point(190, 46);
+			this.darkLabel7.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.darkLabel7.Name = "darkLabel7";
 			this.darkLabel7.Size = new System.Drawing.Size(107, 13);
 			this.darkLabel7.TabIndex = 6;
@@ -387,7 +514,7 @@
 			// 
 			this.darkLabel8.AutoSize = true;
 			this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel8.Location = new System.Drawing.Point(282, 70);
+			this.darkLabel8.Location = new System.Drawing.Point(190, 87);
 			this.darkLabel8.Name = "darkLabel8";
 			this.darkLabel8.Size = new System.Drawing.Size(86, 13);
 			this.darkLabel8.TabIndex = 8;
@@ -397,7 +524,7 @@
 			// 
 			this.darkLabel9.AutoSize = true;
 			this.darkLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.darkLabel9.Location = new System.Drawing.Point(282, 114);
+			this.darkLabel9.Location = new System.Drawing.Point(190, 128);
 			this.darkLabel9.Name = "darkLabel9";
 			this.darkLabel9.Size = new System.Drawing.Size(59, 13);
 			this.darkLabel9.TabIndex = 10;
@@ -405,9 +532,10 @@
 			// 
 			// elementHost
 			// 
-			this.elementHost.Location = new System.Drawing.Point(6, 19);
+			this.elementHost.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.elementHost.Location = new System.Drawing.Point(3, 16);
 			this.elementHost.Name = "elementHost";
-			this.elementHost.Size = new System.Drawing.Size(339, 127);
+			this.elementHost.Size = new System.Drawing.Size(345, 133);
 			this.elementHost.TabIndex = 0;
 			this.elementHost.Child = null;
 			// 
@@ -453,6 +581,16 @@
 			// 
 			// groupBox_Colors
 			// 
+			this.groupBox_Colors.Controls.Add(this.button_ImportScheme);
+			this.groupBox_Colors.Controls.Add(this.darkLabel12);
+			this.groupBox_Colors.Controls.Add(this.button_SaveScheme);
+			this.groupBox_Colors.Controls.Add(this.button_DeleteScheme);
+			this.groupBox_Colors.Controls.Add(this.button_OpenSchemesFolder);
+			this.groupBox_Colors.Controls.Add(this.darkLabel11);
+			this.groupBox_Colors.Controls.Add(this.button_TextColor);
+			this.groupBox_Colors.Controls.Add(this.darkLabel10);
+			this.groupBox_Colors.Controls.Add(this.button_BackgroundColor);
+			this.groupBox_Colors.Controls.Add(this.comboBox_ColorSchemes);
 			this.groupBox_Colors.Controls.Add(this.darkLabel9);
 			this.groupBox_Colors.Controls.Add(this.darkLabel8);
 			this.groupBox_Colors.Controls.Add(this.darkLabel7);
@@ -471,7 +609,7 @@
 			this.groupBox_Colors.Size = new System.Drawing.Size(551, 177);
 			this.groupBox_Colors.TabIndex = 16;
 			this.groupBox_Colors.TabStop = false;
-			this.groupBox_Colors.Text = "Syntax colors";
+			this.groupBox_Colors.Text = "Color schemes";
 			// 
 			// groupBox_Identation
 			// 
@@ -612,11 +750,17 @@
 
 		#endregion
 
+		private DarkUI.Controls.DarkButton button_BackgroundColor;
 		private DarkUI.Controls.DarkButton button_CommentsColor;
+		private DarkUI.Controls.DarkButton button_DeleteScheme;
+		private DarkUI.Controls.DarkButton button_ImportScheme;
 		private DarkUI.Controls.DarkButton button_NewCommandsColor;
+		private DarkUI.Controls.DarkButton button_OpenSchemesFolder;
 		private DarkUI.Controls.DarkButton button_ReferencesColor;
+		private DarkUI.Controls.DarkButton button_SaveScheme;
 		private DarkUI.Controls.DarkButton button_SectionsColor;
 		private DarkUI.Controls.DarkButton button_StandardCommandsColor;
+		private DarkUI.Controls.DarkButton button_TextColor;
 		private DarkUI.Controls.DarkButton button_ValuesColor;
 		private DarkUI.Controls.DarkCheckBox checkBox_Autocomplete;
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseBrackets;
@@ -633,12 +777,16 @@
 		private DarkUI.Controls.DarkCheckBox checkBox_VisibleSpaces;
 		private DarkUI.Controls.DarkCheckBox checkBox_VisibleTabs;
 		private DarkUI.Controls.DarkCheckBox checkBox_WordWrapping;
+		private DarkUI.Controls.DarkComboBox comboBox_ColorSchemes;
 		private DarkUI.Controls.DarkComboBox comboBox_FontFamily;
 		private DarkUI.Controls.DarkGroupBox groupBox_AddSpaces;
 		private DarkUI.Controls.DarkGroupBox groupBox_Colors;
 		private DarkUI.Controls.DarkGroupBox groupBox_Identation;
 		private DarkUI.Controls.DarkGroupBox groupBox_Preview;
 		private DarkUI.Controls.DarkLabel darkLabel1;
+		private DarkUI.Controls.DarkLabel darkLabel10;
+		private DarkUI.Controls.DarkLabel darkLabel11;
+		private DarkUI.Controls.DarkLabel darkLabel12;
 		private DarkUI.Controls.DarkLabel darkLabel2;
 		private DarkUI.Controls.DarkLabel darkLabel3;
 		private DarkUI.Controls.DarkLabel darkLabel4;
@@ -654,5 +802,6 @@
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
 		private System.Windows.Forms.ColorDialog colorDialog;
 		private System.Windows.Forms.Integration.ElementHost elementHost;
+		private System.Windows.Forms.ToolTip toolTip;
 	}
 }

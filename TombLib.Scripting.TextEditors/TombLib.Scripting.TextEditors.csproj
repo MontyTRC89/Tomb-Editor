@@ -7,8 +7,8 @@
     <ProjectGuid>{9F07E72D-3526-42DD-B85B-E85E2953F0F1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombLib.Scripting.Forms</RootNamespace>
-    <AssemblyName>TombLib.Scripting.Forms</AssemblyName>
+    <RootNamespace>TombLib.Scripting.TextEditors</RootNamespace>
+    <AssemblyName>TombLib.Scripting.TextEditors</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -34,6 +34,7 @@
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -47,12 +48,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ConfigurationBase.cs" />
-    <Compile Include="Configuration\TextEditorConfigurationBase.cs" />
-    <Compile Include="Configuration\ClassicScriptConfiguration.cs" />
-    <Compile Include="Configuration\Colors\ClassicScriptColors.cs" />
-    <Compile Include="Configuration\Colors\LuaColors.cs" />
-    <Compile Include="Configuration\LuaConfiguration.cs" />
+    <Compile Include="Configs\ConfigurationBase.cs" />
+    <Compile Include="Configs\TextEditors\TextEditorConfigBase.cs" />
+    <Compile Include="Configs\TextEditors\ClassicScriptEditorConfiguration.cs" />
+    <Compile Include="Configs\TextEditors\ColorSchemes\ClassicScriptColorScheme.cs" />
+    <Compile Include="Configs\TextEditors\ColorSchemes\LuaColorScheme.cs" />
+    <Compile Include="Configs\TextEditors\LuaEditorConfiguration.cs" />
     <Compile Include="Controls\LuaTextBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -68,6 +69,12 @@
     <Compile Include="Controls\Settings\SettingsClassicScript.Designer.cs">
       <DependentUpon>SettingsClassicScript.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormSaveSchemeAs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSaveSchemeAs.Designer.cs">
+      <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormTextEditorSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,13 +84,19 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="DefaultPaths.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Rendering\BookmarkRenderer.cs" />
     <Compile Include="Rendering\ErrorRenderer.cs" />
     <Compile Include="Rendering\SectionRenderer.cs" />
     <Compile Include="Rendering\TextRendering.cs" />
     <Compile Include="SyntaxHighlighting\LuaSyntaxHighlighting.cs" />
     <Compile Include="SyntaxHighlighting\ScriptSyntaxHighlighting.cs" />
-    <Compile Include="TextEditorConfigurations.cs" />
+    <Compile Include="TextEditorConfigs.cs" />
+    <Compile Include="XmlHandling.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\LuaTextBox.resx">
@@ -92,8 +105,15 @@
     <EmbeddedResource Include="Controls\Settings\SettingsClassicScript.resx">
       <DependentUpon>SettingsClassicScript.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSaveSchemeAs.resx">
+      <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormTextEditorSettings.resx">
       <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +129,31 @@
       <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
       <Name>TombLib.Scripting</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Configs\TextEditors\ColorSchemes\ClassicScript\Obsidian.cssch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configs\TextEditors\ColorSchemes\ClassicScript\Monokai.cssch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configs\TextEditors\ColorSchemes\ClassicScript\VS15.cssch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\forward-arrow-16.png" />
+    <Content Include="Resources\general_Import-16.png" />
+    <Content Include="Resources\general_Save-16.png" />
+    <Content Include="Resources\general_trash-16.png" />
+    <None Include="Configs\TextEditors\ColorSchemes\Lua\Monokai.luasch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configs\TextEditors\ColorSchemes\Lua\Obsidian.luasch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configs\TextEditors\ColorSchemes\Lua\VS15.luasch">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

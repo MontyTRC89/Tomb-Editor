@@ -117,7 +117,7 @@ namespace TombLib.Scripting.ErrorDetection
 		{
 			string section = sectionHeaderLineText.Split('[')[1].Split(']')[0];
 
-			foreach (string entry in ScriptKeyWords.Sections)
+			foreach (string entry in ScriptKeywords.Sections)
 				if (section.Equals(entry, StringComparison.OrdinalIgnoreCase))
 					return true;
 

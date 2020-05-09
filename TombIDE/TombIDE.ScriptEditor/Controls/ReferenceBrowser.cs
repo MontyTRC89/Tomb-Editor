@@ -143,7 +143,7 @@ namespace TombIDE.ScriptEditor.Controls
 			dataTable.Columns.Add("hex", typeof(string));
 			dataTable.Columns.Add("flag", typeof(string));
 
-			foreach (PluginMnemonic mnemonic in ScriptKeyWords.PluginMnemonics)
+			foreach (PluginMnemonic mnemonic in ScriptKeywords.PluginMnemonics)
 			{
 				DataRow row = dataTable.NewRow();
 				row["decimal"] = mnemonic.DecimalValue;

@@ -178,7 +178,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 				InitializeCompletionWindow();
 				CompletionWindow.StartOffset = wordStartOffset;
 
-				foreach (string mnemonicConstant in ScriptKeyWords.AllMnemonics)
+				foreach (string mnemonicConstant in ScriptKeywords.AllMnemonics)
 					if (mnemonicConstant.StartsWith(word, StringComparison.OrdinalIgnoreCase))
 						CompletionWindow.CompletionList.CompletionData.Add(new CompletionData(mnemonicConstant));
 

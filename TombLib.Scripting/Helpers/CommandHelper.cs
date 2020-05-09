@@ -150,7 +150,7 @@ namespace TombLib.Scripting.Helpers
 					return entry.Value.ToString();
 
 			// Search in PluginMnemonics
-			foreach (PluginMnemonic pluginMnemonic in ScriptKeyWords.PluginMnemonics)
+			foreach (PluginMnemonic pluginMnemonic in ScriptKeywords.PluginMnemonics)
 				if (pluginMnemonic.FlagName.Equals(key, StringComparison.OrdinalIgnoreCase))
 					return Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
 

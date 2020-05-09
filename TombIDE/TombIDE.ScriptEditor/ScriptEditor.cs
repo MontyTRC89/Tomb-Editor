@@ -32,7 +32,7 @@ namespace TombIDE.ScriptEditor
 	public partial class ScriptEditor : UserControl
 	{
 		private IDE _ide;
-		private TextEditorConfigurations _editorConfigs = new TextEditorConfigurations();
+		private TextEditorConfigs _editorConfigs = TextEditorConfigs.Load();
 
 		private FormFindReplace _formFindReplace;
 		private FormNGCompilingStatus _formCompiling;
@@ -47,7 +47,7 @@ namespace TombIDE.ScriptEditor
 		public ScriptEditor()
 		{
 			// Fetch mnemonic constants / plugin mnemonic constants
-			ScriptKeyWords.SetupConstants(PathHelper.GetReferencesPath(), PathHelper.GetInternalNGCPath());
+			ScriptKeywords.SetupConstants(PathHelper.GetReferencesPath(), PathHelper.GetInternalNGCPath());
 
 			InitializeComponent();
 		}
@@ -142,8 +142,8 @@ namespace TombIDE.ScriptEditor
 		{
 			if (obj is IDE.ScriptEditor_OpenFileEvent)
 			{
-                var e = obj as IDE.ScriptEditor_OpenFileEvent;
-                var fileTab = FindTabPageOfFile(e.RequestedFilePath);
+				var e = obj as IDE.ScriptEditor_OpenFileEvent;
+				var fileTab = FindTabPageOfFile(e.RequestedFilePath);
 
 				if (fileTab != null) // If the requested file is already opened
 					tabControl_Editor.SelectTab(fileTab);
@@ -155,10 +155,10 @@ namespace TombIDE.ScriptEditor
 		private void IDEEvent_HandleObjectSelection(IIDEEvent obj)
 		{
 			if (obj is IDE.ScriptEditor_SelectObjectEvent)
-            {
-                var e = (IDE.ScriptEditor_SelectObjectEvent)obj;
-                SelectObject(e.ObjectName, e.ObjectType);
-            }
+			{
+				var e = (IDE.ScriptEditor_SelectObjectEvent)obj;
+				SelectObject(e.ObjectName, e.ObjectType);
+			}
 		}
 
 		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
@@ -908,6 +908,8 @@ namespace TombIDE.ScriptEditor
 				ShowSectionSeparators = _editorConfigs.ClassicScript.ShowSectionSeparators
 			};
 
+			newTextEditor.TextArea.Margin = new System.Windows.Thickness(6, 0, 0, 0);
+
 			// Bind event methods to the TextEditor
 			newTextEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
 			newTextEditor.TextArea.SelectionChanged += Editor_StatusChanged;
@@ -918,8 +920,7 @@ namespace TombIDE.ScriptEditor
 			ElementHost elementHost = new ElementHost
 			{
 				Size = new Size(newTabPage.Size.Width - 6, newTabPage.Size.Height),
-				Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom,
-				Location = new Point(6, 0),
+				Dock = DockStyle.Fill,
 				Child = newTextEditor,
 				ContextMenuStrip = contextMenu_TextEditor
 			};
@@ -1152,7 +1153,7 @@ namespace TombIDE.ScriptEditor
 			using (FormTextEditorSettings form = new FormTextEditorSettings())
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					_editorConfigs = new TextEditorConfigurations();
+					_editorConfigs = TextEditorConfigs.Load();
 					syntaxPreview.ReloadSettings();
 					ApplySavedSettings();
 				}
@@ -1308,8 +1309,8 @@ namespace TombIDE.ScriptEditor
 				TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
 				if (textEditor is ScriptTextEditor)
-                    UpdateTextEditorSettings((ScriptTextEditor)textEditor);
-                else if (textEditor is LuaTextEditor)
+					UpdateTextEditorSettings((ScriptTextEditor)textEditor);
+				else if (textEditor is LuaTextEditor)
 					UpdateTextEditorSettings((LuaTextEditor)textEditor);
 			}
 
@@ -1328,11 +1329,19 @@ namespace TombIDE.ScriptEditor
 		{
 			scriptTextEditor.SyntaxHighlighting = new ScriptSyntaxHighlighting();
 
+			scriptTextEditor.Background = new System.Windows.Media.SolidColorBrush
+			(
+				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
+				(
+					_editorConfigs.ClassicScript.ColorScheme.Background
+				)
+			);
+
 			scriptTextEditor.Foreground = new System.Windows.Media.SolidColorBrush
 			(
 				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
 				(
-					_editorConfigs.ClassicScript.Colors.Values
+					_editorConfigs.ClassicScript.ColorScheme.Values
 				)
 			);
 

@@ -20,7 +20,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cbLara = new DarkUI.Controls.DarkCheckBox();
             this.panelControls = new System.Windows.Forms.Panel();
-            this.tbScript = new TombLib.Scripting.Forms.Controls.LuaTextBox();
+            this.tbScript = new TombLib.Scripting.TextEditors.Controls.LuaTextBox();
             this.cbFlybys = new DarkUI.Controls.DarkCheckBox();
             this.cbStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbOtherMoveables = new DarkUI.Controls.DarkCheckBox();
@@ -247,6 +247,6 @@
         private DarkUI.Controls.DarkCheckBox cbNPC;
         private DarkUI.Controls.DarkCheckBox cbStatics;
         private DarkUI.Controls.DarkCheckBox cbFlybys;
-        private TombLib.Scripting.Forms.Controls.LuaTextBox tbScript;
+        private TombLib.Scripting.TextEditors.Controls.LuaTextBox tbScript;
     }
 }

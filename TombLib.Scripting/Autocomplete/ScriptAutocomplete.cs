@@ -15,13 +15,13 @@ namespace TombLib.Scripting.Autocomplete
 		{
 			List<ICompletionData> data = new List<ICompletionData>();
 
-			foreach (string keyword in ScriptKeyWords.OldCommands)
+			foreach (string keyword in ScriptKeywords.OldCommands)
 				data.Add(new CompletionData(keyword + "="));
 
-			foreach (string keyword in ScriptKeyWords.NewCommands)
+			foreach (string keyword in ScriptKeywords.NewCommands)
 				data.Add(new CompletionData(keyword + "="));
 
-			foreach (string keyword in ScriptKeyWords.Sections)
+			foreach (string keyword in ScriptKeywords.Sections)
 				data.Add(new CompletionData("[" + keyword + "]"));
 
 			data.Add(new CompletionData("#INCLUDE "));
@@ -57,7 +57,7 @@ namespace TombLib.Scripting.Autocomplete
 			{
 				string mnemonicPrefix = currentArgument.Split('(')[1].Split(')')[0].Trim('.').Trim();
 
-				foreach (string mnemonicConstant in ScriptKeyWords.AllMnemonics)
+				foreach (string mnemonicConstant in ScriptKeywords.AllMnemonics)
 					if (mnemonicConstant.StartsWith(mnemonicPrefix, StringComparison.OrdinalIgnoreCase))
 						completionData.Add(new CompletionData(mnemonicConstant));
 			}

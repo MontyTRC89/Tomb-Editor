@@ -1,9 +1,6 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Text;
 using System.Windows.Forms;
 using TombLib.Scripting.TextEditors.Controls.Settings;
 
@@ -15,24 +12,17 @@ namespace TombLib.Scripting.TextEditors.Forms
 	{
 		private SettingsClassicScript settings_ClassicScript;
 
-		private TextEditorConfigurations _configs;
-		private TextEditorConfigurations _configsCopy;
+		private TextEditorConfigs _configs;
+		private TextEditorConfigs _configsCopy;
 
 		public FormTextEditorSettings()
 		{
 			InitializeComponent();
 
-			_configs = new TextEditorConfigurations();
-			_configsCopy = new TextEditorConfigurations();
+			_configs = TextEditorConfigs.Load();
+			_configsCopy = TextEditorConfigs.Load();
 
-			List<string> fontList = new List<string>();
-
-			foreach (FontFamily font in new InstalledFontCollection().Families)
-				fontList.Add(font.Name);
-
-			settings_ClassicScript = new SettingsClassicScript(_configs, fontList);
-
-			settings_ClassicScript.Dock = DockStyle.Fill;
+			settings_ClassicScript = new SettingsClassicScript(_configs.ClassicScript);
 			tabPage_ClassicScript.Controls.Add(settings_ClassicScript);
 
 			DarkTreeNode classicScriptNode = new DarkTreeNode("Classic Script");
@@ -48,7 +38,7 @@ namespace TombLib.Scripting.TextEditors.Forms
 		{
 			base.OnShown(e);
 
-			settings_ClassicScript.UpdatePreview();
+			settings_ClassicScript.ForcePreviewUpdate();
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -93,7 +83,7 @@ namespace TombLib.Scripting.TextEditors.Forms
 			if (treeView.SelectedNodes[0] == treeView.Nodes[0])
 			{
 				tablessTabControl.SelectTab(1);
-				settings_ClassicScript.UpdatePreview();
+				settings_ClassicScript.ForcePreviewUpdate();
 			}
 			else if (treeView.SelectedNodes[0] == treeView.Nodes[1])
 				tablessTabControl.SelectTab(2);

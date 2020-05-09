@@ -1,4 +1,4 @@
-﻿namespace TombLib.Scripting.Forms.Controls
+﻿namespace TombLib.Scripting.TextEditors.Controls
 {
     partial class LuaTextBox
     {
