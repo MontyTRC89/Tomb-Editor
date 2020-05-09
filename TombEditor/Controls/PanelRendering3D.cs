@@ -1383,14 +1383,16 @@ namespace TombEditor.Controls
 
         private void MoveTimer_Tick(object sender, EventArgs e)
         {
-            if (_movementTimer.Animating &&
-                _movementTimer.Mode == AnimationMode.Snap)
+            if (_movementTimer.Animating)
             {
-                var lerpedRot = Vector2.Lerp(_lastCameraRot, _nextCameraRot, _movementTimer.MoveMultiplier);
-                Camera.Target = Vector3.Lerp(_lastCameraPos, _nextCameraPos, _movementTimer.MoveMultiplier);
-                Camera.RotationX = lerpedRot.X;
-                Camera.RotationY = lerpedRot.Y;
-                Camera.Distance = (float)MathC.Lerp(_lastCameraDist, _nextCameraDist, _movementTimer.MoveMultiplier);
+                if (_movementTimer.Mode == AnimationMode.Snap)
+                {
+                    var lerpedRot = Vector2.Lerp(_lastCameraRot, _nextCameraRot, _movementTimer.MoveMultiplier);
+                    Camera.Target = Vector3.Lerp(_lastCameraPos, _nextCameraPos, _movementTimer.MoveMultiplier);
+                    Camera.RotationX = lerpedRot.X;
+                    Camera.RotationY = lerpedRot.Y;
+                    Camera.Distance = (float)MathC.Lerp(_lastCameraDist, _nextCameraDist, _movementTimer.MoveMultiplier);
+                }
                 Invalidate();
             }
             else
