@@ -177,9 +177,9 @@ namespace TombLib.LevelData.Compilers
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            if (_level.Settings.GameVersion == TRVersion.Game.TR2)
-                newRoom.AmbientIntensity = 0xFFF; // TODO: correct ambient light
-            else if (_level.Settings.GameVersion == TRVersion.Game.TR3)
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+                newRoom.AmbientIntensity = (uint)PackColorTo13BitGreyscale(room.AmbientLight);
+            else if (_level.Settings.GameVersion == TRVersion.Game.TR4)
                 newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
@@ -1583,6 +1583,22 @@ namespace TombLib.LevelData.Compilers
             tmp |= (ushort)((ushort)color.Y << 5);
             tmp |= (ushort)color.Z;
             return tmp;
+        }
+        // Takes the average color value and packs it into an inversed 13 Bit Greyscale Color (Maybe use Luminance int he future?)
+        // Higher = Darker
+        // Used for TR1? and TR2 and TR3 for AmbientInensity
+        private static ushort PackColorTo13BitGreyscale(Vector3 color) {
+            float avg = (color.X + color.Y + color.Z) / 3;
+            //clamp to 0-1
+            avg = Math.Min(1.0f, Math.Max(0,avg));
+            //invert
+            avg = 1.0f - avg;
+            // multiply by 256 to get 8 bits
+            avg *= 0xFF;
+            ushort value = (ushort)avg;
+            //bitshift to left for whatever reason
+            value <<= 5;
+            return value;
         }
 
         private static uint PackColorTo32Bit(Vector3 color)
