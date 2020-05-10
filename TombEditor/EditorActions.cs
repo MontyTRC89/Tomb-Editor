@@ -3431,33 +3431,42 @@ namespace TombEditor
                 });
         }
 
-        public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
+        public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner, bool silent = false, string forceDirectory = null)
         {
             Level level = _editor.Level;
 
             if (!level.Settings.Wads.All(wad => wad.Wad != null))
             {
-                _editor.SendMessage("Wads are missing. Can't compile level without wads.", PopupType.Error);
+                if (!silent)
+                    _editor.SendMessage("Wads are missing. Can't compile level without wads.", PopupType.Error);
                 return false;
             }
 
             if (!level.Settings.Textures.All(texture => texture.IsAvailable))
             {
-                _editor.SendMessage("Textures are missing. Can't compile level without textures.", PopupType.Error);
+                if (!silent)
+                    _editor.SendMessage("Textures are missing. Can't compile level without textures.", PopupType.Error);
                 return false;
             }
 
-            string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
+            string fileName = string.IsNullOrEmpty(forceDirectory) ? level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath) : forceDirectory;
+            string directory = PathC.GetDirectoryNameTry(fileName);
 
-            if(!Directory.Exists(PathC.GetDirectoryNameTry(fileName)))
+            if (!Directory.Exists(directory))
             {
-                _editor.SendMessage("Specified folder for level file does not exist.\nPlease specify different folder in level settings.", PopupType.Error);
-                return false;
+                if (!silent)
+                {
+                    _editor.SendMessage("Specified folder for level file does not exist.\nPlease specify different folder in level settings.", PopupType.Error);
+                    return false;
+                }
+                else
+                    Directory.CreateDirectory(directory); // Just silently make dir and put level there
             }
 
-            if(string.IsNullOrEmpty(Path.GetExtension(fileName)))
+            if (string.IsNullOrEmpty(Path.GetExtension(fileName)))
             {
-                _editor.SendMessage("Specified level file name is incorrect.\nPlease add an extension.", PopupType.Error);
+                if (!silent)
+                    _editor.SendMessage("Specified level file name is incorrect.\nPlease add an extension.", PopupType.Error);
                 return false;
             }
 
@@ -3482,6 +3491,13 @@ namespace TombEditor
                     GC.Collect();
                 }))
             {
+                // Make sure form displays correctly if we're running in silent mode without parent window
+                if (owner == null)
+                {
+                    form.StartPosition = FormStartPosition.CenterScreen;
+                    form.ShowInTaskbar = true;
+                }
+
                 form.ShowDialog(owner);
                 return form.DialogResult != DialogResult.Cancel;
             }
@@ -4372,15 +4388,15 @@ namespace TombEditor
             }
         }
 
-        public static void OpenLevel(IWin32Window owner, string fileName = null)
+        public static bool OpenLevel(IWin32Window owner, string fileName = null, bool silent = false)
         {
             if (!ContinueOnFileDrop(owner, "Open level"))
-                return;
+                return false;
 
             if (string.IsNullOrEmpty(fileName))
                 fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
             if (string.IsNullOrEmpty(fileName))
-                return;
+                return false;
 
             Level newLevel = null;
             try
@@ -4388,20 +4404,15 @@ namespace TombEditor
                 using (var form = new FormOperationDialog("Open level", true, true, progressReporter =>
                     newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter)))
                 {
-                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
-                        return;
+                    // Make sure form displays correctly if we're running in silent mode without parent window
+                    if (owner == null)
+                    {
+                        form.StartPosition = FormStartPosition.CenterScreen;
+                        form.ShowInTaskbar = true;
+                    }
 
-                    // Check if some wads are missing
-                    /*foreach (var wadRef in newLevel.Settings.Wads)
-                        if (wadRef.Wad == null)
-                        {
-                            using (var formSettings = new FormLevelSettings(_editor))
-                            {
-                                if (formSettings.ShowDialog() != DialogResult.OK)
-                                    return;
-                                break;
-                            }
-                        }*/
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return false;
 
                     bool hasUnsavedChanges = false;
 
@@ -4415,7 +4426,7 @@ namespace TombEditor
                             DarkMessageBox.Show(owner, "There was an error while converting your project to the new " +
                                             "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             newLevel = null;
-                            return;
+                            return false;
                         }
                         else
                         {
@@ -4425,28 +4436,33 @@ namespace TombEditor
                         }
                     }
 
-                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
-                        r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    if (!silent)
+                    {
+                        foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                            r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        AddProjectToRecent(fileName);
+                    }
 
                     _editor.Level = newLevel;
                     newLevel = null;
-                    AddProjectToRecent(fileName);
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
-
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to open \"" + fileName + "\"");
 
-                if(exc is FileNotFoundException)
+                if (exc is FileNotFoundException)
                 {
                     RemoveProjectFromRecent(fileName);
-                    _editor.SendMessage("Project file not found!", PopupType.Warning);
+                    if (!silent)
+                        _editor.SendMessage("Project file not found!", PopupType.Warning);
                     _editor.LevelFileNameChange();  // Updates recent files on the main form
                 }
-                else
+                else if (!silent)
                     _editor.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. \nException: " + exc.Message, PopupType.Error);
+                return false;
             }
         }
 

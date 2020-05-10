@@ -33,7 +33,7 @@ namespace TombEditor.Forms
             this.SetActualSize();
 
             panelProgressBar.Visible = !noProgressBar;
-            if(!noProgressBar)
+            if (!noProgressBar && Application.OpenForms.Count > 0)
                 TaskbarProgress.SetState(Application.OpenForms[0].Handle, TaskbarProgress.TaskbarStates.Normal);
 
             lstLog.BackColor = lstLog.BackColor.Multiply(Colors.Brightness);
