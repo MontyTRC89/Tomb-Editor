@@ -820,8 +820,19 @@ namespace TombLib.LevelData.Compilers
                             numSounds++;
 
                     // Prepare indices list to be written. 
+                    // For that, we iterate through ALL sound infos available and count how many samples
+                    // each of them have. Then we build a list of needed sound IDs with appropriate 
+                    // sample count, which is used later to store indices.
                     // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
+
                     var indexList = new List<int>();
+                    int currentSample = 0;
+                    foreach (var sound in _level.Settings.GlobalSoundMap)
+                    {
+                        if (_finalSoundInfosList.Contains(sound))
+                            indexList.Add(currentSample);
+                        currentSample += sound.Samples.Count;
+                    }
 
                     // Write sound details
                     int lastSampleIndex = 0;
@@ -843,6 +854,7 @@ namespace TombLib.LevelData.Compilers
 
                         // "Sample" field is index into SampleIndices in TR2-3 (for main.sfx)
                         // and is direct index to sample in TR4-5.
+
                         ushort index = (ushort)lastSampleIndex;
                         if (_level.Settings.GameVersion == TRVersion.Game.TR2 ||
                             _level.Settings.GameVersion == TRVersion.Game.TR3)
@@ -868,8 +880,6 @@ namespace TombLib.LevelData.Compilers
                             newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
-
-                        indexList.Add(lastSampleIndex);
                         lastSampleIndex += soundDetail.Samples.Count;
                     }
 
