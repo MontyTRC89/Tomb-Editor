@@ -162,6 +162,8 @@ namespace DarkUI.Controls
             return false;
         }
 
+        public Color BackColor { get; set; } = Color.Transparent;
+
         #endregion
 
         #region Constructor Region

@@ -1176,7 +1176,10 @@ namespace DarkUI.Controls
             var rect = GetNodeFullRowArea(node);
 
             // 1. Draw background
-            var bgColor = node.Odd ? OddNodeColor : EvenNodeColor;
+            var bgColor = node.BackColor;
+
+            if(bgColor == Color.Transparent)
+                bgColor = node.Odd ? OddNodeColor : EvenNodeColor;
 
             if (SelectedNodes.Count > 0 && SelectedNodes.Contains(node))
                 bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
