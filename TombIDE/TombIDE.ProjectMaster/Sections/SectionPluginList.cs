@@ -89,6 +89,8 @@ namespace TombIDE.ProjectMaster
 			treeView.SelectedNodes.Clear();
 			treeView.Nodes.Clear();
 
+			int missingPluginsCount = 0;
+
 			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
 			{
 				DarkTreeNode node = new DarkTreeNode
@@ -97,8 +99,23 @@ namespace TombIDE.ProjectMaster
 					Tag = plugin
 				};
 
+				if (string.IsNullOrEmpty(plugin.InternalDllPath))
+				{
+					node.Text = "(MISSING) " + plugin.Name;
+					node.BackColor = Color.FromArgb(96, 64, 64);
+
+					missingPluginsCount++;
+				}
+
 				treeView.Nodes.Add(node);
 			}
+
+			if (missingPluginsCount == 1)
+				sectionPanel.SectionHeader = "Project Plugins >> WARNING: 1 plugin on the list is missing or was not installed using TombIDE. Reinstall it to prevent any issues.";
+			else if (missingPluginsCount > 1)
+				sectionPanel.SectionHeader = "Project Plugins >> WARNING: " + missingPluginsCount + " plugins on the list are missing or were not installed using TombIDE. Reinstall them to prevent any issues.";
+			else
+				sectionPanel.SectionHeader = "Project Plugins";
 
 			treeView.Invalidate();
 		}

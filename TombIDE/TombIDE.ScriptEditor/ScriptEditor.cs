@@ -130,11 +130,8 @@ namespace TombIDE.ScriptEditor
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			IDEEvent_HandleFileOpening(obj);
-
 			IDEEvent_HandleObjectSelection(obj);
-
 			IDEEvent_HandleSilentActions(obj);
-
 			IDEEvent_HandleProgramClosing(obj);
 		}
 
