@@ -830,8 +830,13 @@ namespace TombLib.LevelData.Compilers
                     foreach (var sound in _level.Settings.GlobalSoundMap)
                     {
                         if (_finalSoundInfosList.Contains(sound))
-                            indexList.Add(currentSample);
-                        currentSample += sound.Samples.Count;
+                            foreach (var sample in sound.Samples)
+                            {
+                                indexList.Add(currentSample);
+                                currentSample++;
+                            }
+                        else
+                            currentSample += sound.Samples.Count;
                     }
 
                     // Write sound details
@@ -841,7 +846,7 @@ namespace TombLib.LevelData.Compilers
                     {
                         var soundDetail = _finalSoundInfosList[i];
 
-                        if (soundDetail.Samples.Count > 0x3f)
+                        if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
                         ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
                         characteristics |= (ushort)(soundDetail.Samples.Count << 2);
@@ -852,18 +857,10 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
-                        // "Sample" field is index into SampleIndices in TR2-3 (for main.sfx)
-                        // and is direct index to sample in TR4-5.
-
-                        ushort index = (ushort)lastSampleIndex;
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR2 ||
-                            _level.Settings.GameVersion == TRVersion.Game.TR3)
-                            index = (ushort)i;
-
                         if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
                         {
                             var newSoundDetail = new tr_sound_details();
-                            newSoundDetail.Sample = index;
+                            newSoundDetail.Sample = (ushort)lastSampleIndex;
                             newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
                             newSoundDetail.Chance = (byte)soundDetail.Chance;
                             newSoundDetail.Characteristics = characteristics;
@@ -872,7 +869,7 @@ namespace TombLib.LevelData.Compilers
                         else
                         {
                             var newSoundDetail = new tr3_sound_details();
-                            newSoundDetail.Sample = index;
+                            newSoundDetail.Sample = (ushort)lastSampleIndex;
                             newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
                             newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
                             newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
