@@ -701,6 +701,13 @@ namespace TombEditor
             RaiseEvent(new EditorQuitEvent());
         }
 
+        // Main window focus event
+        public class EditorFocusedEvent : IEditorEvent { }
+        public void Focus()
+        {
+            RaiseEvent(new EditorFocusedEvent());
+        }
+
         // Undo-redo manager
         public EditorUndoManager UndoManager { get; private set; }
 

@@ -53,7 +53,8 @@ namespace TombEditor.Controls
                 Update(); // Magic fix for room view leaking into item view
             }
 
-            if (obj is Editor.LoadedWadsChangedEvent)
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.EditorFocusedEvent)
                 Invalidate();
         }
 
