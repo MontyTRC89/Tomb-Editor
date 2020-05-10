@@ -23,6 +23,8 @@ namespace TombLib.Scripting.TextEditors.Configs.Bases
 
 		public bool WordWrapping { get; set; } = TextEditorBaseDefaults.WordWrapping;
 
+		public bool HighlightCurrentLine { get; set; } = TextEditorBaseDefaults.HighlightCurrentLine;
+
 		public bool ShowLineNumbers { get; set; } = TextEditorBaseDefaults.ShowLineNumbers;
 
 		public bool ShowVisualSpaces { get; set; } = TextEditorBaseDefaults.ShowVisualSpaces;

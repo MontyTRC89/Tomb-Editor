@@ -11,12 +11,18 @@ namespace TombLib.Scripting.TextEditors.Rendering
 	{
 		private ScriptTextEditor _editor;
 
+		#region Construction
+
 		public SectionRenderer(ScriptTextEditor e)
 		{
 			_editor = e;
 		}
 
 		public KnownLayer Layer { get { return KnownLayer.Caret; } }
+
+		#endregion Construction
+
+		#region Drawing
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
 		{
@@ -34,5 +40,7 @@ namespace TombLib.Scripting.TextEditors.Rendering
 				}
 			}
 		}
+
+		#endregion Drawing
 	}
 }

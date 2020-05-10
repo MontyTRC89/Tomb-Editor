@@ -28,6 +28,7 @@
 			this.checkBox_Autocomplete = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_CloseBrackets = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_CloseQuotes = new DarkUI.Controls.DarkCheckBox();
+			this.checkBox_HighlightCurrentLine = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_LineNumbers = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_LiveErrors = new DarkUI.Controls.DarkCheckBox();
 			this.checkBox_PostCommaSpace = new DarkUI.Controls.DarkCheckBox();
@@ -189,14 +190,25 @@
 			this.checkBox_CloseQuotes.TabIndex = 9;
 			this.checkBox_CloseQuotes.Text = "Auto close quotes \" \"";
 			// 
+			// checkBox_HighlightCurrentLine
+			// 
+			this.checkBox_HighlightCurrentLine.AutoSize = true;
+			this.checkBox_HighlightCurrentLine.Location = new System.Drawing.Point(6, 276);
+			this.checkBox_HighlightCurrentLine.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			this.checkBox_HighlightCurrentLine.Name = "checkBox_HighlightCurrentLine";
+			this.checkBox_HighlightCurrentLine.Size = new System.Drawing.Size(122, 17);
+			this.checkBox_HighlightCurrentLine.TabIndex = 11;
+			this.checkBox_HighlightCurrentLine.Text = "Highlight current line";
+			this.checkBox_HighlightCurrentLine.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
+			// 
 			// checkBox_LineNumbers
 			// 
 			this.checkBox_LineNumbers.AutoSize = true;
-			this.checkBox_LineNumbers.Location = new System.Drawing.Point(6, 276);
+			this.checkBox_LineNumbers.Location = new System.Drawing.Point(6, 302);
 			this.checkBox_LineNumbers.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_LineNumbers.Name = "checkBox_LineNumbers";
 			this.checkBox_LineNumbers.Size = new System.Drawing.Size(115, 17);
-			this.checkBox_LineNumbers.TabIndex = 11;
+			this.checkBox_LineNumbers.TabIndex = 12;
 			this.checkBox_LineNumbers.Text = "Show line numbers";
 			this.checkBox_LineNumbers.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
 			// 
@@ -265,44 +277,44 @@
 			// checkBox_SectionSeparators
 			// 
 			this.checkBox_SectionSeparators.AutoSize = true;
-			this.checkBox_SectionSeparators.Location = new System.Drawing.Point(6, 293);
+			this.checkBox_SectionSeparators.Location = new System.Drawing.Point(6, 319);
 			this.checkBox_SectionSeparators.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.checkBox_SectionSeparators.Name = "checkBox_SectionSeparators";
 			this.checkBox_SectionSeparators.Size = new System.Drawing.Size(142, 17);
-			this.checkBox_SectionSeparators.TabIndex = 12;
+			this.checkBox_SectionSeparators.TabIndex = 13;
 			this.checkBox_SectionSeparators.Text = "Show section separators";
 			this.checkBox_SectionSeparators.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
 			// 
 			// checkBox_ToolTips
 			// 
 			this.checkBox_ToolTips.AutoSize = true;
-			this.checkBox_ToolTips.Location = new System.Drawing.Point(6, 362);
-			this.checkBox_ToolTips.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
+			this.checkBox_ToolTips.Location = new System.Drawing.Point(6, 388);
+			this.checkBox_ToolTips.Margin = new System.Windows.Forms.Padding(6, 9, 3, 6);
 			this.checkBox_ToolTips.Name = "checkBox_ToolTips";
 			this.checkBox_ToolTips.Size = new System.Drawing.Size(137, 17);
-			this.checkBox_ToolTips.TabIndex = 15;
+			this.checkBox_ToolTips.TabIndex = 16;
 			this.checkBox_ToolTips.Text = "Show definition tool tips";
 			this.checkBox_ToolTips.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
 			// 
 			// checkBox_VisibleSpaces
 			// 
 			this.checkBox_VisibleSpaces.AutoSize = true;
-			this.checkBox_VisibleSpaces.Location = new System.Drawing.Point(6, 319);
+			this.checkBox_VisibleSpaces.Location = new System.Drawing.Point(6, 345);
 			this.checkBox_VisibleSpaces.Margin = new System.Windows.Forms.Padding(3, 9, 3, 0);
 			this.checkBox_VisibleSpaces.Name = "checkBox_VisibleSpaces";
 			this.checkBox_VisibleSpaces.Size = new System.Drawing.Size(122, 17);
-			this.checkBox_VisibleSpaces.TabIndex = 13;
+			this.checkBox_VisibleSpaces.TabIndex = 14;
 			this.checkBox_VisibleSpaces.Text = "Show visible spaces";
 			this.checkBox_VisibleSpaces.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
 			// 
 			// checkBox_VisibleTabs
 			// 
 			this.checkBox_VisibleTabs.AutoSize = true;
-			this.checkBox_VisibleTabs.Location = new System.Drawing.Point(6, 336);
+			this.checkBox_VisibleTabs.Location = new System.Drawing.Point(6, 362);
 			this.checkBox_VisibleTabs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.checkBox_VisibleTabs.Name = "checkBox_VisibleTabs";
 			this.checkBox_VisibleTabs.Size = new System.Drawing.Size(108, 17);
-			this.checkBox_VisibleTabs.TabIndex = 14;
+			this.checkBox_VisibleTabs.TabIndex = 15;
 			this.checkBox_VisibleTabs.Text = "Show visible tabs";
 			this.checkBox_VisibleTabs.CheckedChanged += new System.EventHandler(this.VisiblePreviewSetting_Changed);
 			// 
@@ -452,7 +464,7 @@
 			this.comboBox_FontFamily.Location = new System.Drawing.Point(6, 92);
 			this.comboBox_FontFamily.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.comboBox_FontFamily.Name = "comboBox_FontFamily";
-			this.comboBox_FontFamily.Size = new System.Drawing.Size(140, 21);
+			this.comboBox_FontFamily.Size = new System.Drawing.Size(150, 21);
 			this.comboBox_FontFamily.TabIndex = 3;
 			this.comboBox_FontFamily.SelectedIndexChanged += new System.EventHandler(this.comboBox_FontFamily_SelectedIndexChanged);
 			// 
@@ -654,11 +666,11 @@
 			this.groupBox_Colors.Controls.Add(this.colorButton_Values);
 			this.groupBox_Colors.Controls.Add(this.colorButton_References);
 			this.groupBox_Colors.Controls.Add(this.colorButton_Comments);
-			this.groupBox_Colors.Location = new System.Drawing.Point(152, 28);
+			this.groupBox_Colors.Location = new System.Drawing.Point(162, 28);
 			this.groupBox_Colors.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
 			this.groupBox_Colors.Name = "groupBox_Colors";
 			this.groupBox_Colors.Size = new System.Drawing.Size(551, 177);
-			this.groupBox_Colors.TabIndex = 16;
+			this.groupBox_Colors.TabIndex = 17;
 			this.groupBox_Colors.TabStop = false;
 			this.groupBox_Colors.Text = "Color schemes";
 			// 
@@ -667,11 +679,11 @@
 			this.groupBox_Identation.Controls.Add(this.groupBox_Preview);
 			this.groupBox_Identation.Controls.Add(this.groupBox_AddSpaces);
 			this.groupBox_Identation.Controls.Add(this.checkBox_ReduceSpaces);
-			this.groupBox_Identation.Location = new System.Drawing.Point(152, 211);
+			this.groupBox_Identation.Location = new System.Drawing.Point(162, 228);
 			this.groupBox_Identation.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.groupBox_Identation.Name = "groupBox_Identation";
 			this.groupBox_Identation.Size = new System.Drawing.Size(551, 177);
-			this.groupBox_Identation.TabIndex = 17;
+			this.groupBox_Identation.TabIndex = 18;
 			this.groupBox_Identation.TabStop = false;
 			this.groupBox_Identation.Text = "Indentation rules";
 			// 
@@ -707,7 +719,7 @@
             0,
             0});
 			this.numeric_FontSize.Name = "numeric_FontSize";
-			this.numeric_FontSize.Size = new System.Drawing.Size(140, 20);
+			this.numeric_FontSize.Size = new System.Drawing.Size(150, 20);
 			this.numeric_FontSize.TabIndex = 1;
 			this.numeric_FontSize.Value = new decimal(new int[] {
             12,
@@ -737,7 +749,7 @@
             0,
             0});
 			this.numeric_UndoStackSize.Name = "numeric_UndoStackSize";
-			this.numeric_UndoStackSize.Size = new System.Drawing.Size(140, 20);
+			this.numeric_UndoStackSize.Size = new System.Drawing.Size(150, 20);
 			this.numeric_UndoStackSize.TabIndex = 5;
 			this.numeric_UndoStackSize.Value = new decimal(new int[] {
             256,
@@ -747,6 +759,7 @@
 			// 
 			// sectionPanel
 			// 
+			this.sectionPanel.Controls.Add(this.checkBox_HighlightCurrentLine);
 			this.sectionPanel.Controls.Add(this.checkBox_ToolTips);
 			this.sectionPanel.Controls.Add(this.checkBox_SectionSeparators);
 			this.sectionPanel.Controls.Add(this.checkBox_VisibleTabs);
@@ -767,11 +780,9 @@
 			this.sectionPanel.Controls.Add(this.numeric_FontSize);
 			this.sectionPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.sectionPanel.Location = new System.Drawing.Point(0, 0);
-			this.sectionPanel.MaximumSize = new System.Drawing.Size(710, 395);
-			this.sectionPanel.MinimumSize = new System.Drawing.Size(710, 395);
 			this.sectionPanel.Name = "sectionPanel";
 			this.sectionPanel.SectionHeader = "Classic Script";
-			this.sectionPanel.Size = new System.Drawing.Size(710, 395);
+			this.sectionPanel.Size = new System.Drawing.Size(720, 412);
 			this.sectionPanel.TabIndex = 0;
 			// 
 			// SettingsClassicScript
@@ -780,10 +791,10 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
 			this.Controls.Add(this.sectionPanel);
-			this.MaximumSize = new System.Drawing.Size(710, 395);
-			this.MinimumSize = new System.Drawing.Size(710, 395);
+			this.MaximumSize = new System.Drawing.Size(720, 412);
+			this.MinimumSize = new System.Drawing.Size(720, 412);
 			this.Name = "SettingsClassicScript";
-			this.Size = new System.Drawing.Size(710, 395);
+			this.Size = new System.Drawing.Size(720, 412);
 			this.buttonContextMenu.ResumeLayout(false);
 			this.groupBox_AddSpaces.ResumeLayout(false);
 			this.groupBox_AddSpaces.PerformLayout();
@@ -817,6 +828,7 @@
 		private DarkUI.Controls.DarkCheckBox checkBox_Autocomplete;
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseBrackets;
 		private DarkUI.Controls.DarkCheckBox checkBox_CloseQuotes;
+		private DarkUI.Controls.DarkCheckBox checkBox_HighlightCurrentLine;
 		private DarkUI.Controls.DarkCheckBox checkBox_LineNumbers;
 		private DarkUI.Controls.DarkCheckBox checkBox_LiveErrors;
 		private DarkUI.Controls.DarkCheckBox checkBox_PostCommaSpace;

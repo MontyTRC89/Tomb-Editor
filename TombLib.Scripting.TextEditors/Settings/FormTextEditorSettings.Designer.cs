@@ -25,9 +25,9 @@
 			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.tabPage_Global = new System.Windows.Forms.TabPage();
 			this.tabPage_ClassicScript = new System.Windows.Forms.TabPage();
+			this.settingsClassicScript = new TombLib.Scripting.TextEditors.Controls.Settings.SettingsClassicScript();
 			this.tabPage_Lua = new System.Windows.Forms.TabPage();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
-			this.settingsClassicScript = new TombLib.Scripting.TextEditors.Controls.Settings.SettingsClassicScript();
 			this.panel_Buttons.SuspendLayout();
 			this.panel_Main.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
@@ -39,7 +39,7 @@
 			this.button_Apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Apply.Checked = false;
 			this.button_Apply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Apply.Location = new System.Drawing.Point(716, 8);
+			this.button_Apply.Location = new System.Drawing.Point(726, 8);
 			this.button_Apply.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
 			this.button_Apply.Name = "button_Apply";
 			this.button_Apply.Size = new System.Drawing.Size(75, 24);
@@ -52,7 +52,7 @@
 			this.button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Cancel.Checked = false;
 			this.button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button_Cancel.Location = new System.Drawing.Point(797, 8);
+			this.button_Cancel.Location = new System.Drawing.Point(807, 8);
 			this.button_Cancel.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.button_Cancel.Name = "button_Cancel";
 			this.button_Cancel.Size = new System.Drawing.Size(75, 24);
@@ -78,9 +78,9 @@
 			this.panel_Buttons.Controls.Add(this.button_Apply);
 			this.panel_Buttons.Controls.Add(this.button_Cancel);
 			this.panel_Buttons.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel_Buttons.Location = new System.Drawing.Point(0, 397);
+			this.panel_Buttons.Location = new System.Drawing.Point(0, 414);
 			this.panel_Buttons.Name = "panel_Buttons";
-			this.panel_Buttons.Size = new System.Drawing.Size(880, 40);
+			this.panel_Buttons.Size = new System.Drawing.Size(890, 40);
 			this.panel_Buttons.TabIndex = 3;
 			// 
 			// panel_Main
@@ -91,7 +91,7 @@
 			this.panel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel_Main.Location = new System.Drawing.Point(0, 0);
 			this.panel_Main.Name = "panel_Main";
-			this.panel_Main.Size = new System.Drawing.Size(880, 397);
+			this.panel_Main.Size = new System.Drawing.Size(890, 414);
 			this.panel_Main.TabIndex = 4;
 			// 
 			// tablessTabControl
@@ -103,7 +103,7 @@
 			this.tablessTabControl.Location = new System.Drawing.Point(168, 0);
 			this.tablessTabControl.Name = "tablessTabControl";
 			this.tablessTabControl.SelectedIndex = 0;
-			this.tablessTabControl.Size = new System.Drawing.Size(710, 395);
+			this.tablessTabControl.Size = new System.Drawing.Size(720, 412);
 			this.tablessTabControl.TabIndex = 4;
 			// 
 			// tabPage_Global
@@ -111,7 +111,7 @@
 			this.tabPage_Global.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.tabPage_Global.Location = new System.Drawing.Point(4, 22);
 			this.tabPage_Global.Name = "tabPage_Global";
-			this.tabPage_Global.Size = new System.Drawing.Size(702, 369);
+			this.tabPage_Global.Size = new System.Drawing.Size(712, 386);
 			this.tabPage_Global.TabIndex = 0;
 			this.tabPage_Global.Text = "Global";
 			// 
@@ -121,16 +121,27 @@
 			this.tabPage_ClassicScript.Controls.Add(this.settingsClassicScript);
 			this.tabPage_ClassicScript.Location = new System.Drawing.Point(4, 22);
 			this.tabPage_ClassicScript.Name = "tabPage_ClassicScript";
-			this.tabPage_ClassicScript.Size = new System.Drawing.Size(702, 369);
+			this.tabPage_ClassicScript.Size = new System.Drawing.Size(712, 386);
 			this.tabPage_ClassicScript.TabIndex = 1;
 			this.tabPage_ClassicScript.Text = "Classic Script";
+			// 
+			// settingsClassicScript
+			// 
+			this.settingsClassicScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
+			this.settingsClassicScript.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.settingsClassicScript.Location = new System.Drawing.Point(0, 0);
+			this.settingsClassicScript.MaximumSize = new System.Drawing.Size(720, 412);
+			this.settingsClassicScript.MinimumSize = new System.Drawing.Size(720, 412);
+			this.settingsClassicScript.Name = "settingsClassicScript";
+			this.settingsClassicScript.Size = new System.Drawing.Size(720, 412);
+			this.settingsClassicScript.TabIndex = 0;
 			// 
 			// tabPage_Lua
 			// 
 			this.tabPage_Lua.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.tabPage_Lua.Location = new System.Drawing.Point(4, 22);
 			this.tabPage_Lua.Name = "tabPage_Lua";
-			this.tabPage_Lua.Size = new System.Drawing.Size(702, 369);
+			this.tabPage_Lua.Size = new System.Drawing.Size(712, 386);
 			this.tabPage_Lua.TabIndex = 2;
 			this.tabPage_Lua.Text = "Lua";
 			// 
@@ -147,20 +158,9 @@
 			this.treeView.Name = "treeView";
 			this.treeView.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
 			this.treeView.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
-			this.treeView.Size = new System.Drawing.Size(168, 395);
+			this.treeView.Size = new System.Drawing.Size(168, 412);
 			this.treeView.TabIndex = 3;
 			this.treeView.SelectedNodesChanged += new System.EventHandler(this.treeView_SelectedNodesChanged);
-			// 
-			// settingsClassicScript
-			// 
-			this.settingsClassicScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(65)))), ((int)(((byte)(69)))));
-			this.settingsClassicScript.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.settingsClassicScript.Location = new System.Drawing.Point(0, 0);
-			this.settingsClassicScript.MaximumSize = new System.Drawing.Size(710, 395);
-			this.settingsClassicScript.MinimumSize = new System.Drawing.Size(710, 395);
-			this.settingsClassicScript.Name = "settingsClassicScript";
-			this.settingsClassicScript.Size = new System.Drawing.Size(710, 395);
-			this.settingsClassicScript.TabIndex = 0;
 			// 
 			// FormTextEditorSettings
 			// 
@@ -169,7 +169,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.CancelButton = this.button_Cancel;
-			this.ClientSize = new System.Drawing.Size(880, 437);
+			this.ClientSize = new System.Drawing.Size(890, 454);
 			this.Controls.Add(this.panel_Main);
 			this.Controls.Add(this.panel_Buttons);
 			this.FlatBorder = true;
@@ -189,7 +189,7 @@
 
 		#endregion
 
-		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
+		private Controls.Settings.SettingsClassicScript settingsClassicScript;
 		private DarkUI.Controls.DarkButton button_Apply;
 		private DarkUI.Controls.DarkButton button_Cancel;
 		private DarkUI.Controls.DarkButton button_ResetDefault;
@@ -199,6 +199,6 @@
 		private System.Windows.Forms.TabPage tabPage_ClassicScript;
 		private System.Windows.Forms.TabPage tabPage_Global;
 		private System.Windows.Forms.TabPage tabPage_Lua;
-		private Controls.Settings.SettingsClassicScript settingsClassicScript;
+		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 	}
 }

@@ -17,6 +17,8 @@
 
 		public const bool WordWrapping = false;
 
+		public const bool HighlightCurrentLine = true;
+
 		public const bool ShowLineNumbers = true;
 
 		public const bool ShowVisualSpaces = false;
