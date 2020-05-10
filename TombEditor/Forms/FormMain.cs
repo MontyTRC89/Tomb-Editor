@@ -1,17 +1,17 @@
-﻿using System;
+﻿using NLog;
+using DarkUI.Config;
+using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using DarkUI.Docking;
 using DarkUI.Forms;
-using NLog;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using System.IO;
-using System.Xml;
-using DarkUI.Config;
 
 namespace TombEditor.Forms
 {
@@ -591,6 +591,12 @@ namespace TombEditor.Forms
         {
             base.OnDragDrop(e);
             EditorActions.DragDropCommonFiles(e, this);
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+                _editor.Focus();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
