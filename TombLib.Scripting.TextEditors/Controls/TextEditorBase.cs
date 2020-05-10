@@ -261,7 +261,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		#endregion Content changed handling
 
-		#region Error Handling
+		#region Error handling
 
 		public void ApplyErrorsToLines(List<ErrorLine> errorLines)
 		{
@@ -299,7 +299,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 					new SolidColorBrush(Colors.Gainsboro));
 		}
 
-		#endregion Error Handling
+		#endregion Error handling
 
 		#region Auto bracket closing
 
