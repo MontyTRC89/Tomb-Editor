@@ -590,6 +590,9 @@ namespace TombIDE.ScriptEditor
 			if ((System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
 			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
 				_formFindReplace.Show(this, _textEditor.SelectedText);
+
+			if (e.Key == System.Windows.Input.Key.F5)
+				OpenIncludeFile();
 		}
 
 		private void TextChangedDelayTimer_Tick(object sender, EventArgs e)
@@ -1368,29 +1371,32 @@ namespace TombIDE.ScriptEditor
 		private void Editor_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
 			if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
+				OpenIncludeFile();
+		}
+
+		private void OpenIncludeFile()
+		{
+			DocumentLine caretLine = _textEditor.Document.GetLineByOffset(_textEditor.CaretOffset);
+			string caretLineText = _textEditor.Document.GetText(caretLine.Offset, caretLine.Length);
+
+			if (caretLineText.StartsWith("#include", StringComparison.OrdinalIgnoreCase) && caretLineText.Contains('"'))
 			{
-				DocumentLine caretLine = _textEditor.Document.GetLineByOffset(_textEditor.CaretOffset);
-				string caretLineText = _textEditor.Document.GetText(caretLine.Offset, caretLine.Length);
+				string pathPart = caretLineText.Split('"')[1];
+				string fullFilePath = Path.Combine(_ide.Project.ScriptPath, pathPart);
 
-				if (caretLineText.StartsWith("#include", StringComparison.OrdinalIgnoreCase) && caretLineText.Contains('"'))
+				if (File.Exists(fullFilePath))
 				{
-					string pathPart = caretLineText.Split('"')[1];
-					string fullFilePath = Path.Combine(_ide.Project.ScriptPath, pathPart);
+					TabPage fileTab = FindTabPageOfFile(fullFilePath);
 
-					if (File.Exists(fullFilePath))
-					{
-						TabPage fileTab = FindTabPageOfFile(fullFilePath);
-
-						if (fileTab != null)
-							tabControl_Editor.SelectTab(fileTab);
-						else
-							OpenFile(fullFilePath);
-					}
+					if (fileTab != null)
+						tabControl_Editor.SelectTab(fileTab);
 					else
-						DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-					_textEditor.SelectionLength = 0;
+						OpenFile(fullFilePath);
 				}
+				else
+					DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				_textEditor.SelectionLength = 0;
 			}
 		}
 	}

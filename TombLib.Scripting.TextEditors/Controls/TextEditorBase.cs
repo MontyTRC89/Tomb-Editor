@@ -235,20 +235,27 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void ContentChangedWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			bool createBackupFiles = (bool)((List<object>)e.Argument)[0];
-			string currentFilePath = ((List<object>)e.Argument)[1].ToString();
-			string text = ((List<object>)e.Argument)[2].ToString();
-
-			if (createBackupFiles)
+			try
 			{
-				// Create a live backup file so the app can restore lost progress if it crashes
-				string backupFilePath = currentFilePath + ".backup";
-				File.WriteAllText(backupFilePath, text, Encoding.GetEncoding(1252));
+				bool createBackupFiles = (bool)((List<object>)e.Argument)[0];
+				string currentFilePath = ((List<object>)e.Argument)[1].ToString();
+				string text = ((List<object>)e.Argument)[2].ToString();
+
+				if (createBackupFiles)
+				{
+					// Create a live backup file so the app can restore lost progress if it crashes
+					string backupFilePath = currentFilePath + ".backup";
+					File.WriteAllText(backupFilePath, text, Encoding.GetEncoding(1252));
+				}
+
+				string fileContent = File.ReadAllText(currentFilePath, Encoding.GetEncoding(1252));
+
+				e.Result = text != fileContent;
 			}
-
-			string fileContent = File.ReadAllText(currentFilePath, Encoding.GetEncoding(1252));
-
-			e.Result = text != fileContent;
+			catch
+			{
+				e.Result = true;
+			}
 		}
 
 		private void ContentChangedWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
