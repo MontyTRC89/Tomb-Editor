@@ -102,6 +102,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			TextChanged += TextEditor_TextChanged;
 
 			MouseHover += TextEditor_MouseHover;
+
 			KeyDown += TextEditor_KeyDown;
 		}
 
