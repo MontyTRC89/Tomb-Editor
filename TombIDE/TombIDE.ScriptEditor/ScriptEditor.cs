@@ -1327,7 +1327,7 @@ namespace TombIDE.ScriptEditor
 
 		private void UpdateTextEditorSettings(ScriptTextEditor scriptTextEditor)
 		{
-			scriptTextEditor.SyntaxHighlighting = new ScriptSyntaxHighlighting();
+			scriptTextEditor.SyntaxHighlighting = new ClassicScriptSyntaxHighlighting(_editorConfigs.ClassicScript.ColorScheme);
 
 			scriptTextEditor.Background = new System.Windows.Media.SolidColorBrush
 			(
@@ -1341,7 +1341,7 @@ namespace TombIDE.ScriptEditor
 			(
 				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
 				(
-					_editorConfigs.ClassicScript.ColorScheme.Values.HtmlColor
+					_editorConfigs.ClassicScript.ColorScheme.Foreground
 				)
 			);
 
@@ -1356,7 +1356,7 @@ namespace TombIDE.ScriptEditor
 
 		private void UpdateTextEditorSettings(LuaTextEditor luaTextEditor)
 		{
-			luaTextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting();
+			luaTextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting(_editorConfigs.Lua.ColorScheme);
 			luaTextEditor.UpdateSettings(_editorConfigs.Lua);
 		}
 

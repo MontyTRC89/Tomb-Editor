@@ -19,7 +19,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		/* Private fields */
 
-		private TextEditorConfigs _configs = TextEditorConfigs.Load();
+		private TextEditorConfigs _configs;
 
 		private string _cachedText;
 		private int _cachedArgumentIndex;
@@ -34,18 +34,24 @@ namespace TombIDE.ScriptEditor.Controls
 		{
 			Font = new Font("Consolas", 9.75f, FontStyle.Bold);
 
-			BackColor = Color.FromArgb(60, 63, 65);
-			ForeColor = ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Values.HtmlColor);
-
 			BorderStyle = BorderStyle.None;
 			ScrollBars = RichTextBoxScrollBars.None;
 
 			ReadOnly = true;
 			WordWrap = false;
+
+			ReloadSettings();
 		}
 
-		public void ReloadSettings() =>
+		public void ReloadSettings()
+		{
 			_configs = TextEditorConfigs.Load();
+
+			BackColor = ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Background);
+			ForeColor = ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Values.HtmlColor);
+
+			DoSyntaxHighlighting();
+		}
 
 		#endregion Construction and public methods
 
@@ -80,7 +86,7 @@ namespace TombIDE.ScriptEditor.Controls
 			SetTextColor(ScriptPatterns.NewCommands, ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.NewCommands.HtmlColor));
 			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.References.HtmlColor));
 			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.References.HtmlColor));
-			SetTextColor(@"(,|/|\(\*Array\*\))", Color.Gainsboro);
+			SetTextColor(@"(,|/|\(\*Array\*\))", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Foreground));
 			SetTextColor(ScriptPatterns.Comments, ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Comments.HtmlColor));
 		}
 

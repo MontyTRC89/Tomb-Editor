@@ -1,14 +1,17 @@
 ﻿using System.IO;
-using System.Xml.Serialization;
 using TombLib.Scripting.TextEditors.ColorSchemes;
+using TombLib.Scripting.TextEditors.Configs.Bases;
+using TombLib.Scripting.TextEditors.Configs.Defaults;
 
 namespace TombLib.Scripting.TextEditors.Configs
 {
-	public sealed class LuaEditorConfiguration : TextEditorConfigBase
+	public sealed class LuaEditorConfiguration : TextEditorConfigurationBase
 	{
 		public override string DefaultPath { get; }
 
-		private string _selectedColorSchemeName = "VS15";
+		#region Color scheme
+
+		private string _selectedColorSchemeName = LuaEditorDefaults.SelectedColorSchemeName;
 
 		public string SelectedColorSchemeName
 		{
@@ -17,21 +20,27 @@ namespace TombLib.Scripting.TextEditors.Configs
 			{
 				_selectedColorSchemeName = value;
 
-				string colorSchemeFilePath = Path.Combine(DefaultPaths.GetLuaColorConfigsPath(), value + ".luasch");
+				string schemeFilePath =
+					Path.Combine(DefaultPaths.GetClassicScriptColorConfigsPath(), value + LuaEditorDefaults.ColorSchemeFileExtension);
 
-				if (!File.Exists(colorSchemeFilePath))
+				if (!File.Exists(schemeFilePath))
 					ColorScheme = new LuaColorScheme();
 				else
-					ColorScheme = XmlHandling.ReadXmlFile<LuaColorScheme>(colorSchemeFilePath);
+					ColorScheme = XmlHandling.ReadXmlFile<LuaColorScheme>(schemeFilePath);
 			}
 		}
 
-		[XmlIgnore]
-		public LuaColorScheme ColorScheme { get; private set; }
+		public LuaColorScheme ColorScheme;
+
+		#endregion Color scheme
+
+		#region Construction
 
 		public LuaEditorConfiguration()
 		{
-			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), "LuaConfiguration.xml");
+			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), LuaEditorDefaults.ConfigurationFileName);
 		}
+
+		#endregion Construction
 	}
 }

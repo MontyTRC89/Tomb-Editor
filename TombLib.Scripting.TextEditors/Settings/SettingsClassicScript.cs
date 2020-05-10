@@ -9,6 +9,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using TombLib.Scripting.Objects;
 using TombLib.Scripting.TextEditors.ColorSchemes;
 using TombLib.Scripting.TextEditors.Configs;
 using TombLib.Scripting.TextEditors.Forms;
@@ -22,20 +23,20 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 		private ScriptTextEditor editorPreview;
 
-		private ClassicScriptEditorConfiguration _config;
-
 		#region Construction
 
-		public SettingsClassicScript(ClassicScriptEditorConfiguration config)
+		public SettingsClassicScript()
 		{
-			_config = config;
-
 			InitializeComponent();
+		}
+
+		public void Initialize(ClassicScriptEditorConfiguration config)
+		{
 			InitializePreview();
 
 			FillFontList();
 			UpdateSchemeList();
-			UpdateControlsWithSettings();
+			UpdateControlsWithSettings(config);
 		}
 
 		private void InitializePreview()
@@ -126,11 +127,11 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			ToggleSaveSchemeButton();
 
-			_config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
-			_config.Save();
+			string fullSchemePath = Path.Combine(DefaultPaths.GetClassicScriptColorConfigsPath(), comboBox_ColorSchemes.SelectedItem.ToString() + ".cssch");
+			ClassicScriptColorScheme selectedScheme = XmlHandling.ReadXmlFile<ClassicScriptColorScheme>(fullSchemePath);
 
-			UpdateColorButtons();
-			UpdatePreviewColors();
+			UpdateColorButtons(selectedScheme);
+			UpdatePreviewColors(selectedScheme);
 		}
 
 		private void button_Color_Click(object sender, EventArgs e) =>
@@ -226,94 +227,94 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 		#region Loading
 
-		private void UpdateControlsWithSettings()
+		private void UpdateControlsWithSettings(ClassicScriptEditorConfiguration config)
 		{
-			numeric_FontSize.Value = (decimal)_config.FontSize - 4; // -4 because AvalonEdit has a different font size scale
-			comboBox_FontFamily.SelectedItem = _config.FontFamily;
-			numeric_UndoStackSize.Value = _config.UndoStackSize;
+			numeric_FontSize.Value = (decimal)config.FontSize - 4; // -4 because AvalonEdit has a different font size scale
+			comboBox_FontFamily.SelectedItem = config.FontFamily;
+			numeric_UndoStackSize.Value = config.UndoStackSize;
 
-			LoadSettingsForCheckBoxes();
-			LoadSettingsForIdentationRules();
+			LoadSettingsForCheckBoxes(config);
+			LoadSettingsForIdentationRules(config);
 
-			comboBox_ColorSchemes.SelectedItem = _config.SelectedColorSchemeName;
+			comboBox_ColorSchemes.SelectedItem = config.SelectedColorSchemeName;
 		}
 
-		private void LoadSettingsForCheckBoxes()
+		private void LoadSettingsForCheckBoxes(ClassicScriptEditorConfiguration config)
 		{
-			checkBox_Autocomplete.Checked = _config.AutocompleteEnabled;
-			checkBox_LiveErrors.Checked = _config.LiveErrorUnderlining;
+			checkBox_Autocomplete.Checked = config.AutocompleteEnabled;
+			checkBox_LiveErrors.Checked = config.LiveErrorUnderlining;
 
-			checkBox_CloseBrackets.Checked = _config.AutoCloseBrackets;
-			checkBox_CloseQuotes.Checked = _config.AutoCloseQuotes;
+			checkBox_CloseBrackets.Checked = config.AutoCloseBrackets;
+			checkBox_CloseQuotes.Checked = config.AutoCloseQuotes;
 
-			checkBox_WordWrapping.Checked = _config.WordWrapping;
+			checkBox_WordWrapping.Checked = config.WordWrapping;
 
-			checkBox_LineNumbers.Checked = _config.ShowLineNumbers;
-			checkBox_SectionSeparators.Checked = _config.ShowSectionSeparators;
+			checkBox_LineNumbers.Checked = config.ShowLineNumbers;
+			checkBox_SectionSeparators.Checked = config.ShowSectionSeparators;
 
-			checkBox_VisibleSpaces.Checked = _config.ShowVisualSpaces;
-			checkBox_VisibleTabs.Checked = _config.ShowVisualTabs;
+			checkBox_VisibleSpaces.Checked = config.ShowVisualSpaces;
+			checkBox_VisibleTabs.Checked = config.ShowVisualTabs;
 
-			checkBox_ToolTips.Checked = _config.ShowDefinitionToolTips;
+			checkBox_ToolTips.Checked = config.ShowDefinitionToolTips;
 		}
 
-		private void LoadSettingsForIdentationRules()
+		private void LoadSettingsForIdentationRules(ClassicScriptEditorConfiguration config)
 		{
-			checkBox_PreEqualSpace.Checked = _config.Tidy_PreEqualSpace;
-			checkBox_PostEqualSpace.Checked = _config.Tidy_PostEqualSpace;
+			checkBox_PreEqualSpace.Checked = config.Tidy_PreEqualSpace;
+			checkBox_PostEqualSpace.Checked = config.Tidy_PostEqualSpace;
 
-			checkBox_PreCommaSpace.Checked = _config.Tidy_PreCommaSpace;
-			checkBox_PostCommaSpace.Checked = _config.Tidy_PostCommaSpace;
+			checkBox_PreCommaSpace.Checked = config.Tidy_PreCommaSpace;
+			checkBox_PostCommaSpace.Checked = config.Tidy_PostCommaSpace;
 
-			checkBox_ReduceSpaces.Checked = _config.Tidy_ReduceSpaces;
+			checkBox_ReduceSpaces.Checked = config.Tidy_ReduceSpaces;
 		}
 
 		#endregion Loading
 
 		#region Applying
 
-		public void ApplySettings()
+		public void ApplySettings(ClassicScriptEditorConfiguration config)
 		{
-			_config.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because AvalonEdit has a different font size scale
-			_config.FontFamily = comboBox_FontFamily.SelectedItem.ToString();
-			_config.UndoStackSize = (int)numeric_UndoStackSize.Value;
+			config.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because AvalonEdit has a different font size scale
+			config.FontFamily = comboBox_FontFamily.SelectedItem.ToString();
+			config.UndoStackSize = (int)numeric_UndoStackSize.Value;
 
-			ApplySettingsFromCheckBoxes();
-			ApplyIdentationRulesSettings();
+			ApplySettingsFromCheckBoxes(config);
+			ApplyIdentationRulesSettings(config);
 
-			_config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
+			config.SelectedColorSchemeName = comboBox_ColorSchemes.SelectedItem.ToString();
 
-			_config.Save();
+			config.Save();
 		}
 
-		private void ApplySettingsFromCheckBoxes()
+		private void ApplySettingsFromCheckBoxes(ClassicScriptEditorConfiguration config)
 		{
-			_config.AutocompleteEnabled = checkBox_Autocomplete.Checked;
-			_config.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
+			config.AutocompleteEnabled = checkBox_Autocomplete.Checked;
+			config.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
 
-			_config.AutoCloseBrackets = checkBox_CloseBrackets.Checked;
-			_config.AutoCloseQuotes = checkBox_CloseQuotes.Checked;
+			config.AutoCloseBrackets = checkBox_CloseBrackets.Checked;
+			config.AutoCloseQuotes = checkBox_CloseQuotes.Checked;
 
-			_config.WordWrapping = checkBox_WordWrapping.Checked;
+			config.WordWrapping = checkBox_WordWrapping.Checked;
 
-			_config.ShowLineNumbers = checkBox_LineNumbers.Checked;
-			_config.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
+			config.ShowLineNumbers = checkBox_LineNumbers.Checked;
+			config.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
 
-			_config.ShowVisualSpaces = checkBox_VisibleSpaces.Checked;
-			_config.ShowVisualTabs = checkBox_VisibleTabs.Checked;
+			config.ShowVisualSpaces = checkBox_VisibleSpaces.Checked;
+			config.ShowVisualTabs = checkBox_VisibleTabs.Checked;
 
-			_config.ShowDefinitionToolTips = checkBox_ToolTips.Checked;
+			config.ShowDefinitionToolTips = checkBox_ToolTips.Checked;
 		}
 
-		private void ApplyIdentationRulesSettings()
+		private void ApplyIdentationRulesSettings(ClassicScriptEditorConfiguration config)
 		{
-			_config.Tidy_PreEqualSpace = checkBox_PreEqualSpace.Checked;
-			_config.Tidy_PostEqualSpace = checkBox_PostEqualSpace.Checked;
+			config.Tidy_PreEqualSpace = checkBox_PreEqualSpace.Checked;
+			config.Tidy_PostEqualSpace = checkBox_PostEqualSpace.Checked;
 
-			_config.Tidy_PreCommaSpace = checkBox_PreCommaSpace.Checked;
-			_config.Tidy_PostCommaSpace = checkBox_PostCommaSpace.Checked;
+			config.Tidy_PreCommaSpace = checkBox_PreCommaSpace.Checked;
+			config.Tidy_PostCommaSpace = checkBox_PostCommaSpace.Checked;
 
-			_config.Tidy_ReduceSpaces = checkBox_ReduceSpaces.Checked;
+			config.Tidy_ReduceSpaces = checkBox_ReduceSpaces.Checked;
 		}
 
 		#endregion Applying
@@ -328,8 +329,6 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			ResetCheckBoxSettings();
 			ResetIdentationRules();
-
-			ApplySettings();
 		}
 
 		private void ResetCheckBoxSettings()
@@ -425,30 +424,28 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 				comboBox_ColorSchemes.SelectedItem = "~UNTITLED";
 			}
 
-			ApplySettings();
-
-			UpdatePreviewColors();
+			UpdatePreviewColors(currentScheme);
 		}
 
-		private void UpdateColorButtons()
+		private void UpdateColorButtons(ClassicScriptColorScheme scheme)
 		{
-			colorButton_Sections.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Sections.HtmlColor);
-			colorButton_Sections.Tag = _config.ColorScheme.Sections;
+			colorButton_Sections.BackColor = ColorTranslator.FromHtml(scheme.Sections.HtmlColor);
+			colorButton_Sections.Tag = scheme.Sections;
 
-			colorButton_Values.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Values.HtmlColor);
-			colorButton_Values.Tag = _config.ColorScheme.Values;
+			colorButton_Values.BackColor = ColorTranslator.FromHtml(scheme.Values.HtmlColor);
+			colorButton_Values.Tag = scheme.Values;
 
-			colorButton_References.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.References.HtmlColor);
-			colorButton_References.Tag = _config.ColorScheme.References;
+			colorButton_References.BackColor = ColorTranslator.FromHtml(scheme.References.HtmlColor);
+			colorButton_References.Tag = scheme.References;
 
-			colorButton_StandardCommands.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.StandardCommands.HtmlColor);
-			colorButton_StandardCommands.Tag = _config.ColorScheme.StandardCommands;
+			colorButton_StandardCommands.BackColor = ColorTranslator.FromHtml(scheme.StandardCommands.HtmlColor);
+			colorButton_StandardCommands.Tag = scheme.StandardCommands;
 
-			colorButton_NewCommands.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.NewCommands.HtmlColor);
-			colorButton_NewCommands.Tag = _config.ColorScheme.NewCommands;
+			colorButton_NewCommands.BackColor = ColorTranslator.FromHtml(scheme.NewCommands.HtmlColor);
+			colorButton_NewCommands.Tag = scheme.NewCommands;
 
-			colorButton_Comments.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Comments.HtmlColor);
-			colorButton_Comments.Tag = _config.ColorScheme.Comments;
+			colorButton_Comments.BackColor = ColorTranslator.FromHtml(scheme.Comments.HtmlColor);
+			colorButton_Comments.Tag = scheme.Comments;
 
 			UpdateColorButtonStyleText(colorButton_Sections);
 			UpdateColorButtonStyleText(colorButton_Values);
@@ -457,8 +454,8 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 			UpdateColorButtonStyleText(colorButton_NewCommands);
 			UpdateColorButtonStyleText(colorButton_Comments);
 
-			colorButton_Background.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Background);
-			colorButton_Foreground.BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Foreground);
+			colorButton_Background.BackColor = ColorTranslator.FromHtml(scheme.Background);
+			colorButton_Foreground.BackColor = ColorTranslator.FromHtml(scheme.Foreground);
 		}
 
 		private void buttonContextMenu_Opening(object sender, CancelEventArgs e)
@@ -502,13 +499,13 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 				colorButton.ForeColor = Color.White;
 		}
 
-		private void UpdatePreviewColors()
+		private void UpdatePreviewColors(ClassicScriptColorScheme scheme)
 		{
 			editorPreview.Background = new System.Windows.Media.SolidColorBrush
 			(
 				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
 				(
-					_config.ColorScheme.Background
+					scheme.Background
 				)
 			);
 
@@ -516,11 +513,11 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 			(
 				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
 				(
-					_config.ColorScheme.Foreground
+					scheme.Foreground
 				)
 			);
 
-			editorPreview.SyntaxHighlighting = new ScriptSyntaxHighlighting();
+			editorPreview.SyntaxHighlighting = new ClassicScriptSyntaxHighlighting(scheme);
 		}
 
 		private void ToggleSaveSchemeButton()

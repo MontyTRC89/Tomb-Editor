@@ -1,8 +1,10 @@
 ﻿using System;
+using TombLib.Scripting.Objects;
+using TombLib.Scripting.TextEditors.Configs.Bases;
 
 namespace TombLib.Scripting.TextEditors.ColorSchemes
 {
-	public sealed class ClassicScriptColorScheme
+	public sealed class ClassicScriptColorScheme : ColorSchemeBase
 	{
 		public HighlightingObject Sections { get; set; } = new HighlightingObject();
 		public HighlightingObject Values { get; set; } = new HighlightingObject();
@@ -10,9 +12,6 @@ namespace TombLib.Scripting.TextEditors.ColorSchemes
 		public HighlightingObject StandardCommands { get; set; } = new HighlightingObject();
 		public HighlightingObject NewCommands { get; set; } = new HighlightingObject();
 		public HighlightingObject Comments { get; set; } = new HighlightingObject();
-
-		public string Background { get; set; } = "Black";
-		public string Foreground { get; set; } = "White";
 
 		#region Operators
 

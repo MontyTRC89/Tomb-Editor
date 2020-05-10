@@ -13,7 +13,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using TombLib.Scripting.Objects;
-using TombLib.Scripting.TextEditors.Configs;
+using TombLib.Scripting.TextEditors.Configs.Bases;
+using TombLib.Scripting.TextEditors.Configs.Defaults;
 using TombLib.Scripting.TextEditors.Rendering;
 
 namespace TombLib.Scripting.TextEditors.Controls
@@ -24,8 +25,17 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		/* Properties */
 
-		public double DefaultFontSize { get; set; } = 16d;
-		public string CommentPrefix { get; set; } = string.Empty;
+		public double DefaultFontSize { get; set; } = TextEditorBaseDefaults.FontSize;
+
+		public bool AutocompleteEnabled { get; set; } = TextEditorBaseDefaults.AutocompleteEnabled;
+		public bool LiveErrorUnderlining { get; set; } = TextEditorBaseDefaults.LiveErrorUnderlining;
+
+		public bool AutoCloseParentheses { get; set; } = TextEditorBaseDefaults.AutoCloseParentheses;
+		public bool AutoCloseBraces { get; set; } = TextEditorBaseDefaults.AutoCloseBraces;
+		public bool AutoCloseBrackets { get; set; } = TextEditorBaseDefaults.AutoCloseBrackets;
+		public bool AutoCloseQuotes { get; set; } = TextEditorBaseDefaults.AutoCloseQuotes;
+
+		public bool ShowDefinitionToolTips { get; set; } = TextEditorBaseDefaults.ShowDefinitionToolTips;
 
 		/// <summary>
 		/// Silent session prevents the control from checking if the text has changed, therefore not running any BackgroundWorkers to do so.
@@ -33,21 +43,15 @@ namespace TombLib.Scripting.TextEditors.Controls
 		/// </summary>
 		public bool IsSilentSession { get; protected set; } = false;
 
-		public bool IsTextChanged { get; set; } = false;
-
-		public bool AutocompleteEnabled { get; set; } = true;
-		public bool LiveErrorUnderlining { get; set; } = true;
-		public bool ShowDefinitionToolTips { get; set; } = true;
 		public bool CreateBackupFiles { get; set; } = true;
 
-		public bool AutoCloseParentheses { get; set; } = true;
-		public bool AutoCloseBraces { get; set; } = true;
-		public bool AutoCloseBrackets { get; set; } = true;
-		public bool AutoCloseQuotes { get; set; } = true;
+		public bool IsTextChanged { get; set; } = false;
 
 		public int MinZoom { get; set; } = 25;
 		public int MaxZoom { get; set; } = 400;
 		public int ZoomStepSize { get; set; } = 15;
+
+		public string CommentPrefix { get; set; } = string.Empty;
 
 		/* Objects */
 
@@ -65,8 +69,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		public TextEditorBase()
 		{
-			InitializeRenderers();
 			InitializeBackgroundWorkers();
+			InitializeRenderers();
 
 			BindEventMethods();
 
@@ -104,8 +108,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void SetNewDefaultSettings()
 		{
-			FontSize = 16d;
-			FontFamily = new FontFamily("Consolas");
 			FontWeight = FontWeights.Normal;
 
 			TextArea.Options.HighlightCurrentLine = true;
@@ -113,12 +115,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			TextArea.TextView.CurrentLineBorder = new Pen(new SolidColorBrush(Color.FromArgb(24, 192, 192, 192)), 1);
 
 			TextArea.SelectionCornerRadius = 0; // Why does this even exist?
-
-			TextArea.Caret.CaretBrush = Brushes.White;
-			Background = new SolidColorBrush(Color.FromRgb(32, 32, 32));
-			Foreground = new SolidColorBrush(Colors.Gainsboro);
-
-			ShowLineNumbers = true;
 
 			HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
 			VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
@@ -161,7 +157,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 		}
 
 		private void TextEditor_MouseRightButtonDown(object sender, MouseButtonEventArgs e) =>
-			MoveCaretToMousePosition(e);
+			MoveCaretToMousePosition();
 
 		private void TextEditor_Unloaded(object sender, RoutedEventArgs e) =>
 			DeleteBackupFile();
@@ -172,7 +168,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 				SpecialToolTip.IsOpen = false;
 		}
 
-		private void MoveCaretToMousePosition(MouseButtonEventArgs e)
+		private void MoveCaretToMousePosition()
 		{
 			TextViewPosition? position = TextArea.TextView.GetPosition(Mouse.GetPosition(TextArea.TextView) + TextArea.TextView.ScrollOffset);
 
@@ -218,7 +214,9 @@ namespace TombLib.Scripting.TextEditors.Controls
 		}
 
 		public bool IsUntitledDocument()
-		{ return string.IsNullOrEmpty(Document.FileName); }
+		{
+			return string.IsNullOrEmpty(Document.FileName);
+		}
 
 		#endregion File I/O
 
@@ -615,7 +613,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			SpecialToolTip.IsOpen = true;
 		}
 
-		public void UpdateSettings(TextEditorConfigBase configuration)
+		public void UpdateSettings(TextEditorConfigurationBase configuration)
 		{
 			FontSize = configuration.FontSize;
 			DefaultFontSize = configuration.FontSize;

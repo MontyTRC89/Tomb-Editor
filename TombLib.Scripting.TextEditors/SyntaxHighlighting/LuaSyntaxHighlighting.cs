@@ -5,13 +5,18 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using TombLib.Scripting.Resources;
-using TombLib.Scripting.TextEditors.Configs;
+using TombLib.Scripting.TextEditors.ColorSchemes;
 
 namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 {
 	public sealed class LuaSyntaxHighlighting : IHighlightingDefinition
 	{
-		private readonly LuaEditorConfiguration _config = new LuaEditorConfiguration().Load<LuaEditorConfiguration>();
+		private readonly LuaColorScheme _scheme;
+
+		public LuaSyntaxHighlighting(LuaColorScheme scheme)
+		{
+			_scheme = scheme;
+		}
 
 		public string Name { get { return "LUA Rules"; } }
 
@@ -26,9 +31,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(LuaPatterns.Comments),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Comments.HtmlColor)),
-						FontWeight = _config.ColorScheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _config.ColorScheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Comments.HtmlColor)),
+						FontWeight = _scheme.Comments.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _scheme.Comments.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -37,9 +42,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(LuaPatterns.Values, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Values.HtmlColor)),
-						FontWeight = _config.ColorScheme.Values.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _config.ColorScheme.Values.IsItalic ? FontStyles.Italic : FontStyles.Normal
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Values.HtmlColor)),
+						FontWeight = _scheme.Values.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _scheme.Values.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -48,9 +53,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(LuaPatterns.Statements, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Statements.HtmlColor)),
-						FontWeight = _config.ColorScheme.Statements.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _config.ColorScheme.Statements.IsItalic ? FontStyles.Italic : FontStyles.Normal
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Statements.HtmlColor)),
+						FontWeight = _scheme.Statements.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _scheme.Statements.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -59,9 +64,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(LuaPatterns.Operators, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.Operators.HtmlColor)),
-						FontWeight = _config.ColorScheme.Operators.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _config.ColorScheme.Operators.IsItalic ? FontStyles.Italic : FontStyles.Normal
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.Operators.HtmlColor)),
+						FontWeight = _scheme.Operators.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _scheme.Operators.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 
@@ -70,9 +75,9 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 					Regex = new Regex(LuaPatterns.SpecialOperators, RegexOptions.IgnoreCase),
 					Color = new HighlightingColor
 					{
-						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_config.ColorScheme.SpecialOperators.HtmlColor)),
-						FontWeight = _config.ColorScheme.SpecialOperators.IsBold ? FontWeights.Bold : FontWeights.Normal,
-						FontStyle = _config.ColorScheme.SpecialOperators.IsItalic ? FontStyles.Italic : FontStyles.Normal
+						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.SpecialOperators.HtmlColor)),
+						FontWeight = _scheme.SpecialOperators.IsBold ? FontWeights.Bold : FontWeights.Normal,
+						FontStyle = _scheme.SpecialOperators.IsItalic ? FontStyles.Italic : FontStyles.Normal
 					}
 				});
 

@@ -14,6 +14,8 @@ namespace TombLib.Scripting.TextEditors.Forms
 
 	internal partial class FormSaveSchemeAs : DarkForm
 	{
+		// TODO: Refactor !!!
+
 		public string SchemeFilePath { get; set; }
 
 		private ColorSchemeType _schemeType;
@@ -89,9 +91,13 @@ namespace TombLib.Scripting.TextEditors.Forms
 
 		#endregion Events
 
-		public static string RemoveIllegalPathSymbols(string fileName)
+		#region Methods
+
+		public string RemoveIllegalPathSymbols(string fileName)
 		{
 			return Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c.ToString(), string.Empty));
 		}
+
+		#endregion Methods
 	}
 }
