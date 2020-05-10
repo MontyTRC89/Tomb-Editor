@@ -613,19 +613,14 @@ namespace TombEditor.Forms
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //level.Load("");
-            //var level = new TestLevel("h:\\.tr4");
-            var level = new TestLevel("Game\\Data\\tut1.tr4", "");
-            //evel = new TestLevel("f:\\trle\\data\\tut1.tr4", "tut1_ngle");
-
-            // var level = new TrLevel();
-            // level.LoadLevel("H:\\tomb5\\data\\joby5.trc");
-            //level.LoadLevel("Game\\data\\title.tr4", "", "");
-            // level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
-            // level.Load("editor");
-
-            //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
-            //level.Load("originale");
+            var batchList = new BatchCompileList();
+            batchList.Location = "D:\\FMAP";
+            batchList.Files.Add("test1.prj2");
+            batchList.Files.Add("test2.prj2");
+            batchList.Files.Add("test3.prj2");
+            batchList.Files.Add("test4.prj2");
+            batchList.Files.Add("test5.prj2");
+            BatchCompileList.SaveToXml("BATCH.xml", batchList);
         }
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)
