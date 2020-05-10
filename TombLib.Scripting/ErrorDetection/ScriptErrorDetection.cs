@@ -106,6 +106,18 @@ namespace TombLib.Scripting.ErrorDetection
 					line.LineNumber, errorSegmentText);
 			}
 
+			if (ContainsEmptyArguments(document, line.Offset))
+			{
+				string errorSegmentText = Regex.Match(lineText, @"=\s*?(\b.*)").Groups[1].Value;
+				errorSegmentText = LineHelper.RemoveComments(errorSegmentText);
+
+				if (errorSegmentText.Length == 0)
+					errorSegmentText = lineText.TrimEnd();
+
+				return new ErrorLine("Empty arguments were found.",
+					line.LineNumber, errorSegmentText);
+			}
+
 			return null;
 		}
 
@@ -210,6 +222,22 @@ namespace TombLib.Scripting.ErrorDetection
 					else
 						return argumentCount == correctArgumentCount;
 				}
+
+			return false;
+		}
+
+		private static bool ContainsEmptyArguments(TextDocument document, int lineOffset)
+		{
+			string lineText = CommandHelper.GetWholeCommandLineText(document, lineOffset);
+
+			if (lineText == null)
+				return true;
+
+			string[] arguments = lineText.Split(',');
+
+			foreach (string argument in arguments)
+				if (string.IsNullOrWhiteSpace(argument))
+					return true;
 
 			return false;
 		}

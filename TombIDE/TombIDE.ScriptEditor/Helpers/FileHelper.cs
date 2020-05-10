@@ -32,10 +32,8 @@ namespace TombIDE.ScriptEditor.Helpers
 		public static void DeleteFiles(string[] files)
 		{
 			foreach (string file in files)
-			{
 				if (File.Exists(file))
 					File.Delete(file);
-			}
 		}
 
 		#endregion Public methods

@@ -22,6 +22,7 @@
 			this.menuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
 			this.dataGrid = new DarkUI.Controls.DarkDataGridView();
 			this.textBox_Search = new DarkUI.Controls.DarkTextBox();
+			this.OwO = new DarkUI.Controls.DarkButton();
 			this.contextMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
 			this.SuspendLayout();
@@ -105,11 +106,23 @@
 			this.textBox_Search.GotFocus += new System.EventHandler(this.textBox_Search_GotFocus);
 			this.textBox_Search.LostFocus += new System.EventHandler(this.textBox_Search_LostFocus);
 			// 
+			// OwO
+			// 
+			this.OwO.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.OwO.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
+			this.OwO.Checked = false;
+			this.OwO.Location = new System.Drawing.Point(797, 0);
+			this.OwO.Name = "OwO";
+			this.OwO.Size = new System.Drawing.Size(3, 3);
+			this.OwO.TabIndex = 3;
+			this.OwO.Click += new System.EventHandler(this.OwO_Click);
+			// 
 			// ReferenceBrowser
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.Controls.Add(this.OwO);
 			this.Controls.Add(this.dataGrid);
 			this.Controls.Add(this.comboBox_References);
 			this.Controls.Add(this.textBox_Search);
@@ -129,5 +142,6 @@
 		private DarkUI.Controls.DarkDataGridView dataGrid;
 		private DarkUI.Controls.DarkTextBox textBox_Search;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Copy;
+		private DarkUI.Controls.DarkButton OwO;
 	}
 }

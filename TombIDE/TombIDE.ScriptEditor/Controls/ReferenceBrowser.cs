@@ -271,5 +271,11 @@ namespace TombIDE.ScriptEditor.Controls
 				}
 			}
 		}
+
+		private void OwO_Click(object sender, EventArgs e) // Sorry
+		{
+			MessageBox.Show(this, "No error 𝓶𝓮𝔁𝓪𝓰𝓮", "NG_CENTER", MessageBoxButtons.OK);
+			DarkMessageBox.Show(this, "I'm sorry, I 𝓬𝓪𝓷𝓷'𝓽 speak 𝙞𝙩𝙖𝙡𝙞𝙘𝙨", "TombIDE", MessageBoxButtons.OK, MessageBoxIcon.Question);
+		}
 	}
 }

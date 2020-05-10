@@ -11,6 +11,6 @@
 		public static string Mnemonics { get { return @"\b(" + string.Join("|", ScriptKeywords.AllMnemonics) + @")\b"; } }
 		public static string HexValues { get { return @"\$[a-f0-9]*"; } }
 		public static string Directives { get { return @"#(define|first_id|include)\s"; } }
-		public static string Values { get { return @"\d|\w"; } }
+		public static string Values { get { return "\\d|\\w|\"|'|\\.|\\\\|/"; } }
 	}
 }

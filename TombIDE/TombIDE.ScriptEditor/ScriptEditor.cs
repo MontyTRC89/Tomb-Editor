@@ -913,6 +913,7 @@ namespace TombIDE.ScriptEditor
 			newTextEditor.TextChanged += Editor_TextChanged;
 			newTextEditor.ZoomChanged += Editor_StatusChanged;
 			newTextEditor.KeyDown += Editor_KeyDown;
+			newTextEditor.MouseDoubleClick += Editor_MouseDoubleClick;
 
 			ElementHost elementHost = new ElementHost
 			{
@@ -1362,6 +1363,35 @@ namespace TombIDE.ScriptEditor
 		private TextEditorBase GetTextEditorOfTab(TabPage tab)
 		{
 			return (TextEditorBase)tab.Controls.OfType<ElementHost>().First().Child;
+		}
+
+		private void Editor_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
+			{
+				DocumentLine caretLine = _textEditor.Document.GetLineByOffset(_textEditor.CaretOffset);
+				string caretLineText = _textEditor.Document.GetText(caretLine.Offset, caretLine.Length);
+
+				if (caretLineText.StartsWith("#include", StringComparison.OrdinalIgnoreCase) && caretLineText.Contains('"'))
+				{
+					string pathPart = caretLineText.Split('"')[1];
+					string fullFilePath = Path.Combine(_ide.Project.ScriptPath, pathPart);
+
+					if (File.Exists(fullFilePath))
+					{
+						TabPage fileTab = FindTabPageOfFile(fullFilePath);
+
+						if (fileTab != null)
+							tabControl_Editor.SelectTab(fileTab);
+						else
+							OpenFile(fullFilePath);
+					}
+					else
+						DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+					_textEditor.SelectionLength = 0;
+				}
+			}
 		}
 	}
 }
