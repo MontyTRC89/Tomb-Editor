@@ -3514,6 +3514,45 @@ namespace TombEditor
                 _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
         }
 
+        public static void BuildInBatch(Editor editor, BatchCompileList batchList, string startFile)
+        {
+            int successCounter = 0;
+            try
+            {
+                foreach (var path in batchList.Files)
+                {
+                    if (!path.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                        continue;
+
+                    if (OpenLevel(null, path, true))
+                    {
+                        // If specified, replace build path with custom build path.
+                        string customPath = null;
+                        if (!string.IsNullOrEmpty(batchList.Location) && Directory.Exists(Path.GetPathRoot(batchList.Location)))
+                            customPath = Path.Combine(batchList.Location, Path.GetFileName(editor.Level.Settings.MakeAbsolute(editor.Level.Settings.GameLevelFilePath)));
+                        if (BuildLevel(true, null, true, customPath))
+                            successCounter++;
+                    }
+                }
+
+                // Clean up and delete batch XML.
+                // It won't happen in case XML was of wrong structure (foolproofing for potentially using wrong XML).
+                if (File.Exists(startFile))
+                    File.Delete(startFile);
+            }
+            catch (Exception ex)
+            {
+                if (ex is OperationCanceledException)
+                    return;
+                else
+                {
+                    DarkMessageBox.Show("Batch build failed! \n" + "Exception: " + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+        }
+
         public static bool IsLaraInLevel()
         {
             return _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.Lara) != null &&
