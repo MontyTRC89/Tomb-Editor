@@ -575,19 +575,22 @@ namespace TombEditor.Forms
             cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
 
             // Hide version-specific controls
-
+            // TRNG only
             bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
-
             if (selectedSoundsDataGridView.Columns.Count >= 7)
             {
                 selectedSoundsDataGridView.Columns[5].Visible = currentVersionToCheck;
                 selectedSoundsDataGridView.Columns[6].Visible = currentVersionToCheck;
             }
 
-            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5 || _levelSettings.GameVersion == TRVersion.Game.TR5Main);
-            GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
-            lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
+            // TR4 platform
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4);
+            lblGameEnableQuickStartFeature1.Visible = currentVersionToCheck;
+            GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
+
+            // TR5 platform
+            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;

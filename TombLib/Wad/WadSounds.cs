@@ -256,6 +256,9 @@ namespace TombLib.Wad
                                     sound.Global = true;
                                 else if (!token.StartsWith("#"))
                                     sound.Samples.Add(new WadSample(token + ".wav"));
+
+                                if (token.StartsWith("#"))
+                                    sound.Indexed = true;
                             }
 
                             sounds.SoundInfos.Add(sound);

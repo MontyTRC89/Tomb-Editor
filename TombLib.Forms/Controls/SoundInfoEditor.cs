@@ -59,6 +59,7 @@ namespace TombLib.Controls
                 result.DisablePanning = cbDisablePanning.Checked;
                 result.LoopBehaviour = (WadSoundLoopBehaviour)(comboLoop.SelectedIndex);
                 result.Global = cbGlobal.Checked;
+                result.Indexed = cbIndexed.Checked;
                 foreach (DataGridViewRow row in dgvSamples.Rows)
                     result.Samples.Add(new WadSample(row.Cells[0].Value.ToString()));
                 return new WadSoundInfo(result);
@@ -170,6 +171,7 @@ namespace TombLib.Controls
                 cbDisablePanning.Checked = newSoundInfo.DisablePanning;
                 comboLoop.SelectedIndex = (int)(newSoundInfo.LoopBehaviour);
                 cbGlobal.Checked = newSoundInfo.Global;
+                cbIndexed.Checked = newSoundInfo.Indexed;
 
                 if (!onlyParams)
                 {

@@ -41,6 +41,7 @@
             this.butClipboardPaste = new DarkUI.Controls.DarkButton();
             this.butClipboardCopy = new DarkUI.Controls.DarkButton();
             this.butResetToDefaults = new DarkUI.Controls.DarkButton();
+            this.cbIndexed = new DarkUI.Controls.DarkCheckBox();
             this.colSampleName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.picDisabledOverlay = new System.Windows.Forms.PictureBox();
             this.butMoveDown = new DarkUI.Controls.DarkButton();
@@ -48,6 +49,8 @@
             this.butDeleteSample = new DarkUI.Controls.DarkButton();
             this.butAddSample = new DarkUI.Controls.DarkButton();
             this.dgvSamples = new DarkUI.Controls.DarkDataGridView();
+            this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SampleFoundPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tbID = new DarkUI.Controls.DarkTextBox();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
@@ -67,8 +70,6 @@
             this.tbName = new DarkUI.Controls.DarkTextBox();
             this.tbNameLabel = new DarkUI.Controls.DarkLabel();
             this.butBrowse = new DarkUI.Controls.DarkButton();
-            this.SamplePathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SampleFoundPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericChance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericPitch)).BeginInit();
@@ -86,13 +87,11 @@
             // 
             // cbGlobal
             // 
-            this.cbGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbGlobal.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbGlobal.Location = new System.Drawing.Point(294, 4);
+            this.cbGlobal.Location = new System.Drawing.Point(108, 4);
             this.cbGlobal.Name = "cbGlobal";
-            this.cbGlobal.Size = new System.Drawing.Size(107, 17);
+            this.cbGlobal.Size = new System.Drawing.Size(64, 17);
             this.cbGlobal.TabIndex = 33;
-            this.cbGlobal.Text = "Global sound";
+            this.cbGlobal.Text = "Global";
             this.toolTip.SetToolTip(this.cbGlobal, "Always include sound when Tomb Editor autodetect option is used");
             this.cbGlobal.CheckedChanged += new System.EventHandler(this.OnSoundInfoChanged);
             // 
@@ -244,6 +243,15 @@
             this.toolTip.SetToolTip(this.butResetToDefaults, "Reset to defaults");
             this.butResetToDefaults.Click += new System.EventHandler(this.butResetToDefaults_Click);
             // 
+            // cbIndexed
+            // 
+            this.cbIndexed.Location = new System.Drawing.Point(173, 4);
+            this.cbIndexed.Name = "cbIndexed";
+            this.cbIndexed.Size = new System.Drawing.Size(70, 17);
+            this.cbIndexed.TabIndex = 105;
+            this.cbIndexed.Text = "Indexed";
+            this.toolTip.SetToolTip(this.cbIndexed, "Index this sound for TR2-3 MAIN.SFX file");
+            // 
             // colSampleName
             // 
             this.colSampleName.HeaderText = "Name";
@@ -255,7 +263,7 @@
             this.picDisabledOverlay.ErrorImage = null;
             this.picDisabledOverlay.Image = global::TombLib.Properties.Resources.misc_SoundToolOverlay;
             this.picDisabledOverlay.InitialImage = null;
-            this.picDisabledOverlay.Location = new System.Drawing.Point(108, 3);
+            this.picDisabledOverlay.Location = new System.Drawing.Point(280, 4);
             this.picDisabledOverlay.Name = "picDisabledOverlay";
             this.picDisabledOverlay.Size = new System.Drawing.Size(115, 22);
             this.picDisabledOverlay.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -334,6 +342,22 @@
             this.dgvSamples.TabIndex = 97;
             this.dgvSamples.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dgvSamples_RowsAdded);
             this.dgvSamples.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dgvSamples_RowsRemoved);
+            // 
+            // SamplePathColumn
+            // 
+            this.SamplePathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SamplePathColumn.FillWeight = 30F;
+            this.SamplePathColumn.HeaderText = "Sample name";
+            this.SamplePathColumn.Name = "SamplePathColumn";
+            this.SamplePathColumn.ReadOnly = true;
+            // 
+            // SampleFoundPathColumn
+            // 
+            this.SampleFoundPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SampleFoundPathColumn.FillWeight = 70F;
+            this.SampleFoundPathColumn.HeaderText = "Found in directory";
+            this.SampleFoundPathColumn.Name = "SampleFoundPathColumn";
+            this.SampleFoundPathColumn.ReadOnly = true;
             // 
             // tbID
             // 
@@ -567,27 +591,12 @@
             this.butBrowse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butBrowse.Click += new System.EventHandler(this.butBrowse_Click);
             // 
-            // SamplePathColumn
-            // 
-            this.SamplePathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SamplePathColumn.FillWeight = 30F;
-            this.SamplePathColumn.HeaderText = "Sample name";
-            this.SamplePathColumn.Name = "SamplePathColumn";
-            this.SamplePathColumn.ReadOnly = true;
-            // 
-            // SampleFoundPathColumn
-            // 
-            this.SampleFoundPathColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SampleFoundPathColumn.FillWeight = 70F;
-            this.SampleFoundPathColumn.HeaderText = "Found in directory";
-            this.SampleFoundPathColumn.Name = "SampleFoundPathColumn";
-            this.SampleFoundPathColumn.ReadOnly = true;
-            // 
             // SoundInfoEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.Controls.Add(this.cbIndexed);
             this.Controls.Add(this.picDisabledOverlay);
             this.Controls.Add(this.butMoveDown);
             this.Controls.Add(this.butMoveUp);
@@ -663,5 +672,6 @@
         private DarkUI.Controls.DarkButton butResetToDefaults;
         private System.Windows.Forms.DataGridViewTextBoxColumn SamplePathColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn SampleFoundPathColumn;
+        private DarkUI.Controls.DarkCheckBox cbIndexed;
     }
 }

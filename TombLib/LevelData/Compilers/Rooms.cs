@@ -184,17 +184,23 @@ namespace TombLib.LevelData.Compilers
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
 
+            // Properly identify game version to swap quicksand and no lensflare flags
+            bool isNL = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
+            bool isNG = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+
             // Room flags
             if (room.FlagHorizon)
                 newRoom.Flags |= 0x0008;
-            if (room.FlagDamage)
-                newRoom.Flags |= 0x0010;
             if (room.FlagOutside)
                 newRoom.Flags |= 0x0020;
-            if (room.FlagNoLensflare)
-                newRoom.Flags |= 0x0080;
-            if (room.FlagCold)
+
+            // TRNG-specific flags
+            if (isNG && room.FlagDamage)
+                newRoom.Flags |= 0x0010;
+            if (isNG && room.FlagCold)
                 newRoom.Flags |= 0x1000;
+            if (isNL && room.FlagNoLensflare)
+                newRoom.Flags |= 0x0080;
 
             // Room type
             switch (room.Type)
@@ -203,13 +209,16 @@ namespace TombLib.LevelData.Compilers
                     newRoom.Flags |= 0x0001;
                     break;
                 case RoomType.Quicksand:
-                    newRoom.Flags |= 0x0004;
+                    if (isNL)
+                        newRoom.Flags |= 0x0004;
+                    else
+                        newRoom.Flags |= 0x0080;
                     break;
                 case RoomType.Rain:
-                    newRoom.Flags |= 0x0800;
+                    if (isNG) newRoom.Flags |= 0x0800;
                     break;
                 case RoomType.Snow:
-                    newRoom.Flags |= 0x0400;
+                    if (isNG) newRoom.Flags |= 0x0400;
                     break;
             }
 
