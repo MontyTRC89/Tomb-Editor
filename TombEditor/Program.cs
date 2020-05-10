@@ -23,6 +23,7 @@ namespace TombEditor
         public static void Main(string[] args)
         { 
             string startFile = null;
+            string batchFile = null;
             bool doBatchCompile = false;
             BatchCompileList batchList = null;
 
@@ -35,9 +36,9 @@ namespace TombEditor
                 // Batch-compile levels
                 if (args[0].EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    startFile = args[0];
-                    batchList = BatchCompileList.ReadFromXml(startFile);
-                    doBatchCompile = batchList.Files.Count > 0;
+                    batchFile = args[0];
+                    batchList = BatchCompileList.ReadFromXml(batchFile);
+                    doBatchCompile = batchList?.Files.Count > 0;
                 }
             }
 
@@ -112,27 +113,7 @@ namespace TombEditor
                         }
                     }
                     else
-                    {
-                        foreach (var path in batchList.Files)
-                        {
-                            if (!path.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
-                                continue;
-
-                            if (EditorActions.OpenLevel(null, path, true))
-                            {
-                                // If specified, replace build path with custom build path.
-                                string customPath = null;
-                                if (!string.IsNullOrEmpty(batchList.Location) && Directory.Exists(Path.GetPathRoot(batchList.Location)))
-                                    customPath = Path.Combine(batchList.Location, Path.GetFileName(editor.Level.Settings.MakeAbsolute(editor.Level.Settings.GameLevelFilePath)));
-                                EditorActions.BuildLevel(true, null, true, customPath);
-                            }
-                        }
-
-                        // Clean up and delete batch XML.
-                        // It won't happen in case XML was of wrong structure (foolproofing for potentially using wrong XML).
-                        if (File.Exists(startFile))
-                            File.Delete(startFile);
-                    }
+                        EditorActions.BuildInBatch(editor, batchList, batchFile);
                 }
             }
             else if (startFile != null) // Send opening file to existing editor instance
