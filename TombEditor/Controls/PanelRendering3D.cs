@@ -353,7 +353,6 @@ namespace TombEditor.Controls
                 _renderingCachedRooms.Clear();
 
             // Update drawing
-
             if (_editor.Mode != EditorMode.Map2D)
                 if (obj is IEditorObjectChangedEvent ||
                     obj is Editor.SelectedObjectChangedEvent ||
@@ -369,8 +368,10 @@ namespace TombEditor.Controls
                     obj is Editor.LoadedImportedGeometriesChangedEvent ||
                     obj is Editor.MergedStaticsChangedEvent ||
                     obj is Editor.GameVersionChangedEvent ||
-                    obj is Editor.HideSelectionEvent)
+                    obj is Editor.HideSelectionEvent ||
+                    obj is Editor.EditorFocusedEvent)
                     Invalidate(false);
+
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
             {
