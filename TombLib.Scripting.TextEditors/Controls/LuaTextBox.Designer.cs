@@ -25,15 +25,15 @@
             this.ehTextEditor.Name = "ehTextEditor";
             this.ehTextEditor.Size = new System.Drawing.Size(150, 150);
             this.ehTextEditor.TabIndex = 0;
-            this.ehTextEditor.Text = "elementHost1";
+            this.ehTextEditor.Text = "elementHost";
             this.ehTextEditor.Child = null;
             // 
-            // LuaTextEditor2
+            // LuaTextEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ehTextEditor);
-            this.Name = "LuaTextEditor2";
+            this.Name = "LuaTextEditor";
             this.ResumeLayout(false);
 
         }

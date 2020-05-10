@@ -10,12 +10,18 @@ namespace TombLib.Scripting.TextEditors.Rendering
 	{
 		private TextEditorBase _editor;
 
+		#region Construction
+
 		public BookmarkRenderer(TextEditorBase e)
 		{
 			_editor = e;
 		}
 
 		public KnownLayer Layer { get { return KnownLayer.Background; } }
+
+		#endregion Construction
+
+		#region Drawing
 
 		public void Draw(TextView textView, DrawingContext drawingContext)
 		{
@@ -30,5 +36,7 @@ namespace TombLib.Scripting.TextEditors.Rendering
 						drawingContext.DrawRectangle(background, border, new Rect(rect.Location, new Size(textView.ActualWidth, rect.Height)));
 				}
 		}
+
+		#endregion Drawing
 	}
 }

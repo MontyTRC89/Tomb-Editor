@@ -13,12 +13,16 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 	{
 		private readonly LuaColorScheme _scheme;
 
+		#region Construction
+
 		public LuaSyntaxHighlighting(LuaColorScheme scheme)
 		{
 			_scheme = scheme;
 		}
 
-		public string Name { get { return "LUA Rules"; } }
+		#endregion Construction
+
+		#region Rules
 
 		public HighlightingRuleSet MainRuleSet
 		{
@@ -86,6 +90,12 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 			}
 		}
 
+		#endregion Rules
+
+		#region Other
+
+		public string Name { get { return "LUA Rules"; } }
+
 		public IEnumerable<HighlightingColor> NamedHighlightingColors { get { throw new NotImplementedException(); } }
 		public IDictionary<string, string> Properties { get { throw new NotImplementedException(); } }
 
@@ -98,5 +108,7 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 		{
 			throw new NotImplementedException();
 		}
+
+		#endregion Other
 	}
 }

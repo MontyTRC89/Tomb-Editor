@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.TextEditors.ColorSchemes;
 using TombLib.Scripting.TextEditors.Configs;
+using TombLib.Scripting.TextEditors.Configs.Defaults;
 using TombLib.Scripting.TextEditors.Forms;
 using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
@@ -249,6 +250,8 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			checkBox_WordWrapping.Checked = config.WordWrapping;
 
+			checkBox_HighlightCurrentLine.Checked = config.HighlightCurrentLine;
+
 			checkBox_LineNumbers.Checked = config.ShowLineNumbers;
 			checkBox_SectionSeparators.Checked = config.ShowSectionSeparators;
 
@@ -297,6 +300,8 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 			config.WordWrapping = checkBox_WordWrapping.Checked;
 
+			config.HighlightCurrentLine = checkBox_HighlightCurrentLine.Checked;
+
 			config.ShowLineNumbers = checkBox_LineNumbers.Checked;
 			config.ShowSectionSeparators = checkBox_SectionSeparators.Checked;
 
@@ -323,9 +328,9 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 		public void ResetToDefault()
 		{
-			numeric_FontSize.Value = 12;
-			comboBox_FontFamily.SelectedItem = "Consolas";
-			numeric_UndoStackSize.Value = 256;
+			numeric_FontSize.Value = (decimal)(TextEditorBaseDefaults.FontSize - 4); // -4 because AvalonEdit has a different font size scale
+			comboBox_FontFamily.SelectedItem = TextEditorBaseDefaults.FontFamily;
+			numeric_UndoStackSize.Value = TextEditorBaseDefaults.UndoStackSize;
 
 			ResetCheckBoxSettings();
 			ResetIdentationRules();
@@ -333,32 +338,32 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 
 		private void ResetCheckBoxSettings()
 		{
-			checkBox_Autocomplete.Checked = true;
-			checkBox_LiveErrors.Checked = true;
+			checkBox_Autocomplete.Checked = TextEditorBaseDefaults.AutocompleteEnabled;
+			checkBox_LiveErrors.Checked = TextEditorBaseDefaults.LiveErrorUnderlining;
 
-			checkBox_CloseBrackets.Checked = true;
-			checkBox_CloseQuotes.Checked = true;
+			checkBox_CloseBrackets.Checked = TextEditorBaseDefaults.AutoCloseBrackets;
+			checkBox_CloseQuotes.Checked = TextEditorBaseDefaults.AutoCloseQuotes;
 
-			checkBox_WordWrapping.Checked = false;
+			checkBox_WordWrapping.Checked = TextEditorBaseDefaults.WordWrapping;
 
-			checkBox_LineNumbers.Checked = true;
-			checkBox_SectionSeparators.Checked = true;
+			checkBox_LineNumbers.Checked = TextEditorBaseDefaults.ShowLineNumbers;
+			checkBox_SectionSeparators.Checked = ClassicScriptEditorDefaults.ShowSectionSeparators;
 
-			checkBox_VisibleSpaces.Checked = false;
-			checkBox_VisibleTabs.Checked = true;
+			checkBox_VisibleSpaces.Checked = TextEditorBaseDefaults.ShowVisualSpaces;
+			checkBox_VisibleTabs.Checked = TextEditorBaseDefaults.ShowVisualTabs;
 
-			checkBox_ToolTips.Checked = true;
+			checkBox_ToolTips.Checked = TextEditorBaseDefaults.ShowDefinitionToolTips;
 		}
 
 		private void ResetIdentationRules()
 		{
-			checkBox_PreEqualSpace.Checked = false;
-			checkBox_PostEqualSpace.Checked = true;
+			checkBox_PreEqualSpace.Checked = ClassicScriptEditorDefaults.Tidy_PreEqualSpace;
+			checkBox_PostEqualSpace.Checked = ClassicScriptEditorDefaults.Tidy_PostEqualSpace;
 
-			checkBox_PreCommaSpace.Checked = false;
-			checkBox_PostCommaSpace.Checked = true;
+			checkBox_PreCommaSpace.Checked = ClassicScriptEditorDefaults.Tidy_PreCommaSpace;
+			checkBox_PostCommaSpace.Checked = ClassicScriptEditorDefaults.Tidy_PostCommaSpace;
 
-			checkBox_ReduceSpaces.Checked = true;
+			checkBox_ReduceSpaces.Checked = ClassicScriptEditorDefaults.Tidy_ReduceSpaces;
 		}
 
 		#endregion Resetting
@@ -543,6 +548,8 @@ namespace TombLib.Scripting.TextEditors.Controls.Settings
 				editorPreview.ResetErrorsOnAllLines();
 
 			editorPreview.WordWrap = checkBox_WordWrapping.Checked;
+
+			editorPreview.Options.HighlightCurrentLine = checkBox_HighlightCurrentLine.Checked;
 
 			editorPreview.ShowLineNumbers = checkBox_LineNumbers.Checked;
 			editorPreview.ShowSectionSeparators = checkBox_SectionSeparators.Checked;

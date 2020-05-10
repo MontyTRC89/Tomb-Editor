@@ -110,7 +110,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 		{
 			FontWeight = FontWeights.Normal;
 
-			TextArea.Options.HighlightCurrentLine = true;
 			TextArea.TextView.CurrentLineBackground = new SolidColorBrush(Color.FromArgb(16, 160, 160, 160));
 			TextArea.TextView.CurrentLineBorder = new Pen(new SolidColorBrush(Color.FromArgb(24, 192, 192, 192)), 1);
 
@@ -630,6 +629,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 			AutoCloseQuotes = configuration.AutoCloseQuotes;
 
 			WordWrap = configuration.WordWrapping;
+
+			Options.HighlightCurrentLine = configuration.HighlightCurrentLine;
 
 			ShowLineNumbers = configuration.ShowLineNumbers;
 

@@ -13,12 +13,16 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 	{
 		private readonly ClassicScriptColorScheme _scheme;
 
+		#region Construction
+
 		public ClassicScriptSyntaxHighlighting(ClassicScriptColorScheme scheme)
 		{
 			_scheme = scheme;
 		}
 
-		public string Name { get { return "Script Rules"; } }
+		#endregion Construction
+
+		#region Rules
 
 		public HighlightingRuleSet MainRuleSet
 		{
@@ -138,6 +142,12 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 			}
 		}
 
+		#endregion Rules
+
+		#region Other
+
+		public string Name { get { return "Script Rules"; } }
+
 		public IEnumerable<HighlightingColor> NamedHighlightingColors { get { throw new NotImplementedException(); } }
 		public IDictionary<string, string> Properties { get { throw new NotImplementedException(); } }
 
@@ -150,5 +160,7 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 		{
 			throw new NotImplementedException();
 		}
+
+		#endregion Other
 	}
 }

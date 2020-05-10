@@ -1345,6 +1345,8 @@ namespace TombIDE.ScriptEditor
 				)
 			);
 
+			scriptTextEditor.ShowSectionSeparators = _editorConfigs.ClassicScript.ShowSectionSeparators;
+
 			scriptTextEditor.Cleaner.PreEqualSpace = _editorConfigs.ClassicScript.Tidy_PreEqualSpace;
 			scriptTextEditor.Cleaner.PostEqualSpace = _editorConfigs.ClassicScript.Tidy_PostEqualSpace;
 			scriptTextEditor.Cleaner.PreCommaSpace = _editorConfigs.ClassicScript.Tidy_PreCommaSpace;
