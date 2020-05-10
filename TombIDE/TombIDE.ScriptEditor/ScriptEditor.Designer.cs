@@ -655,7 +655,7 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_About.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menuItem_About.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_AboutIcon_16;
 			this.menuItem_About.Name = "menuItem_About";
-			this.menuItem_About.Size = new System.Drawing.Size(180, 22);
+			this.menuItem_About.Size = new System.Drawing.Size(116, 22);
 			this.menuItem_About.Text = "&About...";
 			this.menuItem_About.Click += new System.EventHandler(this.Help_About_Click);
 			// 
@@ -979,12 +979,10 @@ namespace TombIDE.ScriptEditor
 			// 
 			// syntaxPreview
 			// 
-			this.syntaxPreview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.syntaxPreview.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.syntaxPreview.CurrentArgumentIndex = 0;
 			this.syntaxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.syntaxPreview.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.syntaxPreview.ForeColor = System.Drawing.Color.LightSalmon;
 			this.syntaxPreview.Location = new System.Drawing.Point(0, 0);
 			this.syntaxPreview.Name = "syntaxPreview";
 			this.syntaxPreview.ReadOnly = true;

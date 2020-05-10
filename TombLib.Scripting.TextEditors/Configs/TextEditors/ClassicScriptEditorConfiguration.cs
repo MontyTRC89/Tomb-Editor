@@ -1,22 +1,31 @@
 ﻿using System.IO;
-using System.Xml.Serialization;
 using TombLib.Scripting.TextEditors.ColorSchemes;
+using TombLib.Scripting.TextEditors.Configs.Bases;
+using TombLib.Scripting.TextEditors.Configs.Defaults;
 
 namespace TombLib.Scripting.TextEditors.Configs
 {
-	public sealed class ClassicScriptEditorConfiguration : TextEditorConfigBase
+	public sealed class ClassicScriptEditorConfiguration : TextEditorConfigurationBase
 	{
 		public override string DefaultPath { get; }
 
-		public bool ShowSectionSeparators { get; set; } = true;
+		#region Properties
 
-		public bool Tidy_PreEqualSpace { get; set; } = false;
-		public bool Tidy_PostEqualSpace { get; set; } = true;
-		public bool Tidy_PreCommaSpace { get; set; } = false;
-		public bool Tidy_PostCommaSpace { get; set; } = true;
-		public bool Tidy_ReduceSpaces { get; set; } = true;
+		public bool ShowSectionSeparators { get; set; } = ClassicScriptEditorDefaults.ShowSectionSeparators;
 
-		private string _selectedColorSchemeName = "VS15";
+		public bool Tidy_PreEqualSpace { get; set; } = ClassicScriptEditorDefaults.Tidy_PreEqualSpace;
+		public bool Tidy_PostEqualSpace { get; set; } = ClassicScriptEditorDefaults.Tidy_PostEqualSpace;
+
+		public bool Tidy_PreCommaSpace { get; set; } = ClassicScriptEditorDefaults.Tidy_PreCommaSpace;
+		public bool Tidy_PostCommaSpace { get; set; } = ClassicScriptEditorDefaults.Tidy_PostCommaSpace;
+
+		public bool Tidy_ReduceSpaces { get; set; } = ClassicScriptEditorDefaults.Tidy_ReduceSpaces;
+
+		#endregion Properties
+
+		#region Color scheme
+
+		private string _selectedColorSchemeName = ClassicScriptEditorDefaults.SelectedColorSchemeName;
 
 		public string SelectedColorSchemeName
 		{
@@ -25,25 +34,50 @@ namespace TombLib.Scripting.TextEditors.Configs
 			{
 				_selectedColorSchemeName = value;
 
-				string colorSchemeFilePath = Path.Combine(DefaultPaths.GetClassicScriptColorConfigsPath(), value + ".cssch");
+				string schemeFilePath =
+					Path.Combine(DefaultPaths.GetClassicScriptColorConfigsPath(), value + ClassicScriptEditorDefaults.ColorSchemeFileExtension);
 
-				if (!File.Exists(colorSchemeFilePath))
+				if (!File.Exists(schemeFilePath))
 					ColorScheme = new ClassicScriptColorScheme();
 				else
-					ColorScheme = XmlHandling.ReadXmlFile<ClassicScriptColorScheme>(colorSchemeFilePath);
+					ColorScheme = XmlHandling.ReadXmlFile<ClassicScriptColorScheme>(schemeFilePath);
 			}
 		}
 
-		[XmlIgnore]
-		public ClassicScriptColorScheme ColorScheme { get; private set; }
+		public ClassicScriptColorScheme ColorScheme;
+
+		#endregion Color scheme
+
+		#region Construction
 
 		public ClassicScriptEditorConfiguration()
 		{
-			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), "ClassicScriptConfiguration.xml");
+			DefaultPath = Path.Combine(DefaultPaths.GetTextEditorConfigsPath(), ClassicScriptEditorDefaults.ConfigurationFileName);
 
 			// These type of brackets aren't being used while writing in Classic Script, therefore auto closing should be disabled for them
 			AutoCloseParentheses = false;
 			AutoCloseBraces = false;
 		}
+
+		#endregion Construction
+
+		#region Override methods
+
+		public override void ResetToDefaultSettings()
+		{
+			ShowSectionSeparators = ClassicScriptEditorDefaults.ShowSectionSeparators;
+
+			Tidy_PreEqualSpace = ClassicScriptEditorDefaults.Tidy_PreEqualSpace;
+			Tidy_PostEqualSpace = ClassicScriptEditorDefaults.Tidy_PostEqualSpace;
+
+			Tidy_PreCommaSpace = ClassicScriptEditorDefaults.Tidy_PreCommaSpace;
+			Tidy_PostCommaSpace = ClassicScriptEditorDefaults.Tidy_PostCommaSpace;
+
+			Tidy_ReduceSpaces = ClassicScriptEditorDefaults.Tidy_ReduceSpaces;
+
+			base.ResetToDefaultSettings();
+		}
+
+		#endregion Override methods
 	}
 }

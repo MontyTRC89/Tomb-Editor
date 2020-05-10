@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TombLib.Scripting.TextEditors
+namespace TombLib.Scripting.Objects
 {
 	public class HighlightingObject
 	{

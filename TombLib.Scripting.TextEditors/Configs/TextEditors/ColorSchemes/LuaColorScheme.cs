@@ -1,17 +1,16 @@
 ﻿using System;
+using TombLib.Scripting.Objects;
+using TombLib.Scripting.TextEditors.Configs.Bases;
 
 namespace TombLib.Scripting.TextEditors.ColorSchemes
 {
-	public sealed class LuaColorScheme
+	public sealed class LuaColorScheme : ColorSchemeBase
 	{
 		public HighlightingObject Comments { get; set; } = new HighlightingObject();
 		public HighlightingObject Values { get; set; } = new HighlightingObject();
 		public HighlightingObject Statements { get; set; } = new HighlightingObject();
 		public HighlightingObject Operators { get; set; } = new HighlightingObject();
 		public HighlightingObject SpecialOperators { get; set; } = new HighlightingObject();
-
-		public string Background { get; set; } = "Black";
-		public string Foreground { get; set; } = "White";
 
 		#region Operators
 

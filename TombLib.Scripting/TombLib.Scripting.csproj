@@ -63,6 +63,7 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Objects\CompletionData.cs" />
     <Compile Include="Objects\ErrorLine.cs" />
+    <Compile Include="Objects\HighlightingObject.cs" />
     <Compile Include="Objects\PluginMnemonic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\LuaKeywords.cs" />

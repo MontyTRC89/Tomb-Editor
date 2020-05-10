@@ -4,8 +4,8 @@ namespace TombLib.Scripting.TextEditors
 {
 	public sealed class TextEditorConfigs
 	{
-		public ClassicScriptEditorConfiguration ClassicScript { get; private set; }
-		public LuaEditorConfiguration Lua { get; private set; }
+		public ClassicScriptEditorConfiguration ClassicScript;
+		public LuaEditorConfiguration Lua;
 
 		public static TextEditorConfigs Load()
 		{

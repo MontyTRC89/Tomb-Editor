@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace TombLib.Scripting.TextEditors.Configs
+namespace TombLib.Scripting.TextEditors.Configs.Bases
 {
 	public abstract class ConfigurationBase
 	{

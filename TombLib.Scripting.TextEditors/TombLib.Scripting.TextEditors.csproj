@@ -48,8 +48,12 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configs\ConfigurationBase.cs" />
-    <Compile Include="Configs\TextEditors\TextEditorConfigBase.cs" />
+    <Compile Include="Configs\Bases\ColorSchemeBase.cs" />
+    <Compile Include="Configs\Bases\ConfigurationBase.cs" />
+    <Compile Include="Configs\Bases\TextEditorConfigurationBase.cs" />
+    <Compile Include="Configs\Defaults\LuaEditorDefaults.cs" />
+    <Compile Include="Configs\Defaults\ClassicScriptEditorDefaults.cs" />
+    <Compile Include="Configs\Defaults\TextEditorBaseDefaults.cs" />
     <Compile Include="Configs\TextEditors\ClassicScriptEditorConfiguration.cs" />
     <Compile Include="Configs\TextEditors\ColorSchemes\ClassicScriptColorScheme.cs" />
     <Compile Include="Configs\TextEditors\ColorSchemes\LuaColorScheme.cs" />
@@ -63,25 +67,24 @@
     <Compile Include="Controls\TextEditorBase.cs" />
     <Compile Include="Controls\LuaTextEditor.cs" />
     <Compile Include="Controls\ScriptTextEditor.cs" />
-    <Compile Include="Controls\Settings\SettingsClassicScript.cs">
+    <Compile Include="Settings\SettingsClassicScript.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Settings\SettingsClassicScript.Designer.cs">
+    <Compile Include="Settings\SettingsClassicScript.Designer.cs">
       <DependentUpon>SettingsClassicScript.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSaveSchemeAs.cs">
+    <Compile Include="Settings\FormSaveSchemeAs.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSaveSchemeAs.Designer.cs">
+    <Compile Include="Settings\FormSaveSchemeAs.Designer.cs">
       <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormTextEditorSettings.cs">
+    <Compile Include="Settings\FormTextEditorSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormTextEditorSettings.Designer.cs">
+    <Compile Include="Settings\FormTextEditorSettings.Designer.cs">
       <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="HighlightingObject.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="DefaultPaths.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,7 +98,7 @@
     <Compile Include="Rendering\SectionRenderer.cs" />
     <Compile Include="Rendering\TextRendering.cs" />
     <Compile Include="SyntaxHighlighting\LuaSyntaxHighlighting.cs" />
-    <Compile Include="SyntaxHighlighting\ScriptSyntaxHighlighting.cs" />
+    <Compile Include="SyntaxHighlighting\ClassicScriptSyntaxHighlighting.cs" />
     <Compile Include="TextEditorConfigs.cs" />
     <Compile Include="XmlHandling.cs" />
   </ItemGroup>
@@ -103,13 +106,13 @@
     <EmbeddedResource Include="Controls\LuaTextBox.resx">
       <DependentUpon>LuaTextBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Settings\SettingsClassicScript.resx">
+    <EmbeddedResource Include="Settings\SettingsClassicScript.resx">
       <DependentUpon>SettingsClassicScript.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSaveSchemeAs.resx">
+    <EmbeddedResource Include="Settings\FormSaveSchemeAs.resx">
       <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormTextEditorSettings.resx">
+    <EmbeddedResource Include="Settings\FormTextEditorSettings.resx">
       <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

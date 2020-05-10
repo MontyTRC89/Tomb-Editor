@@ -20,7 +20,6 @@ using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
 using TombLib.Scripting.Resources.ToolTips;
 using TombLib.Scripting.TextEditors.Rendering;
-using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
 namespace TombLib.Scripting.TextEditors.Controls
 {
@@ -29,6 +28,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 		#region Properties, fields and objects
 
 		public ClassicScriptCleaner Cleaner = new ClassicScriptCleaner();
+
+		private bool _showSectionSeparators;
 
 		public bool ShowSectionSeparators
 		{
@@ -52,8 +53,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			}
 		}
 
-		private bool _showSectionSeparators;
-
 		private BackgroundWorker _autocompleteWorker = new BackgroundWorker();
 		private BackgroundWorker _errorDetectionWorker = new BackgroundWorker();
 
@@ -72,8 +71,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			InitializeRenderers();
 
 			BindEventMethods();
-
-			SyntaxHighlighting = new ScriptSyntaxHighlighting();
 		}
 
 		private void InitializeBackgroundWorkers()
@@ -108,12 +105,6 @@ namespace TombLib.Scripting.TextEditors.Controls
 			KeyDown += TextEditor_KeyDown;
 		}
 
-		private void TextEditor_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.F1)
-				InputFreeIndex();
-		}
-
 		#endregion Construction
 
 		#region Events
@@ -132,6 +123,12 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void TextEditor_MouseHover(object sender, MouseEventArgs e) =>
 			HandleDefinitionToolTips(e);
+
+		private void TextEditor_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.F1)
+				InputFreeIndex();
+		}
 
 		#endregion Events
 
