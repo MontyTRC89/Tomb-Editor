@@ -27,6 +27,7 @@ namespace TombLib.Wad
         public WadSoundLoopBehaviour LoopBehaviour { get; set; }
         public List<WadSample> Samples { get; set; }
         public bool Global { get; set; }
+        public bool Indexed { get; set; } // Legacy flag to index sound for TR2-3 MAIN.SFX file
         [XmlIgnore]
         public bool AddToLevel { get; set; }
         [XmlIgnore]
@@ -48,6 +49,7 @@ namespace TombLib.Wad
             RandomizeVolume = false;
             LoopBehaviour = WadSoundLoopBehaviour.None;
             Global = false;
+            Indexed = false;
             Samples = new List<WadSample>();
             SoundCatalog = "";
         }
@@ -67,6 +69,7 @@ namespace TombLib.Wad
             Samples = new List<WadSample>();
             SoundCatalog = s.SoundCatalog;
             Global = s.Global;
+            Indexed = s.Indexed;
             foreach (var sample in s.Samples)
                 Samples.Add(new WadSample(sample.FileName));
         }
@@ -92,7 +95,8 @@ namespace TombLib.Wad
 
         public int SampleCount(LevelSettings settings)
         {
-            if (Samples == null || Samples.Count <= 0)
+            if ((settings.GameVersion == TRVersion.Game.TR2 || settings.GameVersion == TRVersion.Game.TR3) || 
+                Samples == null || Samples.Count <= 0)
                 return -1;
 
             int result = 0;
