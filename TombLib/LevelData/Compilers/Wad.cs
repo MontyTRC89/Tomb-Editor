@@ -819,6 +819,10 @@ namespace TombLib.LevelData.Compilers
                         if (_finalSelectedSoundsList.Contains(_level.Settings.GlobalSoundMap[i].Id))
                             numSounds++;
 
+                    // Prepare indices list to be written. 
+                    // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
+                    var indexList = new List<int>();
+
                     // Write sound details
                     int lastSampleIndex = 0;
                     bw.Write((uint)_finalSoundInfosList.Count);
@@ -837,10 +841,17 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
+                        // "Sample" field is index into SampleIndices in TR2-3 (for main.sfx)
+                        // and is direct index to sample in TR4-5.
+                        ushort index = (ushort)lastSampleIndex;
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR2 ||
+                            _level.Settings.GameVersion == TRVersion.Game.TR3)
+                            index = (ushort)i;
+
                         if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
                         {
                             var newSoundDetail = new tr_sound_details();
-                            newSoundDetail.Sample = (ushort)lastSampleIndex;
+                            newSoundDetail.Sample = index;
                             newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
                             newSoundDetail.Chance = (byte)soundDetail.Chance;
                             newSoundDetail.Characteristics = characteristics;
@@ -849,22 +860,23 @@ namespace TombLib.LevelData.Compilers
                         else
                         {
                             var newSoundDetail = new tr3_sound_details();
-                            newSoundDetail.Sample = (ushort)lastSampleIndex;
+                            newSoundDetail.Sample = index;
                             newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
-
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
                             newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
+                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
                             newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
                             newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
 
+                        indexList.Add(lastSampleIndex);
                         lastSampleIndex += soundDetail.Samples.Count;
                     }
 
-                    bw.Write((uint)lastSampleIndex);
-                    for (int i = 0; i < lastSampleIndex; i++)
-                        bw.Write(0);
+                    // Write sample indices (not used but parsed in TR4-5)
+                    bw.Write((uint)indexList.Count);
+                    for (int i = 0; i < indexList.Count; i++)
+                        bw.Write((uint)indexList[i]);
                 }
 
                 writer.Write(ms.ToArray());
