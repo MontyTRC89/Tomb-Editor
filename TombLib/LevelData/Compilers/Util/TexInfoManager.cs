@@ -1172,7 +1172,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Tile and flags
                 ushort tile = (ushort)texture.Tile;
-                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR2) tile |= 0x8000;
+                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
 
                 // Blend mode
                 ushort attribute = (ushort)texture.BlendMode;

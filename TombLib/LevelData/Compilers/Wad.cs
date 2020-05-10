@@ -799,9 +799,12 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundMetadata(BinaryWriter writer)
         {
-            // In TRNG and TR5Main NumDemoData is used as sound map size
-            writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                  _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
+            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
+            {
+                // In TRNG and TR5Main NumDemoData is used as sound map size
+                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
+                                      _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
+            }
 
             using (var ms = new MemoryStream())
             {
@@ -834,7 +837,7 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR2)
+                        if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
                         {
                             var newSoundDetail = new tr_sound_details();
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
