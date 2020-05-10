@@ -301,8 +301,8 @@ namespace TombLib.LevelData.Compilers
             writer.WriteBlockArray(Sectors);
 
             // Write room color
-            writer.Write((ushort)(AmbientIntensity & 0x1FF));
-            writer.Write((ushort)(AmbientIntensity & 0x1FF));
+            writer.Write((ushort)(AmbientIntensity));
+            writer.Write((ushort)(AmbientIntensity));
 
             // TODO: Light mode
             writer.Write((ushort)0x00);
@@ -384,8 +384,10 @@ namespace TombLib.LevelData.Compilers
             writer.WriteBlockArray(Sectors);
 
             // Write room color
-            writer.Write((ushort)(AmbientIntensity & 0x1FF));
-            writer.Write((ushort)(AmbientIntensity & 0x1FF));
+            writer.Write((ushort)(AmbientIntensity));
+
+            // Light mode is broken in TR3
+            writer.Write((ushort)0x00);
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Count);
