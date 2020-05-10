@@ -178,6 +178,7 @@ namespace TombLib.LevelData.Compilers
                     numBytesWritten += sizeof(short);
                 }
                 _progressReporter.ReportInfo("Num SoundMap Bytes written : " + numBytesWritten);
+
                 // Write sound details
                 uint numSoundInfos = 0;
                 foreach(var wad in _level.Settings.Wads) {

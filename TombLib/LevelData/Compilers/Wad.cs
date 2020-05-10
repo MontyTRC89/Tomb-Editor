@@ -16,6 +16,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
         private List<int> _finalSelectedSoundsList;
+        private List<int> _finalSoundIndicesList;
         private List<WadSoundInfo> _finalSoundInfosList;
         private List<WadSample> _finalSamplesList;
         private int _soundMapSize = 0;
@@ -678,13 +679,34 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareSoundsData()
         {
-            // Step 1: create the real list of sounds to compile
+            // Step 1: create the real list of sounds and indices to compile
+
             _finalSoundInfosList = new List<WadSoundInfo>();
             _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
 
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
                 if (_finalSelectedSoundsList.Contains(soundInfo.Id))
                     _finalSoundInfosList.Add(soundInfo);
+
+            // Prepare indices list to be written. 
+            // For that, we iterate through ALL sound infos available and count how many samples
+            // each of them have. Then we build a list of needed sound IDs with appropriate 
+            // sample count, which is used later to store indices.
+            // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
+
+            _finalSoundIndicesList = new List<int>();
+            int currentIndex = 0;
+            foreach (var sound in _level.Settings.GlobalSoundMap)
+            {
+                if (_finalSoundInfosList.Contains(sound))
+                    foreach (var sample in sound.Samples)
+                    {
+                        _finalSoundIndicesList.Add(currentIndex);
+                        currentIndex++;
+                    }
+                else
+                    currentIndex += sound.Samples.Count;
+            }
 
             // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
             // There is no other way of guessing it except looking if there is a specific object in any of wads.
@@ -819,26 +841,6 @@ namespace TombLib.LevelData.Compilers
                         if (_finalSelectedSoundsList.Contains(_level.Settings.GlobalSoundMap[i].Id))
                             numSounds++;
 
-                    // Prepare indices list to be written. 
-                    // For that, we iterate through ALL sound infos available and count how many samples
-                    // each of them have. Then we build a list of needed sound IDs with appropriate 
-                    // sample count, which is used later to store indices.
-                    // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
-
-                    var indexList = new List<int>();
-                    int currentSample = 0;
-                    foreach (var sound in _level.Settings.GlobalSoundMap)
-                    {
-                        if (_finalSoundInfosList.Contains(sound))
-                            foreach (var sample in sound.Samples)
-                            {
-                                indexList.Add(currentSample);
-                                currentSample++;
-                            }
-                        else
-                            currentSample += sound.Samples.Count;
-                    }
-
                     // Write sound details
                     int lastSampleIndex = 0;
                     bw.Write((uint)_finalSoundInfosList.Count);
@@ -881,9 +883,9 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     // Write sample indices (not used but parsed in TR4-5)
-                    bw.Write((uint)indexList.Count);
-                    for (int i = 0; i < indexList.Count; i++)
-                        bw.Write((uint)indexList[i]);
+                    bw.Write((uint)_finalSoundIndicesList.Count);
+                    for (int i = 0; i < _finalSoundIndicesList.Count; i++)
+                        bw.Write((uint)_finalSoundIndicesList[i]);
                 }
 
                 writer.Write(ms.ToArray());
