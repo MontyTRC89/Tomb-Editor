@@ -86,7 +86,7 @@
             this.separator_03,
             this.menuItem_OpenInExplorer});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(237, 157);
+			this.contextMenu.Size = new System.Drawing.Size(237, 179);
 			// 
 			// menuItem_NewFile
 			// 
@@ -119,7 +119,8 @@
 			// menuItem_OpenInEditor
 			// 
 			this.menuItem_OpenInEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_OpenInEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_OpenInEditor.Enabled = false;
+			this.menuItem_OpenInEditor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.menuItem_OpenInEditor.Name = "menuItem_OpenInEditor";
 			this.menuItem_OpenInEditor.Size = new System.Drawing.Size(236, 22);
 			this.menuItem_OpenInEditor.Text = "Open Selected File in Editor";
@@ -136,7 +137,8 @@
 			// menuItem_Rename
 			// 
 			this.menuItem_Rename.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_Rename.Enabled = false;
+			this.menuItem_Rename.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.menuItem_Rename.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_edit_16;
 			this.menuItem_Rename.Name = "menuItem_Rename";
 			this.menuItem_Rename.Size = new System.Drawing.Size(236, 22);
@@ -146,7 +148,8 @@
 			// menuItem_Delete
 			// 
 			this.menuItem_Delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_Delete.Enabled = false;
+			this.menuItem_Delete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.menuItem_Delete.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_trash_16;
 			this.menuItem_Delete.Name = "menuItem_Delete";
 			this.menuItem_Delete.Size = new System.Drawing.Size(236, 22);
@@ -164,7 +167,8 @@
 			// menuItem_OpenInExplorer
 			// 
 			this.menuItem_OpenInExplorer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_OpenInExplorer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_OpenInExplorer.Enabled = false;
+			this.menuItem_OpenInExplorer.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
 			this.menuItem_OpenInExplorer.Image = global::TombIDE.ScriptEditor.Properties.Resources.forward_arrow_16;
 			this.menuItem_OpenInExplorer.Name = "menuItem_OpenInExplorer";
 			this.menuItem_OpenInExplorer.Size = new System.Drawing.Size(236, 22);
