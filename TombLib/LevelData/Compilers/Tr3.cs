@@ -171,65 +171,68 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(numDemo);
                 writer.Write(numCinematicFrames);
 
-                // Write sounds
+                // Write sound meta data
+                PrepareSoundsData();
+                WriteSoundMetadata(writer);
 
-                // Write sound map
-                const short soundMapSize = 370;
-                uint numBytesWritten = 0;
-                var lastSound = 0;
-                for (int i = 0; i < soundMapSize; i++) {
-                    short soundMapValue = 0;
-                    if (_level.Settings.WadTryGetSoundInfo(i) != null) {
-                        soundMapValue = (short)lastSound;
-                        lastSound++;
-                    }
-                    writer.Write(soundMapValue);
-                    numBytesWritten += sizeof(short);
-                }
-                // Write sound details
-                uint numSoundInfos = 0;
-                foreach (var sc in _level.Settings.SoundsCatalogs) {
-                    numSoundInfos += (uint)(sc.Sounds.SoundInfos.Count);
-                }
-                writer.Write((uint)numSoundInfos);
+//                // Write sound map
+//                const short soundMapSize = 370;
+//                uint numBytesWritten = 0;
+//                var lastSound = 0;
+//                for (int i = 0; i < soundMapSize; i++) {
+//                    short soundMapValue = 0;
+//                    if (_level.Settings.WadTryGetSoundInfo(i) != null) {
+//                        soundMapValue = (short)lastSound;
+//                        lastSound++;
+//                    }
+//                    writer.Write(soundMapValue);
+//                    numBytesWritten += sizeof(short);
+//                }
+//                // Write sound details
+//                uint numSoundInfos = 0;
+//                foreach (var sc in _level.Settings.SoundsCatalogs) {
+//                    numSoundInfos += (uint)(sc.Sounds.SoundInfos.Count);
+//                }
+//                writer.Write((uint)numSoundInfos);
+//
+//                ushort lastSample = 0;
+//
+//                foreach (var sc in _level.Settings.SoundsCatalogs) {
+//                    for (int i = 0; i < sc.Sounds.SoundInfos.Count; i++) {
+//                        var wadInfo = sc.Sounds.SoundInfos[i];
+//                        var soundInfo = new tr3_sound_details();
+//
+//                        soundInfo.Sample = lastSample;
+//                        soundInfo.Volume = (byte)wadInfo.Volume;
+//                        soundInfo.Chance = (byte)wadInfo.Chance;
+//
+//                        ushort characteristics = (/*wadInfo.Samples.Count */ 1 << 2);
+//                        if (wadInfo.DisablePanning)
+//                            characteristics |= 0x1000;
+//                        if (wadInfo.RandomizePitch)
+//                            characteristics |= 0x2000;
+//                        if (wadInfo.RandomizeVolume)
+//                            characteristics |= 0x4000;
+//                        characteristics |= (byte)wadInfo.LoopBehaviour;
+//
+//                        soundInfo.Characteristics = characteristics;
+//
+//                        writer.Write(soundInfo.Sample);
+//                        writer.Write((byte)soundInfo.Volume);
+//                        writer.Write((byte)soundInfo.Range);
+//                        writer.Write((byte)soundInfo.Chance);
+//                        writer.Write((byte)soundInfo.Pitch);
+//                        writer.Write(soundInfo.Characteristics);
+//                        lastSample += (ushort)wadInfo.Samples.Count;
+//                    }
+//                    
+//                }
+//                uint numSampleIndices = lastSample;
+//                writer.Write(numSampleIndices);
+//                for (uint i = 0; i < numSampleIndices; i++) {
+//                    writer.Write(i);
+//                }
 
-                ushort lastSample = 0;
-
-                foreach (var sc in _level.Settings.SoundsCatalogs) {
-                    for (int i = 0; i < sc.Sounds.SoundInfos.Count; i++) {
-                        var wadInfo = sc.Sounds.SoundInfos[i];
-                        var soundInfo = new tr3_sound_details();
-
-                        soundInfo.Sample = lastSample;
-                        soundInfo.Volume = (byte)wadInfo.Volume;
-                        soundInfo.Chance = (byte)wadInfo.Chance;
-
-                        ushort characteristics = (/*wadInfo.Samples.Count */ 1 << 2);
-                        if (wadInfo.DisablePanning)
-                            characteristics |= 0x1000;
-                        if (wadInfo.RandomizePitch)
-                            characteristics |= 0x2000;
-                        if (wadInfo.RandomizeVolume)
-                            characteristics |= 0x4000;
-                        characteristics |= (byte)wadInfo.LoopBehaviour;
-
-                        soundInfo.Characteristics = characteristics;
-
-                        writer.Write(soundInfo.Sample);
-                        writer.Write((byte)soundInfo.Volume);
-                        writer.Write((byte)soundInfo.Range);
-                        writer.Write((byte)soundInfo.Chance);
-                        writer.Write((byte)soundInfo.Pitch);
-                        writer.Write(soundInfo.Characteristics);
-                        lastSample += (ushort)wadInfo.Samples.Count;
-                    }
-                    
-                }
-                uint numSampleIndices = lastSample;
-                writer.Write(numSampleIndices);
-                for (uint i = 0; i < numSampleIndices; i++) {
-                    writer.Write(i);
-                }
                 writer.Flush();
             }
         }
