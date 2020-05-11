@@ -1,4 +1,4 @@
-﻿namespace TombIDE
+﻿namespace TombIDE.ProjectMaster
 {
 	partial class FormImportLevel
 	{
@@ -49,6 +49,7 @@
 			// 
 			// button_DeselectAll
 			// 
+			this.button_DeselectAll.Checked = false;
 			this.button_DeselectAll.Enabled = false;
 			this.button_DeselectAll.Location = new System.Drawing.Point(225, 147);
 			this.button_DeselectAll.Margin = new System.Windows.Forms.Padding(3, 3, 6, 3);
@@ -62,6 +63,7 @@
 			// 
 			this.button_Import.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Import.Checked = false;
 			this.button_Import.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button_Import.Location = new System.Drawing.Point(9, 549);
 			this.button_Import.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
@@ -73,6 +75,7 @@
 			// 
 			// button_OpenAudioFolder
 			// 
+			this.button_OpenAudioFolder.Checked = false;
 			this.button_OpenAudioFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenAudioFolder.Location = new System.Drawing.Point(330, 4);
 			this.button_OpenAudioFolder.Margin = new System.Windows.Forms.Padding(3, 4, 4, 3);
@@ -85,6 +88,7 @@
 			// 
 			// button_SelectAll
 			// 
+			this.button_SelectAll.Checked = false;
 			this.button_SelectAll.Enabled = false;
 			this.button_SelectAll.Location = new System.Drawing.Point(6, 147);
 			this.button_SelectAll.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
@@ -162,21 +166,19 @@
 			// 
 			// numeric_SoundID
 			// 
-			this.numeric_SoundID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-			this.numeric_SoundID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.numeric_SoundID.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
 			this.numeric_SoundID.Location = new System.Drawing.Point(104, 6);
+			this.numeric_SoundID.LoopValues = false;
 			this.numeric_SoundID.Margin = new System.Windows.Forms.Padding(1, 6, 3, 3);
 			this.numeric_SoundID.Maximum = new decimal(new int[] {
             999,
             0,
             0,
             0});
-			this.numeric_SoundID.LoopValues = false;
 			this.numeric_SoundID.Name = "numeric_SoundID";
 			this.numeric_SoundID.Size = new System.Drawing.Size(220, 20);
 			this.numeric_SoundID.TabIndex = 1;
@@ -239,11 +241,15 @@
 			// 
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Enabled = false;
+			this.treeView.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
+			this.treeView.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView.Location = new System.Drawing.Point(6, 176);
 			this.treeView.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.treeView.MaxDragChange = 20;
 			this.treeView.MultiSelect = true;
 			this.treeView.Name = "treeView";
+			this.treeView.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+			this.treeView.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeView.Size = new System.Drawing.Size(432, 148);
 			this.treeView.TabIndex = 8;
 			// 

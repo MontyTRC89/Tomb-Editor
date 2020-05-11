@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
@@ -26,8 +27,8 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			radioButton_Dark.Checked = !_ide.Configuration.LightModePreviewEnabled;
-			radioButton_Light.Checked = _ide.Configuration.LightModePreviewEnabled;
+			radioButton_Dark.Checked = !_ide.IDEConfiguration.LightModePreviewEnabled;
+			radioButton_Light.Checked = _ide.IDEConfiguration.LightModePreviewEnabled;
 
 			if (_ide.Project.ProjectPath.ToLower() == _ide.Project.EnginePath.ToLower())
 			{
@@ -50,8 +51,8 @@ namespace TombIDE.ProjectMaster
 			{
 				panel_PreviewBackground.BackColor = Color.FromArgb(48, 48, 48);
 
-				_ide.Configuration.LightModePreviewEnabled = false;
-				_ide.Configuration.Save();
+				_ide.IDEConfiguration.LightModePreviewEnabled = false;
+				_ide.IDEConfiguration.Save();
 			}
 		}
 
@@ -61,8 +62,8 @@ namespace TombIDE.ProjectMaster
 			{
 				panel_PreviewBackground.BackColor = Color.White;
 
-				_ide.Configuration.LightModePreviewEnabled = true;
-				_ide.Configuration.Save();
+				_ide.IDEConfiguration.LightModePreviewEnabled = true;
+				_ide.IDEConfiguration.Save();
 			}
 		}
 
@@ -90,12 +91,12 @@ namespace TombIDE.ProjectMaster
 				if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
 				{
 					if (_ide.Project.GameVersion == TRVersion.Game.TRNG && File.Exists(Path.Combine(_ide.Project.EnginePath, "flep.exe")))
-						icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "FLEP.ico");
+						icoFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "FLEP.ico");
 					else
-						icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", _ide.Project.GameVersion + ".ico");
+						icoFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
 				}
 				else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
-					icoFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", _ide.Project.GameVersion + ".ico");
+					icoFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
 
 				ApplyIconToExe(icoFilePath);
 			}

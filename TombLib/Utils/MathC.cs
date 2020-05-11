@@ -62,6 +62,8 @@ namespace TombLib
         public static int Clamp(int value, int min, int max) => value < min ? min : value > max ? max : value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Clamp(double value, double min, double max) => value < min? min : value > max ? max : value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Clamp(float value, float min, float max) => value < min ? min : value > max ? max : value;
 
         /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.

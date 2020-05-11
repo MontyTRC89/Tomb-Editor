@@ -1,0 +1,8 @@
+Syntax: Pickup=	NumberOfPickup,NameInInventory,	TopBorder,DistanceFromCam,Orient_X, Orient_Y, Orient_Z, RotationFlag
+
+To use in [Level] section
+
+The arguments and their meanings are the same of "Puzzle=" and "Examine=" commands but in this case will be defined a generic pickable item  instead of a puzzle or key item.
+
+To have a description of arguments see PuzzleCombo= command.
+

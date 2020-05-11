@@ -61,6 +61,7 @@
 			// button_HidePlugins
 			// 
 			this.button_HidePlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_HidePlugins.Checked = false;
 			this.button_HidePlugins.ForeColor = System.Drawing.Color.Gainsboro;
 			this.button_HidePlugins.Location = new System.Drawing.Point(653, 3);
 			this.button_HidePlugins.Name = "button_HidePlugins";
@@ -73,6 +74,7 @@
 			// button_ShowPlugins
 			// 
 			this.button_ShowPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_ShowPlugins.Checked = false;
 			this.button_ShowPlugins.ForeColor = System.Drawing.Color.Gainsboro;
 			this.button_ShowPlugins.Location = new System.Drawing.Point(616, 256);
 			this.button_ShowPlugins.Margin = new System.Windows.Forms.Padding(3, 3, 32, 12);

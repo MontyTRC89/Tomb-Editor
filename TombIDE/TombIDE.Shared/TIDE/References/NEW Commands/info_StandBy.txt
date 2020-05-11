@@ -1,0 +1,95 @@
+Syntax: StandBy=  IdStandBY, Type StandBy (TSB_..), WaitTime, Flags StandBy (FSB_...), Text, NumTexts, AudioTrack, VAngle, RotateSpeed, Distance, IdTriggerGroupBegin, IdTriggerGroupEnd
+Scope: to use in [Level] section
+Max number of instances for level section: 49
+
+The StandBy command allows to enable an automatic pause-mode in game. 
+The stand-by will begin when the player for some time (that you set in WaitTime field) don't use any game command.
+You can choose what it will happen in game: the main effect is a matrix effect, where the camera turn around to Lara. You can add texts, and new audio track to underline the stand-by mode.
+
+IdStandBY field
+---------------
+Theorically the stand-by starts byself when there are the correct conditions, anyway it has been added also a flipeffect to execute a standby-mode. Thanks to this flipeffect you can use the settings of StandBy command to perform in game a camera effect.
+To select the wished StandBy you choose the corresponding IdStandBY value.
+Anyway, when you use StandBy in native manner, it's necessary that the IdStandBy value was = 1, in fact, only the StandBy with ID = 1, will be started when there are correct conditions.
+Valid Range for IDs: 1 / 499
+
+StandBy (TSB_..) field
+----------------------
+In this field you type a single TSB_ value to set the main effect for stand-by.
+See the description of TSB_ constants in Reference panel of NG_Center program.
+
+WaitTime field
+--------------
+Set the time with no input to activate the stand-by.
+You have to type the number of seconds.
+
+Flags StandBy (FSB_...) field
+-----------------------------
+You can set many FSB_ flags to customize the main method set with TSB_ value.
+See the description o FSB_ constants in Reference Panel.
+Remark: you can type IGNORE in this field to omit any FSB_ flag
+
+Text field
+----------
+You can type the text that will be printed on screen when the stand-by is on.
+For example you could show a text like "Hit a Key To continue".
+
+NumTexts field
+--------------
+Set the number of texts to show during the stand-by mode.
+Usually it will be "1", to show the single string you typed in previous "text" field, anyway you could show different strings in sequence.
+When you type a number greater than "1", the game will show the string you typed in "Text" field, and, after 4 seconds, the string immediatly following the supplied text, in the NG Extra strings list.
+For example if you typed in [NG Strings] section of the script the following strings:
+
+23: Pause - Hit a Key
+24: The longest Night
+25: Created by Paolone
+
+And you wish that above three strings were showed on screen in sequence, you'll type in "Text" field  the first string, followed in "NumTexts" field from the number of strings to show ("3"
+):
+
+
+StandBy=  .... , Pause - Hit a Key, 3, ....
+
+AudioTrack field
+----------------
+If you wish have a new audio track during the stand-by mode you can type in this the number of CD track to play.
+Differently, if you don't wish any furhter audio you can type IGNORE in this field.
+
+VAngle field
+------------
+This field set if the camera is looking lara from downstair or upstair.
+Positive values place the camera down than lara and therefore the camera will look upstairs, while negative values move the camera upper than lara and since lara will be seen from upstairs.
+With 0 value, the camera will have same height than Lara.
+The valid range of values is about from -16384 to +16384 but in the reality it's better avoid to reach exaactly the 16384 abs value.
+It's advisable use zero or negative values for this field becuse if you use bigger positive values the camera should go under the floor.
+Remark: 16384 = 90 degree, 8192 = 45 degrees.
+
+You can type IGNORE in this field to let default value.
+
+RotateSpeed field
+------------------
+The speed of turning around lara has like units the degrees, where to compute a whole revolution the value will be 65536 ($10000).
+Since the value you type in this field will be added to current angle 30 times for seconds you can compute the value to type to reach the wished target.
+For example if you wish the camera perform a quarter of revolution (90 degrees) in one second you should type 16384 (i.e. 90 degrees) / 30 (i.e. one second) = 546.
+I suggest lower speed in particular way then the Distance is large, while when the distance is little you can increase the speed.
+
+If you type too high value for speed the players will be seasick watching your stand-by.
+
+Distance field
+--------------
+This is the distance between the camera (is looking lara) and Lara.
+One sector is 1024 units, one click = 256 units.
+The reasonable range of values could be 256 / 4096, anyway I suggest little values because when you choose to high values (higher than 2048) the camera could have problems turning around lara, entering in collision with walls.
+
+IdTriggerGroupBegin field
+-------------------------
+The StandBy command supplies to you many features, about camera effects, bakcground audio and printing of texts, anyway if you wish customize furtherly your stand-by you could use this field to set a TriggerGroup to perform when the stand-by starts. In the triggergroup you could for example call an organizer, where scrolling or sliding texts will be showed, or some triggers that begin a flyby sequence.
+If you don't want use a triggergroup type IGNORE in this field.
+
+IdTriggerGroupEnd field
+-----------------------
+When you set a TriggerGroup at start of StandBy mode it's probable you wish also another triggergroup to remove from screen the effect added with the beginning trigger group.
+For example if you had a long text to screen with infinite time you could use the End TriggerGroup to clear the screen removing that text.
+
+

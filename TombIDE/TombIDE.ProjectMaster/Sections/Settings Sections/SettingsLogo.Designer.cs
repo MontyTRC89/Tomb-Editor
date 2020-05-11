@@ -31,6 +31,7 @@
 			// 
 			// button_Change
 			// 
+			this.button_Change.Checked = false;
 			this.button_Change.Location = new System.Drawing.Point(336, 175);
 			this.button_Change.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Change.Name = "button_Change";
@@ -41,6 +42,7 @@
 			// 
 			// button_Reset
 			// 
+			this.button_Reset.Checked = false;
 			this.button_Reset.Location = new System.Drawing.Point(336, 245);
 			this.button_Reset.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Reset.Name = "button_Reset";
@@ -51,6 +53,7 @@
 			// 
 			// button_UseBlank
 			// 
+			this.button_UseBlank.Checked = false;
 			this.button_UseBlank.Location = new System.Drawing.Point(336, 210);
 			this.button_UseBlank.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_UseBlank.Name = "button_UseBlank";

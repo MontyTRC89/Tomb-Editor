@@ -1,0 +1,25 @@
+Syntax: Mirror= RoomNumber, XOriginRoomBy1024
+
+To use in [Level] section
+
+Set a mirror effect.
+
+Arguments:
+
+1 -RoomNumber. This is the number of room where lara can see the mirror, pratically is the room in front of mirror (hidden) room.
+
+2 -XOriginRoomBy1024 = X Origin in room edit units. 
+This number is in hexadecimal format.
+You read this value in Info panel belove the 3d panel
+To get the final value to type in Mirror= command you have to add 1 to X Origin and then muplicating this sum for 1024.
+
+For example if X origin of room in front of mirror is 12 (decimal)
+You get the hexadecimal number in following way:
+
+12 + 1 = 13
+13 * 1024 = 13312
+13312 = (converted in hexadecimal=) $3400
+
+Remark: the mirror in room edit must be always over left wall of room in front of mirror.
+
+

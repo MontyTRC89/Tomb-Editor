@@ -1,0 +1,102 @@
+Syntax: DefaultWindowsFont= IdWindowsFont, FLAGS (DWF_...), LineSpacing, MainMenuOffsets, NewGameTitle, LoadGameTitle, NewGameList, LoadGameList, OptionSettings, OptionCmdList, PauseScreen, StatList, InventoryItemName, ExamineText
+
+Scope: To use in [Title] section
+
+If you type this command in the Title section of your script, you force the tomb4 engine to use Windows font characters to show any text in the game.
+All menu titles (New game/Load game/Options ect.) will be drawn whereby windows functions and using the windowds font you set in the given WindowsFont= command.
+
+Remark:
+The most advantage to use windows font is to be able to support different charset (different than default western charset).
+Pratically using windows fonts you should be able to show texts in eastern languages.
+Anyway, there are also some problems in windows font management.
+Since the displaying of windows font is based on API windows function (and not directX functions), the drawing will be more slower than default directx management used in tomb raider.
+This means there will be a light "flickering" of windows texts on screen.
+Another risk is that the font you chose for windows font, it could be missing in some computer and in that case trng engine will try to locate an alike font but since it is different the format in game cuould be less good.
+
+For above reasons I suggest to use the DefaultWindwsFont= chance only when you use an eastern language (not supported in tomb raider default), while for western level builders (and their players) I suggest to continue using the default font management, because it grants better performances and compatibile issues with all computers.
+
+
+IdWindowsFont field
+-------------------
+You type in this field, the ID of the WindowsFont script command with the settings for the windows font you mean use as default for all system strings.
+It's important you place, in the script, first the WindowsFont= command, and then (below) the DefaultWindowsFont that uses the previous.
+
+Example:
+
+ColorRGB=		1, 255,255,255
+ColorRGB=		2, 0,0,0
+WindowsFont=    1, Arial, WFF_BOLD+WFF_SHADOW, 40, 1, 2
+DefaultWindowsFont=  1, IGNORE
+
+Remark: many settings you type in the WindowsFont command, will be ignored in game, because it will be the game engine to set when use a blink text or less, a primary color (white), or a secondary color (yellow).
+Anyway the size, font name and bold, italic (ect) settting will be used.
+
+Note: I remember that form 1.2.2.7 version the WindowsFont allows to type in FontName field (in the string, pointed by that field) also the wished charset in the format:
+
+Charset:FontName
+
+Example:
+
+128:Arial
+
+Where 128 is the charset for eastern languages like japanese and chinese.
+Other charset codes are:
+
+Greek = 161
+Turkish = 162
+Russian = 204
+
+About the western charset it is 0 but it's not necessary type it because when it's missing other charset it will be used always (as default) the western charset.
+
+Flags (DWF_...) field
+---------------------
+In this field you can add DWF_ flags to customize this command.
+If you don't mean set flags you can type IGNORE in this field.
+
+LineSpacing field
+-----------------
+For line spacing I mean the vertical distance between a character row and the following.
+You can reducing or increasing this space with this field.
+The value is expressed in hundredths on the original value set by tomb raider engine.
+For example if you type 100, there will be no change (futile in this case)
+To increase of 20 % the line spacing you type 120, while to reduce by half, you type 50.
+
+You can type IGNORE in this field to keep original value.
+
+Offset modifiers fields...
+--------------------------
+From MainMenuOffsets field and following, there are fields to move up/down the position of some system text used in tomb raider menus.
+The value you type is in pixel but since there are great differences in according with current resolution of tomb raider screen, you have to type these values working on a 1024 x 768 resolution, then trng will adapte these offsets in according with the actual screen resolution.
+
+Note: remember that to move upper a text you have to set a negative value, for example -10 move the text 10 pixel higher than original position.
+
+The names of these fields are self-explicatives, anyway we can remember shortly the strings they change:
+
+MainMenuOffsets: First screen with "New Game", "Load Game", "Options", "Exit"
+
+NewGameTitle: The title of "New Game" screen
+
+LoadGameTitle: The title of "Load Game" screen
+
+NewGameList: The list of levels in the new level screen
+
+LoadGameList: The list of savegame infos in the load game screen
+
+OptionSettings: All texts in main option screen: "Options", "Control Configuration", "Music Volume", "Sfx Volume", "Sound Quality", "Targeting" and their settings.
+
+OptionCmdList: "Option", "Control method" and all the list of game commands and their settings.
+
+PauseScreen: All texts of pause menu: "Paused", "Statistics", "Options", "Exit to title"
+
+StatList: All texts of Statistics screen, except own the title "Statistics"
+
+InventoryItemName: The name of the currently selected item.
+
+ExamineText: The postion of the text linked with an examine item that you see after choosing "Examing" command
+
+I remember that you can type IGNORE in all above fields if you don't wish change their position.
+
+  
+
+
+

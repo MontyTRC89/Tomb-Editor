@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -141,6 +142,8 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
                 chunkIO.WriteChunkVector3(Prj2Chunks.DefaultAmbientLight, settings.DefaultAmbientLight);
+                chunkIO.WriteChunkInt(Prj2Chunks.DefaultLightQuality, (long)settings.DefaultLightQuality);
+                chunkIO.WriteChunkBool(Prj2Chunks.OverrideLightQuality, settings.OverrideIndividualLightQualitySettings);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
@@ -257,7 +260,7 @@ namespace TombLib.LevelData.IO
                         }
                     chunkIO.WriteChunkEnd();
                 }
-                using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes,UInt16.MaxValue))
+                using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
                     foreach(var entry in settings.AutoStaticMeshMerges)
                         using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry3))
@@ -267,6 +270,17 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(entry.TintAsAmbient);
                             chunkIO.Raw.Write(entry.ClearShades);
                         }
+                    chunkIO.WriteChunkEnd();
+                }
+                using (var chunkPalette = chunkIO.WriteChunk(Prj2Chunks.Palette, UInt16.MaxValue))
+                {
+                    chunkIO.Raw.Write((ushort)settings.Palette.Count);
+                    foreach (var color in settings.Palette)
+                    {
+                        chunkIO.Raw.Write(color.R);
+                        chunkIO.Raw.Write(color.G);
+                        chunkIO.Raw.Write(color.B);
+                    }
                     chunkIO.WriteChunkEnd();
                 }
                 chunkIO.WriteChunkEnd();
@@ -439,7 +453,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Fixed);
                         }
                     else if (o is FlybyCameraInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectFlyBy2, () =>
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectFlyBy, () =>
                         {
                             var instance = (FlybyCameraInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -454,7 +468,6 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Number);
                             LEB128.Write(chunkIO.Raw, instance.Sequence);
                             LEB128.Write(chunkIO.Raw, instance.Timer);
-                            chunkIO.WriteChunkString(Prj2Chunks.ObjectFlyBy2LuaScript, instance.LuaScript == null ? "" : instance.LuaScript);
                         });
                     else if (o is SinkInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))
@@ -526,6 +539,45 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZn);
                             LEB128.Write(chunkIO.Raw, instance.Ceiling.XpZp);
                         }
+                    else if (o is VolumeInstance)
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTriggerVolumeTest, LEB128.MaximumSize2Byte))
+                        {
+                            var instance = (VolumeInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+
+                            var shape = instance.Shape();
+                            chunkIO.Raw.Write((byte)shape);
+
+                            switch (shape)
+                            {
+                                case VolumeShape.Box:
+                                    {
+                                        var bv = instance as BoxVolumeInstance;
+                                        chunkIO.Raw.Write(bv.Size);
+                                        chunkIO.Raw.Write(bv.RotationY);
+                                        chunkIO.Raw.Write(bv.RotationX);
+                                    }
+                                    break;
+                                case VolumeShape.Prism:
+                                    {
+                                        var pv = instance as PrismVolumeInstance;
+                                        chunkIO.Raw.Write(pv.Scale);
+                                        chunkIO.Raw.Write(pv.RotationY);
+                                    }
+                                    break;
+                                case VolumeShape.Sphere:
+                                    chunkIO.Raw.Write((instance as SphereVolumeInstance).Scale);
+                                    break;
+                            }
+
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write((ushort)instance.Activators);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Name);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.Environment);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnEnter);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnInside);
+                            chunkIO.Raw.WriteStringUTF8(instance.Scripts.OnLeave);
+                        }
                     else if (o is TriggerInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2, LEB128.MaximumSize2Byte))
                         {
@@ -565,8 +617,6 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunk(Prj2Chunks.ObjectTrigger2Extra, () => writeTriggerParameter(instance.Extra), 32);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectTrigger2CodeBits, instance.CodeBits);
                             chunkIO.WriteChunkBool(Prj2Chunks.ObjectTrigger2OneShot, instance.OneShot);
-                            if (instance.TargetType == TriggerTargetType.LuaScript)
-                                chunkIO.WriteChunkString(Prj2Chunks.ObjectTrigger2LuaScript, instance.LuaScript);
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)

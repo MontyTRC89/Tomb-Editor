@@ -1,0 +1,20 @@
+Syntax: LensFlare=OrigX,OrigY,OrigZ,Red,Green, Blue 
+
+To use in [Level] section
+
+It's used to create a light effect like shining for sun light on len of photocamera.
+
+Note: in spite of same name of null-mesh object LensFlare this command will create a different (more irregular and suggestive effect)
+
+Arguments:
+
+1 - Reflex origin in X axis
+2 - Reflex origin in Y axis
+3 - Reflez origin in Z axis
+4 - Red Intensity of reflex light
+5 - Green Intensity of reflex light
+6 - Blue Intensity of reflex light
+
+To set value for origin it's adivsable use same method for LoadCamera settings (use F1 key and then to do many experiments)
+
+

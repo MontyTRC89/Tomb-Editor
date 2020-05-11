@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster
 {
@@ -28,26 +28,26 @@ namespace TombIDE.ProjectMaster
 			}
 
 			// Check if there are errors in the script
-			if (!_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) || !_ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+			if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) || !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
 			{
 				// Disable the checkBox if so
 				checkBox_RenameScriptEntry.Checked = false;
 				checkBox_RenameScriptEntry.Enabled = false;
 
 				// Display ScriptError + LanguageError
-				if (!_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) && !_ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+				if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
 				{
 					label_ScriptError.Visible = true;
 					label_LanguageError.Visible = true;
 				}
 				// Display ScriptError only
-				else if (!_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) && _ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+				else if (!_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && _ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
 				{
 					Height = 212;
 					label_ScriptError.Visible = true;
 				}
 				// Display LanguageError only
-				else if (_ide.IsLevelScriptDefined(_ide.SelectedLevel.Name) && !_ide.IsLanguageStringDefined(_ide.SelectedLevel.Name))
+				else if (_ide.ScriptEditor_IsScriptDefined(_ide.SelectedLevel.Name) && !_ide.ScriptEditor_IsStringDefined(_ide.SelectedLevel.Name))
 				{
 					Height = 212;
 					label_LanguageError.Visible = true;
@@ -73,7 +73,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string newName = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+				string newName = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 				newName = LevelHandling.RemoveIllegalNameSymbols(newName);
 
 				bool renameDirectory = checkBox_RenameDirectory.Checked;
@@ -113,7 +113,7 @@ namespace TombIDE.ProjectMaster
 					}
 
 					if (renameScriptEntry)
-						_ide.RenameSelectedLevelScriptEntry(newName);
+						_ide.ScriptEditor_RenameLevel(_ide.SelectedLevel.Name, newName);
 
 					_ide.SelectedLevel.Rename(newName, renameDirectory);
 					_ide.RaiseEvent(new IDE.SelectedLevelSettingsChangedEvent());
@@ -128,7 +128,7 @@ namespace TombIDE.ProjectMaster
 
 		private void textBox_NewName_TextChanged(object sender, EventArgs e)
 		{
-			string textBoxContent = SharedMethods.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
+			string textBoxContent = PathHelper.RemoveIllegalPathSymbols(textBox_NewName.Text.Trim());
 			textBoxContent = LevelHandling.RemoveIllegalNameSymbols(textBoxContent);
 
 			// If the name hasn't changed, but the level folder name is different

@@ -40,6 +40,7 @@ namespace TombLib.LevelData
         public string Name { get; set; }
         public VectorInt3 Position { get; set; }
         public Block[,] Blocks { get; private set; }
+
         private List<PositionBasedObjectInstance> _objects = new List<PositionBasedObjectInstance>();
 
         public Room AlternateBaseRoom { get; set; }
@@ -395,6 +396,7 @@ namespace TombLib.LevelData
         }
 
         public IReadOnlyList<PositionBasedObjectInstance> Objects => _objects;
+        public IEnumerable<VolumeInstance> Volumes => _objects.OfType<VolumeInstance>();
 
         public IEnumerable<ObjectInstance> AnyObjects
         {
@@ -1375,7 +1377,7 @@ namespace TombLib.LevelData
             return new RoomConnectionInfo();
         }
 
-        public void SmartBuildGeometry(RectangleInt2 area,bool highQualityLighting = false)
+        public void SmartBuildGeometry(RectangleInt2 area, bool highQualityLighting = false)
         {
             area = area.Inflate(1); // Add margin
 

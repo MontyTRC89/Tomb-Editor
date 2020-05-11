@@ -1,0 +1,82 @@
+Syntax: Demo= DemoFlags (DEMF_...), Parameter, InfoText , DemoLegendText, WaitingTime, DemoIndex array 
+Scope: to use in [Title] or [Level] sections
+
+Demo command is of service to play the demo data you recorded using the EDGX_RECORDING_DEMO skill in DiagnosticType command. (See also the description of EDGX_RECORDING_DEMO flag for more infos)
+
+This command works to show a demo of the levels of your adventure while player is yet in title level.
+In above situation you'll place the Demo= command in [Title] section of the script, of course.
+
+Anyway, if you use Demo command in a [Level] section it will work in custscene-mode, with some operative differences. 
+
+Remark: Remember that the two demo types have NO relationship between themself. 
+When you set a Demo in title level to play different demo.pak files, it's indifferent if the level section (where these demo.pak will be played) had or less a Demo script command.
+The demo script command in a level section will be used only when the player load that level and not in demo mode from title.
+
+
+DemoFlags (DEMF_...) field
+--------------------------
+You can add to this field one or more DEMF_ flags to customize as demo command will work.
+Read the description of DEMF_ constants in MNEMONIC CONSTANTS section of reference panel.
+
+Parameter field
+---------------
+It's possible that in the future some DEMF_ flag required an extra parameter to type in Parameter field.
+Read the description of DEMF_ constants in MNEMONIC CONSTANTS section of reference panel to know how to use Parameter field.
+
+InfoText field
+--------------
+If you wish that a text was typed in title level to inform players that it exists a demo mode and how to enable it, you add a string in string section and then copy the same text in InfoText field.
+About color and position of the text, it will be used the setting of TextFormat= command in title section, and the text will placed at center of bottom line of the screen.
+
+The InfoText string can, optionally, contain a percentage % character that it will be replaced with the second remaining to launch the demo, like in a countdown.
+
+For instance, if you set as WaitingTime 30 seconds, and you set as InfoText string the text:
+
+A demo will start in %d seconds
+
+Then in the title level the player will see the time counting down in this way:
+
+A demo will start in 30 seconds
+A demo will start in 29 seconds
+A demo will start in 28 seconds
+A demo will start in 27 seconds
+ect.
+In the case you set the DEMF_PLAY_ON_KEY flag, it's strongly suggested to set always a text to inform the player, otherwise it's not probable he will discover himself the key to press.
+So you could type a InfoText like:
+
+Hit "1" or "2" or "3" keys to see a demo of different locations of this adventure.
+
+In above case, we suppose you created demos data for three levels, the first, second and third.
+
+See description of DEMF_PLAY_ON_KEY constant for more infos.
+
+DemoLegendText field
+---------------------
+This field store a text to show while the demo is playing.
+Please, don't confuse this text with the InfoText string.
+While the InfoText will be showed in title level to inform players about how to start the demo and for this reason it should be a text like "Demo will begin in %d seconds" or "Hit 1 or 2 to show a Demo", the demo legend string will be drawn only in level (different than title) while the demo is in progress and therefor it could be a text like "Demo (hit escape for Menu)"
+
+Also this text will be printed using the TextFormat setting but in this case it will be the textformat command of the level where the demo it will be played to be used.
+
+WaitingTime field
+-----------------
+If you set in this field a value different than IGNORE (or -1), this value will be used as countdown to launch a demo.
+The time is in seconds, and it will decrease from each player input.
+This means that it's necessary that player didn't set any input command for WaitingTime before launching a demo.
+If you set IGNORE in this field, the countdown method will be not used, in this case you should add the DEMF_PLAY_ON_KEY flag to DemoFlags field, otherwise no demo will be ever launched.
+
+Note: you can also mix countdown method and DEMF_PLAY_ON_KEY flag. In this situation the demo could begin for an user input (hit the key) or because the elapsed time of countdown has been completed.
+
+DemoIndex array fields
+----------------------
+In this array you can type one or more IDs for DemoID.pak file you created with the recording feature of EDGX_RECORDING_DEMO flag.
+
+Notes: 
+- The Demo#.pak files have to be stored in DATA subfolder
+- The name syntax of progressive Demo files is like this:
+Demo1.pak
+Demo2.pak
+Demo3.pak
+- Please, do not use IGNORE values in DemoIndex array fields. 
+
+

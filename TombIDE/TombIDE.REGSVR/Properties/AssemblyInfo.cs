@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TombIDE.REGSVR")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TombIDE Library Registration")]
+[assembly: AssemblyDescription("Registers some OCX COM libraries to make tools like NG_Center work.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TombIDE.REGSVR")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyCompany("Tomb Editor Team")]
+[assembly: AssemblyProduct("TombIDE Library Registration")]
+[assembly: AssemblyCopyright("Copyright © Nickelony 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,7 +1,6 @@
 ﻿using DarkUI.Docking;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
@@ -62,6 +61,7 @@ namespace TombEditor
         public bool Rendering3D_ShowStatics { get; set; } = true;
         public bool Rendering3D_ShowImportedGeometry { get; set; } = true;
         public bool Rendering3D_ShowGhostBlocks { get; set; } = true;
+        public bool Rendering3D_ShowVolumes { get; set; } = true;
         public bool Rendering3D_ShowOtherObjects { get; set; } = true;
         public bool Rendering3D_ShowSlideDirections { get; set; } = false;
         public bool Rendering3D_ShowFPS { get; set; } = false;
@@ -70,6 +70,7 @@ namespace TombEditor
         public bool Rendering3D_ShowCardinalDirections { get; set; } = true;
         public bool Rendering3D_ShowExtraBlendingModes { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
+        public bool Rendering3D_ShowLightingWhiteTextureOnly { get; set; } = false;
         public int Rendering3D_FontSize { get; set; } = 20;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
@@ -78,6 +79,7 @@ namespace TombEditor
         public bool Rendering3D_AnimateCameraOnDoubleClickRoomSwitch { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnRelocation { get; set; } = true;
         public bool Rendering3D_AnimateCameraOnReset { get; set; } = true;
+        public bool Rendering3D_AnimateGhostBlockUnfolding { get; set; } = true;
         public bool Rendering3D_AllowTexturingInLightingMode { get; set; } = true;
         public bool Rendering3D_AlwaysShowCurrentRoomBounds { get; set; } = false;
         public bool Rendering3D_SelectObjectsInAnyRoom { get; set; } = true;
@@ -86,6 +88,8 @@ namespace TombEditor
         public bool Rendering3D_CursorWarping { get; set; } = true;
         public int Rendering3D_FlyModeMoveSpeed { get; set; } = 5;
         public bool Rendering3D_ShowLightRadius { get; set; } = true;
+        public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
+        public bool Rendering3D_ShowRealTintForMergedStatics { get; set; } = false;
 
         // 2D Map options 
 
@@ -110,6 +114,10 @@ namespace TombEditor
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
         public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
+
+        // Palette options
+
+        public bool Palette_TextureSamplingMode { get; set; } = false;
 
         // Gizmo options
 
@@ -142,8 +150,6 @@ namespace TombEditor
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));
         public ColorScheme UI_ColorScheme { get; set; } = ColorScheme.Default;
         public HotkeySets UI_Hotkeys { get; set; } = new HotkeySets();
-        // Geometry options
-        public bool Geometry_HighQualityLightPreview { get; set; } = false;
 
         // Toolbar button order
 
@@ -158,6 +164,7 @@ namespace TombEditor
             "Copy", "Paste", "Stamp", "|",
             "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
             "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "|",
+            "AddBoxVolume", "AddPrismVolume", "AddSphereVolume", "|",
             "CompileLevel", "CompileLevelAndPlay"
         };
 
@@ -286,14 +293,14 @@ namespace TombEditor
                             Contents = new List<string> { "Lighting" },
                             VisibleContent = "Lighting",
                             Order = 0,
-                            Size = new Size(432,128)
+                            Size = new Size(444,139)
                         },
                         new DockGroupState
                         {
                             Contents = new List<string> { "Palette" },
                             VisibleContent = "Palette",
                             Order = 1,
-                            Size = new Size(645,128)
+                            Size = new Size(645,136)
                         }
                     }
                 }

@@ -16,7 +16,7 @@ namespace TombEditor.Forms
         {
             _movable = moveable;
             InitializeComponent();
-            this._editor = Editor.Instance;
+            _editor = Editor.Instance;
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -40,6 +40,13 @@ namespace TombEditor.Forms
             cbInvisible.Checked = _movable.Invisible;
             cbClearBody.Checked = _movable.ClearBody;
             tbOCB.Text = _movable.Ocb.ToString();
+
+            // Disable version-specific controls
+
+            bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+            if (!isT5M) Size = new System.Drawing.Size(Size.Width, 226);
+            lblColor.Visible = isT5M;
+            panelColor.Visible = isT5M;
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -50,6 +57,8 @@ namespace TombEditor.Forms
                 DarkMessageBox.Show(this, "The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            _editor.UndoManager.PushObjectPropertyChanged(_movable);
 
             byte CodeBits = 0;
             CodeBits |= (byte)(cbBit1.Checked ? 1 << 0 : 0);

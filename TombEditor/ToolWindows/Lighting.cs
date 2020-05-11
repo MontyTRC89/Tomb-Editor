@@ -15,6 +15,7 @@ namespace TombEditor.ToolWindows
         {
             InitializeComponent();
             CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
+            cbLightQuality.SelectedIndex = 0; // Reset index to default
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;

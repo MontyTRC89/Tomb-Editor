@@ -64,7 +64,6 @@ namespace TombEditor.Forms
             this.numRoll = new DarkUI.Controls.DarkNumericUpDown();
             this.numRotationX = new DarkUI.Controls.DarkNumericUpDown();
             this.numRotationY = new DarkUI.Controls.DarkNumericUpDown();
-            this.tbLuaScript = new TombLib.Controls.LuaTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numSequence)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numNumber)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numTimer)).BeginInit();
@@ -274,7 +273,7 @@ namespace TombEditor.Forms
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label5.Location = new System.Drawing.Point(12, 74);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(38, 13);
+            this.label5.Size = new System.Drawing.Size(37, 13);
             this.label5.TabIndex = 26;
             this.label5.Text = "Timer:";
             // 
@@ -457,18 +456,6 @@ namespace TombEditor.Forms
             this.numRotationY.Size = new System.Drawing.Size(71, 22);
             this.numRotationY.TabIndex = 7;
             // 
-            // tbLuaScript
-            // 
-            this.tbLuaScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaScript.Code = "";
-            this.tbLuaScript.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbLuaScript.Location = new System.Drawing.Point(547, 19);
-            this.tbLuaScript.Name = "tbLuaScript";
-            this.tbLuaScript.Size = new System.Drawing.Size(0, 364);
-            this.tbLuaScript.TabIndex = 82;
-            // 
             // FormFlybyCamera
             // 
             this.AcceptButton = this.butOK;
@@ -484,7 +471,6 @@ namespace TombEditor.Forms
             this.Controls.Add(this.numTimer);
             this.Controls.Add(this.numNumber);
             this.Controls.Add(this.numSequence);
-            this.Controls.Add(this.tbLuaScript);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.darkLabel2);
@@ -562,7 +548,6 @@ namespace TombEditor.Forms
         private DarkLabel label6;
         private DarkLabel darkLabel1;
         private DarkLabel darkLabel2;
-        private TombLib.Controls.LuaTextBox tbLuaScript;
         private DarkNumericUpDown numSequence;
         private DarkNumericUpDown numNumber;
         private DarkNumericUpDown numTimer;

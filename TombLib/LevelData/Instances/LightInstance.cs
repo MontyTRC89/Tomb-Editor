@@ -5,7 +5,7 @@ namespace TombLib.LevelData
 {
     public enum LightQuality : byte
     {
-        Default,Low,Medium,High
+        Default, Low, Medium, High
     }
     public enum LightType : byte
     {

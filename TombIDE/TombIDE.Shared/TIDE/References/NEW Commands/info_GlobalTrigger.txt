@@ -1,0 +1,73 @@
+Syntax: GlobalTrigger=IdGlobalTrigger, Flags Global Trigger (FGT_...), Global Trigger (GT_..), Parameter, IdConditionTriggerGroup, IdPerformTriggerGroup, IdOnFalseTriggerGroup
+Scope: To use in [LevelSection]
+Max number of instances for level section: 499
+
+GlobTrigger allows to enable some trigger when some global event happens.
+To understand the mean of global trigger we could start from the local triggers. 
+The local triggers are the common triggers we use in NGLE, placing HEAVY, PAD, or FLIPON, FLYBY triggers on same sector of level map.
+These triggers are local own because they work only in located space, i.e. the sector where they are placed.
+Differently, the global trigger work for whole level, and they will be enabled when some global event happens.
+
+Arguments:
+
+IdGlobalTrigger field
+---------------------
+In this field you type a progressive number, 1 for first globaltrigger of your levelsection, "2" for second and so on. It used only to identify this globaltrigger when you use a flipeffect to enabled/disable a globaltrigger.
+Note: the valid range for IdGlobalTrigger field is 1 / 4999
+
+Flags Global Trigger (FGT_...) field
+------------------------------------
+You can set some option about the behavior of GlobTrigger command.
+Currently threre are only a FGT_ flag:
+
+FGT_SINGLE_SHOT: This flag set the current global trigger for single execution. When the global trigger will be executed it will be disabled to avoid further executions.
+
+Remark: if you don't wad set any FGT_ flags, you can type IGNORE in this field.
+
+Global Trigger (GT_..) field
+----------------------------
+You type a constant value starting with GT_ prefix to choose the wished global trigger.
+
+You can find the whole list of GT_ values in Reference panel of NG Center program.
+Currently are available following global triggers:
+
+GT_ENEMY_KILLED:You can specific in Parameter field the index of moveable to monitor. When the given moveable will be killed the global trigger will be started.
+Remarks:
+* You read the index of moveable when, in NGLE program, you perform a single mouse click on that item, the index will be showed in a yellow box.
+* Theorically you can get a trigger activation when a creature dies also with local (common) trigger Switch. If you trigger enemy with a switch trigger and then add to this trigger some common trigge to enable doors, enemies ect, when the creature will die the trigger will be activated. Anyway the problem to use this method is that you have to cover a big surface with above triggers, because it's necessary the creature when he dies, he was on sectors with switch trigger. Differently using global trigger GT_ENEMY_KILLED the trigger will be activated indifferently by corrent position of enemy.
+
+GT_SCREEN_TIMER_REACHED: You can start your global trigger when screen timer reach the supplied number of seconds. You have to type the number of seconds in following field named Parameter.
+For example, to start your trigger when timer screen reach 240 seconds (4 minutes) you can type: "GlobalTrigger=1, IGNORE, GT_SCREEN_TIMER_REACHED, 240, ..."
+
+GT_USED_INVENTORY_ITEM: With this global trigger you can detect when the player chooses a specifc item from inventory. You have to specify the slot id in following field  named Parameter.
+For example to enable a global trigger when player select the QUEST_ITEM2 with slotid = 253, you can type "GlobalTrigger=1, IGNORE,  GT_USED_INVENTORY_ITEM , 253, ...".
+
+Remarks: 
+*If you want remove the chosen item from inventory when global trigger has been engaged you have to insert in perform TriggerGroup the specific flipeffect "Inventory-Item. Remove <&
+inventory-item from inventory". If you don't use this flipeffect the selected item will remain in inventory for further activations.
+
+*Please, try to avoid to use QUEST_ITEM1 for your global trigger because QUEST_ITEM1 is used already for Detector activation.
+
+Remark: there are many other global trigger GT_ values. You can find them and their description in Reference Panel of NG_Center program.
+
+Parameter field
+---------------
+The value to type in this field depends by type of global trigger chosen in previous field "GT_ Global Trigger".
+Read the description for specific global trigger to have more infos about value to type in Parameter field.
+
+IdConditionTriggerGroup field
+-----------------------------
+This field is optional. 
+By default just the GT_ global trigger to set a global condition, anyway if you want perform the final IdPerformTriggerGroup, only when further conditions are true, you can create a conditional TriggerGroup script command and then set in this field the ID of that conditional triggergroup to perform another condition.
+When you use a conditional TriggerGroup, the final condition will be true only when, other to be happened the event set in global trigger, also the conditional TriggerGroup is true.
+If you don't want set additional conditions just you type IGNORE in this field.
+
+IdPerformTriggerGroup field
+---------------------------
+In this field you type the ID (first value) of TriggerGrup command that will be performed when the global condition of GT_ trigger will be true.
+Theorically in Perform TriggerGroup you can place also condition triggers, anyway these further condition triggers will be verified only if GT_ global trigger is true.
+
+IdOnFalseTriggerGroup field
+---------------------------
+If you wish you can perform a triggergroup when the global condition is false, just you type in this field the ID of triggergroup to perform on false condition.
+

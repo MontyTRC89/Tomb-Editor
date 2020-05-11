@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace DarkUI.Forms
 {
-    internal class DarkTranslucentForm : Form
+    public class DarkTranslucentForm : Form
     {
         #region Property Region
 
@@ -26,6 +26,23 @@ namespace DarkUI.Forms
             Opacity = opacity;
             BackColor = backColor;
         }
+
+        #endregion
+
+        #region Override region
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                // turn on WS_EX_TOOLWINDOW style bit
+                cp.ExStyle |= 0x88;
+                return cp;
+            }
+        }
+
+        public new void Show() => Win32.Native.ShowInactiveTopmost(this);
 
         #endregion
     }

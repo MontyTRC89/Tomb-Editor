@@ -271,9 +271,7 @@ namespace TombEditor.Forms
 
             InitializeComponent();
 
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(980, 510) + (Size - ClientSize);
+            this.SetActualSize();
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);
@@ -394,7 +392,7 @@ namespace TombEditor.Forms
                     }
                 }
                 if (!added)
-                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false,false,false, _levelSettings));
+                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false, false, false, _levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
 
@@ -423,6 +421,32 @@ namespace TombEditor.Forms
                 _editor.EditorEventRaised -= EditorEventRaised;
             }
             base.Dispose(disposing);
+        }
+
+        private void UpdateLevelSettings()
+        {
+            LevelSettings settings = _levelSettings.Clone();
+
+            settings.Wads.Clear();
+            foreach (var reference in _objectFileDataGridViewDataSource)
+                settings.Wads.Add(reference.Wad);
+
+            settings.SoundsCatalogs.Clear();
+            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
+                settings.SoundsCatalogs.Add(reference.Sounds);
+
+            settings.Textures.Clear();
+            foreach (var reference in _textureFileDataGridViewDataSource)
+                settings.Textures.Add(reference.Texture);
+
+            settings.AutoStaticMeshMerges.Clear();
+            foreach (var entry in _staticMeshMergeGridViewDataSource)
+            {
+                if (entry.Merge)
+                    settings.AutoStaticMeshMerges.Add(entry.Clone()); // HACK: Clone(), otherwise merge entries won't update!!!
+            }
+
+            _editor.UpdateLevelSettings(settings);
         }
 
         private void UpdateDialog()
@@ -567,8 +591,10 @@ namespace TombEditor.Forms
                     row.Cells[1].Value = value;
             }
 
-            // Update the default ambient light
+            // Update light options
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
+            cbOverrideAllLightQuality.Checked = _levelSettings.OverrideIndividualLightQualitySettings;
+            cmbDefaultLightQuality.SelectedIndex = _levelSettings.DefaultLightQuality == LightQuality.Default ? 0 : ((int)_levelSettings.DefaultLightQuality) - 1;
 
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
@@ -1134,35 +1160,11 @@ namespace TombEditor.Forms
         }
 
         // Dialog buttons
-        private void butApply_Click(object sender, EventArgs e)
-        {
-            _editor.UpdateLevelSettings(_levelSettings.Clone());
-        }
+        private void butApply_Click(object sender, EventArgs e) => UpdateLevelSettings();
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            LevelSettings settings = _levelSettings.Clone();
-
-            settings.Wads.Clear();
-            foreach (var reference in _objectFileDataGridViewDataSource)
-                settings.Wads.Add(reference.Wad);
-
-            settings.SoundsCatalogs.Clear();
-            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
-                settings.SoundsCatalogs.Add(reference.Sounds);
-
-            settings.Textures.Clear();
-            foreach (var reference in _textureFileDataGridViewDataSource)
-                settings.Textures.Add(reference.Texture);
-
-            settings.AutoStaticMeshMerges.Clear();
-            foreach (var entry in _staticMeshMergeGridViewDataSource)
-            {
-                if (entry.Merge)
-                    settings.AutoStaticMeshMerges.Add(entry);
-            }
-
-            _editor.UpdateLevelSettings(settings);
+            UpdateLevelSettings();
             Close();
         }
 
@@ -1246,9 +1248,21 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
-        private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
+        private void cbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
+            UpdateDialog();
+        }
+
+        private void cbOverrideAllLightQuality_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.OverrideIndividualLightQualitySettings = cbOverrideAllLightQuality.Checked;
+            UpdateDialog();
+        }
+
+        private void cmbDefaultLightQuality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _levelSettings.DefaultLightQuality = (LightQuality)(cmbDefaultLightQuality.SelectedIndex + 1);
             UpdateDialog();
         }
 
