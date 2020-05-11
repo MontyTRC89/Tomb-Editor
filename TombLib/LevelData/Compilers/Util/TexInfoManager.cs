@@ -192,9 +192,9 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Check if bumpmapping could be assigned to parent.
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
-            public BumpMappingLevel BumpLevel()
+            public BumpMappingLevel BumpLevel(TRVersion.Game version)
             {
-                if(Texture is LevelTexture)
+                if (Texture is LevelTexture && version > TRVersion.Game.TR3)
                 {
                     var tex = Texture as LevelTexture;
                     if (!String.IsNullOrEmpty(tex.BumpPath))
@@ -375,7 +375,7 @@ namespace TombLib.LevelData.Compilers.Util
             public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, TRVersion.Game version, float maxTextureSize)
             {
                 BlendMode = child.BlendMode;
-                BumpLevel = parent.BumpLevel();
+                BumpLevel = parent.BumpLevel(version);
                 IsForRoom = parent.IsForRoom;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
@@ -1055,7 +1055,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 if (ParentTextures[i].IsForRoom)
                 {
-                    if (ParentTextures[i].BumpLevel() != BumpMappingLevel.None)
+                    if (ParentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
                         bumpedTextures.Add(ParentTextures[i]);
                     else
                         roomTextures.Add(ParentTextures[i]);
@@ -1071,7 +1071,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     if (parentTextures[i].IsForRoom)
                     {
-                        if (parentTextures[i].BumpLevel() != BumpMappingLevel.None)
+                        if (parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
                             bumpedTextures.Add(parentTextures[i]);
                         else
                             roomTextures.Add(parentTextures[i]);
