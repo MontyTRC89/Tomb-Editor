@@ -23,6 +23,9 @@ namespace TombLib.LevelData
         /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TR5Main. Equal to deprecated TRVersion enum. </summary>
         public static Game Legacy(this Game ver) => ver == Game.TRNG ? Game.TR4 : (ver == Game.TR5Main ? Game.TR5 : ver);
 
+        /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TR5Main. Equal to deprecated TRVersion enum. </summary>
+        public static bool UsesMainSfx(this Game ver) => ver == Game.TR2  || ver == Game.TR3;
+
         /// <summary> Base enumeration. Contains all possible game versions.
         public static List<Game> AllVersions => Enum.GetValues(typeof(Game)).OfType<Game>().ToList();
 
