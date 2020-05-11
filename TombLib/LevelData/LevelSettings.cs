@@ -521,7 +521,8 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider I level", "phd"),
             new FileFormat("Tomb Raider II/III level", "tr2"),
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
-            new FileFormat("Tomb Raider Chronicles level", "trc")
+            new FileFormat("Tomb Raider Chronicles level", "trc"),
+            new FileFormat("TR5Main level", "t5m")
         };
 
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]

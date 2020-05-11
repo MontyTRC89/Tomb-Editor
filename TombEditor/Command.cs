@@ -1068,7 +1068,10 @@ namespace TombEditor
 
             AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard", CommandType.Objects, delegate (CommandArgs args)
             {
-                if(args.Editor.SelectedObject == null)
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TRNG, "This feature"))
+                    return;
+
+                if (args.Editor.SelectedObject == null)
                 {
                     args.Editor.SendMessage("Select an object first.", PopupType.Warning);
                     return;
@@ -1596,6 +1599,8 @@ namespace TombEditor
 
             AddCommand("AddFogBulb", "Add fog bulb", CommandType.Lighting, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Fog bulb"))
+                    return;
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
             });
 
@@ -1724,12 +1729,16 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "This flag"))
+                    return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.Beetle);
             });
 
             AddCommand("SetTriggerTriggerer", "Set trigger triggerer / minecart left (TR3)", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "This flag"))
                     return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.TriggerTriggerer);
             });
@@ -1768,6 +1777,8 @@ namespace TombEditor
 
             AddCommand("SetRoomNoLensflare", "Disable global lensflare", CommandType.Rooms, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "NL flag"))
+                    return;
                 if (args.Editor.SelectedRoom != null)
                 {
                     args.Editor.SelectedRoom.FlagNoLensflare = !args.Editor.SelectedRoom.FlagNoLensflare;
@@ -1786,6 +1797,8 @@ namespace TombEditor
 
             AddCommand("SetRoomCold", "Set room to cold (TRNG only)", CommandType.Rooms, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG, "Cold flag"))
+                    return;
                 if (args.Editor.SelectedRoom != null)
                 {
                     args.Editor.SelectedRoom.FlagCold = !args.Editor.SelectedRoom.FlagCold;
@@ -1795,6 +1808,8 @@ namespace TombEditor
 
             AddCommand("SetRoomDamage", "Set room to damage (TRNG only)", CommandType.Rooms, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG, "Damage flag"))
+                    return;
                 if (args.Editor.SelectedRoom != null)
                 {
                     args.Editor.SelectedRoom.FlagDamage = !args.Editor.SelectedRoom.FlagDamage;
@@ -1866,6 +1881,8 @@ namespace TombEditor
 
             AddCommand("MakeQuickItemGroup", "Make quick Itemgroup", CommandType.Objects, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TRNG, "Item grouping"))
+                    return;
                 EditorActions.MakeQuickItemGroup(args.Window);
             });
 
