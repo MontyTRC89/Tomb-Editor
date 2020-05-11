@@ -127,6 +127,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.LevelChangedEvent)
             {
                 butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+                butAddBoxVolume.Enabled = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
             }
 
                 // Update editor mode

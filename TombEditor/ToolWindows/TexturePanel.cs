@@ -51,6 +51,12 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                UpdatVersionSpecificUI();
+
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
             {
@@ -112,6 +118,12 @@ namespace TombEditor.ToolWindows
             }
         }
 
+        private void UpdatVersionSpecificUI()
+        {
+            butBumpMaps.Enabled = (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
+                                  _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+        }
+
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
         {
             if (panelTextureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
@@ -126,6 +138,7 @@ namespace TombEditor.ToolWindows
             butAnimationRanges.Enabled =
             butBumpMaps.Enabled =
             butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
+            UpdatVersionSpecificUI();
         }
 
         private void comboCurrentTexture_DropDown(object sender, EventArgs e)

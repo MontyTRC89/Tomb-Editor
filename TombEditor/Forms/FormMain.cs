@@ -121,6 +121,7 @@ namespace TombEditor.Forms
                 obj is Editor.LevelChangedEvent)
             {
                 addFlybyCameraToolStripMenuItem.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+                addBoxVolumeToolStripMenuItem.Enabled = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
             }
 
             if (obj is Editor.UndoStackChangedEvent)
