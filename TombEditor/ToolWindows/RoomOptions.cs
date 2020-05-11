@@ -52,6 +52,26 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
+                obj is Editor.LevelChangedEvent)
+            {
+                bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
+                bool isTR4or5 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+                bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
+
+                cbFlagCold.Enabled = isNGorT5M;
+                cbFlagDamage.Enabled = isNGorT5M;
+                cbNoLensflare.Enabled = isTR4or5;
+
+                comboReverberation.Enabled = isTR345;
+                comboLightEffect.Enabled = isTR345;
+                numLightEffectStrength.Enabled = isTR345;
+
+                RepopulateRoomTypes();
+            }
+
             // Update the room list
             if (obj is Editor.InitEvent || obj is Editor.RoomListChangedEvent)
             {
@@ -91,8 +111,8 @@ namespace TombEditor.ToolWindows
 
                 int roomType = -1;
                 if (room.Type == RoomType.Quicksand &&
-                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TR3 ||
-                     _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
+                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TR3 &&
+                     _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG &&
                      _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main))
                     roomType = -1;
                 else if ((room.Type == RoomType.Rain || room.Type == RoomType.Snow) &&
@@ -160,26 +180,6 @@ namespace TombEditor.ToolWindows
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
             }
 
-            // Disable version-specific controls
-            if (obj is Editor.InitEvent ||
-                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
-                obj is Editor.LevelChangedEvent)
-            {
-                bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
-                bool isTR4or5  = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
-                bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
-
-                cbFlagCold.Enabled = isNGorT5M;
-                cbFlagDamage.Enabled = isNGorT5M;
-                cbNoLensflare.Enabled = isTR4or5;
-
-                comboReverberation.Enabled = isTR345;
-                comboLightEffect.Enabled = isTR345;
-                numLightEffectStrength.Enabled = isTR345;
-
-                RepopulateRoomTypes();
-            }
-
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {
@@ -201,6 +201,49 @@ namespace TombEditor.ToolWindows
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
                 _NGRoomTypes.ForEach(i => comboRoomType.Items.Add(i));
+
+            ChangeRoomType();
+        }
+
+        private void ChangeRoomType()
+        {
+            RoomType newType;
+            byte newStrength = 0;
+
+            switch (comboRoomType.SelectedIndex)
+            {
+                case -1:
+                    // Wrong type, do nothing
+                    return;
+                case 0:
+                    newType = RoomType.Normal;
+                    break;
+                case 1:
+                    newType = RoomType.Water;
+                    break;
+                case 2:
+                    newType = RoomType.Quicksand;
+                    break;
+                default:
+                    if (comboRoomType.SelectedIndex <= 6)
+                    {
+                        newType = RoomType.Rain;
+                        newStrength = (byte)(comboRoomType.SelectedIndex - 3);
+                    }
+                    else
+                    {
+                        newType = RoomType.Snow;
+                        newStrength = (byte)(comboRoomType.SelectedIndex - 7);
+                    }
+                    break;
+            }
+
+            if (_editor.SelectedRoom.Type != newType || _editor.SelectedRoom.TypeStrength != newStrength)
+            {
+                _editor.SelectedRoom.Type = newType;
+                _editor.SelectedRoom.TypeStrength = newStrength;
+                _editor.RoomPropertiesChange(_editor.SelectedRoom);
+            }
         }
 
         private void comboRoom_SelectedIndexChanged(object sender, EventArgs e)
@@ -303,46 +346,7 @@ namespace TombEditor.ToolWindows
             searchPopUp.Show(this);
         }
 
-        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            RoomType newType;
-            byte newStrength = 0;
-            
-            switch (comboRoomType.SelectedIndex)
-            {
-                case -1:
-                    // Wrong type, do nothing
-                    return;
-                case 0:
-                    newType = RoomType.Normal;
-                    break;
-                case 1:
-                    newType = RoomType.Water;
-                    break;
-                case 2:
-                    newType = RoomType.Quicksand;
-                    break;
-                default:
-                    if (comboRoomType.SelectedIndex <= 6)
-                    {
-                        newType = RoomType.Rain;
-                        newStrength = (byte)(comboRoomType.SelectedIndex - 3);
-                    }
-                    else
-                    {
-                        newType = RoomType.Snow;
-                        newStrength = (byte)(comboRoomType.SelectedIndex - 7);
-                    }
-                    break;
-            }
-
-            if (_editor.SelectedRoom.Type != newType || _editor.SelectedRoom.TypeStrength != newStrength)
-            {
-                _editor.SelectedRoom.Type = newType;
-                _editor.SelectedRoom.TypeStrength = newStrength;
-                _editor.RoomPropertiesChange(_editor.SelectedRoom);
-            }
-        }
+        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e) => ChangeRoomType();
 
         private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
