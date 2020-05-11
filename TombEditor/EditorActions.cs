@@ -4437,6 +4437,13 @@ namespace TombEditor
             if (string.IsNullOrEmpty(fileName))
                 return false;
 
+            if (!File.Exists(fileName))
+            {
+                DarkMessageBox.Show(owner, "File '" + Path.GetFileName(fileName) + "' not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                RemoveProjectFromRecent(fileName);
+                return false;
+            }
+
             Level newLevel = null;
             try
             {
