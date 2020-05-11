@@ -35,9 +35,7 @@ namespace TombLib.LevelData.Compilers
                 spritePages[i].RawCopyTo(texture32Data, (totalPages + i) * 256 * 256 * 4);
             totalPages += spritePages.Count;
 
-            // Use bumpmaps only for TR4+
-            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-                _textureInfoManager.BumpPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.BumpPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
 
             _texture32Data = texture32Data;
 
