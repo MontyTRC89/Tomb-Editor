@@ -1685,14 +1685,14 @@ namespace TombEditor
                 EditorActions.SetDiagonalWall(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area);
             });
 
-            AddCommand("SetBeetleCheckpoint", "Set beetle checkpoint", CommandType.Sectors, delegate (CommandArgs args)
+            AddCommand("SetBeetleCheckpoint", "Set beetle checkpoint / minecart right (TR3)", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.Beetle);
             });
 
-            AddCommand("SetTriggerTriggerer", "Delay trigger until Trigger Triggerer is used", CommandType.Sectors, delegate (CommandArgs args)
+            AddCommand("SetTriggerTriggerer", "Set trigger triggerer / minecart left (TR3)", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
