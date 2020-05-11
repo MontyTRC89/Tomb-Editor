@@ -904,7 +904,7 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     if (_level.Settings.GameVersion < TRVersion.Game.TR5Main && lastSampleIndex > 255)
-                        throw new Exception("Level contains " + lastSampleIndex + 
+                        _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
                             " samples, while maximum is 256. Level will crash. Turn off some sounds to prevent that.");
 
                     // Write sample indices (not used but parsed in TR4-5)
