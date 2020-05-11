@@ -95,8 +95,7 @@ namespace TombLib.Wad
 
         public int SampleCount(LevelSettings settings)
         {
-            if ((settings.GameVersion == TRVersion.Game.TR2 || settings.GameVersion == TRVersion.Game.TR3) || 
-                Samples == null || Samples.Count <= 0)
+            if (settings.GameVersion.UsesMainSfx() || Samples == null || Samples.Count <= 0)
                 return -1;
 
             int result = 0;
