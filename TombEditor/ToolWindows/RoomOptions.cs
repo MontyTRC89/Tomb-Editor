@@ -105,51 +105,14 @@ namespace TombEditor.ToolWindows
                 if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
 
-                // Cleverly switch room types dependent on game version.
-                // We disable rain/snow types for TR5Main because it is expected to set these options with triggers and/or script.
-
-                int roomType = -1;
-                if (room.Type == RoomType.Quicksand &&
-                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TR3 &&
-                     _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG &&
-                     _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main))
-                    roomType = -1;
-                else if ((room.Type == RoomType.Rain || room.Type == RoomType.Snow) &&
-                         _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
-                    roomType = -1;
-                else
-                {
-                    switch (room.Type)
-                    {
-                        case RoomType.Normal:
-                            roomType = 0;
-                            break;
-                        case RoomType.Water:
-                            roomType = 1;
-                            break;
-                        case RoomType.Quicksand:
-                            roomType = 2;
-                            break;
-                        case RoomType.Rain:
-                            roomType = 3 + room.TypeStrength;
-                            break;
-                        case RoomType.Snow:
-                            roomType = 7 + room.TypeStrength;
-                            break;
-                    }
-                }
-                comboRoomType.SelectedIndex = roomType;
 
                 // Update the state of other controls
-
+                ReadRoomType();
                 panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
-
+                comboReverberation.SelectedIndex = (int)room.Reverberation;
                 comboPortalShade.SelectedIndex = (int)room.LightInterpolationMode;
                 comboLightEffect.SelectedIndex = (int)room.LightEffect;
                 numLightEffectStrength.Value = room.LightEffectStrength;
-
-                comboReverberation.SelectedIndex = (int)room.Reverberation;
-
                 cbFlagCold.Checked = room.FlagCold;
                 cbFlagDamage.Checked = room.FlagDamage;
                 cbFlagOutside.Checked = room.FlagOutside;
@@ -201,10 +164,10 @@ namespace TombEditor.ToolWindows
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
                 _NGRoomTypes.ForEach(i => comboRoomType.Items.Add(i));
 
-            ChangeRoomType();
+            ReadRoomType();
         }
 
-        private void ChangeRoomType()
+        private void WriteRoomType()
         {
             RoomType newType;
             byte newStrength = 0;
@@ -243,6 +206,52 @@ namespace TombEditor.ToolWindows
                 _editor.SelectedRoom.TypeStrength = newStrength;
                 _editor.RoomPropertiesChange(_editor.SelectedRoom);
             }
+        }
+
+        private void ReadRoomType()
+        {
+            var room = _editor.SelectedRoom;
+
+            // Cleverly switch room types dependent on game version.
+            // We disable rain/snow types for TR5Main because it is expected to set these options with triggers and/or script.
+
+            int roomType = -1;
+            if (room.Type == RoomType.Quicksand &&
+                (_editor.Level.Settings.GameVersion != TRVersion.Game.TR3 &&
+                 _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG &&
+                 _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main))
+                roomType = -1;
+            else if ((room.Type == RoomType.Rain || room.Type == RoomType.Snow) &&
+                     _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
+                roomType = -1;
+            else
+            {
+                switch (room.Type)
+                {
+                    case RoomType.Normal:
+                        roomType = 0;
+                        break;
+                    case RoomType.Water:
+                        roomType = 1;
+                        break;
+                    case RoomType.Quicksand:
+                        roomType = 2;
+                        break;
+                    case RoomType.Rain:
+                        roomType = 3 + room.TypeStrength;
+                        break;
+                    case RoomType.Snow:
+                        roomType = 7 + room.TypeStrength;
+                        break;
+                }
+            }
+            
+            comboRoomType.SelectedIndex = roomType;
+
+            // If selected type is -1 it means this room type is unsupported in current version. Throw a message about it.
+            if (roomType == -1)
+                _editor.SendMessage("Current room type is not supported in this engine version.\nChange it manually or switch engine version.", PopupType.Warning);
+
         }
 
         private void comboRoom_SelectedIndexChanged(object sender, EventArgs e)
@@ -345,7 +354,7 @@ namespace TombEditor.ToolWindows
             searchPopUp.Show(this);
         }
 
-        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e) => ChangeRoomType();
+        private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e) => WriteRoomType();
 
         private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
