@@ -131,6 +131,19 @@ namespace TombEditor.ToolWindows
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
             }
 
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
+                obj is Editor.LevelChangedEvent)
+            {
+                bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
+                bool isTR4or5  = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+
+                cbFlagCold.Enabled = isNGorT5M;
+                cbFlagDamage.Enabled = isNGorT5M;
+                cbNoLensflare.Enabled = isTR4or5;
+            }
+
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {

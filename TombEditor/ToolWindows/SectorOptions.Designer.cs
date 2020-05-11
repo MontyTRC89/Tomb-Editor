@@ -84,6 +84,7 @@
             // butAddGhostBlock
             // 
             this.butAddGhostBlock.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butAddGhostBlock.Checked = false;
             this.butAddGhostBlock.Image = global::TombEditor.Properties.Resources.objects_geometry_override_16;
             this.butAddGhostBlock.Location = new System.Drawing.Point(3, 197);
             this.butAddGhostBlock.Name = "butAddGhostBlock";
@@ -96,6 +97,7 @@
             this.butCeiling.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
             this.butCeiling.BackColorUseGeneric = false;
+            this.butCeiling.Checked = false;
             this.butCeiling.ForeColor = System.Drawing.Color.White;
             this.butCeiling.Image = global::TombEditor.Properties.Resources.sectortype_Roof_16;
             this.butCeiling.Location = new System.Drawing.Point(32, 1);
@@ -108,6 +110,7 @@
             // butClimbPositiveZ
             // 
             this.butClimbPositiveZ.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butClimbPositiveZ.Checked = false;
             this.butClimbPositiveZ.Image = global::TombEditor.Properties.Resources.sectortype_ClimbNorth_16;
             this.butClimbPositiveZ.Location = new System.Drawing.Point(3, 141);
             this.butClimbPositiveZ.Name = "butClimbPositiveZ";
@@ -119,6 +122,7 @@
             // butClimbPositiveX
             // 
             this.butClimbPositiveX.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butClimbPositiveX.Checked = false;
             this.butClimbPositiveX.Image = global::TombEditor.Properties.Resources.sectortype_ClimbEast_16;
             this.butClimbPositiveX.Location = new System.Drawing.Point(32, 169);
             this.butClimbPositiveX.Name = "butClimbPositiveX";
@@ -130,6 +134,7 @@
             // butClimbNegativeZ
             // 
             this.butClimbNegativeZ.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butClimbNegativeZ.Checked = false;
             this.butClimbNegativeZ.Image = global::TombEditor.Properties.Resources.sectortype_ClimbSouth_1_16;
             this.butClimbNegativeZ.Location = new System.Drawing.Point(32, 141);
             this.butClimbNegativeZ.Name = "butClimbNegativeZ";
@@ -141,6 +146,7 @@
             // butClimbNegativeX
             // 
             this.butClimbNegativeX.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butClimbNegativeX.Checked = false;
             this.butClimbNegativeX.Image = global::TombEditor.Properties.Resources.sectortype_ClimbWest_16;
             this.butClimbNegativeX.Location = new System.Drawing.Point(3, 169);
             this.butClimbNegativeX.Name = "butClimbNegativeX";
@@ -154,6 +160,7 @@
             this.butNotWalkableBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butNotWalkableBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(150)))));
             this.butNotWalkableBox.BackColorUseGeneric = false;
+            this.butNotWalkableBox.Checked = false;
             this.butNotWalkableBox.ForeColor = System.Drawing.Color.White;
             this.butNotWalkableBox.Image = global::TombEditor.Properties.Resources.sectortype_NotWalkable_16;
             this.butNotWalkableBox.Location = new System.Drawing.Point(32, 29);
@@ -168,6 +175,7 @@
             this.butPortal.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butPortal.BackColor = System.Drawing.Color.Black;
             this.butPortal.BackColorUseGeneric = false;
+            this.butPortal.Checked = false;
             this.butPortal.ForeColor = System.Drawing.Color.White;
             this.butPortal.Image = global::TombEditor.Properties.Resources.sectortype_Portal__16;
             this.butPortal.Location = new System.Drawing.Point(3, 85);
@@ -180,8 +188,9 @@
             // butFlagTriggerTriggerer
             // 
             this.butFlagTriggerTriggerer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butFlagTriggerTriggerer.Checked = false;
             this.butFlagTriggerTriggerer.Image = global::TombEditor.Properties.Resources.sectortype_TriggerTriggerer_16;
-            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 113);
+            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(3, 113);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
             this.butFlagTriggerTriggerer.TabIndex = 9;
@@ -193,6 +202,7 @@
             this.butDeath.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butDeath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(200)))), ((int)(((byte)(0)))));
             this.butDeath.BackColorUseGeneric = false;
+            this.butDeath.Checked = false;
             this.butDeath.ForeColor = System.Drawing.Color.White;
             this.butDeath.Image = global::TombEditor.Properties.Resources.sectortype_Death_16;
             this.butDeath.Location = new System.Drawing.Point(32, 57);
@@ -205,6 +215,7 @@
             // butForceSolidFloor
             // 
             this.butForceSolidFloor.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butForceSolidFloor.Checked = false;
             this.butForceSolidFloor.Image = global::TombEditor.Properties.Resources.sectortype_ForceSolidFloor_16_copy;
             this.butForceSolidFloor.Location = new System.Drawing.Point(32, 197);
             this.butForceSolidFloor.Name = "butForceSolidFloor";
@@ -218,6 +229,7 @@
             this.butMonkey.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butMonkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.butMonkey.BackColorUseGeneric = false;
+            this.butMonkey.Checked = false;
             this.butMonkey.ForeColor = System.Drawing.Color.White;
             this.butMonkey.Image = global::TombEditor.Properties.Resources.sectortype_Monkey_16;
             this.butMonkey.Location = new System.Drawing.Point(3, 57);
@@ -230,8 +242,9 @@
             // butFlagBeetle
             // 
             this.butFlagBeetle.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.butFlagBeetle.Checked = false;
             this.butFlagBeetle.Image = global::TombEditor.Properties.Resources.sectortype_Beetle_16;
-            this.butFlagBeetle.Location = new System.Drawing.Point(3, 113);
+            this.butFlagBeetle.Location = new System.Drawing.Point(32, 113);
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
             this.butFlagBeetle.TabIndex = 8;
@@ -243,6 +256,7 @@
             this.butBox.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.butBox.BackColorUseGeneric = false;
+            this.butBox.Checked = false;
             this.butBox.ForeColor = System.Drawing.Color.White;
             this.butBox.Image = global::TombEditor.Properties.Resources.sectortype_Box_16;
             this.butBox.Location = new System.Drawing.Point(3, 29);
@@ -257,6 +271,7 @@
             this.butFloor.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butFloor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
             this.butFloor.BackColorUseGeneric = false;
+            this.butFloor.Checked = false;
             this.butFloor.ForeColor = System.Drawing.Color.White;
             this.butFloor.Image = global::TombEditor.Properties.Resources.sectortype_Floor_1_16;
             this.butFloor.Location = new System.Drawing.Point(3, 1);
@@ -271,6 +286,7 @@
             this.butWall.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butWall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(120)))), ((int)(((byte)(0)))));
             this.butWall.BackColorUseGeneric = false;
+            this.butWall.Checked = false;
             this.butWall.ForeColor = System.Drawing.Color.White;
             this.butWall.Image = global::TombEditor.Properties.Resources.sectortype_Wall_1_16;
             this.butWall.Location = new System.Drawing.Point(32, 85);
@@ -321,6 +337,7 @@
             // 
             // butDiagonalWall
             // 
+            this.butDiagonalWall.Checked = false;
             this.butDiagonalWall.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butDiagonalWall.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalWall.Image = global::TombEditor.Properties.Resources.sectortype_DiagonalWall2_16;
@@ -335,6 +352,7 @@
             // 
             // butDiagonalFloor
             // 
+            this.butDiagonalFloor.Checked = false;
             this.butDiagonalFloor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butDiagonalFloor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalFloor.Image = global::TombEditor.Properties.Resources.sectortype_StepFloor_1_16;
@@ -349,6 +367,7 @@
             // 
             // butDiagonalCeiling
             // 
+            this.butDiagonalCeiling.Checked = false;
             this.butDiagonalCeiling.Dock = System.Windows.Forms.DockStyle.Fill;
             this.butDiagonalCeiling.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butDiagonalCeiling.Image = global::TombEditor.Properties.Resources.sectortype_StepCeiling_16;

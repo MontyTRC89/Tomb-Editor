@@ -2,6 +2,7 @@
 using NLog;
 using System;
 using System.Windows.Forms;
+using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 
@@ -67,6 +68,29 @@ namespace TombEditor.ToolWindows
                 butPortal.Image = (butPortal.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Portal_neg__16 : Properties.Resources.sectortype_Portal__16;
                 butWall.BackColor = _editor.Configuration.UI_ColorScheme.ColorWall.ToWinFormsColor();
                 butWall.Image = (butWall.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Wall_neg_16 : Properties.Resources.sectortype_Wall_1_16;
+            }
+
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
+                obj is Editor.LevelChangedEvent)
+            {
+                bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
+                butMonkey.Enabled = isTR345;
+                butFlagBeetle.Enabled = isTR345;
+                butFlagTriggerTriggerer.Enabled = isTR345;
+
+                if (_editor.Level.Settings.GameVersion >= TRVersion.Game.TR4)
+                {
+                    butFlagTriggerTriggerer.Image = Properties.Resources.sectortype_TriggerTriggerer_16;
+                    butFlagBeetle.Image = Properties.Resources.sectortype_Beetle_16;
+                }
+                else
+                {
+
+                    butFlagTriggerTriggerer.Image = Properties.Resources.sectortype_MinecartLeft_16;
+                    butFlagBeetle.Image = Properties.Resources.sectortype_MinecartRight_16;
+                }
             }
         }
 
