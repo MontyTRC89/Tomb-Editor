@@ -204,6 +204,33 @@ namespace TombLib.LevelData
             return VariableBegin + type + VariableEnd;
         }
 
+        public void ConvertLevelExtension()
+        {
+            var result = string.Empty;
+            switch (GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                    result = ".phd";
+                    break;
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
+                    result = ".tr2";
+                    break;
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TRNG:
+                default:
+                    result = ".tr4";
+                    break;
+                case TRVersion.Game.TR5:
+                    result = ".trc";
+                    break;
+                case TRVersion.Game.TR5Main:
+                    result = ".t5m";
+                    break;
+            }
+            GameLevelFilePath = Path.ChangeExtension(GameLevelFilePath, result);
+        }
+
         public string GetVariable(VariableType type)
         {
             string result;
