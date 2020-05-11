@@ -280,6 +280,7 @@ namespace TombLib.Wad
                                 else if (token.Equals("W", StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotWait;
+                                    anyTokenFound = true;
                                 }
                                 else if (token.StartsWith("#g"))
                                 {
