@@ -1,0 +1,9 @@
+Syntax: Puzzle=NumberOfPuzzle,NameInInventory,	TopBorder,DistanceFromCam,Orient_X, Orient_Y, Orient_Z, RotationFlag
+
+To use in [Level] section
+
+Set data for a pickable item.
+For description see "PuzzleCombo=" command
+The arguments are the same, the only difference is that in Puzzle= command is missing the "Index of part" argument.
+
+

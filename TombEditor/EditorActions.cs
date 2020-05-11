@@ -58,7 +58,7 @@ namespace TombEditor
         {
             var watch = new Stopwatch();
             watch.Start();
-            room.SmartBuildGeometry(area,_editor.Configuration.Geometry_HighQualityLightPreview);
+            room.SmartBuildGeometry(area, _editor.Configuration.Rendering3D_HighQualityLightPreview);
             watch.Stop();
             logger.Debug("Edit geometry time: " + watch.ElapsedMilliseconds + "  ms");
             _editor.RoomGeometryChange(room);
@@ -334,10 +334,18 @@ namespace TombEditor
 
         public static void ResetObjectScale(PositionBasedObjectInstance obj)
         {
-            if (!(obj is IScaleable)) return;
+            if (!(obj is IScaleable || obj is ISizeable)) return;
+
             _editor.UndoManager.PushObjectTransformed(obj);
 
-            (obj as IScaleable).Scale = 1;
+            if (obj is IScaleable)
+                (obj as IScaleable).Scale = 1;
+            else if (obj is ISizeable)
+            {
+                var o = (ISizeable)obj;
+                o.Size = o.DefaultSize;
+            }
+
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
@@ -355,8 +363,19 @@ namespace TombEditor
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
-                if (colorDialog.ShowDialog(owner) != DialogResult.OK)
+                // Temporarily hide selection
+                _editor.ToggleHiddenSelection(true);
+
+                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
+                {
+                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
+                    _editor.UndoManager.PushObjectPropertyChanged(obj);
+                }
+                else
                     colorDialog.Color = oldLightColor;
+
+                // Unhide selection
+                _editor.ToggleHiddenSelection(false);
 
                 obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
@@ -365,7 +384,7 @@ namespace TombEditor
             }
         }
 
-        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj,Action<Vector3> newColorCallback)
+        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj, Action<Vector3> newColorCallback)
         {
             using (var colorDialog = new RealtimeColorDialog(
                 _editor.Configuration.ColorDialog_Position.X,
@@ -379,8 +398,14 @@ namespace TombEditor
                 colorDialog.Color = (obj.Color).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
+                // Temporarily hide selection
+                _editor.ToggleHiddenSelection(true);
+
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+
+                // Unhide selection
+                _editor.ToggleHiddenSelection(false);
 
                 obj.Color = colorDialog.Color.ToFloat3Color();
                 _editor.ObjectChange(obj, ObjectChangeType.Change);
@@ -648,6 +673,27 @@ namespace TombEditor
             _editor.UndoManager.PushGhostBlockCreated(ghostList);
         }
 
+        public static void AddVolume(VolumeShape shape)
+        {
+            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
+                _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TR5Main.", PopupType.Info);
+            else
+            {
+                switch (shape)
+                {
+                    case VolumeShape.Box:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new BoxVolumeInstance());
+                        break;
+                    case VolumeShape.Prism:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new PrismVolumeInstance());
+                        break;
+                    case VolumeShape.Sphere:
+                        _editor.Action = new EditorActionPlace(false, (l, r) => new SphereVolumeInstance());
+                        break;
+                }
+            }
+        }
+
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
         {
             if (modifierKeys.HasFlag(Keys.Control))
@@ -674,6 +720,18 @@ namespace TombEditor
                 newScale = 128.0f;
             instance.Scale = newScale;
 
+            _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
+        }
+
+        public static void ResizeObject(ISizeable instance, Vector3 delta, double quantization)
+        {
+            if (quantization < 1.0f) quantization = 1.0f;
+
+            var newX = (float)MathC.Clamp(Math.Round((delta.X) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            var newY = (float)MathC.Clamp(Math.Round((delta.Y) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            var newZ = (float)MathC.Clamp(Math.Round((delta.Z) / quantization) * quantization, 1 / 64.0f, float.MaxValue);
+            
+            instance.Size = new Vector3(newX, newY, newZ);
             _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
         }
 
@@ -715,7 +773,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -747,7 +805,7 @@ namespace TombEditor
 
             // Update state
             if (instance is LightInstance)
-                instance.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -781,7 +839,11 @@ namespace TombEditor
                     break;
             }
             if (instance is LightInstance)
+            {
                 instance.Room.BuildGeometry();
+                instance.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
+                
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
@@ -797,7 +859,7 @@ namespace TombEditor
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
-                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || 
+                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
                     Control.ModifierKeys.HasFlag(Keys.Control) ||
                     Control.ModifierKeys.HasFlag(Keys.Alt))
                     EditStaticMeshColor(owner, (StaticInstance)instance);
@@ -857,7 +919,28 @@ namespace TombEditor
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is LightInstance)
+            {
                 EditLightColor(owner);
+            }
+            else if (instance is VolumeInstance)
+            {
+                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                {
+                    var existingWindow = Application.OpenForms["FormVolume"];
+                    if (existingWindow == null)
+                    {
+                        var volForm = new FormVolume((VolumeInstance)instance);
+                        volForm.Show(owner);
+                    }
+                    else
+                    {
+                        (existingWindow as FormVolume).SaveAndReopenVolume((VolumeInstance)instance);
+                        existingWindow.Focus();
+                    }
+                }
+                else
+                    _editor.SendMessage("This object is unavailable in this game version. Switch version to TR5Main.", PopupType.Error);
+            }
         }
 
         public static void PasteObject(VectorInt2 pos, Room room)
@@ -923,26 +1006,31 @@ namespace TombEditor
                 _editor.RoomSectorPropertiesChange(room);
             if (instance is LightInstance)
             {
-                room.RebuildLighting(true);
-                //_editor.RoomGeometryChange(room);
+
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                _editor.RoomGeometryChange(room);
             }
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 if (adjoiningRoom != null)
                 {
                     adjoiningRoom.BuildGeometry();
+                    adjoiningRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(adjoiningRoom);
 
                     if (adjoiningRoom.AlternateOpposite != null)
                     {
                         adjoiningRoom.AlternateOpposite.BuildGeometry();
+                        adjoiningRoom.AlternateOpposite.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _editor.RoomSectorPropertiesChange(adjoiningRoom.AlternateOpposite);
                     }
                 }
                 if (room.AlternateOpposite != null)
                 {
                     room.AlternateOpposite.BuildGeometry();
+                    room.AlternateOpposite.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
                 }
             }
@@ -997,6 +1085,7 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1012,6 +1101,7 @@ namespace TombEditor
 
             // Update state
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1301,6 +1391,7 @@ namespace TombEditor
             if (textureApplied)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomTextureChange(room);
             }
             return textureApplied;
@@ -1677,6 +1768,7 @@ namespace TombEditor
             }
 
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1714,6 +1806,7 @@ namespace TombEditor
                 }
 
             room.BuildGeometry();
+            room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomTextureChange(room);
         }
 
@@ -1763,7 +1856,10 @@ namespace TombEditor
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
-                room.BuildGeometry(); // Rebuild lighting!
+            {
+                room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
             _editor.ObjectChange(instance, ObjectChangeType.Add);
             _editor.SelectedObject = instance;
         }
@@ -1840,6 +1936,7 @@ namespace TombEditor
             foreach (Room adjoiningRoom in adjoiningRooms)
             {
                 adjoiningRoom?.BuildGeometry();
+                adjoiningRoom?.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
 
@@ -1881,7 +1978,11 @@ namespace TombEditor
                 room.AlternateOpposite.Resize(_editor.Level, newArea, (short)room.AlternateOpposite.GetLowestCorner(), (short)room.AlternateOpposite.GetHighestCorner(), useFloor);
             room.Resize(_editor.Level, newArea, (short)room.GetLowestCorner(), (short)room.GetHighestCorner(), useFloor);
             Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             // Cleanup
             if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
@@ -2377,7 +2478,11 @@ namespace TombEditor
 
             // Update
             foreach (Room portalRoom in portals.Select(portal => portal.Room).Distinct())
+            {
                 portalRoom.BuildGeometry();
+                portalRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
+                
             foreach (PortalInstance portal in portals)
                 _editor.ObjectChange(portal, ObjectChangeType.Add);
 
@@ -2404,6 +2509,7 @@ namespace TombEditor
 
             newRoom.Name = "Flipped of " + room;
             newRoom.BuildGeometry();
+            newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
             // Assign room
             _editor.Level.AssignRoomToFree(newRoom);
@@ -2786,7 +2892,15 @@ namespace TombEditor
             _editor.RoomListChange();
 
             // Build the geometry of the new room
-            Parallel.Invoke(() => newRoom.BuildGeometry(), () => room.BuildGeometry());
+            Parallel.Invoke(() =>
+            {
+                newRoom.BuildGeometry();
+                newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }, () =>
+            {
+                room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             if (switchRoom && (_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite))
                 _editor.SelectedRoom = newRoom; //Don't center
@@ -3077,7 +3191,11 @@ namespace TombEditor
             if (alternated)
                 performMergeAction(newRoom.AlternateOpposite, mergeRooms?.Select(room => room.AlternateOpposite ?? room), alternateNewSectorMap, true);
             Room.FixupNeighborPortals(_editor.Level, new[] { newRoom }, new[] { newRoom }.Concat(mergeRooms), ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             // Add room and update the editor
             foreach (Room room in mergeRooms)
@@ -3111,7 +3229,11 @@ namespace TombEditor
             relevantRooms.Add(room);
             relevantRooms.Add(splitRoom);
             Room.FixupNeighborPortals(_editor.Level, new[] { room, splitRoom }, new[] { room, splitRoom }, ref relevantRooms);
-            Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+            Parallel.ForEach(relevantRooms, relevantRoom =>
+            {
+                relevantRoom.BuildGeometry();
+                relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            });
 
             // Cleanup
             if ((_editor.SelectedRoom == room || _editor.SelectedRoom == room.AlternateOpposite) && _editor.SelectedSectors.Valid)
@@ -3158,6 +3280,7 @@ namespace TombEditor
             var newRoom = _editor.SelectedRoom.Clone(_editor.Level);
             newRoom.Name = cutName + " (copy" + buffer + ")";
             newRoom.BuildGeometry();
+            newRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.Level.AssignRoomToFree(newRoom);
             _editor.RoomListChange();
             _editor.UndoManager.PushRoomCreated(newRoom);
@@ -3218,6 +3341,7 @@ namespace TombEditor
                     {
                         room.AmbientLight = c.ToFloat3Color() * 2.0f;
                         room.BuildGeometry();
+                        room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _editor.RoomPropertiesChange(room);
                     }
                 }, _editor.Configuration.UI_ColorScheme))
@@ -3238,6 +3362,7 @@ namespace TombEditor
             foreach (Room room in _editor.SelectedRooms)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomPropertiesChange(room);
             }
 
@@ -3248,7 +3373,7 @@ namespace TombEditor
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 room.AmbientLight = _editor.SelectedRoom.AmbientLight;
-            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview); });
+            Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview); });
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
         }
@@ -3264,7 +3389,7 @@ namespace TombEditor
                 return;
 
             setLightValue(light, newValue.Value);
-            light.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -3274,7 +3399,7 @@ namespace TombEditor
             if (light == null)
                 return;
             light.Quality = newQuality;
-            light.Room.RebuildLighting(_editor.Configuration.Geometry_HighQualityLightPreview);
+            light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.ObjectChange(light, ObjectChangeType.Change);
         }
 
@@ -3306,33 +3431,42 @@ namespace TombEditor
                 });
         }
 
-        public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner)
+        public static bool BuildLevel(bool autoCloseWhenDone, IWin32Window owner, bool silent = false, string forceDirectory = null)
         {
             Level level = _editor.Level;
 
             if (!level.Settings.Wads.All(wad => wad.Wad != null))
             {
-                _editor.SendMessage("Wads are missing. Can't compile level without wads.", PopupType.Error);
+                if (!silent)
+                    _editor.SendMessage("Wads are missing. Can't compile level without wads.", PopupType.Error);
                 return false;
             }
 
             if (!level.Settings.Textures.All(texture => texture.IsAvailable))
             {
-                _editor.SendMessage("Textures are missing. Can't compile level without textures.", PopupType.Error);
+                if (!silent)
+                    _editor.SendMessage("Textures are missing. Can't compile level without textures.", PopupType.Error);
                 return false;
             }
 
-            string fileName = level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath);
+            string fileName = string.IsNullOrEmpty(forceDirectory) ? level.Settings.MakeAbsolute(level.Settings.GameLevelFilePath) : forceDirectory;
+            string directory = PathC.GetDirectoryNameTry(fileName);
 
-            if(!Directory.Exists(PathC.GetDirectoryNameTry(fileName)))
+            if (!Directory.Exists(directory))
             {
-                _editor.SendMessage("Specified folder for level file does not exist.\nPlease specify different folder in level settings.", PopupType.Error);
-                return false;
+                if (!silent)
+                {
+                    _editor.SendMessage("Specified folder for level file does not exist.\nPlease specify different folder in level settings.", PopupType.Error);
+                    return false;
+                }
+                else
+                    Directory.CreateDirectory(directory); // Just silently make dir and put level there
             }
 
-            if(string.IsNullOrEmpty(Path.GetExtension(fileName)))
+            if (string.IsNullOrEmpty(Path.GetExtension(fileName)))
             {
-                _editor.SendMessage("Specified level file name is incorrect.\nPlease add an extension.", PopupType.Error);
+                if (!silent)
+                    _editor.SendMessage("Specified level file name is incorrect.\nPlease add an extension.", PopupType.Error);
                 return false;
             }
 
@@ -3357,6 +3491,13 @@ namespace TombEditor
                     GC.Collect();
                 }))
             {
+                // Make sure form displays correctly if we're running in silent mode without parent window
+                if (owner == null)
+                {
+                    form.StartPosition = FormStartPosition.CenterScreen;
+                    form.ShowInTaskbar = true;
+                }
+
                 form.ShowDialog(owner);
                 return form.DialogResult != DialogResult.Cancel;
             }
@@ -3371,6 +3512,45 @@ namespace TombEditor
             }
             else
                 _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
+        }
+
+        public static void BuildInBatch(Editor editor, BatchCompileList batchList, string startFile)
+        {
+            int successCounter = 0;
+            try
+            {
+                foreach (var path in batchList.Files)
+                {
+                    if (!path.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                        continue;
+
+                    if (OpenLevel(null, path, true))
+                    {
+                        // If specified, replace build path with custom build path.
+                        string customPath = null;
+                        if (!string.IsNullOrEmpty(batchList.Location) && Directory.Exists(Path.GetPathRoot(batchList.Location)))
+                            customPath = Path.Combine(batchList.Location, Path.GetFileName(editor.Level.Settings.MakeAbsolute(editor.Level.Settings.GameLevelFilePath)));
+                        if (BuildLevel(true, null, true, customPath))
+                            successCounter++;
+                    }
+                }
+
+                // Clean up and delete batch XML.
+                // It won't happen in case XML was of wrong structure (foolproofing for potentially using wrong XML).
+                if (File.Exists(startFile))
+                    File.Delete(startFile);
+            }
+            catch (Exception ex)
+            {
+                if (ex is OperationCanceledException)
+                    return;
+                else
+                {
+                    DarkMessageBox.Show("Batch build failed! \n" + "Exception: " + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
         }
 
         public static bool IsLaraInLevel()
@@ -3605,7 +3785,11 @@ namespace TombEditor
                 return false;
             var newRooms = _editor.Level.TransformRooms(_editor.SelectedRooms, transformation);
             foreach (Room room in newRooms)
+            {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+            }
+
             _editor.SelectRoomsAndResetCamera(newRooms);
 
             _editor.RoomListChange();
@@ -3694,6 +3878,7 @@ namespace TombEditor
             portals.Select(p => p.AdjoiningRoom).ToList().ForEach(room => { room.BuildGeometry(); _editor.RoomGeometryChange(room); });
 
             _editor.SelectedRoom.BuildGeometry();
+            _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomSectorPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -3780,6 +3965,7 @@ namespace TombEditor
 
             portal.Opacity = opacity;
             portal.Room.BuildGeometry();
+            portal.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
             _editor.RoomGeometryChange(portal.Room);
             _editor.ObjectChange(portal, ObjectChangeType.Change);
         }
@@ -3853,7 +4039,7 @@ namespace TombEditor
             ExportRooms(new[] { _editor.SelectedRoom }, owner);
         }
 
-        private static Vector2 GetNormalizedUV(Vector2 uv,int textureWidth,int textureHeight)
+        private static Vector2 GetNormalizedUV(Vector2 uv, int textureWidth, int textureHeight)
         {
             return new Vector2(uv.X/textureWidth, uv.Y/textureHeight );
         }
@@ -4241,15 +4427,15 @@ namespace TombEditor
             }
         }
 
-        public static void OpenLevel(IWin32Window owner, string fileName = null)
+        public static bool OpenLevel(IWin32Window owner, string fileName = null, bool silent = false)
         {
             if (!ContinueOnFileDrop(owner, "Open level"))
-                return;
+                return false;
 
             if (string.IsNullOrEmpty(fileName))
                 fileName = LevelFileDialog.BrowseFile(owner, null, fileName, "Open Tomb Editor level", LevelSettings.FileFormatsLevel, null, false);
             if (string.IsNullOrEmpty(fileName))
-                return;
+                return false;
 
             Level newLevel = null;
             try
@@ -4257,20 +4443,15 @@ namespace TombEditor
                 using (var form = new FormOperationDialog("Open level", true, true, progressReporter =>
                     newLevel = Prj2Loader.LoadFromPrj2(fileName, progressReporter)))
                 {
-                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
-                        return;
+                    // Make sure form displays correctly if we're running in silent mode without parent window
+                    if (owner == null)
+                    {
+                        form.StartPosition = FormStartPosition.CenterScreen;
+                        form.ShowInTaskbar = true;
+                    }
 
-                    // Check if some wads are missing
-                    /*foreach (var wadRef in newLevel.Settings.Wads)
-                        if (wadRef.Wad == null)
-                        {
-                            using (var formSettings = new FormLevelSettings(_editor))
-                            {
-                                if (formSettings.ShowDialog() != DialogResult.OK)
-                                    return;
-                                break;
-                            }
-                        }*/
+                    if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
+                        return false;
 
                     bool hasUnsavedChanges = false;
 
@@ -4284,7 +4465,7 @@ namespace TombEditor
                             DarkMessageBox.Show(owner, "There was an error while converting your project to the new " +
                                             "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             newLevel = null;
-                            return;
+                            return false;
                         }
                         else
                         {
@@ -4294,24 +4475,33 @@ namespace TombEditor
                         }
                     }
 
+                    if (!silent)
+                    {
+                        foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                            r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        AddProjectToRecent(fileName);
+                    }
+
                     _editor.Level = newLevel;
                     newLevel = null;
-                    AddProjectToRecent(fileName);
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
+                    return true;
                 }
             }
             catch (Exception exc)
             {
                 logger.Error(exc, "Unable to open \"" + fileName + "\"");
 
-                if(exc is FileNotFoundException)
+                if (exc is FileNotFoundException)
                 {
                     RemoveProjectFromRecent(fileName);
-                    _editor.SendMessage("Project file not found!", PopupType.Warning);
+                    if (!silent)
+                        _editor.SendMessage("Project file not found!", PopupType.Warning);
                     _editor.LevelFileNameChange();  // Updates recent files on the main form
                 }
-                else
+                else if (!silent)
                     _editor.SendMessage("There was an error while opening project file. File may be in use or may be corrupted. \nException: " + exc.Message, PopupType.Error);
+                return false;
             }
         }
 
@@ -4364,6 +4554,9 @@ namespace TombEditor
                     if (form.ShowDialog(owner) != DialogResult.OK || newLevel == null)
                         return;
 
+                    foreach (Room r in newLevel.Rooms.Where(room => room != null))
+                        r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+
                     _editor.Level = newLevel;
                     newLevel = null;
                 }
@@ -4401,6 +4594,7 @@ namespace TombEditor
             foreach (Room room in roomsToUpdate)
             {
                 room.BuildGeometry();
+                room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomSectorPropertiesChange(room);
             }
 
@@ -4458,7 +4652,11 @@ namespace TombEditor
             {
                 var relevantRooms = new HashSet<Room> { room, ((PortalInstance)@object).AdjoiningRoom };
                 Room.FixupNeighborPortals(_editor.Level, new[] { room }, new[] { room }, ref relevantRooms);
-                Parallel.ForEach(relevantRooms, relevantRoom => relevantRoom.BuildGeometry());
+                Parallel.ForEach(relevantRooms, relevantRoom =>
+                {
+                    relevantRoom.BuildGeometry();
+                    relevantRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                });
                 foreach (Room relevantRoom in relevantRooms)
                     _editor.RoomPropertiesChange(relevantRoom);
             }

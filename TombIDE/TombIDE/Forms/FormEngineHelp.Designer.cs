@@ -25,6 +25,7 @@
 			// button_Close
 			// 
 			this.button_Close.ButtonStyle = DarkUI.Controls.DarkButtonStyle.Flat;
+			this.button_Close.Checked = false;
 			this.button_Close.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button_Close.Location = new System.Drawing.Point(424, 3);
 			this.button_Close.Name = "button_Close";

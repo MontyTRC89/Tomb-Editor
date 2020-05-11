@@ -20,7 +20,7 @@ namespace DarkUI.Forms
         [Obsolete("It is recommended to specify the \"owner\" of the message box. This way the message box can be opened on top of the currently active window.")]
         public static DialogResult Show(string message, string caption)
         {
-            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption })
+            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, StartPosition = FormStartPosition.CenterScreen })
                 return form.ShowDialog();
         }
         public static DialogResult Show(IWin32Window owner, string message, string caption)
@@ -32,7 +32,7 @@ namespace DarkUI.Forms
         [Obsolete("It is recommended to specify the \"owner\" of the message box. This way the message box can be opened on top of the currently active window.")]
         public static DialogResult Show(string message, string caption, MessageBoxIcon icon)
         {
-            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, Icon = icon })
+            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, Icon = icon, StartPosition = FormStartPosition.CenterScreen })
                 return form.ShowDialog();
         }
         public static DialogResult Show(IWin32Window owner, string message, string caption, MessageBoxIcon icon)
@@ -45,7 +45,7 @@ namespace DarkUI.Forms
         [Obsolete("It is recommended to specify the \"owner\" of the message box. This way the message box can be opened on top of the currently active window.")]
         public static DialogResult Show(string message, string caption, MessageBoxButtons buttons)
         {
-            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, DialogButtons = buttons })
+            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, DialogButtons = buttons, StartPosition = FormStartPosition.CenterScreen })
                 return form.ShowDialog();
         }
         public static DialogResult Show(IWin32Window owner, string message, string caption, MessageBoxButtons buttons)
@@ -57,7 +57,7 @@ namespace DarkUI.Forms
         [Obsolete("It is recommended to specify the \"owner\" of the message box. This way the message box can be opened on top of the currently active window.")]
         public static DialogResult Show(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
-            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, DialogButtons = buttons, Icon = icon })
+            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, DialogButtons = buttons, Icon = icon, StartPosition = FormStartPosition.CenterScreen })
                 return form.ShowDialog();
         }
         public static DialogResult Show(IWin32Window owner, string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
@@ -70,7 +70,7 @@ namespace DarkUI.Forms
         [Obsolete("It is recommended to specify the \"owner\" of the message box. This way the message box can be opened on top of the currently active window.")]
         public static DialogResult Show(string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
         {
-            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, DialogButtons = buttons, Icon = icon, DefaultButton = defaultButton })
+            using (var form = new DarkDialogMessageBox() { Message = message, Text = caption, DialogButtons = buttons, Icon = icon, DefaultButton = defaultButton, StartPosition = FormStartPosition.CenterScreen })
                 return form.ShowDialog();
         }
         public static DialogResult Show(IWin32Window owner, string message, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)

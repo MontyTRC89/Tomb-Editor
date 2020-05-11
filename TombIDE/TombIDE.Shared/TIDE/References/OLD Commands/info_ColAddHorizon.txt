@@ -1,0 +1,11 @@
+Syntax: ColAddHorizon= ENABLED/DISABLED
+
+To use in [Level] section
+
+To paste sky texture with horizon object.
+It's a nice way to avoid black row between sky and horizon.
+It works better if you use also a Layer1= command to set correct sky color value.
+
+
+
+

@@ -19,7 +19,7 @@ namespace TombIDE.ScriptEditor.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -63,6 +63,16 @@ namespace TombIDE.ScriptEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AboutScreen_800 {
+            get {
+                object obj = ResourceManager.GetObject("AboutScreen_800", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_play_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_play_16", resourceCulture);
@@ -87,6 +97,16 @@ namespace TombIDE.ScriptEditor.Properties {
             get {
                 object obj = ResourceManager.GetObject("folder", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap forward_arrow_16 {
+            get {
+                object obj = ResourceManager.GetObject("forward_arrow_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -133,9 +153,39 @@ namespace TombIDE.ScriptEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap general_create_new_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_create_new_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap general_cut_16 {
             get {
                 object obj = ResourceManager.GetObject("general_cut_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_edit_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_edit_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_folder_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_folder_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -186,6 +236,16 @@ namespace TombIDE.ScriptEditor.Properties {
         internal static System.Drawing.Bitmap general_settings_16 {
             get {
                 object obj = ResourceManager.GetObject("general_settings_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap general_trash_16 {
+            get {
+                object obj = ResourceManager.GetObject("general_trash_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

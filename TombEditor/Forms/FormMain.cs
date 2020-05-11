@@ -1,17 +1,17 @@
-﻿using System;
+﻿using NLog;
+using DarkUI.Config;
+using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using DarkUI.Docking;
 using DarkUI.Forms;
-using NLog;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using System.IO;
-using System.Xml;
-using DarkUI.Config;
 
 namespace TombEditor.Forms
 {
@@ -42,15 +42,16 @@ namespace TombEditor.Forms
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
 
+            // Initialize everything needed
+            _editor.RaiseEvent(new Editor.InitEvent());
+
             Text = "Tomb Editor " + Application.ProductVersion + " - Untitled";
             Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Only how debug menu when a debugger is attached...
             debugToolStripMenuItem.Visible = Debugger.IsAttached;
 
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = Configuration.Window_SizeDefault + (Size - ClientSize);
+            this.SetActualSize();
 
             // DockPanel message filters for drag and resize.
             Application.AddMessageFilter(dockArea.DockContentDragFilter);
@@ -59,12 +60,13 @@ namespace TombEditor.Forms
             // Initialize panels
             MainView.InitializeRendering(_editor.RenderingDevice);
             ItemBrowser.InitializeRendering(_editor.RenderingDevice);
-            
-            // Restore window settings
+
+            // Restore window settings and prepare UI
             Configuration.LoadWindowProperties(this, _editor.Configuration);
             LoadWindowLayout(_editor.Configuration);
             GenerateMenusRecursive(menuStrip.Items);
             UpdateUIColours();
+            UpdateControls();
 
             // Retrieve clipboard change notifications
             ClipboardEvents.ClipboardChanged += ClipboardEvents_ClipboardChanged;
@@ -94,7 +96,7 @@ namespace TombEditor.Forms
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Gray out menu options that do not apply
-            if (obj is Editor.SelectedObjectChangedEvent || 
+            if (obj is Editor.SelectedObjectChangedEvent ||
                 obj is Editor.ModeChangedEvent ||
                 obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -115,7 +117,7 @@ namespace TombEditor.Forms
 
             // Disable version-specific controls
             if (obj is Editor.InitEvent ||
-                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
+                obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
                 obj is Editor.LevelChangedEvent)
             {
                 addFlybyCameraToolStripMenuItem.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
@@ -146,6 +148,20 @@ namespace TombEditor.Forms
                 gridWallsIn3SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = _editor.SelectedObject is SectorBasedObjectInstance && validSectorSelection;
+            }
+
+            // Update version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+            {
+                bool isNG  = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+
+                addSphereVolumeToolStripMenuItem.Enabled    = isT5M;
+                addPrismVolumeToolStripMenuItem.Enabled     = isT5M;
+                addBoxVolumeToolStripMenuItem.Enabled       = isT5M;
+                makeQuickItemGroupToolStripMenuItem.Enabled = isNG;
             }
 
             // Update compilation statistics
@@ -231,6 +247,7 @@ namespace TombEditor.Forms
                 if (e.UpdateLayout)
                     LoadWindowLayout(_editor.Configuration);
                 UpdateUIColours();
+                UpdateControls();
             }
 
             // Update texture controls
@@ -274,6 +291,12 @@ namespace TombEditor.Forms
                 foreach (var form in Application.OpenForms)
                     if (form is DarkForm) ((DarkForm)form).Refresh();
             }
+        }
+
+        private void UpdateControls()
+        {
+            showRealTintForMergedStaticsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForMergedStatics;
+            drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
         }
 
         private void RefreshRecentProjectsList()
@@ -578,6 +601,12 @@ namespace TombEditor.Forms
             EditorActions.DragDropCommonFiles(e, this);
         }
 
+        protected override void OnActivated(EventArgs e)
+        {
+            base.OnActivated(e);
+                _editor.Focus();
+        }
+
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (FormAbout form = new FormAbout(Properties.Resources.misc_AboutScreen_800))
@@ -598,19 +627,14 @@ namespace TombEditor.Forms
 
         private void debugAction0ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //level.Load("");
-            //var level = new TestLevel("h:\\.tr4");
-            var level = new TestLevel("Game\\Data\\tut1.tr4", "");
-            //evel = new TestLevel("f:\\trle\\data\\tut1.tr4", "tut1_ngle");
-
-            // var level = new TrLevel();
-            // level.LoadLevel("H:\\tomb5\\data\\joby5.trc");
-            //level.LoadLevel("Game\\data\\title.tr4", "", "");
-            // level = new TombRaider4Level("D:\\Software\\Tomb-Editor\\Build\\Game\\Data\\karnak.tr4");
-            // level.Load("editor");
-
-            //level = new TombEngine.TombRaider4Level("e:\\trle\\data\\tut1.tr4");
-            //level.Load("originale");
+            var batchList = new BatchCompileList();
+            batchList.Location = "D:\\FMAP";
+            batchList.Files.Add("test1.prj2");
+            batchList.Files.Add("test2.prj2");
+            batchList.Files.Add("test3.prj2");
+            batchList.Files.Add("test4.prj2");
+            batchList.Files.Add("test5.prj2");
+            BatchCompileList.SaveToXml("BATCH.xml", batchList);
         }
 
         private void debugAction1ToolStripMenuItem_Click(object sender, EventArgs e)

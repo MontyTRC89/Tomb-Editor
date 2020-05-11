@@ -1,0 +1,32 @@
+Syntax: #INCLUDE "ExternalScriptTextFile.txt"
+Scope: Any
+
+The #include directive is not a script command, it doesn't perform any change to final script.dat.
+It used only to divide and to put in order a long script.txt moving some specific blocks of commands from the main script to little text files in the SCRIPT folder.
+When ng_center finds a #INCLUDE directive, it loads temporary the content of the given include file and paste it with the main script in same position where that include directive was. For this reason the response in the compiling it is always the same.
+The usage of include directives is useful to put in order the script, dividing it in logical blocks.
+For example when you create many script commands to realize a custom animazion or other effect, you can copy all commands for that target in a separated text file with a meaningfull name.
+In this way your script could become like this:
+
+#INCLUDE "LaraHome.txt"
+
+#INCLUDE "AnimClimbFromWater.txt"
+
+#INCLUDE "DistanceSensory.txt"
+
+There are undoubt advantages in this job planning.
+When you are not interested to some (already completed) feature, you have not all those script commands in the main script to create confusion.
+While, when you wish work own on that feature, you can load (F5 key) the include file in Ng_center and you'll have always the meaningful commands in the editor to study and edit them.
+
+If you work with include files read also the description of the directive #FIRST_ID. 
+It is very useful to reduce the risk of IDs conflicts of the commands stored in main script and include files
+
+Remarks:
+
+- You can type an #include directive ONLY in main script.txt file. It's now allowed use an #Include directive in a sub-file loaded from another #include directive of script.txt file
+
+- Remember that you can load an include file in the editor hitting F5 key while the caret is over the #include line.
+
+- You can use the command CTRL F5 to create an empty include file with wished filename, where you'll be able to store your commands.
+
+

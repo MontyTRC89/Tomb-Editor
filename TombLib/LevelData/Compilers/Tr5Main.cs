@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,25 +10,21 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
-        // Collections for LUA triggers
-        private List<TriggerInstance> _luaTriggers;
+        private const string _indent = "    ";
+
+        // Collections for volumes
+        private List<VolumeScriptInstance> _volumeScripts;
         private Dictionary<int, int> _luaIdToItems;
 
-        private static readonly ChunkId Tr5MainChunkTriggersList = ChunkId.FromString("Tr5Triggers");
-        private static readonly ChunkId Tr5MainChunkTrigger = ChunkId.FromString("Tr5Trigger");
-        private static readonly ChunkId Tr5MainChunkLuaIds = ChunkId.FromString("Tr5LuaIds");
-        private static readonly ChunkId Tr5MainChunkLuaId = ChunkId.FromString("Tr5LuaId");
-
-        private void PrepareLuaTriggers()
-        {
-            _luaTriggers = new List<TriggerInstance>();
-            foreach (var room in _level.Rooms)
-                if (room != null)
-                    foreach (var trigger in room.Triggers)
-                        if (trigger.TargetType == TriggerTargetType.LuaScript)
-                            _luaTriggers.Add(trigger);
-        }
-
+        /**/ private static readonly ChunkId Tr5MainExtraRoomData = ChunkId.FromString("Tr5ExtraRoomData");
+        /***/ private static readonly ChunkId Tr5MainChunkVolumeList = ChunkId.FromString("Tr5Volumes");
+        /***/ private static readonly ChunkId Tr5MainChunkVolume = ChunkId.FromString("Tr5Volume");
+        /**/ private static readonly ChunkId Tr5MainExtraData = ChunkId.FromString("Tr5ExtraData");
+        /***/ private static readonly ChunkId Tr5MainChunkVolumeScriptList = ChunkId.FromString("Tr5VolumeScripts");
+        /***/ private static readonly ChunkId Tr5MainChunkVolumeScript = ChunkId.FromString("Tr5VolumeScript");
+        /***/ private static readonly ChunkId Tr5MainChunkLuaIds = ChunkId.FromString("Tr5LuaIds");
+        /***/ private static readonly ChunkId Tr5MainChunkLuaId = ChunkId.FromString("Tr5LuaId");
+        
         private void WriteLevelTr5Main()
         {
             // Now begin to compile the geometry block in a MemoryStream
@@ -194,7 +191,7 @@ namespace TombLib.LevelData.Compilers
                     ReportProgress(91, "Writing textures");
 
                     // The room texture tile count currently also currently contains the wad textures
-                    // But lets not bother with those fielsd too much since they only matter when bump maps are used and we don't use them.
+                    // But lets not bother with those fields too much since they only matter when bump maps are used and we don't use them.
                     writer.Write((ushort)_textureInfoManager.NumRoomPages);
                     writer.Write((ushort)_textureInfoManager.NumObjectsPages);
                     // Bump map pages must be multiplied by 2 or tile index will be wrong
@@ -262,38 +259,148 @@ namespace TombLib.LevelData.Compilers
                     WriteSoundData(writer);
 
                     // Write extra data
+                    _volumeScripts = new List<VolumeScriptInstance>();
+
                     using (var ms = new MemoryStream())
                     {
                         var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(ms));
 
-                        chunkIO.WriteChunkWithChildren(Tr5MainChunkTriggersList, () =>
+                        int currRoom = 0;
+                        foreach (var r in _level.Rooms.Where(r => r != null))
                         {
-                            foreach (var trigger in _luaTriggers)
+                            // Add further extra data conditions here, otherwise compiler will skip this room altogether
+                            if (r.Volumes.Count() > 0)
+                                currRoom++;
+                            else
                             {
-                                chunkIO.WriteChunk(Tr5MainChunkTrigger, () =>
-                                {
-                                    string functionName = "Trigger_" + _luaTriggers.IndexOf(trigger);
-                                    string functionCode = "function " + functionName + "()\n" +
-                                                          trigger.LuaScript + "\n" +
-                                                          "end\n";
-
-                                    chunkIO.Raw.WriteStringUTF8(functionName);
-                                    chunkIO.Raw.WriteStringUTF8(functionCode);
-                                });
+                                currRoom++;
+                                continue;
                             }
-                        });
 
-                        chunkIO.WriteChunkWithChildren(Tr5MainChunkLuaIds, () =>
+                            using (var extraRoomDataChunk = chunkIO.WriteChunk(Tr5MainExtraRoomData))
+                            {
+                                // First and only param after signature is internal room number
+                                chunkIO.Raw.Write(currRoom);
+
+                                using (var volumeListChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeList))
+                                {
+                                    var trRoom = _tempRooms[r];
+
+                                    foreach (var vol in r.Volumes)
+                                        using (var volumeChunk = chunkIO.WriteChunk(Tr5MainChunkVolume))
+                                        {
+                                            int scriptIndex = 0;
+                                            if (_volumeScripts.Contains(vol.Scripts))
+                                                scriptIndex = _volumeScripts.IndexOf(vol.Scripts);
+                                            else
+                                            {
+                                                _volumeScripts.Add(vol.Scripts);
+                                                scriptIndex = _volumeScripts.Count - 1;
+                                            }
+
+                                            // FIXME is it needed?
+                                            int add = 0;
+                                            if (vol is BoxVolumeInstance)
+                                                add = (int)((vol as BoxVolumeInstance).Size.Y / 2.0f);
+
+                                            var X = (int)Math.Round(trRoom.Info.X + vol.Position.X);
+                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add); 
+                                            var Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z);
+
+                                            if (vol is BoxVolumeInstance)
+                                                chunkIO.Raw.Write(0);
+                                            else if (vol is SphereVolumeInstance)
+                                                chunkIO.Raw.Write(1);
+                                            else if (vol is PrismVolumeInstance)
+                                                chunkIO.Raw.Write(2);
+
+                                            chunkIO.Raw.Write(X);
+                                            chunkIO.Raw.Write(Y);
+                                            chunkIO.Raw.Write(Z);
+                                            chunkIO.Raw.Write((short)vol.Activators);
+                                            chunkIO.Raw.Write(scriptIndex);
+
+                                            if (vol is BoxVolumeInstance)
+                                            {
+                                                var bv = (BoxVolumeInstance)vol;
+                                                var min = vol.Position - (bv.Size / 2.0f);
+                                                var max = vol.Position + (bv.Size / 2.0f);
+                                                var rotY = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                                                   Math.Round(bv.RotationY * (65536.0 / 360.0))));
+                                                var rotX = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
+                                                                   Math.Round(bv.RotationX * (65536.0 / 360.0))));
+
+                                                chunkIO.Raw.Write(rotY);
+                                                chunkIO.Raw.Write(rotX);
+                                                chunkIO.Raw.Write((short)min.X);
+                                                chunkIO.Raw.Write((short)min.Y);
+                                                chunkIO.Raw.Write((short)min.Z);
+                                                chunkIO.Raw.Write((short)max.X);
+                                                chunkIO.Raw.Write((short)max.Y);
+                                                chunkIO.Raw.Write((short)max.Z);
+                                            }
+                                            else if (vol is SphereVolumeInstance)
+                                                chunkIO.Raw.Write((vol as SphereVolumeInstance).Size);
+                                            else if (vol is PrismVolumeInstance)
+                                            {
+                                                var pv = (PrismVolumeInstance)vol;
+                                                chunkIO.Raw.Write(pv.RotationY);
+                                                chunkIO.Raw.Write(pv.Size);
+                                            }
+                                        }
+                                }
+                            }
+                        }
+
+                        using (var extraDataChunk = chunkIO.WriteChunk(Tr5MainExtraData))
                         {
-                            for (int i = 0; i < _luaIdToItems.Count; i++)
+                            using (var volScriptListChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScriptList))
                             {
-                                chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
+                                for (int i = 0; i < _volumeScripts.Count; i++)
                                 {
-                                    chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
-                                    chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
-                                });
+                                    var script = _volumeScripts[i];
+                                    using (var volScriptChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScript))
+                                    {
+                                        chunkIO.Raw.WriteStringUTF8(script.Name);
+
+                                        string onEnter = string.Empty;
+                                        string onInside = string.Empty;
+                                        string onLeave = string.Empty;
+
+                                        if (script.OnEnter.Trim().Length > 0)
+                                            onEnter = "volscripts[" + i + "].OnEnter  = function(activator) \n" +
+                                                        _indent + script.OnEnter.Replace("\n", "\n" + _indent) + "\n" + "end;";
+
+                                        if (script.OnInside.Trim().Length > 0)
+                                            onInside = "volscripts[" + i + "].OnInside = function(activator) \n" +
+                                                        _indent + script.OnInside.Replace("\n", "\n" + _indent) + "\n" + "end;";
+
+                                        if (script.OnLeave.Trim().Length > 0)
+                                            onLeave  = "volscripts[" + i + "].OnLeave = function(activator) \n" +
+                                                        _indent + script.OnLeave.Replace("\n", "\n" + _indent) + "\n" + "end;";
+
+                                        string functionCode =
+                                            onEnter  + (string.IsNullOrEmpty(onEnter)  ? string.Empty : "\n\n") +
+                                            onInside + (string.IsNullOrEmpty(onInside) ? string.Empty : "\n\n") +
+                                            onLeave  + (string.IsNullOrEmpty(onLeave)  ? string.Empty : "\n\n") ;
+
+                                        chunkIO.Raw.WriteStringUTF8(functionCode);
+                                    }
+                                }
                             }
-                        });
+
+                            using (var chunkLuaIds = chunkIO.WriteChunk(Tr5MainChunkLuaIds))
+                            {
+                                for (int i = 0; i < _luaIdToItems.Count; i++)
+                                {
+                                    chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
+                                    {
+                                        chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
+                                        chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
+                                    });
+                                }
+                            }
+                        }
 
                         chunkIO.Raw.Flush();
 

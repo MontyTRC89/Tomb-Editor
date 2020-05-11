@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ProjectMaster
 {
@@ -53,28 +53,23 @@ namespace TombIDE.ProjectMaster
 		{
 			using (FormPluginManager form = new FormPluginManager(_ide))
 			{
-				form.ShowDialog(this);
-
-				bool newPluginsInstalled = false;
-
-				foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					if (initialPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
-						continue;
+					foreach (Plugin plugin in _ide.Project.InstalledPlugins)
+					{
+						if (initialPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
+							continue;
 
-					_ide.AddPluginToLanguageFile(plugin);
-					newPluginsInstalled = true;
+						_ide.ScriptEditor_AddNewNGString(plugin.Name);
+					}
 				}
-
-				if (newPluginsInstalled)
-					_ide.RaiseEvent(new IDE.NewPluginsInstalledEvent());
 			}
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)
 		{
 			Plugin selectedPlugin = (Plugin)treeView.SelectedNodes[0].Tag;
-			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
+			SharedMethods.OpenInExplorer(Path.GetDirectoryName(selectedPlugin.InternalDllPath));
 		}
 
 		private void treeView_SelectedNodesChanged(object sender, EventArgs e)
@@ -94,6 +89,8 @@ namespace TombIDE.ProjectMaster
 			treeView.SelectedNodes.Clear();
 			treeView.Nodes.Clear();
 
+			int missingPluginsCount = 0;
+
 			foreach (Plugin plugin in _ide.Project.InstalledPlugins)
 			{
 				DarkTreeNode node = new DarkTreeNode
@@ -102,8 +99,23 @@ namespace TombIDE.ProjectMaster
 					Tag = plugin
 				};
 
+				if (string.IsNullOrEmpty(plugin.InternalDllPath))
+				{
+					node.Text = "(MISSING) " + plugin.Name;
+					node.BackColor = Color.FromArgb(96, 64, 64);
+
+					missingPluginsCount++;
+				}
+
 				treeView.Nodes.Add(node);
 			}
+
+			if (missingPluginsCount == 1)
+				sectionPanel.SectionHeader = "Project Plugins >> WARNING: 1 plugin on the list is missing or was not installed using TombIDE. Reinstall it to prevent any issues.";
+			else if (missingPluginsCount > 1)
+				sectionPanel.SectionHeader = "Project Plugins >> WARNING: " + missingPluginsCount + " plugins on the list are missing or were not installed using TombIDE. Reinstall them to prevent any issues.";
+			else
+				sectionPanel.SectionHeader = "Project Plugins";
 
 			treeView.Invalidate();
 		}

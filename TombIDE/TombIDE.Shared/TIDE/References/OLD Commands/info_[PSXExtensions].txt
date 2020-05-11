@@ -1,0 +1,15 @@
+Syntax:
+
+[PSXExtensions]
+Level= .PSX
+Cut= .CUT
+FMV= .FMV
+
+Assign file extensions for Playstation 1 game version
+
+1 - Level file (Level=)
+2 - Cutscene files (CUT=)
+3 - Movies (FMV=)
+
+It's not useful to change these values.
+

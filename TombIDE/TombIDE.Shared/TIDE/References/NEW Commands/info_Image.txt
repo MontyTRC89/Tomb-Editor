@@ -1,0 +1,64 @@
+Syntax: Image=IdImageCommand, IdImageFile, ImageFlags (IF_...), EffectTime, AudioTrack, XPosition, YPosition, SizeX, SizeY
+Scope: To use in [Level] section
+Max number of instances for level section: 199
+
+The Image command permits to set some data to be used for flipeffect trigger "Show Image ..."
+
+IdImageCommand field
+--------------------
+In this field you have to type a progressive number that will be used to identifiy this Image command from some flipeffect trigger.
+Valid range for IDs: 1 / 1999
+
+IdImageFile field
+-----------------
+In this field you type the number of image to show.
+This number (or ID) referes to image in the format: "IMAGE<ID>.BMP"
+For example if you type 5 in this field, this mean you want show the image:
+
+IMAGE5.bmp
+
+TRng engine will look for images in TRLE\PIX folder, and, if it's missing in PIX folder, trng will look for image also in TRLE folder, i.e. in same foldr where is the tomb4.exe program.
+Remark: Trlm2009 program will copy all the imageN.bmp images in TRLE\PIX folder.
+
+ImageFlags (IF_...) field
+--------------------------
+You can specify some IF_ flags to set some features of image or about the mode to view it.
+If you type IGNORE in this field the image will be showed  freezing the game and in the position and size you set in following fields of this command.
+
+EffectTime field
+----------------
+This field works only for further effect you chose for this image.
+If you don't apply any effect to image, this field will be ignored.
+The time should be typed in tick frame units, the internal time of tomb4 engine.
+One tick frame values 1/30 of second
+When you set an effect for current image the EffectTime will inform the engine about how much frames will be necessary to complete the effect.
+If you type little values the effect will appear fast, while typing big values as EffectTime the effect will be showed slowly.
+If you type IGNORE in this field the default value is 30 ticks, i.e. one second to complete the effect.
+
+AudioTrack field
+----------------
+If you want was performed an audio track at start of viewing of the image, you can type in this field a number between 0 and 255 to choose the wished audio track of AUDIO folder.
+For example typing 35 it will be plyed the sound 035.wav
+
+
+XPosition and YPosition fields
+-------------------------------
+In these two fields you type the origin, respect tomb raider screen, where placing your image.
+It's important understand that the used units for position (and also size, in following fields) are NOT in pixel.
+The reason is given by difficulty to kwow in advance the current tomb raider resolution.
+When you create your level, and the script.dat, you cann't know if the game will be played on 640x480 screen or 1024x768 (or other...) and for this reason setting the origin of image or its size in pixel could affect many problems.
+For this reason, the origin and size of image will be given in proportional units: named "micro units" (1/1000 of screen)
+For example if you want locate the center of game screen the values will be XPosition = 500  and YPosition=500, since the whole width and height of game screen will have the reference value of 1000 x 1000 micro units.
+Although this method could seem complicated it's the last way to have your image located with wished position and size on each screen risolution.
+
+SizeX and SizeX fields
+----------------------
+In these two fields you set the size you want the image had once it has been drawn on game screen.
+The values are in micro units (see descrition of XPosition, YPosition fields)
+Probably you could have problem to set current ratio of image because also the height of scren  (about Y size) will be computed in micro units (1/1000)
+For example if your source image is 100 x 100 pixels, i.e. it's a perfect square, you cann't set a target size 200 x 200 microunits, because the size y 200 computed on ScreenY should be bigger than computed on ScreenX, since the screen usually has a ratio of 1.3, i.e. the width of screen is 1.3 times bigger than height of screen.
+To solve this problem you can use a new utility you find in Tools panel of NG_Center program: Get Screen Frames
+With this utility you can, using the mouse, select a rectangular region on a ideal-tomb raider screen, and get as reply the four values XPos, YPos, SizeX and SizeY in micro units.
+
+
+

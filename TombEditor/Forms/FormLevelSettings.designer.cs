@@ -164,6 +164,9 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.levelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.cbOverrideAllLightQuality = new DarkUI.Controls.DarkCheckBox();
+            this.cmbDefaultLightQuality = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel22 = new DarkUI.Controls.DarkLabel();
             this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
             this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
@@ -221,14 +224,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -1272,7 +1275,7 @@
             this.cbAutodetectIfNoneSelected.Size = new System.Drawing.Size(290, 17);
             this.cbAutodetectIfNoneSelected.TabIndex = 117;
             this.cbAutodetectIfNoneSelected.Text = "Autodetect sounds on compilation if none selected";
-            this.cbAutodetectIfNoneSelected.CheckedChanged += new System.EventHandler(this.cbcbAutodetectIfNoneSelected_CheckedChanged);
+            this.cbAutodetectIfNoneSelected.CheckedChanged += new System.EventHandler(this.cbAutodetectIfNoneSelected_CheckedChanged);
             // 
             // butAssignFromWads
             // 
@@ -1576,6 +1579,7 @@
             this.selectedSoundsDataGridView.ShowRowErrors = false;
             this.selectedSoundsDataGridView.Size = new System.Drawing.Size(769, 201);
             this.selectedSoundsDataGridView.TabIndex = 116;
+            this.selectedSoundsDataGridView.ToggleCheckBoxOnClick = true;
             this.selectedSoundsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.selectedSoundsDataGridView_CellValueChanged);
             // 
             // colSoundsEnabled
@@ -1724,7 +1728,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 271);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 302);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1753,7 +1757,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 220);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 251);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1824,7 +1828,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 118);
+            this.panel6.Location = new System.Drawing.Point(0, 149);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -1861,6 +1865,9 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cbOverrideAllLightQuality);
+            this.panel12.Controls.Add(this.cmbDefaultLightQuality);
+            this.panel12.Controls.Add(this.darkLabel22);
             this.panel12.Controls.Add(this.cbAgressiveFloordataPacking);
             this.panel12.Controls.Add(this.cbAgressiveTexturePacking);
             this.panel12.Controls.Add(this.darkLabel13);
@@ -1871,13 +1878,48 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 118);
+            this.panel12.Size = new System.Drawing.Size(778, 149);
             this.panel12.TabIndex = 91;
+            // 
+            // cbOverrideAllLightQuality
+            // 
+            this.cbOverrideAllLightQuality.AutoSize = true;
+            this.cbOverrideAllLightQuality.Location = new System.Drawing.Point(216, 42);
+            this.cbOverrideAllLightQuality.Name = "cbOverrideAllLightQuality";
+            this.cbOverrideAllLightQuality.Size = new System.Drawing.Size(168, 17);
+            this.cbOverrideAllLightQuality.TabIndex = 108;
+            this.cbOverrideAllLightQuality.Tag = "";
+            this.cbOverrideAllLightQuality.Text = "Override individual settings";
+            this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
+            // 
+            // cmbDefaultLightQuality
+            // 
+            this.cmbDefaultLightQuality.FormattingEnabled = true;
+            this.cmbDefaultLightQuality.Items.AddRange(new object[] {
+            "Low",
+            "Medium",
+            "High"});
+            this.cmbDefaultLightQuality.Location = new System.Drawing.Point(129, 40);
+            this.cmbDefaultLightQuality.Name = "cmbDefaultLightQuality";
+            this.cmbDefaultLightQuality.Size = new System.Drawing.Size(81, 23);
+            this.cmbDefaultLightQuality.TabIndex = 107;
+            this.cmbDefaultLightQuality.SelectedIndexChanged += new System.EventHandler(this.cmbDefaultLightQuality_SelectedIndexChanged);
+            // 
+            // darkLabel22
+            // 
+            this.darkLabel22.AutoSize = true;
+            this.darkLabel22.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel22.Location = new System.Drawing.Point(0, 43);
+            this.darkLabel22.Name = "darkLabel22";
+            this.darkLabel22.Size = new System.Drawing.Size(113, 13);
+            this.darkLabel22.TabIndex = 106;
+            this.darkLabel22.Text = "Default light quality:";
             // 
             // cbAgressiveFloordataPacking
             // 
             this.cbAgressiveFloordataPacking.AutoSize = true;
-            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 93);
+            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 120);
             this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
             this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(176, 17);
             this.cbAgressiveFloordataPacking.TabIndex = 105;
@@ -1888,7 +1930,7 @@
             // cbAgressiveTexturePacking
             // 
             this.cbAgressiveTexturePacking.AutoSize = true;
-            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 70);
+            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 97);
             this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
             this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(337, 17);
             this.cbAgressiveTexturePacking.TabIndex = 104;
@@ -1899,7 +1941,7 @@
             // darkLabel13
             // 
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(202, 44);
+            this.darkLabel13.Location = new System.Drawing.Point(213, 71);
             this.darkLabel13.Name = "darkLabel13";
             this.darkLabel13.Size = new System.Drawing.Size(45, 17);
             this.darkLabel13.TabIndex = 103;
@@ -1923,10 +1965,10 @@
             0,
             0,
             65536});
-            this.numPadding.Location = new System.Drawing.Point(129, 42);
+            this.numPadding.Location = new System.Drawing.Point(129, 69);
             this.numPadding.LoopValues = false;
             this.numPadding.Name = "numPadding";
-            this.numPadding.Size = new System.Drawing.Size(67, 22);
+            this.numPadding.Size = new System.Drawing.Size(81, 22);
             this.numPadding.TabIndex = 102;
             this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
             // 
@@ -1936,14 +1978,14 @@
             this.panelRoomAmbientLight.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelRoomAmbientLight.Location = new System.Drawing.Point(129, 10);
             this.panelRoomAmbientLight.Name = "panelRoomAmbientLight";
-            this.panelRoomAmbientLight.Size = new System.Drawing.Size(67, 24);
+            this.panelRoomAmbientLight.Size = new System.Drawing.Size(81, 24);
             this.panelRoomAmbientLight.TabIndex = 89;
             this.panelRoomAmbientLight.Click += new System.EventHandler(this.panelRoomAmbientLight_Click);
             // 
             // darkLabel12
             // 
             this.darkLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel12.Location = new System.Drawing.Point(0, 44);
+            this.darkLabel12.Location = new System.Drawing.Point(0, 71);
             this.darkLabel12.Name = "darkLabel12";
             this.darkLabel12.Size = new System.Drawing.Size(123, 17);
             this.darkLabel12.TabIndex = 101;
@@ -2242,5 +2284,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn textureFileDataGridViewSizeColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewReplaceMagentaWithTransparencyColumn;
         private DarkUI.Controls.DarkDataGridViewCheckBoxColumn textureFileDataGridViewConvert512PixelsToDoubleRowsColumn;
+        private DarkUI.Controls.DarkLabel darkLabel22;
+        private DarkUI.Controls.DarkCheckBox cbOverrideAllLightQuality;
+        private DarkUI.Controls.DarkComboBox cmbDefaultLightQuality;
     }
 }

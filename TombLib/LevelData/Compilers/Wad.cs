@@ -498,6 +498,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Convert static meshes
+            int convertedStaticsCount = 0;
             ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
@@ -527,17 +528,25 @@ namespace TombLib.LevelData.Compilers
 
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
-                //do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
-                 if(!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
+
+                // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
+                if (!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
                     ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
-                } else
+                }
+                else
                 {
-                    _progressReporter.ReportInfo("Creating Dummy Mesh for automatically Merged Mesh :" + oldStaticMesh.ToString(_level.Settings.GameVersion));
+                    convertedStaticsCount++;
+                    logger.Info("Creating Dummy Mesh for automatically Merged Mesh: " + oldStaticMesh.ToString(_level.Settings.GameVersion));
                     CreateDummyWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
                 }
                 _staticMeshes.Add(newStaticMesh);
             }
+            
+            if (convertedStaticsCount > 0)
+                _progressReporter.ReportInfo("    Number of statics merged with room geometry: " + convertedStaticsCount);
+            else
+                _progressReporter.ReportInfo("    No statics to merge into room geometry.");
 
             if (_writeDbgWadTxt)
                 using (var fileStream = new FileStream("Wad.txt", FileMode.Create, FileAccess.Write, FileShare.None))

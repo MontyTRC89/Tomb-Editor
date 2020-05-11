@@ -1,4 +1,5 @@
-﻿using DarkUI.Win32;
+﻿using DarkUI.Config;
+using DarkUI.Win32;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ using System.Threading;
 using System.Windows.Forms;
 using TombEditor.Forms;
 using TombLib.NG;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Catalog;
-using DarkUI.Config;
 
 namespace TombEditor
 {
@@ -21,10 +22,25 @@ namespace TombEditor
         [STAThread]
         public static void Main(string[] args)
         { 
-            // Open files on start
             string startFile = null;
-            if (args.Length > 0 && args[0].EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
-                startFile = args[0];
+            string batchFile = null;
+            bool doBatchCompile = false;
+            BatchCompileList batchList = null;
+
+            if (args.Length >= 1)
+            {
+                // Open files on start
+                if (args[0].EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                    startFile = args[0];
+
+                // Batch-compile levels
+                if (args[0].EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    batchFile = args[0];
+                    batchList = BatchCompileList.ReadFromXml(batchFile);
+                    doBatchCompile = batchList?.Files.Count > 0;
+                }
+            }
 
             // Load configuration
             var initialEvents = new List<LogEventInfo>();
@@ -33,7 +49,7 @@ namespace TombEditor
             // Update DarkUI configuration
             Colors.Brightness = configuration.UI_FormColor_Brightness / 100.0f;
 
-            if (configuration.Editor_AllowMultipleInstances ||
+            if (configuration.Editor_AllowMultipleInstances || doBatchCompile ||
                 mutex.WaitOne(TimeSpan.Zero, true))
             {
                 // Setup logging
@@ -63,36 +79,46 @@ namespace TombEditor
                         Environment.Exit(1);
                     }
 
+                    // Load catalogs
                     TrCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\TrCatalog.xml");
                     NgCatalog.LoadCatalog(Application.StartupPath + "\\Catalogs\\NgCatalog.xml");
 
-                    //Run
+                    // Run
                     Editor editor = new Editor(SynchronizationContext.Current, configuration);
                     Editor.Instance = editor;
-                    using (FormMain form = new FormMain(editor))
-                    {
-                        form.Show();
 
-                        if (!string.IsNullOrEmpty(startFile)) // Open files on start
+                    // Run editor normally if no batch compile is pending.
+                    // Otherwise, don't load main form and jump straight to batch-compiling levels.
+
+                    if (!doBatchCompile)
+                    {
+                        using (FormMain form = new FormMain(editor))
                         {
-                            if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
-                                EditorActions.OpenLevelPrj(form, startFile);
-                            else
-                                EditorActions.OpenLevel(form, startFile);
+                            form.Show();
+
+                            if (!string.IsNullOrEmpty(startFile)) // Open files on start
+                            {
+                                if (startFile.EndsWith(".prj", StringComparison.InvariantCultureIgnoreCase))
+                                    EditorActions.OpenLevelPrj(form, startFile);
+                                else
+                                    EditorActions.OpenLevel(form, startFile);
+                            }
+                            else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
+                            {
+                                if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0 &&
+                                    File.Exists(Properties.Settings.Default.RecentProjects[0]))
+                                    EditorActions.OpenLevel(form, Properties.Settings.Default.RecentProjects[0]);
+                            }
+                            Application.Run(form);
                         }
-                        else if (editor.Configuration.Editor_OpenLastProjectOnStartup)
-                        {
-                            if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0 &&
-                                File.Exists(Properties.Settings.Default.RecentProjects[0]))
-                                EditorActions.OpenLevel(form, Properties.Settings.Default.RecentProjects[0]);
-                        }
-                        Application.Run(form);
                     }
+                    else
+                        EditorActions.BuildInBatch(editor, batchList, batchFile);
                 }
             }
-            else if (startFile != null)
+            else if (startFile != null) // Send opening file to existing editor instance
                 SingleInstanceManagement.Send(Process.GetCurrentProcess(), new List<string>() { ".prj2" }, startFile);
-            else
+            else // Just bring editor to top, if user tries to launch another copy
                 SingleInstanceManagement.Bump(Process.GetCurrentProcess());
         }
     }

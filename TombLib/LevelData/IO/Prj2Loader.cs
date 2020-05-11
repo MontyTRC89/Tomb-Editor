@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -227,6 +228,10 @@ namespace TombLib.LevelData.IO
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
+                else if (id == Prj2Chunks.DefaultLightQuality)
+                    settings.DefaultLightQuality = (LightQuality)chunkIO.ReadChunkLong(chunkSize);
+                else if (id == Prj2Chunks.OverrideLightQuality)
+                    settings.OverrideIndividualLightQualitySettings = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.ScriptDirectory)
                     settings.ScriptDirectory = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SelectedSounds)
@@ -458,14 +463,14 @@ namespace TombLib.LevelData.IO
                     });
                     settings.AnimatedTextureSets = animatedTextureSets;
                 }
-                else if(id == Prj2Chunks.AutoMergeStaticMeshes)
+                else if (id == Prj2Chunks.AutoMergeStaticMeshes)
                 {
                     chunkIO.ReadChunks((id2, size) => {
                         if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
                         {
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades,false,false, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, false, false, settings));
                             return true;
                         }
                         else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry2)
@@ -473,7 +478,7 @@ namespace TombLib.LevelData.IO
                             uint value = chunkIO.Raw.ReadUInt32();
                             bool vertexShades = chunkIO.Raw.ReadBoolean();
                             bool tintAsAmbient = chunkIO.Raw.ReadBoolean();
-                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient,false, settings));
+                            settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(value, true, vertexShades, tintAsAmbient, false, settings));
                             return true;
                         }
                         else if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry3)
@@ -487,7 +492,22 @@ namespace TombLib.LevelData.IO
                         }
                         else return false;
                     });
-                }else
+                }
+                else if (id == Prj2Chunks.Palette)
+                {
+                    var colorCount = chunkIO.Raw.ReadUInt16();
+                    var colorList = new List<ColorC>();
+
+                    for (int i = 0; i < colorCount; i++)
+                    {
+                        var r = chunkIO.Raw.ReadByte();
+                        var g = chunkIO.Raw.ReadByte();
+                        var b = chunkIO.Raw.ReadByte();
+                        colorList.Add(new ColorC(r, g, b));
+                    }
+                    settings.Palette = colorList;
+                }
+                else
                     return false;
                 return true;
             });
@@ -855,8 +875,8 @@ namespace TombLib.LevelData.IO
                     instance.CodeBits = chunkIO.Raw.ReadByte();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
-                }else 
-                if (id3 == Prj2Chunks.ObjectMovable2)
+                }
+                else if (id3 == Prj2Chunks.ObjectMovable2)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -878,7 +898,8 @@ namespace TombLib.LevelData.IO
                     });
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
-                }else if (id3 == Prj2Chunks.ObjectMovable3)
+                }
+                else if (id3 == Prj2Chunks.ObjectMovable3)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -961,7 +982,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectFlyBy2)
+                else if (id3 == Prj2Chunks.ObjectFlyBy2) // Obsolete; LuaScript is unused with new script concept.
                 {
                     var instance = new FlybyCameraInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -978,7 +999,7 @@ namespace TombLib.LevelData.IO
                     {
                         if (id4 == Prj2Chunks.ObjectFlyBy2LuaScript)
                         {
-                            instance.LuaScript = chunkIO.ReadChunkString(chunkSize4);
+                            chunkIO.ReadChunkString(chunkSize4);
                             return true;
                         }
                         return false;
@@ -1063,13 +1084,12 @@ namespace TombLib.LevelData.IO
                         instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
                     else
                         instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
-                    if(id3 == Prj2Chunks.ObjectLight3)
-                    {
+
+                    if (id3 == Prj2Chunks.ObjectLight3)
                         instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
-                    }else
-                    {
+                    else
                         instance.Quality = LightQuality.Default;
-                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1180,8 +1200,6 @@ namespace TombLib.LevelData.IO
                             instance.CodeBits = unchecked((byte)chunkIO.ReadChunkLong(chunkSize4));
                         else if (id4 == Prj2Chunks.ObjectTrigger2OneShot)
                             instance.OneShot = chunkIO.ReadChunkBool(chunkSize4);
-                        else if (id4 == Prj2Chunks.ObjectTrigger2LuaScript)
-                            instance.LuaScript = chunkIO.ReadChunkString(chunkSize4);
                         else
                             return false;
                         return true;
@@ -1227,6 +1245,56 @@ namespace TombLib.LevelData.IO
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);                    
+                }
+                else if (id3 == Prj2Chunks.ObjectTriggerVolumeTest)
+                {
+                    var instanceType = (VolumeShape)chunkIO.Raw.ReadByte();
+                    var scripts = new VolumeScriptInstance();
+
+                    VolumeInstance instance;
+
+                    switch (instanceType)
+                    {
+                        case VolumeShape.Box:
+                            {
+                                instance = new BoxVolumeInstance();
+                                var bv = instance as BoxVolumeInstance;
+                                bv.Size = chunkIO.Raw.ReadVector3();
+                                bv.RotationY = chunkIO.Raw.ReadSingle();
+                                bv.RotationX = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        case VolumeShape.Prism:
+                            {
+                                instance = new PrismVolumeInstance();
+                                var pv = instance as PrismVolumeInstance;
+                                pv.Scale = chunkIO.Raw.ReadSingle();
+                                pv.RotationY = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        case VolumeShape.Sphere:
+                            {
+                                instance = new SphereVolumeInstance();
+                                var sv = instance as SphereVolumeInstance;
+                                sv.Scale = chunkIO.Raw.ReadSingle();
+                            }
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.Activators = (VolumeActivators)chunkIO.Raw.ReadUInt16();
+                    scripts.Name = chunkIO.Raw.ReadStringUTF8();
+                    scripts.Environment = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnEnter = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnInside = chunkIO.Raw.ReadStringUTF8();
+                    scripts.OnLeave = chunkIO.Raw.ReadStringUTF8();
+
+                    instance.Scripts = scripts;
+
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
                 }
                 else
                     return false;

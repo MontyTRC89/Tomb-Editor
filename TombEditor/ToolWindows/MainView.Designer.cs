@@ -29,6 +29,7 @@
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
             this.butDrawCardinalDirections = new System.Windows.Forms.ToolStripButton();
             this.butDrawExtraBlendingModes = new System.Windows.Forms.ToolStripButton();
+            this.butDrawWhiteLighting = new System.Windows.Forms.ToolStripButton();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
@@ -37,7 +38,9 @@
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawImportedGeometry = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawGhostBlocks = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawVolumes = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawOther = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
             this.butFlipMap = new System.Windows.Forms.ToolStripButton();
             this.butCopy = new System.Windows.Forms.ToolStripButton();
             this.butPaste = new System.Windows.Forms.ToolStripButton();
@@ -54,6 +57,9 @@
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
+            this.butAddBoxVolume = new System.Windows.Forms.ToolStripButton();
+            this.butAddPrismVolume = new System.Windows.Forms.ToolStripButton();
+            this.butAddSphereVolume = new System.Windows.Forms.ToolStripButton();
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
             this.butTextureWalls = new System.Windows.Forms.ToolStripButton();
             this.butEditLevelSettings = new System.Windows.Forms.ToolStripButton();
@@ -62,7 +68,7 @@
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.butDrawLightRadius = new System.Windows.Forms.ToolStripMenuItem();
+            this.butDrawStaticTint = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,6 +92,8 @@
             this.butDrawRoomNames,
             this.butDrawCardinalDirections,
             this.butDrawExtraBlendingModes,
+            this.butDrawWhiteLighting,
+            this.butDrawStaticTint,
             this.butDrawIllegalSlopes,
             this.butDrawSlideDirections,
             this.butDisableGeometryPicking,
@@ -106,6 +114,9 @@
             this.butCompileLevel,
             this.butCompileLevelAndPlay,
             this.butTextureFloor,
+            this.butAddBoxVolume,
+            this.butAddPrismVolume,
+            this.butAddSphereVolume,
             this.butTextureCeiling,
             this.butTextureWalls,
             this.butEditLevelSettings,
@@ -267,6 +278,17 @@
             this.butDrawExtraBlendingModes.Size = new System.Drawing.Size(23, 25);
             this.butDrawExtraBlendingModes.Tag = "DrawExtraBlendingModes";
             // 
+            // butDrawWhiteLighting
+            // 
+            this.butDrawWhiteLighting.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawWhiteLighting.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawWhiteLighting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawWhiteLighting.Image = global::TombEditor.Properties.Resources.actions_DrawUntexturedLights_16;
+            this.butDrawWhiteLighting.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawWhiteLighting.Name = "butDrawWhiteLighting";
+            this.butDrawWhiteLighting.Size = new System.Drawing.Size(23, 25);
+            this.butDrawWhiteLighting.Tag = "DrawWhiteTextureLightingOnly";
+            // 
             // butDrawIllegalSlopes
             // 
             this.butDrawIllegalSlopes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -310,8 +332,9 @@
             this.butDrawStatics,
             this.butDrawImportedGeometry,
             this.butDrawGhostBlocks,
-            this.butDrawLightRadius,
-            this.butDrawOther});
+            this.butDrawVolumes,
+            this.butDrawOther,
+            this.butDrawLightRadius});
             this.butDrawObjects.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawObjects.Image = global::TombEditor.Properties.Resources.actions_DrawObjects_16;
             this.butDrawObjects.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -326,7 +349,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -338,7 +361,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -350,7 +373,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -362,9 +385,20 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
+            // 
+            // butDrawVolumes
+            // 
+            this.butDrawVolumes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawVolumes.Checked = true;
+            this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawVolumes.Name = "butDrawVolumes";
+            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
+            this.butDrawVolumes.Tag = "DrawVolumes";
+            this.butDrawVolumes.Text = "DrawVolumes";
             // 
             // butDrawOther
             // 
@@ -374,9 +408,21 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
+            // 
+            // butDrawLightRadius
+            // 
+            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawLightRadius.Checked = true;
+            this.butDrawLightRadius.CheckOnClick = true;
+            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawLightRadius.Name = "butDrawLightRadius";
+            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
+            this.butDrawLightRadius.Tag = "DrawLightRadius";
+            this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
             // butFlipMap
             // 
@@ -564,6 +610,39 @@
             this.butTextureFloor.Size = new System.Drawing.Size(23, 25);
             this.butTextureFloor.Tag = "TextureFloor";
             // 
+            // butAddBoxVolume
+            // 
+            this.butAddBoxVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddBoxVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddBoxVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddBoxVolume.Image = global::TombEditor.Properties.Resources.objects_volume_box_16;
+            this.butAddBoxVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddBoxVolume.Name = "butAddBoxVolume";
+            this.butAddBoxVolume.Size = new System.Drawing.Size(23, 20);
+            this.butAddBoxVolume.Tag = "AddBoxVolume";
+            // 
+            // butAddPrismVolume
+            // 
+            this.butAddPrismVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddPrismVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddPrismVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddPrismVolume.Image = global::TombEditor.Properties.Resources.objects_volume_prism_16;
+            this.butAddPrismVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddPrismVolume.Name = "butAddPrismVolume";
+            this.butAddPrismVolume.Size = new System.Drawing.Size(24, 24);
+            this.butAddPrismVolume.Tag = "AddPrismVolume";
+            // 
+            // butAddSphereVolume
+            // 
+            this.butAddSphereVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddSphereVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddSphereVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddSphereVolume.Image = global::TombEditor.Properties.Resources.objects_volume_sphere_16;
+            this.butAddSphereVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddSphereVolume.Name = "butAddSphereVolume";
+            this.butAddSphereVolume.Size = new System.Drawing.Size(24, 24);
+            this.butAddSphereVolume.Tag = "AddSphereVolume";
+            // 
             // butTextureCeiling
             // 
             this.butTextureCeiling.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -572,7 +651,7 @@
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.texture_Ceiling2_16;
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureCeiling.Name = "butTextureCeiling";
-            this.butTextureCeiling.Size = new System.Drawing.Size(23, 25);
+            this.butTextureCeiling.Size = new System.Drawing.Size(24, 24);
             this.butTextureCeiling.Tag = "TextureCeiling";
             // 
             // butTextureWalls
@@ -583,7 +662,7 @@
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.texture_Walls2_16;
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureWalls.Name = "butTextureWalls";
-            this.butTextureWalls.Size = new System.Drawing.Size(23, 25);
+            this.butTextureWalls.Size = new System.Drawing.Size(24, 24);
             this.butTextureWalls.Tag = "TextureWalls";
             // 
             // butEditLevelSettings
@@ -639,6 +718,7 @@
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3D.Location = new System.Drawing.Point(3, 31);
             this.panel3D.Name = "panel3D";
+            this.panel3D.ShowLightingWhiteTextureOnly = false;
             this.panel3D.Size = new System.Drawing.Size(833, 255);
             this.panel3D.TabIndex = 13;
             // 
@@ -654,17 +734,16 @@
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             // 
-            // butDrawLightRadius
+            // butDrawStaticTint
             // 
-            this.butDrawLightRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDrawLightRadius.Checked = true;
-            this.butDrawLightRadius.CheckOnClick = true;
-            this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
-            this.butDrawLightRadius.Tag = "DrawLightRadius";
-            this.butDrawLightRadius.Text = "DrawLightRadius";
+            this.butDrawStaticTint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDrawStaticTint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDrawStaticTint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDrawStaticTint.Image = global::TombEditor.Properties.Resources.actions_StaticTint_16;
+            this.butDrawStaticTint.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDrawStaticTint.Name = "butDrawStaticTint";
+            this.butDrawStaticTint.Size = new System.Drawing.Size(23, 25);
+            this.butDrawStaticTint.Tag = "ShowRealTintForMergedStatics";
             // 
             // MainView
             // 
@@ -733,5 +812,11 @@
         private System.Windows.Forms.ToolStripButton butSearch;
         private System.Windows.Forms.ToolStripButton butSearchAndReplaceObjects;
         private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
+        private System.Windows.Forms.ToolStripButton butDrawWhiteLighting;
+        private System.Windows.Forms.ToolStripMenuItem butDrawVolumes;
+        private System.Windows.Forms.ToolStripButton butAddBoxVolume;
+        private System.Windows.Forms.ToolStripButton butAddPrismVolume;
+        private System.Windows.Forms.ToolStripButton butAddSphereVolume;
+        private System.Windows.Forms.ToolStripButton butDrawStaticTint;
     }
 }

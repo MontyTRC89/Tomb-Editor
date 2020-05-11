@@ -34,7 +34,6 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
-            EditorEventRaised(new Editor.InitEvent());
 
             // A hack to edit textbox size
             tbRoomTags.AutoSize = false;
@@ -54,7 +53,7 @@ namespace TombEditor.ToolWindows
         {
             // Disable version-specific controls
             if (obj is Editor.InitEvent ||
-                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
+                obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
                 bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;

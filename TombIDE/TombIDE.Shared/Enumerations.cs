@@ -1,0 +1,42 @@
+﻿namespace TombIDE.Shared
+{
+	public enum IDETab
+	{
+		ProjectMaster,
+		ScriptEditor,
+		Tools
+	}
+
+	public enum GameLanguage
+	{
+		// Default TR4 languages
+
+		English,
+		French,
+		German,
+		Italian,
+		Spanish,
+		Japanese,
+		Dutch
+	}
+
+	public enum ObjectType
+	{
+		Section,
+		Level,
+		Include,
+		Define
+	}
+
+	public enum FileCreationMode
+	{
+		New,
+		Saving
+	}
+
+	public enum FindingOrder
+	{
+		Prev,
+		Next
+	}
+}

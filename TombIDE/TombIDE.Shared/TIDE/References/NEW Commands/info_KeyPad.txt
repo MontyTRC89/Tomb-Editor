@@ -1,0 +1,26 @@
+Syntax: KeyPad=AtStartAnimation, FrameStartPopUp, AtEndAnimation, ClickSound
+Scope: to use in [Level] section
+
+KeyPad command is optional and it used to change default animations and sounds for Keypad switch_type1 you find in ng.wad
+You should use this command only if you want modify animations or sounds to enable when lara activates the keypad switch in game.
+
+Parameters:
+AtStartAnimation= Number of lara animation to show when Lara engages with Action command the keypad.
+You don't wad any animation at start you can type in this field IGNORE.
+Remark: the default value was 197
+
+FrameStartPopUp=Used only if you set a valid value in above field AtStartAnimation. In this case the keypad image will be showed only when the start animation reachs this frame number. For example if you type 20 in this field, the keypad will be showed 20 frames after start animation was started.
+Remarks: 
+* If you don't set any AtStartAnimation, this field will be ignored.
+* If you set a valid AtStartAnimation value, you must set in FrameStartPopUp field a valid value, you cann't set IGNORE in this field.
+AtEndAnimation= Number of animation to show when the keypad was closed.
+Remarks:
+*If you don't wad a final animation you can type IGNORE in this field.
+*The AtEndAnimation will be showed only if player goes off from keypad with Enter/[*] key, differently, if he exits using Escape key no final animation will be performed.
+ 
+ClickSound=Number of sound effect to play when player hits some key of keypad.
+Remarks:
+*If you don't wad any sound, type IGNORE in this field
+*You can see the list of sound effect in Reference panel of NG_Center program.
+
+

@@ -91,6 +91,16 @@ namespace TombLib.ResourcesC {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] palette {
+            get {
+                object obj = ResourceManager.GetObject("palette", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap pcsky_raw {

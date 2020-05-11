@@ -38,6 +38,7 @@
 			// 
 			this.button_Create.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.button_Create.Checked = false;
 			this.button_Create.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.button_Create.Location = new System.Drawing.Point(9, 203);
 			this.button_Create.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
@@ -49,6 +50,7 @@
 			// 
 			// button_OpenAudioFolder
 			// 
+			this.button_OpenAudioFolder.Checked = false;
 			this.button_OpenAudioFolder.Image = global::TombIDE.ProjectMaster.Properties.Resources.forward_arrow_16;
 			this.button_OpenAudioFolder.Location = new System.Drawing.Point(330, 4);
 			this.button_OpenAudioFolder.Margin = new System.Windows.Forms.Padding(3, 4, 4, 3);
@@ -116,21 +118,19 @@
 			// 
 			// numeric_SoundID
 			// 
-			this.numeric_SoundID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-			this.numeric_SoundID.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.numeric_SoundID.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
 			this.numeric_SoundID.Location = new System.Drawing.Point(104, 6);
+			this.numeric_SoundID.LoopValues = false;
 			this.numeric_SoundID.Margin = new System.Windows.Forms.Padding(1, 6, 3, 3);
 			this.numeric_SoundID.Maximum = new decimal(new int[] {
             999,
             0,
             0,
             0});
-			this.numeric_SoundID.LoopValues = false;
 			this.numeric_SoundID.Name = "numeric_SoundID";
 			this.numeric_SoundID.Size = new System.Drawing.Size(220, 20);
 			this.numeric_SoundID.TabIndex = 1;

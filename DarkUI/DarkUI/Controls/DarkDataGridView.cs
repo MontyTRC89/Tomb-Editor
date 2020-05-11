@@ -26,6 +26,8 @@ namespace DarkUI.Controls
         private bool _isInit;
         private ScrollBars _scrollBars = ScrollBars.Both;
         private int _dragPosition = -1;
+        private int _dragColumnIndex = -1;
+        private bool _dragValue = false;
 
         private static readonly DataGridViewCellStyle _cellStyleUnfocusedEven = GetCellStyle(false, false, false);
         private static readonly DataGridViewCellStyle _cellStyleUnfocusedOdd = GetCellStyle(false, true, false);
@@ -88,8 +90,8 @@ namespace DarkUI.Controls
             _base.MouseWheel += BaseMouseWheel;
             _base.KeyDown += BaseKeyDown;
             _base.MouseMove += BaseMouseMove;
-            _base.CellMouseDoubleClick += BaseCellMouseDoubleClick;
-            _base.CellMouseClick += BaseCellMouseClick;
+            _base.CellMouseDown += BaseCellMouseDown;
+            _base.CellMouseEnter += BaseCellMouseEnter;
             _base.DragEnter += BaseDragEnter;
             _base.DragOver += BaseDragOver;
             _base.DragLeave += BaseDragLeave;
@@ -168,46 +170,32 @@ namespace DarkUI.Controls
             _vScrollBar.ScrollBy(e.Delta < 0 ? 1 : -1);
         }
 
-        private void BaseCellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            if (e.RowIndex == -1) return;
-
-            if (_base.Columns[e.ColumnIndex] is DarkDataGridViewCheckBoxColumn || _base.Columns[e.ColumnIndex] is DataGridViewCheckBoxColumn)
-            {
-                var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
-                cell.Value = !((bool)cell.Value);
-                _base.RefreshEdit();
-                return;
-            }
-
-            if (_base.IsCurrentCellInEditMode)
-                return;
-
-            if (ToggleCheckBoxOnDoubleClick)
-                ToggleFirstCheckbox(e);
-        }
-
         private void ToggleFirstCheckbox(DataGridViewCellMouseEventArgs e)
         {
             for (int i = 0; i < _base.Columns.Count; i++)
             {
                 if (_base.Columns[i] is DarkDataGridViewCheckBoxColumn || _base.Columns[i] is DataGridViewCheckBoxColumn)
                 {
-                    _base.Rows[e.RowIndex].Cells[i].Value = !((bool)_base.Rows[e.RowIndex].Cells[i].Value);
-                    _base.RefreshEdit();
+                    if (i != e.ColumnIndex)
+                    {
+                        _base.Rows[e.RowIndex].Cells[i].Value = !((bool)_base.Rows[e.RowIndex].Cells[i].Value);
+                        _base.RefreshEdit();
+                    }
                     break;
                 }
             }
         }
 
-        private void BaseCellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void BaseCellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.RowIndex == -1) return;
+            if (e.RowIndex == -1 || e.Button != MouseButtons.Left) return;
 
             var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
             if (cell is DarkDataGridViewCheckBoxCell || cell is DataGridViewCheckBoxCell)
             {
                 cell.Value = !((bool)cell.Value);
+                _dragValue = (bool)cell.Value;
+                _dragColumnIndex = e.ColumnIndex;
                 _base.RefreshEdit();
                 return;
             }
@@ -228,6 +216,24 @@ namespace DarkUI.Controls
 
             if (ToggleCheckBoxOnClick)
                 ToggleFirstCheckbox(e);
+        }
+
+        private void BaseCellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex == -1 || e.ColumnIndex != _dragColumnIndex) return;
+
+            var cell = _base.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            if (cell is DarkDataGridViewCheckBoxCell || cell is DataGridViewCheckBoxCell)
+            {
+                if (Control.MouseButtons.HasFlag(MouseButtons.Left))
+                {
+                    if ((bool)cell.Value != _dragValue)
+                    {
+                        cell.Value = _dragValue;
+                        _base.RefreshEdit();
+                    }
+                }
+            }
         }
 
         private void BaseKeyDown(object sender, KeyEventArgs e)
@@ -871,12 +877,7 @@ namespace DarkUI.Controls
 
         [DefaultValue(false)]
         [Category("Misc")]
-        [Description("Toggles checkbox value on double-click in first encountered checkbox cell.")]
-        public bool ToggleCheckBoxOnDoubleClick { get; set; }
-
-        [DefaultValue(false)]
-        [Category("Misc")]
-        [Description("Toggles checkbox value on double-click in first encountered checkbox cell.")]
+        [Description("Toggles checkbox value on click in first encountered checkbox cell.")]
         public bool ToggleCheckBoxOnClick { get; set; }
 
         [DefaultValue(false)]
@@ -1498,6 +1499,10 @@ namespace DarkUI.Controls
                 }
             }
         }
+
+        // Absorb content click mouse events, because it's intercepted globally in parent DGV event handlers
+        protected override void OnContentClick(DataGridViewCellEventArgs e) { }
+        protected override void OnContentDoubleClick(DataGridViewCellEventArgs e) { }
     }
 
     public class DarkDataGridViewCheckBoxColumn : DataGridViewCheckBoxColumn

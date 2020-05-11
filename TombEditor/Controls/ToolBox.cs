@@ -45,7 +45,6 @@ namespace TombEditor.Controls
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
-                EditorEventRaised(new Editor.InitEvent());
             }
         }
 

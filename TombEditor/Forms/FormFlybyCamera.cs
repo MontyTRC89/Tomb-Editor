@@ -61,18 +61,6 @@ namespace TombEditor.Forms
                 cbBit12.Text = "Make fade-in";
                 cbBit13.Text = "Make fade-out";
             }
-
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-            {
-                Width = 960;
-                tbLuaScript.Enabled = true;
-                tbLuaScript.Code = _flyByCamera.LuaScript;
-            }
-            else
-            {
-                Width = 560;
-                tbLuaScript.Enabled = false;
-            }
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -104,11 +92,6 @@ namespace TombEditor.Forms
             _flyByCamera.Roll = (float)numRoll.Value;
             _flyByCamera.RotationX = (float)numRotationX.Value;
             _flyByCamera.RotationY = (float)numRotationY.Value;
-
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-            {
-                _flyByCamera.LuaScript = tbLuaScript.Code;
-            }
 
             DialogResult = DialogResult.OK;
             Close();

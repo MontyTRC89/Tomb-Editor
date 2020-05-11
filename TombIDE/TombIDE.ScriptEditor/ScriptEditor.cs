@@ -1,48 +1,55 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
-using FastColoredTextBoxNS;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Automation;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using TombIDE.ScriptEditor.Forms;
+using TombIDE.ScriptEditor.Helpers;
 using TombIDE.Shared;
-using TombIDE.Shared.Scripting;
-using TombIDE.Shared.Scripting.Syntaxes;
+using TombIDE.Shared.SharedClasses;
 using TombLib.Forms;
 using TombLib.LevelData;
-using TombLib.Script;
+using TombLib.Scripting.Compilers;
+using TombLib.Scripting.Helpers;
+using TombLib.Scripting.Resources;
+using TombLib.Scripting.TextEditors;
+using TombLib.Scripting.TextEditors.Controls;
+using TombLib.Scripting.TextEditors.Forms;
+using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
 namespace TombIDE.ScriptEditor
 {
 	public partial class ScriptEditor : UserControl
 	{
 		private IDE _ide;
+		private TextEditorConfigs _editorConfigs = TextEditorConfigs.Load();
+
+		private FormFindReplace _formFindReplace;
+		private FormNGCompilingStatus _formCompiling;
 
 		/// <summary>
-		/// The currently used ScriptTextBox
+		/// The current tab's TextEditor.
 		/// </summary>
-		private ScriptTextBox _textBox;
+		private TextEditorBase _textEditor;
 
-		private FormDebugMode _formDebugMode;
-
-		#region Initialization
+		#region Construction and public methods
 
 		public ScriptEditor()
 		{
-			KeyWords.SetupConstants();
+			// Fetch mnemonic constants / plugin mnemonic constants
+			ScriptKeywords.SetupConstants(PathHelper.GetReferencesPath(), PathHelper.GetInternalNGCPath());
 
 			InitializeComponent();
-
-			_formDebugMode = new FormDebugMode();
 		}
 
 		public void Initialize(IDE ide)
@@ -50,156 +57,34 @@ namespace TombIDE.ScriptEditor
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			// Check if the previous session crashed and left .backup files in the project's /Script/ folder
+			// Initialize watchers
+			scriptFolderWatcher.Path = _ide.Project.ScriptPath;
+
+			// Initialize forms
+			_formFindReplace = new FormFindReplace(ref tabControl_Editor, ref tabControl_Info);
+			_formCompiling = new FormNGCompilingStatus();
+
+			// Initialize side controls
+			objectBrowser.Initialize(_ide);
+			fileList.Initialize(_ide);
+			referenceBrowser.Initialize(_ide);
+
+			// Check if the previous session crashed and left unhandled .backup files
 			CheckPreviousSession();
 
 			// Open the project's script file on start
 			OpenScriptFile();
-
-			ApplyUserSettings();
-
-			// Run the scriptFolderWatcher and update the File List
-			scriptFolderWatcher.Path = _ide.Project.ScriptPath;
-			UpdateFileList();
 		}
 
-		private void OnIDEEventRaised(IIDEEvent obj)
-		{
-			if (obj is IDE.LevelAddedEvent)
-			{
-				List<string> scriptMessages = ((IDE.LevelAddedEvent)obj).ScriptMessages;
+		#endregion Construction and public methods
 
-				// Check if the message is not empty
-				if (scriptMessages.Count > 0)
-					WriteGeneratedCode(scriptMessages);
-			}
-			else if (obj is IDE.RequestedScriptPresenceCheckEvent)
-			{
-				string levelName = ((IDE.RequestedScriptPresenceCheckEvent)obj).LevelName;
-
-				TabPage cachedTab = tabControl_Editor.SelectedTab;
-				bool wasScriptFileAlreadyOpened = IsFileAlreadyOpened(GetScriptFilePath());
-
-				_ide.LevelScriptDefined = IsLevelScriptDefined(levelName);
-
-				if (!wasScriptFileAlreadyOpened)
-					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
-
-				tabControl_Editor.SelectTab(cachedTab);
-			}
-			else if (obj is IDE.RequestedLanguageStringPresenceCheckEvent)
-			{
-				string levelName = ((IDE.RequestedLanguageStringPresenceCheckEvent)obj).LevelName;
-
-				TabPage cachedTab = tabControl_Editor.SelectedTab;
-				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
-
-				_ide.LevelLanguageStringDefined = IsLevelLanguageStringDefined(levelName);
-
-				if (!wasLanguageFileAlreadyOpened)
-					tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
-
-				tabControl_Editor.SelectTab(cachedTab);
-			}
-			else if (obj is IDE.RequestedScriptEntryRenameEvent)
-			{
-				string oldName = ((IDE.RequestedScriptEntryRenameEvent)obj).PreviousName;
-				string newName = ((IDE.RequestedScriptEntryRenameEvent)obj).CurrentName;
-
-				RenameRequestedLevelScript(oldName, newName);
-				RenameRequestedLanguageString(oldName, newName);
-
-				OpenScriptFile(); // Because that's the most important file affected
-
-				_ide.IndicateScriptEditorChange();
-			}
-			else if (obj is IDE.RequestedPluginLanguageEntryAdditionEvent)
-			{
-				string pluginFileName = ((IDE.RequestedPluginLanguageEntryAdditionEvent)obj).PluginFileName;
-
-				TabPage cachedTab = tabControl_Editor.SelectedTab;
-				bool wasLanguageFileAlreadyOpened = IsFileAlreadyOpened(GetLanguageFilePath("english"));
-
-				OpenLanguageFile("english");
-
-				bool wasFileChanged = _textBox.IsChanged;
-
-				for (int i = 0; i < _textBox.LinesCount; i++)
-				{
-					if (_textBox.GetLineText(i).ToLower().StartsWith("[extrang]"))
-					{
-						// Check if plugin string isn't already defined
-						for (int j = _textBox.LinesCount - 1; j >= i; j--)
-						{
-							if (Regex.IsMatch(_textBox.GetLineText(j), @"\A\d*:\s*?" + pluginFileName + @"(;.*)?"))
-								return;
-						}
-
-						// Add the string
-						for (int j = _textBox.LinesCount - 1; j >= i; j--)
-						{
-							if (Regex.IsMatch(_textBox.GetLineText(j), @"\A\d*:.*"))
-							{
-								_textBox.Selection = new Range(_textBox, _textBox.GetLineText(j).Length, j, _textBox.GetLineText(j).Length, j);
-								_textBox.SelectedText = Environment.NewLine;
-
-								int prevNumber = int.Parse(Regex.Replace(_textBox.GetLineText(j), @"\A(\d*):.*", "$1"));
-
-								_textBox.Selection = new Range(_textBox, 0, j + 1, 0, j + 1);
-								_textBox.SelectedText = prevNumber + 1 + ": " + pluginFileName;
-
-								_textBox.Navigate(j + 1);
-								break;
-							}
-							else if (j == i)
-							{
-								_textBox.Selection = new Range(_textBox, _textBox.GetLineText(j).Length, j, _textBox.GetLineText(j).Length, j);
-								_textBox.SelectedText = Environment.NewLine;
-
-								_textBox.Selection = new Range(_textBox, 0, j + 1, 0, j + 1);
-								_textBox.SelectedText = "0: " + pluginFileName;
-
-								_textBox.Navigate(j + 1);
-								break;
-							}
-						}
-
-						break;
-					}
-				}
-
-				_textBox.Invalidate();
-
-				if (wasFileChanged)
-					_ide.IndicateScriptEditorChange();
-				else
-				{
-					SaveFile(tabControl_Editor.SelectedTab, _textBox);
-
-					if (!wasLanguageFileAlreadyOpened)
-					{
-						tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
-						tabControl_Editor.SelectTab(cachedTab);
-					}
-				}
-			}
-			else if (obj is IDE.ProgramClosingEvent)
-			{
-				if (AreAllFilesSaved())
-				{
-					_ide.ClosingCancelled = false;
-					_textBox.Dispose();
-				}
-				else
-					_ide.ClosingCancelled = true; // Only happens when the user clicked "Cancel" or when saving failed somehow
-			}
-		}
+		#region Session
 
 		private void CheckPreviousSession()
 		{
 			string[] files = Directory.GetFiles(_ide.Project.ScriptPath, "*.backup", SearchOption.AllDirectories);
 
-			if (files.Length != 0) // If a .backup file exists in the project's /Script/ folder
+			if (files.Length != 0) // If a .backup file exists
 			{
 				DialogResult result = DarkMessageBox.Show(this,
 					"Looks like your previous Script Editor session was unsuccessfully closed.\n" +
@@ -207,512 +92,226 @@ namespace TombIDE.ScriptEditor
 					MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
-					RestorePreviousSession(files);
+					RestoreSession(files);
 				else if (result == DialogResult.No)
-				{
-					// Delete all .backup files
-					foreach (string file in files)
-					{
-						if (File.Exists(file))
-							File.Delete(file);
-					}
-				}
+					FileHelper.DeleteFiles(files); // Deletes all .backup files
 			}
 		}
 
-		private void RestorePreviousSession(string[] files)
+		private void RestoreSession(string[] files)
 		{
 			foreach (string file in files)
 			{
 				string backupFileContent = File.ReadAllText(file, Encoding.GetEncoding(1252));
 
-				// Get the original file path by trimming ".backup" at the end of the backup file path
-				string originalFilePath = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file));
+				string originalFilePath = GetOriginalFilePathFromBackupFile(file);
 
-				// Open the original file and replace the whole text of the ScriptTextBox with the .backup file content
+				// Open the original file and replace the whole text of the TextEditor with the .backup file content
 				OpenFile(originalFilePath);
-				_textBox.Text = backupFileContent;
+				_textEditor.Text = backupFileContent;
 
 				HandleTextChangedIndicator();
 			}
 		}
 
-		private void ApplyUserSettings()
-		{
-			// ScriptTextBox specific settings
-			foreach (TabPage tab in tabControl_Editor.TabPages)
-			{
-				tab.Controls.OfType<ScriptTextBox>().First().Font = new Font(_ide.Configuration.FontFamily, _ide.Configuration.FontSize);
-				tab.Controls.OfType<ScriptTextBox>().First().AutoCompleteBrackets = _ide.Configuration.AutoCloseBrackets;
-				tab.Controls.OfType<ScriptTextBox>().First().WordWrap = _ide.Configuration.WordWrap;
-				tab.Controls.OfType<ScriptTextBox>().First().ShowLineNumbers = _ide.Configuration.View_ShowLineNumbers;
-				tab.Controls.OfType<ScriptTextBox>().First().ShowToolTips = _ide.Configuration.View_ShowToolTips;
-			}
-
-			// Editor settings
-			CommandManager.MaxHistoryLength = _ide.Configuration.UndoStackSize;
-			ToggleObjBrowser(_ide.Configuration.View_ShowObjBrowser);
-			ToggleFileList(_ide.Configuration.View_ShowFileList);
-			ToggleInfoBox(_ide.Configuration.View_ShowInfoBox);
-			ToggleToolStrip(_ide.Configuration.View_ShowToolStrip);
-			ToggleStatusStrip(_ide.Configuration.View_ShowStatusStrip);
-			ToggleLineNumbers(_ide.Configuration.View_ShowLineNumbers);
-			ToggleToolTips(_ide.Configuration.View_ShowToolTips);
-			SwapPanels(_ide.Configuration.View_SwapPanels);
-		}
-
 		private bool AreAllFilesSaved()
 		{
 			foreach (TabPage tab in tabControl_Editor.TabPages)
-			{
 				if (!IsFileSaved(tab))
 					return false;
-			}
 
 			return true;
 		}
 
-		#endregion Initialization
+		#endregion Session
 
-		#region Events
+		#region IDE Events
 
-		private void File_Save_Click(object sender, EventArgs e) => OnSaveButtonClicked();
-		private void File_SaveAll_Click(object sender, EventArgs e) => SaveAll();
-		private void File_Build_Click(object sender, EventArgs e) => BuildScript();
-
-		private void Edit_Undo_Click(object sender, EventArgs e) => _textBox.Undo();
-		private void Edit_Redo_Click(object sender, EventArgs e) => _textBox.Redo();
-		private void Edit_Cut_Click(object sender, EventArgs e) => _textBox.Cut();
-		private void Edit_Copy_Click(object sender, EventArgs e) => _textBox.Copy();
-		private void Edit_Paste_Click(object sender, EventArgs e) => _textBox.Paste();
-		private void Edit_Find_Click(object sender, EventArgs e) => _textBox.ShowFindDialog();
-		private void Edit_Replace_Click(object sender, EventArgs e) => _textBox.ShowReplaceDialog();
-
-		private void Edit_SelectAll_Click(object sender, EventArgs e)
+		private void OnIDEEventRaised(IIDEEvent obj)
 		{
-			_textBox.SelectAll();
-			DoStatusCounting(); // So it updates the status strip labels
+			IDEEvent_HandleFileOpening(obj);
+			IDEEvent_HandleObjectSelection(obj);
+			IDEEvent_HandleSilentActions(obj);
+			IDEEvent_HandleProgramClosing(obj);
 		}
 
-		private void Tools_Reindent_Click(object sender, EventArgs e) => _textBox.TidyDocument();
-		private void Tools_Trim_Click(object sender, EventArgs e) => _textBox.TidyDocument(true);
-		private void Tools_Comment_Click(object sender, EventArgs e) => _textBox.InsertLinePrefix(_textBox.CommentPrefix);
-		private void Tools_Uncomment_Click(object sender, EventArgs e) => _textBox.RemoveLinePrefix(_textBox.CommentPrefix);
-		private void Tools_ToggleBookmark_Click(object sender, EventArgs e) => _textBox.ToggleBookmark();
-		private void Tools_PrevBookmark_Click(object sender, EventArgs e) => _textBox.GotoPrevBookmark(_textBox.Selection.Start.iLine);
-		private void Tools_NextBookmark_Click(object sender, EventArgs e) => _textBox.GotoNextBookmark(_textBox.Selection.Start.iLine);
-		private void Tools_ClearBookmarks_Click(object sender, EventArgs e) => _textBox.ClearAllBookmarks();
-		private void Tools_Settings_Click(object sender, EventArgs e) => ShowSettingsForm();
-
-		private void View_ObjBrowser_Click(object sender, EventArgs e) => ToggleObjBrowser(!menuItem_ObjBrowser.Checked);
-		private void View_FileList_Click(object sender, EventArgs e) => ToggleFileList(!menuItem_FileList.Checked);
-		private void View_InfoBox_Click(object sender, EventArgs e) => ToggleInfoBox(!menuItem_InfoBox.Checked);
-		private void View_ToolStrip_Click(object sender, EventArgs e) => ToggleToolStrip(!menuItem_ToolStrip.Checked);
-		private void View_StatusStrip_Click(object sender, EventArgs e) => ToggleStatusStrip(!menuItem_StatusStrip.Checked);
-		private void View_LineNumbers_Click(object sender, EventArgs e) => ToggleLineNumbers(!menuItem_LineNumbers.Checked);
-		private void View_ToolTips_Click(object sender, EventArgs e) => ToggleToolTips(!menuItem_ToolTips.Checked);
-		private void View_SwapPanels_Click(object sender, EventArgs e) => SwapPanels(!menuItem_SwapPanels.Checked);
-
-		private void Help_About_Click(object sender, EventArgs e) => ShowAboutForm();
-
-		private void ContextMenu_Cut_Click(object sender, EventArgs e) => _textBox.Cut();
-		private void ContextMenu_Copy_Click(object sender, EventArgs e) => _textBox.Copy();
-		private void ContextMenu_Paste_Click(object sender, EventArgs e) => _textBox.Paste();
-		private void ContextMenu_Comment_Click(object sender, EventArgs e) => _textBox.InsertLinePrefix(_textBox.CommentPrefix);
-		private void ContextMenu_Uncomment_Click(object sender, EventArgs e) => _textBox.RemoveLinePrefix(_textBox.CommentPrefix);
-		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => _textBox.ToggleBookmark();
-
-		private void ToolStrip_Save_Click(object sender, EventArgs e) => OnSaveButtonClicked();
-		private void ToolStrip_SaveAll_Click(object sender, EventArgs e) => SaveAll();
-		private void ToolStrip_Undo_Click(object sender, EventArgs e) => _textBox.Undo();
-		private void ToolStrip_Redo_Click(object sender, EventArgs e) => _textBox.Redo();
-		private void ToolStrip_Cut_Click(object sender, EventArgs e) => _textBox.Cut();
-		private void ToolStrip_Copy_Click(object sender, EventArgs e) => _textBox.Copy();
-		private void ToolStrip_Paste_Click(object sender, EventArgs e) => _textBox.Paste();
-		private void ToolStrip_Comment_Click(object sender, EventArgs e) => _textBox.InsertLinePrefix(_textBox.CommentPrefix);
-		private void ToolStrip_Uncomment_Click(object sender, EventArgs e) => _textBox.RemoveLinePrefix(_textBox.CommentPrefix);
-		private void ToolStrip_ToggleBookmark_Click(object sender, EventArgs e) => _textBox.ToggleBookmark();
-		private void ToolStrip_PrevBookmark_Click(object sender, EventArgs e) => _textBox.GotoPrevBookmark(_textBox.Selection.Start.iLine);
-		private void ToolStrip_NextBookmark_Click(object sender, EventArgs e) => _textBox.GotoNextBookmark(_textBox.Selection.Start.iLine);
-		private void ToolStrip_ClearBookmarks_Click(object sender, EventArgs e) => _textBox.ClearAllBookmarks();
-		private void ToolStrip_Build_Click(object sender, EventArgs e) => BuildScript();
-
-		private void StatusStrip_ResetZoom_Click(object sender, EventArgs e)
+		private void IDEEvent_HandleFileOpening(IIDEEvent obj)
 		{
-			_textBox.Zoom = 100;
-			button_ResetZoom.Visible = false;
-		}
-
-		private void inputTimer_Tick(object sender, EventArgs e)
-		{
-			// The inputTimer is used to update the Object Browser when the user hasn't typed anything for 3 seconds
-			// This boosts performance
-			inputTimer.Stop();
-			UpdateObjectBrowser();
-		}
-
-		private void Editor_TextChangedDelayed(object sender, TextChangedEventArgs e)
-		{
-			HandleTextChangedIndicator();
-
-			// Reset the timer
-			inputTimer.Stop();
-			inputTimer.Start();
-		}
-
-		private void Editor_UndoRedoState_Changed(object sender, EventArgs e) => UpdateUndoRedoSaveStates();
-		private void Editor_ZoomChanged(object sender, EventArgs e) => DoStatusCounting();
-
-		private void Editor_SelectionChanged(object sender, EventArgs e)
-		{
-			DoStatusCounting();
-
-			try
+			if (obj is IDE.ScriptEditor_OpenFileEvent)
 			{
-				HandleSyntaxHints();
-			}
-			catch { }
-		}
+				var e = obj as IDE.ScriptEditor_OpenFileEvent;
+				var fileTab = FindTabPageOfFile(e.RequestedFilePath);
 
-		private void Editor_KeyPress(object sender, KeyPressEventArgs e) => DoStatusCounting();
-
-		private void sectionPanel_Files_Resize(object sender, EventArgs e) => AdjustFileListButtons();
-
-		private void tabControl_Info_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (tabControl_Info.SelectedIndex == 0)
-				sectionPanel_InfoBox.SectionHeader = "Information Box - Double-click on a row to view details.";
-			else
-				sectionPanel_InfoBox.SectionHeader = "Information Box";
-		}
-
-		#endregion Events
-
-		#region Event Methods
-
-		private void OnSaveButtonClicked()
-		{
-			if (!SaveFile(tabControl_Editor.SelectedTab, _textBox))
-				return; // File saving failed
-
-			HandleTextChangedIndicator();
-
-			menuItem_Save.Enabled = false;
-			button_Save.Enabled = false;
-
-			if (IsEveryTabSaved())
-			{
-				menuItem_SaveAll.Enabled = false;
-				button_SaveAll.Enabled = false;
+				if (fileTab != null) // If the requested file is already opened
+					tabControl_Editor.SelectTab(fileTab);
+				else
+					OpenFile(e.RequestedFilePath);
 			}
 		}
 
-		private void SaveAll()
+		private void IDEEvent_HandleObjectSelection(IIDEEvent obj)
 		{
-			foreach (TabPage tab in tabControl_Editor.TabPages)
+			if (obj is IDE.ScriptEditor_SelectObjectEvent)
 			{
-				ScriptTextBox tabTextBox = tab.Controls.OfType<ScriptTextBox>().First();
-
-				if (tabTextBox.FilePath == null)
-					continue;
-
-				SaveFile(tab, tabTextBox);
-
-				HandleTextChangedIndicator(tab, tabTextBox);
-				UpdateUndoRedoSaveStates();
+				var e = (IDE.ScriptEditor_SelectObjectEvent)obj;
+				SelectObject(e.ObjectName, e.ObjectType);
 			}
 		}
 
-		private void BuildScript()
+		private void IDEEvent_HandleSilentActions(IIDEEvent obj)
 		{
-			SaveAll();
-
-			switch (_ide.Project.GameVersion)
+			if (obj is IDE.ScriptEditor_AppendScriptLinesEvent // Append Script Lines
+				|| obj is IDE.ScriptEditor_AddNewLevelStringEvent // Add New Level String
+				|| obj is IDE.ScriptEditor_AddNewNGStringEvent // Add New NG String
+				|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent // Script Presence Check Requested
+				|| obj is IDE.ScriptEditor_StringPresenceCheckEvent // String Presence Check Requested
+				|| obj is IDE.ScriptEditor_RenameLevelEvent) // Rename Level
 			{
-				case TRVersion.Game.TR4:
-					CompileTR4Script();
-					break;
+				TabPage cachedTab = tabControl_Editor.SelectedTab;
 
-				case TRVersion.Game.TRNG:
-					CompileTRNGScript();
-					break;
+				TabPage scriptFileTab = FindTabPageOfFile(PathHelper.GetScriptFilePath(_ide.Project));
+				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
+				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened ?
+					GetTextEditorOfTab(scriptFileTab).IsTextChanged : false;
+
+				TabPage languageFileTab = FindTabPageOfFile(PathHelper.GetLanguageFilePath(_ide.Project, GameLanguage.English));
+				bool wasLanguageFileAlreadyOpened = languageFileTab != null;
+				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened ?
+					GetTextEditorOfTab(languageFileTab).IsTextChanged : false;
+
+				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent)
+				{
+					List<string> inputLines = ((IDE.ScriptEditor_AppendScriptLinesEvent)obj).Lines;
+
+					if (inputLines.Count == 0)
+						return;
+
+					AppendScriptLines(inputLines);
+					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_AddNewLevelStringEvent)
+				{
+					AddNewLevelNameString(((IDE.ScriptEditor_AddNewLevelStringEvent)obj).LevelName);
+					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent)
+				{
+					bool isChanged = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).NGString);
+					EndSilentScriptAction(cachedTab, isChanged, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
+				{
+					_ide.ScriptDefined = IsLevelScriptDefined(((IDE.ScriptEditor_ScriptPresenceCheckEvent)obj).LevelName);
+					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent)
+				{
+					_ide.StringDefined = IsLevelLanguageStringDefined(((IDE.ScriptEditor_StringPresenceCheckEvent)obj).LevelName);
+					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_RenameLevelEvent)
+				{
+					string oldName = ((IDE.ScriptEditor_RenameLevelEvent)obj).OldName;
+					string newName = ((IDE.ScriptEditor_RenameLevelEvent)obj).NewName;
+
+					RenameRequestedLevelScript(oldName, newName);
+					RenameRequestedLanguageString(oldName, newName);
+
+					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+				}
 			}
 		}
 
-		private void AdjustOldFormatting() // Because the compilers really don't like having a space before "="
+		private void IDEEvent_HandleProgramClosing(IIDEEvent obj)
 		{
-			string vgeScriptFileContent = File.ReadAllText(SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script\Script.txt");
-
-			while (vgeScriptFileContent.Contains(" ="))
-				vgeScriptFileContent = vgeScriptFileContent.Replace(" =", "=");
-
-			File.WriteAllText(SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script\Script.txt", vgeScriptFileContent, Encoding.GetEncoding(1252));
+			if (obj is IDE.ProgramClosingEvent)
+				(obj as IDE.ProgramClosingEvent).CanClose = AreAllFilesSaved();
 		}
 
-		private void HandleTextChangedIndicator(TabPage tab = null, ScriptTextBox textBox = null)
+		#endregion IDE Events
+
+		#region IDE Event Methods
+
+		private void SelectObject(string objectName, ObjectType type)
 		{
-			if (tab == null)
-				tab = tabControl_Editor.SelectedTab;
+			DocumentLine objectLine = FindDocumentLineOfObject(objectName, type);
 
-			if (textBox == null)
-				textBox = _textBox;
-
-			if (string.IsNullOrEmpty(textBox.FilePath))
+			if (objectLine != null)
 			{
-				if (!textBox.IsChanged)
-					tab.Text = "Untitled";
-				else if (!tab.Text.EndsWith("*"))
-					tab.Text = "Untitled*";
-			}
-			else
-			{
-				if (!textBox.IsChanged)
-					tab.Text = tab.Text.TrimEnd('*');
-				else if (!tab.Text.EndsWith("*"))
-					tab.Text = Path.GetFileName(textBox.FilePath) + "*";
+				_textEditor.Focus();
+				_textEditor.ScrollToLine(objectLine.LineNumber);
+				_textEditor.SelectLine(objectLine);
 			}
 		}
 
-		private void UpdateUndoRedoSaveStates()
+		private DocumentLine FindDocumentLineOfObject(string objectName, ObjectType type)
 		{
-			// Undo buttons
-			if (_textBox.UndoEnabled)
+			foreach (DocumentLine line in _textEditor.Document.Lines)
 			{
-				menuItem_Undo.Enabled = true;
-				menuItem_Undo.Text = "&Undo";
-				button_Undo.Enabled = true;
-			}
-			else
-			{
-				menuItem_Undo.Enabled = false;
-				menuItem_Undo.Text = "Can't Undo";
-				button_Undo.Enabled = false;
-			}
+				string lineText = _textEditor.Document.GetText(line.Offset, line.Length);
 
-			// Redo buttons
-			if (_textBox.RedoEnabled)
-			{
-				menuItem_Redo.Enabled = true;
-				menuItem_Redo.Text = "&Redo";
-				button_Redo.Enabled = true;
-			}
-			else
-			{
-				menuItem_Redo.Enabled = false;
-				menuItem_Redo.Text = "Can't Redo";
-				button_Redo.Enabled = false;
-			}
+				switch (type)
+				{
+					case ObjectType.Section:
+						if (lineText.StartsWith(objectName))
+							return line;
+						break;
 
-			// Save buttons
-			if (_textBox.IsContentChanged())
-			{
-				menuItem_Save.Enabled = true;
-				button_Save.Enabled = true;
-			}
-			else
-			{
-				menuItem_Save.Enabled = false;
-				button_Save.Enabled = false;
+					case ObjectType.Level:
+						if (Regex.Replace(lineText, @"name\s*?=", string.Empty, RegexOptions.IgnoreCase).TrimStart().StartsWith(objectName))
+							return line;
+						break;
+
+					case ObjectType.Include:
+						if (Regex.Replace(lineText, @"#include\s*", string.Empty, RegexOptions.IgnoreCase).TrimStart('"').StartsWith(objectName))
+							return line;
+						break;
+
+					case ObjectType.Define:
+						if (Regex.Replace(lineText, @"#define\s*", string.Empty, RegexOptions.IgnoreCase).StartsWith(objectName))
+							return line;
+						break;
+				}
 			}
 
-			menuItem_SaveAll.Enabled = !IsEveryTabSaved();
-			button_SaveAll.Enabled = !IsEveryTabSaved();
+			return null;
 		}
 
-		private void DoStatusCounting()
+		private void AppendScriptLines(List<string> inputLines)
 		{
-			label_LineNumber.Text = "Line: " + (_textBox.Selection.Start.iLine + 1);
-			label_ColNumber.Text = "Column: " + (_textBox.Selection.Start.iChar + 1);
+			OpenScriptFile(true); // Changes the current _textEditor as well
 
-			if (_textBox.Selection.Start.iChar < 0) // FCTB sucks
-				_textBox.Selection.Start = new Place(0, _textBox.Selection.Start.iLine);
-
-			label_SelectedChars.Text = "Selected: " + _textBox.SelectedText.Length;
-
-			label_Zoom.Text = "Zoom: " + _textBox.Zoom + "%";
-			button_ResetZoom.Visible = _textBox.Zoom != 100;
-		}
-
-		private void ToggleObjBrowser(bool state)
-		{
-			menuItem_ObjBrowser.Checked = state;
-			splitter_Left.Visible = state;
-			sectionPanel_ObjBrowser.Visible = state;
-			_ide.Configuration.View_ShowObjBrowser = state;
-		}
-
-		private void ToggleFileList(bool state)
-		{
-			menuItem_FileList.Checked = state;
-			splitter_Right.Visible = state;
-			sectionPanel_Files.Visible = state;
-			_ide.Configuration.View_ShowFileList = state;
-		}
-
-		private void ToggleInfoBox(bool state)
-		{
-			menuItem_InfoBox.Checked = state;
-			splitter_Bottom.Visible = state;
-			sectionPanel_InfoBox.Visible = state;
-			_ide.Configuration.View_ShowInfoBox = state;
-		}
-
-		private void ToggleToolStrip(bool state)
-		{
-			menuStrip.SendToBack(); // Preventing a glitch
-
-			menuItem_ToolStrip.Checked = state;
-			toolStrip.Visible = state;
-			_ide.Configuration.View_ShowToolStrip = state;
-		}
-
-		private void ToggleStatusStrip(bool state)
-		{
-			textBox_Syntax.Visible = state;
-
-			menuItem_StatusStrip.Checked = state;
-			statusStrip.Visible = state;
-			_ide.Configuration.View_ShowStatusStrip = state;
-		}
-
-		private void ToggleLineNumbers(bool state)
-		{
-			menuItem_LineNumbers.Checked = state;
-
-			foreach (TabPage tab in tabControl_Editor.TabPages)
-				tab.Controls.OfType<ScriptTextBox>().First().ShowLineNumbers = state;
-
-			_ide.Configuration.View_ShowLineNumbers = state;
-		}
-
-		private void ToggleToolTips(bool state)
-		{
-			menuItem_ToolTips.Checked = state;
-
-			foreach (TabPage tab in tabControl_Editor.TabPages)
-				tab.Controls.OfType<ScriptTextBox>().First().ShowToolTips = state;
-
-			_ide.Configuration.View_ShowToolTips = state;
-		}
-
-		private void SwapPanels(bool state)
-		{
-			menuItem_SwapPanels.Checked = state;
-
-			if (menuItem_SwapPanels.Checked)
-			{
-				sectionPanel_Files.Dock = DockStyle.Bottom;
-				sectionPanel_Files.Height = 200;
-
-				sectionPanel_InfoBox.Dock = DockStyle.Right;
-				sectionPanel_InfoBox.Width = 384;
-
-				splitter_Right.MinSize = 384;
-
-				Controls.SetChildIndex(splitter_Right, 5);
-				Controls.SetChildIndex(splitter_Bottom, 3);
-			}
-			else
-			{
-				sectionPanel_Files.Dock = DockStyle.Right;
-				sectionPanel_Files.Width = 200;
-
-				sectionPanel_InfoBox.Dock = DockStyle.Bottom;
-				sectionPanel_InfoBox.Height = 200;
-
-				splitter_Right.MinSize = 200;
-
-				Controls.SetChildIndex(splitter_Bottom, 5);
-				Controls.SetChildIndex(splitter_Right, 3);
-			}
-
-			// Prevent a graphical glitch
-			tabControl_Info.Visible = false;
-
-			if (tabControl_Info.SelectedIndex == 0)
-			{
-				tabControl_Info.SelectTab(1);
-				tabControl_Info.Invalidate();
-				tabControl_Info.SelectTab(0);
-			}
-			else
-			{
-				tabControl_Info.SelectTab(0);
-				tabControl_Info.Invalidate();
-				tabControl_Info.SelectTab(1);
-			}
-
-			tabControl_Info.Visible = true;
-
-			AdjustFileListButtons();
-
-			_ide.Configuration.View_SwapPanels = state;
-		}
-
-		private bool IsEveryTabSaved()
-		{
-			// The difference between this and the AreAllFilesSaved() method is that this one just returns true/false
-			// and doesn't prompt the user to save the changes
-
-			foreach (TabPage tab in tabControl_Editor.TabPages)
-			{
-				if (tab.Text.TrimEnd('*') == "Untitled")
-					continue;
-
-				ScriptTextBox tabTextBox = tab.Controls.OfType<ScriptTextBox>().First();
-
-				if (tabTextBox.IsChanged)
-					return false;
-			}
-
-			return true;
-		}
-
-		#endregion Event Methods
-
-		#region Script Generator Methods
-
-		private void WriteGeneratedCode(List<string> scriptMessages)
-		{
-			AppendMessagesToScriptFile(scriptMessages);
-			AddLevelNameToLanguageFile(scriptMessages);
-
-			// Show the main Script file after everything is done
-			OpenScriptFile(); // Changes the current _textBox as well
+			// Join the messages into a single string and append it into the _textEditor
+			_textEditor.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
 
 			// Scroll to the line where changes were made (the last line)
-			_textBox.Navigate(_textBox.Lines.Count - 1);
-		}
-
-		private void AppendMessagesToScriptFile(List<string> scriptMessages)
-		{
-			OpenScriptFile(); // Changes the current _textBox as well
-
-			// Join the messages into a single string and append it into the _textBox
-			_textBox.AppendText(string.Join(Environment.NewLine, scriptMessages) + "\n");
+			_textEditor.ScrollToLine(_textEditor.LineCount);
 
 			HandleTextChangedIndicator();
 		}
 
-		private void AddLevelNameToLanguageFile(List<string> scriptMessages)
+		private void AddNewLevelNameString(string levelName)
 		{
-			OpenLanguageFile("english"); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+
 				// Find a free "Level Name " string slot in the language file
-				if (_textBox.GetLineText(i).StartsWith("Level Name "))
+				if (_textEditor.Document.GetText(currentLine.Offset, currentLine.Length).StartsWith("Level Name "))
 				{
 					// Select the line and replace its text with the added level name
-					_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
+					_textEditor.SelectionStart = currentLine.Offset;
+					_textEditor.SelectionLength = currentLine.Length;
 
-					string levelName = scriptMessages[1].Replace("Name= ", string.Empty);
-					_textBox.SelectedText = levelName;
+					_textEditor.SelectedText = levelName;
+
 					break;
 				}
 
-				if (i == _textBox.LinesCount - 1)
+				if (i == _textEditor.LineCount)
 				{
 					DarkMessageBox.Show(this,
 						"Warning, you ran out of free Level Name String slots in the main Language File.\n" +
@@ -726,37 +325,77 @@ namespace TombIDE.ScriptEditor
 			HandleTextChangedIndicator();
 		}
 
-		private void RenameRequestedLanguageString(string oldName, string newName)
+		private bool AddNewNGString(string ngString)
 		{
-			OpenLanguageFile("english"); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
+
+			_textEditor.SelectionStart = 0;
+			_textEditor.SelectionLength = 0;
 
 			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
+			for (int i = 1; i <= _textEditor.LineCount; i++)
 			{
-				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine iline = _textEditor.Document.GetLineByNumber(i);
+				string ilineText = _textEditor.Document.GetText(iline.Offset, iline.Length);
 
-				if (line == oldName)
+				if (ilineText.StartsWith("[extrang]", StringComparison.OrdinalIgnoreCase))
 				{
-					line = line.Replace(oldName, newName);
-					_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
-					_textBox.SelectedText = line;
+					// Check if the string isn't already defined
+					for (int j = _textEditor.LineCount; j >= i; j--)
+					{
+						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
+						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
 
-					_textBox.Navigate(i);
+						if (Regex.IsMatch(jlineText, @"\A\d*:\s*?" + ngString + @"(;.*)?"))
+							return false;
+					}
+
+					// Add the string
+					for (int j = _textEditor.LineCount; j >= i; j--)
+					{
+						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
+						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
+
+						if (Regex.IsMatch(jlineText, @"\A\d*:.*"))
+						{
+							_textEditor.CaretOffset = jline.EndOffset;
+							_textEditor.TextArea.PerformTextInput(Environment.NewLine);
+
+							int prevNumber = int.Parse(Regex.Replace(jlineText, @"\A(\d*):.*", "$1"));
+
+							_textEditor.SelectedText = prevNumber + 1 + ": " + ngString;
+
+							_textEditor.ScrollToLine(j + 1);
+							break;
+						}
+						else if (j == i)
+						{
+							_textEditor.CaretOffset = jline.EndOffset;
+							_textEditor.TextArea.PerformTextInput(Environment.NewLine);
+
+							_textEditor.SelectedText = "0: " + ngString;
+
+							_textEditor.ScrollToLine(j);
+							break;
+						}
+					}
+
 					break;
 				}
 			}
 
-			HandleTextChangedIndicator();
+			return true;
 		}
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
 		{
-			OpenScriptFile(); // Changes the current _textBox as well
+			OpenScriptFile(true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
@@ -768,10 +407,11 @@ namespace TombIDE.ScriptEditor
 					if (scriptLevelName == oldName)
 					{
 						line = line.Replace(oldName, newName);
-						_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
-						_textBox.SelectedText = line;
+						_textEditor.SelectionStart = currentLine.Offset;
+						_textEditor.SelectionLength = currentLine.Length;
+						_textEditor.SelectedText = line;
 
-						_textBox.Navigate(i);
+						_textEditor.ScrollToLine(i);
 						break;
 					}
 				}
@@ -780,14 +420,40 @@ namespace TombIDE.ScriptEditor
 			HandleTextChangedIndicator();
 		}
 
-		private bool IsLevelScriptDefined(string levelName)
+		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			OpenScriptFile(); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
+
+				if (line == oldName)
+				{
+					line = line.Replace(oldName, newName);
+					_textEditor.SelectionStart = currentLine.Offset;
+					_textEditor.SelectionLength = currentLine.Length;
+					_textEditor.SelectedText = line;
+
+					_textEditor.ScrollToLine(i);
+					break;
+				}
+			}
+
+			HandleTextChangedIndicator();
+		}
+
+		private bool IsLevelScriptDefined(string levelName)
+		{
+			OpenScriptFile(true); // Changes the current _textEditor as well
+
+			// Scan all lines
+			for (int i = 1; i < _textEditor.LineCount; i++)
+			{
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
 
@@ -806,12 +472,13 @@ namespace TombIDE.ScriptEditor
 
 		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			OpenLanguageFile("english"); // Changes the current _textBox as well
+			OpenLanguageFile(_ide.Project.DefaultLanguage, true); // Changes the current _textEditor as well
 
 			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
+			for (int i = 1; i < _textEditor.LineCount; i++)
 			{
-				string line = Regex.Replace(_textBox.GetLineText(i), ";.*$", string.Empty).Trim(); // Removed comments
+				DocumentLine currentLine = _textEditor.Document.GetLineByNumber(i);
+				string line = Regex.Replace(_textEditor.Document.GetText(currentLine.Offset, currentLine.Length), ";.*$", string.Empty).Trim(); // Removed comments
 
 				if (line == levelName)
 					return true;
@@ -820,589 +487,407 @@ namespace TombIDE.ScriptEditor
 			return false;
 		}
 
-		#endregion Script Generator Methods
-
-		#region Compilers
-
-		private void CompileTR4Script()
+		private void EndSilentScriptAction(TabPage previousTab, bool indicateChange, bool saveAffectedFile, bool closeAffectedTab)
 		{
-			IScriptCompiler compiler = new ScriptCompilerNew(TRVersion.Game.TR4);
+			if (indicateChange)
+				_ide.ScriptEditor_IndicateExternalChange();
 
-			if (compiler.CompileScripts(_ide.Project.ScriptPath, _ide.Project.EnginePath))
-				DarkMessageBox.Show(this, "Script compiled successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			if (saveAffectedFile)
+				SaveFile(tabControl_Editor.SelectedTab);
+
+			if (closeAffectedTab)
+				tabControl_Editor.TabPages.Remove(tabControl_Editor.SelectedTab);
+
+			tabControl_Editor.SelectTab(previousTab);
+		}
+
+		#endregion IDE Event Methods
+
+		#region Events
+
+		private void File_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
+		private void File_Save_Click(object sender, EventArgs e) => OnSaveButtonClicked();
+		private void File_SaveAll_Click(object sender, EventArgs e) => SaveAll();
+		private void File_Build_Click(object sender, EventArgs e) => BuildScript();
+
+		private void Edit_Undo_Click(object sender, EventArgs e) => _textEditor.Undo();
+		private void Edit_Redo_Click(object sender, EventArgs e) => _textEditor.Redo();
+		private void Edit_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
+		private void Edit_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
+		private void Edit_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
+		private void Edit_FindReplace_Click(object sender, EventArgs e) => _formFindReplace.Show(this, _textEditor.SelectedText);
+
+		private void Edit_SelectAll_Click(object sender, EventArgs e)
+		{
+			_textEditor.SelectAll();
+			DoStatusCounting(); // So it updates the status strip labels
+		}
+
+		private void Tools_CheckErrors_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).ManuallyCheckForErrors();
+		private void Tools_Reindent_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).TidyDocument();
+		private void Tools_Trim_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).TidyDocument(true);
+		private void Tools_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
+		private void Tools_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
+		private void Tools_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
+		private void Tools_PrevBookmark_Click(object sender, EventArgs e) => _textEditor.GoToPrevBookmark();
+		private void Tools_NextBookmark_Click(object sender, EventArgs e) => _textEditor.GoToNextBookmark();
+		private void Tools_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
+		private void Tools_Settings_Click(object sender, EventArgs e) => ShowSettingsForm();
+
+		private void View_ObjBrowser_Click(object sender, EventArgs e) => ToggleObjBrowser(!menuItem_ObjBrowser.Checked);
+		private void View_FileList_Click(object sender, EventArgs e) => ToggleFileList(!menuItem_FileList.Checked);
+		private void View_InfoBox_Click(object sender, EventArgs e) => ToggleInfoBox(!menuItem_InfoBox.Checked);
+		private void View_ToolStrip_Click(object sender, EventArgs e) => ToggleToolStrip(!menuItem_ToolStrip.Checked);
+		private void View_StatusStrip_Click(object sender, EventArgs e) => ToggleStatusStrip(!menuItem_StatusStrip.Checked);
+		private void View_SwapPanels_Click(object sender, EventArgs e) => SwapPanels(!menuItem_SwapPanels.Checked);
+
+		private void Help_About_Click(object sender, EventArgs e) => ShowAboutForm();
+
+		private void ContextMenu_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
+		private void ContextMenu_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
+		private void ContextMenu_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
+		private void ContextMenu_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
+		private void ContextMenu_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
+		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
+
+		private void ToolStrip_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
+		private void ToolStrip_Save_Click(object sender, EventArgs e) => OnSaveButtonClicked();
+		private void ToolStrip_SaveAll_Click(object sender, EventArgs e) => SaveAll();
+		private void ToolStrip_Undo_Click(object sender, EventArgs e) => _textEditor.Undo();
+		private void ToolStrip_Redo_Click(object sender, EventArgs e) => _textEditor.Redo();
+		private void ToolStrip_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
+		private void ToolStrip_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
+		private void ToolStrip_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
+		private void ToolStrip_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
+		private void ToolStrip_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
+		private void ToolStrip_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
+		private void ToolStrip_PrevBookmark_Click(object sender, EventArgs e) => _textEditor.GoToPrevBookmark();
+		private void ToolStrip_NextBookmark_Click(object sender, EventArgs e) => _textEditor.GoToNextBookmark();
+		private void ToolStrip_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
+		private void ToolStrip_Build_Click(object sender, EventArgs e) => BuildScript();
+
+		private void StatusStrip_ResetZoom_Click(object sender, EventArgs e)
+		{
+			_textEditor.Zoom = 100;
+			button_ResetZoom.Visible = false;
+
+			DoStatusCounting();
+		}
+
+		private void Editor_TextChanged(object sender, EventArgs e)
+		{
+			if (!textChangedDelayTimer.Enabled)
+				textChangedDelayTimer.Start();
+
+			treeView_SearchResults.Nodes.Clear();
+			treeView_SearchResults.Invalidate();
+		}
+
+		private void Editor_StatusChanged(object sender, EventArgs e) => DoStatusCounting();
+
+		private void Editor_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if ((System.Windows.Input.Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control)
+			&& (e.Key == System.Windows.Input.Key.F || e.Key == System.Windows.Input.Key.H))
+				_formFindReplace.Show(this, _textEditor.SelectedText);
+
+			if (e.Key == System.Windows.Input.Key.F5)
+				OpenIncludeFile();
+		}
+
+		private void TextChangedDelayTimer_Tick(object sender, EventArgs e)
+		{
+			objectBrowser.UpdateContent(_textEditor.Text);
+
+			DoStatusCounting();
+			UpdateUndoRedoSaveStates();
+			HandleTextChangedIndicator();
+
+			textChangedDelayTimer.Stop();
+		}
+
+		private void Caret_PositionChanged(object sender, EventArgs e)
+		{
+			DoStatusCounting();
+			UpdateSyntaxPreview();
+		}
+
+		#endregion Events
+
+		#region Event Methods
+
+		private void OnSaveButtonClicked()
+		{
+			if (!SaveFile(tabControl_Editor.SelectedTab))
+				return; // File saving failed
+
+			HandleTextChangedIndicator();
+
+			menuItem_Save.Enabled = false;
+			button_Save.Enabled = false;
+
+			if (IsEveryTabSaved())
+			{
+				menuItem_SaveAll.Enabled = false;
+				button_SaveAll.Enabled = false;
+			}
+		}
+
+		private void SaveAll()
+		{
+			foreach (TabPage tab in tabControl_Editor.TabPages)
+			{
+				TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
+
+				if (tabTextEditor.Document.FileName == null)
+					continue;
+
+				SaveFile(tab);
+
+				HandleTextChangedIndicator(tab, tabTextEditor);
+				UpdateUndoRedoSaveStates();
+			}
+		}
+
+		private void BuildScript()
+		{
+			SaveAll();
+
+			switch (_ide.Project.GameVersion)
+			{
+				case TRVersion.Game.TRNG:
+					CompileTRNGScript();
+					break;
+			}
+		}
+
+		private void HandleTextChangedIndicator(TabPage tab = null, TextEditorBase textEditor = null)
+		{
+			if (tab == null)
+				tab = tabControl_Editor.SelectedTab;
+
+			if (textEditor == null)
+				textEditor = _textEditor;
+
+			if (string.IsNullOrEmpty(textEditor.Document.FileName))
+			{
+				if (!textEditor.IsTextChanged)
+					tab.Text = "Untitled";
+				else if (!tab.Text.EndsWith("*"))
+					tab.Text = "Untitled*";
+			}
 			else
-				DarkMessageBox.Show(this, "Error while compiling the script.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-
-		private void CompileTRNGScript()
-		{
-			foreach (Process fuckingDieAlreadyYouStupidFuck in Process.GetProcessesByName("ng_center"))
-				fuckingDieAlreadyYouStupidFuck.Kill();
-
-			if (!AreLibrariesRegistered())
-				return;
-
-			try
 			{
-				string vgeScriptPath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script";
-
-				// Delete the old /Script/ directory in the VGE if it exists
-				if (Directory.Exists(vgeScriptPath))
-					Directory.Delete(vgeScriptPath, true);
-
-				// Recreate the directory
-				Directory.CreateDirectory(vgeScriptPath);
-
-				// Create all of the subdirectories
-				foreach (string dirPath in Directory.GetDirectories(_ide.Project.ScriptPath, "*", SearchOption.AllDirectories))
-					Directory.CreateDirectory(dirPath.Replace(_ide.Project.ScriptPath, vgeScriptPath));
-
-				// Copy all the files into the VGE /Script/ folder
-				foreach (string newPath in Directory.GetFiles(_ide.Project.ScriptPath, "*.*", SearchOption.AllDirectories))
-					File.Copy(newPath, newPath.Replace(_ide.Project.ScriptPath, vgeScriptPath));
-
-				AdjustOldFormatting();
-
-				// Run NG_Center.exe
-				var application = TestStack.White.Application.Launch(SharedMethods.GetProgramDirectory() + @"\NGC\NG_Center.exe");
-
-				// Do some actions in NG Center
-				RunScriptedNGCenterEvents(application);
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (!textEditor.IsTextChanged)
+					tab.Text = tab.Text.TrimEnd('*');
+				else if (!tab.Text.EndsWith("*"))
+					tab.Text = GetCorrectTabTitle(textEditor.Document.FileName) + "*";
 			}
 		}
 
-		private void RunScriptedNGCenterEvents(TestStack.White.Application application)
+		private void UpdateUndoRedoSaveStates()
 		{
-			try
+			// Undo buttons
+			if (_textEditor.CanUndo)
 			{
-				// Get a list of all windows belonging to the app
-				var windowList = application.GetWindows();
-
-				// Check if the list has the main NG Center window (it starts with "NG Center 1.5...")
-				var ngWindow = windowList.Find(x => x.Title.Contains("NG Center 1.5"));
-
-				if (ngWindow == null)
-				{
-					// If not, then try again because we're most probably seeing the "Loading" window
-					RunScriptedNGCenterEvents(application);
-					return;
-				}
-
-				Point cachedCursorPosition = new Point();
-
-				// Refresh the window list and check if a Updater message box appeared
-				windowList = application.GetWindows();
-				var ngUpdaterWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
-
-				if (ngUpdaterWindow != null)
-					ngUpdaterWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
-
-				// Find the "Build" button
-				var buildButton = ngWindow.Get<TestStack.White.UIItems.Button>("Build");
-
-				// Click the button
-				cachedCursorPosition = Cursor.Position;
-				buildButton.Click();
-				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
-
-				// Refresh the window list and check if an error message box appeared
-				windowList = application.GetWindows();
-				var ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
-
-				if (ngErrorWindow != null)
-				{
-					_formDebugMode.Show();
-					return; // For Daniel
-				}
-
-				// Find the "Show Log" button
-				var logButton = ngWindow.Get<TestStack.White.UIItems.Button>("Show Log");
-
-				// Click the button
-				cachedCursorPosition = Cursor.Position;
-				logButton.Click();
-				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
-
-				// Read the logs
-				string logFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script\script_log.txt";
-				string logFileContent = File.ReadAllText(logFilePath);
-
-				// Replace the VGE paths in the log file with the current project ones
-				string vgePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE";
-				File.WriteAllText(logFilePath, logFileContent.Replace(vgePath, _ide.Project.EnginePath), Encoding.GetEncoding(1252));
-
-				application.Close(); // Done!
-
-				// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-				string compiledScriptFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\Script.dat";
-				string compiledEnglishFilePath = SharedMethods.GetProgramDirectory() + @"\NGC\VGE\English.dat";
-
-				if (File.Exists(compiledScriptFilePath))
-					File.Copy(compiledScriptFilePath, Path.Combine(_ide.Project.EnginePath, "Script.dat"), true);
-
-				if (File.Exists(compiledEnglishFilePath))
-					File.Copy(compiledEnglishFilePath, Path.Combine(_ide.Project.EnginePath, "English.dat"), true);
-
-				// Read and show the logs in the "Compiler Logs" richTextBox
-				richTextBox_Logs.Text = File.ReadAllText(logFilePath);
-
-				// Select the "Compiler Logs" tab
-				tabControl_Info.SelectTab(1);
-				tabControl_Info.Invalidate();
-
-				System.Threading.Thread.Sleep(100);
-
-				foreach (Process fuckingDieAlreadyYouStupidFuck in Process.GetProcessesByName("notepad"))
-				{
-					if (fuckingDieAlreadyYouStupidFuck.MainWindowTitle.Contains("script_log"))
-						fuckingDieAlreadyYouStupidFuck.Kill();
-				}
+				menuItem_Undo.Enabled = true;
+				menuItem_Undo.Text = "&Undo";
+				button_Undo.Enabled = true;
 			}
-			catch (ElementNotAvailableException)
+			else
 			{
-				// The "Loading" window just closed, so try again
-				RunScriptedNGCenterEvents(application);
+				menuItem_Undo.Enabled = false;
+				menuItem_Undo.Text = "Can't Undo";
+				button_Undo.Enabled = false;
 			}
+
+			// Redo buttons
+			if (_textEditor.CanRedo)
+			{
+				menuItem_Redo.Enabled = true;
+				menuItem_Redo.Text = "&Redo";
+				button_Redo.Enabled = true;
+			}
+			else
+			{
+				menuItem_Redo.Enabled = false;
+				menuItem_Redo.Text = "Can't Redo";
+				button_Redo.Enabled = false;
+			}
+
+			// Save buttons
+			if (_textEditor.IsTextChanged)
+			{
+				menuItem_Save.Enabled = true;
+				button_Save.Enabled = true;
+			}
+			else
+			{
+				menuItem_Save.Enabled = false;
+				button_Save.Enabled = false;
+			}
+
+			menuItem_SaveAll.Enabled = !IsEveryTabSaved();
+			button_SaveAll.Enabled = !IsEveryTabSaved();
 		}
 
-		private bool AreLibrariesRegistered()
+		private void DoStatusCounting()
 		{
-			string MSCOMCTL = Path.Combine(SharedMethods.GetSystemDirectory(), "Mscomctl.ocx");
-			string RICHTX32 = Path.Combine(SharedMethods.GetSystemDirectory(), "Richtx32.ocx");
-			string PICFORMAT32 = Path.Combine(SharedMethods.GetSystemDirectory(), "PicFormat32.ocx");
-			string COMDLG32 = Path.Combine(SharedMethods.GetSystemDirectory(), "Comdlg32.ocx");
+			label_LineNumber.Text = "Line: " + _textEditor.TextArea.Caret.Position.Line;
+			label_ColNumber.Text = "Column: " + _textEditor.TextArea.Caret.Position.Column;
 
-			if (!File.Exists(MSCOMCTL) || !File.Exists(RICHTX32) || !File.Exists(PICFORMAT32) || !File.Exists(COMDLG32))
+			label_SelectedChars.Text = "Selected: " + _textEditor.SelectedText.Length;
+
+			label_Zoom.Text = "Zoom: " + _textEditor.Zoom + "%";
+			button_ResetZoom.Visible = _textEditor.Zoom != 100;
+		}
+
+		private void UpdateSyntaxPreview()
+		{
+			syntaxPreview.CurrentArgumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(_textEditor.Document, _textEditor.CaretOffset);
+			syntaxPreview.Text = CommandHelper.GetCommandSyntax(_textEditor.Document, _textEditor.CaretOffset);
+		}
+
+		private void ToggleObjBrowser(bool state)
+		{
+			menuItem_ObjBrowser.Checked = state;
+			splitter_Left.Visible = state;
+			objectBrowser.Visible = state;
+			_ide.IDEConfiguration.View_ShowObjBrowser = state;
+		}
+
+		private void ToggleFileList(bool state)
+		{
+			menuItem_FileList.Checked = state;
+			splitter_Right.Visible = state;
+			fileList.Visible = state;
+			_ide.IDEConfiguration.View_ShowFileList = state;
+		}
+
+		private void ToggleInfoBox(bool state)
+		{
+			menuItem_InfoBox.Checked = state;
+			splitter_Bottom.Visible = state;
+			sectionPanel_InfoBox.Visible = state;
+			_ide.IDEConfiguration.View_ShowInfoBox = state;
+		}
+
+		private void ToggleToolStrip(bool state)
+		{
+			menuItem_ToolStrip.Checked = state;
+			toolStrip.Visible = state;
+			_ide.IDEConfiguration.View_ShowToolStrip = state;
+		}
+
+		private void ToggleStatusStrip(bool state)
+		{
+			menuItem_StatusStrip.Checked = state;
+			statusStrip.Visible = state;
+			_ide.IDEConfiguration.View_ShowStatusStrip = state;
+
+			panel_Syntax.Visible = state;
+		}
+
+		private void SwapPanels(bool state)
+		{
+			menuItem_SwapPanels.Checked = state;
+
+			if (menuItem_SwapPanels.Checked)
 			{
-				ProcessStartInfo startInfo = new ProcessStartInfo
-				{
-					FileName = Path.Combine(SharedMethods.GetProgramDirectory(), "TombIDE Library Registration.exe")
-				};
+				fileList.Dock = DockStyle.Bottom;
+				fileList.Height = 200;
 
-				try
-				{
-					Process process = Process.Start(startInfo);
-					process.WaitForExit();
-				}
-				catch
-				{
+				sectionPanel_InfoBox.Dock = DockStyle.Right;
+				sectionPanel_InfoBox.Width = 384;
+
+				splitter_Right.MinSize = 384;
+
+				Controls.SetChildIndex(splitter_Right, 5);
+				Controls.SetChildIndex(splitter_Bottom, 3);
+			}
+			else
+			{
+				fileList.Dock = DockStyle.Right;
+				fileList.Width = 200;
+
+				sectionPanel_InfoBox.Dock = DockStyle.Bottom;
+				sectionPanel_InfoBox.Height = 200;
+
+				splitter_Right.MinSize = 200;
+
+				Controls.SetChildIndex(splitter_Bottom, 5);
+				Controls.SetChildIndex(splitter_Right, 3);
+			}
+
+			_ide.IDEConfiguration.View_SwapPanels = state;
+		}
+
+		private bool IsEveryTabSaved()
+		{
+			// The difference between this and the AreAllFilesSaved() method is that this one just returns true/false
+			// and doesn't prompt the user to save the changes
+
+			foreach (TabPage tab in tabControl_Editor.TabPages)
+			{
+				if (tab.Text.TrimEnd('*') == "Untitled")
+					continue;
+
+				TextEditorBase tabTextEditor = GetTextEditorOfTab(tab);
+
+				if (tabTextEditor.IsTextChanged)
 					return false;
-				}
 			}
 
 			return true;
 		}
 
+		#endregion Event Methods
+
+		#region Compilers
+
+		private void CompileTRNGScript()
+		{
+			if (!NGCompiler.AreLibrariesRegistered())
+				return;
+
+			try
+			{
+				_formCompiling.ShowCompilingMode();
+				_formCompiling.Show();
+
+				if (NGCompiler.Compile(_ide.Project.ScriptPath, _ide.Project.EnginePath))
+				{
+					// Read the logs
+					string logFilePath = Path.Combine(PathHelper.GetVGEScriptPath(), "script_log.txt");
+
+					// Read and show the logs in the "Compiler Logs" richTextBox
+					richTextBox_Logs.Text = File.ReadAllText(logFilePath);
+
+					// Select the "Compiler Logs" tab
+					tabControl_Info.SelectTab(1);
+					tabControl_Info.Invalidate();
+
+					if (_formCompiling.Visible)
+						_formCompiling.Close();
+				}
+				else
+				{
+					_formCompiling.ShowDebugMode();
+
+					if (!backgroundWorker_NGC.IsBusy)
+						backgroundWorker_NGC.RunWorkerAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				if (_formCompiling.Visible)
+					_formCompiling.Close();
+
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
 		#endregion Compilers
-
-		#region ObjectBrowser
-
-		private void UpdateObjectBrowser()
-		{
-			// Only allow the Object Browser to work for actual script files (might add support for more files later)
-			if (tabControl_Editor.SelectedTab.Text.TrimEnd('*') != Path.GetFileName(GetScriptFilePath()))
-			{
-				treeView_Objects.SelectedNodes.Clear();
-				treeView_Objects.Nodes.Clear();
-				treeView_Objects.Invalidate();
-				return;
-			}
-
-			string filter = string.Empty;
-
-			if (!string.IsNullOrWhiteSpace(textBox_SearchObj.Text) && textBox_SearchObj.Text != "Search...")
-				filter = textBox_SearchObj.Text.Trim();
-
-			treeView_Objects.Nodes.Clear();
-
-			// Add the default nodes
-			treeView_Objects.Nodes.Add(new DarkTreeNode("Sections"));
-			treeView_Objects.Nodes.Add(new DarkTreeNode("Levels"));
-
-			// Add all subnodes
-			foreach (string line in _textBox.Lines)
-			{
-				AddSectionNode(line, filter);
-				AddLevelNode(line, filter);
-			}
-
-			// Expand the default nodes
-			treeView_Objects.Nodes[0].Expanded = true;
-			treeView_Objects.Nodes[1].Expanded = true;
-
-			treeView_Objects.Invalidate();
-		}
-
-		private void AddSectionNode(string line, string filter)
-		{
-			foreach (string section in KeyWords.Sections)
-			{
-				string sectionName = "[" + section + "]";
-
-				// Exclude [Level] sections
-				if (sectionName == "[Level]")
-					continue;
-
-				// Check if the current line starts a section
-				if (line.StartsWith(sectionName))
-				{
-					// Add the node if the section name matches the filter (it always does if there's nothing in the search bar)
-					if (sectionName.ToLower().Contains(filter.ToLower()))
-						treeView_Objects.Nodes[0].Nodes.Add(new DarkTreeNode(sectionName));
-				}
-			}
-		}
-
-		private void AddLevelNode(string line, string filter)
-		{
-			line = Regex.Replace(line, ";.*$", string.Empty).Trim(); // Removed comments
-
-			Regex rgx = new Regex(@"\bName\s?=\s?"); // Regex rule to find lines that start with "Name = "
-
-			if (rgx.IsMatch(line))
-			{
-				// Get the level name without "Name = " from the line string
-				string levelName = rgx.Replace(line, string.Empty).Trim();
-
-				// Add the node if the level name matches the filter (it always does if there's nothing in the search bar)
-				if (levelName.ToLower().Contains(filter.ToLower()))
-					treeView_Objects.Nodes[1].Nodes.Add(new DarkTreeNode(levelName));
-			}
-		}
-
-		private void ObjBrowser_TreeView_Click(object sender, EventArgs e)
-		{
-			// If the user hasn't selected any node or the selected node is empty
-			if (treeView_Objects.SelectedNodes.Count == 0 || string.IsNullOrWhiteSpace(treeView_Objects.SelectedNodes[0].Text))
-				return;
-
-			// If the selected node is a default item ("Sections" or "Levels")
-			if (treeView_Objects.SelectedNodes[0] == treeView_Objects.Nodes[0] || treeView_Objects.SelectedNodes[0] == treeView_Objects.Nodes[1])
-				return;
-
-			// Scan all lines
-			for (int i = 0; i < _textBox.LinesCount; i++)
-			{
-				// Find the line that contains the node text
-				if (_textBox.GetLineText(i).Contains(treeView_Objects.SelectedNodes[0].Text))
-				{
-					_textBox.Focus();
-
-					// Scroll to the line position
-					_textBox.Navigate(i);
-
-					// Select the line
-					_textBox.Selection = new Range(_textBox, 0, i, _textBox.GetLineText(i).Length, i);
-					return;
-				}
-			}
-		}
-
-		private void ObjBrowser_Search_GotFocus(object sender, EventArgs e)
-		{
-			if (textBox_SearchObj.Text == "Search...")
-				textBox_SearchObj.Text = string.Empty;
-		}
-
-		private void ObjBrowser_Search_LostFocus(object sender, EventArgs e)
-		{
-			if (textBox_SearchObj.Text == string.Empty)
-				textBox_SearchObj.Text = "Search...";
-		}
-
-		private void ObjBrowser_Search_TextChanged(object sender, EventArgs e) => UpdateObjectBrowser();
-
-		#endregion ObjectBrowser
-
-		#region FileList
-
-		private void UpdateFileList()
-		{
-			treeView_Files.Nodes.Clear();
-
-			Stack<DarkTreeNode> stack = new Stack<DarkTreeNode>();
-			DirectoryInfo scriptDirectory = new DirectoryInfo(_ide.Project.ScriptPath);
-
-			DarkTreeNode node = new DarkTreeNode("Script Folder")
-			{
-				Icon = Properties.Resources.folder.ToBitmap(),
-				Tag = scriptDirectory
-			};
-
-			stack.Push(node);
-
-			while (stack.Count > 0)
-			{
-				DarkTreeNode currentNode = stack.Pop();
-				DirectoryInfo info = (DirectoryInfo)currentNode.Tag;
-
-				foreach (DirectoryInfo directory in info.GetDirectories())
-				{
-					DarkTreeNode childDirectoryNode = new DarkTreeNode(directory.Name)
-					{
-						Icon = Properties.Resources.folder.ToBitmap(),
-						Tag = directory
-					};
-
-					currentNode.Nodes.Add(childDirectoryNode);
-					stack.Push(childDirectoryNode);
-				}
-
-				foreach (FileInfo file in info.GetFiles())
-				{
-					if (file.Name.ToLower().EndsWith(".txt") || file.Name.ToLower().EndsWith(".lua"))
-					{
-						DarkTreeNode fileNode = new DarkTreeNode(file.Name)
-						{
-							Icon = Properties.Resources.file.ToBitmap(),
-							Tag = file.FullName
-						};
-
-						currentNode.Nodes.Add(fileNode);
-					}
-				}
-			}
-
-			node.Expanded = true;
-			treeView_Files.Nodes.Add(node);
-		}
-
-		private void AdjustFileListButtons() // 𝓡𝓮𝓼𝓹𝓸𝓷𝓼𝓲𝓿𝓮𝓷𝓮𝓼𝓼
-		{
-			button_EditScript.Width = (sectionPanel_Files.Width / 2) - 5;
-			button_EditLanguages.Location = new Point((sectionPanel_Files.Width / 2), button_EditLanguages.Location.Y);
-
-			if (sectionPanel_Files.Width % 2 > 0)
-				button_EditLanguages.Width = (sectionPanel_Files.Width / 2) - 5;
-			else
-				button_EditLanguages.Width = (sectionPanel_Files.Width / 2) - 6;
-		}
-
-		private void FolderWatcher_Changed(object sender, FileSystemEventArgs e) => UpdateFileList();
-		private void FolderWatcher_Renamed(object sender, RenamedEventArgs e) => UpdateFileList();
-
-		private void FileList_EditScript_Click(object sender, EventArgs e) => OpenScriptFile();
-		private void FileList_EditStrings_Click(object sender, EventArgs e) => OpenLanguageFile("english");
-
-		private void FileList_OpenInExplorer_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(_ide.Project.ScriptPath);
-
-		private void FileList_TreeView_DoubleClick(object sender, EventArgs e)
-		{
-			// If the user hasn't selected any node or the selected node is empty
-			if (treeView_Files.SelectedNodes.Count == 0 || string.IsNullOrWhiteSpace(treeView_Files.SelectedNodes[0].Text))
-				return;
-
-			// If the selected node is not a .txt or .lua file
-			if (!treeView_Files.SelectedNodes[0].Text.ToLower().EndsWith(".txt") && !treeView_Files.SelectedNodes[0].Text.ToLower().EndsWith(".lua"))
-				return;
-
-			string clickedFilePath = treeView_Files.SelectedNodes[0].Tag.ToString();
-
-			if (IsFileAlreadyOpened(clickedFilePath))
-				return;
-
-			OpenFile(clickedFilePath);
-		}
-
-		#endregion FileList
-
-		#region Syntax Hints
-
-		private void HandleSyntaxHints()
-		{
-			int currentLineNumber = _textBox.Selection.Start.iLine;
-			string lineText = _textBox.GetLineText(currentLineNumber);
-
-			string command = string.Empty;
-
-			if (lineText.Contains("="))
-				command = lineText.Split('=')[0].Trim();
-			else if (lineText.Trim().StartsWith("#"))
-				command = lineText.Split(' ')[0].Trim();
-
-			if (command.ToLower() == "level")
-				command = GetCorrectLevelCommand(currentLineNumber);
-			else if (command.ToLower() == "cut")
-				command = GetCorrectCutCommand(currentLineNumber);
-			else if (command.ToLower() == "fmv")
-				command = GetCorrectFMVCommand(currentLineNumber);
-
-			if (command == null)
-				return;
-
-			string content = string.Empty;
-
-			if (Regex.IsMatch(lineText, @"Customize\s*?=.*?,", RegexOptions.IgnoreCase))
-			{
-				string custKey = lineText.Split('=')[1].Split(',')[0].Trim();
-
-				// Get resources from CustSyntaxes.resx
-				ResourceManager custSyntaxResource = new ResourceManager(typeof(CustSyntaxes));
-				ResourceSet custResourceSet = custSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-				foreach (DictionaryEntry entry in custResourceSet)
-				{
-					if (custKey.ToLower() == entry.Key.ToString().ToLower())
-					{
-						content = entry.Value.ToString();
-						break;
-					}
-				}
-
-				if (string.IsNullOrEmpty(content))
-				{
-					for (int i = 0; i < KeyWords.PluginMnemonics.Length; i++)
-					{
-						PluginMnemonic pluginMnemonic = KeyWords.PluginMnemonics[i];
-
-						if (pluginMnemonic.Flag.ToLower() == custKey.ToLower())
-						{
-							content = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
-							break;
-						}
-					}
-				}
-			}
-			else if (Regex.IsMatch(lineText, @"Parameters\s*?=.*?,", RegexOptions.IgnoreCase))
-			{
-				string paramKey = lineText.Split('=')[1].Split(',')[0].Trim();
-
-				// Get resources from ParamSyntaxes.resx
-				ResourceManager custSyntaxResource = new ResourceManager(typeof(ParamSyntaxes));
-				ResourceSet custResourceSet = custSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-				foreach (DictionaryEntry entry in custResourceSet)
-				{
-					if (paramKey.ToLower() == entry.Key.ToString().ToLower())
-					{
-						content = entry.Value.ToString();
-						break;
-					}
-				}
-
-				if (string.IsNullOrEmpty(content))
-				{
-					for (int i = 0; i < KeyWords.PluginMnemonics.Length; i++)
-					{
-						PluginMnemonic pluginMnemonic = KeyWords.PluginMnemonics[i];
-
-						if (pluginMnemonic.Flag.ToLower() == paramKey.ToLower())
-						{
-							content = Regex.Split(pluginMnemonic.Description, "syntax:", RegexOptions.IgnoreCase)[1].Replace("\r", string.Empty).Split('\n')[0].Trim();
-							break;
-						}
-					}
-				}
-			}
-			else
-			{
-				// Get resources from OldCommandSyntaxes.resx
-				ResourceManager oldCommandSyntaxResource = new ResourceManager(typeof(OldCommandSyntaxes));
-				ResourceSet oldCommandResourceSet = oldCommandSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-				// Get resources from NewCommandSyntaxes.resx
-				ResourceManager newCommandSyntaxResource = new ResourceManager(typeof(NewCommandSyntaxes));
-				ResourceSet newCommandResourceSet = newCommandSyntaxResource.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-
-				List<DictionaryEntry> entries = new List<DictionaryEntry>();
-				entries.AddRange(oldCommandResourceSet.Cast<DictionaryEntry>().ToList());
-				entries.AddRange(newCommandResourceSet.Cast<DictionaryEntry>().ToList());
-
-				foreach (DictionaryEntry entry in entries)
-				{
-					if (command.ToLower() == entry.Key.ToString().ToLower())
-					{
-						content = entry.Value.ToString();
-						break;
-					}
-				}
-			}
-
-			textBox_Syntax.Text = content;
-		}
-
-		private string GetCorrectLevelCommand(int lineNumber)
-		{
-			string section = GetCurrentSectionName(lineNumber);
-
-			if (section == null)
-				return "LevelLevel";
-
-			switch (section.ToLower())
-			{
-				case "psxextensions":
-					return "LevelPSX";
-
-				case "pcextensions":
-					return "LevelPC";
-
-				case "title":
-					return "LevelLevel";
-
-				case "level":
-					return "LevelLevel";
-			}
-
-			return null;
-		}
-
-		private string GetCorrectCutCommand(int lineNumber)
-		{
-			string section = GetCurrentSectionName(lineNumber);
-
-			if (section == null)
-				return null;
-
-			switch (section.ToLower())
-			{
-				case "psxextensions":
-					return "CutPSX";
-
-				case "pcextensions":
-					return "CutPC";
-			}
-
-			return null;
-		}
-
-		private string GetCorrectFMVCommand(int lineNumber)
-		{
-			string section = GetCurrentSectionName(lineNumber);
-
-			if (section == null)
-				return null;
-
-			switch (section.ToLower())
-			{
-				case "psxextensions":
-					return "FMVPSX";
-
-				case "pcextensions":
-					return "FMVPC";
-			}
-
-			return null;
-		}
-
-		private string GetCurrentSectionName(int lineNumber)
-		{
-			for (int i = lineNumber - 1; i > 0; i--)
-			{
-				string currentLineText = _textBox.GetLineText(lineNumber);
-
-				if (currentLineText.Trim().StartsWith("["))
-					return currentLineText.Split('[')[1].Split(']')[0].Trim();
-			}
-
-			return null;
-		}
-
-		#endregion Syntax Hints
 
 		#region Tabs
 
@@ -1412,34 +897,57 @@ namespace TombIDE.ScriptEditor
 			TabPage newTabPage = new TabPage(tabPageTitle)
 			{
 				UseVisualStyleBackColor = false,
-				BackColor = Color.FromArgb(60, 63, 65),
+				BackColor = Color.FromArgb(32, 32, 32),
 				Size = tabControl_Editor.Size
 			};
 
-			// Create the ScriptTextBox
-			ScriptTextBox newTextBox = new ScriptTextBox
+			// Create the TextEditor
+			ScriptTextEditor newTextEditor = new ScriptTextEditor
 			{
-				ShowLineNumbers = _ide.Configuration.View_ShowLineNumbers,
-				ContextMenuStrip = contextMenu_TextBox
+				ShowLineNumbers = _editorConfigs.ClassicScript.ShowLineNumbers,
+				ShowSectionSeparators = _editorConfigs.ClassicScript.ShowSectionSeparators
 			};
 
-			// Bind event methods to the ScriptTextBox
-			newTextBox.KeyPress += Editor_KeyPress;
-			newTextBox.SelectionChanged += Editor_SelectionChanged;
-			newTextBox.TextChangedDelayed += Editor_TextChangedDelayed;
-			newTextBox.UndoRedoStateChanged += Editor_UndoRedoState_Changed;
-			newTextBox.ZoomChanged += Editor_ZoomChanged;
+			newTextEditor.TextArea.Margin = new System.Windows.Thickness(6, 0, 0, 0);
 
-			// Add the ScriptTextBox to the tab
-			newTabPage.Controls.Add(newTextBox);
+			// Bind event methods to the TextEditor
+			newTextEditor.TextArea.Caret.PositionChanged += Caret_PositionChanged;
+			newTextEditor.TextArea.SelectionChanged += Editor_StatusChanged;
+			newTextEditor.TextChanged += Editor_TextChanged;
+			newTextEditor.ZoomChanged += Editor_StatusChanged;
+			newTextEditor.KeyDown += Editor_KeyDown;
+			newTextEditor.MouseDoubleClick += Editor_MouseDoubleClick;
+
+			ElementHost elementHost = new ElementHost
+			{
+				Size = new Size(newTabPage.Size.Width - 6, newTabPage.Size.Height),
+				Dock = DockStyle.Fill,
+				Child = newTextEditor,
+				ContextMenuStrip = contextMenu_TextEditor
+			};
+
+			// Add the host to the tab
+			newTabPage.Controls.Add(elementHost);
 
 			// Add the tab to the tabControl and select it
 			tabControl_Editor.TabPages.Add(newTabPage);
 			tabControl_Editor.SelectTab(newTabPage);
 
-			// Change the active ScriptTextBox and apply user settings to it
-			_textBox = newTextBox;
-			ApplyUserSettings();
+			// Change the active TextEditor and apply user settings to it
+			_textEditor = newTextEditor;
+
+			ApplySavedSettings();
+		}
+
+		private TabPage FindTabPageOfFile(string filePath)
+		{
+			foreach (TabPage tab in tabControl_Editor.TabPages)
+			{
+				if (tab.Text.TrimEnd('*') == GetCorrectTabTitle(filePath))
+					return tab;
+			}
+
+			return null;
 		}
 
 		private void Editor_TabControl_Selecting(object sender, TabControlCancelEventArgs e)
@@ -1453,12 +961,12 @@ namespace TombIDE.ScriptEditor
 		{
 			if (tabControl_Editor.TabCount > 0)
 			{
-				// Change the active ScriptTextBox
-				_textBox = tabControl_Editor.SelectedTab.Controls.OfType<ScriptTextBox>().First();
+				// Change the active TextEditor
+				_textEditor = GetTextEditorOfTab(tabControl_Editor.SelectedTab);
 
 				// Update everything
 				UpdateUndoRedoSaveStates();
-				UpdateObjectBrowser();
+				objectBrowser.UpdateContent(_textEditor.Text);
 				DoStatusCounting();
 			}
 		}
@@ -1503,16 +1011,17 @@ namespace TombIDE.ScriptEditor
 
 		#region Files
 
-		private void OpenScriptFile()
+		private void OpenScriptFile(bool silentAction = false)
 		{
 			try
 			{
-				string scriptFilePath = GetScriptFilePath();
+				string scriptFilePath = PathHelper.GetScriptFilePath(_ide.Project);
+				TabPage scriptFileTab = FindTabPageOfFile(scriptFilePath);
 
-				if (IsFileAlreadyOpened(scriptFilePath))
-					return;
-
-				OpenFile(scriptFilePath);
+				if (scriptFileTab != null)
+					tabControl_Editor.SelectTab(scriptFileTab);
+				else
+					OpenFile(scriptFilePath, silentAction);
 			}
 			catch (Exception ex)
 			{
@@ -1520,19 +1029,17 @@ namespace TombIDE.ScriptEditor
 			}
 		}
 
-		/// <summary>
-		/// Valid arguments: "english", "spanish", "german" etc.
-		/// </summary>
-		private void OpenLanguageFile(string language)
+		private void OpenLanguageFile(GameLanguage language, bool silentAction = false)
 		{
 			try
 			{
-				string languageFilePath = GetLanguageFilePath(language);
+				string languageFilePath = PathHelper.GetLanguageFilePath(_ide.Project, language);
+				TabPage languageFileTab = FindTabPageOfFile(languageFilePath);
 
-				if (IsFileAlreadyOpened(languageFilePath))
-					return;
-
-				OpenFile(languageFilePath);
+				if (languageFileTab != null)
+					tabControl_Editor.SelectTab(languageFileTab);
+				else
+					OpenFile(languageFilePath, silentAction);
 			}
 			catch (Exception ex)
 			{
@@ -1540,147 +1047,96 @@ namespace TombIDE.ScriptEditor
 			}
 		}
 
-		private void OpenFile(string filePath)
+		private void OpenFile(string filePath, bool silentAction = false)
 		{
-			CreateNewTabPage(Path.GetFileName(filePath)); // Changes the current _textBox
-			_textBox.OpenFile(filePath);
+			CreateNewTabPage(GetCorrectTabTitle(filePath)); // Changes the current _textEditor
+			_textEditor.OpenFile(filePath, silentAction);
 
 			menuItem_Save.Enabled = false;
 			button_Save.Enabled = false;
 
-			UpdateObjectBrowser();
+			objectBrowser.UpdateContent(_textEditor.Text);
 		}
 
 		private bool IsFileSaved(TabPage tab)
 		{
-			ScriptTextBox textBox = tab.Controls.OfType<ScriptTextBox>().First();
+			TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
-			if (textBox.IsChanged)
+			if (textEditor.IsTextChanged)
 			{
-				if (_ide.SelectedIDETab != "Script Editor")
-					_ide.SelectIDETab("Script Editor");
+				if (_ide.SelectedIDETab != IDETab.ScriptEditor)
+					_ide.SelectIDETab(IDETab.ScriptEditor);
 
 				tabControl_Editor.SelectTab(tab);
 
-				string fileName = string.IsNullOrEmpty(_textBox.FilePath) ? "Untitled" : Path.GetFileName(_textBox.FilePath);
+				string fileName = string.IsNullOrEmpty(_textEditor.Document.FileName) ? "Untitled" : Path.GetFileName(_textEditor.Document.FileName);
 
 				DialogResult result = DarkMessageBox.Show(this,
 					"Do you want save changes to " + fileName + " ?", "Unsaved changes!",
 					MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
 				if (result == DialogResult.Yes)
-					return SaveFile(tab, textBox);
+					return SaveFile(tab);
 				else if (result == DialogResult.Cancel)
 					return false;
 			}
 
-			if (_textBox.FilePath != string.Empty)
-			{
-				string backupFilePath = _textBox.FilePath + ".backup";
-
-				if (File.Exists(backupFilePath))
-					File.Delete(backupFilePath); // We don't need the backup file when the original file is saved
-			}
-
 			tab.Dispose();
-			return true; // When the file is saved
+			return true;
 		}
 
-		private bool SaveFile(TabPage tab, ScriptTextBox textBox)
+		private bool SaveFile(TabPage tab)
 		{
-			if (_ide.Configuration.Tidy_ReindentOnSave)
-				textBox.TidyDocument();
+			TextEditorBase textEditor = GetTextEditorOfTab(tab);
+
+			if (_ide.IDEConfiguration.Tidy_ReindentOnSave)
+				((ScriptTextEditor)textEditor).TidyDocument();
 
 			try
 			{
-				if (textBox.FilePath == null) // For "Untitled"
+				if (textEditor.Document.FileName == null) // For "Untitled"
 				{
-					SaveFileDialog dialog = new SaveFileDialog()
-					{
-						Filter = "Text Files|*.txt|LUA Files|*.lua|All Files|*.*",
-						InitialDirectory = _ide.Project.ScriptPath
-					};
+					string initialNodePath = null;
+					string initialFileName = null;
 
-					if (dialog.ShowDialog(this) == DialogResult.OK)
+					if (!tab.Text.TrimEnd('*').Equals("untitled", StringComparison.OrdinalIgnoreCase))
 					{
-						textBox.FilePath = dialog.FileName;
-						tab.Text = Path.GetFileName(textBox.FilePath);
+						initialFileName = tab.Text.TrimEnd('*').Split('.')[0];
+
+						if (initialFileName.Contains('\\'))
+						{
+							string partialPath = initialFileName.Split('\\').Last();
+
+							initialNodePath = "Script\\" + initialFileName.Remove(initialFileName.Length - partialPath.Length - 1, partialPath.Length + 1);
+							initialFileName = partialPath;
+						}
 					}
-					else
-						return false;
+
+					using (FormFileCreation form = new FormFileCreation(_ide, FileCreationMode.Saving, initialNodePath, initialFileName))
+					{
+						if (form.ShowDialog(this) == DialogResult.OK)
+						{
+							textEditor.Document.FileName = form.NewFilePath;
+							tab.Text = form.NewFilePath.Replace(_ide.Project.ScriptPath + "\\", "");
+						}
+						else
+							return false;
+					}
 				}
 
-				textBox.SaveCurrentFile();
+				textEditor.Save(textEditor.Document.FileName);
 			}
 			catch (Exception ex) // Saving failed somehow
 			{
 				DialogResult result = DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
 				if (result == DialogResult.Retry)
-					return SaveFile(tab, textBox); // Retry saving
+					return SaveFile(tab); // Retry saving
 
 				return false;
 			}
 
 			return true; // When saving was successful
-		}
-
-		private string GetScriptFilePath()
-		{
-			string scriptFilePath = string.Empty;
-
-			// Find the script file in the project's /Script/ folder
-			foreach (string file in Directory.GetFiles(_ide.Project.ScriptPath))
-			{
-				if (Path.GetFileName(file).ToLower() == "script.txt")
-				{
-					scriptFilePath = file;
-					break;
-				}
-			}
-
-			if (string.IsNullOrEmpty(scriptFilePath))
-				throw new FileNotFoundException("Couldn't find the SCRIPT.TXT file.");
-
-			return scriptFilePath;
-		}
-
-		/// <summary>
-		/// Valid arguments: "english", "spanish", "german" etc.
-		/// </summary>
-		private string GetLanguageFilePath(string language)
-		{
-			string languageFilePath = string.Empty;
-
-			// Find the language file in the project's /Script/ folder
-			foreach (string file in Directory.GetFiles(_ide.Project.ScriptPath))
-			{
-				if (Path.GetFileName(file).ToLower() == language.ToLower() + ".txt")
-				{
-					languageFilePath = file;
-					break;
-				}
-			}
-
-			if (string.IsNullOrEmpty(languageFilePath))
-				throw new FileNotFoundException("Couldn't find the " + language.ToUpper() + ".TXT file.");
-
-			return languageFilePath;
-		}
-
-		private bool IsFileAlreadyOpened(string filePath)
-		{
-			foreach (TabPage tab in tabControl_Editor.TabPages)
-			{
-				if (tab.Text.TrimEnd('*') == Path.GetFileName(filePath))
-				{
-					// Select the tab
-					tabControl_Editor.SelectTab(tabControl_Editor.TabPages.IndexOf(tab));
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		#endregion Files
@@ -1689,44 +1145,259 @@ namespace TombIDE.ScriptEditor
 
 		private void ShowAboutForm()
 		{
-			using (FormAbout form = new FormAbout(null))
+			using (FormAbout form = new FormAbout(Properties.Resources.AboutScreen_800))
 				form.ShowDialog(this);
 		}
 
 		private void ShowSettingsForm()
 		{
-			_ide.Configuration.Save();
-
-			// Cache critical settings
-			int undoStackSizeCache = _ide.Configuration.UndoStackSize;
-			bool autocompleteCache = _ide.Configuration.Autocomplete;
-
-			using (FormSettings form = new FormSettings(_ide))
-			{
+			using (FormTextEditorSettings form = new FormTextEditorSettings())
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					ApplyUserSettings();
+					_editorConfigs = TextEditorConfigs.Load();
+					syntaxPreview.ReloadSettings();
+					ApplySavedSettings();
+				}
+		}
 
-					if (form.RestartItemCount > 0)
-					{
-						if (!AreAllFilesSaved())
-						{
-							// Saving failed or the user clicked "Cancel"
-							// Therefore restore the previous critical settings
-							_ide.Configuration.UndoStackSize = undoStackSizeCache;
-							_ide.Configuration.Autocomplete = autocompleteCache;
-							_ide.Configuration.Save();
+		#endregion Forms
 
-							ShowSettingsForm();
-							return; // DO NOT CLOSE THE APP !!! (ﾉ°Д°)ﾉ︵﻿ ┻━┻
-						}
+		private void ClearAllBookmarks()
+		{
+			DialogResult result = DarkMessageBox.Show(this, "Are you sure you want to clear all bookmarks from the current document?",
+				"Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-						_ide.RestartApplication();
-					}
+			if (result == DialogResult.Yes)
+			{
+				foreach (DocumentLine line in _textEditor.Document.Lines)
+				{
+					if (line.IsBookmarked)
+						line.IsBookmarked = false;
+				}
+
+				_textEditor.TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+			}
+		}
+
+		public string GetCorrectTabTitle(string filePath)
+		{
+			return filePath.Replace(_ide.Project.ScriptPath + @"\", "");
+		}
+
+		public string GetOriginalFilePathFromBackupFile(string backupFilePath)
+		{
+			return Path.Combine(Path.GetDirectoryName(backupFilePath), Path.GetFileNameWithoutExtension(backupFilePath));
+		}
+
+		private void treeView_SearchResults_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			foreach (DarkTreeNode node in treeView_SearchResults.Nodes)
+			{
+				if (treeView_SearchResults.SelectedNodes[0] == node)
+					return;
+			}
+
+			string sourceFilePath = Path.Combine(
+				_ide.Project.ScriptPath, treeView_SearchResults.SelectedNodes[0].ParentNode.Text.Split('(')[0].Trim());
+
+			Match match = (Match)treeView_SearchResults.SelectedNodes[0].Tag;
+
+			TabPage tab = FindTabPageOfFile(sourceFilePath);
+
+			if (tab != null)
+			{
+				tabControl_Editor.SelectTab(tab);
+
+				try
+				{
+					DocumentLine line = _textEditor.Document.GetLineByOffset(match.Index);
+
+					_textEditor.SelectionStart = match.Index;
+					_textEditor.SelectionLength = match.Length;
+
+					_textEditor.ScrollToLine(line.LineNumber);
+				}
+				catch { }
+			}
+		}
+
+		private void backgroundWorker_NGC_DoWork(object sender, DoWorkEventArgs e)
+		{
+			foreach (Process process in Process.GetProcesses())
+			{
+				if (process.ProcessName.Contains("NG_Center"))
+				{
+					process.WaitForExit();
+					break;
 				}
 			}
 		}
 
-		#endregion Forms
+		private void backgroundWorker_NGC_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (_formCompiling.Visible)
+				_formCompiling.Close();
+		}
+
+		private void CreateNewFile()
+		{
+			using (FormFileCreation form = new FormFileCreation(_ide, FileCreationMode.New))
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					FileStream stream = File.Create(form.NewFilePath);
+					stream.Close();
+
+					OpenFile(form.NewFilePath);
+				}
+			}
+		}
+
+		private void scriptFolderWatcher_Changed(object sender, FileSystemEventArgs e)
+		{
+			fileList.UpdateFileList();
+
+			List<TabPage> tabsToClose = new List<TabPage>();
+
+			foreach (TabPage tab in tabControl_Editor.TabPages)
+			{
+				TextEditorBase textEditor = GetTextEditorOfTab(tab);
+
+				if (string.IsNullOrEmpty(textEditor.Document.FileName))
+					continue;
+
+				if (!File.Exists(textEditor.Document.FileName))
+				{
+					if (textEditor.IsTextChanged)
+					{
+						textEditor.Document.FileName = null;
+						HandleTextChangedIndicator();
+					}
+					else
+						tabsToClose.Add(tab);
+				}
+			}
+
+			foreach (TabPage tab in tabsToClose)
+				tabControl_Editor.TabPages.Remove(tab);
+		}
+
+		private void scriptFolderWatcher_Renamed(object sender, RenamedEventArgs e)
+		{
+			fileList.UpdateFileList();
+
+			foreach (TabPage tab in tabControl_Editor.TabPages)
+			{
+				TextEditorBase textEditor = GetTextEditorOfTab(tab);
+
+				if (textEditor.Document.FileName == e.OldFullPath)
+				{
+					textEditor.Document.FileName = e.FullPath;
+					tab.Text = GetCorrectTabTitle(e.FullPath);
+
+					HandleTextChangedIndicator();
+
+					break;
+				}
+			}
+		}
+
+		private void ApplySavedSettings()
+		{
+			// TextEditor specific settings
+			foreach (TabPage tab in tabControl_Editor.TabPages)
+			{
+				TextEditorBase textEditor = GetTextEditorOfTab(tab);
+
+				if (textEditor is ScriptTextEditor)
+					UpdateTextEditorSettings((ScriptTextEditor)textEditor);
+				else if (textEditor is LuaTextEditor)
+					UpdateTextEditorSettings((LuaTextEditor)textEditor);
+			}
+
+			// Editor settings
+			ToggleObjBrowser(_ide.IDEConfiguration.View_ShowObjBrowser);
+			ToggleFileList(_ide.IDEConfiguration.View_ShowFileList);
+			ToggleInfoBox(_ide.IDEConfiguration.View_ShowInfoBox);
+			ToggleToolStrip(_ide.IDEConfiguration.View_ShowToolStrip);
+			ToggleStatusStrip(_ide.IDEConfiguration.View_ShowStatusStrip);
+			SwapPanels(_ide.IDEConfiguration.View_SwapPanels);
+
+			DoStatusCounting();
+		}
+
+		private void UpdateTextEditorSettings(ScriptTextEditor scriptTextEditor)
+		{
+			scriptTextEditor.SyntaxHighlighting = new ClassicScriptSyntaxHighlighting(_editorConfigs.ClassicScript.ColorScheme);
+
+			scriptTextEditor.Background = new System.Windows.Media.SolidColorBrush
+			(
+				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
+				(
+					_editorConfigs.ClassicScript.ColorScheme.Background
+				)
+			);
+
+			scriptTextEditor.Foreground = new System.Windows.Media.SolidColorBrush
+			(
+				(System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString
+				(
+					_editorConfigs.ClassicScript.ColorScheme.Foreground
+				)
+			);
+
+			scriptTextEditor.ShowSectionSeparators = _editorConfigs.ClassicScript.ShowSectionSeparators;
+
+			scriptTextEditor.Cleaner.PreEqualSpace = _editorConfigs.ClassicScript.Tidy_PreEqualSpace;
+			scriptTextEditor.Cleaner.PostEqualSpace = _editorConfigs.ClassicScript.Tidy_PostEqualSpace;
+			scriptTextEditor.Cleaner.PreCommaSpace = _editorConfigs.ClassicScript.Tidy_PreCommaSpace;
+			scriptTextEditor.Cleaner.PostCommaSpace = _editorConfigs.ClassicScript.Tidy_PostCommaSpace;
+			scriptTextEditor.Cleaner.ReduceSpaces = _editorConfigs.ClassicScript.Tidy_ReduceSpaces;
+
+			scriptTextEditor.UpdateSettings(_editorConfigs.ClassicScript);
+		}
+
+		private void UpdateTextEditorSettings(LuaTextEditor luaTextEditor)
+		{
+			luaTextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting(_editorConfigs.Lua.ColorScheme);
+			luaTextEditor.UpdateSettings(_editorConfigs.Lua);
+		}
+
+		private TextEditorBase GetTextEditorOfTab(TabPage tab)
+		{
+			return (TextEditorBase)tab.Controls.OfType<ElementHost>().First().Child;
+		}
+
+		private void Editor_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			if (e.ChangedButton == System.Windows.Input.MouseButton.Left && ModifierKeys == Keys.Control)
+				OpenIncludeFile();
+		}
+
+		private void OpenIncludeFile()
+		{
+			DocumentLine caretLine = _textEditor.Document.GetLineByOffset(_textEditor.CaretOffset);
+			string caretLineText = _textEditor.Document.GetText(caretLine.Offset, caretLine.Length);
+
+			if (caretLineText.StartsWith("#include", StringComparison.OrdinalIgnoreCase) && caretLineText.Contains('"'))
+			{
+				string pathPart = caretLineText.Split('"')[1];
+				string fullFilePath = Path.Combine(_ide.Project.ScriptPath, pathPart);
+
+				if (File.Exists(fullFilePath))
+				{
+					TabPage fileTab = FindTabPageOfFile(fullFilePath);
+
+					if (fileTab != null)
+						tabControl_Editor.SelectTab(fileTab);
+					else
+						OpenFile(fullFilePath);
+				}
+				else
+					DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				_textEditor.SelectionLength = 0;
+			}
+		}
 	}
 }

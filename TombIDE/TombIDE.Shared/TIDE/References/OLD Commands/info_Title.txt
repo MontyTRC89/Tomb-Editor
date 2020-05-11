@@ -1,0 +1,8 @@
+Syntax: Title=	ENABLED/DISABLED
+
+To use in [Options] section
+
+To set if use or less the title.tr4 level as background for introduction screen.
+The title.tr4 is a common level but with a flyby camera sequence. It will be used only for 'decorative' effects.
+
+
