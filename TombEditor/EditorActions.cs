@@ -3297,6 +3297,13 @@ namespace TombEditor
             return true;
         }
 
+        public static bool VersionCheck(bool supported, string objectType)
+        {
+            if (!supported)
+                _editor.SendMessage(objectType + " is not supported in current game version.", PopupType.Info);
+            return supported;
+        }
+
         public static bool CheckForLockedRooms(IWin32Window owner, IEnumerable<Room> rooms)
         {
             if (rooms.All(room => !room.Locked))

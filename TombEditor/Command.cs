@@ -991,6 +991,9 @@ namespace TombEditor
 
             AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Flyby camera"))
+                    return;
+
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new FlybyCameraInstance(args.Editor.SelectedObject));
             });
 
@@ -1016,16 +1019,22 @@ namespace TombEditor
 
             AddCommand("AddBoxVolume", "Add box volume", CommandType.Objects, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Volume"))
+                    return;
                 EditorActions.AddVolume(VolumeShape.Box);
             });
 
             AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Volume"))
+                    return;
                 EditorActions.AddVolume(VolumeShape.Prism);
             });
 
             AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
             {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Volume"))
+                    return;
                 EditorActions.AddVolume(VolumeShape.Sphere);
             });
 
@@ -1642,12 +1651,16 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR3, "Monkeyswing"))
+                    return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.Monkey);
             });
 
             AddCommand("SetClimbPositiveZ", "Climb on North sector side", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR2, "Climbing"))
                     return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbPositiveZ);
             });
@@ -1656,6 +1669,8 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR2, "Climbing"))
+                    return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbPositiveX);
             });
 
@@ -1663,12 +1678,16 @@ namespace TombEditor
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
                     return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR2, "Climbing"))
+                    return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbNegativeZ);
             });
 
             AddCommand("SetClimbNegativeX", "Climb on West sector side", CommandType.Sectors, delegate (CommandArgs args)
             {
                 if (!EditorActions.CheckForRoomAndBlockSelection(args.Window))
+                    return;
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR2, "Climbing"))
                     return;
                 EditorActions.ToggleBlockFlag(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, BlockFlags.ClimbNegativeX);
             });
