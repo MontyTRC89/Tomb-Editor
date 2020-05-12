@@ -27,6 +27,7 @@ TombIDE:
 
 SoundTool:
  * Allow multiple instances option.
+ * Ability to compile MAIN.SFX file for TR1 and TR2.
  
 WadTool:
  * Fix wrong copy animcommand behaviour.
