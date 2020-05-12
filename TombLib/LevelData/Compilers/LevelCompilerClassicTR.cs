@@ -151,7 +151,11 @@ namespace TombLib.LevelData.Compilers
             // Throw a warning about zero padding and agressive texture packing
             if (_level.Settings.AgressiveTexturePacking && _level.Settings.TexturePadding == 0)
                 _progressReporter.ReportWarn("Agressive texture packing was used with zero padding. This will lead to dramatic texture border bleeding.\nPlease turn off agressive texture packing or increase padding to at least 1px.");
-
+            //Throw warning if texture pages count is big
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+                if (_textureInfoManager.NumObjectsPages + _textureInfoManager.NumRoomPages >= 28)
+                    _progressReporter.ReportWarn("The number of total texture pages is equal or greater than 28. Texture glitches or crashes may occur.\nUse aggressive texture packing to reduce the total nunber of texture pages used or use less or smaller textures ");
+            
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
 
