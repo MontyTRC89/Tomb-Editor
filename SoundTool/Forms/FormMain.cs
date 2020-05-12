@@ -8,19 +8,36 @@ using TombLib.Utils;
 using System.IO;
 using TombLib.LevelData.IO;
 using System.Collections.Generic;
-using DarkUI.Config;
+using TombLib.IO;
 
 namespace SoundTool
 {
     public partial class FormMain : DarkForm
     {
+        private static readonly IReadOnlyCollection<FileFormat> 
+            _fileFormatSfx = new[] { new FileFormat("Tomb Raider 2/3 MAIN.SFX", "sfx") };
+
         private PopUpInfo popup = new PopUpInfo();
         private Configuration _configuration;
 
-        public Level ReferenceLevel
+        private Level ReferenceLevel
         {
             get { return soundInfoEditor.ReferenceLevel; }
             set { soundInfoEditor.ReferenceLevel = value; }
+        }
+
+        private WadSounds Sounds
+        {
+            get
+            {
+                var sounds = new WadSounds();
+                foreach (DataGridViewRow row in dgvSoundInfos.Rows)
+                {
+                    WadSoundInfo info = (WadSoundInfo)row.Tag;
+                    sounds.SoundInfos.Add(info);
+                }
+                return sounds;
+            }
         }
 
         private bool Saved
@@ -66,8 +83,8 @@ namespace SoundTool
             CheckForSavedChanges();
 
             if (filename == null)
-                filename = LevelFileDialog.BrowseFile(this, "Select archive to open",
-                                                      WadSounds.FormatExtensions,
+                filename = LevelFileDialog.BrowseFile(this, null, _configuration.SoundTool_LastCatalogPath, "Select archive to open",
+                                                      WadSounds.FormatExtensions, null,
                                                       false);
 
             if (filename == null || !File.Exists(filename))
@@ -78,6 +95,9 @@ namespace SoundTool
 
             if (sounds == null)
                 return false;
+
+            // File read correctly, save catalog path to recent
+            _configuration.SoundTool_LastCatalogPath = filename;
 
             dgvSoundInfos.Rows.Clear();
 
@@ -116,15 +136,8 @@ namespace SoundTool
             if (filename == null)
                 return;
 
-            var sounds = new WadSounds();
-            foreach (DataGridViewRow row in dgvSoundInfos.Rows)
-            {
-                WadSoundInfo info = (WadSoundInfo)row.Tag;
-                sounds.SoundInfos.Add(info);
-            }
-
-            sounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
-            WadSounds.SaveToXml(filename, sounds);
+            Sounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
+            WadSounds.SaveToXml(filename, Sounds);
 
             _currentArchive = filename;
             Saved = true;
@@ -231,6 +244,9 @@ namespace SoundTool
 
             unloadReferenceProjectToolStripMenuItem.Enabled = refLoaded;
             saveToolStripMenuItem.Enabled = _currentArchive == null || !Saved;
+
+            if (dgvSoundInfos.Rows.Count > 0)
+                SelectSoundInfo(dgvSoundInfos.SelectedRows[0].Index);
         }
 
         private bool CheckForSavedChanges()
@@ -301,12 +317,76 @@ namespace SoundTool
             }
         }
 
+        private void CompileMainSFX(bool onlyIndexed)
+        {
+            LevelSettings settings;
+            var sounds = Sounds.SoundInfos;
+
+            if (sounds.Count == 0)
+            {
+                popup.ShowError(soundInfoEditor, "No sounds present. Nothing to compile!");
+                return;
+            }
+
+            settings = new LevelSettings();
+            settings.WadSoundPaths.Clear();
+            var samplePath = LevelFileDialog.BrowseFolder(this, null, _configuration.SoundTool_LastMainSFXSamplePath,
+                "Choose a path where all samples are stored", null);
+            if (string.IsNullOrEmpty(samplePath))
+                return; // User cancelled path selection
+            settings.WadSoundPaths.Add(new WadSoundPath(samplePath));
+            _configuration.SoundTool_LastMainSFXSamplePath = samplePath; // Update settings
+
+            var mainSFXPath = LevelFileDialog.BrowseFile(this, null, _configuration.SoundTool_LastMainSFXPath,
+                    "Choose a path to save MAIN.SFX", _fileFormatSfx, null, true);
+
+            if (string.IsNullOrEmpty(mainSFXPath))
+                return; // User cancelled saving
+
+            bool missing;
+            var samples = WadSample.CompileSamples(sounds, settings, onlyIndexed, out missing);
+
+            try
+            {
+                using (var writer = new BinaryWriterEx(new FileStream(mainSFXPath, FileMode.Create, FileAccess.Write, FileShare.None)))
+                {
+                    foreach (var sample in samples.Values)
+                        writer.Write(sample.Data, 0, sample.Data.Length);
+                }
+
+                var message = "MAIN.SFX compiled successfully!";
+                if (missing) message += "\n" + "Some samples weren't found and won't play in game.";
+                popup.ShowInfo(soundInfoEditor, message);
+                _configuration.SoundTool_LastMainSFXPath = mainSFXPath;
+            }
+            catch (Exception ex)
+            {
+                popup.ShowError(soundInfoEditor, "There was a error writing MAIN.SFX. \nException: " + ex.Message);
+            }
+        }
+
+        private void IndexAllSounds()
+        {
+            Sounds.SoundInfos.ForEach(s => s.Indexed = true);
+            UpdateUI();
+        }
+
+        private void UnindexAllSounds()
+        {
+            Sounds.SoundInfos.ForEach(s => s.Indexed = false);
+            UpdateUI();
+        }
+
         private void NewXMLToolStripMenuItem_Click(object sender, EventArgs e) => CreateNewArchive();
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e) => OpenArchive();
         private void saveToolStripMenuItem_Click(object sender, EventArgs e) => SaveArchive(_currentArchive);
         private void saveXMLAsToolStripMenuItem_Click(object sender, EventArgs e) => SaveArchive();
         private void loadReferenceLevelToolStripMenuItem_Click(object sender, EventArgs e) => LoadReferenceLevel();
         private void unloadReferenceProjectToolStripMenuItem_Click(object sender, EventArgs e) => UnloadReferenceLevel();
+        private void indexStripMenuItem3_Click(object sender, EventArgs e) => IndexAllSounds();
+        private void unindexStripMenuItem3_Click(object sender, EventArgs e) => UnindexAllSounds();
+        private void buildMSFXStripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(true);
+        private void buildMSFXallStripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(false);
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         private void butAddNewSoundInfo_Click(object sender, EventArgs e) => AddSoundInfo();
