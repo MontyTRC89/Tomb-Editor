@@ -377,7 +377,8 @@ namespace TombLib.LevelData.Compilers
                             Lighting2 = 0,
                             Attributes = (ushort)lightingEffect
                         };
-                        trVertex.Lighting2 = PackColorTo16Bit(color);
+                        trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
+
                         // Check for maximum vertices reached
                         if (roomVertices.Count >= 65536)
                         {
@@ -474,13 +475,13 @@ namespace TombLib.LevelData.Compilers
 
                                 // Pack the light according to chosen lighting model
                                 if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
-                                    trVertex.Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color);
+                                    trVertex.Lighting2 = PackLightColor(mesh.Vertices[j].Color, _level.Settings.GameVersion);
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128));
+                                    trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
                                 else
-                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
+                                    trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
 
                                 // Check for maximum vertices reached
                                 if (roomVertices.Count >= 65536)
@@ -803,7 +804,7 @@ namespace TombLib.LevelData.Compilers
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Intensity1 = PackColorTo16Bit(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X)),
+                    Intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion),
                     Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 0x0001 : instance.Ocb)
                 });
             }
@@ -844,7 +845,7 @@ namespace TombLib.LevelData.Compilers
             if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 trVertex.Color = PackColorTo32Bit(Color);
             else
-                trVertex.Lighting2 = PackColorTo16Bit(Color);
+                trVertex.Lighting2 = PackLightColor(Color, room.Level.Settings.GameVersion);
 
             // Add vertex
             vertexIndex = (ushort)roomVertices.Count;
@@ -1584,6 +1585,14 @@ namespace TombLib.LevelData.Compilers
                         FindConnectedRooms(outSharedRooms, roomPair.Key, worldPos, checkFloorCeiling);
                     FindConnectedRooms(outSharedRooms, roomPair.Value, worldPos, checkFloorCeiling);
                 }
+        }
+
+        private static ushort PackLightColor(Vector3 color, TRVersion.Game version)
+        {
+            if (version >= TRVersion.Game.TR3)
+                return PackColorTo16Bit(color);
+            else
+                return PackColorTo13BitGreyscale(color);
         }
 
         private static ushort PackColorTo16Bit(Vector3 color)
