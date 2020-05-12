@@ -177,10 +177,10 @@ namespace TombLib.LevelData.Compilers
             // Store ambient intensity
             if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                 newRoom.AmbientIntensity = (uint)PackColorTo13BitGreyscale(room.AmbientLight);
-            else if (_level.Settings.GameVersion == TRVersion.Game.TR4)
-                newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
             else
-                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
+                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | 
+                                           ((uint)roomAmbientColor.Green << 8) | 
+                                                  roomAmbientColor.Blue;
 
             // Properly identify game version to swap quicksand and no lensflare flags
             bool isNL = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
