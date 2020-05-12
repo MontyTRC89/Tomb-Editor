@@ -639,6 +639,10 @@ namespace TombEditor.Forms
             soundDataGridView.Visible = !currentVersionToCheck;
             soundDataGridViewControls.Visible = !currentVersionToCheck;
             lblPathsPrompt.Text = currentVersionToCheck ? _pathsPromptMSFX : _pathsPromptNew;
+            lblPathsPrompt.Dock = currentVersionToCheck ? DockStyle.Fill : DockStyle.Top;
+            lblPathsPrompt.TextAlign = currentVersionToCheck ? ContentAlignment.MiddleCenter : ContentAlignment.TopLeft;
+            lblPathsPrompt.AutoSize = !currentVersionToCheck;
+            lblPathsPrompt.ForeColor = currentVersionToCheck ? Colors.DisabledText : Colors.LightText;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
