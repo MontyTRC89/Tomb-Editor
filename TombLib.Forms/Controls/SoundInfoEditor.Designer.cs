@@ -596,8 +596,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.Controls.Add(this.cbIndexed);
             this.Controls.Add(this.picDisabledOverlay);
+            this.Controls.Add(this.cbIndexed);
             this.Controls.Add(this.butMoveDown);
             this.Controls.Add(this.butMoveUp);
             this.Controls.Add(this.butDeleteSample);
@@ -615,7 +615,7 @@
             this.Controls.Add(this.butBrowse);
             this.Controls.Add(this.butResetToDefaults);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MinimumSize = new System.Drawing.Size(400, 346);
+            this.MinimumSize = new System.Drawing.Size(400, 246);
             this.Name = "SoundInfoEditor";
             this.Size = new System.Drawing.Size(400, 426);
             ((System.ComponentModel.ISupportInitialize)(this.numericVolume)).EndInit();
