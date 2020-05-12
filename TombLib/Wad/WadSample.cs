@@ -8,6 +8,8 @@ using System.IO;
 using TombLib.Utils;
 using NAudio.Wave.SampleProviders;
 using System.Xml.Serialization;
+using System.Threading.Tasks;
+using TombLib.LevelData;
 
 namespace TombLib.Wad
 {
@@ -427,6 +429,59 @@ namespace TombLib.Wad
                     return NullSample;
                 throw;
             }
+        }
+
+        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, out bool missingSamplesFound)
+        {
+            var samples = new List<WadSample>();
+            foreach (var soundInfo in soundMap)
+            {
+                if (onlyIndexed && !soundInfo.Indexed)
+                    continue;
+                foreach (var sample in soundInfo.Samples)
+                    samples.Add(sample);
+            }
+
+            var loadedSamples = new SortedDictionary<int, WadSample>();
+
+            var missing = false;
+            Parallel.For(0, samples.Count, i =>
+            {
+                WadSample currentSample = NullSample;
+                try
+                {
+                    string samplePath = WadSounds.TryGetSamplePath(settings, samples[i].FileName);
+
+                    // If sample was found, then load it...
+                    if (!string.IsNullOrEmpty(samplePath))
+                    {
+                        using (var stream = new FileStream(samplePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            var buffer = new byte[stream.Length];
+                            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
+                                throw new EndOfStreamException();
+                            currentSample = new WadSample(samplePath, WadSample.ConvertSampleFormat(buffer, false));
+                        }
+                    }
+                    // ... otherwise output null sample
+                    else
+                    {
+                        currentSample = WadSample.NullSample;
+                        logger.Warn(new FileNotFoundException(), "Unable to find sample '" + samplePath + "'");
+                        missing = true;
+                    }
+                }
+                catch (Exception exc)
+                {
+                    logger.Warn(exc, "Unable to read file '" + samples[i].FileName + "' from provided location.");
+                }
+
+                lock (loadedSamples)
+                    loadedSamples.Add(i, currentSample);
+            });
+
+            missingSamplesFound = missing;
+            return loadedSamples;
         }
 
         public static readonly IEnumerable<FileFormat> FileFormatsToRead = new[]

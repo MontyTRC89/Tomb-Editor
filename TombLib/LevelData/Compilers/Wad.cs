@@ -794,49 +794,8 @@ namespace TombLib.LevelData.Compilers
                 return;
 
             // Step 4: load samples
-            var samples = new List<WadSample>();
-            foreach (var soundInfo in _finalSoundInfosList)
-                foreach (var sample in soundInfo.Samples)
-                    samples.Add(sample);
-
-            _finalSamplesList = new List<WadSample>();
-            SortedDictionary<int, WadSample> loadedSamples = new SortedDictionary<int, WadSample>();
-
-            bool samplesMissing = false;
-            Parallel.For(0, samples.Count, i =>
-            {
-                WadSample currentSample = WadSample.NullSample;
-                try
-                {
-                    string samplePath = WadSounds.TryGetSamplePath(_level.Settings, samples[i].FileName);
-
-                    // If sample was found, then load it...
-                    if (!string.IsNullOrEmpty(samplePath))
-                    {
-                        using (var stream = new FileStream(samplePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        {
-                            var buffer = new byte[stream.Length];
-                            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
-                                throw new EndOfStreamException();
-                            currentSample = new WadSample(samplePath, WadSample.ConvertSampleFormat(buffer, false));
-                        }
-                    }
-                    // ... otherwise output null sample
-                    else
-                    {
-                        currentSample = WadSample.NullSample;
-                        logger.Warn(new FileNotFoundException(), "Unable to find sample '" + samplePath + "'");
-                        samplesMissing = true;
-                    }
-                }
-                catch (Exception exc)
-                {
-                    //logger.Warn(exc, "Unable to read file '" + samplePathInfos[i].FullPath + "'");
-                }
-
-                lock (loadedSamples)
-                    loadedSamples.Add(i, currentSample);
-            });
+            bool samplesMissing;
+            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, out samplesMissing);
 
             if (samplesMissing)
                 _progressReporter.ReportWarn("Some samples weren't found. Make sure sample paths are specified correctly. Check level settings for details.");
