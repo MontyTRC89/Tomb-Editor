@@ -11,6 +11,10 @@ namespace TombLib
     {
         public const float ZeroTolerance = 1e-6f; // Value a 8x higher than 1.19209290E-07F
 
+        // Use Rec.709 trichromat formula to get perceptive luma value
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetLuma(this Vector3 color) => (float)((color.X * 0.2126) + (color.Y * 0.7152) + (color.Z * 0.0722));
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static VectorInt2 To2(this VectorInt3 vec) => new VectorInt2(vec.X, vec.Y);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
