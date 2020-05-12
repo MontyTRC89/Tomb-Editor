@@ -498,6 +498,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Convert static meshes
+            int convertedStaticsCount = 0;
             ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
@@ -527,17 +528,25 @@ namespace TombLib.LevelData.Compilers
 
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
-                //do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
-                 if(!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
+
+                // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
+                if (!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
                     ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
-                } else
+                }
+                else
                 {
-                    _progressReporter.ReportInfo("Creating Dummy Mesh for automatically Merged Mesh :" + oldStaticMesh.ToString(_level.Settings.GameVersion));
+                    convertedStaticsCount++;
+                    logger.Info("Creating Dummy Mesh for automatically Merged Mesh: " + oldStaticMesh.ToString(_level.Settings.GameVersion));
                     CreateDummyWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
                 }
                 _staticMeshes.Add(newStaticMesh);
             }
+            
+            if (convertedStaticsCount > 0)
+                _progressReporter.ReportInfo("    Number of statics merged with room geometry: " + convertedStaticsCount);
+            else
+                _progressReporter.ReportInfo("    No statics to merge into room geometry.");
 
             if (_writeDbgWadTxt)
                 using (var fileStream = new FileStream("Wad.txt", FileMode.Create, FileAccess.Write, FileShare.None))
@@ -785,49 +794,8 @@ namespace TombLib.LevelData.Compilers
                 return;
 
             // Step 4: load samples
-            var samples = new List<WadSample>();
-            foreach (var soundInfo in _finalSoundInfosList)
-                foreach (var sample in soundInfo.Samples)
-                    samples.Add(sample);
-
-            _finalSamplesList = new List<WadSample>();
-            SortedDictionary<int, WadSample> loadedSamples = new SortedDictionary<int, WadSample>();
-
-            bool samplesMissing = false;
-            Parallel.For(0, samples.Count, i =>
-            {
-                WadSample currentSample = WadSample.NullSample;
-                try
-                {
-                    string samplePath = WadSounds.TryGetSamplePath(_level.Settings, samples[i].FileName);
-
-                    // If sample was found, then load it...
-                    if (!string.IsNullOrEmpty(samplePath))
-                    {
-                        using (var stream = new FileStream(samplePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        {
-                            var buffer = new byte[stream.Length];
-                            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
-                                throw new EndOfStreamException();
-                            currentSample = new WadSample(samplePath, WadSample.ConvertSampleFormat(buffer, false));
-                        }
-                    }
-                    // ... otherwise output null sample
-                    else
-                    {
-                        currentSample = WadSample.NullSample;
-                        logger.Warn(new FileNotFoundException(), "Unable to find sample '" + samplePath + "'");
-                        samplesMissing = true;
-                    }
-                }
-                catch (Exception exc)
-                {
-                    //logger.Warn(exc, "Unable to read file '" + samplePathInfos[i].FullPath + "'");
-                }
-
-                lock (loadedSamples)
-                    loadedSamples.Add(i, currentSample);
-            });
+            bool samplesMissing;
+            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, out samplesMissing);
 
             if (samplesMissing)
                 _progressReporter.ReportWarn("Some samples weren't found. Make sure sample paths are specified correctly. Check level settings for details.");
@@ -895,7 +863,7 @@ namespace TombLib.LevelData.Compilers
                     }
 
                     if (_level.Settings.GameVersion < TRVersion.Game.TR5Main && lastSampleIndex > 255)
-                        throw new Exception("Level contains " + lastSampleIndex + 
+                        _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
                             " samples, while maximum is 256. Level will crash. Turn off some sounds to prevent that.");
 
                     // Write sample indices (not used but parsed in TR4-5)

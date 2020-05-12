@@ -30,7 +30,7 @@ namespace TombLib.LevelData
         SoundEngineVersion
     }
 
-    public class AutoStaticMeshMergeEntry : ICloneable
+    public class AutoStaticMeshMergeEntry : ICloneable, IEquatable<AutoStaticMeshMergeEntry>
     {
         public string StaticMesh
         {
@@ -43,7 +43,7 @@ namespace TombLib.LevelData
         public bool InterpretShadesAsEffect { get; set; }
         public bool TintAsAmbient { get; set; }
         public bool ClearShades { get; set; }
-        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect,bool tintAsAmbient,bool clearShades, LevelSettings parent)
+        public AutoStaticMeshMergeEntry(uint staticMesh, bool merge, bool interpretShadesAsEffect, bool tintAsAmbient, bool clearShades, LevelSettings parent)
         {
             this.meshId = staticMesh;
             this.parent = parent;
@@ -63,23 +63,23 @@ namespace TombLib.LevelData
             return Clone();
         }
 
-        public override bool Equals(object obj)
-        {
-            if(obj is AutoStaticMeshMergeEntry)
-            {
-                AutoStaticMeshMergeEntry other = (AutoStaticMeshMergeEntry)obj;
-                if(other.meshId == meshId)
-                {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
-
         public override int GetHashCode()
         {
-            return (int)meshId;
+            return ("merged" + meshId + ClearShades + InterpretShadesAsEffect + Merge + TintAsAmbient).GetHashCode();
+        }
+
+        public override bool Equals(Object other) => Equals(other as AutoStaticMeshMergeEntry);
+
+        public bool Equals(AutoStaticMeshMergeEntry other)
+        {
+            if (other == null)
+                return false;
+
+            return (other.meshId == meshId &&
+                    other.ClearShades == ClearShades &&
+                    other.InterpretShadesAsEffect == InterpretShadesAsEffect &&
+                    other.Merge == Merge &&
+                    other.TintAsAmbient == TintAsAmbient);
         }
     }
 
@@ -111,11 +111,6 @@ namespace TombLib.LevelData
         public const string VariableEnd = ")";
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
-        public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
-        public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
-        public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
-
         // New sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();
@@ -137,8 +132,7 @@ namespace TombLib.LevelData
         }
         public bool AutoAssignSoundsIfNoSelection { get; set; } = true; // Autodetect and assign sounds if none selected
 
-        public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
-
+        // Default sound paths
         public List<WadSoundPath> WadSoundPaths { get; set; } = new List<WadSoundPath>
             {
                 new WadSoundPath("Sounds"), // For directly loading wad files.
@@ -161,25 +155,41 @@ namespace TombLib.LevelData
                 new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
             };
 
-        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
+        // Game version and version-specific settings
+        public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
+        public bool GameEnableQuickStartFeature { get; set; } = true;
+
+        // Paths
+        public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
+        public string FontTextureFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string SkyTextureFilePath { get; set; } = null; // Can be null if the default should be used.
+        public string Tr5ExtraSpritesFilePath { get; set; } = null; // Can be null if the default should be used.
         public string ScriptDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Script";
         public string GameDirectory { get; set; } = VariableCreate(VariableType.EditorDirectory) + Dir + "Game";
         public string GameLevelFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "data" + Dir + VariableCreate(VariableType.LevelName) + ".tr4"; // Relative to "GameDirectory"
         public string GameExecutableFilePath { get; set; } = VariableCreate(VariableType.GameDirectory) + Dir + "Tomb4.exe"; // Relative to "GameDirectory"
-        public bool GameEnableQuickStartFeature { get; set; } = true;
-        public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
+
+        // All data lists
+        public List<ReferencedWad> Wads { get; set; } = new List<ReferencedWad>();
         public List<LevelTexture> Textures { get; set; } = new List<LevelTexture>();
-        public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
+        public List<ReferencedSoundsCatalog> SoundsCatalogs { get; set; } = new List<ReferencedSoundsCatalog>();
         public List<ImportedGeometry> ImportedGeometries { get; set; } = new List<ImportedGeometry>();
-        public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
         public List<ImportedGeometry> ImportedRooms { get; set; } = new List<ImportedGeometry>();
         public bool InterpretStaticMeshVertexDataForMerge { get; set; } = false;
         public List<AutoStaticMeshMergeEntry> AutoStaticMeshMerges { get; set; } = new List<AutoStaticMeshMergeEntry>();
+        public List<AnimatedTextureSet> AnimatedTextureSets { get; set; } = new List<AnimatedTextureSet>();
+        public List<ColorC> Palette { get; set; } = LoadPalette(ResourcesC.ResourcesC.palette);
+
+        // Light options
+        public Vector3 DefaultAmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f);
+        public LightQuality DefaultLightQuality { get; set; } = LightQuality.Low;
+        public bool OverrideIndividualLightQualitySettings { get; set; } = false;
+
         // Compiler options
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
         public int TexturePadding { get; set; } = 8;
-
+        
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;
@@ -202,6 +212,33 @@ namespace TombLib.LevelData
         public static string VariableCreate(VariableType type)
         {
             return VariableBegin + type + VariableEnd;
+        }
+
+        public void ConvertLevelExtension()
+        {
+            var result = string.Empty;
+            switch (GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                    result = ".phd";
+                    break;
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
+                    result = ".tr2";
+                    break;
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TRNG:
+                default:
+                    result = ".tr4";
+                    break;
+                case TRVersion.Game.TR5:
+                    result = ".trc";
+                    break;
+                case TRVersion.Game.TR5Main:
+                    result = ".t5m";
+                    break;
+            }
+            GameLevelFilePath = Path.ChangeExtension(GameLevelFilePath, result);
         }
 
         public string GetVariable(VariableType type)
@@ -346,6 +383,20 @@ namespace TombLib.LevelData
             return LoadRawExtraTexture(path);
         }
 
+        public static List<ColorC> LoadPalette(byte[] buffer)
+        {
+            var result = new List<ColorC>();
+            if (buffer.Length < 3) return result; // No suitable color data found
+
+            using (var stream = new MemoryStream(buffer, false))
+            using (var readerPalette = new BinaryReader(stream))
+                while (readerPalette.BaseStream.Position < readerPalette.BaseStream.Length)
+                    result.Add(new ColorC(readerPalette.ReadByte(), readerPalette.ReadByte(), readerPalette.ReadByte()));
+
+            return result;
+        }
+        public static List<ColorC> LoadPalette() => LoadPalette(ResourcesC.ResourcesC.palette);
+
         public static ImageC LoadRawExtraTexture(string path)
         {
             using (FileStream reader = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -470,7 +521,8 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider I level", "phd"),
             new FileFormat("Tomb Raider II/III level", "tr2"),
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
-            new FileFormat("Tomb Raider Chronicles level", "trc")
+            new FileFormat("Tomb Raider Chronicles level", "trc"),
+            new FileFormat("TR5Main level", "t5m")
         };
 
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]
@@ -488,9 +540,7 @@ namespace TombLib.LevelData
             return null;
         }
 
-        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) 
-        {
-            return (AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any());
-        }
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) => AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any();
+        public AutoStaticMeshMergeEntry GetStaticMergeEntry(WadStaticId staticMeshId) => AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
     }
 }

@@ -1,0 +1,24 @@
+Syntax: Layer1= Red,Green,Blue,Speed
+
+To use in [Level] section when Horizon=ENABLED
+
+This command set the color of sky texture and the speed of movements of sky texture 
+
+Arguments:
+
+1 - Red Color ("160")
+Set intensity of red for background sky color
+
+2 - Green Color ("150")
+Set intensity of green for background sky color
+
+3- Blue Color ("192")
+Set intensity of blue for background sky color
+
+4 - Speed movements for sky texture ("7")
+Range values:  -16   +16 
+If you use negative values the movement of animation  will be inverted
+
+
+
+

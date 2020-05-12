@@ -15,6 +15,7 @@ namespace TombEditor.ToolWindows
         {
             InitializeComponent();
             CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
+            cbLightQuality.SelectedIndex = 0; // Reset index to default
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
@@ -31,6 +32,13 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                butAddFogBulb.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR3;
+
             // Update light UI
             if (obj is Editor.ObjectChangedEvent ||
                 obj is Editor.SelectedObjectChangedEvent)

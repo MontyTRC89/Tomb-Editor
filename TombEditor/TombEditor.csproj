@@ -68,11 +68,14 @@
     <StartupObject>TombEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.5.10\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="SharpDX, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libs\SharpDX.dll</HintPath>
@@ -118,7 +121,11 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -189,6 +196,12 @@
     </Compile>
     <Compile Include="Forms\FormToolBarLayout.Designer.cs">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormVolume.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormVolume.Designer.cs">
+      <DependentUpon>FormVolume.cs</DependentUpon>
     </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
@@ -485,6 +498,9 @@
     <EmbeddedResource Include="Forms\FormToolBarLayout.resx">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormVolume.resx">
+      <DependentUpon>FormVolume.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
       <DependentUpon>ToolPaletteFloating.cs</DependentUpon>
     </EmbeddedResource>
@@ -594,7 +610,6 @@
     <None Include="Resources\icons_toolbox\toolbox_GridPaint3x3-16.png" />
     <None Include="Resources\icons_toolbox\toolbox_GridPaint4x4-16.png" />
     <None Include="Resources\icons_general\general_filter-16.png" />
-    <None Include="Resources\general_filter-16.png" />
     <None Include="Resources\icons_objects\objects_geometry-override-16.png" />
     <None Include="Resources\icons_actions\actions_back-16.png" />
     <None Include="Resources\icons_general\general_airplane-16.png" />
@@ -603,6 +618,11 @@
     <None Include="Resources\icons_sectortype\sectortype_MinecartRight_neg-16.png" />
     <None Include="Resources\icons_sectortype\sectortype_MinecartRight-16.png" />
     <None Include="Resources\icons_sectortype\sectortype_MinecartLeft_neg-16.png" />
+    <None Include="Resources\icons_objects\objects_LightPoint-161.png" />
+    <None Include="Resources\icons_objects\objects_volume-box-16.png" />
+    <None Include="Resources\icons_objects\objects_volume-sphere-16.png" />
+    <None Include="Resources\icons_objects\objects_volume-prism-16.png" />
+    <None Include="Resources\icons_actions\actions_StaticTint-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
     <None Include="Editor\Shaders\Model.fx">
@@ -627,6 +647,10 @@
     <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj">
       <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
       <Name>TombLib.Rendering</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TombLib.Scripting.TextEditors\TombLib.Scripting.TextEditors.csproj">
+      <Project>{9f07e72d-3526-42dd-b85b-e85e2953f0f1}</Project>
+      <Name>TombLib.Scripting.TextEditors</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>

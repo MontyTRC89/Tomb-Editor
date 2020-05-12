@@ -10,8 +10,6 @@ namespace TombLib.LevelData
         public short Timer { get; set; }
         public ushort Flags { get; set; }
 
-        public string LuaScript { get; set; }
-
         private float _speed { get; set; } = 1;
         private float _fov { get; set; } = 80;
         private float _roll { get; set; }

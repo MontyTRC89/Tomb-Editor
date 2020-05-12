@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
-using TombLib.Projects;
 
 namespace TombIDE.ProjectMaster
 {
@@ -29,7 +29,7 @@ namespace TombIDE.ProjectMaster
 			prj2FileWatcher.Path = _ide.Project.LevelsPath;
 			levelFolderWatcher.Path = _ide.Project.LevelsPath;
 
-			string pluginsFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins");
+			string pluginsFolderPath = PathHelper.GetTRNGPluginsPath();
 
 			if (!Directory.Exists(pluginsFolderPath))
 				Directory.CreateDirectory(pluginsFolderPath);
@@ -51,14 +51,14 @@ namespace TombIDE.ProjectMaster
 
 				splitContainer_Info.Panel2Collapsed = true;
 			}
-			else if (_ide.Configuration.PluginsPanelHidden)
+			else if (_ide.IDEConfiguration.PluginsPanelHidden)
 			{
 				button_ShowPlugins.Enabled = true;
 				button_ShowPlugins.Visible = true;
 
 				splitContainer_Info.Panel2Collapsed = true;
 			}
-			else if (!_ide.Configuration.PluginsPanelHidden)
+			else if (!_ide.IDEConfiguration.PluginsPanelHidden)
 			{
 				button_ShowPlugins.Enabled = false;
 				button_ShowPlugins.Visible = false;
@@ -86,8 +86,8 @@ namespace TombIDE.ProjectMaster
 			button_ShowPlugins.Enabled = false;
 			button_ShowPlugins.Visible = false;
 
-			_ide.Configuration.PluginsPanelHidden = false;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.PluginsPanelHidden = false;
+			_ide.IDEConfiguration.Save();
 		}
 
 		private void button_HidePlugins_Click(object sender, System.EventArgs e)
@@ -101,8 +101,8 @@ namespace TombIDE.ProjectMaster
 			button_ShowPlugins.Enabled = true;
 			button_ShowPlugins.Visible = true;
 
-			_ide.Configuration.PluginsPanelHidden = true;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.PluginsPanelHidden = true;
+			_ide.IDEConfiguration.Save();
 
 			animationTimer.Start();
 		}
@@ -157,7 +157,7 @@ namespace TombIDE.ProjectMaster
 			HandleScriptReferenceFiles();
 
 			XmlHandling.UpdatePluginsXml(_ide.AvailablePlugins);
-			XmlHandling.SaveTRPROJ(_ide.Project);
+			_ide.Project.Save();
 
 			_ide.RaiseEvent(new IDE.PluginListsUpdatedEvent());
 		}
@@ -185,7 +185,7 @@ namespace TombIDE.ProjectMaster
 		/// </summary>
 		private void LookForUndefinedPlugins()
 		{
-			foreach (string directory in Directory.GetDirectories(Path.Combine(SharedMethods.GetProgramDirectory(), "TRNG Plugins")))
+			foreach (string directory in Directory.GetDirectories(PathHelper.GetTRNGPluginsPath()))
 			{
 				if (!IsValidPluginFolder(directory))
 					continue;
@@ -235,8 +235,7 @@ namespace TombIDE.ProjectMaster
 
 		private void HandleScriptReferenceFiles()
 		{
-			string ngcFolderPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC");
-			string[] referenceFiles = Directory.GetFiles(ngcFolderPath, "plugin_*.script", SearchOption.TopDirectoryOnly);
+			string[] referenceFiles = Directory.GetFiles(PathHelper.GetInternalNGCPath(), "plugin_*.script", SearchOption.TopDirectoryOnly);
 
 			// Delete all .script files from the internal /NGC/ folder
 			foreach (string file in referenceFiles)
@@ -252,7 +251,7 @@ namespace TombIDE.ProjectMaster
 
 				if (File.Exists(scriptFilePath))
 				{
-					string destPath = Path.Combine(SharedMethods.GetProgramDirectory(), "NGC", Path.GetFileName(scriptFilePath));
+					string destPath = Path.Combine(PathHelper.GetInternalNGCPath(), Path.GetFileName(scriptFilePath));
 					File.Copy(scriptFilePath, destPath, true);
 				}
 			}

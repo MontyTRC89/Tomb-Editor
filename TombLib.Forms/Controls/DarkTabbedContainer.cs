@@ -19,7 +19,7 @@ namespace TombLib.Controls
             get { return _linkedControl; }
             set
             {
-                if (!(value is DarkListView) && !(value is DarkListBox))
+                if (!(value is DarkListView) && !(value is DarkListBox) && !(value == null))
                     return;
 
                 // Unlink previous list view, if any
@@ -51,7 +51,9 @@ namespace TombLib.Controls
                         // Populate options list and select first entry
                         foreach (TabPage tab in TabPages)
                             listView.Items.Add(new DarkListItem(tab.Text));
-                        listView.SelectItem(0);
+
+                        if (listView.Items.Count > 0)
+                            listView.SelectItem(0);
 
                         // Link list selection event to container
                         listView.SelectedIndicesChanged += OnChange;
@@ -64,7 +66,9 @@ namespace TombLib.Controls
                         // Populate combo and select first entry
                         foreach (TabPage tab in TabPages)
                             combo.Items.Add(new DarkListItem(tab.Text));
-                        combo.SelectedIndex = 0;
+
+                        if (combo.Items.Count > 0)
+                            combo.SelectedIndex = 0;
 
                         // Link combo selection event to container
                         combo.SelectedIndexChanged += OnChange;
@@ -128,6 +132,15 @@ namespace TombLib.Controls
                 ((TabPage)tab).BackColor = Colors.GreyBackground;
 
             base.OnParentBackColorChanged(e);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            // Hide tabs by trapping the TCM_ADJUSTRECT message
+            if (m.Msg == 0x1328 && !DesignMode)
+                m.Result = (IntPtr)1;
+            else
+                base.WndProc(ref m);
         }
     }
 }

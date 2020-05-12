@@ -153,6 +153,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_DrawUntexturedLights_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_DrawUntexturedLights_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_generic_text_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_generic_text_16", resourceCulture);
@@ -266,6 +276,16 @@ namespace TombEditor.Properties {
         internal static System.Drawing.Bitmap actions_Split_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_Split_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap actions_StaticTint_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_StaticTint_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -741,12 +761,32 @@ namespace TombEditor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static byte[] Palette {
+        internal static System.Drawing.Bitmap objects_volume_box_16 {
             get {
-                object obj = ResourceManager.GetObject("Palette", resourceCulture);
-                return ((byte[])(obj));
+                object obj = ResourceManager.GetObject("objects_volume_box_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap objects_volume_prism_16 {
+            get {
+                object obj = ResourceManager.GetObject("objects_volume_prism_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap objects_volume_sphere_16 {
+            get {
+                object obj = ResourceManager.GetObject("objects_volume_sphere_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

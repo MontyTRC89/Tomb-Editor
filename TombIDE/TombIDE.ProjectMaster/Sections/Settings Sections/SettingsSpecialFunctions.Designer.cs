@@ -21,24 +21,27 @@
 			this.button_DeleteLogs = new DarkUI.Controls.DarkButton();
 			this.button_RenameLauncher = new DarkUI.Controls.DarkButton();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
+			this.button_BatchBuild = new DarkUI.Controls.DarkButton();
 			this.textBox_LauncherName = new System.Windows.Forms.TextBox();
 			this.sectionPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_BuildArchive
 			// 
+			this.button_BuildArchive.Checked = false;
 			this.button_BuildArchive.Enabled = false;
 			this.button_BuildArchive.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_Open_16;
-			this.button_BuildArchive.Location = new System.Drawing.Point(7, 96);
+			this.button_BuildArchive.Location = new System.Drawing.Point(321, 96);
 			this.button_BuildArchive.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.button_BuildArchive.Name = "button_BuildArchive";
-			this.button_BuildArchive.Size = new System.Drawing.Size(624, 25);
+			this.button_BuildArchive.Size = new System.Drawing.Size(310, 25);
 			this.button_BuildArchive.TabIndex = 1;
-			this.button_BuildArchive.Text = "Create a \"Ready To Play\" game archive (Not implemented)";
+			this.button_BuildArchive.Text = "Create a \"Ready To Play\" game archive (Not implem.)";
 			this.button_BuildArchive.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			// 
 			// button_DeleteLogs
 			// 
+			this.button_DeleteLogs.Checked = false;
 			this.button_DeleteLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_DeleteLogs.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
 			this.button_DeleteLogs.Location = new System.Drawing.Point(7, 65);
@@ -52,6 +55,7 @@
 			// 
 			// button_RenameLauncher
 			// 
+			this.button_RenameLauncher.Checked = false;
 			this.button_RenameLauncher.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_RenameLauncher.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_RenameLauncher.Location = new System.Drawing.Point(7, 34);
@@ -66,6 +70,7 @@
 			// sectionPanel
 			// 
 			this.sectionPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.sectionPanel.Controls.Add(this.button_BatchBuild);
 			this.sectionPanel.Controls.Add(this.textBox_LauncherName);
 			this.sectionPanel.Controls.Add(this.button_RenameLauncher);
 			this.sectionPanel.Controls.Add(this.button_BuildArchive);
@@ -76,6 +81,20 @@
 			this.sectionPanel.SectionHeader = "Special Functions";
 			this.sectionPanel.Size = new System.Drawing.Size(640, 130);
 			this.sectionPanel.TabIndex = 0;
+			// 
+			// button_BatchBuild
+			// 
+			this.button_BatchBuild.Checked = false;
+			this.button_BatchBuild.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_BatchBuild.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_ArrowDown_16;
+			this.button_BatchBuild.Location = new System.Drawing.Point(7, 96);
+			this.button_BatchBuild.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
+			this.button_BatchBuild.Name = "button_BatchBuild";
+			this.button_BatchBuild.Size = new System.Drawing.Size(310, 25);
+			this.button_BatchBuild.TabIndex = 4;
+			this.button_BatchBuild.Text = "Rebuild all project levels at once. (Batch)";
+			this.button_BatchBuild.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+			this.button_BatchBuild.Click += new System.EventHandler(this.button_BatchBuild_Click);
 			// 
 			// textBox_LauncherName
 			// 
@@ -113,5 +132,6 @@
 		private DarkUI.Controls.DarkButton button_RenameLauncher;
 		private DarkUI.Controls.DarkSectionPanel sectionPanel;
 		private System.Windows.Forms.TextBox textBox_LauncherName;
+		private DarkUI.Controls.DarkButton button_BatchBuild;
 	}
 }

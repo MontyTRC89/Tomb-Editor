@@ -21,7 +21,14 @@ namespace TombLib.LevelData
 
     public interface IScaleable
     {
+        float DefaultScale { get; }
         float Scale { get; set; }
+    }
+
+    public interface ISizeable
+    {
+        Vector3 DefaultSize { get; }
+        Vector3 Size { get; set; }
     }
 
     public interface IRotateableY
@@ -253,7 +260,7 @@ namespace TombLib.LevelData
             get
             {
                 return RotationMatrix *
-                    Matrix4x4.CreateScale((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix4x4.CreateScale(((this as ISizeable)?.Size ?? new Vector3(1.0f)) * ((this as IScaleable)?.Scale ?? 1.0f)) *
                     Matrix4x4.CreateTranslation((Room?.WorldPos ?? new Vector3()) + Position);
             }
         }
@@ -263,7 +270,7 @@ namespace TombLib.LevelData
             get
             {
                 return RotationMatrix *
-                    Matrix4x4.CreateScale((this as IScaleable)?.Scale ?? 1.0f) *
+                    Matrix4x4.CreateScale(((this as ISizeable)?.Size ?? new Vector3(1.0f)) * ((this as IScaleable)?.Scale ?? 1.0f)) *
                     Matrix4x4.CreateTranslation(Position);
             }
         }

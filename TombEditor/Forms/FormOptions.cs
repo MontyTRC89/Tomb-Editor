@@ -1,38 +1,30 @@
 ﻿using DarkUI.Controls;
-using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Reflection;
-using System.Windows.Forms;
-using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Rendering;
+using TombLib.Forms;
 using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
-    public partial class FormOptions : DarkForm
+    public partial class FormOptions : FormOptionsBase
     {
         private readonly Editor _editor;
+        private bool _lockColorScheme;
 
-        public FormOptions(Editor editor)
+        public FormOptions(Editor editor) : base(editor.Configuration, new List<string>() { "UI_ColorScheme" })
         {
             InitializeComponent();
             InitializeDialog();
-
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(630, 540) + (Size - ClientSize);
-            MaximumSize = new Size(MinimumSize.Width, 10000);
-            Size = MinimumSize;
+            this.SetActualSize(630, 540);
+            this.LockWidth();
 
             _editor = editor;
             _editor.EditorEventRaised += EditorEventRaised;
-
-            ReadConfigIntoControls(this);
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -41,12 +33,9 @@ namespace TombEditor.Forms
                 ReadConfigIntoControls(this);
         }
 
-        private void InitializeDialog()
+        protected override void InitializeDialog()
         {
-            // Link listview to tabbed container
-            tabbedContainer.LinkedControl = optionsList;
-
-			// Filter out non-TrueType fonts by catching an exception on font creation
+            // Filter out non-TrueType fonts by catching an exception on font creation
             foreach (var font in FontFamily.Families)
                 try { var ff = new FontFamily(font.Name);
                       cmbRendering3DFont.Items.Add(font.Name); }
@@ -62,152 +51,21 @@ namespace TombEditor.Forms
                 .ToList()
                 .ForEach(item => cmbColorScheme.Items.Add(item.Name));
 
-            // Assign event for every color panel
-            var panels = AllOptionControls(this).Where(c => c is DarkPanel).ToList();
-            foreach(var panel in panels)
-                panel.Click += (sender, e) =>
+            // Reset color scheme combo if color was changed
+            foreach (var panel in AllOptionControls(this).Where(c => c is DarkPanel))
+                panel.BackColorChanged += (sender, e) =>
                 {
-                    using (var colorDialog = new RealtimeColorDialog(_editor.Configuration.UI_ColorScheme))
-                    {
-                        colorDialog.Color = panel.BackColor;
-                        colorDialog.FullOpen = true;
-                        if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                            return;
-
-                        if (panel.BackColor != colorDialog.Color)
-                        {
-                            panel.BackColor = colorDialog.Color;
-                            if (panel.Parent.Text == "Color scheme") cmbColorScheme.SelectedIndex = -1;
-                        }
-                    }
+                    if (!_lockColorScheme && panel.Parent.Text == "Color scheme")
+                        cmbColorScheme.SelectedIndex = -1;
                 };
+
+            base.InitializeDialog();
         }
 
-        private IEnumerable<Control> AllOptionControls(Control control) =>
-            WinFormsUtils.AllSubControls(control).Where(c => (c is DarkCheckBox ||
-                                                              c is DarkTextBox ||
-                                                              c is DarkComboBox ||
-                                                              c is DarkNumericUpDown ||
-                                                              c is DarkPanel) && c.Tag != null).ToList();
-
-        private Object GetOptionObject(Control control, Configuration configuration)
+        protected override void WriteConfigFromControls()
         {
-            var name = control.Tag?.ToString();
-            var option = configuration.GetType().GetProperty(name)?.GetValue(configuration);
-
-            if (option == null) // Try to get sub-option from color scheme
-            {
-                var type = configuration.UI_ColorScheme.GetType();
-                var prop = type.GetField(name);
-
-                if (prop != null)
-                    option = prop.GetValue(configuration.UI_ColorScheme);
-            }
-
-            return option;
-        }
-
-        private void SetOptionValue(String name, Object obj, Object value)
-        {
-            var prop = obj.GetType().GetProperty(name);
-            if(prop != null)
-                prop.SetValue(obj, value);
-            else
-            {
-                var field = obj.GetType().GetField(name);
-                if (field != null)
-                    field.SetValue(obj, value);
-            }
-        }
-
-        private void ReadConfigIntoControls(Control parent, bool resetToDefault = false, Type onlyType = null)
-        {
-            var controls    = AllOptionControls(parent);
-            var configToUse = resetToDefault ? new Configuration() : _editor.Configuration;
-
-            foreach (var control in controls)
-            {
-                if (onlyType != null && control.GetType() != onlyType)
-                    continue;
-
-                var option = GetOptionObject(control, configToUse);
-                if(option != null)
-                {
-                    if (control is DarkCheckBox && option is bool)
-                        ((DarkCheckBox)control).Checked = (bool)option;
-                    else if (control is DarkTextBox && option is string)
-                        ((DarkTextBox)control).Text = (string)option;
-                    else if (control is DarkComboBox)
-                    {
-                             if (option is string)         ((DarkComboBox)control).SelectedItem = (string)option;
-                        else if (option is int)            ((DarkComboBox)control).SelectedItem = (int)option;
-                        else if (option is float)          ((DarkComboBox)control).SelectedItem = (float)option;
-                        else if (option is TRVersion.Game) ((DarkComboBox)control).SelectedItem = (TRVersion.Game)option;
-                    }
-                    else if (control is DarkNumericUpDown)
-                    {
-                             if (option is float) ((DarkNumericUpDown)control).Value = (decimal)(float)option;
-                        else if (option is int)   ((DarkNumericUpDown)control).Value = (decimal)(int)option;
-                    }
-                    else if (control is DarkPanel)
-                    {
-                             if (option is Vector4) ((DarkPanel)control).BackColor = ((Vector4)option).ToWinFormsColor();
-                        else if (option is string)  ((DarkPanel)control).BackColor = ColorTranslator.FromHtml((string)option);
-                    }
-                }
-            }
-        }
-
-        private void WriteConfigFromControls()
-        {
-            var controls = AllOptionControls(this);
-            var config   = _editor.Configuration;
-
-            foreach (var control in controls)
-            {
-                var option = GetOptionObject(control, config);
-                if (option != null)
-                {
-                    var name = control.Tag.ToString();
-
-                    if (control is DarkCheckBox && option is bool)
-                        SetOptionValue(name, config, ((DarkCheckBox)control).Checked);
-                    else if (control is DarkTextBox && option is string)
-                        SetOptionValue(name, config, ((DarkTextBox)control).Text);
-                    else if (control is DarkComboBox)
-                    {
-                             if (option is string)         SetOptionValue(name, config, ((DarkComboBox)control).SelectedItem.ToString());
-                        else if (option is int)            SetOptionValue(name, config, (int)((DarkComboBox)control).SelectedItem);
-                        else if (option is float)          SetOptionValue(name, config, (float)((DarkComboBox)control).SelectedItem);
-                        else if (option is TRVersion.Game) SetOptionValue(name, config, (TRVersion.Game)((DarkComboBox)control).SelectedItem);
-                    }
-                    else if (control is DarkNumericUpDown)
-                    {
-                             if (option is int)   SetOptionValue(name, config,   (int)((DarkNumericUpDown)control).Value);
-                        else if (option is float) SetOptionValue(name, config, (float)((DarkNumericUpDown)control).Value);
-                    }
-                    else if (control is DarkPanel)
-                    {
-                        if (option is Vector4)
-                        {
-                            var newColor = ((DarkPanel)control).BackColor.ToFloat4Color();
-                            newColor.W = ((Vector4)option).W; // Preserve alpha for now, until alpha color dialog is implemented
-                            SetOptionValue(name, config.UI_ColorScheme, newColor);
-                        }
-                        else if (option is string) SetOptionValue(name, config, ColorTranslator.ToHtml(((DarkPanel)control).BackColor));
-                    }
-                }
-            }
+            base.WriteConfigFromControls();
             _editor.ConfigurationChange();
-        }
-
-        private void butApply_Click(object sender, EventArgs e) => WriteConfigFromControls();
-        private void butPageDefaults_Click(object sender, EventArgs e) => ReadConfigIntoControls(tabbedContainer.SelectedTab, true);
-
-        private void butOk_Click(object sender, EventArgs e)
-        {
-            WriteConfigFromControls();
-            Close();
         }
 
         private void cmbColorScheme_SelectedIndexChanged(object sender, EventArgs e)
@@ -215,15 +73,17 @@ namespace TombEditor.Forms
             if (cmbColorScheme.SelectedIndex == -1) return;
             var config = _editor.Configuration;
 
-            foreach (FieldInfo prop in typeof(ColorScheme).GetFields())
+            _lockColorScheme = true;
+            foreach (var prop in typeof(ColorScheme).GetFields())
                 if (prop.FieldType == typeof(ColorScheme) && prop.Name == cmbColorScheme.SelectedItem.ToString())
                 {
-                    var preset = (ColorScheme)prop.GetValue(config.UI_ColorScheme);
-                    foreach (FieldInfo field in typeof(ColorScheme).GetFields().Where(f => f.FieldType == typeof(Vector4)))
-                        SetOptionValue(field.Name, config.UI_ColorScheme, (Vector4)field.GetValue(preset));
-                    ReadConfigIntoControls(tabbedContainer.SelectedTab, false, typeof(DarkPanel));
+                    foreach (var field in typeof(ColorScheme).GetFields().Where(f => f.FieldType == typeof(Vector4)))
+                        foreach (var panel in AllOptionControls(groupColorScheme).OfType<DarkPanel>())
+                            if (panel.Tag.ToString() == field.Name)
+                                panel.BackColor = ((Vector4)field.GetValue(prop.GetValue(config.UI_ColorScheme))).ToWinFormsColor();
                     break;
                 }
+            _lockColorScheme = false;
         }
     }
 }

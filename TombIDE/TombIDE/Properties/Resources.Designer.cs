@@ -63,6 +63,16 @@ namespace TombIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap add_48 {
+            get {
+                object obj = ResourceManager.GetObject("add_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap forward_arrow_16 {
             get {
                 object obj = ResourceManager.GetObject("forward_arrow_16", resourceCulture);
@@ -203,9 +213,9 @@ namespace TombIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap import_52 {
+        internal static System.Drawing.Bitmap import_48 {
             get {
-                object obj = ResourceManager.GetObject("import_52", resourceCulture);
+                object obj = ResourceManager.GetObject("import_48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,19 +223,9 @@ namespace TombIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap opened_folder_50 {
+        internal static System.Drawing.Bitmap open_48 {
             get {
-                object obj = ResourceManager.GetObject("opened_folder_50", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap plus_math_60 {
-            get {
-                object obj = ResourceManager.GetObject("plus_math_60", resourceCulture);
+                object obj = ResourceManager.GetObject("open_48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

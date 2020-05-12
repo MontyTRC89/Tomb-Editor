@@ -1,0 +1,20 @@
+Syntax: ResetHUB= NumberOfLevel
+
+To use in [Level] section
+
+Force the game engine to reload also default meshes like that of Lara or side-car, jeep ect.
+You must use this command if in next level lara will have different mesh structures
+
+Arguments:
+
+1 - Level number first of that is necessary reload lara meshes ("3")
+
+Pratically, if in level 2 you use young lara, while in next level number 3, you use the "old" lara, you must type in [Level] section of level 2 the command: 
+ResetHUB= 3
+to force reloading before loading the third level (the next).
+
+Remark:
+Different textures (skin) don't require ResetHUB command.
+
+
+

@@ -52,6 +52,7 @@
             this.panel2DGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2DGrid.Location = new System.Drawing.Point(2, 0);
             this.panel2DGrid.Name = "panel2DGrid";
+            this.panel2DGrid.Padding = new System.Windows.Forms.Padding(2);
             this.panel2DGrid.Room = null;
             this.panel2DGrid.Size = new System.Drawing.Size(224, 223);
             this.panel2DGrid.TabIndex = 103;

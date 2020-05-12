@@ -4,6 +4,14 @@ using TombLib;
 
 namespace TombEditor.Controls
 {
+    public enum AnimationMode
+    {
+        Idle,
+        Spin,
+        Snap,
+        GhostBlockUnfold
+    }
+
     public class MovementTimer : IDisposable
     {
         private readonly Timer _moveTimer = new Timer() { Interval = 16 };
@@ -15,7 +23,8 @@ namespace TombEditor.Controls
 
         public float MoveMultiplier { get; private set; }
         public Keys MoveKey { get; private set; } = Keys.None;
-        public bool Animating { get; private set; } = false;
+        public AnimationMode Mode { get; private set; } = AnimationMode.Idle;
+        public bool Animating => Mode > AnimationMode.Spin;
 
         public MovementTimer(EventHandler moveEvent, float moveAcceleration = 0.02f)
         {
@@ -34,10 +43,12 @@ namespace TombEditor.Controls
 
         public bool Engage(Keys moveDirection)
         {
-            if (Animating) return false; // Reject if auto-move is in progress
+            if (Mode != AnimationMode.Idle)
+                return false; // Reject if auto-move is in progress
 
             if (Hotkey.ReservedCameraKeys.Contains(moveDirection))
             {
+                Mode = AnimationMode.Spin;
                 if (_moveTimer.Enabled == false)
                     _moveTimer.Enabled = true;
                 if (MoveKey != moveDirection)
@@ -51,9 +62,9 @@ namespace TombEditor.Controls
                 return false;
         }
 
-        public void Animate(float timeInSeconds)
+        public void Animate(AnimationMode mode, float timeInSeconds)
         {
-            Animating = true;
+            Mode = mode;
             _autoMoveCurrent = 0.0f;
             _autoMoveStep = (1.0f / (float)_moveTimer.Interval) / timeInSeconds;
             _moveTimer.Enabled = true;
@@ -61,24 +72,31 @@ namespace TombEditor.Controls
 
         public void Stop(bool force = false)
         {
-            if (Animating & !force) return; // Reject if auto-move is in progress
+            if (Mode > AnimationMode.Spin & !force) return; // Reject if auto-move is in progress
             
             _moveTimer.Enabled = false;
-            Animating = false;
+            Mode = AnimationMode.Idle;
             MoveMultiplier = 0.0f;
             MoveKey = Keys.None;
         }
 
         private void UpdateTimer(object sender, EventArgs e)
         {
-            if(Animating)
+            if (Mode == AnimationMode.Spin)
+            {
+                if (MoveMultiplier < 1.0f)
+                    MoveMultiplier += _moveAcceleration;
+                else
+                    MoveMultiplier = 1.0f;
+            }
+            else if (Mode != AnimationMode.Idle)
             {
                 _autoMoveCurrent += _autoMoveStep;
 
                 // Allow timer to overflow for 2 subsequent frames, so we
                 // get finalizing 1.0 value at all times
 
-                if(_autoMoveCurrent >= 1.0f + (_autoMoveStep * 2))
+                if (_autoMoveCurrent >= 1.0f + (_autoMoveStep * 2))
                     Stop(true);
                 else
                 {
@@ -87,12 +105,7 @@ namespace TombEditor.Controls
                 }
             }
             else
-            {
-                if (MoveMultiplier < 1.0f)
-                    MoveMultiplier += _moveAcceleration;
-                else
-                    MoveMultiplier = 1.0f;
-            }
+                Stop(true);
         }
     }
 }

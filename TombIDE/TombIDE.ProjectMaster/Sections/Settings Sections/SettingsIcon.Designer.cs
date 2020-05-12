@@ -36,6 +36,7 @@ namespace TombIDE.ProjectMaster
 			// 
 			// button_Change
 			// 
+			this.button_Change.Checked = false;
 			this.button_Change.Location = new System.Drawing.Point(423, 240);
 			this.button_Change.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Change.Name = "button_Change";
@@ -46,6 +47,7 @@ namespace TombIDE.ProjectMaster
 			// 
 			// button_Reset
 			// 
+			this.button_Reset.Checked = false;
 			this.button_Reset.Location = new System.Drawing.Point(423, 275);
 			this.button_Reset.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.button_Reset.Name = "button_Reset";

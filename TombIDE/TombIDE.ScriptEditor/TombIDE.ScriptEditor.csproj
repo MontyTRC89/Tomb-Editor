@@ -31,40 +31,64 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="CustomTabControl">
       <HintPath>..\..\Libs\CustomTabControl.dll</HintPath>
     </Reference>
-    <Reference Include="FastColoredTextBox, Version=2.16.24.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
+    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\FastColoredTextBox.dll</HintPath>
+      <HintPath>..\..\Libs\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TestStack.White, Version=0.13.0.0, Culture=neutral, PublicKeyToken=2672efbf3e161801, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\TestStack.White.0.13.3\lib\net40\TestStack.White.dll</HintPath>
-    </Reference>
-    <Reference Include="UIAutomationClient" />
-    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FileList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\FileList.Designer.cs">
+      <DependentUpon>FileList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ObjectBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ObjectBrowser.Designer.cs">
+      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ReferenceBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\ReferenceBrowser.Designer.cs">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormDebugMode.cs">
+    <Compile Include="Controls\SyntaxPreview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFolderCreation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormDebugMode.Designer.cs">
-      <DependentUpon>FormDebugMode.cs</DependentUpon>
+    <Compile Include="Forms\FormFolderCreation.Designer.cs">
+      <DependentUpon>FormFolderCreation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormNGCompilingStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormNGCompilingStatus.Designer.cs">
+      <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormFindReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFindReplace.Designer.cs">
+      <DependentUpon>FormFindReplace.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormMnemonicInfo.cs">
       <SubType>Form</SubType>
@@ -72,19 +96,20 @@
     <Compile Include="Forms\FormMnemonicInfo.Designer.cs">
       <DependentUpon>FormMnemonicInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormReindentRules.cs">
+    <Compile Include="Forms\FormFileCreation.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormReindentRules.Designer.cs">
-      <DependentUpon>FormReindentRules.cs</DependentUpon>
+    <Compile Include="Forms\FormFileCreation.Designer.cs">
+      <DependentUpon>FormFileCreation.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormSettings.cs">
+    <Compile Include="Forms\FormRenameItem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormSettings.Designer.cs">
-      <DependentUpon>FormSettings.cs</DependentUpon>
+    <Compile Include="Forms\FormRenameItem.Designer.cs">
+      <DependentUpon>FormRenameItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="MonospacedFonts.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -97,22 +122,35 @@
     <Compile Include="ScriptEditor.Designer.cs">
       <DependentUpon>ScriptEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="SupportedFormats.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\FileList.resx">
+      <DependentUpon>FileList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ObjectBrowser.resx">
+      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ReferenceBrowser.resx">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormDebugMode.resx">
-      <DependentUpon>FormDebugMode.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormFolderCreation.resx">
+      <DependentUpon>FormFolderCreation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormNGCompilingStatus.resx">
+      <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormFindReplace.resx">
+      <DependentUpon>FormFindReplace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormMnemonicInfo.resx">
       <DependentUpon>FormMnemonicInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormReindentRules.resx">
-      <DependentUpon>FormReindentRules.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormFileCreation.resx">
+      <DependentUpon>FormFileCreation.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormSettings.resx">
-      <DependentUpon>FormSettings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormRenameItem.resx">
+      <DependentUpon>FormRenameItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -126,6 +164,14 @@
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.TextEditors\TombLib.Scripting.TextEditors.csproj">
+      <Project>{9F07E72D-3526-42DD-B85B-E85E2953F0F1}</Project>
+      <Name>TombLib.Scripting.TextEditors</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting\TombLib.Scripting.csproj">
+      <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
+      <Name>TombLib.Scripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
@@ -141,29 +187,33 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\actions_play-16.png" />
-    <Content Include="Resources\file.ico" />
-    <Content Include="Resources\folder.ico" />
-    <Content Include="Resources\general_AboutIcon-16.png" />
-    <Content Include="Resources\general_clipboard-16.png" />
-    <Content Include="Resources\general_copy-16.png" />
-    <Content Include="Resources\general_copy_comments-16.png" />
-    <Content Include="Resources\general_cut-16.png" />
-    <Content Include="Resources\general_redo-16.png" />
-    <Content Include="Resources\general_Save-16.png" />
-    <Content Include="Resources\general_SaveAll-16.png" />
-    <Content Include="Resources\general_search-16.png" />
-    <Content Include="Resources\general_settings-16.png" />
-    <Content Include="Resources\general_undo-16.png" />
-    <Content Include="Resources\script-bookmark-16.png" />
-    <Content Include="Resources\script-clearbookmarks-16.png" />
-    <Content Include="Resources\script-comment-16.png" />
-    <Content Include="Resources\script-nextbookmark-16.png" />
-    <Content Include="Resources\script-prevbookmark-16.png" />
-    <Content Include="Resources\script-uncomment-16.png" />
+    <None Include="Resources\AboutScreen_800.png" />
+    <Content Include="Resources\Images\forward-arrow-16.png" />
+    <Content Include="Resources\Images\general_create_new-16.png" />
+    <Content Include="Resources\Images\general_edit-16.png" />
+    <Content Include="Resources\Images\general_folder-16.png" />
+    <Content Include="Resources\Images\general_trash-16.png" />
+    <Content Include="Resources\Icons\file.ico" />
+    <Content Include="Resources\Icons\folder.ico" />
+    <Content Include="Resources\Images\actions_play-16.png" />
+    <Content Include="Resources\Images\general_AboutIcon-16.png" />
+    <Content Include="Resources\Images\general_clipboard-16.png" />
+    <Content Include="Resources\Images\general_copy-16.png" />
+    <Content Include="Resources\Images\general_copy_comments-16.png" />
+    <Content Include="Resources\Images\general_cut-16.png" />
+    <Content Include="Resources\Images\general_redo-16.png" />
+    <Content Include="Resources\Images\general_Save-16.png" />
+    <Content Include="Resources\Images\general_SaveAll-16.png" />
+    <Content Include="Resources\Images\general_search-16.png" />
+    <Content Include="Resources\Images\general_settings-16.png" />
+    <Content Include="Resources\Images\general_undo-16.png" />
+    <Content Include="Resources\Images\script-bookmark-16.png" />
+    <Content Include="Resources\Images\script-clearbookmarks-16.png" />
+    <Content Include="Resources\Images\script-comment-16.png" />
+    <Content Include="Resources\Images\script-nextbookmark-16.png" />
+    <Content Include="Resources\Images\script-prevbookmark-16.png" />
+    <Content Include="Resources\Images\script-uncomment-16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,11 +2,13 @@
 using DarkUI.Forms;
 using Microsoft.VisualBasic.FileIO;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
+using TombIDE.Shared.SharedForms;
 
 namespace TombIDE.ProjectMaster
 {
@@ -26,7 +28,7 @@ namespace TombIDE.ProjectMaster
 			_ide = ide;
 			_ide.IDEEventRaised += OnIDEEventRaised;
 
-			button_ViewFileNames.Checked = _ide.Configuration.ViewFileNames;
+			button_ViewFileNames.Checked = _ide.IDEConfiguration.ViewFileNames;
 
 			FillLevelList(); // With levels taken from the .trproj file (current _ide.Project)
 		}
@@ -66,7 +68,7 @@ namespace TombIDE.ProjectMaster
 
 			// Mark external levels
 			if (!level.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-				node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
+				node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 
 			// Add the node to the list
 			treeView.Nodes.Add(node);
@@ -81,25 +83,7 @@ namespace TombIDE.ProjectMaster
 
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
-			if (obj is IDE.LevelAddedEvent)
-			{
-				// Add the level to the list
-				ProjectLevel addedLevel = ((IDE.LevelAddedEvent)obj).AddedLevel;
-				AddLevelToList(addedLevel, true);
-
-				// Select the new level node
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					if (((ProjectLevel)node.Tag).Name.ToLower() == addedLevel.Name.ToLower())
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
-
-						break;
-					}
-				}
-			}
-			else if (obj is IDE.SelectedLevelSettingsChangedEvent)
+			if (obj is IDE.SelectedLevelSettingsChangedEvent)
 			{
 				// Update the text of the node (if the level name was changed ofc)
 				if (button_ViewFileNames.Checked)
@@ -114,7 +98,7 @@ namespace TombIDE.ProjectMaster
 
 				// Mark external levels
 				if (!_ide.SelectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-					treeView.SelectedNodes[0].Text = _ide.Configuration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
+					treeView.SelectedNodes[0].Text = _ide.IDEConfiguration.ExternalLevelPrefix + treeView.SelectedNodes[0].Text;
 
 				// Update the node's Tag with the updated level
 				treeView.SelectedNodes[0].Tag = _ide.SelectedLevel;
@@ -138,11 +122,21 @@ namespace TombIDE.ProjectMaster
 		private void button_Import_Click(object sender, EventArgs e) => ImportLevel();
 		private void button_Rename_Click(object sender, EventArgs e) => ShowRenameLevelForm();
 		private void button_Delete_Click(object sender, EventArgs e) => DeleteLevel();
-		private void button_MoveUp_Click(object sender, EventArgs e) => MoveLevelUpOnList();
-		private void button_MoveDown_Click(object sender, EventArgs e) => MoveLevelDownOnList();
+
+		private void button_MoveUp_Click(object sender, EventArgs e)
+		{
+			treeView.MoveSelectedNodeUp();
+			ReserializeTRPROJ();
+		}
+
+		private void button_MoveDown_Click(object sender, EventArgs e)
+		{
+			treeView.MoveSelectedNodeDown();
+			ReserializeTRPROJ();
+		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(((ProjectLevel)treeView.SelectedNodes[0].Tag).FolderPath);
+			SharedMethods.OpenInExplorer(((ProjectLevel)treeView.SelectedNodes[0].Tag).FolderPath);
 
 		private void button_Refresh_Click(object sender, EventArgs e) => RefreshLevelList();
 
@@ -150,8 +144,8 @@ namespace TombIDE.ProjectMaster
 		{
 			button_ViewFileNames.Checked = !button_ViewFileNames.Checked;
 
-			_ide.Configuration.ViewFileNames = button_ViewFileNames.Checked;
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.ViewFileNames = button_ViewFileNames.Checked;
+			_ide.IDEConfiguration.Save();
 
 			AdjustTextOfAllNodes();
 		}
@@ -195,8 +189,11 @@ namespace TombIDE.ProjectMaster
 
 		private void ShowLevelSetupForm()
 		{
-			using (FormLevelSetup form = new FormLevelSetup(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger IDE.LevelAddedEvent
+			using (FormLevelSetup form = new FormLevelSetup(_ide.Project))
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+					OnLevelAdded(form.CreatedLevel, form.GeneratedScriptLines);
+			}
 		}
 
 		private void ImportLevel()
@@ -216,8 +213,11 @@ namespace TombIDE.ProjectMaster
 						if (ProjectLevel.IsBackupFile(Path.GetFileName(dialog.FileName)))
 							throw new ArgumentException("You cannot import backup files.");
 
-						using (FormImportLevel form = new FormImportLevel(_ide, dialog.FileName))
-							form.ShowDialog(this); // After the form is done, it will trigger IDE.LevelAddedEvent
+						using (FormImportLevel form = new FormImportLevel(_ide.Project, dialog.FileName))
+						{
+							if (form.ShowDialog(this) == DialogResult.OK)
+								OnLevelAdded(form.ImportedLevel, form.GeneratedScriptLines);
+						}
 					}
 					catch (Exception ex)
 					{
@@ -241,7 +241,7 @@ namespace TombIDE.ProjectMaster
 
 			// Internal level paths always start with the project's LevelsPath
 			bool isInternalLevel = affectedLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase);
-			string message = string.Empty;
+			string message;
 
 			if (isInternalLevel)
 			{
@@ -269,54 +269,6 @@ namespace TombIDE.ProjectMaster
 				// Send the new list (without the removed node) into the .trproj file
 				ReserializeTRPROJ();
 			}
-		}
-
-		private void MoveLevelUpOnList()
-		{
-			if (treeView.SelectedNodes[0].VisibleIndex == 0)
-				return; // Node can't be moved higher because it's already at 0
-
-			DarkTreeNode[] cachedNodes = treeView.Nodes.ToArray();
-			treeView.Nodes.Clear();
-
-			for (int i = 0; i < cachedNodes.Length; i++)
-			{
-				if (i + 1 == treeView.SelectedNodes[0].VisibleIndex)
-				{
-					treeView.Nodes.Add(cachedNodes[i + 1]);
-					treeView.Nodes.Add(cachedNodes[i]);
-					i++;
-				}
-				else
-					treeView.Nodes.Add(cachedNodes[i]);
-			}
-
-			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			ReserializeTRPROJ();
-		}
-
-		private void MoveLevelDownOnList()
-		{
-			if (treeView.SelectedNodes[0].VisibleIndex == treeView.Nodes.Count - 1)
-				return; // Node can't be moved lower because it's already at the bottom
-
-			DarkTreeNode[] cachedNodes = treeView.Nodes.ToArray();
-			treeView.Nodes.Clear();
-
-			for (int i = 0; i < cachedNodes.Length; i++)
-			{
-				if (i == treeView.SelectedNodes[0].VisibleIndex)
-				{
-					treeView.Nodes.Add(cachedNodes[i + 1]);
-					treeView.Nodes.Add(cachedNodes[i]);
-					i++;
-				}
-				else
-					treeView.Nodes.Add(cachedNodes[i]);
-			}
-
-			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			ReserializeTRPROJ();
 		}
 
 		private void RefreshLevelList()
@@ -375,7 +327,7 @@ namespace TombIDE.ProjectMaster
 
 					// Mark external levels
 					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-						node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
+						node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 				}
 			}
 			else
@@ -387,7 +339,7 @@ namespace TombIDE.ProjectMaster
 
 					// Mark external levels
 					if (!nodeLevel.FolderPath.StartsWith(_ide.Project.LevelsPath, StringComparison.OrdinalIgnoreCase))
-						node.Text = _ide.Configuration.ExternalLevelPrefix + node.Text;
+						node.Text = _ide.IDEConfiguration.ExternalLevelPrefix + node.Text;
 				}
 			}
 		}
@@ -447,7 +399,7 @@ namespace TombIDE.ProjectMaster
 
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Path.Combine(SharedMethods.GetProgramDirectory(), "TombEditor.exe"),
+				FileName = Path.Combine(PathHelper.GetProgramDirectory(), "TombEditor.exe"),
 				Arguments = "\"" + prj2Path + "\""
 			};
 
@@ -458,6 +410,29 @@ namespace TombIDE.ProjectMaster
 
 		#region Methods
 
+		private void OnLevelAdded(ProjectLevel addedLevel, List<string> scriptLines)
+		{
+			AddLevelToList(addedLevel, true);
+
+			// Select the new level node
+			foreach (DarkTreeNode node in treeView.Nodes)
+			{
+				if (((ProjectLevel)node.Tag).Name.ToLower() == addedLevel.Name.ToLower())
+				{
+					treeView.SelectNode(node);
+					CheckItemSelection();
+
+					break;
+				}
+			}
+
+			if (scriptLines != null && scriptLines.Count > 0)
+			{
+				_ide.ScriptEditor_AppendScriptLines(scriptLines);
+				_ide.ScriptEditor_AddNewLevelString(addedLevel.Name);
+			}
+		}
+
 		public void ReserializeTRPROJ()
 		{
 			treeView.Invalidate();
@@ -467,7 +442,7 @@ namespace TombIDE.ProjectMaster
 			foreach (DarkTreeNode node in treeView.Nodes)
 				_ide.Project.Levels.Add((ProjectLevel)node.Tag);
 
-			XmlHandling.SaveTRPROJ(_ide.Project);
+			_ide.Project.Save();
 
 			label_Hint.Visible = treeView.Nodes.Count == 0;
 		}

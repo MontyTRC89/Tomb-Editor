@@ -1,0 +1,18 @@
+Syntax: Diagnostic= ENABLED/DISABLED
+Scope: To use in [Options] section
+
+If you enable the diagnostic with  Diagnostic=ENABLED, in game will be showed on screen some information in real time about number of current Lara's animation, the current State-id of lara and current effective frame rate in game.
+
+These infos are useful to discover what is the number of some animation, then you can use this number to locate animation in wad file using Animation Editor of wad merger program.
+
+If you have problems to read in real-time above informations, remember you can also to use Tomb4_Logger.exe program to catch all diagnostic mexages and store them in a text file.
+If you perform Tomb4_Logger.exe before starting tomb4 trng engine with diagnostic enabled, you'll have also in log file the LoadCamera= .. script command line with infos about current camera view to add in script.txt file for load camera screenshot
+To get infos about LoadCamera in log file you have to keep down the F1 key.
+
+This is a sample of text you can get in this way:
+
+  21656:   LoadCamera=  6656, -2817, 14123, 6656, -2631, 12800, 2
+  21672:   Animation=103   StateId=2  ($2)
+
+
+

@@ -23,8 +23,9 @@ namespace TombLib.LevelData
         public bool CeilingSplitToggled => Block.Ceiling.SplitDirectionIsXEqualsZ;
 
         public bool Editable => !Block.IsAnyWall;
-        public bool Valid => Editable && (Floor.XnZn != 0   || Floor.XpZn != 0   || Floor.XnZp != 0   || Floor.XpZp != 0  ||
-                                          Ceiling.XnZn != 0 || Ceiling.XpZn != 0 || Ceiling.XnZp != 0 || Ceiling.XpZp != 0);
+        public bool Valid => Editable && (ValidFloor || ValidCeiling);
+        public bool ValidFloor => Floor.XnZn != 0 || Floor.XpZn != 0 || Floor.XnZp != 0 || Floor.XpZp != 0;
+        public bool ValidCeiling => Ceiling.XnZn != 0 || Ceiling.XpZn != 0 || Ceiling.XnZp != 0 || Ceiling.XpZp != 0;
 
         public GhostBlockInstance() : base(new RectangleInt2()) { }
 
@@ -41,29 +42,33 @@ namespace TombLib.LevelData
                    "ceiling: (" + Ceiling.XnZp + ", " + Ceiling.XpZp + ", " + Ceiling.XpZn + ", " + Ceiling.XnZn + ")";
         }
 
-        public void Move(int delta)
+        public void Move(int delta, bool? forceSurface = null)
         {
-            delta /= 256;
-
             if (SelectedCorner.HasValue)
-            {
-                if (SelectedFloor)
-                    switch (SelectedCorner.Value)
-                    {
-                        case BlockEdge.XnZn: Floor.XnZn += (short)delta; break;
-                        case BlockEdge.XnZp: Floor.XnZp += (short)delta; break;
-                        case BlockEdge.XpZn: Floor.XpZn += (short)delta; break;
-                        case BlockEdge.XpZp: Floor.XpZp += (short)delta; break;
-                    }
-                else
-                    switch (SelectedCorner.Value)
-                    {
-                        case BlockEdge.XnZn: Ceiling.XnZn += (short)delta; break;
-                        case BlockEdge.XnZp: Ceiling.XnZp += (short)delta; break;
-                        case BlockEdge.XpZn: Ceiling.XpZn += (short)delta; break;
-                        case BlockEdge.XpZp: Ceiling.XpZp += (short)delta; break;
-                    }
-            }
+                Move(SelectedCorner.Value, delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
+            else
+                for (int i = 0; i < 4; i++)
+                    Move((BlockEdge)(i), delta, forceSurface.HasValue ? forceSurface.Value : SelectedFloor);
+        }
+
+        private void Move (BlockEdge edge, int delta, bool floor)
+        {
+            if (floor)
+                switch (edge)
+                {
+                    case BlockEdge.XnZn: Floor.XnZn += (short)delta; break;
+                    case BlockEdge.XnZp: Floor.XnZp += (short)delta; break;
+                    case BlockEdge.XpZn: Floor.XpZn += (short)delta; break;
+                    case BlockEdge.XpZp: Floor.XpZp += (short)delta; break;
+                }
+            else
+                switch (edge)
+                {
+                    case BlockEdge.XnZn: Ceiling.XnZn += (short)delta; break;
+                    case BlockEdge.XnZp: Ceiling.XnZp += (short)delta; break;
+                    case BlockEdge.XpZn: Ceiling.XpZn += (short)delta; break;
+                    case BlockEdge.XpZp: Ceiling.XpZp += (short)delta; break;
+                }
         }
 
         public Vector3[] ControlPositions(bool floor, bool original = false, float margin = -16.0f)

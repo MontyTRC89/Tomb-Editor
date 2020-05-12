@@ -35,6 +35,8 @@ namespace TombLib.Utils
                 (int)Math.Round(firstColor.B * (1 - mixFactor) + secondColor.B * mixFactor));
         }
 
+        public static bool IsGrayscale(this Color color) => color.R == color.G && color.G == color.B;
+
         public static void DrawRectangle(this System.Drawing.Graphics g, Pen pen, RectangleF rectangle)
         {
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
@@ -104,5 +106,16 @@ namespace TombLib.Utils
             else
                 return false;
         }
+
+        public static void SetActualSize(this Form form, Size? size = null)
+        {
+            if (!size.HasValue) size = form.ClientSize;
+            form.MinimumSize = size.Value + (form.Size - form.ClientSize - (SystemInformation.Border3DSize + SystemInformation.Border3DSize));
+            form.Size = form.MinimumSize;
+        }
+        public static void SetActualSize(this Form form, int width, int height) => SetActualSize(form, new Size(width, height));
+
+        public static void LockHeight(this Form form) => form.MaximumSize = new Size(int.MaxValue, form.Size.Height);
+        public static void LockWidth(this Form form) => form.MaximumSize = new Size(form.Size.Width, int.MaxValue);
     }
 }
