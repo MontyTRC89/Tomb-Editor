@@ -28,6 +28,11 @@ namespace TombEditor.Forms
         private const string _catalogsPromptMSFX = "Warning: only single catalog may be used with TR2 and TR4 engines! Multiple catalogs may cause unexpected results.";
         private const string _catalogsPromptNew = "If any sound info ID is duplicated in any of catalog, first one will be used.";
 
+        private const string _pathsPromptMSFX = "Sound paths are not available for this game version." + "\n" +
+            "If you want to recompile MAIN.SFX file, use SoundTool.";
+        private const string _pathsPromptNew = "Locations from which sound samples will be loaded." + "\n" +
+            "Each required sample will be searched in folders in top to bottom order.If not found, sound is not played.";
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private class PictureTooltip : ToolTip
@@ -628,11 +633,12 @@ namespace TombEditor.Forms
 
             // TR4 and above
             currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
-            soundDataGridView.Enabled = !currentVersionToCheck;
-            soundDataGridViewControls.Enabled = !currentVersionToCheck;
             panelFont.Enabled = !currentVersionToCheck;
             panelSky.Enabled = !currentVersionToCheck;
             lblCatalogsPrompt.Text = _catalogsPromptBase + (currentVersionToCheck ? _catalogsPromptMSFX : _catalogsPromptNew);
+            soundDataGridView.Visible = !currentVersionToCheck;
+            soundDataGridViewControls.Visible = !currentVersionToCheck;
+            lblPathsPrompt.Text = currentVersionToCheck ? _pathsPromptMSFX : _pathsPromptNew;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)

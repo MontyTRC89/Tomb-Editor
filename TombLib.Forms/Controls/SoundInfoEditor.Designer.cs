@@ -247,10 +247,10 @@
             // 
             this.cbIndexed.Location = new System.Drawing.Point(173, 4);
             this.cbIndexed.Name = "cbIndexed";
-            this.cbIndexed.Size = new System.Drawing.Size(70, 17);
+            this.cbIndexed.Size = new System.Drawing.Size(143, 17);
             this.cbIndexed.TabIndex = 105;
-            this.cbIndexed.Text = "Indexed";
-            this.toolTip.SetToolTip(this.cbIndexed, "Index this sound for TR2-3 MAIN.SFX file");
+            this.cbIndexed.Text = "Include for MAIN.SFX";
+            this.toolTip.SetToolTip(this.cbIndexed, "Include this sound for TR2-3 MAIN.SFX file");
             // 
             // colSampleName
             // 
