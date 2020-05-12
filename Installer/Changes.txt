@@ -18,6 +18,7 @@ Tomb Editor:
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
  * Add experimental TR3 compiler.
+ * Add experimental TR2 compiler.
  
 TombIDE:
  * Major refactoring and performance improvemets.
