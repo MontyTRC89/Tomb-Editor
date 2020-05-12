@@ -38,7 +38,8 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update available items combo box
-            if (obj is Editor.LoadedWadsChangedEvent)
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
             {
                 var allMoveables = _editor.Level.Settings.WadGetAllMoveables();
                 var allStatics   = _editor.Level.Settings.WadGetAllStatics();

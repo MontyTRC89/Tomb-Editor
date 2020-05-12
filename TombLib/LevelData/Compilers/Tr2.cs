@@ -157,105 +157,14 @@ namespace TombLib.LevelData.Compilers
                 var lightmap = new byte[8192];
                 writer.Write(lightmap);
 
-                const short numDemo = 0;
+                const ushort numDemo = 0;
+                const ushort numCinematicFrames = 0;
                 writer.Write(numDemo);
-                writer.Write(numDemo);
+                writer.Write(numCinematicFrames);
 
-                // Write sounds
-
-                // Write sound map
-                var soundMapSize = 370;
-                uint numBytesWritten = 0;
-                var lastSound = 0;
-                for (int i = 0; i < soundMapSize; i++) {
-                    short soundMapValue = -1;
-                    if (_level.Settings.WadTryGetSoundInfo(i) != null) {
-                        soundMapValue = (short)lastSound;
-                        lastSound++;
-                    }
-
-                    writer.Write(soundMapValue);
-                    numBytesWritten += sizeof(short);
-                }
-                _progressReporter.ReportInfo("Num SoundMap Bytes written : " + numBytesWritten);
-
-                // Write sound details
-                uint numSoundInfos = 0;
-                foreach(var wad in _level.Settings.Wads) {
-                    numSoundInfos += (uint)(wad.Wad.Sounds.SoundInfos.Count);
-                }
-                writer.Write((uint)numSoundInfos);
-
-                ushort lastSample = 0;
-
-                foreach (var wad in _level.Settings.Wads) {
-                    for (int i = 0; i < wad.Wad.Sounds.SoundInfos.Count; i++) {
-                        var wadInfo = wad.Wad.Sounds.SoundInfos[i];
-                        var soundInfo = new tr3_sound_details();
-
-                        soundInfo.Sample = lastSample;
-                        soundInfo.Volume = (byte)wadInfo.Volume;
-                        soundInfo.Chance = (byte)wadInfo.Chance;
-
-                        ushort characteristics = (/*wadInfo.Samples.Count */ 1 << 2);
-                        if (wadInfo.DisablePanning)
-                            characteristics |= 0x1000;
-                        if (wadInfo.RandomizePitch)
-                            characteristics |= 0x2000;
-                        if (wadInfo.RandomizeVolume)
-                            characteristics |= 0x4000;
-                        characteristics |= (byte)wadInfo.LoopBehaviour;
-
-                        soundInfo.Characteristics = characteristics;
-
-                        writer.Write(soundInfo.Sample);
-                        writer.Write((short)soundInfo.Volume);
-                        writer.Write((short)soundInfo.Chance);
-                        writer.Write((short)soundInfo.Pitch);
-                        writer.Write(soundInfo.Characteristics);
-
-                        lastSample += (ushort)wadInfo.Samples.Count;
-                    }
-                }
-
-
-                /*for (int i = 0; i < _level.Wad.SoundInfo.Count; i++) {
-                    var wadInfo = _level.Wad.SoundInfo.ElementAt(i).Value;
-                    var soundInfo = new tr_sound_details();
-
-                    soundInfo.Sample = lastSample;
-                    soundInfo.Volume = wadInfo.Volume;
-                    soundInfo.Chance = wadInfo.Chance;
-
-                    ushort characteristics = (ushort)(/ *wadInfo.Samples.Count * / 1 << 2);
-                    if (wadInfo.FlagN)
-                        characteristics |= 0x1000;
-                    if (wadInfo.RandomizePitch)
-                        characteristics |= 0x2000;
-                    if (wadInfo.RandomizeGain)
-                        characteristics |= 0x4000;
-                    characteristics |= (byte)wadInfo.Loop;
-
-                    soundInfo.Characteristics = characteristics;
-
-                    writer.Write(soundInfo.Sample);
-                    writer.Write((short)soundInfo.Volume);
-                    writer.Write((short)soundInfo.Chance);
-                    writer.Write(soundInfo.Characteristics);
-
-                    lastSample += (short)wadInfo.Samples.Count;
-                }*/
-
-                // TODO: samples are in MAIN.SFX so I have to found a way to write samples indices here
-                int numSampleIndices = lastSample;
-                writer.Write(numSampleIndices);
-                int filler3 = 0;
-                for (int i = 0; i < numSampleIndices; i++)
-                    writer.Write(/*filler3*/ i);
-
-                writer.Flush();
-
-                //_soundManager.UpdateMainSfx();
+                // Write sound meta data
+                PrepareSoundsData();
+                WriteSoundMetadata(writer);
             }
         }
     }
