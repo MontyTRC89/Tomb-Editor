@@ -161,14 +161,18 @@ namespace TombLib.LevelData.Compilers
 
                     if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                     {
+                        ushort texW = (ushort)oldTexture.Texture.Image.Width;
+                        ushort texH = (ushort)oldTexture.Texture.Image.Height;
+                        ushort SpriteW = (ushort)((texW - 1) * 256 + 255);
+                        ushort SpriteH = (ushort)((texH - 1) * 256 + 255);
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;
-                        newTexture.Width = (ushort)((oldTexture.Texture.Image.Width - 1) * 256 + 255);
-                        newTexture.Height = (ushort)((oldTexture.Texture.Image.Height - 1) * 256 + 255);
-                        newTexture.TopSide = 0;
-                        newTexture.LeftSide = 0;
-                        newTexture.RightSide = 0;
-                        newTexture.BottomSide = 0;
+                        newTexture.Width = SpriteW;
+                        newTexture.Height = SpriteH;
+                        newTexture.TopSide = (short)-oldTexture.Texture.Image.Height;
+                        newTexture.LeftSide = (short)0;
+                        newTexture.RightSide = (short)oldTexture.Texture.Image.Width;
+                        newTexture.BottomSide = (short) 0;
                     }
                     else
                     {
