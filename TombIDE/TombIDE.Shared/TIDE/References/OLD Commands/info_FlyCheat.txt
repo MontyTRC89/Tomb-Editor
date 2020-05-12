@@ -1,0 +1,10 @@
+Syntax: FlyCheat= ENABLED/DISABLED
+
+To use in [Options] section.
+
+Enables or disales the possibility to do fly Lara typing on keyboard the letters: D O Z Y
+
+Usually is useful let enabled this option only for debugging phase to check easily all room structure (and textures!) of your level.
+Before developing your level you should always set this command to DISABLED
+
+

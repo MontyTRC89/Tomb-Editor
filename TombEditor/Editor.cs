@@ -37,7 +37,7 @@ namespace TombEditor
     {
         None,
         Block,
-        PositionBasedObject
+        SpatialObject
     }
 
     public interface IEditorObjectChangedEvent : IEditorEventCausesUnsavedChanges
@@ -296,8 +296,8 @@ namespace TombEditor
                         throw new ArgumentException("The object to be selected is not part of the level.");
                 }
 
-                if (value != null && value is PositionBasedObjectInstance)
-                    LastSelection = LastSelectionType.PositionBasedObject;
+                if (value != null && value is ISpatial)
+                    LastSelection = LastSelectionType.SpatialObject;
 
                 if (value == _selectedObject)
                     return;
@@ -465,24 +465,38 @@ namespace TombEditor
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class AnimatedTexturesChanged : IEditorEventCausesUnsavedChanges { }
+        public class AnimatedTexturesChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void AnimatedTexturesChange()
         {
-            RaiseEvent(new AnimatedTexturesChanged());
+            RaiseEvent(new AnimatedTexturesChangedEvent());
+        }
+
+        // This is invoked if merged static list was changed for the level.
+        public class MergedStaticsChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void MergedStaticsChange()
+        {
+            RaiseEvent(new MergedStaticsChangedEvent());
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class TextureSoundsChanged : IEditorEventCausesUnsavedChanges { }
+        public class TextureSoundsChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void TextureSoundsChange()
         {
-            RaiseEvent(new TextureSoundsChanged());
+            RaiseEvent(new TextureSoundsChangedEvent());
         }
 
         // This is invoked if the animated texture sets changed for the level.
-        public class BumpmapsChanged : IEditorEventCausesUnsavedChanges { }
+        public class BumpmapsChangedEvent : IEditorEventCausesUnsavedChanges { }
         public void BumpmapsChange()
         {
-            RaiseEvent(new BumpmapsChanged());
+            RaiseEvent(new BumpmapsChangedEvent());
+        }
+
+        // This is invoked if game version is changed for the level.
+        public class GameVersionChangedEvent : IEditorEventCausesUnsavedChanges { }
+        public void GameVersionChange()
+        {
+            RaiseEvent(new GameVersionChangedEvent());
         }
 
         // This is invoked after an autosave
@@ -619,8 +633,34 @@ namespace TombEditor
         {
             RaiseEvent(new ToggleFlyModeEvent { FlyModeState = state });
         }
-
         public bool FlyMode { get; set; } = false;
+
+        // Toggle hidden selection (during color picking)
+        public class HideSelectionEvent : IEditorEvent
+        {
+            public bool HideSelection { get; set; }
+        }
+        public void ToggleHiddenSelection(bool state)
+        {
+            HiddenSelection = state;
+            RaiseEvent(new HideSelectionEvent { HideSelection = state });
+        }
+        public bool HiddenSelection { get; private set; } = false;
+        
+        // Last used palette colour
+        public class LastUsedPaletteColourChangedEvent : IEditorEvent
+        {
+            public ColorC Colour { get; set; }
+        }
+        public void LastUsedPaletteColourChange(ColorC color)
+        {
+            LastUsedPaletteColour = color;
+            RaiseEvent(new LastUsedPaletteColourChangedEvent { Colour = color });
+        }
+        public ColorC LastUsedPaletteColour { get; private set; } = new ColorC(128, 128, 128);
+
+        // For resetting global palette to default
+        public class ResetPaletteEvent : IEditorEvent { }
 
         // Select a texture and center the view
         public class SelectTextureAndCenterViewEvent : IEditorEvent
@@ -630,6 +670,16 @@ namespace TombEditor
         public void SelectTextureAndCenterView(TextureArea texture)
         {
             RaiseEvent(new SelectTextureAndCenterViewEvent { Texture = texture });
+        }
+
+        // Select different texture set
+        public class SelectedLevelTextureChangedSetEvent : IEditorEvent
+        {
+            public LevelTexture Texture { get; internal set; }
+        }
+        public void SelectedLevelTextureChanged(LevelTexture texture)
+        {
+            RaiseEvent(new SelectedLevelTextureChangedSetEvent { Texture = texture });
         }
 
         // Send message
@@ -643,14 +693,20 @@ namespace TombEditor
             RaiseEvent(new MessageEvent { Message = message, Type = type });
         }
 
+        // Init / quit editor events
+        public class InitEvent : IEditorEvent { }
         public class EditorQuitEvent : IEditorEvent { }
         public void Quit()
         {
             RaiseEvent(new EditorQuitEvent());
         }
 
-        public class InitEvent : IEditorEvent { }
-
+        // Main window focus event
+        public class EditorFocusedEvent : IEditorEvent { }
+        public void Focus()
+        {
+            RaiseEvent(new EditorFocusedEvent());
+        }
 
         // Undo-redo manager
         public EditorUndoManager UndoManager { get; private set; }
@@ -736,7 +792,9 @@ namespace TombEditor
             bool wadsChanged = !newSettings.Wads.SequenceEqual(_level.Settings.Wads);
             bool soundsChanged = !newSettings.SoundsCatalogs.SequenceEqual(_level.Settings.SoundsCatalogs);
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
+            bool mergedStaticsChanged = !newSettings.AutoStaticMeshMerges.SequenceEqual(_level.Settings.AutoStaticMeshMerges);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
+            bool gameVersionChanged = newSettings.GameVersion != _level.Settings.GameVersion;
 
             // Update the current settings
             _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));
@@ -757,8 +815,14 @@ namespace TombEditor
             if (animatedTexturesChanged)
                 AnimatedTexturesChange();
 
+            if (mergedStaticsChanged)
+                MergedStaticsChange();
+
             if (levelFilenameChanged)
                 LevelFileNameChange();
+
+            if (gameVersionChanged)
+                GameVersionChange();
 
             // Update file watchers
             if (importedGeometryChanged || texturesChanged || wadsChanged || soundsChanged)

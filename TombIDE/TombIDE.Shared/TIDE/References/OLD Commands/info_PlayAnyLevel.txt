@@ -1,0 +1,10 @@
+Syntax: PlayAnyLevel= ENABLED/DISABLED
+
+To use in [Options] section
+
+Set if player will can choose the level to play in any order or if the game will start automatically from first level of script.txt file (excluding title.tr4 level, of course)
+
+It's a common error of beginners let this command to ENABLED setting.
+Really enabled is useful only for original level editor levels but when you create your adventure you should set always as DISABLED this command in way to start from first level and then go on in following levels only when player reachs this result in game.
+
+

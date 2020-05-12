@@ -14,7 +14,7 @@ namespace TombLib.LevelData.Compilers
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
-        private Dictionary<WadPolygon,Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
+        private Dictionary<WadPolygon, Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
 
         private void BuildRooms()
@@ -23,13 +23,16 @@ namespace TombLib.LevelData.Compilers
             Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
                 room.RebuildLighting(true);
             });
-            ReportProgress(15, "Building rooms");
 
+            ReportProgress(15, "Building rooms");
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
                 _roomsUnmapping.Add(room);
             }
+
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
+
 
             // TODO Enable parallization
             //Parallel.ForEach(_roomsRemappingDictionary.Keys, (Room room) =>
@@ -39,18 +42,14 @@ namespace TombLib.LevelData.Compilers
             //        _tempRooms.Add(room, trRoom);
             //});
 
-            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
-
             foreach (var room in _roomsRemappingDictionary.Keys)
-            {
                 _tempRooms.Add(room, BuildRoom(room));
-            }
 
             // Remove WaterScheme values for water rooms
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
 #if DEBUG
-                using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
+            using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
             {
                 for (int r = 0; r < _tempRooms.Count; r++)
                 {
@@ -132,10 +131,9 @@ namespace TombLib.LevelData.Compilers
                         (!light.IsStaticallyUsed && !forImportedGeometry))
                         continue;
 
-                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false,false);                    
+                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);                    
                 }
-
-            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
         }
 
         private tr_room BuildRoom(Room room)
@@ -178,11 +176,11 @@ namespace TombLib.LevelData.Compilers
 
             // Store ambient intensity
             if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                newRoom.AmbientIntensity = (uint)PackColorTo13BitGreyscale(room.AmbientLight);
-            else if (_level.Settings.GameVersion == TRVersion.Game.TR4)
-                newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
+                newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.AmbientLight);
             else
-                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
+                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | 
+                                           ((uint)roomAmbientColor.Green << 8) | 
+                                                  roomAmbientColor.Blue;
 
             // Properly identify game version to swap quicksand and no lensflare flags
             bool isNL = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
@@ -312,7 +310,7 @@ namespace TombLib.LevelData.Compilers
 
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
-                    //check if static Mesh is in the Auto Merge list
+                    // Сheck if static Mesh is in the Auto Merge list
                     var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
                         mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
                     if (entry == null)
@@ -344,26 +342,26 @@ namespace TombLib.LevelData.Compilers
                         }
                         else
                         {
-                            if(!clearShades)
-                            //If we have shades, use them as a factor for the resulting vertex color
-                            if (j < wadStatic.Mesh.VerticesShades.Count)
+                            // If we have shades, use them as a factor for the resulting vertex color
+                            if (!clearShades && j < wadStatic.Mesh.VerticesShades.Count)
                             {
                                 shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
                                 shade = 1.0f - shade;
                             }
                         }
                         Vector3 color;
-                        if(!entry.TintAsAmbient)
+                        if (!entry.TintAsAmbient)
                         {
                             color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
-                            //Apply Shade factor
+                            // Apply Shade factor
                             color *= shade;
-                            //Apply Instance Color
+                            // Apply Instance Color
                             color *= staticMesh.Color;
-                        }else
+                        }
+                        else
                         {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color*128);
-                                //Apply Shade factor
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                                // Apply Shade factor
                                 color *= shade;
                         }
                         
@@ -480,7 +478,7 @@ namespace TombLib.LevelData.Compilers
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true,room.AmbientLight*128));
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128));
                                 else
                                     trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
 
@@ -861,15 +859,22 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                // If target game is <= TR4 then ignore all special lights and fog bulbs
+                // If target game is <= TR3 then ignore all special lights (except sun for TR3) and fog bulbs
                 if (_level.Settings.GameVersion < TRVersion.Game.TR4 &&
-                      (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
+                    (light.Type == LightType.Spot || light.Type == LightType.Shadow || light.Type == LightType.FogBulb))
+                    continue;
+
+                // FIXME: For now sun type is blocked for TR3 because normal format is yet to be figured out
+                // Change to TRVersion.Game.TR3 when fixed.
+                if (_level.Settings.GameVersion < TRVersion.Game.TR4 && light.Type == LightType.Sun)
                     continue;
 
                 if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
+
                 tr_color color = PackColorTo24Bit(light.Color);
                 ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
+
                 if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
                     continue;
                 lightCount += 1;
@@ -1593,17 +1598,16 @@ namespace TombLib.LevelData.Compilers
             tmp |= (ushort)color.Z;
             return tmp;
         }
-        // Takes the average color value and packs it into an inversed 13 Bit Greyscale Color (Maybe use Luminance int he future?)
-        // Higher = Darker
+
+        // Takes the average color value and packs it into an inversed 13 Bit luma value (Higher = Darker)
         // Used for TR1? and TR2 and TR3 for AmbientInensity
-        private static ushort PackColorTo13BitGreyscale(Vector3 color) {
-            float avg = (color.X + color.Y + color.Z) / 3;
-            //clamp to 0-1
-            avg = Math.Min(1.0f, Math.Max(0,avg));
-            //invert
+        private static ushort PackColorTo13BitGreyscale(Vector3 color)
+        {
+            float avg = MathC.Clamp(color.GetLuma(), 0, 1);
+            // invert
             avg = 1.0f - avg;
-            // multiply by 256 to get 8 bits
-            avg *= 0xFF;
+            // multiply by 128 to get 8 bits
+            avg *= 255.0f;
             ushort value = (ushort)avg;
             //bitshift to left for whatever reason
             value <<= 5;

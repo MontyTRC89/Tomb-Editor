@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE
 {
@@ -22,54 +22,63 @@ namespace TombIDE
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			Configuration configuration = Configuration.Load();
+			IDEConfiguration ideConfiguration = IDEConfiguration.Load();
 			List<Project> availableProjects = XmlHandling.GetProjectsFromXml();
 			List<Plugin> availablePlugins = XmlHandling.GetPluginsFromXml();
 
-			using (IDE ide = new IDE(configuration, availableProjects, availablePlugins))
+			using (IDE ide = new IDE(ideConfiguration, availableProjects, availablePlugins))
 			{
 				using (FormStart form = new FormStart(ide))
 				{
 					if (args.Length > 0)
 					{
-						if (Path.GetExtension(args[0]).ToLower() == ".trproj")
+						if (Path.GetExtension(args[0]).ToLower() != ".trproj")
 						{
-							ide.Configuration.RememberedProject = string.Empty;
-							form.OpenTRPROJWithTombIDE(args[0]); // Changes ide.Configuration.RememberedProject to the opened project on success
+							MessageBox.Show("Invalid file type. TombIDE can only open .trproj files.", "Error",
+								MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-							if (string.IsNullOrEmpty(ide.Configuration.RememberedProject))
-								return; // Opening project failed
-
-							Application.Run(form);
-
-							// Reset the RememberedProject setting after closing
-							ide.Configuration.RememberedProject = string.Empty;
-							ide.Configuration.Save();
+							return;
 						}
+
+						ide.IDEConfiguration.RememberedProject = string.Empty;
+						form.OpenTrprojWithTombIDE(args[0]); // Changes ide.Configuration.RememberedProject to the opened project on success
+
+						if (string.IsNullOrEmpty(ide.IDEConfiguration.RememberedProject))
+							return; // Opening project failed
+
+						Application.Run(form);
+
+						// Reset the RememberedProject setting after closing
+						ide.IDEConfiguration.RememberedProject = string.Empty;
+						ide.IDEConfiguration.Save();
 					}
 					else
 						Application.Run(form);
 				}
 			}
+
+#if (DEBUG)
+			System.Diagnostics.Process.GetCurrentProcess().Kill(); // Faster app closing while debugging
+#endif
 		}
 
 		private static void UpdateNGCompilerPaths()
 		{
 			try
 			{
-				string programPath = SharedMethods.GetProgramDirectory();
+				string programPath = PathHelper.GetProgramDirectory();
 
 				if (IsUnicodePath(programPath))
 					throw new ArgumentException(
 						"Your executing path contains non-ASCII symbols. This will not allow the compilers to work correctly.\n" +
 						"Please consider removing all non-ASCII symbols from the executing path before launching TombIDE.");
 
-				string virtualEnginePath = Path.Combine(programPath, "NGC", "VGE");
+				string virtualEnginePath = PathHelper.GetVGEPath();
 
 				if (virtualEnginePath.Length > 255)
 					throw new PathTooLongException(
 						"Your executing path is too long. Please consider shortening your executing path " +
-						"to a maximum of 248 symbols before launching TombIDE.");
+						"to a maximum of 244 symbols before launching TombIDE.");
 
 				byte[] stringBytes = Encoding.ASCII.GetBytes(virtualEnginePath);
 
@@ -85,7 +94,7 @@ namespace TombIDE
 				// Merge the stringBytes array with the leftover items from the bytesToWrite_02 array, so the full array size is still 256
 				bytesToWrite_02 = stringBytes.Concat(bytesToWrite_02).ToArray();
 
-				string centerSettingsFilePath = Path.Combine(programPath, "NGC", "center_settings.bin");
+				string centerSettingsFilePath = Path.Combine(programPath, "TIDE", "NGC", "center_settings.bin");
 
 				using (FileStream stream = File.OpenWrite(centerSettingsFilePath))
 				{

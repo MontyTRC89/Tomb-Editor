@@ -32,11 +32,9 @@
 			this.OwO = new DarkUI.Controls.DarkLabel();
 			this.panel_CoverLoading = new System.Windows.Forms.Panel();
 			this.panel_Main = new System.Windows.Forms.Panel();
-			this.tablessTabControl = new TombIDE.TablessTabControl();
+			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.tabPage_ProjectMaster = new System.Windows.Forms.TabPage();
-			this.projectMaster = new TombIDE.ProjectMaster.ProjectMaster();
 			this.tabPage_ScriptEditor = new System.Windows.Forms.TabPage();
-			this.scriptEditor = new TombIDE.ScriptEditor.ScriptEditor();
 			this.tabPage_Tools = new System.Windows.Forms.TabPage();
 			this.UwU = new DarkUI.Controls.DarkLabel();
 			this.panel_Programs = new System.Windows.Forms.Panel();
@@ -48,8 +46,6 @@
 			this.contextMenu_ProgramButton.SuspendLayout();
 			this.panel_Main.SuspendLayout();
 			this.tablessTabControl.SuspendLayout();
-			this.tabPage_ProjectMaster.SuspendLayout();
-			this.tabPage_ScriptEditor.SuspendLayout();
 			this.tabPage_Tools.SuspendLayout();
 			this.panel_Programs.SuspendLayout();
 			this.SuspendLayout();
@@ -109,6 +105,7 @@
 			// 
 			this.button_Special.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.button_Special.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.button_Special.Image = global::TombIDE.Properties.Resources.general_edit_16;
 			this.button_Special.Location = new System.Drawing.Point(2, 222);
 			this.button_Special.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.button_Special.Name = "button_Special";
@@ -215,40 +212,20 @@
 			// tabPage_ProjectMaster
 			// 
 			this.tabPage_ProjectMaster.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_ProjectMaster.Controls.Add(this.projectMaster);
 			this.tabPage_ProjectMaster.Location = new System.Drawing.Point(4, 22);
 			this.tabPage_ProjectMaster.Name = "tabPage_ProjectMaster";
 			this.tabPage_ProjectMaster.Size = new System.Drawing.Size(997, 573);
 			this.tabPage_ProjectMaster.TabIndex = 0;
 			this.tabPage_ProjectMaster.Text = "Project Master";
 			// 
-			// projectMaster
-			// 
-			this.projectMaster.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.projectMaster.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.projectMaster.Location = new System.Drawing.Point(0, 0);
-			this.projectMaster.Name = "projectMaster";
-			this.projectMaster.Size = new System.Drawing.Size(997, 573);
-			this.projectMaster.TabIndex = 0;
-			// 
 			// tabPage_ScriptEditor
 			// 
 			this.tabPage_ScriptEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_ScriptEditor.Controls.Add(this.scriptEditor);
 			this.tabPage_ScriptEditor.Location = new System.Drawing.Point(4, 22);
 			this.tabPage_ScriptEditor.Name = "tabPage_ScriptEditor";
 			this.tabPage_ScriptEditor.Size = new System.Drawing.Size(997, 573);
 			this.tabPage_ScriptEditor.TabIndex = 2;
 			this.tabPage_ScriptEditor.Text = "Script Editor";
-			// 
-			// scriptEditor
-			// 
-			this.scriptEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.scriptEditor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scriptEditor.Location = new System.Drawing.Point(0, 0);
-			this.scriptEditor.Name = "scriptEditor";
-			this.scriptEditor.Size = new System.Drawing.Size(997, 573);
-			this.scriptEditor.TabIndex = 0;
 			// 
 			// tabPage_Tools
 			// 
@@ -356,8 +333,6 @@
 			this.contextMenu_ProgramButton.ResumeLayout(false);
 			this.panel_Main.ResumeLayout(false);
 			this.tablessTabControl.ResumeLayout(false);
-			this.tabPage_ProjectMaster.ResumeLayout(false);
-			this.tabPage_ScriptEditor.ResumeLayout(false);
 			this.tabPage_Tools.ResumeLayout(false);
 			this.tabPage_Tools.PerformLayout();
 			this.panel_Programs.ResumeLayout(false);
@@ -373,8 +348,6 @@
 		private DarkUI.Controls.DarkLabel label_Separator_03;
 		private DarkUI.Controls.DarkLabel OwO;
 		private DarkUI.Controls.DarkLabel UwU;
-		private ProjectMaster.ProjectMaster projectMaster;
-		private ScriptEditor.ScriptEditor scriptEditor;
 		private System.Windows.Forms.Button button_AddProgram;
 		private System.Windows.Forms.Button button_LaunchGame;
 		private System.Windows.Forms.Button button_Leave;
@@ -392,7 +365,6 @@
 		private System.Windows.Forms.Timer timer_ScriptButtonBlinking;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_DeleteButton;
 		private System.Windows.Forms.ToolTip toolTip;
-		private TablessTabControl tablessTabControl;
+		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 	}
 }
-

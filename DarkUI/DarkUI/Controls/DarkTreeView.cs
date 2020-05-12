@@ -944,6 +944,52 @@ namespace DarkUI.Controls
             return null;
         }
 
+        public void MoveSelectedNodeUp()
+        {
+            if (SelectedNodes[0].VisibleIndex == 0)
+                return; // Node can't be moved higher because it's already at 0
+
+            DarkTreeNode[] cachedNodes = Nodes.ToArray();
+            Nodes.Clear();
+
+            for (int i = 0; i < cachedNodes.Length; i++)
+            {
+                if (i + 1 == SelectedNodes[0].VisibleIndex)
+                {
+                    Nodes.Add(cachedNodes[i + 1]);
+                    Nodes.Add(cachedNodes[i]);
+                    i++;
+                }
+                else
+                    Nodes.Add(cachedNodes[i]);
+            }
+
+            ScrollTo(SelectedNodes[0].FullArea.Location);
+        }
+
+        public void MoveSelectedNodeDown()
+        {
+            if (SelectedNodes[0].VisibleIndex == Nodes.Count - 1)
+                return; // Node can't be moved lower because it's already at the bottom
+
+            DarkTreeNode[] cachedNodes = Nodes.ToArray();
+            Nodes.Clear();
+
+            for (int i = 0; i < cachedNodes.Length; i++)
+            {
+                if (i == SelectedNodes[0].VisibleIndex)
+                {
+                    Nodes.Add(cachedNodes[i + 1]);
+                    Nodes.Add(cachedNodes[i]);
+                    i++;
+                }
+                else
+                    Nodes.Add(cachedNodes[i]);
+            }
+
+            ScrollTo(SelectedNodes[0].FullArea.Location);
+        }
+
         #endregion
 
         #region Drag & Drop Region
@@ -1120,18 +1166,26 @@ namespace DarkUI.Controls
             }
         }
 
+        public Color OddNodeColor { get; set; } = Colors.HeaderBackground;
+        public Color EvenNodeColor { get; set; } = Colors.GreyBackground;
+        public Color FocusedNodeColor { get; set; } = Colors.BlueSelection;
+        public Color NonFocusedNodeColor { get; set; } = Colors.GreySelection;
+
         private void DrawNode(DarkTreeNode node, Graphics g)
         {
             var rect = GetNodeFullRowArea(node);
 
             // 1. Draw background
-            var bgColor = node.Odd ? Colors.HeaderBackground : Colors.GreyBackground;
+            var bgColor = node.BackColor;
+
+            if(bgColor == Color.Transparent)
+                bgColor = node.Odd ? OddNodeColor : EvenNodeColor;
 
             if (SelectedNodes.Count > 0 && SelectedNodes.Contains(node))
-                bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
+                bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
 
             if (IsDragging && _dropNode == node)
-                bgColor = Focused ? Colors.BlueSelection : Colors.GreySelection;
+                bgColor = Focused ? FocusedNodeColor : NonFocusedNodeColor;
 
             using (var b = new SolidBrush(bgColor))
             {

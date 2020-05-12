@@ -1,0 +1,21 @@
+Syntax: Snow= SNOW_ constant
+Scope: To use in [Level] section
+
+The snow will be showed in current level only if in current [Level] section is present the command "Snow=SNOW_SINGLE_ROOM"  or "Snow=SNOW_ALL_OUTSIDE"
+
+SNOW_DISABLED
+This settings is the same to omit to insert Snow= command. The futher rooms labeled as "Snow" room in ngle will be ignored, i.e. no snow effect will be showed.
+
+SNOW_SINGLE_ROOM
+Only the room with "Snow" label in ngle and with [O] (outside) status will have the snow in game.
+Each room will have own snow intensity read from field Water Intensity at right of multistate button Water/Rain/Snow ...
+
+SNOW_ALL_OUTSIDE
+The snow will be showed in all outside room, ignoring multistate button. This means that also a room without "snow" button will have the snow if it is different than Water room and it has the [O] outside status.
+
+Remarks:
+(1) If you use SNOW_ALL_OUTSIDE setting, and you want set the intensity for snow in all level, you can set a single room with "Snow" attribute in ngle and set in that room in water intensity field the value for snow intensity. That value will be used for whole level.
+
+(2) If you don't mean to use snow rooms in current level it's better use command "Snow=SNOW_DISABLED" to inform trng engine to avoid a lot of computes to locate further snow rooms.
+
+

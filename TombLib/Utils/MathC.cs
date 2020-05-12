@@ -11,6 +11,10 @@ namespace TombLib
     {
         public const float ZeroTolerance = 1e-6f; // Value a 8x higher than 1.19209290E-07F
 
+        // Use Rec.709 trichromat formula to get perceptive luma value
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetLuma(this Vector3 color) => (float)((color.X * 0.2126) + (color.Y * 0.7152) + (color.Z * 0.0722));
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static VectorInt2 To2(this VectorInt3 vec) => new VectorInt2(vec.X, vec.Y);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -62,6 +66,8 @@ namespace TombLib
         public static int Clamp(int value, int min, int max) => value < min ? min : value > max ? max : value;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Clamp(double value, double min, double max) => value < min? min : value > max ? max : value;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Clamp(float value, float min, float max) => value < min ? min : value > max ? max : value;
 
         /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.

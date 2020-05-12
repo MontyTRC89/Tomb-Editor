@@ -40,6 +40,7 @@
             // 
             // butAddTrigger
             // 
+            this.butAddTrigger.Checked = false;
             this.butAddTrigger.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
             this.butAddTrigger.Location = new System.Drawing.Point(3, 4);
             this.butAddTrigger.Name = "butAddTrigger";
@@ -50,6 +51,7 @@
             // 
             // butEditTrigger
             // 
+            this.butEditTrigger.Checked = false;
             this.butEditTrigger.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditTrigger.Location = new System.Drawing.Point(33, 4);
             this.butEditTrigger.Name = "butEditTrigger";
@@ -60,6 +62,7 @@
             // 
             // butDeleteTrigger
             // 
+            this.butDeleteTrigger.Checked = false;
             this.butDeleteTrigger.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteTrigger.Location = new System.Drawing.Point(63, 4);
             this.butDeleteTrigger.Name = "butDeleteTrigger";
@@ -105,7 +108,7 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.Controls.Add(this.panelTriggerList);
             this.Controls.Add(this.panelTriggerTools);
-            this.DockText = "Triggers";
+            this.DockText = "Legacy Triggers";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "TriggerList";

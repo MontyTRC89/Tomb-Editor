@@ -1,0 +1,8 @@
+Syntax: CutScene=ENABLED
+Scope: To use in [Level] section
+
+Cutscene command permit to singal current level like a cutscene-level.
+The operations performed by this command are only two: 
+1) all keyboard/joystick input will be disabled for whole cutscene-level.
+2) If lara has in her hands weapons or flare, force lara to throw out them to get free hand. This operation to free hands will be performed at start of cutscene level.
+

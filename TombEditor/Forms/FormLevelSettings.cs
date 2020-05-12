@@ -24,6 +24,10 @@ namespace TombEditor.Forms
 {
     public partial class FormLevelSettings : DarkForm
     {
+        private const string _catalogsPromptBase = "Sound catalogs (eg *.xml, sounds.txt, *.sfx/*.sam) from which sound infos will be loaded.\n";
+        private const string _catalogsPromptMSFX = "Warning: only single catalog may be used with TR2 and TR4 engines! Multiple catalogs may cause unexpected results.";
+        private const string _catalogsPromptNew = "If any sound info ID is duplicated in any of catalog, first one will be used.";
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private class PictureTooltip : ToolTip
@@ -267,9 +271,7 @@ namespace TombEditor.Forms
 
             InitializeComponent();
 
-            // Calculate the sizes at runtime since they actually depend on the choosen layout.
-            // https://stackoverflow.com/questions/1808243/how-does-one-calculate-the-minimum-client-size-of-a-net-windows-form
-            MinimumSize = new Size(980, 510) + (Size - ClientSize);
+            this.SetActualSize();
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);
@@ -390,7 +392,7 @@ namespace TombEditor.Forms
                     }
                 }
                 if (!added)
-                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false,false,false, _levelSettings));
+                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false, false, false, _levelSettings));
             }
             staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
 
@@ -419,6 +421,32 @@ namespace TombEditor.Forms
                 _editor.EditorEventRaised -= EditorEventRaised;
             }
             base.Dispose(disposing);
+        }
+
+        private void UpdateLevelSettings()
+        {
+            LevelSettings settings = _levelSettings.Clone();
+
+            settings.Wads.Clear();
+            foreach (var reference in _objectFileDataGridViewDataSource)
+                settings.Wads.Add(reference.Wad);
+
+            settings.SoundsCatalogs.Clear();
+            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
+                settings.SoundsCatalogs.Add(reference.Sounds);
+
+            settings.Textures.Clear();
+            foreach (var reference in _textureFileDataGridViewDataSource)
+                settings.Textures.Add(reference.Texture);
+
+            settings.AutoStaticMeshMerges.Clear();
+            foreach (var entry in _staticMeshMergeGridViewDataSource)
+            {
+                if (entry.Merge)
+                    settings.AutoStaticMeshMerges.Add(entry.Clone()); // HACK: Clone(), otherwise merge entries won't update!!!
+            }
+
+            _editor.UpdateLevelSettings(settings);
         }
 
         private void UpdateDialog()
@@ -563,8 +591,10 @@ namespace TombEditor.Forms
                     row.Cells[1].Value = value;
             }
 
-            // Update the default ambient light
+            // Update light options
             panelRoomAmbientLight.BackColor = (_levelSettings.DefaultAmbientLight * new Vector3(0.5f)).ToWinFormsColor();
+            cbOverrideAllLightQuality.Checked = _levelSettings.OverrideIndividualLightQualitySettings;
+            cmbDefaultLightQuality.SelectedIndex = _levelSettings.DefaultLightQuality == LightQuality.Default ? 0 : ((int)_levelSettings.DefaultLightQuality) - 1;
 
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
@@ -578,6 +608,7 @@ namespace TombEditor.Forms
             // TRNG only
             bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
+            panelScripts.Visible = currentVersionToCheck;
             if (selectedSoundsDataGridView.Columns.Count >= 7)
             {
                 selectedSoundsDataGridView.Columns[5].Visible = currentVersionToCheck;
@@ -594,6 +625,14 @@ namespace TombEditor.Forms
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
+
+            // TR4 and above
+            currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
+            soundDataGridView.Enabled = !currentVersionToCheck;
+            soundDataGridViewControls.Enabled = !currentVersionToCheck;
+            panelFont.Enabled = !currentVersionToCheck;
+            panelSky.Enabled = !currentVersionToCheck;
+            lblCatalogsPrompt.Text = _catalogsPromptBase + (currentVersionToCheck ? _catalogsPromptMSFX : _catalogsPromptNew);
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -1052,6 +1091,7 @@ namespace TombEditor.Forms
             if (_levelSettings.GameVersion == gameVersion)
                 return;
             _levelSettings.GameVersion = gameVersion; // Must also check none enum values
+            _levelSettings.ConvertLevelExtension();
             UpdateDialog();
         }
 
@@ -1120,35 +1160,11 @@ namespace TombEditor.Forms
         }
 
         // Dialog buttons
-        private void butApply_Click(object sender, EventArgs e)
-        {
-            _editor.UpdateLevelSettings(_levelSettings.Clone());
-        }
+        private void butApply_Click(object sender, EventArgs e) => UpdateLevelSettings();
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            LevelSettings settings = _levelSettings.Clone();
-
-            settings.Wads.Clear();
-            foreach (var reference in _objectFileDataGridViewDataSource)
-                settings.Wads.Add(reference.Wad);
-
-            settings.SoundsCatalogs.Clear();
-            foreach (var reference in _soundsCatalogsDataGridViewDataSource)
-                settings.SoundsCatalogs.Add(reference.Sounds);
-
-            settings.Textures.Clear();
-            foreach (var reference in _textureFileDataGridViewDataSource)
-                settings.Textures.Add(reference.Texture);
-
-            settings.AutoStaticMeshMerges.Clear();
-            foreach (var entry in _staticMeshMergeGridViewDataSource)
-            {
-                if (entry.Merge)
-                    settings.AutoStaticMeshMerges.Add(entry);
-            }
-
-            _editor.UpdateLevelSettings(settings);
+            UpdateLevelSettings();
             Close();
         }
 
@@ -1232,9 +1248,21 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
-        private void cbcbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
+        private void cbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
+            UpdateDialog();
+        }
+
+        private void cbOverrideAllLightQuality_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.OverrideIndividualLightQualitySettings = cbOverrideAllLightQuality.Checked;
+            UpdateDialog();
+        }
+
+        private void cmbDefaultLightQuality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _levelSettings.DefaultLightQuality = (LightQuality)(cmbDefaultLightQuality.SelectedIndex + 1);
             UpdateDialog();
         }
 

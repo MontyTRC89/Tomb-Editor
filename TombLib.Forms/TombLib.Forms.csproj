@@ -119,12 +119,6 @@
     <Compile Include="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\LuaTextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\LuaTextBox.Designer.cs">
-      <DependentUpon>LuaTextBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\PanelItemPreview.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -142,6 +136,12 @@
     </Compile>
     <Compile Include="Controls\SoundInfoEditor.Designer.cs">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormOptionsBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormOptionsBase.Designer.cs">
+      <DependentUpon>FormOptionsBase.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\TaskbarProgress.cs" />
     <Compile Include="Controls\TriggerParameterControl.cs">
@@ -209,9 +209,6 @@
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\LuaTextBox.resx">
-      <DependentUpon>LuaTextBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -229,6 +226,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormInputBox.resx">
       <DependentUpon>FormInputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormOptionsBase.resx">
+      <DependentUpon>FormOptionsBase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PopUpInfo.resx">
       <DependentUpon>PopUpInfo.cs</DependentUpon>

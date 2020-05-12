@@ -1,0 +1,205 @@
+Syntax: #DEFINE  CONSTANT  VALUE
+Scope: Any
+
+The define directive creates a mporary mnemonic constant with the wished value.
+
+The main usage of #define directive is to get easily the remapping of a group of script commands.
+Since some commands require to have an univocal ID, when you insert in your script a block of commands there is the risk to have conflicts with the IDs.
+To solve these conflicts in fast way you can build your script using a mnemonic constant defined by #define directive to use as base of the IDs of your commands.
+
+For example:
+
+TriggerGroup=	4, $8000, 112, $2C
+TriggerGroup=	5, $2000, 271, $52
+TriggerGroup=	6, $2000, 235, $70,  $2000, 232, $52
+GlobalTrigger=	2, IGNORE, GT_CONDITION_GROUP, IGNORE, 4, 5, IGNORE 
+GlobalTrigger=	3, IGNORE, GT_TRNG_L_TIMER_EQUALS, 45, IGNORE, 6, INGORE
+
+Above code shows the links between different commands using their IDs
+
+The GlobalTrigger 2, "calls" the triggergroups with indices 4 and 5, while the globaltrigger 3 calls the triggergroup 6.
+
+When the commands are more it becomes also more slow find all ids to change to move the id range with higher numbers to avoid conflicts preserving their links.
+But using the #define directive we can change above code in this way:
+
+#DEFINE BS_TG 4  ;the first TriggerGroup index
+#DEFINE BS_GT 2  ;the first GlobalTrigger index
+
+TriggerGroup=	BS_TG, $8000, 112, $2C
+TriggerGroup=	BS_TG+1, $2000, 271, $52
+TriggerGroup=	BS_TG+2, $2000, 235, $70,  $2000, 232, $52
+GlobalTrigger=	BS_GT, IGNORE, GT_CONDITION_GROUP, IGNORE, BS_TG, BS_TG+1, IGNORE 
+GlobalTrigger=	BS_GT+1, IGNORE, GT_TRNG_L_TIMER_EQUALS, 45, IGNORE, BS_TG+2, IGNORE
+
+In this case the final compiled code will be exactly the same, but the advantage of second version is that when you find a conflict and you have to change all triggergroup and globaltrigger indices, preserving the internal links between them, just you change only the two directive:
+
+#DEFINE BS_TG 10
+#DEFINE BS_GT 8
+
+And all IDs will be moved higher keeping the correct inner links.
+
+These problems of IDs remapping are very usual when the level builders exchange blocks of commands to explain how create some features.
+So, your code sample will be easily adapted to any script if you take the habit to use always the #define directive to set all ID numbers
+
+Remark: see also the #FIRST_ID directive to complete in easy way above target.
+
+----------------
+
+Other usages of #define directive are less useful, anyway some idea could be:
+to use a define to use a single word for a group of official mnemonic constants you use very often:
+
+#define DEBUG DGX_LOG_SCRIPT_COMMANDS+DGX_COMMON_VARIABLES+DGX_LARA
+and
+#define USUAL DGX_LARA+DGX_SFX_SOUNDS
++DGX_CHEATS
+
+
+In this way you can change easily the Diagnostic command typing:
+
+Diagnostic= DEBUG, 0
+or
+Diagnostic= USUAL, 0
+
+-------
+
+Some notes about the #define directive:
+
+- The #define directive is local and it works only inside the current source. If you use include files, and therefore different sources, any directive will work  only in the source where it is. The advantage to divide the script in different sources is that in this way you can use the same directive in any source with different values.
+
+- You cann't use two times the same CONSTANT name in same source.
+Example:
+
+#DEFINE MYNAME 12
+#DEFINE MYNAME FT_BOTTOM_CENTER+FT_SIZE_ATOMIC_CHAR
+
+- You can use in the formula (to get the VALUE) the CONSTANT name set in another define directive of same source but these directives have to be placed previous of the define that will use them:
+
+This code is correct:
+
+#DEFINE BS_ALL  10
+#DEFINE BS_TG BS_ALL+30
+#DEFINE BS_GT BS_TG+15
+
+while this is wrong:
+
+#DEFINE BS_ALL  10
+#DEFINE BS_GT BS_TG+15
+#DEFINE BS_TG BS_ALL+30
+
+Because the value of BS_TG is not yet defined when the #DEFINE BS_GT directive will be parsed.
+
+- You can not let blanks (spaces) between operands of the VALUE field.
+This is wrong:
+
+#DEFINE MYSUM ALFA +BETA
+
+this is correct:
+
+#DEFINE MYSUM ALFA+BETA
+
+DEFINE Used to declare plugin ID in TriggerGroup command
+--------------------------------------------------------
+From 1.2.2.8 version, #define could be used in according with exporting of triggers and plugin management.
+When an exported (from NGLE) trigger was possessed by some plugin, there is the problem to discover what is the plugin that handles that exported trigger.
+NGLE when it exports a trigger for script (from Set Trigger Type window), it adds to the trigger values the Id of plugin that owns that trigger.
+The problem is that the Id is only a number but how can NG_Center to know what is the plugin_name.dll that corresponds to that Plugin Id?
+A first solution is given by NGLE program, that when it is exporting the trigger will read the script.txt file to discover, from Plugin= script command, what is, in ng_center the plugin ID for that plugin_name. Once it discovered the right pluginId (in ng_center) it will convert the plugin id (to insert in exported trigger) to that ng_center value.
+In this way, when you'll add that exported trigger in some triggergroup command, it will work fine, since when NG_Center will read the plugin ID in the trigger, it will be able to associate it with the right plugin name since it has that information in Plugin= script command.
+The problem borns when a trigger will be used in a different script.
+In this situation the new script has no way to know what is the plugin_name corresponding to that plugin Id.
+To help ng_center to discover the link between pluginID and pluginName you can use a #define directive.
+In this situation is very important the position of this #define, since it should be declared first of triggergroup where there is the given plugin ID.
+
+For instance:
+
+#define @Plugin_Train  3
+
+TriggerGroup= .......
+
+
+In above script, ng_center will parse the code, it will find the link: Plugin_Train has plugin ID = 3, and then, when parsing following triggergroup, it will find a trigger with plugin ID = 3, it will know that id = 3 means "plugin_train".
+
+It's not necessary that the #define was own in previous row of the triggergroup. It could be also 2, 3 or 20 rows first of it, anyway it's important rememeber to close that define to avoid that, the define was used for triggergroup where that linkage is not valid.
+To close the previous define we'll use another #define but with the special value "CLEAR"
+So, above example it will become:
+
+#define @Plugin_Train  3
+
+TriggerGroup= .......
+
+#define @plugins CLEAR
+
+Please note that you have to type the final #define own how you see in above example and not typing a row like:
+
+#define @plugin_train CLEAR
+
+the reason to use a fixed name "@plugins" is to simply the syntax of this management.
+In fact, in the future it may be there will be many plugins and so you could need of syntax like these:
+
+#define @Plugin_smartlights 4
+#define @Plugin_robots  3
+#define @Plugin_train 1
+
+TriggerGroup= ....
+
+#define @plugins CLEAR
+
+In above example we gave a list of pluginIDs infos and then we cleared all with a single final "#define @plugins clear" line.
+
+If you omit or misplace the final CLEAR line you could get bad troubles.
+Now we do a more detailed sample:
+
+We suppose you have in [Options] section these plugin= commands:
+
+[Options]
+
+Plugin  = 1, Plugin_people, IGNORE
+Plugin  = 2, Plugin_train, IGNORE
+Plugin  = 3, Plugin_demo, IGNORE
+
+
+Then you export from NGLE a trigger owned of Plugin_train and you add this trigger to the TriggerGroup= 10:
+
+
+TriggerGroup= 10, $024000, 132, $0012
+
+In this situation you have no need to use #define @plugin  because NGLE set in the trigger the same PluginId it read in your script, and so, since the plugin_train had in your script the id = 2, ngle used id = 2 in the trigger.
+You can see the first two hexadecimal characters of first exported number ($024000) as id. The $02 at begin is for PluginId = 2.
+
+Ok, let's go...
+
+Now we suppose you get from some friend a triggergroup (or more code) for some new skill, and this friend inform you that it used the plugin_people in those triggergroups. He informed you also that in his script the Plugin_people has Id = 2, while in YOUR script the id=2 is for plugin_train but you can solve this conflict using the define directive:
+
+#define @plugin_people  2
+
+TriggerGroup= 21, $02200, 17, $0124 ....
+
+
+Above code will work fine, because when ng_center read the line "#define @plugin_people  2" it will have to associate the id=2 to plugin_people, pratically ng_center will convert the id from 2 (internal of trigger) to 1 the id for plugin_people in your script.
+
+But if you omit the final CLEAR and you typed in you script the commands with this sorting:
+
+#define @plugin_people  2
+
+TriggerGroup= 21, $02200, 17, $0124 ....  ;triggergroup from your friend for plugin_people
+
+... other commands ....
+
+TriggerGroup= 10, $024000, 132, $0012  ;triggergroup yours for plugin_train
+
+
+Ng_center will see also your triggergroup=10 as to convert, and it will change the id =2 (that it was for plugin_train) as it was for Plugin_people.
+
+To fix this problem just you remember to close the previous #define with clear before meeting other triggergroups:
+
+#define @plugin_people  2
+
+TriggerGroup= 21, $02200, 17, $0124 ....  ;triggergroup from your friend for plugin_people
+
+#define @plugins CLEAR
+
+TriggerGroup= 10, $024000, 132, $0012  ;triggergroup yours for plugin_train
+
+In this new code, all will work fine, since the "clear" will remove the previous define and when NG_Center will parse the triggergroup=21, not finding any pluginid definition in its internal plugin table, it will use the native pluginId, i.e. the 2 that is the right ID for plugin_train.
+
+

@@ -56,9 +56,11 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripMenuItem("Merge into room geometry", null, (o, e) =>
                 {
                     if (!isMerged)
-                        editor.Level.Settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(stat.WadObjectId.TypeId, true, false,false,false, editor.Level.Settings));
+                        editor.Level.Settings.AutoStaticMeshMerges.Add(new AutoStaticMeshMergeEntry(stat.WadObjectId.TypeId, true, false, false, false, editor.Level.Settings));
                     else
                         editor.Level.Settings.AutoStaticMeshMerges.RemoveAll(item => item.meshId == stat.WadObjectId.TypeId);
+
+                    _editor.MergedStaticsChange();
                 })
                 { Checked = isMerged });
             }
@@ -114,7 +116,7 @@ namespace TombEditor.Controls.ContextMenus
                 }
             }
 
-            if (targetObject is PositionBasedObjectInstance && (targetObject is IScaleable))
+            if (targetObject is PositionBasedObjectInstance && (targetObject is IScaleable || targetObject is ISizeable))
             {
                 Items.Add(new ToolStripMenuItem("Reset scale", null, (o, e) =>
                 {

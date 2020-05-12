@@ -8,9 +8,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
-using TombLib.Projects;
 
 namespace TombIDE.ProjectMaster
 {
@@ -39,7 +39,7 @@ namespace TombIDE.ProjectMaster
 
 		private void AddPinnedProgramsToContextMenu()
 		{
-			foreach (string programPath in _ide.Configuration.PinnedProgramPaths)
+			foreach (string programPath in _ide.IDEConfiguration.PinnedProgramPaths)
 			{
 				string exeFileName = Path.GetFileName(programPath).ToLower();
 
@@ -97,7 +97,7 @@ namespace TombIDE.ProjectMaster
 					tabControl.Enabled = false;
 				}
 			}
-			else if (obj is IDE.ProgramButtonsChangedEvent)
+			else if (obj is IDE.ProgramButtonsModifiedEvent)
 			{
 				// Cache the first 3 items, because they are important
 				List<ToolStripItem> cachedItems = new List<ToolStripItem>
@@ -204,7 +204,7 @@ namespace TombIDE.ProjectMaster
 		private void menuItem_Open_Click(object sender, EventArgs e) => OpenSelectedResource();
 
 		private void menuItem_OpenFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(Path.GetDirectoryName(treeView_Resources.SelectedNodes[0].Text));
+			SharedMethods.OpenInExplorer(Path.GetDirectoryName(treeView_Resources.SelectedNodes[0].Text));
 
 		private void OpenSelectedResource()
 		{
@@ -221,7 +221,7 @@ namespace TombIDE.ProjectMaster
 
 				if (treeView_Resources.SelectedNodes[0].ParentNode == treeView_Resources.Nodes[1]) // Wad handling
 				{
-					startInfo.FileName = Path.Combine(SharedMethods.GetProgramDirectory(), "WadTool.exe");
+					startInfo.FileName = Path.Combine(PathHelper.GetProgramDirectory(), "WadTool.exe");
 					startInfo.Arguments = "\"" + treeView_Resources.SelectedNodes[0].Text + "\"";
 				}
 				else

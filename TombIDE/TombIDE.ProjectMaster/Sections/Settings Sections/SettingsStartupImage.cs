@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
+using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
@@ -24,8 +25,8 @@ namespace TombIDE.ProjectMaster
 		{
 			_ide = ide;
 
-			radioButton_Wide.Checked = !_ide.Configuration.StandardAspectRatioPreviewEnabled;
-			radioButton_Standard.Checked = _ide.Configuration.StandardAspectRatioPreviewEnabled;
+			radioButton_Wide.Checked = !_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
+			radioButton_Standard.Checked = _ide.IDEConfiguration.StandardAspectRatioPreviewEnabled;
 
 			UpdatePreview();
 		}
@@ -43,8 +44,8 @@ namespace TombIDE.ProjectMaster
 					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
 						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 426, 240);
 
-					_ide.Configuration.StandardAspectRatioPreviewEnabled = false;
-					_ide.Configuration.Save();
+					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = false;
+					_ide.IDEConfiguration.Save();
 				}
 				catch (Exception ex)
 				{
@@ -62,8 +63,8 @@ namespace TombIDE.ProjectMaster
 					using (Image image = Image.FromFile(Path.Combine(_ide.Project.EnginePath, "load.bmp")))
 						panel_Preview.BackgroundImage = ImageHandling.ResizeImage(image, 320, 240);
 
-					_ide.Configuration.StandardAspectRatioPreviewEnabled = true;
-					_ide.Configuration.Save();
+					_ide.IDEConfiguration.StandardAspectRatioPreviewEnabled = true;
+					_ide.IDEConfiguration.Save();
 				}
 				catch (Exception ex)
 				{
@@ -117,9 +118,9 @@ namespace TombIDE.ProjectMaster
 				string imageFilePath = string.Empty;
 
 				if (_ide.Project.GameVersion.Native() == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
-					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB4\Defaults", "load.bmp");
+					imageFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "load.bmp");
 				else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
-					imageFilePath = Path.Combine(SharedMethods.GetProgramDirectory(), @"Templates\TOMB5\Defaults", "load.bmp");
+					imageFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "load.bmp");
 
 				ReplaceImage(imageFilePath);
 			}

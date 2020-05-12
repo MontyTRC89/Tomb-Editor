@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -1743,19 +1740,21 @@ namespace TombLib.LevelData
             RayTraceZ(room, (int)position.X, (int)position.Y, (int)position.Z, (int)lightPosition.X, (int)lightPosition.Y, (int)lightPosition.Z));
         }
 
-        private static int GetLightSampleCount(LightInstance light)
+        private static int GetLightSampleCount(LightInstance light, LightQuality defaultQuality = LightQuality.Low)
         {
             int numSamples = 1;
-            switch (light.Quality)
+            LightQuality finalQuality = light.Quality == LightQuality.Default ? defaultQuality : light.Quality;
+
+            switch (finalQuality)
             {
                 case LightQuality.Low:
-                    numSamples = 3;
+                    numSamples = 1;
                     break;
                 case LightQuality.Medium:
-                    numSamples = 5;
+                    numSamples = 3;
                     break;
                 case LightQuality.High:
-                    numSamples = 7;
+                    numSamples = 5;
                     break;
             }
             return numSamples;
@@ -1780,6 +1779,14 @@ namespace TombLib.LevelData
 //                     });
 //                 });
 //             });
+            if(numSamples == 1) {
+                if(light.IsObstructedByRoomGeometry) {
+                    if (!LightRayTrace(room, position, light.Position))
+                        return 1;
+                    else
+                        return 0;
+                }
+            }
             float sampleSum = 0.0f;
             for (int x = (int)(-numSamples / 2.0f); x <= (int)(numSamples / 2.0f); x++)
                 for (int y = 0; y <= 0; y++)
@@ -1789,13 +1796,10 @@ namespace TombLib.LevelData
                         if (light.IsObstructedByRoomGeometry)
                         {
                             if (!LightRayTrace(room, position, light.Position + samplePos))
-                            {
                                 sampleSum += 1.0f;
-                            }
-                        }else
-                        {
-                            sampleSum += 1;
                         }
+                        else
+                            sampleSum += 1.0f;
 
                     }
             sampleSum /= (numSamples * 1 * numSamples);
@@ -1803,7 +1807,7 @@ namespace TombLib.LevelData
         }
 
         public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, 
-                                                      Vector3 normal, bool forRooms,bool highQuality)
+                                                      Vector3 normal, bool forRooms, bool highQuality)
         {
             if (!light.Enabled)
                 return Vector3.Zero;
@@ -1816,6 +1820,8 @@ namespace TombLib.LevelData
             {
                 case LightType.Point:
                 case LightType.Shadow:
+
+
                     // Get the light vector
                     lightVector = position - light.Position;
 
@@ -1838,29 +1844,28 @@ namespace TombLib.LevelData
                         float dotN = Vector3.Dot((!forRooms ? -lightVector : normal), normal);
 
                         // Do raytracing
-                        float sampleSum = 0;
-                        if(dotN <= 0 || forRooms)
+                        float sampleSum = 1.0f;
+                        if (dotN <= 0 || forRooms)
                         {
-                            int numSamples;
-                            if (highQuality)
-                                numSamples = GetLightSampleCount(light);
-                            else
-                                numSamples = 1;
-                            sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
-
-                            if (sampleSum < 0.000001f)
-                                return Vector3.Zero;
+                            if (highQuality) {
+                                int numSamples = GetLightSampleCount(light, light.Quality);
+                                sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
+                            }
+                            else {
+                                int numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
+                                sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
+                            }
                         }
-
                         // Calculate the attenuation
                         float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
                         if (attenuaton > 1.0f)
                             attenuaton = 1.0f;
                         if (attenuaton <= 0.0f)
                             return Vector3.Zero;
-
                         // Calculate final light color
-                        float finalIntensity = dotN * attenuaton * diffuse * sampleSum;
+                        float diffuseIntensity = dotN * attenuaton * sampleSum;
+                        diffuseIntensity = Math.Max(0, diffuseIntensity);
+                        float finalIntensity = diffuseIntensity * diffuse;
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
                     break;
@@ -1886,12 +1891,12 @@ namespace TombLib.LevelData
                 case LightType.Sun:
                     {
                         // Do raytracing now for saving CPU later
-                        float sampleSum = 0;
+                        float sampleSum = 1.0f;
                         if (forRooms)
                         {
                             int numSamples;
                             if (highQuality)
-                                numSamples = GetLightSampleCount(light);
+                                numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
                             else
                                 numSamples = 1;
                             sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
@@ -1903,7 +1908,7 @@ namespace TombLib.LevelData
                         // Calculate the light direction
                         lightDirection = light.GetDirection();
 
-                        // calcolo la luce diffusa
+                        // Calculate diffuse lighting
                         float diffuse = -Vector3.Dot(lightDirection, normal);
 
                         if (diffuse <= 0)
@@ -1911,7 +1916,6 @@ namespace TombLib.LevelData
 
                         if (diffuse > 1)
                             diffuse = 1.0f;
-
 
                         float finalIntensity = diffuse * light.Intensity * 8192.0f * sampleSum;
                         if (finalIntensity < 0)
@@ -1943,12 +1947,12 @@ namespace TombLib.LevelData
                         if (d < cosO2)
                             return Vector3.Zero;
 
-                        float sampleSum = 0;
+                        float sampleSum = 1.0f;
                         if (forRooms)
                         {
                             int numSamples;
                             if (highQuality)
-                                numSamples = GetLightSampleCount(light);
+                                numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
                             else
                                 numSamples = 1;
                             sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
@@ -1983,13 +1987,12 @@ namespace TombLib.LevelData
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
                     break;
-
             }
 
             return Vector3.Zero;
         }
 
-        public void Relight(Room room,bool highQuality = false)
+        public void Relight(Room room, bool highQuality = false)
         {
             // Collect lights
             List<LightInstance> lights = new List<LightInstance>();

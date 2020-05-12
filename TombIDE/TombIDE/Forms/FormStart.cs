@@ -1,15 +1,13 @@
 using DarkUI.Controls;
 using DarkUI.Forms;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombLib.Projects;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE
 {
@@ -17,56 +15,49 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
+		private Project _selectedProject;
+
 		#region Initialization
 
 		public FormStart(IDE ide)
 		{
 			_ide = ide;
-			_ide.IDEEventRaised += OnIDEEventRaised;
 
 			InitializeComponent();
 
 			ApplySavedSettings();
-			FillProjectList(); // _ide.AvailableProjects is taken from the TombIDEProjects.xml file
+
+			FillProjectList();
 		}
 
-		public void OpenTRPROJWithTombIDE(string path)
+		public void OpenTrprojWithTombIDE(string trprojFilePath)
 		{
 			try
 			{
-				Project openedProject = XmlHandling.ReadTRPROJ(path);
+				Project openedProject = Project.FromFile(trprojFilePath);
 
-				if (!openedProject.IsValidProject())
-					throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
+				if (!ProjectChecker.IsValidProject(openedProject))
+					throw new ArgumentException("Opened project is invalid. Please check if it's correctly installed.");
 
 				// Check if a project with the same name but different paths already exists on the list
 				foreach (DarkTreeNode node in treeView.Nodes)
 				{
-					Project project = (Project)node.Tag;
+					Project nodeProject = (Project)node.Tag;
 
-					if (project.Name.ToLower() == openedProject.Name.ToLower() && project.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
+					if (nodeProject.Name.ToLower() == openedProject.Name.ToLower()
+					&& nodeProject.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
 					{
-						DialogResult result = DarkMessageBox.Show(this,
-							"A project with the same name but different paths already exists on the list.\n" +
-							"Would you like to replace the project on the list with the currently opened one?",
-							"Project name duplicate found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-						if (result == DialogResult.Yes)
-						{
-							treeView.Nodes.Remove(node);
-							RefreshAndReserializeProjects();
-
-							break;
-						}
+						if (AskForProjectNodeReplacement(openedProject, node))
+							break; // The user confirmed replacing the node
 						else
-							return;
+							return; // The user declined replacing the node
 					}
 				}
 
 				if (!IsProjectOnList(openedProject))
-					_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
+					AddProjectToList(openedProject, true);
 
-				_ide.Configuration.RememberedProject = openedProject.Name;
+				_ide.IDEConfiguration.RememberedProject = openedProject.Name;
 
 				// Continue code in Program.cs
 			}
@@ -79,18 +70,14 @@ namespace TombIDE
 		protected override void OnLoad(EventArgs e)
 		{
 			// Automatically open remembered project (if there is one)
-			if (!string.IsNullOrWhiteSpace(_ide.Configuration.RememberedProject))
+			if (!string.IsNullOrWhiteSpace(_ide.IDEConfiguration.RememberedProject))
 			{
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					if (((Project)node.Tag).Name.ToLower() == _ide.Configuration.RememberedProject.ToLower())
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
+				SelectProjectOnList(_ide.IDEConfiguration.RememberedProject);
 
-						OpenSelectedProject();
-						return;
-					}
+				if (_selectedProject != null) // If the project was found on the list
+				{
+					OpenSelectedProject();
+					return; // Don't go to base.OnLoad(e) to avoid window duplicates
 				}
 			}
 
@@ -100,27 +87,28 @@ namespace TombIDE
 		protected override void OnClosed(EventArgs e)
 		{
 			SaveSettings();
+
 			base.OnClosed(e);
 		}
 
 		private void ApplySavedSettings()
 		{
-			Size = _ide.Configuration.Start_WindowSize;
+			Size = _ide.IDEConfiguration.Start_WindowSize;
 
-			if (_ide.Configuration.Start_OpenMaximized)
+			if (_ide.IDEConfiguration.Start_OpenMaximized)
 				WindowState = FormWindowState.Maximized;
 		}
 
 		private void SaveSettings()
 		{
-			_ide.Configuration.Start_OpenMaximized = WindowState == FormWindowState.Maximized;
+			_ide.IDEConfiguration.Start_OpenMaximized = WindowState == FormWindowState.Maximized;
 
 			if (WindowState == FormWindowState.Normal)
-				_ide.Configuration.Start_WindowSize = Size;
+				_ide.IDEConfiguration.Start_WindowSize = Size;
 			else
-				_ide.Configuration.Start_WindowSize = RestoreBounds.Size;
+				_ide.IDEConfiguration.Start_WindowSize = RestoreBounds.Size;
 
-			_ide.Configuration.Save();
+			_ide.IDEConfiguration.Save();
 		}
 
 		private void FillProjectList()
@@ -130,85 +118,42 @@ namespace TombIDE
 			// Add nodes into the treeView for each project
 			foreach (Project project in _ide.AvailableProjects)
 			{
-				if (project.IsValidProject())
-					AddProjectToList(project);
+				if (ProjectChecker.IsValidProject(project))
+					AddProjectToList(project, false);
 			}
 
 			// Update TombIDEProjects.xml with only valid projects
 			RefreshAndReserializeProjects();
 		}
 
-		private void AddProjectToList(Project project, bool reserialize = false)
-		{
-			// Create the node
-			DarkTreeNode node = new DarkTreeNode
-			{
-				Text = project.Name,
-				Tag = project
-			};
-
-			if (!string.IsNullOrEmpty(project.LaunchFilePath))
-			{
-				if (File.Exists(project.LaunchFilePath))
-					node.Icon = Icon.ExtractAssociatedIcon(project.LaunchFilePath).ToBitmap();
-			}
-
-			// Add the node to the list
-			treeView.Nodes.Add(node);
-
-			if (reserialize)
-				RefreshAndReserializeProjects();
-		}
-
 		#endregion Initialization
 
 		#region Events
 
-		private void OnIDEEventRaised(IIDEEvent obj)
-		{
-			if (obj is IDE.ProjectAddedEvent)
-			{
-				// Add the project to the list
-				Project addedProject = ((IDE.ProjectAddedEvent)obj).AddedProject;
-				AddProjectToList(addedProject, true);
-
-				// Select the new project node
-				foreach (DarkTreeNode node in treeView.Nodes)
-				{
-					if (((Project)node.Tag).Name.ToLower() == addedProject.Name.ToLower())
-					{
-						treeView.SelectNode(node);
-						CheckItemSelection();
-
-						break;
-					}
-				}
-			}
-			else if (obj is IDE.ActiveProjectRenamedEvent)
-			{
-				// Update the selected node
-				treeView.SelectedNodes[0].Text = _ide.Project.Name;
-				treeView.SelectedNodes[0].Tag = _ide.Project;
-
-				// Update the TombIDEProjects.xml file as well
-				RefreshAndReserializeProjects();
-			}
-		}
-
-		private void button_Main_New_Click(object sender, EventArgs e) => ShowProjectSetupForm();
-		private void button_Main_Open_Click(object sender, EventArgs e) => OpenTRPROJ();
+		private void button_Main_New_Click(object sender, EventArgs e) => CreateNewProject();
+		private void button_Main_Open_Click(object sender, EventArgs e) => OpenTrproj();
 		private void button_Main_Import_Click(object sender, EventArgs e) => ImportExe();
 
-		private void button_New_Click(object sender, EventArgs e) => ShowProjectSetupForm();
-		private void button_Open_Click(object sender, EventArgs e) => OpenTRPROJ();
+		private void button_New_Click(object sender, EventArgs e) => CreateNewProject();
+		private void button_Open_Click(object sender, EventArgs e) => OpenTrproj();
 		private void button_Import_Click(object sender, EventArgs e) => ImportExe();
-		private void button_Rename_Click(object sender, EventArgs e) => ShowRenameProjectForm();
+		private void button_Rename_Click(object sender, EventArgs e) => RenameProject();
 		private void button_Delete_Click(object sender, EventArgs e) => DeleteProject();
-		private void button_MoveUp_Click(object sender, EventArgs e) => MoveProjectUpOnList();
-		private void button_MoveDown_Click(object sender, EventArgs e) => MoveProjectDownOnList();
+
+		private void button_MoveUp_Click(object sender, EventArgs e)
+		{
+			treeView.MoveSelectedNodeUp();
+			RefreshAndReserializeProjects();
+		}
+
+		private void button_MoveDown_Click(object sender, EventArgs e)
+		{
+			treeView.MoveSelectedNodeDown();
+			RefreshAndReserializeProjects();
+		}
 
 		private void button_OpenFolder_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenFolderInExplorer(((Project)treeView.SelectedNodes[0].Tag).ProjectPath);
+			SharedMethods.OpenInExplorer(((Project)treeView.SelectedNodes[0].Tag).ProjectPath);
 
 		private void button_OpenProject_Click(object sender, EventArgs e) => OpenSelectedProject();
 
@@ -226,7 +171,7 @@ namespace TombIDE
 				return;
 
 			if (e.KeyCode == Keys.F2)
-				ShowRenameProjectForm();
+				RenameProject();
 
 			if (e.KeyCode == Keys.Delete)
 				DeleteProject();
@@ -242,36 +187,53 @@ namespace TombIDE
 
 		#region Event methods
 
-		private void ShowProjectSetupForm()
+		private void CreateNewProject()
 		{
-			using (FormProjectSetup form = new FormProjectSetup(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger IDE.ProjectAddedEvent
+			using (FormProjectSetup form = new FormProjectSetup())
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					AddProjectToList(form.CreatedProject, true);
+					SelectProjectOnList(form.CreatedProject.Name);
+				}
+			}
 		}
 
-		private void OpenTRPROJ()
+		private void OpenTrproj()
 		{
 			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				dialog.Title = "Choose the .trproj file you want to open";
+				dialog.Title = "Select the .trproj file you want to open";
 				dialog.Filter = "TombIDE Project Files|*.trproj";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
 					try
 					{
-						Project openedProject = XmlHandling.ReadTRPROJ(dialog.FileName);
+						Project openedProject = Project.FromFile(dialog.FileName);
 
-						if (!openedProject.IsValidProject())
-							throw new ArgumentException("Opened project is invalid. Please check if the project is correctly installed.");
+						if (!ProjectChecker.IsValidProject(openedProject))
+							throw new ArgumentException("Opened project is invalid. Please check if it's correctly installed.");
 
-						// Check for name duplicates
-						foreach (Project project in _ide.AvailableProjects)
+						// Check if a project with the same name but different paths already exists on the list
+						foreach (DarkTreeNode node in treeView.Nodes)
 						{
-							if (project.Name.ToLower() == openedProject.Name.ToLower())
-								throw new ArgumentException("A project with the same name already exists on the list.");
+							Project nodeProject = (Project)node.Tag;
+
+							if (nodeProject.Name.ToLower() == openedProject.Name.ToLower()
+							&& nodeProject.ProjectPath.ToLower() != openedProject.ProjectPath.ToLower())
+							{
+								if (AskForProjectNodeReplacement(openedProject, node))
+									break; // The user confirmed replacing the node
+								else
+									return; // The user declined replacing the node
+							}
 						}
 
-						_ide.AddProjectToList(openedProject); // Triggers IDE.ProjectAddedEvent
+						if (!IsProjectOnList(openedProject))
+							AddProjectToList(openedProject, true);
+
+						SelectProjectOnList(openedProject.Name);
 					}
 					catch (Exception ex)
 					{
@@ -285,81 +247,31 @@ namespace TombIDE
 		{
 			using (OpenFileDialog dialog = new OpenFileDialog())
 			{
-				dialog.Title = "Choose the .exe file of the game project you want to import";
+				dialog.Title = "Select the .exe file of the game project you want to import";
 				dialog.Filter = "Executable Files|*.exe";
 
 				if (dialog.ShowDialog(this) == DialogResult.OK)
 				{
-					string selectedExePath = dialog.FileName;
-
-					string selectedFileName = Path.GetFileName(selectedExePath);
-					string selectedFileDirectoryName = Path.GetFileName(Path.GetDirectoryName(selectedExePath));
-
 					try
 					{
-						string gameExeFilePath = string.Empty;
-						string launcherFilePath = string.Empty;
+						string gameExeFilePath = FileFinder.GetGameExePathFromSelectedFilePath(dialog.FileName);
+						string launcherFilePath = FileFinder.GetLauncherPathFromSelectedFilePath(dialog.FileName);
 
-						string engineDirectory = Path.Combine(Path.GetDirectoryName(selectedExePath), "Engine");
-
-						if (selectedFileName.ToLower() == "tomb4.exe" && selectedFileDirectoryName.ToLower() != "engine")
-						{
-							gameExeFilePath = selectedExePath;
-							launcherFilePath = selectedExePath;
-						}
-						else if (selectedFileName.ToLower() == "tomb4.exe" && selectedFileDirectoryName.ToLower() == "engine")
-						{
-							gameExeFilePath = selectedExePath;
-
-							string prevDirectory = Path.GetDirectoryName(Path.GetDirectoryName(selectedExePath));
-							List<string> launcherFiles = Project.GetLauncherExecutablesFromDirectory(prevDirectory);
-
-							if (launcherFiles.Count == 1)
-								launcherFilePath = launcherFiles.First();
-							else if (launcherFiles.Count > 1)
-							{
-								DarkMessageBox.Show(this, "Selected project contains more than one launcher executable.\n" +
-									"Please specify which one you want to use.", "Warning",
-										MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-								using (FormFileSelection form = new FormFileSelection(launcherFiles.ToArray()))
-								{
-									if (form.ShowDialog(this) == DialogResult.OK)
-										launcherFilePath = form.SelectedFile;
-									else
-										return;
-								}
-							}
-							else
-								throw new ArgumentException("Selected project doesn't contain any launcher executable.\n" +
-									"Please check if the project is correctly installed.");
-						}
-						else if (selectedFileName.ToLower() != "tomb4.exe" && Directory.Exists(engineDirectory))
-						{
-							foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
-							{
-								if (Path.GetFileName(file).ToLower() == "tomb4.exe")
-								{
-									gameExeFilePath = file;
-									launcherFilePath = selectedExePath;
-
-									break;
-								}
-							}
-						}
-
-						if (string.IsNullOrEmpty(gameExeFilePath) || string.IsNullOrEmpty(launcherFilePath))
-							throw new ArgumentException("Invalid game .exe file.");
-
-						// Check if a project that's using the same .exe file exists on the list
+						// Check if a project that's using the same EnginePath exists on the list
 						foreach (Project project in _ide.AvailableProjects)
 						{
 							if (project.EnginePath.ToLower() == Path.GetDirectoryName(gameExeFilePath).ToLower())
 								throw new ArgumentException("Project already exists on the list.\nIt's called \"" + project.Name + "\"");
 						}
 
-						using (FormImportProject form = new FormImportProject(_ide, gameExeFilePath, launcherFilePath))
-							form.ShowDialog(this); // After the form is done, it will trigger IDE.ProjectAddedEvent
+						using (FormImportProject form = new FormImportProject(gameExeFilePath, launcherFilePath))
+						{
+							if (form.ShowDialog(this) == DialogResult.OK)
+							{
+								AddProjectToList(form.ImportedProject, true);
+								SelectProjectOnList(form.ImportedProject.Name);
+							}
+						}
 					}
 					catch (Exception ex)
 					{
@@ -369,18 +281,26 @@ namespace TombIDE
 			}
 		}
 
-		private void ShowRenameProjectForm()
+		private void RenameProject()
 		{
-			using (FormRenameProject form = new FormRenameProject(_ide))
-				form.ShowDialog(this); // After the form is done, it will trigger IDE.ActiveProjectRenamedEvent
+			using (FormRenameProject form = new FormRenameProject(_selectedProject))
+			{
+				if (form.ShowDialog(this) == DialogResult.OK)
+				{
+					// Update the selected node
+					treeView.SelectedNodes[0].Text = _selectedProject.Name;
+					treeView.SelectedNodes[0].Tag = _selectedProject;
+
+					// Update the TombIDEProjects.xml file as well
+					RefreshAndReserializeProjects();
+				}
+			}
 		}
 
 		private void DeleteProject()
 		{
-			Project affectedProject = (Project)treeView.SelectedNodes[0].Tag;
-
 			DialogResult result = DarkMessageBox.Show(this,
-				"Are you sure you want to delete the \"" + affectedProject.Name + "\" project from the list?\n" +
+				"Are you sure you want to delete the \"" + _selectedProject.Name + "\" project from the list?\n" +
 				"This process will NOT affect the project folder nor its files.", "Are you sure?",
 				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -389,59 +309,12 @@ namespace TombIDE
 				// Remove the node and clear selection
 				treeView.SelectedNodes[0].Remove();
 				treeView.SelectedNodes.Clear();
+
 				CheckItemSelection();
 
-				// Update TombIDEProjects.xml with the new list (without the deleted node)
+				// Update TombIDEProjects.xml with the new list (without the removed node)
 				RefreshAndReserializeProjects();
 			}
-		}
-
-		private void MoveProjectUpOnList()
-		{
-			if (treeView.SelectedNodes[0].VisibleIndex == 0)
-				return; // Node can't be moved higher because it's already at 0
-
-			DarkTreeNode[] cachedNodes = treeView.Nodes.ToArray();
-			treeView.Nodes.Clear();
-
-			for (int i = 0; i < cachedNodes.Length; i++)
-			{
-				if (i + 1 == treeView.SelectedNodes[0].VisibleIndex)
-				{
-					treeView.Nodes.Add(cachedNodes[i + 1]);
-					treeView.Nodes.Add(cachedNodes[i]);
-					i++;
-				}
-				else
-					treeView.Nodes.Add(cachedNodes[i]);
-			}
-
-			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			RefreshAndReserializeProjects();
-		}
-
-		private void MoveProjectDownOnList()
-		{
-			if (treeView.SelectedNodes[0].VisibleIndex == treeView.Nodes.Count - 1)
-				return; // Node can't be moved lower because it's already at the bottom
-
-			DarkTreeNode[] cachedNodes = treeView.Nodes.ToArray();
-			treeView.Nodes.Clear();
-
-			for (int i = 0; i < cachedNodes.Length; i++)
-			{
-				if (i == treeView.SelectedNodes[0].VisibleIndex)
-				{
-					treeView.Nodes.Add(cachedNodes[i + 1]);
-					treeView.Nodes.Add(cachedNodes[i]);
-					i++;
-				}
-				else
-					treeView.Nodes.Add(cachedNodes[i]);
-			}
-
-			treeView.ScrollTo(treeView.SelectedNodes[0].FullArea.Location);
-			RefreshAndReserializeProjects();
 		}
 
 		private void CheckItemSelection()
@@ -454,63 +327,49 @@ namespace TombIDE
 			button_OpenFolder.Enabled = treeView.SelectedNodes.Count > 0;
 			button_OpenProject.Enabled = treeView.SelectedNodes.Count > 0;
 
-			// Set the active project if a node is selected
-			// Triggers IDE.ActiveProjectChangedEvent
-			_ide.Project = treeView.SelectedNodes.Count > 0 ? (Project)treeView.SelectedNodes[0].Tag : null;
+			// // // // // // // //
+			_selectedProject = treeView.SelectedNodes.Count > 0 ? (Project)treeView.SelectedNodes[0].Tag : null;
+			// // // // // // // //
 		}
 
 		private void OpenSelectedProject()
 		{
-			if (_ide.Project == null)
+			if (_selectedProject == null) // If no project is selected
 				return;
 
-			if (!_ide.Project.IsValidProject())
-				return;
-
-			if (!File.Exists(_ide.Project.LaunchFilePath))
+			if (!ProjectChecker.IsValidProject(_selectedProject))
 			{
-				try
-				{
-					string launchFilePath = GetLauncherExecutable(_ide.Project);
+				DarkMessageBox.Show(this, "Failed to load project. Please check if it's correctly installed.", "Error",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-					if (string.IsNullOrEmpty(launchFilePath))
-						return;
-
-					_ide.Project.LaunchFilePath = launchFilePath;
-					XmlHandling.SaveTRPROJ(_ide.Project);
-				}
-				catch (Exception ex)
-				{
-					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
+				return;
 			}
+
+			if (!IsValidGameLauncher())
+				return;
 
 			// Set RememberedProject if checkBox_Remember is checked
 			if (checkBox_Remember.Checked)
-				_ide.Configuration.RememberedProject = _ide.Project.Name;
+				_ide.IDEConfiguration.RememberedProject = _selectedProject.Name;
 
+			// Save settings and hide the current window
 			SaveSettings();
-
-			// Hide the project selection window (this one)
 			Hide();
 
 			// Show the main form of TombIDE
-			using (FormMain form = new FormMain(_ide))
+			using (FormMain form = new FormMain(_ide, _selectedProject))
 			{
 				DialogResult result = form.ShowDialog(this);
 
 				if (result == DialogResult.OK) // OK means the user wants to switch projects
 				{
 					// Reset the RememberedProject setting
-					_ide.Configuration.RememberedProject = string.Empty;
-					_ide.Configuration.Save();
+					_ide.IDEConfiguration.RememberedProject = string.Empty;
+					_ide.IDEConfiguration.Save();
 
-					// Restart the application
+					// Restart the application (without any arguments)
 					Application.Exit();
 					Process.Start(Assembly.GetExecutingAssembly().Location);
-
-					// Using Show() instead would cause ObjectDisposed exceptions
 				}
 				else if (result == DialogResult.Cancel) // Cancel means the user closed the program
 					Application.Exit();
@@ -521,10 +380,32 @@ namespace TombIDE
 
 		#region Other methods
 
+		private void AddProjectToList(Project project, bool reserialize)
+		{
+			// Create the node
+			DarkTreeNode node = new DarkTreeNode
+			{
+				Text = project.Name,
+				Tag = project
+			};
+
+			// Get the icon for the node
+			if (!string.IsNullOrEmpty(project.LaunchFilePath))
+			{
+				if (File.Exists(project.LaunchFilePath))
+					node.Icon = Icon.ExtractAssociatedIcon(project.LaunchFilePath).ToBitmap();
+			}
+
+			// Add the node to the list
+			treeView.Nodes.Add(node);
+
+			if (reserialize)
+				RefreshAndReserializeProjects();
+		}
+
 		private void RefreshAndReserializeProjects()
 		{
 			RepositionProjectNodeIcons();
-			treeView.Invalidate();
 
 			_ide.AvailableProjects.Clear();
 
@@ -543,44 +424,42 @@ namespace TombIDE
 				int iconHeight = (40 * node.VisibleIndex) + 4;
 				node.IconArea = new Rectangle(new Point(4, iconHeight), new Size(32, 32));
 			}
+
+			treeView.Invalidate();
 		}
 
-		public string GetLauncherExecutable(Project project)
+		private void SelectProjectOnList(string projectName)
 		{
-			if (project.EnginePath.ToLower() == project.ProjectPath.ToLower())
+			foreach (DarkTreeNode node in treeView.Nodes)
 			{
-				foreach (string file in Directory.GetFiles(project.EnginePath, "*.exe", SearchOption.TopDirectoryOnly))
+				if (((Project)node.Tag).Name.ToLower() == projectName.ToLower())
 				{
-					if (Path.GetFileName(file).ToLower() == "tomb4.exe")
-						return file;
+					treeView.SelectNode(node);
+					CheckItemSelection();
+
+					break;
 				}
+			}
+		}
+
+		private bool AskForProjectNodeReplacement(Project openedProject, DarkTreeNode projectNode)
+		{
+			DialogResult result = DarkMessageBox.Show(this,
+				"A project with the same name but different paths already exists on the list.\n" +
+				"Would you like to replace the project on the list with the currently opened one?",
+				"Project name duplicate found", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+			if (result == DialogResult.Yes)
+			{
+				treeView.Nodes.Remove(projectNode);
+				RefreshAndReserializeProjects();
+
+				AddProjectToList(openedProject, true);
+
+				return true;
 			}
 			else
-			{
-				List<string> launcherFiles = Project.GetLauncherExecutablesFromDirectory(project.ProjectPath);
-
-				if (launcherFiles.Count == 1)
-					return launcherFiles.First();
-				else if (launcherFiles.Count > 1)
-				{
-					DarkMessageBox.Show(this, "Selected project contains more than one launcher executable.\n" +
-						"Please specify which one you want to use.", "Warning",
-							MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-					using (FormFileSelection form = new FormFileSelection(launcherFiles.ToArray()))
-					{
-						if (form.ShowDialog(this) == DialogResult.OK)
-							return form.SelectedFile;
-						else
-							return null;
-					}
-				}
-				else
-					throw new ArgumentException("Selected project doesn't contain any launcher executable.\n" +
-						"Please check if the project is correctly installed.");
-			}
-
-			return null;
+				return false;
 		}
 
 		private bool IsProjectOnList(Project project)
@@ -592,6 +471,30 @@ namespace TombIDE
 			}
 
 			return false;
+		}
+
+		private bool IsValidGameLauncher()
+		{
+			// Check if the launcher file exists, if not, then try to find it
+			if (!File.Exists(_selectedProject.LaunchFilePath))
+			{
+				try
+				{
+					string launchFilePath = FileFinder.GetLauncherPathFromProject(_selectedProject);
+
+					_selectedProject.LaunchFilePath = launchFilePath;
+					_selectedProject.Save();
+
+					return true;
+				}
+				catch (Exception ex)
+				{
+					DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
+			}
+			else
+				return true;
 		}
 
 		#endregion Other methods

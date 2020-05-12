@@ -1,0 +1,70 @@
+Syntax: TextureSequence=IdTexSeq, FramePerSec, SEQ_ flags, Tex Indices array {...}
+Scope: to use in [Level] section
+Max number of instances for level section is: 99
+
+IdTexSeq field
+--------------
+Progressive number to idenfity this texture sequence when you enable it using the flipeffect trigger.
+You'll use "1" for first TextureSequence command, the value "2" for second TextureSequence command, ect.
+Valid range is 1 / 999
+
+FramePerSec field
+------------------
+In this field you set the speed of the sequence. The value is in frame per second. The max value is 30, i.e. 30 frame for second, the smallest value is 1.
+
+SEQ_ flags field
+-----------------
+You can set two or more SEQ_ flags, you find the list in reference panel of NG Center program.
+Currently there are following flags:
+
+SEQ_LOOP
+The sequence will be perfomed in endless way. If you use this flag you'll have to use specific flipeffet to stop the sequence, otherwise it will be performed continuously.
+
+SEQ_LOOP_INVERSE
+This flag works only if you set also SEQ_LOOP flag.
+While the single SEQ_LOOP flag set an infinite loop with this sequence (supposing 4 textures from 0 to 3):
+
+0 1 2 3 0 1 2 3 0 1 2 3 ....
+
+When you set also the SEQ_LOOP_INVERSE flag, the sequence will be:
+
+0 1 2 3 2 1 0 1 2 3 2 1 0 ...
+
+SEQ_STOP_AT_FIRST
+If you set this flag you force engine to set always the first texture of range when the animation will be completed.
+Differently, if you omit this flag the last texture showed depends by type of animation.
+If you have set no loop, the last texture showed will be the texture of last index of array sequence.
+If you have set a loop, the texture showed will depend by the moment when you perform the Stop texture sequence flipeffect.
+
+Tex Indices array {...} fields
+------------------------------ 
+The tex indices array may host up to 1000 different indices.
+You'll separate the value with commas ',' in common way.
+Each index will describe the index position for each texture within the specific animation range.
+For example if you set four texture in tga map, with each texture show a literal "A" the first and then "B", "C" and "D"
+When you want show a frame with "A" texture you'll type 0 (zero), when you want the "B" you type 1, ect.
+
+For example if you TextureSequence command is:
+
+TextureSequence= 1, 4, IGNORE, 
+3, 2, 1, 0
+
+You'll have a sequence with ID = 1 (this is the number to set in flipeffect trigger to start/stop this sequence)
+
+The animation will be slow, because you set 4 fps, so the image will change only four times for second.
+
+No loop, because you set IGNORE for SEQ_ flags
+
+While the sequence showed in game will be with following images:
+
+D  (3) 
+C  (2)
+B  (1)
+A  (0)
+
+Remarks: 
+* The ranges you can animate with TextureSequence command have to be set like "P-Frames" in NGLE.
+* The max number of texture you can animate with TextureSequence is 16. This mean you can type only number enclosed in range 0 - 15 in Indices Array fields.
+* You can animate same P-Frame range with different TextureSequence commands.
+* The Id of P-Frame range to animate will be set in flipeffect trigger
+

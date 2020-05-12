@@ -28,9 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabSubPanel2 = new DarkUI.Controls.DarkPanel();
             this.panel1 = new DarkUI.Controls.DarkPanel();
@@ -96,16 +93,6 @@
             this.darkNumericUpDown35 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkNumericUpDown34 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel37 = new DarkUI.Controls.DarkLabel();
-            this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
-            this.optionsList = new DarkUI.Controls.DarkListView();
-            this.panel5 = new DarkUI.Controls.DarkPanel();
-            this.butApply = new DarkUI.Controls.DarkButton();
-            this.butOk = new DarkUI.Controls.DarkButton();
-            this.butCancel = new DarkUI.Controls.DarkButton();
-            this.panel4 = new DarkUI.Controls.DarkPanel();
-            this.butPageDefaults = new DarkUI.Controls.DarkButton();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.darkSectionPanel2.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabSubPanel2.SuspendLayout();
@@ -140,52 +127,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown36)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown35)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown34)).BeginInit();
-            this.darkSectionPanel1.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel4.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.darkSectionPanel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.darkSectionPanel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel5, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.panel4, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(5);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(609, 400);
-            this.tableLayoutPanel1.TabIndex = 2;
-            // 
-            // darkSectionPanel2
-            // 
-            this.darkSectionPanel2.Controls.Add(this.tabbedContainer);
-            this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel2.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel2.Location = new System.Drawing.Point(209, 3);
-            this.darkSectionPanel2.Name = "darkSectionPanel2";
-            this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(397, 360);
-            this.darkSectionPanel2.TabIndex = 2;
             // 
             // tabbedContainer
             // 
             this.tabbedContainer.Controls.Add(this.tabPage2);
             this.tabbedContainer.Controls.Add(this.tabPage5);
-            this.tabbedContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabbedContainer.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tabbedContainer.Location = new System.Drawing.Point(1, 1);
-            this.tabbedContainer.Name = "tabbedContainer";
-            this.tabbedContainer.SelectedIndex = 0;
             this.tabbedContainer.Size = new System.Drawing.Size(395, 358);
-            this.tabbedContainer.TabIndex = 2;
             // 
             // tabPage2
             // 
@@ -197,7 +145,7 @@
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(387, 332);
-            this.tabPage2.TabIndex = 9;
+            this.tabPage2.TabIndex = 10;
             this.tabPage2.Text = "General";
             // 
             // tabSubPanel2
@@ -629,7 +577,7 @@
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage5.Size = new System.Drawing.Size(387, 332);
-            this.tabPage5.TabIndex = 13;
+            this.tabPage5.TabIndex = 14;
             this.tabPage5.Text = "Gizmo";
             // 
             // darkGroupBox11
@@ -745,7 +693,7 @@
             this.darkLabel29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel29.Location = new System.Drawing.Point(8, 49);
             this.darkLabel29.Name = "darkLabel29";
-            this.darkLabel29.Size = new System.Drawing.Size(116, 13);
+            this.darkLabel29.Size = new System.Drawing.Size(117, 13);
             this.darkLabel29.TabIndex = 33;
             this.darkLabel29.Text = "Translation cone size:";
             // 
@@ -910,7 +858,7 @@
             this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel21.Location = new System.Drawing.Point(8, 49);
             this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(116, 13);
+            this.darkLabel21.Size = new System.Drawing.Size(117, 13);
             this.darkLabel21.TabIndex = 33;
             this.darkLabel21.Text = "Translation cone size:";
             // 
@@ -1075,7 +1023,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(8, 49);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
@@ -1127,112 +1075,12 @@
             this.darkLabel37.TabIndex = 35;
             this.darkLabel37.Text = "Centering cube size:";
             // 
-            // darkSectionPanel1
-            // 
-            this.darkSectionPanel1.Controls.Add(this.optionsList);
-            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.darkSectionPanel1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.darkSectionPanel1.Location = new System.Drawing.Point(3, 3);
-            this.darkSectionPanel1.Name = "darkSectionPanel1";
-            this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(200, 360);
-            this.darkSectionPanel1.TabIndex = 7;
-            // 
-            // optionsList
-            // 
-            this.optionsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.optionsList.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.optionsList.Location = new System.Drawing.Point(1, 1);
-            this.optionsList.Name = "optionsList";
-            this.optionsList.Size = new System.Drawing.Size(198, 358);
-            this.optionsList.TabIndex = 6;
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.butApply);
-            this.panel5.Controls.Add(this.butOk);
-            this.panel5.Controls.Add(this.butCancel);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(209, 369);
-            this.panel5.Name = "panel5";
-            this.panel5.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panel5.Size = new System.Drawing.Size(397, 28);
-            this.panel5.TabIndex = 5;
-            // 
-            // butApply
-            // 
-            this.butApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApply.Checked = false;
-            this.butApply.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butApply.Location = new System.Drawing.Point(140, 1);
-            this.butApply.Name = "butApply";
-            this.butApply.Size = new System.Drawing.Size(80, 24);
-            this.butApply.TabIndex = 3;
-            this.butApply.Text = "Apply";
-            this.butApply.Click += new System.EventHandler(this.butApply_Click);
-            // 
-            // butOk
-            // 
-            this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butOk.Checked = false;
-            this.butOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butOk.Location = new System.Drawing.Point(226, 1);
-            this.butOk.Name = "butOk";
-            this.butOk.Size = new System.Drawing.Size(80, 24);
-            this.butOk.TabIndex = 3;
-            this.butOk.Text = "OK";
-            this.butOk.Click += new System.EventHandler(this.butOk_Click);
-            // 
-            // butCancel
-            // 
-            this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butCancel.Checked = false;
-            this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butCancel.Location = new System.Drawing.Point(312, 1);
-            this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(80, 24);
-            this.butCancel.TabIndex = 3;
-            this.butCancel.Text = "Cancel";
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.butPageDefaults);
-            this.panel4.Location = new System.Drawing.Point(3, 369);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(200, 28);
-            this.panel4.TabIndex = 8;
-            // 
-            // butPageDefaults
-            // 
-            this.butPageDefaults.Checked = false;
-            this.butPageDefaults.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.butPageDefaults.Location = new System.Drawing.Point(1, 1);
-            this.butPageDefaults.Name = "butPageDefaults";
-            this.butPageDefaults.Size = new System.Drawing.Size(199, 24);
-            this.butPageDefaults.TabIndex = 4;
-            this.butPageDefaults.Text = "Set page to default";
-            this.butPageDefaults.Click += new System.EventHandler(this.butPageDefaults_Click);
-            // 
             // FormOptions
             // 
-            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(615, 403);
-            this.Controls.Add(this.tableLayoutPanel1);
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "FormOptions";
-            this.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Options";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.darkSectionPanel2.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -1274,63 +1122,44 @@
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown36)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown35)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown34)).EndInit();
-            this.darkSectionPanel1.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
-        private DarkUI.Controls.DarkSectionPanel darkSectionPanel1;
-        private DarkUI.Controls.DarkListView optionsList;
-        private DarkUI.Controls.DarkButton butApply;
-        private DarkUI.Controls.DarkButton butOk;
-        private DarkUI.Controls.DarkButton butCancel;
-        private DarkUI.Controls.DarkPanel panel5;
-        private DarkUI.Controls.DarkPanel panel4;
-        private DarkUI.Controls.DarkButton butPageDefaults;
-        private TombLib.Controls.DarkTabbedContainer tabbedContainer;
         private System.Windows.Forms.TabPage tabPage2;
         private DarkUI.Controls.DarkPanel tabSubPanel2;
         private DarkUI.Controls.DarkPanel panel1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox3;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown1;
         private DarkUI.Controls.DarkCheckBox cbEnableLogging;
         private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox3;
+        private DarkUI.Controls.DarkLabel darkLabel73;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown42;
+        private DarkUI.Controls.DarkLabel darkLabel72;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox2;
+        private DarkUI.Controls.DarkLabel darkLabel61;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown6;
+        private DarkUI.Controls.DarkPanel panelColorSelector0;
+        private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkCheckBox darkCheckBox26;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown5;
+        private DarkUI.Controls.DarkLabel darkLabel6;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown4;
+        private DarkUI.Controls.DarkLabel darkLabel5;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown3;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown2;
+        private DarkUI.Controls.DarkLabel darkLabel4;
+        private DarkUI.Controls.DarkLabel darkLabel3;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox2;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox1;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown39;
         private DarkUI.Controls.DarkLabel darkLabel67;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private System.Windows.Forms.TabPage tabPage5;
-        private DarkUI.Controls.DarkLabel darkLabel39;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown36;
-        private DarkUI.Controls.DarkLabel darkLabel38;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown35;
-        private DarkUI.Controls.DarkLabel darkLabel37;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown34;
-        private DarkUI.Controls.DarkLabel darkLabel36;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown33;
-        private DarkUI.Controls.DarkLabel darkLabel35;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown32;
-        private DarkUI.Controls.DarkLabel darkLabel61;
-        private DarkUI.Controls.DarkPanel panelColorSelector0;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox7;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox10;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown16;
-        private DarkUI.Controls.DarkLabel darkLabel18;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown17;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown18;
-        private DarkUI.Controls.DarkLabel darkLabel19;
-        private DarkUI.Controls.DarkLabel darkLabel20;
-        private DarkUI.Controls.DarkLabel darkLabel21;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown19;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown23;
-        private DarkUI.Controls.DarkLabel darkLabel25;
         private DarkUI.Controls.DarkGroupBox darkGroupBox11;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown24;
         private DarkUI.Controls.DarkLabel darkLabel26;
@@ -1342,22 +1171,27 @@
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown27;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown28;
         private DarkUI.Controls.DarkLabel darkLabel30;
-        private DarkUI.Controls.DarkLabel darkLabel7;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown6;
-        private DarkUI.Controls.DarkGroupBox darkGroupBox3;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown5;
-        private DarkUI.Controls.DarkLabel darkLabel6;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown4;
-        private DarkUI.Controls.DarkLabel darkLabel5;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown3;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown2;
-        private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkLabel darkLabel3;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox1;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox2;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox3;
-        private DarkUI.Controls.DarkLabel darkLabel73;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown42;
-        private DarkUI.Controls.DarkLabel darkLabel72;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox10;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown16;
+        private DarkUI.Controls.DarkLabel darkLabel18;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown17;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown18;
+        private DarkUI.Controls.DarkLabel darkLabel19;
+        private DarkUI.Controls.DarkLabel darkLabel20;
+        private DarkUI.Controls.DarkLabel darkLabel21;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown19;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown23;
+        private DarkUI.Controls.DarkLabel darkLabel25;
+        private DarkUI.Controls.DarkGroupBox darkGroupBox7;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown33;
+        private DarkUI.Controls.DarkLabel darkLabel39;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown32;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown36;
+        private DarkUI.Controls.DarkLabel darkLabel35;
+        private DarkUI.Controls.DarkLabel darkLabel38;
+        private DarkUI.Controls.DarkLabel darkLabel36;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown35;
+        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown34;
+        private DarkUI.Controls.DarkLabel darkLabel37;
     }
 }

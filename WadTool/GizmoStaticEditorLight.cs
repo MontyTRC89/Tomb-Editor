@@ -31,7 +31,7 @@ namespace WadTool
         protected override void GizmoRotateX(float newAngle) { }
         protected override void GizmoRotateY(float newAngle) { }
         protected override void GizmoRotateZ(float newAngle) { }
-        protected override void GizmoScale(float newScale)
+        protected override void GizmoScaleX(float newScale)
         {
             // Set some limits to scale
             // TODO: object risks to be too small and to be not pickable. We should add some size check
@@ -43,12 +43,14 @@ namespace WadTool
             _control.SelectedLight.Radius = newScale;
             _control.UpdateLights();
         }
+        protected override void GizmoScaleY(float newScale) => GizmoScaleX(newScale);
+        protected override void GizmoScaleZ(float newScale) => GizmoScaleX(newScale);
 
         protected override Vector3 Position => _control != null && _control.SelectedLight != null ? _control.SelectedLight.Position : Vector3.Zero;
         protected override float RotationY => 0;
         protected override float RotationX => 0;
         protected override float RotationZ => 0;
-        protected override float Scale => _control != null && _control.SelectedLight != null ? _control.SelectedLight.Radius : 0.0f;
+        protected override Vector3 Scale => _control != null && _control.SelectedLight != null ? new Vector3(_control.SelectedLight.Radius) : Vector3.Zero;
 
         protected override float CentreCubeSize => _configuration.GizmoStatic_CenterCubeSize;
         protected override float TranslationConeSize => _configuration.GizmoStatic_TranslationConeSize;

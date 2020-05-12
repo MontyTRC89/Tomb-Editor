@@ -21,8 +21,7 @@ namespace TombEditor.ToolWindows
             CommandHandler.AssignCommandsToControls(Editor.Instance, this, toolTip);
 
             _editor = Editor.Instance;
-            _editor.EditorEventRaised += EditorEventRaised;EditorEventRaised(new Editor.InitEvent());
-            EditorEventRaised(new Editor.InitEvent());
+            _editor.EditorEventRaised += EditorEventRaised;
 
             panel2DGrid.Room = _editor.SelectedRoom;
         }
@@ -49,8 +48,7 @@ namespace TombEditor.ToolWindows
             }
 
             // Update color scheme on buttons
-            if (obj is Editor.ConfigurationChangedEvent ||
-                obj is Editor.InitEvent)
+            if (obj is Editor.ConfigurationChangedEvent || obj is Editor.InitEvent)
             {
                 butFloor.BackColor = _editor.Configuration.UI_ColorScheme.ColorFloor.ToWinFormsColor();
                 butFloor.Image = (butFloor.BackColor.GetBrightness() > iconSwitchBrightnessThreshold) ? Properties.Resources.sectortype_Floor_neg_16 : Properties.Resources.sectortype_Floor_1_16;
@@ -72,7 +70,7 @@ namespace TombEditor.ToolWindows
 
             // Disable version-specific controls
             if (obj is Editor.InitEvent ||
-                //obj is Editor.GameVersionChangedEvent || // FIXME: UNCOMMENT WHEN MERGED WITH DEVELOP!!!!!!!!!!!!!!!!!
+                obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;

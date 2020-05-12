@@ -35,6 +35,7 @@ namespace TombEditor.Forms
         {
             if (ParseOCB())
             {
+                Editor.Instance.UndoManager.PushObjectPropertyChanged(_staticMesh);
                 _staticMesh.Ocb = newOCB;
                 DialogResult = DialogResult.OK;
                 Close();
