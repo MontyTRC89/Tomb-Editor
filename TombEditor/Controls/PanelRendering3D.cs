@@ -2689,7 +2689,7 @@ namespace TombEditor.Controls
                 if (moveable == null)
                     continue;
 
-                if (j != 0 && (lastPass || _lastObject.WadObjectId != instance.WadObjectId))
+                if (j != 0 && _lastObject != null && (lastPass || _lastObject.WadObjectId != instance.WadObjectId))
                 {
                     var currentInstance = movGroup.Last();
                     var model = _wadRenderer.GetMoveable(_editor?.Level?.Settings?.WadTryGetMoveable(currentInstance.WadObjectId));
@@ -2880,7 +2880,7 @@ namespace TombEditor.Controls
                 if (stat == null)
                     continue;
 
-                if (j != 0 && (lastPass || _lastObject.WadObjectId != instance.WadObjectId))
+                if (j != 0 && _lastObject != null && (lastPass || _lastObject.WadObjectId != instance.WadObjectId))
                 {
                     var currentInstance = stGroup.Last();
                     var model = _wadRenderer.GetStatic(_editor?.Level?.Settings?.WadTryGetStatic(currentInstance.WadObjectId));
