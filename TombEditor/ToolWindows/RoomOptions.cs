@@ -341,6 +341,12 @@ namespace TombEditor.ToolWindows
                 panelRoomAmbientLight.BackColor = colorDialog.Color;
                 room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
 
+                if (_editor.Level.Settings.GameVersion < TRVersion.Game.TR4)
+                {
+                    if (!colorDialog.Color.IsGrayscale())
+                        _editor.SendMessage("Moveables will use grayscale ambience in this game version.", PopupType.Info);
+                }
+
                 _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
 

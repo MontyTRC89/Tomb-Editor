@@ -35,6 +35,8 @@ namespace TombLib.Utils
                 (int)Math.Round(firstColor.B * (1 - mixFactor) + secondColor.B * mixFactor));
         }
 
+        public static bool IsGrayscale(this Color color) => color.R == color.G && color.G == color.B;
+
         public static void DrawRectangle(this System.Drawing.Graphics g, Pen pen, RectangleF rectangle)
         {
             g.DrawRectangle(pen, rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);

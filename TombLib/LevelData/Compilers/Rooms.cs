@@ -176,7 +176,7 @@ namespace TombLib.LevelData.Compilers
 
             // Store ambient intensity
             if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                newRoom.AmbientIntensity = (uint)PackColorTo13BitGreyscale(room.AmbientLight);
+                newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.AmbientLight);
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | 
                                            ((uint)roomAmbientColor.Green << 8) | 
@@ -859,15 +859,22 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                // If target game is <= TR4 then ignore all special lights and fog bulbs
+                // If target game is <= TR3 then ignore all special lights (except sun for TR3) and fog bulbs
                 if (_level.Settings.GameVersion < TRVersion.Game.TR4 &&
-                      (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
+                    (light.Type == LightType.Spot || light.Type == LightType.Shadow || light.Type == LightType.FogBulb))
+                    continue;
+
+                // FIXME: For now sun type is blocked for TR3 because normal format is yet to be figured out
+                // Change to TRVersion.Game.TR3 when fixed.
+                if (_level.Settings.GameVersion < TRVersion.Game.TR4 && light.Type == LightType.Sun)
                     continue;
 
                 if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
+
                 tr_color color = PackColorTo24Bit(light.Color);
                 ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
+
                 if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
                     continue;
                 lightCount += 1;
@@ -1591,17 +1598,16 @@ namespace TombLib.LevelData.Compilers
             tmp |= (ushort)color.Z;
             return tmp;
         }
-        // Takes the average color value and packs it into an inversed 13 Bit Greyscale Color (Maybe use Luminance int he future?)
-        // Higher = Darker
+
+        // Takes the average color value and packs it into an inversed 13 Bit luma value (Higher = Darker)
         // Used for TR1? and TR2 and TR3 for AmbientInensity
-        private static ushort PackColorTo13BitGreyscale(Vector3 color) {
-            float avg = (color.X + color.Y + color.Z) / 3;
-            //clamp to 0-1
-            avg = Math.Min(1.0f, Math.Max(0,avg));
-            //invert
+        private static ushort PackColorTo13BitGreyscale(Vector3 color)
+        {
+            float avg = MathC.Clamp(color.GetLuma(), 0, 1);
+            // invert
             avg = 1.0f - avg;
-            // multiply by 256 to get 8 bits
-            avg *= 0xFF;
+            // multiply by 128 to get 8 bits
+            avg *= 255.0f;
             ushort value = (ushort)avg;
             //bitshift to left for whatever reason
             value <<= 5;
