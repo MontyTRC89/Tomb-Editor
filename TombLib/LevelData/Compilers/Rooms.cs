@@ -182,9 +182,10 @@ namespace TombLib.LevelData.Compilers
                                            ((uint)roomAmbientColor.Green << 8) | 
                                                   roomAmbientColor.Blue;
 
-            // Properly identify game version to swap quicksand and no lensflare flags
-            bool isNL = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
-            bool isNG = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+            // Properly identify game version to swap light mode, quicksand and no lensflare flags
+            bool isTR2 = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
+            bool isNL  = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
+            bool isNG  = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             // Room flags
             if (room.FlagHorizon)
@@ -258,20 +259,26 @@ namespace TombLib.LevelData.Compilers
             switch (lightEffect)
             {
                 case RoomLightEffect.GlowAndMovement:
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
+                    newRoom.LightMode = 3; // Used in TR2 only
+                    newRoom.Flags |= 0x0100;
+                    break;
+
                 case RoomLightEffect.Movement:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
-                    if (lightEffect == RoomLightEffect.GlowAndMovement)
-                        newRoom.Flags |= 0x0100;
+                    newRoom.LightMode = 1; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
+                    newRoom.LightMode = 2; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Reflection:
                     newRoom.Flags |= 0x0200;
+                    newRoom.LightMode = 2; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.None:
@@ -710,16 +717,16 @@ namespace TombLib.LevelData.Compilers
                                     break;
                                 }
                             }
-                            else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                            else if ((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) 
+                                    || isTR2) // Always check portal edges for TR2 because of special room light modes
                             {
                                 // Disable movement for portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
                                     portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                 {
                                     // Still allow movement, if adjoining room has very same properties
-                                    if (!((otherRoomLightEffect == RoomLightEffect.Movement ||
-                                            otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
-                                            portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                    if (!(otherRoomLightEffect == lightEffect &&
+                                          portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
                                         allowMovement = false;
                                 }
                             }
@@ -749,16 +756,51 @@ namespace TombLib.LevelData.Compilers
                     if (allowGlow     && (lightEffect == RoomLightEffect.Glow     || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x4000;
 
-                    // FIXME: Workaround for desynced water reflections (possibly make it an option in TR5Main?)
-                    // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
-                    // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
-                    // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
-                    // This is original TR renderer bug and should be resolved in TR5Main DX11 renderer.
 
                     if (lightEffect == RoomLightEffect.None && trVertex.Attributes != 0x0000)
-                        continue;
+                    {
+                        // Workaround for desynced water reflections (possibly make it an option in TR5Main?)
+                        // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
+                        // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
+                        // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
+                        // This is original TR renderer bug and should be resolved in TR5Main DX11 renderer.
+                        // Do not remove this condition.
+                    }
+                    else
+                        trVertex.Attributes = flags;
 
-                    trVertex.Attributes = flags;
+                    // Remap vertex flags to LightEffect intensity for TR2.
+                    // FIXME: In original TR2 winroomedit and Dxtre3d, intensity value was based on dummy light object
+                    // placed in a room. As we don't have this mechanism yet, just assign effect to whole room.
+
+                    if (isTR2)
+                    {
+                        bool glowMapped = (trVertex.Attributes & 0x4000) != 0;
+                        bool moveMapped = (trVertex.Attributes & 0x2000) != 0;
+
+                        // Clear existing flags
+                        trVertex.Attributes = unchecked((ushort)((short)trVertex.Attributes & ~0x6000));
+
+                        // Force remap if sunset effect is used.
+                        // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
+                        if (room.LightEffect == RoomLightEffect.Sunset)
+                        {
+                            if (allowMovement)
+                                trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
+                        }
+                        else
+                        {
+                            // Remap TR3+ glow / movement to TR2 glow / flicker
+                            if (glowMapped || moveMapped)
+                                trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
+                        }
+
+                        // Additionally set "no movement" flag for water rooms. This feature is exclusive in TR2, in later games
+                        // 0x8000 flag is broken.
+                        if (!allowMovement)
+                            trVertex.Attributes |= 0x8000;
+                    }
+
                     roomVertices[i] = trVertex;
                 }
 

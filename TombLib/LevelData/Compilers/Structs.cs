@@ -305,7 +305,7 @@ namespace TombLib.LevelData.Compilers
             writer.Write((ushort)(AmbientIntensity));
 
             // TODO: Light mode
-            writer.Write((ushort)0x00);
+            writer.Write(LightMode);
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Count);
