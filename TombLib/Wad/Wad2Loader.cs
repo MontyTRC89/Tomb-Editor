@@ -511,6 +511,7 @@ namespace TombLib.Wad
                 int width = LEB128.ReadInt(chunkIO.Raw);
                 int height = LEB128.ReadInt(chunkIO.Raw);
                 byte[] imageData = null;
+                RectangleInt2 rect = new RectangleInt2();
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
@@ -518,12 +519,20 @@ namespace TombLib.Wad
                         obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
                     else if (id2 == Wad2Chunks.SpriteData)
                         imageData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
-                    else
-                        return false;
+                    else if (id2 == Wad2Chunks.SpriteSides) {
+                        rect.X0 = chunkIO.Raw.ReadInt32();
+                        rect.Y0 = chunkIO.Raw.ReadInt32();
+                        rect.X1 = chunkIO.Raw.ReadInt32();
+                        rect.Y1 = chunkIO.Raw.ReadInt32();
+                    }else return false;
                     return true;
                 });
 
-                sprites.Add(obsoleteIndex++, new WadSprite { Texture = new WadTexture(ImageC.FromByteArray(imageData, width, height)) });
+                sprites.Add(obsoleteIndex++, new WadSprite {
+                    Texture = new WadTexture(ImageC.FromByteArray(imageData, width, height)),
+                    Alignment = rect
+                })
+                ;
                 return true;
             });
 
