@@ -120,8 +120,8 @@ namespace TombEditor.ToolWindows
 
         private void UpdatVersionSpecificUI()
         {
-            butBumpMaps.Enabled = (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                                  _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+            butBumpMaps.Enabled = (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
+                                   _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
         }
 
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
