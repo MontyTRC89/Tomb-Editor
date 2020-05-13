@@ -241,7 +241,8 @@ namespace TombLib.LevelData.Compilers
                 switch (room.Type)
                 {
                     case RoomType.Water:
-                        lightEffect = RoomLightEffect.Glow;
+                        if (!isTR2)
+                            lightEffect = RoomLightEffect.Glow; // TR2 does water glowing automatically
                         break;
                     case RoomType.Quicksand:
                         lightEffect = RoomLightEffect.Movement;
