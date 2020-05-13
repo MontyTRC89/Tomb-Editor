@@ -183,9 +183,10 @@ namespace TombLib.LevelData.Compilers
                                                   roomAmbientColor.Blue;
 
             // Properly identify game version to swap light mode, quicksand and no lensflare flags
-            bool isTR2 = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
-            bool isNL  = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
-            bool isNG  = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+            bool isTR2  = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
+            bool isTR23 = isTR2 || room.Level.Settings.GameVersion == TRVersion.Game.TR3;
+            bool isNL   = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
+            bool isNG   = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             // Room flags
             if (room.FlagHorizon)
@@ -719,7 +720,7 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
                             else if ((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) 
-                                    || isTR2) // Always check portal edges for TR2 because of special room light modes
+                                    || isTR23) // Always check portal edges for TR2 because of special room light modes
                             {
                                 // Disable movement for portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
@@ -795,12 +796,12 @@ namespace TombLib.LevelData.Compilers
                             if (glowMapped || moveMapped)
                                 trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
                         }
-
-                        // Additionally set "no movement" flag for water rooms. This feature is exclusive in TR2, in later games
-                        // 0x8000 flag is broken.
-                        if (!allowMovement)
-                            trVertex.Attributes |= 0x8000;
                     }
+
+                    // Additionally set "no movement" flag for water rooms. This feature is present in TR2-3, in later games
+                    // 0x8000 flag is broken.
+                    if (isTR23 && !allowMovement)
+                        trVertex.Attributes |= 0x8000;
 
                     roomVertices[i] = trVertex;
                 }
