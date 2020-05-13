@@ -717,7 +717,8 @@ namespace TombLib.LevelData.Compilers
             int currentIndex = 0;
             foreach (var sound in _level.Settings.GlobalSoundMap)
             {
-                if (!sound.Indexed) continue;
+                // Don't include indices for non-indexed sounds
+                if (_level.Settings.GameVersion.UsesMainSfx() && !sound.Indexed) continue;
 
                 if (_finalSoundInfosList.Contains(sound))
                     foreach (var sample in sound.Samples)

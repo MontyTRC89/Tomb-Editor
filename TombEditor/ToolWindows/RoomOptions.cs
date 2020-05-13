@@ -59,14 +59,14 @@ namespace TombEditor.ToolWindows
                 bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
                 bool isTR4or5 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
+                bool isTR1 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR1;
 
                 cbFlagCold.Enabled = isNGorT5M;
                 cbFlagDamage.Enabled = isNGorT5M;
                 cbNoLensflare.Enabled = isTR4or5;
-
                 comboReverberation.Enabled = isTR345;
-                comboLightEffect.Enabled = isTR345;
-                numLightEffectStrength.Enabled = isTR345;
+                comboLightEffect.Enabled = !isTR1;
+                numLightEffectStrength.Enabled = !isTR1;
 
                 RepopulateRoomTypes();
             }
@@ -152,6 +152,7 @@ namespace TombEditor.ToolWindows
 
         private void RepopulateRoomTypes()
         {
+            // Repopulate room type
             comboRoomType.Items.Clear();
             comboRoomType.Items.Add("Normal");
             comboRoomType.Items.Add("Water");
@@ -165,6 +166,24 @@ namespace TombEditor.ToolWindows
                 _NGRoomTypes.ForEach(i => comboRoomType.Items.Add(i));
 
             ReadRoomType();
+
+            // Repopulate room effect type
+            bool isTR2 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR2;
+            var list = new List<string>()
+            {
+                "None",
+                "Default",
+                "Reflection",
+                "Glow",
+                isTR2 ? "Flicker" : "Move",       // Show as flicker for TR2
+                isTR2 ? "Sunset" : "Glow & Move", // Show as sunset for TR2
+                "Mist"
+            };
+
+            var backupIndex = comboLightEffect.SelectedIndex;
+            comboLightEffect.Items.Clear();
+            list.ForEach(i => comboLightEffect.Items.Add(i));
+            comboLightEffect.SelectedIndex = backupIndex;
         }
 
         private void WriteRoomType()
