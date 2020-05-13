@@ -169,10 +169,10 @@ namespace TombLib.LevelData.Compilers
                         newTexture.Y = (byte)packInfo.Pos.Y;
                         newTexture.Width = SpriteW;
                         newTexture.Height = SpriteH;
-                        newTexture.TopSide = (short)-oldTexture.Texture.Image.Height;
-                        newTexture.LeftSide = (short)0;
-                        newTexture.RightSide = (short)oldTexture.Texture.Image.Width;
-                        newTexture.BottomSide = (short) 0;
+                        newTexture.TopSide = (short)oldTexture.Alignment.Y0;
+                        newTexture.LeftSide = (short)oldTexture.Alignment.X0;
+                        newTexture.RightSide = (short)oldTexture.Alignment.X1;
+                        newTexture.BottomSide = (short)oldTexture.Alignment.Y1;
                     }
                     else
                     {

@@ -104,6 +104,12 @@ namespace TombLib.Wad
                         LEB128.Write(chunkIO.Raw, sprite.Texture.Image.Height);
                         chunkIO.WriteChunkInt(Wad2Chunks.SpriteIndex, i);
                         chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.SpriteData, sprite.Texture.Image.ToByteArray());
+                        chunkIO.WriteChunk(Wad2Chunks.SpriteSides, () => {
+                            chunkIO.Raw.Write(sprite.Alignment.X0);
+                            chunkIO.Raw.Write(sprite.Alignment.Y0);
+                            chunkIO.Raw.Write(sprite.Alignment.X1);
+                            chunkIO.Raw.Write(sprite.Alignment.Y1);
+                        });
                     });
                 }
             });
