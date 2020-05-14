@@ -19,6 +19,14 @@ namespace TombLib.Controls
             get { return _currentObject; }
             set
             {
+                if (value is WadSpriteSequence)
+                {
+                    if (!_animTimer.Enabled) _animTimer.Enabled = true;
+                    if (_currentObject != value) _currentFrame = 0;
+                }
+                else if(_animTimer.Enabled) 
+                    _animTimer.Enabled = false;
+
                 _currentObject = value;
                 Invalidate();
             }
@@ -29,8 +37,11 @@ namespace TombLib.Controls
         public int AnimationIndex { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int KeyFrameIndex { get; set; }
-      
 
+        // Preview animation state
+        private Timer _animTimer = new Timer() { Interval = 333 };
+        private int _currentFrame;
+      
         // Interaction state
         private float _lastX;
         private float _lastY;
@@ -45,6 +56,19 @@ namespace TombLib.Controls
 
         public PanelItemPreview()
         {
+            _animTimer.Tick += _animTimer_Tick;
+        }
+
+        private void _animTimer_Tick(object sender, EventArgs e)
+        {
+            if (!(CurrentObject is WadSpriteSequence))
+                return;
+
+            if (_currentFrame < (CurrentObject as WadSpriteSequence).Sprites.Count - 1)
+                _currentFrame++;
+            else
+                _currentFrame = 0;
+            Invalidate();
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -198,24 +222,19 @@ namespace TombLib.Controls
             }
             else if (CurrentObject is WadSpriteSequence)
             {
-                WadSpriteSequence spriteSequence = (WadSpriteSequence)CurrentObject;
-                int spriteIndex = Math.Min(spriteSequence.Sprites.Count - 1, KeyFrameIndex);
-                if (spriteIndex < spriteSequence.Sprites.Count && spriteIndex >= 0)
+                WadSprite sprite = (CurrentObject as WadSpriteSequence).Sprites[_currentFrame];
+
+                float aspectRatioViewport = (float)ClientSize.Width / ClientSize.Height;
+                float aspectRatioImage = (float)sprite.Texture.Image.Width / sprite.Texture.Image.Height;
+                float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
+                Vector2 factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
+
+                SwapChain.RenderSprites(_textureAllocator, false, new Sprite
                 {
-                    WadSprite sprite = spriteSequence.Sprites[spriteIndex];
-
-                    float aspectRatioViewport = (float)ClientSize.Width / ClientSize.Height;
-                    float aspectRatioImage = (float)sprite.Texture.Image.Width / sprite.Texture.Image.Height;
-                    float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
-                    Vector2 factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
-
-                    SwapChain.RenderSprites(_textureAllocator, false, new Sprite
-                    {
-                        Texture = sprite.Texture.Image,
-                        PosStart = -0.9f * factor,
-                        PosEnd = 0.9f * factor
-                    });
-                }
+                    Texture = sprite.Texture.Image,
+                    PosStart = -0.9f * factor,
+                    PosEnd = 0.9f * factor
+                });
             }
         }
 

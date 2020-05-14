@@ -14,6 +14,8 @@ Tomb Editor:
  * Animate ghost blocks on selection.
  * Don't deselect current object when cancelling object placement.
  * Fix epic bug because of which every sound source was created twice.
+ * Fix lots of bugs with imported geometry handling.
+ * Ask for automatic reconnection of all offline media on reconnecting just one.
  * Fix lagging gizmo movement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
@@ -32,10 +34,12 @@ SoundTool:
  
 WadTool:
  * Fix wrong copy animcommand behaviour.
+ * Fix and animate sprite preview.
  
 General:
  * Try to guess duplicated item IDs corrupted by StrPix or WadMerger after using it with v130 wads.
  * Easily select multiple checkboxes in lists by dragging mouse across them.
+ * Correctly parse alpha channel in TR1 textures while loading TR1 level as wad.
 
 Version 1.2.11
 ==============
