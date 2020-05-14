@@ -228,51 +228,92 @@ namespace TombLib.LevelData
         public VectorInt2 SectorPosition
         {
             get { return new VectorInt2((int)(Position.X / 1024.0f), (int)(Position.Z / 1024.0f)); }
-            set { Position = new Vector3(value.X * 1024.0f, Position.Y, value.Y * 1024.0f);} }
+            set { Position = new Vector3(value.X * 1024.0f, Position.Y, value.Y * 1024.0f); }
+        }
+
+        // All object matrices are precached on any transform, which allows to save some CPU time
+        // with big level previews.
+
+        public Matrix4x4 WorldPositionMatrix
+        { get { UpdateMatrices(); return _lastWorldPositionMatrix; } }
+        private Matrix4x4 _lastWorldPositionMatrix;
+
+        public Matrix4x4 LocalPositionMatrix
+        { get { UpdateMatrices(); return _lastLocalPositionMatrix; } }
+        private Matrix4x4 _lastLocalPositionMatrix;
+
+        public Matrix4x4 RotationMatrix
+        { get { UpdateMatrices(); return _lastRotationMatrix; } }
+        private Matrix4x4 _lastRotationMatrix;
+
+        public Matrix4x4 ScaleMatrix
+        { get { UpdateMatrices(); return _lastScaleMatrix; } }
+        private Matrix4x4 _lastScaleMatrix;
+
+        public Matrix4x4 RotationPositionMatrix
+        { get { UpdateMatrices(); return _lastRotPosMatrix; } }
+        private Matrix4x4 _lastRotPosMatrix;
+
+        public Matrix4x4 ObjectMatrix
+        { get { UpdateMatrices(); return _lastObjectMatrix; } }
+        private Matrix4x4 _lastObjectMatrix;
+
+        public Matrix4x4 LocalObjectMatrix
+        { get { UpdateMatrices(); return _lastLocalObjectMatrix; } }
+        private Matrix4x4 _lastLocalObjectMatrix;
+
+        private bool UpdateMatrices()
+        {
+            bool result = false;
+
+            if (Position != _lastPosition)
+            {
+                result = true;
+                _lastPosition = Position;
+            }
+
+            var currentRotation = new Vector3()
+            {
+                X = (this as IRotateableY)?.RotationY ?? 0.0f,
+                Y = (this as IRotateableYX)?.RotationX ?? 0.0f,
+                Z = (this as IRotateableYXRoll)?.Roll ?? 0.0f
+            };
+            if (currentRotation != _lastRotation)
+            {
+                result = true;
+                _lastRotation = currentRotation;
+            }
+
+            var currentScale = ((this as ISizeable)?.Size ?? new Vector3(1.0f)) * ((this as IScaleable)?.Scale ?? 1.0f);
+            if (currentScale != _lastScale)
+            {
+                result = true;
+                _lastScale = currentScale;
+            }
+
+            if (result)
+            {
+                _lastLocalPositionMatrix = Matrix4x4.CreateTranslation(Position);
+                _lastWorldPositionMatrix = _lastLocalPositionMatrix * Matrix4x4.CreateTranslation(Room?.WorldPos ?? new Vector3());
+                _lastRotationMatrix = Matrix4x4.CreateFromYawPitchRoll(
+                                       (this as IRotateableY)?.GetRotationYRadians() ?? 0.0f,
+                                      -(this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
+                                       (this as IRotateableYXRoll)?.GetRotationRollRadians() ?? 0.0f);
+                _lastRotPosMatrix = _lastRotationMatrix * _lastWorldPositionMatrix;
+                _lastScaleMatrix = Matrix4x4.CreateScale(_lastScale);
+                _lastObjectMatrix = _lastRotationMatrix * _lastScaleMatrix * _lastWorldPositionMatrix;
+                _lastLocalObjectMatrix = _lastRotationMatrix * _lastScaleMatrix * _lastLocalPositionMatrix;
+            }
+
+            return result;
+        }
+        private Vector3 _lastPosition = new Vector3(float.MinValue);
+        private Vector3 _lastRotation = new Vector3(float.MinValue);
+        private Vector3 _lastScale = new Vector3(float.MinValue);
 
         public void Move(int deltaX, int deltaY, int deltaZ)
         {
             Position = Position + new Vector3(deltaX, deltaY, deltaZ);
-        }
-
-        public Matrix4x4 RotationMatrix
-        {
-            get
-            {
-                return Matrix4x4.CreateFromYawPitchRoll(
-                    (this as IRotateableY)?.GetRotationYRadians() ?? 0.0f,
-                    -(this as IRotateableYX)?.GetRotationXRadians() ?? 0.0f,
-                    (this as IRotateableYXRoll)?.GetRotationRollRadians() ?? 0.0f);
-            }
-        }
-
-        public Matrix4x4 RotationPositionMatrix
-        {
-            get
-            {
-                return RotationMatrix *
-                    Matrix4x4.CreateTranslation((Room?.WorldPos ?? new Vector3()) + Position);
-            }
-        }
-
-        public Matrix4x4 ObjectMatrix
-        {
-            get
-            {
-                return RotationMatrix *
-                    Matrix4x4.CreateScale(((this as ISizeable)?.Size ?? new Vector3(1.0f)) * ((this as IScaleable)?.Scale ?? 1.0f)) *
-                    Matrix4x4.CreateTranslation((Room?.WorldPos ?? new Vector3()) + Position);
-            }
-        }
-
-        public Matrix4x4 LocalObjectMatrix
-        {
-            get
-            {
-                return RotationMatrix *
-                    Matrix4x4.CreateScale(((this as ISizeable)?.Size ?? new Vector3(1.0f)) * ((this as IScaleable)?.Scale ?? 1.0f)) *
-                    Matrix4x4.CreateTranslation(Position);
-            }
         }
 
         public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
