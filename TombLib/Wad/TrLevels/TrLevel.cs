@@ -907,10 +907,11 @@ namespace TombLib.Wad.TrLevels
                     {
                         for (int x = 0; x < width; x++)
                         {
-                            var r = Palette8[texture8[y * 256 + x]].Red * 4;
-                            var g = Palette8[texture8[y * 256 + x]].Green * 4;
-                            var b = Palette8[texture8[y * 256 + x]].Blue * 4;
-                            var a = (byte)(r == 255 && g == 0 && b == 255 ? 0 : 255);
+                            var index = texture8[y * 256 + x];
+                            var r = Palette8[index].Red * 4;
+                            var g = Palette8[index].Green * 4;
+                            var b = Palette8[index].Blue * 4;
+                            var a = (byte)(index == 0 ? 0 : 255);
 
                             TextureMap32[y * 1024 + x * 4 + 0] = (byte)b;
                             TextureMap32[y * 1024 + x * 4 + 1] = (byte)g;
