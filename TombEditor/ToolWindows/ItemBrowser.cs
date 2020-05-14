@@ -81,18 +81,20 @@ namespace TombEditor.ToolWindows
                 else
                 {
                     comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
+                    var version = _editor.Level.Settings.GameVersion;
                     if (e.Current.Value.MoveableId == WadMoveableId.Lara) // Show Lara's skin
                     {
-                        WadMoveable moveable = _editor.Level.Settings.WadTryGetMoveable(WadMoveableId.LaraSkin);
-                        if (moveable != null)
-                            panelItem.CurrentObject = moveable;
+                        WadMoveableId laraSkinId = WadMoveableId.GetLaraSkin(version); 
+                        WadMoveable moveableSkin = _editor.Level.Settings.WadTryGetMoveable(laraSkinId);
+                        if (moveableSkin != null)
+                            panelItem.CurrentObject = moveableSkin;
                     }
                     panelItem.Invalidate();
                 }
             }
 
             // Update tooltip texts
-            if(obj is Editor.ConfigurationChangedEvent)
+            if (obj is Editor.ConfigurationChangedEvent)
             {
                 if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
