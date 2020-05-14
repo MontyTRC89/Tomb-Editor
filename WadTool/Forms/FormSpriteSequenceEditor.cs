@@ -39,6 +39,11 @@ namespace WadTool
             dataGridViewControls.CreateNewRow = newObject;
             dataGridViewControls.DataGridView = dataGridView;
             dataGridViewControls.Enabled = true;
+
+            // Refresh initially
+            if (dataGridView.Rows.Count > 0)
+                dataGridView.Rows[0].Selected = true;
+            SelectSprite();
         }
 
         protected override void Dispose(bool disposing)
@@ -100,6 +105,12 @@ namespace WadTool
             }
         }
 
+        private void SelectSprite()
+        {
+            if (dataGridView.SelectedRows.Count > 0 && dataGridView.SelectedRows[0].Index >= 0)
+                picSprite.Image = _imageCache[((WadSprite)dataGridView.SelectedRows[0].DataBoundItem).Texture];
+        }
+
         private void btExport_Click(object sender, EventArgs e)
         {
             using (var fileDialog = new SaveFileDialog())
@@ -151,7 +162,7 @@ namespace WadTool
             if (dataGridView.SelectedRows.Count <= 0)
                 return;
 
-            picSprite.Image = _imageCache[((WadSprite)dataGridView.SelectedRows[0].DataBoundItem).Texture];
+            SelectSprite();
         }
 
         private void dataGridView_CellFormattingSafe(object sender, DarkDataGridViewSafeCellFormattingEventArgs e)

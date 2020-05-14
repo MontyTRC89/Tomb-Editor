@@ -137,20 +137,6 @@ namespace TombEditor.Forms
                 for (int x = xMin; x < xMax; ++x)
                     textureMap.VisibleTexture.SetBumpMappingLevel(x, y, bump);
 
-            // TODO: disabled for now
-            /*ConservativeRasterizer.RasterizeQuad(
-
-                textureMap.SelectedTexture.TexCoord0 / LevelTexture.BumpMappingGranularity,
-                textureMap.SelectedTexture.TexCoord1 / LevelTexture.BumpMappingGranularity,
-                textureMap.SelectedTexture.TexCoord2 / LevelTexture.BumpMappingGranularity,
-                textureMap.SelectedTexture.TexCoord3 / LevelTexture.BumpMappingGranularity,
-                (startX, startY, endX, endY) =>
-                {
-                    for (int y = startY; y < endY; ++y)
-                        for (int x = startX; x < endX; ++x)
-                            textureMap.VisibleTexture.SetBumpMappingLevel(x, y, bump);
-                });*/
-
             textureMap.Invalidate();
             _editor.BumpmapsChange();
         }
@@ -221,21 +207,6 @@ namespace TombEditor.Forms
                 RectangleF selArea = RectangleF.FromLTRB(selStart.X, selStart.Y, selEnd.X, selEnd.Y);
 
                 e.Graphics.FillRectangle(_coverBrush, selArea);
-
-                // TODO: disabled for now
-                /*ConservativeRasterizer.RasterizeQuadUniquely(
-                    SelectedTexture.TexCoord0 / LevelTexture.BumpMappingGranularity,
-                    SelectedTexture.TexCoord1 / LevelTexture.BumpMappingGranularity,
-                    SelectedTexture.TexCoord2 / LevelTexture.BumpMappingGranularity,
-                    SelectedTexture.TexCoord3 / LevelTexture.BumpMappingGranularity,
-                    (startX, startY, endX, endY) =>
-                    {
-                        PointF tileStart = ToVisualCoord(new Vector2(startX, startY) * LevelTexture.BumpMappingGranularity);
-                        PointF tileEnd = ToVisualCoord(new Vector2(endX, endY) * LevelTexture.BumpMappingGranularity);
-                        RectangleF tileArea = RectangleF.FromLTRB(tileStart.X, tileStart.Y, tileEnd.X, tileEnd.Y);
-                        e.Graphics.FillRectangle(_coverBrush, tileArea);
-                    });*/
-
                 base.OnPaintSelection(e);
             }
         }
