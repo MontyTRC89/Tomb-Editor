@@ -58,7 +58,7 @@ namespace TombLib.Wad
         public static int CheckSampleDataForFormat(byte[] data)
         {
             // Based on: https://de.wikipedia.org/wiki/RIFF_WAVE
-            // Just a very simple, ceap but strict checking routine to make sure
+            // Just a very simple, cheap but strict checking routine to make sure
             // we don't get strange wave files in an *.wad2 or the game itself
             // that we then (or other tools) have to support later on.
             try

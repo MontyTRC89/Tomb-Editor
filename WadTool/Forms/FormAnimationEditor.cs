@@ -2171,7 +2171,6 @@ namespace WadTool
                             else
                                 try
                                 {
-                                    // Task.Factory.StartNew(() => WadSoundPlayer.PlaySoundInfo(_level, soundInfo));
                                     WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo);
                                 }
                                 catch (Exception exc)
