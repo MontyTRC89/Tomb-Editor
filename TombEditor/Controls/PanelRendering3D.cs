@@ -1776,7 +1776,7 @@ namespace TombEditor.Controls
             return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
         }
 
-        private void DrawDebugLines(Matrix4x4 viewProjection)
+        private void DrawDebugLines(Matrix4x4 viewProjection, Effect effect)
         {
             var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds ||
                 ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms));
@@ -1785,18 +1785,17 @@ namespace TombEditor.Controls
                 return;
 
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-            Effect solidEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
             Matrix4x4 model = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos);
-            solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-            solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+            effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+            effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 
             if (_drawHeightLine)
             {
                 _legacyDevice.SetVertexBuffer(_objectHeightLineVertexBuffer);
                 _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _objectHeightLineVertexBuffer));
                 Matrix4x4 model2 = Matrix4x4.CreateTranslation(_editor.SelectedObject.Room.WorldPos);
-                solidEffect.Parameters["ModelViewProjection"].SetValue((model2 * viewProjection).ToSharpDX());
-                solidEffect.CurrentTechnique.Passes[0].Apply();
+                effect.Parameters["ModelViewProjection"].SetValue((model2 * viewProjection).ToSharpDX());
+                effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.LineList, 2);
             }
 
@@ -1804,8 +1803,8 @@ namespace TombEditor.Controls
             {
                 _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
                 _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.CurrentTechnique.Passes[0].Apply();
+                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
             }
 
@@ -1814,10 +1813,10 @@ namespace TombEditor.Controls
                 if (_editor.SelectedRooms.Count > 0)
                     foreach (Room room in _editor.SelectedRooms)
                         // Draw room bounding box around every selected Room
-                        DrawRoomBoundingBox(viewProjection, solidEffect, room);
+                        DrawRoomBoundingBox(viewProjection, effect, room);
                 else
                     // Draw room bounding box
-                    DrawRoomBoundingBox(viewProjection, solidEffect, _editor.SelectedRoom);
+                    DrawRoomBoundingBox(viewProjection, effect, _editor.SelectedRoom);
             }
         }
 
@@ -1848,37 +1847,35 @@ namespace TombEditor.Controls
             return message;
         }
 
-        private void DrawLights(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
+        private void DrawLights(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
             _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
-            Effect solidEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
-
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var light in room.Objects.OfType<LightInstance>())
                 {
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((light.ObjectMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["ModelViewProjection"].SetValue((light.ObjectMatrix * viewProjection).ToSharpDX());
 
                     if (light.Type == LightType.Point)
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
                     if (light.Type == LightType.Spot)
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
                     if (light.Type == LightType.FogBulb)
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
                     if (light.Type == LightType.Shadow)
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+                        effect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
                     if (light.Type == LightType.Effect)
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
                     if (light.Type == LightType.Sun)
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
+                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
 
                     if (_editor.SelectedObject == light)
-                        solidEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        effect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
 
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    effect.CurrentTechnique.Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                 }
 
@@ -1897,18 +1894,18 @@ namespace TombEditor.Controls
                     if (light.Type == LightType.Point || light.Type == LightType.Shadow)
                     {
                         model = Matrix4x4.CreateScale(light.InnerRange * 2.0f) * light.ObjectMatrix;
-                        solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                        effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-                        solidEffect.CurrentTechnique.Passes[0].Apply();
+                        effect.CurrentTechnique.Passes[0].Apply();
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                     }
 
                     model = Matrix4x4.CreateScale(light.OuterRange * 2.0f) * light.ObjectMatrix;
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                    effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    effect.CurrentTechnique.Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
                 }
                 else if (light.Type == LightType.Spot)
@@ -1923,10 +1920,10 @@ namespace TombEditor.Controls
                     float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / coneAngle * lenScaleH;
 
                     Matrix4x4 Model = Matrix4x4.CreateScale(lenScaleW, lenScaleW, lenScaleH) * light.ObjectMatrix;
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((Model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                    effect.Parameters["ModelViewProjection"].SetValue((Model * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    effect.CurrentTechnique.Passes[0].Apply();
 
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
 
@@ -1935,10 +1932,10 @@ namespace TombEditor.Controls
                     float cutoffScaleW = light.OuterAngle * (float)(Math.PI / 180) / coneAngle * cutoffScaleH;
 
                     Matrix4x4 model2 = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * light.ObjectMatrix;
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model2 * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+                    effect.Parameters["ModelViewProjection"].SetValue((model2 * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    effect.CurrentTechnique.Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
                 else if (light.Type == LightType.Sun)
@@ -1948,10 +1945,10 @@ namespace TombEditor.Controls
                     _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
 
                     Matrix4x4 model = Matrix4x4.CreateScale(0.01f, 0.01f, 1.0f) * light.ObjectMatrix;
-                    solidEffect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+                    effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                    effect.CurrentTechnique.Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
 
@@ -1967,12 +1964,11 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawGhostBlocks(Matrix4x4 viewProjection, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw)
+        private void DrawGhostBlocks(Matrix4x4 viewProjection, Effect effect, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw)
         {
             if (ghostBlocksToDraw.Count == 0)
                 return;
 
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorFloor;
             var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.9f);
             var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
@@ -1982,9 +1978,8 @@ namespace TombEditor.Controls
             bool selectedCornerDrawn = false;
             bool lastSelectedCorner  = false;
 
-            _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
 
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
@@ -2239,29 +2234,25 @@ namespace TombEditor.Controls
                 effect.CurrentTechnique.Passes[0].Apply();
                 _legacyDevice.Draw(PrimitiveType.TriangleList, 84);
             }
-
-            // Bring back old vb or forthcoming code may crash
-            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
-            _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
         }
 
-        private void DrawVolumes(Matrix4x4 viewProjection, List<VolumeInstance> volumesToDraw, List<Text> textToDraw)
+        private void DrawVolumes(Matrix4x4 viewProjection, Effect effect, List<VolumeInstance> volumesToDraw, List<Text> textToDraw)
         {
-            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+            if (volumesToDraw.Count == 0)
+                return;
+
             var drawVolume = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
             var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.45f);
             var selectColor = new Vector4(baseColor.To3(), 0.7f);
-
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
-            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
 
             var currentShape = VolumeShape.Box;
             int selectedIndex = -1;
             int lastIndex = -1;
             int elementCount = _littleCube.IndexBuffer.ElementCount;
 
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
@@ -2380,10 +2371,8 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawObjects(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
+        private void DrawObjects(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
-            Effect effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
-
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
@@ -3285,24 +3274,27 @@ namespace TombEditor.Controls
                     _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
 
+            // Get common effect for service objects
+            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+
             // Draw ghost blocks
             if (ShowGhostBlocks)
-                DrawGhostBlocks(viewProjection, ghostBlocksToDraw, textToDraw);
+                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw);
 
             // Draw volumes
             if (ShowVolumes)
-                DrawVolumes(viewProjection, volumesToDraw, textToDraw);
+                DrawVolumes(viewProjection, effect, volumesToDraw, textToDraw);
 
             if (ShowOtherObjects)
             {
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-                DrawObjects(viewProjection, roomsToDraw, textToDraw);
+                DrawObjects(viewProjection, effect, roomsToDraw, textToDraw);
                 // Draw light objects and bounding volumes only for current room
-                DrawLights(viewProjection, roomsToDraw, textToDraw);
+                DrawLights(viewProjection, effect, roomsToDraw, textToDraw);
             }
 
             // Draw the height of the object
-            DrawDebugLines(viewProjection);
+            DrawDebugLines(viewProjection, effect);
 
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
