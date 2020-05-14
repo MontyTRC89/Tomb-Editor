@@ -75,6 +75,8 @@
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
             this.dataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dataGridView_CellFormatting);
+            this.dataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseDoubleClick);
+            this.dataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
             this.dataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             this.dataGridView.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dataGridView_UserDeletedRow);
             this.dataGridView.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView_UserDeletingRow);
@@ -107,6 +109,7 @@
             this.pathColumn.FillWeight = 50F;
             this.pathColumn.HeaderText = "Path";
             this.pathColumn.Name = "pathColumn";
+            this.pathColumn.ReadOnly = true;
             // 
             // searchButtonColumn
             // 
@@ -151,7 +154,7 @@
             // 
             // swapYZColumn
             // 
-            this.swapYZColumn.DataPropertyName = "SwapXZ";
+            this.swapYZColumn.DataPropertyName = "SwapYZ";
             this.swapYZColumn.HeaderText = "Y↔Z";
             this.swapYZColumn.Name = "swapYZColumn";
             this.swapYZColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
