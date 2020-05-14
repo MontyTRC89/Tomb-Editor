@@ -14,6 +14,8 @@ Tomb Editor:
  * Animate ghost blocks on selection.
  * Don't deselect current object when cancelling object placement.
  * Fix epic bug because of which every sound source was created twice.
+ * Fix lots of bugs with imported geometry handling.
+ * Ask for automatic reconnection of all offline media on reconnecting just one.
  * Fix lagging gizmo movement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
