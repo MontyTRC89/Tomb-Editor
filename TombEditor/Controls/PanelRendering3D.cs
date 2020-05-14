@@ -2767,10 +2767,8 @@ namespace TombEditor.Controls
             {
                 var lastPass = k == importedGeometryToDraw.Count;
                 var instance = importedGeometryToDraw[lastPass ? k - 1 : k];
-                if (instance.Model?.DirectXModel == null)
-                    continue;
 
-                if (k != 0 && (lastPass || _lastObject.Model.UniqueID != instance.Model.UniqueID))
+                if (k != 0 && _lastObject != null && (lastPass || _lastObject.Model.UniqueID != instance.Model.UniqueID))
                 {
                     var currentInstance = geoGroup.Last();
                     var model = currentInstance.Model.DirectXModel;
@@ -3128,7 +3126,7 @@ namespace TombEditor.Controls
         {
             var importedGeometryToDraw = new List<ImportedGeometryInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
-                importedGeometryToDraw.AddRange(roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>());
+                importedGeometryToDraw.AddRange(roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>().Where(ig => ig.Model?.DirectXModel != null));
             importedGeometryToDraw.Sort(new Comparer());
             return importedGeometryToDraw;
         }
@@ -3436,10 +3434,19 @@ namespace TombEditor.Controls
 
             public int Compare(ImportedGeometryInstance x, ImportedGeometryInstance y)
             {
-                if (x == null && y == null) return  0;
-                if (x == null && x != null) return  1;
-                if (x != null && y == null) return -1;
-                return x.Model.UniqueID.GetHashCode().CompareTo(y.Model.UniqueID.GetHashCode());
+                try // Because TRTombalization makes direct comparison almost impossible to achieve without nullref exceptions
+                {
+                    var xModel = x?.Model ?? null;
+                    var yModel = y?.Model ?? null;
+                    if (xModel == null && yModel == null) return  0;
+                    if (xModel == null && yModel != null) return  1;
+                    if (xModel != null && yModel == null) return -1;
+                    return x.Model.UniqueID.GetHashCode().CompareTo(y.Model.UniqueID.GetHashCode());
+                }
+                catch
+                {
+                    return 0;
+                }
             }
         }
 

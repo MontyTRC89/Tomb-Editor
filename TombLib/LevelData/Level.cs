@@ -356,7 +356,7 @@ namespace TombLib.LevelData
                 if (oldLookup.Count != 0)
                     foreach (Room room in Rooms.Where(room => room != null))
                         foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
-                            if (oldLookup.ContainsKey(instance.Model.UniqueID))
+                            if (instance.Model != null && oldLookup.ContainsKey(instance.Model.UniqueID))
                             {
                                 instance.Model = null;
                                 objectChangedNotification(instance);
