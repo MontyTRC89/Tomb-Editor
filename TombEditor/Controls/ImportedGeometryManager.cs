@@ -119,6 +119,8 @@ namespace TombEditor.Controls
         [Browsable(false)]
         public LevelSettings LevelSettings { get; set; }
 
+        public new event EventHandler<MouseEventArgs> MouseDoubleClick;
+
         private readonly Color _correctColor;
         private readonly Color _wrongColor;
 
@@ -129,13 +131,15 @@ namespace TombEditor.Controls
             _correctColor = dataGridView.BackColor.MixWith(Color.LimeGreen, 0.55);
             _wrongColor = dataGridView.BackColor.MixWith(Color.DarkRed, 0.55);
 
+            dataGridView.CellMouseDoubleClick += dataGridView_CellMouseDoubleClick;
+
             // Initialize sound path data grid view
             dataGridViewControls.DataGridView = dataGridView;
             dataGridViewControls.Enabled = true;
             dataGridViewControls.CreateNewRow = delegate
             {
                 List<string> paths = LevelFileDialog.BrowseFiles(this, LevelSettings, PathC.GetDirectoryNameTry(LevelSettings.LevelFilePath),
-                    "Select the 3D files that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory).ToList();
+                    "Select 3D files that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory).ToList();
 
                 // Load imported geometries
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
@@ -199,16 +203,7 @@ namespace TombEditor.Controls
                 return;
 
             if (dataGridView.Columns[e.ColumnIndex].Name == searchButtonColumn.Name)
-            {
-                string path = LevelFileDialog.BrowseFile(this, LevelSettings, _dataGridViewDataSource[e.RowIndex].Path,
-                    "Select a 3D file that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false);
-                if (!string.IsNullOrEmpty(path))
-                {
-                    var info = _dataGridViewDataSource[e.RowIndex];
-                    info.Path = path;
-                    _dataGridViewDataSource[e.RowIndex] = info;
-                }
-            }
+                EditorActions.UpdateImportedGeometryFilePath(this, LevelSettings, _dataGridViewDataSource[e.RowIndex].Object);
         }
 
         private void dataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -287,5 +282,13 @@ namespace TombEditor.Controls
             if (userDeletingRow_Cancel.HasValue && userDeletingRow_Cancel.Value)
                 userDeletingRow_Cancel = null;
         }
+
+        private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            if (e.RowIndex == 3)
+            dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = 1.0f;
+        }
+
+        private void dataGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) => MouseDoubleClick?.Invoke(sender, e);
     }
 }

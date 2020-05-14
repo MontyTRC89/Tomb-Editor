@@ -52,10 +52,12 @@
             this.importedGeometryManager.SelectedImportedGeometry = null;
             this.importedGeometryManager.Size = new System.Drawing.Size(730, 451);
             this.importedGeometryManager.TabIndex = 0;
+            this.importedGeometryManager.MouseDoubleClick += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.importedGeometryManager_MouseDoubleClick);
             // 
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(653, 559);
             this.butCancel.Name = "butCancel";
@@ -67,6 +69,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.Location = new System.Drawing.Point(567, 559);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
@@ -83,9 +86,9 @@
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(732, 30);
             this.darkLabel1.TabIndex = 2;
-            this.darkLabel1.Text = "Select a model from the following list or add a new one by pressing \'Create from " +
-    "file\'.\r\nPress \'Assign\' afterwards to assign the loaded file to this imported geo" +
-    "metry object.";
+            this.darkLabel1.Text = "Select a model from the following list or add a new one by pressing plus button.\r" +
+    "\nDouble-click on entry or press \'Assign\' to assign the loaded file to this impor" +
+    "ted geometry object.";
             // 
             // darkLabel2
             // 
@@ -101,6 +104,7 @@
             // butAssign
             // 
             this.butAssign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAssign.Checked = false;
             this.butAssign.Location = new System.Drawing.Point(653, 502);
             this.butAssign.Name = "butAssign";
             this.butAssign.Size = new System.Drawing.Size(80, 23);
@@ -117,7 +121,7 @@
             this.importedGeometryLabel.Name = "importedGeometryLabel";
             this.importedGeometryLabel.Size = new System.Drawing.Size(491, 17);
             this.importedGeometryLabel.TabIndex = 2;
-            this.importedGeometryLabel.Text = "None ☹";
+            this.importedGeometryLabel.Text = "None";
             this.importedGeometryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // darkLabel3

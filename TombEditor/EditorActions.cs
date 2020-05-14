@@ -3621,15 +3621,35 @@ namespace TombEditor
             }
         }
 
-        public static void UpdateTextureFilepath(IWin32Window owner, LevelTexture toReplace)
+        public static void UpdateTextureFilepath(IWin32Window owner, LevelTexture toReplace, bool searchForOthers = true)
         {
             var settings = _editor.Level.Settings;
             string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Path, "Load a texture", LevelTexture.FileExtensions, VariableType.LevelDirectory, false);
-            if (String.IsNullOrEmpty(path) || path == toReplace?.Path)
+            if (string.IsNullOrEmpty(path) || (path == toReplace?.Path && toReplace?.LoadException == null))
                 return;
 
-            toReplace.SetPath(_editor.Level.Settings, path);
-            _editor.LoadedTexturesChange(toReplace);
+            var list = new Dictionary<LevelTexture, string>() { { toReplace, path } };
+
+            if (searchForOthers)
+                foreach (var tex in settings.Textures.Where(t => t != toReplace && t != null && !t.IsAvailable))
+                {
+                    // Now recursively search down the folder structure
+                    var newPath = PathC.TryFindFile(Path.GetDirectoryName(settings.MakeAbsolute(path)), settings.MakeAbsolute(tex.Path), 4, 4);
+                    if (File.Exists(newPath))
+                    {
+                        if (searchForOthers && DarkMessageBox.Show(owner, "Other missing textures were found. Reconnect them?",
+                            "Reconnect offline media", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                            break;
+                        else
+                        {
+                            searchForOthers = false; // Unset flag so we don't prompt again
+                            list.Add(tex, newPath);
+                        }
+                    }
+                }
+
+            _editor.SendMessage("Reconnecting " + list.Count + " textures...", PopupType.Info);
+            Task.Factory.StartNew(() => list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); _editor.LoadedTexturesChange(item.Key); }));
         }
 
         public static void UnloadTextures(IWin32Window owner)
@@ -3740,14 +3760,36 @@ namespace TombEditor
             return results.Where(result => result != null);
         }
 
-        public static void UpdateWadFilepath(IWin32Window owner, ReferencedWad toReplace)
+        public static void UpdateWadFilepath(IWin32Window owner, ReferencedWad toReplace, bool searchForOthers = true)
         {
-            string path = LevelFileDialog.BrowseFile(owner, _editor.Level.Settings, toReplace.Path,
+            var settings = _editor.Level.Settings;
+            string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Path,
                 "Load an object file (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory, false);
-            if (path == toReplace?.Path)
+            if (string.IsNullOrEmpty(path) || (path == toReplace?.Path && toReplace?.LoadException == null))
                 return;
-            toReplace.SetPath(_editor.Level.Settings, path);
-            _editor.LoadedWadsChange();
+
+            var list = new Dictionary<ReferencedWad, string>() { { toReplace, path } };
+
+            if (searchForOthers)
+                foreach (var w in settings.Wads.Where(g => g != toReplace && g != null && g.LoadException != null))
+                {
+                    // Now recursively search down the folder structure
+                    var newPath = PathC.TryFindFile(Path.GetDirectoryName(settings.MakeAbsolute(path)), settings.MakeAbsolute(w.Path), 4, 4);
+                    if (File.Exists(newPath))
+                    {
+                        if (searchForOthers && DarkMessageBox.Show(owner, "Other missing wads were found. Reconnect them?",
+                            "Reconnect offline media", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                            break;
+                        else
+                        {
+                            searchForOthers = false; // Unset flag so we don't prompt again
+                            list.Add(w, newPath);
+                        }
+                    }
+                }
+
+            _editor.SendMessage("Reconnecting " + list.Count + " wads...", PopupType.Info);
+            Task.Factory.StartNew(() => list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); _editor.LoadedWadsChange(); }));
         }
 
         public static void RemoveWads(IWin32Window owner)
@@ -3765,6 +3807,42 @@ namespace TombEditor
             foreach (var wad in _editor.Level.Settings.Wads)
                 wad.Reload(_editor.Level.Settings, dialogHandler);
             _editor.LoadedWadsChange();
+        }
+
+        public static void UpdateImportedGeometryFilePath(IWin32Window owner, LevelSettings settings, ImportedGeometry toReplace, bool searchForOthers = true)
+        {
+            string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Info.Path,
+                "Select 3D file that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false);
+            if (string.IsNullOrEmpty(path) || (path == toReplace?.Info.Path && toReplace?.LoadException == null))
+                return;
+
+            var list = new Dictionary<ImportedGeometry, string>() { { toReplace, path } };
+
+            if (searchForOthers)
+                foreach (var ig in settings.ImportedGeometries.Where(ig => ig != toReplace && ig != null && ig.LoadException != null))
+                {
+                    // Now recursively search down the folder structure
+                    var newPath = PathC.TryFindFile(Path.GetDirectoryName(settings.MakeAbsolute(path)), settings.MakeAbsolute(ig.Info.Path), 4, 4);
+                    if (File.Exists(newPath))
+                    {
+                        if (searchForOthers && DarkMessageBox.Show(owner, "Other missing imported geometries were found. Reconnect them?",
+                        "Reconnect offline media", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                            break;
+                        else
+                        {
+                            searchForOthers = false; // Unset flag so we don't prompt again
+                            list.Add(ig, newPath);
+                        }
+                    }
+                }
+
+            _editor.SendMessage("Reconnecting " + list.Count + " imported geometries...", PopupType.Info);
+            foreach (var item in list)
+            {
+                var newInfo = item.Key.Info;
+                newInfo.Path = item.Value;
+                settings.ImportedGeometryUpdate(item.Key, newInfo);
+            }
         }
 
         public static void ReloadSounds(IWin32Window owner)
@@ -3817,6 +3895,11 @@ namespace TombEditor
             }
 
             if (_editor.SelectedObject == null && instance == null)
+                return;
+
+            // HACK: Thanks to TRTomb, copying empty imported geometry crashes TE.
+            // To prevent that, we block copying of such entries.
+            if ((instance as ImportedGeometryInstance)?.Model == null)
                 return;
 
             if (_editor.SelectedObject == null && instance != null)

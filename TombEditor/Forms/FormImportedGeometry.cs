@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using DarkUI.Forms;
-using TombLib;
 using TombLib.LevelData;
 
 namespace TombEditor.Forms
@@ -37,19 +36,22 @@ namespace TombEditor.Forms
         {
             ImportedGeometry currentModelObj = NewLevelSettings.ImportedGeometryFromID(_currentModel);
             if (currentModelObj == null)
-                importedGeometryLabel.Text = "None ☹";
+                importedGeometryLabel.Text = "None";
             else
                 importedGeometryLabel.Text = currentModelObj.Info.Name + "   (" + currentModelObj.Info.Path + ")";
         }
 
-        private void butAssign_Click(object sender, EventArgs e)
+        private void Assign()
         {
-            if(importedGeometryManager.SelectedImportedGeometry != null)
+            if (importedGeometryManager.SelectedImportedGeometry != null)
             {
                 _currentModel = importedGeometryManager.SelectedImportedGeometry.UniqueID;
                 UpdateCurrentModelDisplay();
             }
         }
+
+        private void butAssign_Click(object sender, EventArgs e) => Assign();
+        private void importedGeometryManager_MouseDoubleClick(object sender, MouseEventArgs e) => Assign();
 
         private void butOk_Click(object sender, EventArgs e)
         {
