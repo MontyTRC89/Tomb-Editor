@@ -66,6 +66,35 @@ namespace TombLib
         public static float Clamp(float value, float min, float max) => value < min ? min : value > max ? max : value;
 
         /// <summary>
+        /// Fast round from here: https://stackoverflow.com/questions/40460850/significant-drop-in-performance-of-math-round-on-x64-platform
+        /// Needed for lots of round operations, such as in an extremely large amount of 2D graphics drawing.
+        /// </summary>
+
+        private static readonly double[] RoundLookup = CreateRoundLookup();
+
+        private static double[] CreateRoundLookup()
+        {
+            double[] result = new double[15];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = Math.Pow(10, i);
+            }
+
+            return result;
+        }
+
+        public static double Round(double value)
+        {
+            return Math.Floor(value + 0.5);
+        }
+
+        public static double Round(double value, int decimalPlaces)
+        {
+            double adjustment = RoundLookup[decimalPlaces];
+            return Math.Floor(value * adjustment + 0.5) / adjustment;
+        }
+
+        /// <summary>
         /// Checks if a and b are almost equals, taking into account the magnitude of floating point numbers (unlike <see cref="WithinEpsilon"/> method). See Remarks.
         /// See remarks.
         /// </summary>
