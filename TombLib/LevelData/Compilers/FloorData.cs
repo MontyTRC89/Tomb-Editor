@@ -331,13 +331,7 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(0x13);
             }
 
-            // If sector is Beetle
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
-                (block.Flags & BlockFlags.Beetle) != BlockFlags.None)
-            {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x15);
-            }
+            
 
             // If sector is Trigger triggerer
             if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
@@ -345,6 +339,13 @@ namespace TombLib.LevelData.Compilers
             {
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add(0x14);
+            }
+
+            // If sector is Beetle
+            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
+                (block.Flags & BlockFlags.Beetle) != BlockFlags.None) {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x15);
             }
 
             // Triggers
