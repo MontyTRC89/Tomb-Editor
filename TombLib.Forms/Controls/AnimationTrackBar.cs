@@ -425,11 +425,16 @@ namespace TombLib.Controls
                                                           new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
                                                           TextFormatFlags.WordBreak);
 
+            // Precache some variables for speeding up renderer with ultra-long animations (5000+ frames)
+            var step = frameStep;
+            var padding = picSlider.Padding;
+            var drawStepWidth = _keyFrameBorderPen.Width * 4;
+
             // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
-                    int  currX = (int)Math.Round(frameStep * i, MidpointRounding.AwayFromZero) + picSlider.Padding.Left;
+                    int  currX = (int)Math.Round(step * i, MidpointRounding.AwayFromZero) + padding.Left;
                     bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
@@ -441,7 +446,7 @@ namespace TombLib.Controls
                         // Draw animcommands
                         foreach (var ac in Animation.WadAnimation.AnimCommands)
                         {
-                            Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, picSlider.Padding.Top - _animCommandMarkerRadius / 2 + (_animCommandMarkerRadius / 3 * count), _animCommandMarkerRadius, _animCommandMarkerRadius);
+                            Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, padding.Top - _animCommandMarkerRadius / 2 + (_animCommandMarkerRadius / 3 * count), _animCommandMarkerRadius, _animCommandMarkerRadius);
                             float startAngle = !first ? (!last ? 0   : 90 ) : 0;
                             float endAngle   = !first ? (!last ? 180 : 90 ) : 90;
 
@@ -456,12 +461,11 @@ namespace TombLib.Controls
 
                         // Draw frame lines.
                         // Determine if labels are overlapping and decide on drawing
-                        var drawStepWidth = _keyFrameBorderPen.Width * 2;
                         bool drawCurrentLine = true;
 
-                        if (frameStep < drawStepWidth)
+                        if (step < drawStepWidth)
                         {
-                            int period = (int)Math.Round(drawStepWidth / frameStep, MidpointRounding.AwayFromZero);
+                            int period = (int)Math.Round(drawStepWidth / step, MidpointRounding.AwayFromZero);
                             if (i % period != 0) drawCurrentLine = false;
                         }
 
@@ -471,9 +475,9 @@ namespace TombLib.Controls
 
                             var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
                             if (isKeyFrame)
-                                e.Graphics.DrawLine(_keyFrameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw keyframe
+                                e.Graphics.DrawLine(_keyFrameBorderPen, currX, padding.Top, currX, lineHeight);  // Draw keyframe
                             else
-                                e.Graphics.DrawLine(_frameBorderPen, currX, picSlider.Padding.Top, currX, lineHeight);  // Draw ordinary frame
+                                e.Graphics.DrawLine(_frameBorderPen, currX, padding.Top, currX, lineHeight);  // Draw ordinary frame
 
                             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
                         }
@@ -482,17 +486,16 @@ namespace TombLib.Controls
 
                     // Draw cursor on 2nd pass's first occurence (only for real animations, not for single-frame ones)
                     if (i == 0 && passes == 1 && realFrameCount > 1)
-                        e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + picSlider.Padding.Left, picSlider.Padding.Top, _cursorWidth, picSlider.ClientSize.Height - picSlider.Padding.Bottom - 2));
-
+                        e.Graphics.FillRectangle(_cursorBrush, new RectangleF(ValueToX(Value) + addShift + padding.Left, padding.Top, _cursorWidth, picSlider.ClientSize.Height - padding.Bottom - 2));
 
                     // Draw labels
                     bool drawCurrentLabel = true;
                     if ((passes == 0 && !isKeyFrame) || (passes != 0 && isKeyFrame))
                     {
                         // Determine if labels are overlapping and decide on drawing
-                        if (frameStep < maxLabelSize.Width * 1.25)
+                        if (step < maxLabelSize.Width * 1.25)
                         {
-                            int period = (int)Math.Round(maxLabelSize.Width * 1.25 / frameStep, MidpointRounding.AwayFromZero);
+                            int period = (int)Math.Round(maxLabelSize.Width * 1.25 / step, MidpointRounding.AwayFromZero);
                             if (i % period != 0) drawCurrentLabel = false;
                         }
 
@@ -503,12 +506,12 @@ namespace TombLib.Controls
                             int shift = 0;
                             if (first)
                             {
-                                shift -= picSlider.Padding.Left;
+                                shift -= padding.Left;
                                 align = StringAlignment.Near;
                             }
                             else if (last)
                             {
-                                shift += picSlider.Padding.Left;
+                                shift += padding.Left;
                                 align = StringAlignment.Far;
                             }
 
@@ -523,7 +526,7 @@ namespace TombLib.Controls
             if(realFrameCount > 1)
             {
                 e.Graphics.SmoothingMode = SmoothingMode.Default;
-                e.Graphics.DrawLine(_keyFrameBorderPen, picSlider.Padding.Left, picSlider.Padding.Top + 1, picSlider.ClientSize.Width - picSlider.Padding.Left, picSlider.Padding.Top + 1);
+                e.Graphics.DrawLine(_keyFrameBorderPen, padding.Left, padding.Top + 1, picSlider.ClientSize.Width - padding.Left, padding.Top + 1);
             }
         }
     }
