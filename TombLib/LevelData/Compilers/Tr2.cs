@@ -29,7 +29,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(fakeTextures);
 
                 // 16 bit textures
-                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data);
+                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings.Dither16BitTextures);
                 writer.Write(texture16Data);
 
                 const int filler = 0;

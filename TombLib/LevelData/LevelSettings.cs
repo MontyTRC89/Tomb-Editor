@@ -188,6 +188,7 @@ namespace TombLib.LevelData
         // Compiler options
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
+        public bool Dither16BitTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
         
         // For TR5 only

@@ -222,6 +222,8 @@ namespace TombLib.LevelData.IO
                     settings.Tr5WeatherType = (Tr5WeatherType)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.TexturePadding)
                     settings.TexturePadding = chunkIO.ReadChunkInt(chunkSize);
+                else if (id == Prj2Chunks.Dither16BitTextures)
+                    settings.Dither16BitTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveFloordataPacking)
