@@ -30,6 +30,7 @@ SoundTool:
  * Allow multiple instances option.
  
 WadTool:
+ * Fix extreme lag with very long animations.
  * Fix wrong copy animcommand behaviour.
  * Fix and animate sprite preview.
  
