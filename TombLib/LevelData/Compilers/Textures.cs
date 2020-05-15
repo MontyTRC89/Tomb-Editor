@@ -272,11 +272,9 @@ namespace TombLib.LevelData.Compilers
             // Stucki dithering matrix, it produces better result than Floyd-Steinberg
             // with gradients
             var ditherMatrix = new byte[,]
-            { { 0, 0, 3, 0, 1 },
-              { 5, 0, 6, 0, 0 },
-              { 0, 4, 2, 0, 1 },
-              { 0, 0, 0, 3, 0 },
-              { 2, 0, 0, 5, 0 }  };
+            { { 0, 0, 0, 8, 4 },
+              { 2, 4, 8, 4, 2 },
+              { 1, 2, 4, 2, 1 } };
 
             var seed = new Random(31459);
             int pixelCount = textureData.Length / 4;
@@ -295,7 +293,7 @@ namespace TombLib.LevelData.Compilers
                 int bE = g1 - g2;
                 int gE = b1 - b2;
 
-                for (int row = 0; row < 5; row++)
+                for (int row = 0; row < 3; row++)
                 {
                     int offsetY = (i / pageSize) + row;
 
@@ -307,7 +305,7 @@ namespace TombLib.LevelData.Compilers
                         if (coefficient != 0 && offsetX >= 0 && offsetX < pageSize && offsetY >= 0 && offsetY < height)
                         {
                             // Add some noise to coefficient to reduce banding
-                            float finalCoeff = 15 - (seed.Next(0, 8));
+                            float finalCoeff = 42 - (seed.Next(0, 15));
 
                             int offsetIndex = (offsetY * pageSize + offsetX) * 4;
                             int newR = (int)((rE * coefficient) / finalCoeff);
