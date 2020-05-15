@@ -37,14 +37,17 @@ namespace WadTool
             _animation = animation;
             //Make a copy of the Animation's commands. we dont want to edit the Commands directly
             _animCommands = new BindingList<WadAnimCommand>(animation.WadAnimation.AnimCommands.ToList());
-            this.gridViewCommands.DataSource = _animCommands;
+            gridViewCommands.DataSource = _animCommands;
         }
 
         private void AnimCommandEditor_AnimCommandChanged(object sender, AnimCommandEditor.AnimCommandEventArgs e)
         {
-            int index = gridViewCommands.SelectedRows[0].Index;
-            _animCommands[index] = e.Command.Clone();
-            Invalidate();
+            if (gridViewCommands.SelectedRows.Count == 1)
+            {
+                int index = gridViewCommands.SelectedRows[0].Index;
+                _animCommands[index] = e.Command.Clone();
+                Invalidate();
+            }
         }
 
         private void GridViewCommands_SelectionChanged(object sender, EventArgs e)
@@ -89,6 +92,8 @@ namespace WadTool
             base.OnShown(e);
             if (gridViewCommands.SelectedRows.Count > 0)
                 gridViewCommands.FirstDisplayedScrollingRowIndex = gridViewCommands.SelectedRows[0].Index;
+            else
+                gridViewCommands.Rows[0].Selected = true; // Select 1st row by default
         }
 
         private void DeleteCommand()

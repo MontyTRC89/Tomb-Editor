@@ -2,9 +2,11 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
+using System.Collections.Generic;
+using System.Linq;
 using TombLib.Wad;
 using TombLib.Graphics;
-using System.Drawing.Drawing2D;
 using DarkUI.Config;
 using DarkUI.Extensions;
 
@@ -241,8 +243,6 @@ namespace TombLib.Controls
             SelectionChanged?.Invoke(this, new EventArgs());
         }
 
-
-
         private void picSlider_SizeChanged(object sender, EventArgs e) => picSlider.Invalidate();
 
         private void picSlider_MouseEnter(object sender, EventArgs e)
@@ -404,7 +404,7 @@ namespace TombLib.Controls
                         }
                     }
 
-                    if(passes == 0)
+                    if (passes == 0)
                     {
                         e.Graphics.FillRectangle(_selectionBrush, rect);
                         e.Graphics.DrawRectangle(_selectionPen, rect);
@@ -425,6 +425,12 @@ namespace TombLib.Controls
                                                           new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
                                                           TextFormatFlags.WordBreak);
 
+            // Precache animcommands so we don't iterate them every drawn frame
+            var acList = new List<KeyValuePair<int, WadAnimCommand>>();
+            foreach (var ac in Animation.WadAnimation.AnimCommands.Where(ac => ac.FrameBased))
+                acList.Add(new KeyValuePair<int, WadAnimCommand>(ac.Parameter1, ac));
+
+
             // Precache some variables for speeding up renderer with ultra-long animations (5000+ frames)
             var step = frameStep;
             var padding = picSlider.Padding;
@@ -434,7 +440,7 @@ namespace TombLib.Controls
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
                 {
-                    int  currX = (int)Math.Round(step * i, MidpointRounding.AwayFromZero) + padding.Left;
+                    int  currX = (int)MathC.Round(step * i) + padding.Left;
                     bool isKeyFrame = (i % (Animation.WadAnimation.FrameRate == 0 ? 1 : Animation.WadAnimation.FrameRate) == 0);
                     bool first = i == 0;
                     bool last  = i >= realFrameCount - 1;
@@ -444,33 +450,37 @@ namespace TombLib.Controls
                         int count = 0;
 
                         // Draw animcommands
-                        foreach (var ac in Animation.WadAnimation.AnimCommands)
+                        if (acList.Count > 0)
                         {
-                            Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, padding.Top - _animCommandMarkerRadius / 2 + (_animCommandMarkerRadius / 3 * count), _animCommandMarkerRadius, _animCommandMarkerRadius);
-                            float startAngle = !first ? (!last ? 0   : 90 ) : 0;
-                            float endAngle   = !first ? (!last ? 180 : 90 ) : 90;
+                            foreach (var acPair in acList)
+                            {
+                                var ac = acPair.Value;
+                                Rectangle currRect = new Rectangle(currX - _animCommandMarkerRadius / 2, padding.Top - _animCommandMarkerRadius / 2 + (_animCommandMarkerRadius / 3 * count), _animCommandMarkerRadius, _animCommandMarkerRadius);
+                                float startAngle = !first ? (!last ? 0 : 90) : 0;
+                                float endAngle = !first ? (!last ? 180 : 90) : 90;
 
-                            if (ac.FrameBased && ac.Parameter1 == i)
-                                using (SolidBrush currBrush = (SolidBrush)(ac.Type == WadAnimCommandType.PlaySound ? _animCommandSoundBrush : _animCommandFlipeffectBrush).Clone())
-                                {
-                                    currBrush.Color = Color.FromArgb((int)((float)currBrush.Color.A / (1.0f + ((float)count / 3.0f))), currBrush.Color);
-                                    e.Graphics.FillPie(currBrush, currRect, startAngle, endAngle);
-                                    count++;
-                                }
+                                if (ac.Parameter1 == i)
+                                    using (SolidBrush currBrush = (SolidBrush)(ac.Type == WadAnimCommandType.PlaySound ? _animCommandSoundBrush : _animCommandFlipeffectBrush).Clone())
+                                    {
+                                        currBrush.Color = Color.FromArgb((int)((float)currBrush.Color.A / (1.0f + ((float)count / 3.0f))), currBrush.Color);
+                                        e.Graphics.FillPie(currBrush, currRect, startAngle, endAngle);
+                                        count++;
+                                    }
+                            }
+                            acList.RemoveAll(ac => ac.Key == i); // Remove already drawn animcommands from list
                         }
 
-                        // Draw frame lines.
-                        // Determine if labels are overlapping and decide on drawing
+                        // Determine if current line should be drawn.
                         bool drawCurrentLine = true;
-
                         if (step < drawStepWidth)
                         {
-                            int period = (int)Math.Round(drawStepWidth / step, MidpointRounding.AwayFromZero);
-                            if (i % period != 0) drawCurrentLine = false;
+                            int period = (int)MathC.Round(drawStepWidth / step);
+                            if (i % period != 0 && i != realFrameCount - 1) drawCurrentLine = false;
                         }
 
                         if (drawCurrentLine)
                         {
+                            // Draw frame lines
                             e.Graphics.SmoothingMode = SmoothingMode.Default;
 
                             var lineHeight = picSlider.Height / (isKeyFrame ? 2 : 3);
@@ -481,7 +491,6 @@ namespace TombLib.Controls
 
                             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
                         }
-
                     }
 
                     // Draw cursor on 2nd pass's first occurence (only for real animations, not for single-frame ones)
@@ -495,7 +504,7 @@ namespace TombLib.Controls
                         // Determine if labels are overlapping and decide on drawing
                         if (step < maxLabelSize.Width * 1.25)
                         {
-                            int period = (int)Math.Round(maxLabelSize.Width * 1.25 / step, MidpointRounding.AwayFromZero);
+                            int period = (int)MathC.Round(maxLabelSize.Width * 1.25 / step);
                             if (i % period != 0) drawCurrentLabel = false;
                         }
 
