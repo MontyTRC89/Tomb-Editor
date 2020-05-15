@@ -3607,9 +3607,9 @@ namespace TombEditor
                     var selection = new SectorSelection();
                     selection.Area = new RectangleInt2(VectorInt2.Zero, new VectorInt2(room.NumXSectors - 1, room.NumZSectors - 1));
 
-                    EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Floor);
-                    EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Ceiling);
-                    EditorActions.TexturizeAll(room, selection, emptyTexture, BlockFaceType.Wall);
+                    TexturizeAll(room, selection, emptyTexture, BlockFaceType.Floor);
+                    TexturizeAll(room, selection, emptyTexture, BlockFaceType.Ceiling);
+                    TexturizeAll(room, selection, emptyTexture, BlockFaceType.Wall);
                 }
             }
         }
@@ -3642,7 +3642,7 @@ namespace TombEditor
                 }
 
             _editor.SendMessage("Reconnecting " + list.Count + " textures...", PopupType.Info);
-            Task.Factory.StartNew(() => list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); _editor.LoadedTexturesChange(item.Key); }));
+            Task.Run(() => list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); _editor.LoadedTexturesChange(item.Key); }));
         }
 
         public static void UnloadTextures(IWin32Window owner)
@@ -3782,7 +3782,7 @@ namespace TombEditor
                 }
 
             _editor.SendMessage("Reconnecting " + list.Count + " wads...", PopupType.Info);
-            Task.Factory.StartNew(() => list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); _editor.LoadedWadsChange(); }));
+            Task.Run(() => list.ToList().ForEach(item => { item.Key.SetPath(settings, item.Value); _editor.LoadedWadsChange(); }));
         }
 
         public static void RemoveWads(IWin32Window owner)
