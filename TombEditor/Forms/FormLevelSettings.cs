@@ -603,6 +603,7 @@ namespace TombEditor.Forms
 
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
+            cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
 
@@ -1243,6 +1244,11 @@ namespace TombEditor.Forms
         private void numPadding_ValueChanged(object sender, EventArgs e)
         {
             _levelSettings.TexturePadding = (int)numPadding.Value;
+            UpdateDialog();
+        }
+        private void cbDither16BitTextures_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.Dither16BitTextures = cbDither16BitTextures.Checked;
             UpdateDialog();
         }
 
