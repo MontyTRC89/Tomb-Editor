@@ -420,6 +420,11 @@ namespace TombLib.Controls
                 }
             }
 
+            // Measure maximum label size
+            SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
+                                                          new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
+                                                          TextFormatFlags.WordBreak);
+
             // Draw frame-specific animcommands, numericals and dividers
             for (int passes = 0; passes < 2; passes++)
                 for (int i = 0; i < realFrameCount; ++i)
@@ -484,11 +489,6 @@ namespace TombLib.Controls
                     bool drawCurrentLabel = true;
                     if ((passes == 0 && !isKeyFrame) || (passes != 0 && isKeyFrame))
                     {
-                        // Measure maximum label size
-                        SizeF maxLabelSize = TextRenderer.MeasureText(realFrameCount.ToString(), Font,
-                                                                      new Size(picSlider.Width - picSlider.Padding.Horizontal, picSlider.Height - picSlider.Padding.Vertical),
-                                                                      TextFormatFlags.WordBreak);
-
                         // Determine if labels are overlapping and decide on drawing
                         if (frameStep < maxLabelSize.Width * 1.25)
                         {
