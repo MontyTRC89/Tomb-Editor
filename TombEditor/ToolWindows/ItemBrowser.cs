@@ -103,7 +103,7 @@ namespace TombEditor.ToolWindows
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            var searchPopUp = new PopUpSearch(comboItems);
+            var searchPopUp = new PopUpSearch(comboItems, _editor.Level.Settings.GameVersion);
             searchPopUp.Show(this);
         }
 
