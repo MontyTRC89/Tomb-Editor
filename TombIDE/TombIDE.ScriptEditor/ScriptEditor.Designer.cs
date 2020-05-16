@@ -44,6 +44,7 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Uncomment = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_19 = new System.Windows.Forms.ToolStripSeparator();
 			this.contextMenuItem_ToggleBookmark = new System.Windows.Forms.ToolStripMenuItem();
+			this.fileList = new TombIDE.ScriptEditor.Controls.FileList();
 			this.label_ColNumber = new System.Windows.Forms.ToolStripStatusLabel();
 			this.label_LineNumber = new System.Windows.Forms.ToolStripStatusLabel();
 			this.label_SelectedChars = new System.Windows.Forms.ToolStripStatusLabel();
@@ -61,13 +62,19 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_SelectAll = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_File = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_NewFile = new System.Windows.Forms.ToolStripMenuItem();
-			this.separator_20 = new System.Windows.Forms.ToolStripSeparator();
+			this.separator_10 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_SaveAll = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_Build = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Help = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_About = new System.Windows.Forms.ToolStripMenuItem();
+			this.menu_Options = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuItem_NewInclude = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuItem_ShowLogs = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuItem_ReindentOnSave = new System.Windows.Forms.ToolStripMenuItem();
+			this.separator_08 = new System.Windows.Forms.ToolStripSeparator();
+			this.menuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_Tools = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_CheckErrors = new System.Windows.Forms.ToolStripMenuItem();
 			this.separator_05 = new System.Windows.Forms.ToolStripSeparator();
@@ -81,8 +88,6 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_PrevBookmark = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_NextBookmark = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ClearBookmarks = new System.Windows.Forms.ToolStripMenuItem();
-			this.separator_08 = new System.Windows.Forms.ToolStripSeparator();
-			this.menuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
 			this.menu_View = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_ObjBrowser = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuItem_FileList = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,37 +98,37 @@ namespace TombIDE.ScriptEditor
 			this.separator_12 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuItem_SwapPanels = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip = new DarkUI.Controls.DarkMenuStrip();
+			this.objectBrowser = new TombIDE.ScriptEditor.Controls.ObjectBrowser();
 			this.panel_Editor = new System.Windows.Forms.Panel();
 			this.tabControl_Editor = new System.Windows.Forms.CustomTabControl();
 			this.panel_Syntax = new System.Windows.Forms.Panel();
 			this.syntaxPreview = new TombIDE.ScriptEditor.Controls.SyntaxPreview();
+			this.referenceBrowser = new TombIDE.ScriptEditor.Controls.ReferenceBrowser();
 			this.richTextBox_Logs = new System.Windows.Forms.RichTextBox();
+			this.scriptFolderWatcher = new System.IO.FileSystemWatcher();
 			this.sectionPanel_InfoBox = new DarkUI.Controls.DarkSectionPanel();
 			this.tabControl_Info = new System.Windows.Forms.CustomTabControl();
 			this.tabPage_RefBrowser = new System.Windows.Forms.TabPage();
-			this.referenceBrowser = new TombIDE.ScriptEditor.Controls.ReferenceBrowser();
 			this.tabPage_CompilerLogs = new System.Windows.Forms.TabPage();
 			this.tabPage_SearchResults = new System.Windows.Forms.TabPage();
 			this.treeView_SearchResults = new DarkUI.Controls.DarkTreeView();
+			this.separator_11 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_13 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_14 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_15 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_16 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_17 = new System.Windows.Forms.ToolStripSeparator();
-			this.separator_21 = new System.Windows.Forms.ToolStripSeparator();
 			this.splitter_Bottom = new System.Windows.Forms.Splitter();
 			this.splitter_Left = new System.Windows.Forms.Splitter();
 			this.splitter_Right = new System.Windows.Forms.Splitter();
 			this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
 			this.textChangedDelayTimer = new System.Windows.Forms.Timer(this.components);
 			this.toolStrip = new DarkUI.Controls.DarkToolStrip();
-			this.objectBrowser = new TombIDE.ScriptEditor.Controls.ObjectBrowser();
-			this.fileList = new TombIDE.ScriptEditor.Controls.FileList();
-			this.scriptFolderWatcher = new System.IO.FileSystemWatcher();
 			this.contextMenu_TextEditor.SuspendLayout();
 			this.menuStrip.SuspendLayout();
 			this.panel_Editor.SuspendLayout();
 			this.panel_Syntax.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.scriptFolderWatcher)).BeginInit();
 			this.sectionPanel_InfoBox.SuspendLayout();
 			this.tabControl_Info.SuspendLayout();
 			this.tabPage_RefBrowser.SuspendLayout();
@@ -131,7 +136,6 @@ namespace TombIDE.ScriptEditor
 			this.tabPage_SearchResults.SuspendLayout();
 			this.statusStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.scriptFolderWatcher)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// backgroundWorker_NGC
@@ -149,7 +153,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Build.Name = "button_Build";
 			this.button_Build.Size = new System.Drawing.Size(23, 25);
 			this.button_Build.Text = "Build Script (F9)";
-			this.button_Build.Click += new System.EventHandler(this.ToolStrip_Build_Click);
+			this.button_Build.Click += new System.EventHandler(this.File_Build_Click);
 			// 
 			// button_ClearBookmarks
 			// 
@@ -161,7 +165,7 @@ namespace TombIDE.ScriptEditor
 			this.button_ClearBookmarks.Name = "button_ClearBookmarks";
 			this.button_ClearBookmarks.Size = new System.Drawing.Size(23, 25);
 			this.button_ClearBookmarks.Text = "Clear all Bookmarks (Ctrl+Shift+B)";
-			this.button_ClearBookmarks.Click += new System.EventHandler(this.ToolStrip_ClearBookmarks_Click);
+			this.button_ClearBookmarks.Click += new System.EventHandler(this.Tools_ClearBookmarks_Click);
 			// 
 			// button_Comment
 			// 
@@ -173,7 +177,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Comment.Name = "button_Comment";
 			this.button_Comment.Size = new System.Drawing.Size(23, 25);
 			this.button_Comment.Text = "Comment out Lines (Ctrl+Shift+C)";
-			this.button_Comment.Click += new System.EventHandler(this.ToolStrip_Comment_Click);
+			this.button_Comment.Click += new System.EventHandler(this.Tools_Comment_Click);
 			// 
 			// button_Copy
 			// 
@@ -185,7 +189,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Copy.Name = "button_Copy";
 			this.button_Copy.Size = new System.Drawing.Size(23, 25);
 			this.button_Copy.Text = "Copy (Ctrl+C)";
-			this.button_Copy.Click += new System.EventHandler(this.ToolStrip_Copy_Click);
+			this.button_Copy.Click += new System.EventHandler(this.Edit_Copy_Click);
 			// 
 			// button_Cut
 			// 
@@ -197,7 +201,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Cut.Name = "button_Cut";
 			this.button_Cut.Size = new System.Drawing.Size(23, 25);
 			this.button_Cut.Text = "Cut (Ctrl+X)";
-			this.button_Cut.Click += new System.EventHandler(this.ToolStrip_Cut_Click);
+			this.button_Cut.Click += new System.EventHandler(this.Edit_Cut_Click);
 			// 
 			// button_NewFile
 			// 
@@ -209,7 +213,7 @@ namespace TombIDE.ScriptEditor
 			this.button_NewFile.Name = "button_NewFile";
 			this.button_NewFile.Size = new System.Drawing.Size(23, 25);
 			this.button_NewFile.Text = "New File...";
-			this.button_NewFile.Click += new System.EventHandler(this.ToolStrip_NewFile_Click);
+			this.button_NewFile.Click += new System.EventHandler(this.File_NewFile_Click);
 			// 
 			// button_NextBookmark
 			// 
@@ -221,7 +225,7 @@ namespace TombIDE.ScriptEditor
 			this.button_NextBookmark.Name = "button_NextBookmark";
 			this.button_NextBookmark.Size = new System.Drawing.Size(23, 25);
 			this.button_NextBookmark.Text = "Next Bookmark (Ctrl+Right)";
-			this.button_NextBookmark.Click += new System.EventHandler(this.ToolStrip_NextBookmark_Click);
+			this.button_NextBookmark.Click += new System.EventHandler(this.Tools_NextBookmark_Click);
 			// 
 			// button_Paste
 			// 
@@ -233,7 +237,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Paste.Name = "button_Paste";
 			this.button_Paste.Size = new System.Drawing.Size(23, 25);
 			this.button_Paste.Text = "Paste (Ctrl+V)";
-			this.button_Paste.Click += new System.EventHandler(this.ToolStrip_Paste_Click);
+			this.button_Paste.Click += new System.EventHandler(this.Edit_Paste_Click);
 			// 
 			// button_PrevBookmark
 			// 
@@ -245,7 +249,7 @@ namespace TombIDE.ScriptEditor
 			this.button_PrevBookmark.Name = "button_PrevBookmark";
 			this.button_PrevBookmark.Size = new System.Drawing.Size(23, 25);
 			this.button_PrevBookmark.Text = "Previous Bookmark (Ctrl+Left)";
-			this.button_PrevBookmark.Click += new System.EventHandler(this.ToolStrip_PrevBookmark_Click);
+			this.button_PrevBookmark.Click += new System.EventHandler(this.Tools_PrevBookmark_Click);
 			// 
 			// button_Redo
 			// 
@@ -257,7 +261,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Redo.Name = "button_Redo";
 			this.button_Redo.Size = new System.Drawing.Size(23, 25);
 			this.button_Redo.Text = "Redo (Ctrl+Y)";
-			this.button_Redo.Click += new System.EventHandler(this.ToolStrip_Redo_Click);
+			this.button_Redo.Click += new System.EventHandler(this.Edit_Redo_Click);
 			// 
 			// button_ResetZoom
 			// 
@@ -281,7 +285,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Save.Name = "button_Save";
 			this.button_Save.Size = new System.Drawing.Size(23, 25);
 			this.button_Save.Text = "Save (Ctrl+S)";
-			this.button_Save.Click += new System.EventHandler(this.ToolStrip_Save_Click);
+			this.button_Save.Click += new System.EventHandler(this.File_Save_Click);
 			// 
 			// button_SaveAll
 			// 
@@ -293,7 +297,7 @@ namespace TombIDE.ScriptEditor
 			this.button_SaveAll.Name = "button_SaveAll";
 			this.button_SaveAll.Size = new System.Drawing.Size(23, 25);
 			this.button_SaveAll.Text = "Save All (Ctrl+Shift+S)";
-			this.button_SaveAll.Click += new System.EventHandler(this.ToolStrip_SaveAll_Click);
+			this.button_SaveAll.Click += new System.EventHandler(this.File_SaveAll_Click);
 			// 
 			// button_ToggleBookmark
 			// 
@@ -305,7 +309,7 @@ namespace TombIDE.ScriptEditor
 			this.button_ToggleBookmark.Name = "button_ToggleBookmark";
 			this.button_ToggleBookmark.Size = new System.Drawing.Size(23, 25);
 			this.button_ToggleBookmark.Text = "Toggle Bookmark (Ctrl+B)";
-			this.button_ToggleBookmark.Click += new System.EventHandler(this.ToolStrip_ToggleBookmark_Click);
+			this.button_ToggleBookmark.Click += new System.EventHandler(this.Tools_ToggleBookmark_Click);
 			// 
 			// button_Uncomment
 			// 
@@ -317,7 +321,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Uncomment.Name = "button_Uncomment";
 			this.button_Uncomment.Size = new System.Drawing.Size(23, 25);
 			this.button_Uncomment.Text = "Uncomment Lines (Ctrl+Shift+U)";
-			this.button_Uncomment.Click += new System.EventHandler(this.ToolStrip_Uncomment_Click);
+			this.button_Uncomment.Click += new System.EventHandler(this.Tools_Uncomment_Click);
 			// 
 			// button_Undo
 			// 
@@ -329,7 +333,7 @@ namespace TombIDE.ScriptEditor
 			this.button_Undo.Name = "button_Undo";
 			this.button_Undo.Size = new System.Drawing.Size(23, 25);
 			this.button_Undo.Text = "Undo (Ctrl+Z)";
-			this.button_Undo.Click += new System.EventHandler(this.ToolStrip_Undo_Click);
+			this.button_Undo.Click += new System.EventHandler(this.Edit_Undo_Click);
 			// 
 			// contextMenu_TextEditor
 			// 
@@ -355,7 +359,7 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Cut.Name = "contextMenuItem_Cut";
 			this.contextMenuItem_Cut.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_Cut.Text = "Cut";
-			this.contextMenuItem_Cut.Click += new System.EventHandler(this.ContextMenu_Cut_Click);
+			this.contextMenuItem_Cut.Click += new System.EventHandler(this.Edit_Cut_Click);
 			// 
 			// contextMenuItem_Copy
 			// 
@@ -365,7 +369,7 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Copy.Name = "contextMenuItem_Copy";
 			this.contextMenuItem_Copy.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_Copy.Text = "Copy";
-			this.contextMenuItem_Copy.Click += new System.EventHandler(this.ContextMenu_Copy_Click);
+			this.contextMenuItem_Copy.Click += new System.EventHandler(this.Edit_Copy_Click);
 			// 
 			// contextMenuItem_Paste
 			// 
@@ -375,7 +379,7 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Paste.Name = "contextMenuItem_Paste";
 			this.contextMenuItem_Paste.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_Paste.Text = "Paste";
-			this.contextMenuItem_Paste.Click += new System.EventHandler(this.ContextMenu_Paste_Click);
+			this.contextMenuItem_Paste.Click += new System.EventHandler(this.Edit_Paste_Click);
 			// 
 			// separator_18
 			// 
@@ -393,7 +397,7 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Comment.Name = "contextMenuItem_Comment";
 			this.contextMenuItem_Comment.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_Comment.Text = "Comment out Lines";
-			this.contextMenuItem_Comment.Click += new System.EventHandler(this.ContextMenu_Comment_Click);
+			this.contextMenuItem_Comment.Click += new System.EventHandler(this.Tools_Comment_Click);
 			// 
 			// contextMenuItem_Uncomment
 			// 
@@ -403,7 +407,7 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_Uncomment.Name = "contextMenuItem_Uncomment";
 			this.contextMenuItem_Uncomment.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_Uncomment.Text = "Uncomment Lines";
-			this.contextMenuItem_Uncomment.Click += new System.EventHandler(this.ContextMenu_Uncomment_Click);
+			this.contextMenuItem_Uncomment.Click += new System.EventHandler(this.Tools_Uncomment_Click);
 			// 
 			// separator_19
 			// 
@@ -421,7 +425,16 @@ namespace TombIDE.ScriptEditor
 			this.contextMenuItem_ToggleBookmark.Name = "contextMenuItem_ToggleBookmark";
 			this.contextMenuItem_ToggleBookmark.Size = new System.Drawing.Size(179, 22);
 			this.contextMenuItem_ToggleBookmark.Text = "Toggle Bookmark";
-			this.contextMenuItem_ToggleBookmark.Click += new System.EventHandler(this.ContextMenu_ToggleBookmark_Click);
+			this.contextMenuItem_ToggleBookmark.Click += new System.EventHandler(this.Tools_ToggleBookmark_Click);
+			// 
+			// fileList
+			// 
+			this.fileList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.fileList.Dock = System.Windows.Forms.DockStyle.Right;
+			this.fileList.Location = new System.Drawing.Point(760, 52);
+			this.fileList.Name = "fileList";
+			this.fileList.Size = new System.Drawing.Size(200, 315);
+			this.fileList.TabIndex = 4;
 			// 
 			// label_ColNumber
 			// 
@@ -572,7 +585,7 @@ namespace TombIDE.ScriptEditor
 			this.menu_File.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menu_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItem_NewFile,
-            this.separator_20,
+            this.separator_10,
             this.menuItem_Save,
             this.menuItem_SaveAll,
             this.separator_01,
@@ -592,13 +605,13 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_NewFile.Text = "&New File...";
 			this.menuItem_NewFile.Click += new System.EventHandler(this.File_NewFile_Click);
 			// 
-			// separator_20
+			// separator_10
 			// 
-			this.separator_20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.separator_20.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-			this.separator_20.Name = "separator_20";
-			this.separator_20.Size = new System.Drawing.Size(184, 6);
+			this.separator_10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_10.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+			this.separator_10.Name = "separator_10";
+			this.separator_10.Size = new System.Drawing.Size(184, 6);
 			// 
 			// menuItem_Save
 			// 
@@ -659,12 +672,69 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_About.Text = "&About...";
 			this.menuItem_About.Click += new System.EventHandler(this.Help_About_Click);
 			// 
+			// menu_Options
+			// 
+			this.menu_Options.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menu_Options.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_NewInclude,
+            this.menuItem_ShowLogs,
+            this.menuItem_ReindentOnSave,
+            this.separator_08,
+            this.menuItem_Settings});
+			this.menu_Options.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menu_Options.Name = "menu_Options";
+			this.menu_Options.Size = new System.Drawing.Size(61, 20);
+			this.menu_Options.Text = "&Options";
+			// 
+			// menuItem_NewInclude
+			// 
+			this.menuItem_NewInclude.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_NewInclude.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_NewInclude.Name = "menuItem_NewInclude";
+			this.menuItem_NewInclude.Size = new System.Drawing.Size(242, 22);
+			this.menuItem_NewInclude.Text = "&Use New #INCLUDE Method";
+			this.menuItem_NewInclude.Click += new System.EventHandler(this.Options_NewInclude_Click);
+			// 
+			// menuItem_ShowLogs
+			// 
+			this.menuItem_ShowLogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_ShowLogs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_ShowLogs.Name = "menuItem_ShowLogs";
+			this.menuItem_ShowLogs.Size = new System.Drawing.Size(242, 22);
+			this.menuItem_ShowLogs.Text = "&Show Compiler Logs After Build";
+			this.menuItem_ShowLogs.Click += new System.EventHandler(this.Options_ShowLogs_Click);
+			// 
+			// menuItem_ReindentOnSave
+			// 
+			this.menuItem_ReindentOnSave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_ReindentOnSave.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_ReindentOnSave.Name = "menuItem_ReindentOnSave";
+			this.menuItem_ReindentOnSave.Size = new System.Drawing.Size(242, 22);
+			this.menuItem_ReindentOnSave.Text = "&Reindent on Save";
+			this.menuItem_ReindentOnSave.Click += new System.EventHandler(this.Options_ReindentOnSave_Click);
+			// 
+			// separator_08
+			// 
+			this.separator_08.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_08.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_08.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+			this.separator_08.Name = "separator_08";
+			this.separator_08.Size = new System.Drawing.Size(239, 6);
+			// 
+			// menuItem_Settings
+			// 
+			this.menuItem_Settings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_Settings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_Settings.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_settings_16;
+			this.menuItem_Settings.Name = "menuItem_Settings";
+			this.menuItem_Settings.Size = new System.Drawing.Size(242, 22);
+			this.menuItem_Settings.Text = "Text Editor &Settings...";
+			this.menuItem_Settings.Click += new System.EventHandler(this.Options_Settings_Click);
+			// 
 			// menu_Tools
 			// 
 			this.menu_Tools.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.menu_Tools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_CheckErrors,
-            this.separator_05,
             this.menuItem_Reindent,
             this.menuItem_Trim,
             this.separator_06,
@@ -675,8 +745,8 @@ namespace TombIDE.ScriptEditor
             this.menuItem_PrevBookmark,
             this.menuItem_NextBookmark,
             this.menuItem_ClearBookmarks,
-            this.separator_08,
-            this.menuItem_Settings});
+            this.separator_05,
+            this.menuItem_CheckErrors});
 			this.menu_Tools.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.menu_Tools.Name = "menu_Tools";
 			this.menu_Tools.Size = new System.Drawing.Size(46, 20);
@@ -689,11 +759,14 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_CheckErrors.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_search_16;
 			this.menuItem_CheckErrors.Name = "menuItem_CheckErrors";
 			this.menuItem_CheckErrors.Size = new System.Drawing.Size(300, 22);
-			this.menuItem_CheckErrors.Text = "Check For &Errors";
+			this.menuItem_CheckErrors.Text = "Manually Check for &Errors";
 			this.menuItem_CheckErrors.Click += new System.EventHandler(this.Tools_CheckErrors_Click);
 			// 
 			// separator_05
 			// 
+			this.separator_05.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_05.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_05.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
 			this.separator_05.Name = "separator_05";
 			this.separator_05.Size = new System.Drawing.Size(297, 6);
 			// 
@@ -772,7 +845,7 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_PrevBookmark.Name = "menuItem_PrevBookmark";
 			this.menuItem_PrevBookmark.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Left)));
 			this.menuItem_PrevBookmark.Size = new System.Drawing.Size(300, 22);
-			this.menuItem_PrevBookmark.Text = "Go To &Previous Bookmark";
+			this.menuItem_PrevBookmark.Text = "Go to &Previous Bookmark";
 			this.menuItem_PrevBookmark.Click += new System.EventHandler(this.Tools_PrevBookmark_Click);
 			// 
 			// menuItem_NextBookmark
@@ -783,7 +856,7 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_NextBookmark.Name = "menuItem_NextBookmark";
 			this.menuItem_NextBookmark.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Right)));
 			this.menuItem_NextBookmark.Size = new System.Drawing.Size(300, 22);
-			this.menuItem_NextBookmark.Text = "Go To &Next Bookmark";
+			this.menuItem_NextBookmark.Text = "Go to &Next Bookmark";
 			this.menuItem_NextBookmark.Click += new System.EventHandler(this.Tools_NextBookmark_Click);
 			// 
 			// menuItem_ClearBookmarks
@@ -797,21 +870,6 @@ namespace TombIDE.ScriptEditor
 			this.menuItem_ClearBookmarks.Size = new System.Drawing.Size(300, 22);
 			this.menuItem_ClearBookmarks.Text = "Clear &all Bookmarks";
 			this.menuItem_ClearBookmarks.Click += new System.EventHandler(this.Tools_ClearBookmarks_Click);
-			// 
-			// separator_08
-			// 
-			this.separator_08.Name = "separator_08";
-			this.separator_08.Size = new System.Drawing.Size(297, 6);
-			// 
-			// menuItem_Settings
-			// 
-			this.menuItem_Settings.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.menuItem_Settings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.menuItem_Settings.Image = global::TombIDE.ScriptEditor.Properties.Resources.general_settings_16;
-			this.menuItem_Settings.Name = "menuItem_Settings";
-			this.menuItem_Settings.Size = new System.Drawing.Size(300, 22);
-			this.menuItem_Settings.Text = "&Settings...";
-			this.menuItem_Settings.Click += new System.EventHandler(this.Tools_Settings_Click);
 			// 
 			// menu_View
 			// 
@@ -912,6 +970,7 @@ namespace TombIDE.ScriptEditor
             this.menu_File,
             this.menu_Edit,
             this.menu_Tools,
+            this.menu_Options,
             this.menu_View,
             this.menu_Help});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -919,6 +978,15 @@ namespace TombIDE.ScriptEditor
 			this.menuStrip.Padding = new System.Windows.Forms.Padding(3, 2, 0, 2);
 			this.menuStrip.Size = new System.Drawing.Size(960, 24);
 			this.menuStrip.TabIndex = 0;
+			// 
+			// objectBrowser
+			// 
+			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Left;
+			this.objectBrowser.Location = new System.Drawing.Point(0, 52);
+			this.objectBrowser.Name = "objectBrowser";
+			this.objectBrowser.Size = new System.Drawing.Size(200, 315);
+			this.objectBrowser.TabIndex = 2;
 			// 
 			// panel_Editor
 			// 
@@ -979,10 +1047,12 @@ namespace TombIDE.ScriptEditor
 			// 
 			// syntaxPreview
 			// 
+			this.syntaxPreview.BackColor = System.Drawing.Color.Black;
 			this.syntaxPreview.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.syntaxPreview.CurrentArgumentIndex = 0;
 			this.syntaxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.syntaxPreview.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.syntaxPreview.ForeColor = System.Drawing.Color.White;
 			this.syntaxPreview.Location = new System.Drawing.Point(0, 0);
 			this.syntaxPreview.Name = "syntaxPreview";
 			this.syntaxPreview.ReadOnly = true;
@@ -991,6 +1061,15 @@ namespace TombIDE.ScriptEditor
 			this.syntaxPreview.TabIndex = 0;
 			this.syntaxPreview.Text = "";
 			this.syntaxPreview.WordWrap = false;
+			// 
+			// referenceBrowser
+			// 
+			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.referenceBrowser.Location = new System.Drawing.Point(0, 0);
+			this.referenceBrowser.Name = "referenceBrowser";
+			this.referenceBrowser.Size = new System.Drawing.Size(948, 143);
+			this.referenceBrowser.TabIndex = 0;
 			// 
 			// richTextBox_Logs
 			// 
@@ -1005,6 +1084,16 @@ namespace TombIDE.ScriptEditor
 			this.richTextBox_Logs.Size = new System.Drawing.Size(948, 143);
 			this.richTextBox_Logs.TabIndex = 0;
 			this.richTextBox_Logs.Text = "";
+			// 
+			// scriptFolderWatcher
+			// 
+			this.scriptFolderWatcher.EnableRaisingEvents = true;
+			this.scriptFolderWatcher.IncludeSubdirectories = true;
+			this.scriptFolderWatcher.SynchronizingObject = this.fileList;
+			this.scriptFolderWatcher.Changed += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
+			this.scriptFolderWatcher.Created += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
+			this.scriptFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
+			this.scriptFolderWatcher.Renamed += new System.IO.RenamedEventHandler(this.scriptFolderWatcher_Renamed);
 			// 
 			// sectionPanel_InfoBox
 			// 
@@ -1060,15 +1149,6 @@ namespace TombIDE.ScriptEditor
 			this.tabPage_RefBrowser.TabIndex = 0;
 			this.tabPage_RefBrowser.Text = "Reference Browser";
 			// 
-			// referenceBrowser
-			// 
-			this.referenceBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.referenceBrowser.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.referenceBrowser.Location = new System.Drawing.Point(0, 0);
-			this.referenceBrowser.Name = "referenceBrowser";
-			this.referenceBrowser.Size = new System.Drawing.Size(948, 143);
-			this.referenceBrowser.TabIndex = 0;
-			// 
 			// tabPage_CompilerLogs
 			// 
 			this.tabPage_CompilerLogs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1103,6 +1183,14 @@ namespace TombIDE.ScriptEditor
 			this.treeView_SearchResults.Size = new System.Drawing.Size(948, 143);
 			this.treeView_SearchResults.TabIndex = 0;
 			this.treeView_SearchResults.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeView_SearchResults_MouseDoubleClick);
+			// 
+			// separator_11
+			// 
+			this.separator_11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.separator_11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.separator_11.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.separator_11.Name = "separator_11";
+			this.separator_11.Size = new System.Drawing.Size(6, 28);
 			// 
 			// separator_13
 			// 
@@ -1143,14 +1231,6 @@ namespace TombIDE.ScriptEditor
 			this.separator_17.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
 			this.separator_17.Name = "separator_17";
 			this.separator_17.Size = new System.Drawing.Size(6, 28);
-			// 
-			// separator_21
-			// 
-			this.separator_21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.separator_21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.separator_21.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-			this.separator_21.Name = "separator_21";
-			this.separator_21.Size = new System.Drawing.Size(6, 28);
 			// 
 			// splitter_Bottom
 			// 
@@ -1211,7 +1291,7 @@ namespace TombIDE.ScriptEditor
 			this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.button_NewFile,
-            this.separator_21,
+            this.separator_11,
             this.button_Save,
             this.button_SaveAll,
             this.separator_13,
@@ -1236,34 +1316,6 @@ namespace TombIDE.ScriptEditor
 			this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
 			this.toolStrip.Size = new System.Drawing.Size(960, 28);
 			this.toolStrip.TabIndex = 1;
-			// 
-			// objectBrowser
-			// 
-			this.objectBrowser.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.objectBrowser.Dock = System.Windows.Forms.DockStyle.Left;
-			this.objectBrowser.Location = new System.Drawing.Point(0, 52);
-			this.objectBrowser.Name = "objectBrowser";
-			this.objectBrowser.Size = new System.Drawing.Size(200, 315);
-			this.objectBrowser.TabIndex = 2;
-			// 
-			// fileList
-			// 
-			this.fileList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.fileList.Dock = System.Windows.Forms.DockStyle.Right;
-			this.fileList.Location = new System.Drawing.Point(760, 52);
-			this.fileList.Name = "fileList";
-			this.fileList.Size = new System.Drawing.Size(200, 315);
-			this.fileList.TabIndex = 4;
-			// 
-			// scriptFolderWatcher
-			// 
-			this.scriptFolderWatcher.EnableRaisingEvents = true;
-			this.scriptFolderWatcher.IncludeSubdirectories = true;
-			this.scriptFolderWatcher.SynchronizingObject = this.fileList;
-			this.scriptFolderWatcher.Changed += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
-			this.scriptFolderWatcher.Created += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
-			this.scriptFolderWatcher.Deleted += new System.IO.FileSystemEventHandler(this.scriptFolderWatcher_Changed);
-			this.scriptFolderWatcher.Renamed += new System.IO.RenamedEventHandler(this.scriptFolderWatcher_Renamed);
 			// 
 			// ScriptEditor
 			// 
@@ -1290,6 +1342,7 @@ namespace TombIDE.ScriptEditor
 			this.menuStrip.PerformLayout();
 			this.panel_Editor.ResumeLayout(false);
 			this.panel_Syntax.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.scriptFolderWatcher)).EndInit();
 			this.sectionPanel_InfoBox.ResumeLayout(false);
 			this.tabControl_Info.ResumeLayout(false);
 			this.tabPage_RefBrowser.ResumeLayout(false);
@@ -1299,7 +1352,6 @@ namespace TombIDE.ScriptEditor
 			this.statusStrip.PerformLayout();
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.scriptFolderWatcher)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1357,6 +1409,7 @@ namespace TombIDE.ScriptEditor
 		private System.Windows.Forms.ToolStripMenuItem menu_Edit;
 		private System.Windows.Forms.ToolStripMenuItem menu_File;
 		private System.Windows.Forms.ToolStripMenuItem menu_Help;
+		private System.Windows.Forms.ToolStripMenuItem menu_Options;
 		private System.Windows.Forms.ToolStripMenuItem menu_Tools;
 		private System.Windows.Forms.ToolStripMenuItem menu_View;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_About;
@@ -1370,16 +1423,19 @@ namespace TombIDE.ScriptEditor
 		private System.Windows.Forms.ToolStripMenuItem menuItem_FindReplace;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_InfoBox;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_NewFile;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_NewInclude;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_NextBookmark;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_ObjBrowser;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Paste;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_PrevBookmark;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Redo;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Reindent;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_ReindentOnSave;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Save;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_SaveAll;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_SelectAll;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_Settings;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_ShowLogs;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_StatusStrip;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_SwapPanels;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_ToggleBookmark;
@@ -1396,6 +1452,8 @@ namespace TombIDE.ScriptEditor
 		private System.Windows.Forms.ToolStripSeparator separator_07;
 		private System.Windows.Forms.ToolStripSeparator separator_08;
 		private System.Windows.Forms.ToolStripSeparator separator_09;
+		private System.Windows.Forms.ToolStripSeparator separator_10;
+		private System.Windows.Forms.ToolStripSeparator separator_11;
 		private System.Windows.Forms.ToolStripSeparator separator_12;
 		private System.Windows.Forms.ToolStripSeparator separator_13;
 		private System.Windows.Forms.ToolStripSeparator separator_14;
@@ -1404,8 +1462,6 @@ namespace TombIDE.ScriptEditor
 		private System.Windows.Forms.ToolStripSeparator separator_17;
 		private System.Windows.Forms.ToolStripSeparator separator_18;
 		private System.Windows.Forms.ToolStripSeparator separator_19;
-		private System.Windows.Forms.ToolStripSeparator separator_20;
-		private System.Windows.Forms.ToolStripSeparator separator_21;
 		private System.Windows.Forms.ToolStripStatusLabel label_ColNumber;
 		private System.Windows.Forms.ToolStripStatusLabel label_LineNumber;
 		private System.Windows.Forms.ToolStripStatusLabel label_SelectedChars;

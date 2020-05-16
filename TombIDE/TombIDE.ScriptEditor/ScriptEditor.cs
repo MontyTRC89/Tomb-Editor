@@ -520,7 +520,7 @@ namespace TombIDE.ScriptEditor
 		private void Edit_SelectAll_Click(object sender, EventArgs e)
 		{
 			_textEditor.SelectAll();
-			DoStatusCounting(); // So it updates the status strip labels
+			DoStatusCounting();
 		}
 
 		private void Tools_CheckErrors_Click(object sender, EventArgs e) => ((ScriptTextEditor)_textEditor).ManuallyCheckForErrors();
@@ -532,7 +532,11 @@ namespace TombIDE.ScriptEditor
 		private void Tools_PrevBookmark_Click(object sender, EventArgs e) => _textEditor.GoToPrevBookmark();
 		private void Tools_NextBookmark_Click(object sender, EventArgs e) => _textEditor.GoToNextBookmark();
 		private void Tools_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
-		private void Tools_Settings_Click(object sender, EventArgs e) => ShowSettingsForm();
+
+		private void Options_NewInclude_Click(object sender, EventArgs e) => ToggleNewIncludeOption(!menuItem_NewInclude.Checked);
+		private void Options_ShowLogs_Click(object sender, EventArgs e) => ToggleShowLogsOption(!menuItem_ShowLogs.Checked);
+		private void Options_ReindentOnSave_Click(object sender, EventArgs e) => ToggleReindentOnSaveOption(!menuItem_ReindentOnSave.Checked);
+		private void Options_Settings_Click(object sender, EventArgs e) => ShowSettingsForm();
 
 		private void View_ObjBrowser_Click(object sender, EventArgs e) => ToggleObjBrowser(!menuItem_ObjBrowser.Checked);
 		private void View_FileList_Click(object sender, EventArgs e) => ToggleFileList(!menuItem_FileList.Checked);
@@ -542,29 +546,6 @@ namespace TombIDE.ScriptEditor
 		private void View_SwapPanels_Click(object sender, EventArgs e) => SwapPanels(!menuItem_SwapPanels.Checked);
 
 		private void Help_About_Click(object sender, EventArgs e) => ShowAboutForm();
-
-		private void ContextMenu_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
-		private void ContextMenu_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
-		private void ContextMenu_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
-		private void ContextMenu_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
-		private void ContextMenu_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
-		private void ContextMenu_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
-
-		private void ToolStrip_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
-		private void ToolStrip_Save_Click(object sender, EventArgs e) => OnSaveButtonClicked();
-		private void ToolStrip_SaveAll_Click(object sender, EventArgs e) => SaveAll();
-		private void ToolStrip_Undo_Click(object sender, EventArgs e) => _textEditor.Undo();
-		private void ToolStrip_Redo_Click(object sender, EventArgs e) => _textEditor.Redo();
-		private void ToolStrip_Cut_Click(object sender, EventArgs e) => _textEditor.Cut();
-		private void ToolStrip_Copy_Click(object sender, EventArgs e) => _textEditor.Copy();
-		private void ToolStrip_Paste_Click(object sender, EventArgs e) => _textEditor.Paste();
-		private void ToolStrip_Comment_Click(object sender, EventArgs e) => _textEditor.CommentLines();
-		private void ToolStrip_Uncomment_Click(object sender, EventArgs e) => _textEditor.UncommentLines();
-		private void ToolStrip_ToggleBookmark_Click(object sender, EventArgs e) => _textEditor.ToggleBookmark();
-		private void ToolStrip_PrevBookmark_Click(object sender, EventArgs e) => _textEditor.GoToPrevBookmark();
-		private void ToolStrip_NextBookmark_Click(object sender, EventArgs e) => _textEditor.GoToNextBookmark();
-		private void ToolStrip_ClearBookmarks_Click(object sender, EventArgs e) => ClearAllBookmarks();
-		private void ToolStrip_Build_Click(object sender, EventArgs e) => BuildScript();
 
 		private void StatusStrip_ResetZoom_Click(object sender, EventArgs e)
 		{
@@ -748,6 +729,24 @@ namespace TombIDE.ScriptEditor
 			syntaxPreview.Text = CommandHelper.GetCommandSyntax(_textEditor.Document, _textEditor.CaretOffset);
 		}
 
+		private void ToggleNewIncludeOption(bool state)
+		{
+			menuItem_NewInclude.Checked = state;
+			_ide.IDEConfiguration.UseNewIncludeMethod = state;
+		}
+
+		private void ToggleShowLogsOption(bool state)
+		{
+			menuItem_ShowLogs.Checked = state;
+			_ide.IDEConfiguration.ShowCompilerLogsAfterBuild = state;
+		}
+
+		private void ToggleReindentOnSaveOption(bool state)
+		{
+			menuItem_ReindentOnSave.Checked = state;
+			_ide.IDEConfiguration.ReindentOnSave = state;
+		}
+
 		private void ToggleObjBrowser(bool state)
 		{
 			menuItem_ObjBrowser.Checked = state;
@@ -859,7 +858,8 @@ namespace TombIDE.ScriptEditor
 					_ide.Project.ScriptPath,
 					_ide.Project.EnginePath,
 					DefaultPaths.GetInternalNGCPath(),
-					DefaultPaths.GetVGEPath()))
+					DefaultPaths.GetVGEPath(),
+					menuItem_NewInclude.Checked))
 				{
 					// Read the logs
 					string logFilePath = Path.Combine(DefaultPaths.GetVGEScriptPath(), "script_log.txt");
@@ -867,9 +867,12 @@ namespace TombIDE.ScriptEditor
 					// Read and show the logs in the "Compiler Logs" richTextBox
 					richTextBox_Logs.Text = File.ReadAllText(logFilePath);
 
-					// Select the "Compiler Logs" tab
-					tabControl_Info.SelectTab(1);
-					tabControl_Info.Invalidate();
+					if (_ide.IDEConfiguration.ShowCompilerLogsAfterBuild)
+					{
+						// Select the "Compiler Logs" tab
+						tabControl_Info.SelectTab(1);
+						tabControl_Info.Invalidate();
+					}
 
 					if (_formCompiling.Visible)
 						_formCompiling.Close();
@@ -1093,7 +1096,7 @@ namespace TombIDE.ScriptEditor
 		{
 			TextEditorBase textEditor = GetTextEditorOfTab(tab);
 
-			if (_ide.IDEConfiguration.Tidy_ReindentOnSave)
+			if (_ide.IDEConfiguration.ReindentOnSave)
 				((ScriptTextEditor)textEditor).TidyDocument();
 
 			try
@@ -1159,7 +1162,6 @@ namespace TombIDE.ScriptEditor
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
 					_editorConfigs = TextEditorConfigs.Load();
-					syntaxPreview.ReloadSettings();
 					ApplySavedSettings();
 				}
 		}
@@ -1320,12 +1322,18 @@ namespace TombIDE.ScriptEditor
 			}
 
 			// Editor settings
+			ToggleNewIncludeOption(_ide.IDEConfiguration.UseNewIncludeMethod);
+			ToggleShowLogsOption(_ide.IDEConfiguration.ShowCompilerLogsAfterBuild);
+			ToggleReindentOnSaveOption(_ide.IDEConfiguration.ReindentOnSave);
+
 			ToggleObjBrowser(_ide.IDEConfiguration.View_ShowObjBrowser);
 			ToggleFileList(_ide.IDEConfiguration.View_ShowFileList);
 			ToggleInfoBox(_ide.IDEConfiguration.View_ShowInfoBox);
 			ToggleToolStrip(_ide.IDEConfiguration.View_ShowToolStrip);
 			ToggleStatusStrip(_ide.IDEConfiguration.View_ShowStatusStrip);
 			SwapPanels(_ide.IDEConfiguration.View_SwapPanels);
+
+			syntaxPreview.ReloadSettings();
 
 			DoStatusCounting();
 		}
