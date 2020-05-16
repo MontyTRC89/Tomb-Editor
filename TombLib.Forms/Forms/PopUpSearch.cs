@@ -5,6 +5,9 @@ using System.Windows.Forms;
 using DarkUI.Config;
 using DarkUI.Forms;
 using TombLib.Utils;
+using TombLib.LevelData;
+using DarkUI.Controls;
+using TombLib.Wad;
 
 namespace TombLib.Forms
 {
@@ -17,10 +20,11 @@ namespace TombLib.Forms
 
         private List<string> _searchItems = new List<string>();
         private int _currentIndex;
+        private TRVersion.Game _version;
 
         private Control _callbackControl;
 
-        public PopUpSearch(Control callbackControl, string startText = "")
+        public PopUpSearch(Control callbackControl, TRVersion.Game version = TRVersion.Game.TR4)
         {
             InitializeComponent();
 
@@ -32,13 +36,19 @@ namespace TombLib.Forms
             _currentIndex = -1;
             _searchItems.Clear();
             _callbackControl = callbackControl;
+            _version = version;
 
             // TODO: Support other control types?
-            if (_callbackControl is DarkUI.Controls.DarkComboBox)
+            if (_callbackControl is DarkComboBox)
             {
-                DarkUI.Controls.DarkComboBox callbackCombo = (DarkUI.Controls.DarkComboBox)_callbackControl;
+                var callbackCombo = (DarkComboBox)_callbackControl;
                 foreach (var item in callbackCombo.Items)
-                    _searchItems.Add(item.ToString());
+                {
+                    if (item is IWadObject)
+                        _searchItems.Add((item as IWadObject).ToString(_version));
+                    else
+                        _searchItems.Add(item.ToString());
+                }
             }
 
             // Set pop-up width to parent control width
@@ -46,14 +56,6 @@ namespace TombLib.Forms
 
             // Set backcolor
             BackColor = Colors.DarkBackground;
-
-            // In case we invoke pop-up from another text control, we can pass existing string here
-            if(startText.Length != 0)
-            {
-                txtSearchString.Text = startText;
-                txtSearchString.Select(0, 0);
-                txtSearchString.SelectionStart = txtSearchString.Text.Length;
-            }
 
             // Start intro animation
             _animProgress = 0.0f;
