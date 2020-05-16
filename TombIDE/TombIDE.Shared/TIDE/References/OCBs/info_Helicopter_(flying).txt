@@ -1,3 +1,0 @@
-Flying helicopter has internal name "Animation 1" and you find it in "Desert Railroad" of The Last Revelation.
-To do fly it you must set ocb = 666 and use AI_FOLLOW is same way of Enemy Jeep (see AI_FOLLOW and Enemy jeep descriptions)
-

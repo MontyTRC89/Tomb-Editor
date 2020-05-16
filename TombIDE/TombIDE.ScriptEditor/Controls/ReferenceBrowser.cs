@@ -38,96 +38,52 @@ namespace TombIDE.ScriptEditor.Controls
 		{
 			dataGrid.Columns.Clear();
 
-			// TEMP !!!
-
-			if (comboBox_References.SelectedItem.ToString() == "OCB List"
-				|| comboBox_References.SelectedItem.ToString() == "OLD Commands List"
-				|| comboBox_References.SelectedItem.ToString() == "NEW Commands List")
-			{
-				DataTable listTable = GetListTableFromTextFile(Path.Combine(PathHelper.GetReferencesPath(), comboBox_References.SelectedItem.ToString() + ".txt"), "Items");
-
-				DataColumn dcRowString = listTable.Columns.Add("_RowString", typeof(string));
-
-				foreach (DataRow dataRow in listTable.Rows)
-				{
-					StringBuilder builder = new StringBuilder();
-
-					for (int i = 0; i < listTable.Columns.Count - 1; i++)
-					{
-						builder.Append(dataRow[i].ToString());
-						builder.Append("\t");
-					}
-
-					dataRow[dcRowString] = builder.ToString();
-				}
-
-				string filter = string.Empty;
-
-				if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search references...")
-					filter = textBox_Search.Text.Trim();
-
-				listTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
-
-				dataGrid.DataSource = listTable;
-				dataGrid.Columns["_RowString"].Visible = false;
-
-				return;
-			}
-
-			// !!!
-
 			try
 			{
-				string xmlPath = Path.Combine(PathHelper.GetReferencesPath(), comboBox_References.SelectedItem + ".xml");
+				string xmlPath = Path.Combine(DefaultPaths.GetReferencesPath(), comboBox_References.SelectedItem + ".xml");
 
 				using (XmlReader reader = XmlReader.Create(xmlPath))
+				using (DataSet dataSet = new DataSet())
 				{
-					using (DataSet dataSet = new DataSet())
+					dataSet.ReadXml(reader);
+
+					DataTable dataTable = dataSet.Tables[0];
+
+					if (comboBox_References.SelectedIndex == 0)
 					{
-						dataSet.ReadXml(reader);
+						DataTable pluginMnemonicTable = GetPluginMnemonicTable();
 
-						DataTable dataTable = dataSet.Tables[0];
-
-						if (comboBox_References.SelectedIndex == 0)
-						{
-							DataTable pluginMnemonicTable = GetPluginMnemonicTable();
-
-							foreach (DataRow row in pluginMnemonicTable.Rows)
-								dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
-						}
-
-						DataColumn dcRowString = dataTable.Columns.Add("_RowString", typeof(string));
-
-						foreach (DataRow dataRow in dataTable.Rows)
-						{
-							StringBuilder builder = new StringBuilder();
-
-							for (int i = 0; i < dataTable.Columns.Count - 1; i++)
-							{
-								builder.Append(dataRow[i].ToString());
-								builder.Append("\t");
-							}
-
-							dataRow[dcRowString] = builder.ToString();
-						}
-
-						string filter = string.Empty;
-
-						if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search references...")
-							filter = textBox_Search.Text.Trim();
-
-						dataTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
-
-						dataGrid.DataSource = dataTable;
-						dataGrid.Columns["_RowString"].Visible = false;
-
-						SetFriendlyColumnHeaders();
+						foreach (DataRow row in pluginMnemonicTable.Rows)
+							dataTable.Rows.Add(row.ItemArray[0].ToString(), row.ItemArray[1].ToString(), row.ItemArray[2].ToString());
 					}
+
+					DataColumn dcRowString = dataTable.Columns.Add("_RowString", typeof(string));
+
+					foreach (DataRow dataRow in dataTable.Rows)
+					{
+						StringBuilder builder = new StringBuilder();
+
+						for (int i = 0; i < dataTable.Columns.Count - 1; i++)
+						{
+							builder.Append(dataRow[i].ToString());
+							builder.Append("\t");
+						}
+
+						dataRow[dcRowString] = builder.ToString();
+					}
+
+					string filter = string.Empty;
+
+					if (!string.IsNullOrWhiteSpace(textBox_Search.Text) && textBox_Search.Text != "Search references...")
+						filter = textBox_Search.Text.Trim();
+
+					dataTable.DefaultView.RowFilter = "[_RowString] LIKE '%" + filter + "%'";
+
+					dataGrid.DataSource = dataTable;
+					dataGrid.Columns["_RowString"].Visible = false;
+
+					SetFriendlyColumnHeaders();
 				}
-			}
-			catch (DirectoryNotFoundException)
-			{
-				// Don't do anything
 			}
 			catch (Exception ex)
 			{
@@ -149,25 +105,6 @@ namespace TombIDE.ScriptEditor.Controls
 				row["decimal"] = mnemonic.DecimalValue;
 				row["hex"] = mnemonic.HexValue;
 				row["flag"] = mnemonic.FlagName;
-
-				dataTable.Rows.Add(row);
-			}
-
-			return dataTable;
-		}
-
-		private DataTable GetListTableFromTextFile(string filePath, string listHeaderTitle)
-		{
-			DataTable dataTable = new DataTable();
-
-			dataTable.Columns.Add(listHeaderTitle, typeof(string));
-
-			string[] entries = File.ReadAllLines(filePath);
-
-			foreach (string entry in entries)
-			{
-				DataRow row = dataTable.NewRow();
-				row[listHeaderTitle] = entry;
 
 				dataTable.Rows.Add(row);
 			}
@@ -250,24 +187,23 @@ namespace TombIDE.ScriptEditor.Controls
 			{
 				string comboBoxItem = comboBox_References.SelectedItem.ToString();
 
-				if (comboBox_References.SelectedIndex == 0)
-					_mnemonicInfoForm.Show(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.Other);
-				else if (comboBoxItem == "OCB List" || comboBoxItem == "OLD Commands List" || comboBoxItem == "NEW Commands List")
+				switch (comboBoxItem)
 				{
-					switch (comboBoxItem)
-					{
-						case "OCB List":
-							_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OCB);
-							break;
+					case "Mnemonic Constants":
+						_mnemonicInfoForm.Show(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.Mnemonics);
+						break;
 
-						case "OLD Commands List":
-							_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OLDCommands);
-							break;
+					case "OLD Commands List":
+						_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OLDCommands);
+						break;
 
-						case "NEW Commands List":
-							_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.NEWCommands);
-							break;
-					}
+					case "NEW Commands List":
+						_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.NEWCommands);
+						break;
+
+					case "OCB List":
+						_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OCBs);
+						break;
 				}
 			}
 		}
@@ -275,7 +211,6 @@ namespace TombIDE.ScriptEditor.Controls
 		private void OwO_Click(object sender, EventArgs e) // Sorry
 		{
 			MessageBox.Show(this, "No error 𝓶𝓮𝔁𝓪𝓰𝓮", "NG_CENTER", MessageBoxButtons.OK);
-			DarkMessageBox.Show(this, "I'm sorry, I 𝓬𝓪𝓷𝓷'𝓽 speak 𝙞𝙩𝙖𝙡𝙞𝙘𝙨", "TombIDE", MessageBoxButtons.OK, MessageBoxIcon.Question);
 		}
 	}
 }

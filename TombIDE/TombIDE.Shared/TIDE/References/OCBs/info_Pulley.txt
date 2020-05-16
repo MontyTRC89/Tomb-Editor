@@ -1,8 +1,0 @@
-OCB set when times lara will pull the rope to trigger somewhat.
-
-Example:
-
-1 = Just pull one time to trigger ..
-2 = it needs pull two times to trigger
-ect.
-

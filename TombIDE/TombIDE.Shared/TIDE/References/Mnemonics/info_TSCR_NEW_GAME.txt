@@ -1,2 +1,0 @@
-Used with GT_TITLE_SCREEN global trigger.
-Detect the [New Game] screen, where you can select a specific level name.

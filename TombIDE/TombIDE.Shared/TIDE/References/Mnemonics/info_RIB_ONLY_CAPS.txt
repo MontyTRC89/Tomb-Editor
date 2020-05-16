@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_INPUT_BOX
-Force that all text typed by user will be in capital letters. By default, omitting this flag, the text will be drawn lower or capital letters, in according with usage or less of SHIFT key, as in common text editors.

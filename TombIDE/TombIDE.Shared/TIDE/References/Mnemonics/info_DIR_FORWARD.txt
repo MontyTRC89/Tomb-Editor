@@ -1,3 +1,0 @@
-Used in Parameters=PARAM_MOVE_ITEM script command
-Relative direction.
-This flag will move the item forward respect its current facing. For instance if the item is looking to north the item will move to north but this is true for any intermediate direction.

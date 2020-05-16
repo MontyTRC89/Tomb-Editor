@@ -1,3 +1,0 @@
-Used with CUST_BIKE_VS_ENEMIES customization.
-In this case it will be the bike to explode and lara will be killed, of course.
-You can mix this flag with HIT_EXPLODE flag to have a double explosion: of the item and of the bike

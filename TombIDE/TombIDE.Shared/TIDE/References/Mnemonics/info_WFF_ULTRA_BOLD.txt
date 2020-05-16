@@ -1,2 +1,0 @@
-Used in WindowsFont= command.
-This is the max heavy for character: the depth of drawn will be the max available. If you want have "fat" characters this is the ideal setting but it works fine always when the size set for this font is big, differently, using a little font an ultra bold could cause a very leak text.

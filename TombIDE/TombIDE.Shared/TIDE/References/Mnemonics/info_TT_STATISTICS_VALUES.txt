@@ -1,1 +1,0 @@
-Text of statistic values, like "43m"

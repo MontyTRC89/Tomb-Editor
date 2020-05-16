@@ -1,1 +1,0 @@
-perform animation only when lara has no horizontal or vertical speed

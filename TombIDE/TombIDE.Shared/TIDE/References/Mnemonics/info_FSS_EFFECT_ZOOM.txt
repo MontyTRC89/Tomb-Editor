@@ -1,6 +1,0 @@
-Used with Parameters=PARAM_SHOW_SPRITE script command.
-
-With this effect the sprite will be showed with a zoom effect.
-At start the sprite will be drawn at 1/10 of its size, then in [Extra Value] frames it will be mangnified until to reach the size and position you chose in OriginX,OriginY, Width, Height fiels.
-
-In Extra Value field you should set the number of frames (1/32 of second) required to complete the zoom effect. If you set a low value the zoom will be very fast, while if the number of frame is high the effect will be slow.

@@ -1,4 +1,0 @@
-Used with Customize=CUST_INNER_SCREENSHOT
-Adding this flag to QSF_SIZE you set a true color 24 bits for inner image.
-By default, when this flag is missing, the image will be saved at 256 colors in compressed format.
-The RGB images are very better than 256 compressed, of course, but the size of RGB images is very big and if you mix true color with a big size each savegame could reach 1 Mb of size and this is not a good choice because the players very often wish exchange savegames and, a too heavy savegame could be not goods in these exchanges on-line.

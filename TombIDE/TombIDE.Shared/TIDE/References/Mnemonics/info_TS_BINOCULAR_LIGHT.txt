@@ -1,3 +1,0 @@
-Used with Customize=CUST_SFX command
-This is a single-shot sound played when the player switch on or off the illuminator for binoculars.
-Default value is 369 LARA_CLICK_SWITCH

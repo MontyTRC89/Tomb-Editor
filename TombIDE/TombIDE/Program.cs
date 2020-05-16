@@ -66,14 +66,14 @@ namespace TombIDE
 		{
 			try
 			{
-				string programPath = PathHelper.GetProgramDirectory();
+				string programPath = DefaultPaths.GetProgramDirectory();
 
 				if (IsUnicodePath(programPath))
 					throw new ArgumentException(
 						"Your executing path contains non-ASCII symbols. This will not allow the compilers to work correctly.\n" +
 						"Please consider removing all non-ASCII symbols from the executing path before launching TombIDE.");
 
-				string virtualEnginePath = PathHelper.GetVGEPath();
+				string virtualEnginePath = DefaultPaths.GetVGEPath();
 
 				if (virtualEnginePath.Length > 255)
 					throw new PathTooLongException(

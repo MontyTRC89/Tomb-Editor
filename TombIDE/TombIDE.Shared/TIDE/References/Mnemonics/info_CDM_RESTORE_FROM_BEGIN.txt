@@ -1,3 +1,0 @@
-Used by Customize=CUST_CD_SINGLE_PLAYBACK
-This settin force trng engine to save the single-playback cd and restore it but always from begin and not from the effective position it had while the game had been saved.
-This setting it's adivsable for little and meaningful audio track, like a sound where lara was speaking.

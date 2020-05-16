@@ -1,4 +1,0 @@
-Used in DiagnosticType script command.
-You can add this flag in Extra field of DiagnosticType command to create a shorter debugging log.
-When you omit this flag the log will be very large, with a lot of mexages about false conditions, frame for frame.
-If you find too chaotic this full log you can create a concise log with EDGX_CONCISE_SCRIPT_LOG flag.

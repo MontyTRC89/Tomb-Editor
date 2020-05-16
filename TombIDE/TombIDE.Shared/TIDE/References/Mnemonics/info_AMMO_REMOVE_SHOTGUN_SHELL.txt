@@ -1,2 +1,0 @@
-Used in Customize=CUST_AMMO command
-This flag remove the shell case effect. You should use this flag only for shotgun ammo.

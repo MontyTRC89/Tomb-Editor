@@ -1,2 +1,0 @@
-Verify if there is yet space at left of Lara in hang mode. In DistanceForEnv you type the space required at left to have the condition true.
-Remark: you can't specify a value for distance that passes over the current sector. If you type a too big value the engine will reduce it to reach only the left border of current sector.

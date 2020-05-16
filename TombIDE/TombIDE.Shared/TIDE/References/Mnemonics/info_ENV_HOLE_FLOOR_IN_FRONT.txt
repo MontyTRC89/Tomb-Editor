@@ -1,3 +1,0 @@
-condition is true when there is an hole, i.e. a zone where lara is able to go down or fall.
-Different ENV_HOLE_FLOOR.. set the position of adiacent square respect that where is lara.
-In Distance field you can set the height (or depth) of the hole.

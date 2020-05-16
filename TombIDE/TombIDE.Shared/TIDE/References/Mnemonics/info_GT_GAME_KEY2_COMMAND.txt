@@ -1,2 +1,0 @@
-This global trigger works in same way of GT_GAME_KEY1_COMMAND, but in this case you can set in Parameter field a KEY2_.. game command.
-See description of GT_GAME_KEY1_COMMAND for more infos.

@@ -1,3 +1,0 @@
-Used in DiagnosticType script command.
-Show on screen the values of trng variables.
-This flag enables the viewing for common variable, i.e. all variables less the Store variables.

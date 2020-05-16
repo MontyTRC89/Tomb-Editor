@@ -1,1 +1,0 @@
-Verify if there is an object (moveable) with slot number = number set in ExtraSlot field of Animation command. As DistanceForEnv you have to type the distance where you want the object. (1024 = sector)

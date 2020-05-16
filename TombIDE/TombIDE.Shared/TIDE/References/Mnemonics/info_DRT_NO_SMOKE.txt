@@ -1,3 +1,0 @@
-Used in Customize=CUST_DARTS command
-This flag remove the smoke when dart hit the wall and also the sound of the crash.
-You should use this flag when you want give to dart the look of ray laser.

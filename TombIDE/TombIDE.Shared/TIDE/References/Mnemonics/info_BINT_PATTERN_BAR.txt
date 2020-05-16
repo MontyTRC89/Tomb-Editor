@@ -1,4 +1,0 @@
-Used into Customize=CUST_BINOCULARS command
-A pattern bar is like a bar, where the level of some value will be showed as length of a solid bar, but with pattern bar you can use a pattern instead by a solid color.
-To draw your pattern bar just drawing it in the binocular screen, drawing as it should be at full size, then in the rectangle (in the script) to set the size of the bar you should type in the BackGround color field of PARAM_RECT command, the color below the pattern bar, i.e. the color used to erase the pattern to simulate a shorter bar.
-For example if your pattern bar is above a black zone you'll set a black color in background field.

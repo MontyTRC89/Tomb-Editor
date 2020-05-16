@@ -1,2 +1,0 @@
-Used in SavegamePanel= script command.
-By default the selected savegame in the list will be highlighted with a constant inversion of colors. If you want have a blink of this highlighting you can use the SPF_BLINK_SELECTED flag.

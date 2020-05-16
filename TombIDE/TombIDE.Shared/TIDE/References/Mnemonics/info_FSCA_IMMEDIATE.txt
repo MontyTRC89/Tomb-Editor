@@ -1,3 +1,0 @@
-Used with Parameters=PARAM_SCALE_ITEM
-With this flag you set an immediate scaling with no dynamic effect.
-In this situation the BeginSizePercentage and PercentageSpeed fields will  be ignored (you can type IGNORE in them) and the item it will be immedialty resized to the size set in FinalSizePercentage field.

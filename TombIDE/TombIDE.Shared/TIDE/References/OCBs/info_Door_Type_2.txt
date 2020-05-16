@@ -1,5 +1,0 @@
-Enter all 1-5 buttons to make door opened at start.
-
-Remark: setting al five buttons the further following sequence for door with trigger and antitrigger could don't work properly.
-If you mean use antitrigger/trigger sequence for door it's better don't hit all buttons but let them unpressed and trigger normally the door using a hidden trigger where lara will step over before reaching the door.
-

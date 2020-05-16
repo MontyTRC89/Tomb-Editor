@@ -1,9 +1,0 @@
-Used in Animation command.
-If you wish that lara did not change her (and the your) animation when she has been touched by enemies, you can add this flag.
-The push-away animation is a very hardcoded animation, where lara suspend previous animation and move herself slowly while the enemy is pushing her away.
-These push-away animations have numbers: 125 126 127 128
-
-Note: this flag disables the pushaway animation only when the animation of lara is the same you set in current Animation command.
-If you use an animation chain, where, after this first animation, there is another, your custom animation, you could see lara with push-away animation while there is this second animation. To avoid this problem you can use this trick: create another Animation command for the second animation, with the FAN_DISABLE_PUSH_AWAY flag. The trick consists in the fact that this other animation command could be never performed, just using an unexisting stateid as condition for it, but this animation will be however used to store the animation numbers about when disabling push away animation for lara.
-
-Another method to solve above problem is to disable the push away animation forever and for all lara's animations, with the CUST_DISABLE_PUSH_AWAY_ANIMATION customize command.

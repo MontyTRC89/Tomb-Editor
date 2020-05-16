@@ -1,5 +1,0 @@
-Used into Customize=CUST_BINOCULARS command
-You can show data whereby a strip for compass and sextant.
-A strip is a slim image with a graduate scale.
-The strip for compass should have always the size of 1400 x 64
-You should use the compass strip in lightning demo level as reference for position of cardinal points and degrees.

@@ -1,2 +1,0 @@
-666 = to stop animation when lara goes out of triggering square
-

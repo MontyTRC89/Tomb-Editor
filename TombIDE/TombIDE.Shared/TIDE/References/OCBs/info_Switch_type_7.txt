@@ -1,3 +1,0 @@
-Switch type 7 are shatterable switch (action will be triggered when lara shot them)
-In ocb window press all buttons 1 through 5 in OCB.
-

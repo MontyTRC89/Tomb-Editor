@@ -1,4 +1,0 @@
-Used in GlobalTrigger command.
-This flag says to trng engine to abort the default procedure in tomb engine used to manage the event (the global trigger) you intercepted.
-This flag should be used when you wish use you triggergroup (launched by your globaltrigger command) to manage that event and you don't wish tomb engine interferes with your operations.
-Currently the only global trigger that uses this flag is GT_SELECTED_INVENTORY_ITEM

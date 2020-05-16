@@ -1,3 +1,0 @@
-Used in DiagnosticType script command.
-Show the debug data about Animation script command.
-An Animation command works in debug mode when you type as animation number a negative number. In this situation the diagnostic will show if the conditions to enable the animation are corrects, and when this is true it will be showed "YES", while in opposite case "no".

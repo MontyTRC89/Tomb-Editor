@@ -1,2 +1,0 @@
-Enter negative number on OCB to delay triggering. Adding increments of 10 will delay by one second for each 10 units.
-

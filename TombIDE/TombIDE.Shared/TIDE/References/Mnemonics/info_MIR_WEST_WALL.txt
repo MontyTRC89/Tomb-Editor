@@ -1,1 +1,0 @@
-Mirror on west wall of current room. This was the default (and only) setting in old tomb4 egine

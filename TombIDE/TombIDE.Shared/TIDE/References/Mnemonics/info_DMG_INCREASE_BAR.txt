@@ -1,2 +1,0 @@
-By default, the damage bar (showed only using DMG_INDIRECT_BAR) starts full and decrease it until to empty, and when reach the empty status lara will be damaged very fastly.
-If you want change this behavior to have a progress bar that it grows, starting from empty to reach full, you must use this flag.

@@ -1,8 +1,0 @@
-Used in Enemy command.
-Force the specified animating to work like a BRIDGE_FLAT item.
-You can place below it a dummy trigger and lara will be able to walk over it.
-Remarks:
-It's advisable using an Animating item with this flag.
-In particular way some moveable will not work because they have more than a mesh or a pivot for first frame non compatible to work like bridge item.
-A good way to avoid these problems is to copy an original BRIDGE_FLAT object in an animating slot with wad merger (Copy button + SHIFT key to reassign the target slot).
-Once you copied the original BRIDGE_FLAT in your object then you can modify its layout with metasequoia.

@@ -1,2 +1,0 @@
-Used in Customize=CUST_FLARE command.
-By default the flare light is a bit blinking. If you wish have a stable common light you can add this flag.

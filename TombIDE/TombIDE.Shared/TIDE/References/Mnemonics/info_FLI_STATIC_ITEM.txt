@@ -1,3 +1,0 @@
-Used in LogItem= command.
-Add this flag when you use a static index rather a moveable item index, in LogItem command.
-The infos drew on screen will be the same used for moveables but, of course, some values about animation, frames ect, will have a useless (null) value.

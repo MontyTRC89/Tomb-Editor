@@ -1,3 +1,0 @@
-Used in Demo script command.
-You can silent the audio tracks while the demo is playing with this flipeffect.
-This flag doesn't affect the sound effects.

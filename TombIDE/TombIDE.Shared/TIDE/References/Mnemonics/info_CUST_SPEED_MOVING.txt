@@ -1,9 +1,0 @@
-Syntax: Customize=CUST_SPEED_MOVING, Speed
-When you use some ACTION trigger to move animating or other moveables, the engine uses as default speed the value 32.
-A way to use a speed different than 32 is to type in OCB of that object a different speed, anyway this method works only for Animating objects becase other moveables have (or could have) some usage of OCB field and for this reason the TRNG engine will ignore the OCB field of object different than Animating.
-If you want modify the default speed (used by all moveables different than Animating) you can use the CUST_SPEED_MOVING constant.
-For example:
-
-Customize=CUST_SPEED_MOVING, 50
-
-Above command will force to use as default speed the value 50.
