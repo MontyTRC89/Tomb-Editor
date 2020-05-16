@@ -424,7 +424,6 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Add geometry imported objects
-                int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (geometry.Model?.DirectXModel == null)
@@ -443,6 +442,8 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var submesh in mesh.Submeshes)
                         {
+                            var indexList = new List<int>();
+
                             for (int j = 0; j < mesh.Vertices.Count; j++)
                             {
                                 // Apply the transform to the vertex
@@ -469,7 +470,7 @@ namespace TombLib.LevelData.Compilers
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128));
+                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true,room.AmbientLight*128));
                                 else
                                     trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
 
@@ -479,7 +480,15 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
                                 }
 
-                                roomVertices.Add(trVertex);
+                                var existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position &&
+                                                                              v.Lighting2 == trVertex.Lighting2);
+
+                                if (existingIndex == -1)
+                                {
+                                    existingIndex = roomVertices.Count;
+                                    roomVertices.Add(trVertex);
+                                }
+                                indexList.Add(existingIndex);
                             }
 
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
@@ -490,13 +499,9 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
                                 }
 
-                                var triangle = new tr_face3();
-
-                                ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
-                                ushort index1 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 1]);
-                                ushort index2 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 2]);
-
-                                triangle.Texture = 20;
+                                ushort index0 = (ushort)(indexList[j + 0]);
+                                ushort index1 = (ushort)(indexList[j + 1]);
+                                ushort index2 = (ushort)(indexList[j + 2]);
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
@@ -521,8 +526,6 @@ namespace TombLib.LevelData.Compilers
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
-
-                            geometryVertexIndexBase += mesh.Vertices.Count;
                         }
                     }
                 }
