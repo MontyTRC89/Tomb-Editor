@@ -4146,6 +4146,8 @@ namespace TombEditor
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
+                            _editor.SendMessage("Room export started...", PopupType.Info);
+
                             BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
                             {
                                 if (txt is LevelTexture)

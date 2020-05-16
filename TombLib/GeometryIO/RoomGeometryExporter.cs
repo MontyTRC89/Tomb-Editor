@@ -144,9 +144,6 @@ namespace TombLib.GeometryIO
                     string meshFormat = "TeRoom_{0}_{1}_{2}_{3}";
                     var mesh = new IOMesh(string.Format(meshFormat, index, xOff, yOff, zOff));
 
-                    if (exportInWorldCoordinates) // FIXME: Is it really needed?
-                        mesh.Position = room.WorldPos;
-
                     // Add submeshes
                     foreach (var material in model.Materials)
                         mesh.Submeshes.Add(material, new IOSubmesh(material));
