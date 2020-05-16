@@ -33,7 +33,7 @@ namespace TombLib.GeometryIO.Exporters
                 {
                     writer.Write("\t\"" + material.Name + "\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
                     writer.Write("tex(\"" + material.TexturePath /*GetTexturePath(path, material.Texture)*/ + "\") ");
-                    writer.WriteLine("shader(4) vcol(1) ");
+                    writer.WriteLine("shader(1) vcol(1) ");
                 }
 
                 writer.WriteLine("}");

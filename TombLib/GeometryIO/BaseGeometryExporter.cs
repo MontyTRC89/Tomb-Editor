@@ -33,10 +33,10 @@ namespace TombLib.GeometryIO
         {
             if (filename.EndsWith(".mqo", StringComparison.InvariantCultureIgnoreCase))
                 return new Exporters.MetasequoiaExporter(settings, getTexturePathCallback);
+            else if (filename.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase))
+                return new Exporters.ObjExporter(settings, getTexturePathCallback);
             /*else if (filename.EndsWith(".ply", StringComparison.InvariantCultureIgnoreCase))
                 return new Exporters.Ply(settings, getTexturePathCallback);
-            else if (filename.EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase))
-                return new Exporters.Obj(settings, getTexturePathCallback);
             else if (filename.EndsWith(".dea", StringComparison.InvariantCultureIgnoreCase))
                 return new Exporters.Collada(settings, getTexturePathCallback);*/
             else
@@ -70,7 +70,7 @@ namespace TombLib.GeometryIO
             return uv;
         }
 
-        protected Vector2 ApplyUVTransform(Vector2 uv, int w, int h)
+        protected Vector2 ApplyUVTransform(Vector2 uv, int w = 1, int h = 1)
         {
             uv.X = (float)Math.Round(uv.X);
             uv.Y = (float)Math.Round(uv.Y);
@@ -94,9 +94,9 @@ namespace TombLib.GeometryIO
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
-            new FileFormat("Metasequoia", "mqo") /*,
+            new FileFormat("Metasequoia", "mqo"),
+            new FileFormat("Wavefront Object", "obj") /*,
             new FileFormat("Stanford Polygon Library", "ply"),
-            new FileFormat("Wavefront Object", "obj"),
             new FileFormat("Collada", "dae")*/
         };
     }

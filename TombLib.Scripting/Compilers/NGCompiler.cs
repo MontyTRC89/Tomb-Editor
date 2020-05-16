@@ -201,19 +201,19 @@ namespace TombLib.Scripting.Compilers
 		{
 			CancellationToken token = new CancellationTokenSource(TimeSpan.FromSeconds(3)).Token;
 
-			void KillProcess()
-			{
-				while (true)
-					if (token.IsCancellationRequested)
-						return;
-					else
-						foreach (Process process in Process.GetProcessesByName("notepad"))
-							if (process.MainWindowTitle.Contains("script_log"))
-							{
-								process.Kill();
-								return;
-							}
-			}
+            Action KillProcess = () =>
+            {
+                while (true)
+                    if (token.IsCancellationRequested)
+                        return;
+                    else
+                        foreach (Process process in Process.GetProcessesByName("notepad"))
+                            if (process.MainWindowTitle.Contains("script_log"))
+                            {
+                                process.Kill();
+                                return;
+                            }
+            };
 
 			return Task.Run(KillProcess, token);
 		}

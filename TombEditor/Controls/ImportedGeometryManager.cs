@@ -151,7 +151,7 @@ namespace TombEditor.Controls
 
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
-                        settingsDialog.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
+                        settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
                         if (settingsDialog.ShowDialog(this) == DialogResult.Cancel)
                             continue;
 
