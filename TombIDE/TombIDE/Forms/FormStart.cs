@@ -36,8 +36,10 @@ namespace TombIDE
 			{
 				Project openedProject = Project.FromFile(trprojFilePath);
 
-				if (!ProjectChecker.IsValidProject(openedProject))
-					throw new ArgumentException("Opened project is invalid. Please check if it's correctly installed.");
+				string errorMessage;
+
+				if (!ProjectChecker.IsValidProject(openedProject, out errorMessage))
+					throw new ArgumentException(errorMessage);
 
 				// Check if a project with the same name but different paths already exists on the list
 				foreach (DarkTreeNode node in treeView.Nodes)
@@ -212,8 +214,10 @@ namespace TombIDE
 					{
 						Project openedProject = Project.FromFile(dialog.FileName);
 
-						if (!ProjectChecker.IsValidProject(openedProject))
-							throw new ArgumentException("Opened project is invalid. Please check if it's correctly installed.");
+						string errorMessage;
+
+						if (!ProjectChecker.IsValidProject(openedProject, out errorMessage))
+							throw new ArgumentException(errorMessage);
 
 						// Check if a project with the same name but different paths already exists on the list
 						foreach (DarkTreeNode node in treeView.Nodes)
@@ -337,9 +341,11 @@ namespace TombIDE
 			if (_selectedProject == null) // If no project is selected
 				return;
 
-			if (!ProjectChecker.IsValidProject(_selectedProject))
+			string errorMessage;
+
+			if (!ProjectChecker.IsValidProject(_selectedProject, out errorMessage))
 			{
-				DarkMessageBox.Show(this, "Failed to load project. Please check if it's correctly installed.", "Error",
+				DarkMessageBox.Show(this, "Failed to load project. " + errorMessage, "Error",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 
 				return;
