@@ -1,3 +1,0 @@
-0 = normal (it will become visible only after triggering)
-1 = Dog immediatly visible on ground (standing down) and it will move when triggered
-

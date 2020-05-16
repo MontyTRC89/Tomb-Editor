@@ -47,7 +47,7 @@ namespace TombIDE.ScriptEditor
 		public ScriptEditor()
 		{
 			// Fetch mnemonic constants / plugin mnemonic constants
-			ScriptKeywords.SetupConstants(PathHelper.GetReferencesPath(), PathHelper.GetInternalNGCPath());
+			ScriptKeywords.SetupConstants(DefaultPaths.GetReferencesPath(), DefaultPaths.GetInternalNGCPath());
 
 			InitializeComponent();
 		}
@@ -845,9 +845,9 @@ namespace TombIDE.ScriptEditor
 
 		#region Compilers
 
-		private void CompileTRNGScript()
+		private async void CompileTRNGScript()
 		{
-			if (!NGCompiler.AreLibrariesRegistered())
+			if (!AreLibrariesRegistered())
 				return;
 
 			try
@@ -855,10 +855,14 @@ namespace TombIDE.ScriptEditor
 				_formCompiling.ShowCompilingMode();
 				_formCompiling.Show();
 
-				if (NGCompiler.Compile(_ide.Project.ScriptPath, _ide.Project.EnginePath))
+				if (await NGCompiler.Compile(
+					_ide.Project.ScriptPath,
+					_ide.Project.EnginePath,
+					DefaultPaths.GetInternalNGCPath(),
+					DefaultPaths.GetVGEPath()))
 				{
 					// Read the logs
-					string logFilePath = Path.Combine(PathHelper.GetVGEScriptPath(), "script_log.txt");
+					string logFilePath = Path.Combine(DefaultPaths.GetVGEScriptPath(), "script_log.txt");
 
 					// Read and show the logs in the "Compiler Logs" richTextBox
 					richTextBox_Logs.Text = File.ReadAllText(logFilePath);
@@ -1398,6 +1402,31 @@ namespace TombIDE.ScriptEditor
 
 				_textEditor.SelectionLength = 0;
 			}
+		}
+
+		public static bool AreLibrariesRegistered()
+		{
+			string MSCOMCTL = Path.Combine(DefaultPaths.GetSystemDirectory(), "Mscomctl.ocx");
+			string RICHTX32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "Richtx32.ocx");
+			string PICFORMAT32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "PicFormat32.ocx");
+			string COMDLG32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "Comdlg32.ocx");
+
+			if (!File.Exists(MSCOMCTL) || !File.Exists(RICHTX32) || !File.Exists(PICFORMAT32) || !File.Exists(COMDLG32))
+			{
+				ProcessStartInfo startInfo = new ProcessStartInfo
+				{
+					FileName = Path.Combine(DefaultPaths.GetProgramDirectory(), "TombIDE Library Registration.exe")
+				};
+
+				try
+				{
+					Process process = Process.Start(startInfo);
+					process.WaitForExit();
+				}
+				catch { return false; }
+			}
+
+			return true;
 		}
 	}
 }

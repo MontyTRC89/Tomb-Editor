@@ -1,5 +1,0 @@
-Used in DiagnosticType script command.
-This extra flag works only when you enabled the DGX_LARA to have Lara's data (animations, stateids) on screen.
-If you add the EDGX_LARA_CORD_IN_LOG in ExtraDgxFlas of DiangosticType command, in the log will be showed the coordinates of Lara, too.
-
-Note: by default the coordinates were missing in the log to reduce its size.

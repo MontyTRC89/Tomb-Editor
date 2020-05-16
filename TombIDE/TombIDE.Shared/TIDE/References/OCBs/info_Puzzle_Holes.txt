@@ -1,4 +1,0 @@
-999 =  turns off `collision' from the `puzzle done' object.
-Without it, an `invisible' door would prevent Lara from go through.
-
-

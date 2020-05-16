@@ -1,2 +1,0 @@
-Verify if lara is near to corner at her left while she is hang mode. In DistanceForEnv you type the min distance from corner to be the condition true.
-Remark: the "_IN_" means internal corner. The internal corner are that you find inside a box, while the "_OUT_" (outside) corners are them you find outside of a box.

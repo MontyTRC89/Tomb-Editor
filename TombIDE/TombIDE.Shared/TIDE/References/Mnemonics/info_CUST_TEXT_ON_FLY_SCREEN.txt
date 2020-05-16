@@ -1,3 +1,0 @@
-Enables the printing of screen also during flyby camera sequence.
-
-Syntax: Customize=CUST_TEXT_ON_FLY_SCREEN, ENABLED/DISABLED

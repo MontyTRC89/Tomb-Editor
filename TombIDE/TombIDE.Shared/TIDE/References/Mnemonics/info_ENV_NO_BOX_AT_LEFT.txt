@@ -1,3 +1,0 @@
-Used in AnimationSlot command
-Check if at left of current enemy it's missing a box sector.
-See the description of ENV_NO_BOX_IN_FRONT constant, for more infos.

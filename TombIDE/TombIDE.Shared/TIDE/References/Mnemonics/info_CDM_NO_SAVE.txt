@@ -1,2 +1,0 @@
-Used by Customize=CUST_CD_SINGLE_PLAYBACK.
-Using this setting the further single-playback cd will be ignored in saving game and when player will reload that savegame the single cd will be not played.

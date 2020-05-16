@@ -1,210 +1,160 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Automation;
-using System.Windows.Forms;
+using TestStack.White;
+using TestStack.White.UIItems;
+using TestStack.White.UIItems.WindowItems;
+using TestStack.White.WindowsAPI;
 
 namespace TombLib.Scripting.Compilers
 {
 	public static class NGCompiler
 	{
-		// TODO: Refactor
-
-		public static bool AreLibrariesRegistered()
+		public static async Task<bool> Compile(
+			string projectScriptPath, string projectEnginePath, string ngcPath, string vgePath, bool newIncludeMethod = true)
 		{
-			string MSCOMCTL = Path.Combine(DefaultPaths.GetSystemDirectory(), "Mscomctl.ocx");
-			string RICHTX32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "Richtx32.ocx");
-			string PICFORMAT32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "PicFormat32.ocx");
-			string COMDLG32 = Path.Combine(DefaultPaths.GetSystemDirectory(), "Comdlg32.ocx");
+			string vgeScriptPath = Path.Combine(vgePath, "Script");
 
-			if (!File.Exists(MSCOMCTL) || !File.Exists(RICHTX32) || !File.Exists(PICFORMAT32) || !File.Exists(COMDLG32))
-			{
-				ProcessStartInfo startInfo = new ProcessStartInfo
-				{
-					FileName = Path.Combine(DefaultPaths.GetProgramDirectory(), "TombIDE Library Registration.exe")
-				};
+			CopyFilesToVGEScriptDirectory(projectScriptPath, vgeScriptPath);
 
-				try
-				{
-					Process process = Process.Start(startInfo);
-					process.WaitForExit();
-				}
-				catch { return false; }
-			}
+			if (newIncludeMethod)
+				MergeIncludes(vgeScriptPath);
 
-			return true;
+			AdjustFormatting(vgeScriptPath);
+
+			Application ngCenter = Application.Launch(Path.Combine(ngcPath, "NG_Center.exe")); // Runs NG_Center.exe
+			return await RunScriptedNGCenterEvents(projectEnginePath, vgePath, ngCenter); // Does some actions in NG Center
 		}
 
-		public static bool Compile(string projectScriptPath, string projectEnginePath)
-		{
-			CopyFilesToVGEScriptFolder(projectScriptPath);
-			AdjustFormatting(projectScriptPath);
-
-			// Run NG_Center.exe
-			var application = TestStack.White.Application.Launch(Path.Combine(DefaultPaths.GetInternalNGCPath(), "NG_Center.exe"));
-
-			// Do some actions in NG Center
-			return RunScriptedNGCenterEvents(projectEnginePath, application);
-		}
-
-		private static bool RunScriptedNGCenterEvents(string projectEnginePath, TestStack.White.Application application)
+		private static async Task<bool> RunScriptedNGCenterEvents(string projectEnginePath, string vgePath, Application ngCenter)
 		{
 			try
 			{
-				// Get a list of all windows belonging to the app
-				var windowList = application.GetWindows();
+				// FIND THE MAIN NG CENTER WINDOW
+				List<Window> windowList = ngCenter.GetWindows(); // Gets a list of all windows which belong to NG Center
+				Window mainNGCenterWindow = windowList.Find(x => x.Title.StartsWith("NG Center 1.5"));
 
-				// Check if the list has the main NG Center window (it starts with "NG Center 1.5...")
-				var ngWindow = windowList.Find(x => x.Title.Contains("NG Center 1.5"));
-
-				if (ngWindow == null)
+				if (mainNGCenterWindow == null) // If the main window wasn't found
 				{
-					// Refresh the window list and check if a Updater message box appeared
-					windowList = application.GetWindows();
-					var ngMissingWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
+					// CLOSE PROBLEM MESSAGE BOXES (if there are any)
+					windowList = ngCenter.GetWindows();
+					Window ngcProblemMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-					if (ngMissingWindow != null)
-						ngMissingWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
+					if (ngcProblemMessageBox != null)
+						ngcProblemMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
 
-					// If not, then try again because we're most probably seeing the "Loading" window
-					return RunScriptedNGCenterEvents(projectEnginePath, application);
+					return await RunScriptedNGCenterEvents(projectEnginePath, vgePath, ngCenter);
 				}
 
-				Point cachedCursorPosition = new Point();
+				// CLOSE THE UPDATER MESSAGE BOX (if there is one)
+				windowList = ngCenter.GetWindows();
+				Window ngcUpdateMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-				// Refresh the window list and check if a Updater message box appeared
-				windowList = application.GetWindows();
-				var ngUpdaterWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
+				if (ngcUpdateMessageBox != null)
+					ngcUpdateMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
 
-				if (ngUpdaterWindow != null)
-					ngUpdaterWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
-
-				// Find the "Build" button
-				var buildButton = ngWindow.Get<TestStack.White.UIItems.Button>("Build");
-
-				// Click the button
-				cachedCursorPosition = Cursor.Position;
+				// CLICK THE "Build" BUTTON
+				Button buildButton = mainNGCenterWindow.Get<Button>("Build");
 				buildButton.Click();
-				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
 
-				// Refresh the window list and check if an error message box appeared
-				windowList = application.GetWindows();
-				var ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
+				// CHECK IF AN ERROR MESSAGE BOX APPEARED AND IF SO, TRY AGAIN
+				windowList = ngCenter.GetWindows();
+				Window ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-				if (ngErrorWindow != null)
+				if (ngcErrorMessageBox != null) // If the first build attempt failed
 				{
-					ngErrorWindow.KeyIn(TestStack.White.WindowsAPI.KeyboardInput.SpecialKeys.ESCAPE);
+					ngcErrorMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
 
-					// Click the button
-					cachedCursorPosition = Cursor.Position;
-					buildButton.Click();
-					Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
+					buildButton.Click(); // Try again, because NG Center tends to throw non-existent errors on the first try
 
-					ngErrorWindow = null;
+					ngcErrorMessageBox = null;
 				}
 
-				// Refresh the window list and check if an error message box appeared
-				windowList = application.GetWindows();
-				ngErrorWindow = windowList.Find(x => x.Title.Contains("NG_CENTER"));
+				windowList = ngCenter.GetWindows();
+				ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-				if (ngErrorWindow != null)
+				if (ngcErrorMessageBox != null) // If the second build attempt failed
 					return false;
 
-				// Find the "Show Log" button
-				var logButton = ngWindow.Get<TestStack.White.UIItems.Button>("Show Log");
-
-				// Click the button
-				cachedCursorPosition = Cursor.Position;
+				// CLICK THE "Show Log" BUTTON AND UPDATE PATHS FROM VGE TO PROJECT
+				Button logButton = mainNGCenterWindow.Get<Button>("Show Log");
 				logButton.Click();
-				Cursor.Position = cachedCursorPosition; // Restore the previous cursor position
 
-				// Read the logs
-				string logFilePath = Path.Combine(DefaultPaths.GetVGEScriptPath(), "script_log.txt");
-				string logFileContent = File.ReadAllText(logFilePath);
+				UpdatePathsInsideLogs(vgePath, projectEnginePath);
 
-				// Replace the VGE paths in the log file with the current project ones
-				File.WriteAllText(logFilePath, logFileContent.Replace(DefaultPaths.GetVGEPath(), projectEnginePath), Encoding.GetEncoding(1252));
+				// DONE
+				ngCenter.Close();
 
-				application.Close(); // Done!
+				CopyCompiledFilesToProject(vgePath, projectEnginePath);
 
-				// Copy the compiled files from the Virtual Game Engine folder to the current project folder
-				string compiledScriptFilePath = Path.Combine(DefaultPaths.GetVGEPath(), "Script.dat");
-				string compiledEnglishFilePath = Path.Combine(DefaultPaths.GetVGEPath(), "English.dat");
-
-				if (File.Exists(compiledScriptFilePath))
-					File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
-
-				if (File.Exists(compiledEnglishFilePath))
-					File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
-
-				Thread.Sleep(100);
-
-				foreach (Process notepadProcess in Process.GetProcessesByName("notepad"))
-				{
-					if (notepadProcess.MainWindowTitle.Contains("script_log"))
-						notepadProcess.Kill();
-				}
+				await KillNotepadProcess();
 
 				return true;
 			}
 			catch (ElementNotAvailableException)
 			{
-				// The "Loading" window just closed, so try again
-				return RunScriptedNGCenterEvents(projectEnginePath, application);
+				// THE "Loading" WINDOW JUST CLOSED, SO TRY AGAIN
+				return await RunScriptedNGCenterEvents(projectEnginePath, vgePath, ngCenter);
 			}
 		}
 
-		private static void CopyFilesToVGEScriptFolder(string projectScriptPath)
+		private static void CopyFilesToVGEScriptDirectory(string projectScriptPath, string vgeScriptPath)
 		{
-			string vgeScriptPath = DefaultPaths.GetVGEScriptPath();
-
-			// Delete the old /Script/ directory in the VGE if it exists
+			// Delete the old /Script/ directory in the VGE folder (if it exists)
 			if (Directory.Exists(vgeScriptPath))
 				Directory.Delete(vgeScriptPath, true);
 
 			// Recreate the directory
 			Directory.CreateDirectory(vgeScriptPath);
 
-			// Create all of the subdirectories
+			// Create all of the subdirectories from the original project directory
 			foreach (string dirPath in Directory.GetDirectories(projectScriptPath, "*", SearchOption.AllDirectories))
 				Directory.CreateDirectory(dirPath.Replace(projectScriptPath, vgeScriptPath));
 
-			// Copy all the files into the VGE /Script/ folder
+			// Copy all the files into the VGE /Script/ directory
 			foreach (string newPath in Directory.GetFiles(projectScriptPath, "*.*", SearchOption.AllDirectories))
 				File.Copy(newPath, newPath.Replace(projectScriptPath, vgeScriptPath));
 		}
 
-		private static void AdjustFormatting(string projectScriptPath)
+		private static void MergeIncludes(string vgeScriptPath)
 		{
-			string vgeScriptFilePath = Path.Combine(DefaultPaths.GetVGEScriptPath(), "Script.txt");
+			string vgeScriptFilePath = Path.Combine(vgeScriptPath, "Script.txt");
 
 			string[] lines = File.ReadAllLines(vgeScriptFilePath, Encoding.GetEncoding(1252));
-			lines = ReplaceIncludesWithFileContents(lines, projectScriptPath);
+			lines = ReplaceIncludesWithFileContents(lines, vgeScriptPath);
 
 			string newFileContent = string.Join(Environment.NewLine, lines);
-
-			while (newFileContent.Contains(" ="))
-				newFileContent = newFileContent.Replace(" =", "=");
-
-			File.WriteAllText(Path.Combine(DefaultPaths.GetVGEScriptPath(), "Script.txt"), newFileContent, Encoding.GetEncoding(1252));
+			File.WriteAllText(vgeScriptFilePath, newFileContent, Encoding.GetEncoding(1252));
 		}
 
-		private static string[] ReplaceIncludesWithFileContents(string[] lines, string projectScriptPath)
+		private static void AdjustFormatting(string vgeScriptPath)
+		{
+			string vgeScriptFilePath = Path.Combine(vgeScriptPath, "Script.txt");
+
+			string fileContent = File.ReadAllText(vgeScriptFilePath, Encoding.GetEncoding(1252));
+
+			while (fileContent.Contains(" ="))
+				fileContent = fileContent.Replace(" =", "=");
+
+			File.WriteAllText(vgeScriptFilePath, fileContent, Encoding.GetEncoding(1252));
+		}
+
+		private static string[] ReplaceIncludesWithFileContents(string[] lines, string vgeScriptPath)
 		{
 			List<string> newLines = new List<string>();
 
 			foreach (string line in lines)
 			{
 				if (line.StartsWith("#include", StringComparison.OrdinalIgnoreCase))
-				{
 					try
 					{
 						string partialIncludePath = line.Split('"')[1].Trim();
-						string includedFilePath = Path.Combine(projectScriptPath, partialIncludePath);
+						string includedFilePath = Path.Combine(vgeScriptPath, partialIncludePath);
 
 						if (File.Exists(includedFilePath))
 						{
@@ -216,12 +166,56 @@ namespace TombLib.Scripting.Compilers
 						continue;
 					}
 					catch { }
-				}
 
 				newLines.Add(line);
 			}
 
 			return newLines.ToArray();
+		}
+
+		private static void UpdatePathsInsideLogs(string vgePath, string projectEnginePath)
+		{
+			string logFilePath = Path.Combine(vgePath, "Script", "script_log.txt");
+			string logFileContent = File.ReadAllText(logFilePath);
+
+			// Replace the VGE paths in the log file with the current project ones
+			string newFileContent = logFileContent.Replace(vgePath, projectEnginePath);
+
+			File.WriteAllText(logFilePath, newFileContent, Encoding.GetEncoding(1252));
+		}
+
+		private static void CopyCompiledFilesToProject(string vgePath, string projectEnginePath)
+		{
+			// Copy the compiled files from the Virtual Game Engine folder to the current project folder
+			string compiledScriptFilePath = Path.Combine(vgePath, "Script.dat");
+			string compiledEnglishFilePath = Path.Combine(vgePath, "English.dat");
+
+			if (File.Exists(compiledScriptFilePath))
+				File.Copy(compiledScriptFilePath, Path.Combine(projectEnginePath, "Script.dat"), true);
+
+			if (File.Exists(compiledEnglishFilePath))
+				File.Copy(compiledEnglishFilePath, Path.Combine(projectEnginePath, "English.dat"), true);
+		}
+
+		private static Task KillNotepadProcess()
+		{
+			CancellationToken token = new CancellationTokenSource(TimeSpan.FromSeconds(3)).Token;
+
+			void KillProcess()
+			{
+				while (true)
+					if (token.IsCancellationRequested)
+						return;
+					else
+						foreach (Process process in Process.GetProcessesByName("notepad"))
+							if (process.MainWindowTitle.Contains("script_log"))
+							{
+								process.Kill();
+								return;
+							}
+			}
+
+			return Task.Run(KillProcess, token);
 		}
 	}
 }

@@ -1,1 +1,0 @@
-The text will start from top left corner of screen, under the lowest bar (Damage bar)

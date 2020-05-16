@@ -1,7 +1,0 @@
-This flag set the detector in radar mode. If you omit to set this flag the detector will work in Pointer mode.
-There are big differences between two modes and some fields and flags will work only for a specific detector mode.
-In pointer mode the detector has a pointer like a compass that shows where is the current target (current target is the first target in the list yet present in game).
-Pointer mode works only on one target at time: when the first target has been picked up (or killed) the detector will start to point second target in the list and go on.
-In radar mode detector is able to scan all targets in same moment just they are in the range of radar.
-Note: Remember that the range of radar is different of range for activation. The range of radar is given by formula 6 * MetricScale, where the digit "6" is the (fixed) number of grid sectors of radar. For example if you set 2 meter for metric scale the target will be showed on radar only when it is to 12 meters from lara or less.
-To understand radar mode is bit more difficultous than pointer mode, because the target in radar mode will be showed always with up side = north, while in pointer mode the pointer is always relative to where lara is looking. In fact, in pointer mode, when the pointer is on red sign this means lara is looking in correct direction of target, while in radar mode it's advisable that lara looks to north to understand if targerts are at her left or right.

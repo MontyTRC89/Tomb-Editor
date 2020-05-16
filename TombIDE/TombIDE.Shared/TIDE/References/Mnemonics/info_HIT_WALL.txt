@@ -1,5 +1,0 @@
-Used with CUST_BIKE_VS_ENEMIES customization.
-The enemy will remain imperturbable to the impact with the bike.
-You should use this flag when the enemy is very big or very power.
-The bike will crash on it like it was a wall.
-Note: it should be important that the enemy was also not too fast in his movements to use this flag, otherwise he could enter in the collision box of the bike with weird results.

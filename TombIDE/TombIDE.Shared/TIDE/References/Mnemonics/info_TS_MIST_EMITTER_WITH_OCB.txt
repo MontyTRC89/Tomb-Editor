@@ -1,2 +1,0 @@
-Used with Customize=CUST_SFX command.
-This is the sound of mist emitter but only when you customized it with a ocb value different than 0.

@@ -1,1 +1,0 @@
-To use only with greande ammo. You can change the number of second required to do explode the grenade. The default value is 4 seconds. You have to type the number of seconds in Extra field.

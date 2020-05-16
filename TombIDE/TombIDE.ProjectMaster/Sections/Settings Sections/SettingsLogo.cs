@@ -108,9 +108,9 @@ namespace TombIDE.ProjectMaster
 					string sourcePakPath = string.Empty;
 
 					if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
-						sourcePakPath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
+						sourcePakPath = Path.Combine(DefaultPaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
 					else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
-						sourcePakPath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
+						sourcePakPath = Path.Combine(DefaultPaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "uklogo.pak");
 
 					string destPakPath = Path.Combine(_ide.Project.EnginePath, @"data\uklogo.pak");
 

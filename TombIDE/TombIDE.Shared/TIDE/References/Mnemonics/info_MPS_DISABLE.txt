@@ -1,6 +1,0 @@
-used in Plugin= command.
-This flag should be used only temporarily as experiment.
-When you add MPS_DISABLE flag to MainPluginSettings field, that plugin will be ignored by trng, pratically like its library.dll was not present in trle.
-This is a way to verify if some problem or weirdness happens for this plugin, without the need to remove it physically from trle and ng_center folders.
-
-Note: You should understand that the simple removing of Plugin= script command, with a ";" character for instance, could not have the same effect of MPS_DISABLE flag. Because the removing of the plugin= script command from the script, it will not affect the loading of plugin library in tomb4 and its execution.

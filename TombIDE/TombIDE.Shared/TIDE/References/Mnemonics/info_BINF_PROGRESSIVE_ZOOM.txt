@@ -1,5 +1,0 @@
-Used into Customize=CUST_BINOCULARS command
-This flag changes the speed and progression of zoom.
-Old method was very fast and it had always the same speed.
-The new (progressive) method tries to begin slowly, increasing the speed only when player keep continuosly down the scale in key.
-The progressive zoom works better to have a fine tuning of scale factor, for this reason it is suggested when you set the super zoom skill, since in that situation the speed of old method work badly with highest magnifying.

@@ -1,1 +1,0 @@
-This flag work in very similar way of above flag fadd_durate_stateid, but in this case the value to check for condition emit/disable is the animation number.

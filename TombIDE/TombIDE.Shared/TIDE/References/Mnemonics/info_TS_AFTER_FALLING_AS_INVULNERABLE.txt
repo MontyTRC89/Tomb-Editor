@@ -1,2 +1,0 @@
-Used with Customize=CUST_SFX command.
-When Lara is invulnerable and she falled from big heights, she will not die but she touches the floor and comes back to stand up position after a short animation.

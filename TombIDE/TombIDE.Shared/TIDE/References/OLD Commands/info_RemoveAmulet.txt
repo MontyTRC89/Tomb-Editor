@@ -1,7 +1,0 @@
-Syntax: RemoveAmulet = ENABLED/DISABLED
-
-To use in [Level] action
-
-If RemoveAmulet = Enabled, will be removed from inventory the amulet in current level.
-
-

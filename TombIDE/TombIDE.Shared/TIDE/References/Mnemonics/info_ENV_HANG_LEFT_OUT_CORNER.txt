@@ -1,1 +1,0 @@
-Same mean of ENV_HANG_LEFT_IN_CORNER but with reference to an Outside corner. See description of ENV_HANG_LEFT_IN_CORNER to have more infos about internal and outside corners.

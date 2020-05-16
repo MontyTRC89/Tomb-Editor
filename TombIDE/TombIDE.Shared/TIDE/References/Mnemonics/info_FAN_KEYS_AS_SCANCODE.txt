@@ -1,3 +1,0 @@
-If you mean to use KeyBoard scan code in Key1 and Key2 fields, you have to add this flag  FAN_KEYS_AS_SCANCODE in FAN_ fields.
-When you don't use this falg the value typed in Key1 and Key2 field will be interpreted like Game command, i.e. mnemonic constants KEY1_.. and KEY2_...
-Remark: This behavior is the opposite respect for first version of Ng_Center. In previous versions you have to set a flag to specify to use game commands but now the game commands are the default setting.

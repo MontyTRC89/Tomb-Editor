@@ -1,3 +1,0 @@
-1 = Prevents door opening. Used in conjunction with cog switch to have the door opening slowly while lara pull the cog.
-2= To open with a crowbar
-

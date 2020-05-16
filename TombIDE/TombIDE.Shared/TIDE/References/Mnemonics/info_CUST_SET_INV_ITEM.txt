@@ -1,5 +1,0 @@
-Permit to set an inventory items like INVARIABLE items, i.e. items that will remain always in inventory after to be used, like the binocular.
-
-Syntax: Customize= CUST_SET_INV_ITEM, SlotOfItem
-
-Remark: you can place one or more "Customize=CUST_SET_INV_ITEM" commands in same level section so to assign the invariable property to many inventory items.

@@ -1,4 +1,0 @@
-Used in Parameters=PARAM_MOVE_ITEM script command
-The direction will be the line from lara versus the leading actor.
-Please try to understand that this is different than DIR_LARA_FACING since in the case of DIR_DIRECTION_LARA_LEADING_ACTOR flag has no importance where lara is looking but lara and the leading actor will be used as two points where draw the direction.
-Note: remember you can always add the DIR_INVERT_DIRECTION flag to have the opposite direction, and in this case, the direction from leading actor to lara.

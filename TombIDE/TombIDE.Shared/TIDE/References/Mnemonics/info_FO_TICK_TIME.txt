@@ -1,5 +1,0 @@
-Change time unit misure. By default, i.e. if you DON'T use this flag, the time is in seconds, but, if you want use a more precise units of time you can add this flag  in "Flags Organizer" field of Organizer, and the time you type will be interpreted like frame ticks, i.e. the minimum time unit.
-The tick frame is 1/30 of second so if you mean set also some big time, to convert in seconds just you type the number of seconds * 30.
-For example:
-15 = half second
-300 = 10 seconds

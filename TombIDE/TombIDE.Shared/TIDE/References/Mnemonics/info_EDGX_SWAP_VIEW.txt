@@ -1,4 +1,0 @@
-Used in DiagnosticType script command.
-With this flag you enable a change of view when you press the F12 key.
-The view is about the direction from that Lara will be looked.
-This feature is useful when you wish study some animation or mesh of Lara but this is not visible from back view.

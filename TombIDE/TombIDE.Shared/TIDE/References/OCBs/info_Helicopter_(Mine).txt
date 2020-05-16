@@ -1,9 +1,0 @@
-"Mine" helicopter is the "static" half (only a side of meshs are visible) helicopter you find in Death City. Lara will can destroy it shotting.
-
-Enter 1 in OCB of the helicopter. To make it explode, use SHATTER3 and set it up as per room 73. The fuel can does not sit directly on the trigger ­ it won't activate the heavy trigger if it does.
-
-Enter 0 in OCB of the helicoter if you want use only "mined field"
-With OCB = 0 the helicopter will be invisible and at its placement it will be created a mine field of 6 x 6 sectors. If lara walks over the mine field she will explode and die.
-Remark: the mined field is not correctly aligned with secotor bounding.
-Praticall it has a size of full 5 x 5 sectors zone + a border of 1/2 sector of width.
-

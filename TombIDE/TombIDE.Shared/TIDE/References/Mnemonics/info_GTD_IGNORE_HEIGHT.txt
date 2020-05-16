@@ -1,2 +1,0 @@
-Used in parameter field of GlobalTrigger command when you use GT_DISTANCE_FROM_ITEM or GT_DISTANCE_FROM_STATIC global triggers.
-See the description of above global triggers for more infos.

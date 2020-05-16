@@ -49,7 +49,7 @@ namespace TombIDE.Shared
 
 		public static string GetDefaultPath()
 		{
-			return Path.Combine(PathHelper.GetConfigsPath(), "TombIDEConfiguration.xml");
+			return Path.Combine(DefaultPaths.GetConfigsPath(), "TombIDEConfiguration.xml");
 		}
 
 		public void Save(Stream stream)
@@ -66,8 +66,8 @@ namespace TombIDE.Shared
 			}
 			catch (IOException)
 			{
-				if (!Directory.Exists(PathHelper.GetConfigsPath()))
-					Directory.CreateDirectory(PathHelper.GetConfigsPath());
+				if (!Directory.Exists(DefaultPaths.GetConfigsPath()))
+					Directory.CreateDirectory(DefaultPaths.GetConfigsPath());
 
 				using (XmlWriter writer = XmlWriter.Create(path))
 					new XmlSerializer(typeof(IDEConfiguration)).Serialize(writer, new IDEConfiguration());
@@ -96,8 +96,8 @@ namespace TombIDE.Shared
 			}
 			catch (IOException)
 			{
-				if (!Directory.Exists(PathHelper.GetConfigsPath()))
-					Directory.CreateDirectory(PathHelper.GetConfigsPath());
+				if (!Directory.Exists(DefaultPaths.GetConfigsPath()))
+					Directory.CreateDirectory(DefaultPaths.GetConfigsPath());
 
 				using (XmlWriter writer = XmlWriter.Create(filePath))
 					new XmlSerializer(typeof(IDEConfiguration)).Serialize(writer, new IDEConfiguration());

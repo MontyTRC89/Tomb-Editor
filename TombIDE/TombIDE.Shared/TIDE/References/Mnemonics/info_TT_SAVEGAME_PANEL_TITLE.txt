@@ -1,1 +1,0 @@
-Title for savegame panel. "Load Game" or "Save Game"

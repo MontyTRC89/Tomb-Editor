@@ -1,7 +1,0 @@
-Syntax:  DemoDisc=DISABLED/ENABLED
-
-To use in [Options] section.
-
-Set if current game is only a demo.
-If argument is ENABLED will be played only first level.
-

@@ -1,9 +1,0 @@
-Syntax: Legend=	TextToShowAtLevelBegin
-
-To use in [Level] section AFTER {Name=} statement
-
-Set the text will be showed at start of current level.
-This mexage will be showed for about 4 seconds.
-
-This statement is optional.
-

@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_WTEXT script command
-Keep the text also when there is a flyby camera

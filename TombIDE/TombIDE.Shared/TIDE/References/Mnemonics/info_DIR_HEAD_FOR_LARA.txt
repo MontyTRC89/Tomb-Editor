@@ -1,2 +1,0 @@
-Used in Parameters=PARAM_MOVE_ITEM script command
-This direction is given from the current position of item to be moved and the position of lara as ending position.

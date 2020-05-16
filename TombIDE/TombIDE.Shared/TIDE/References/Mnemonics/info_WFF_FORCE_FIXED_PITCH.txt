@@ -1,5 +1,0 @@
-Used in WindowsFont= command.
-This flag force trng to choose a font with fixed pitch charaters.
-Theorically it should be sufficent to choose a font name of fixed pitch like "courier" but in the reality, performing some test, I discovered that sometimes windows font procedure prefers choose a different face name font only to reach other parameters like size of font.
-To avoid this doubt you can add the WFF_FORCE_FIXED_PITCH flag and the characters will be surely with fixed pitch.
-The fixed pitch (all characers will have always same width) is very useful when you want create text tables like in savegame panel.

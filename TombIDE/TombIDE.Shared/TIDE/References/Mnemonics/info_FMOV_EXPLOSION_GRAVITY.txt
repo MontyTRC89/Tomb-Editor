@@ -1,3 +1,0 @@
-used in Paramaters=PARAM_MOVE_ITEM script command
-This flag will move the item upper at start with the highest speed, and then it will decrease fastly.
-You can change the max begin speed using percentage of variation in Speed field. See the description of FMOV_FROG_JUMP_GRAVITY to know how compute the formula to type in that field.

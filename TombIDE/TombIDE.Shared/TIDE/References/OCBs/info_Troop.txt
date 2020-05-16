@@ -1,3 +1,0 @@
-1 = Start troop with animation 27, while with other OCBs begins with animation 12
-
-

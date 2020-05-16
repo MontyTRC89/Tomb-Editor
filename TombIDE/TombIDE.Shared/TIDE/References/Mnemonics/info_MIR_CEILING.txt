@@ -1,2 +1,0 @@
-Mirror on the ceiling.
-Remark: If you want see lara on ceiling floor you have to use a room very little in height or a fixed camera to look both laras in same time, otherwise lara is not able to rotare her neck to see other lara over her in height position.

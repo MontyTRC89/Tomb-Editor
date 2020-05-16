@@ -1,4 +1,0 @@
-Current flag works only in pointer mode.
-You can invert the position of line in vertical scale (at right of detector)
-By default (when you DON'T use this flag) the floating line shows where is lara, while the fixed red pointed line at center shows the position of target.
-If you think it's not logical this relation you can use this flag to invert the situation. With the DTF_INVERSE_VPOINTER flag the floating point is the vertical position of target, while the fixed red line is the vertical position of Lara.

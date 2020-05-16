@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_WTEXT script command
-The color of text will change between foreground color and color of shadow mask slowly, giving the look of a blinking text.

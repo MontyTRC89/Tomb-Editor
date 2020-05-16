@@ -1,5 +1,0 @@
-Used in Diary= command.
-When the game was played at full screen on a wide-screen monitor the images of Diary will be distorted and lara will become an obese dwarf.
-If you want avoid this deformation you can set this flag. When trng finds the PL_FIX_WIDE_SCREEN flag, it will show the background image of diary non at full-screen but with a width a bit littler than screen to preserve the normal ratio between width-height with a ratio of 1.3 ([width] divided by [height] = 1.3)
-In this wieving at left and right of diary there will be two empty columns.
-This look could be good if you in background image draw a book style image.

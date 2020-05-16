@@ -1,5 +1,0 @@
-Set 1 as ocb if you want have a reability of lever after 'timer' seconds.
-For example if you in switch trigger insert in timer field the value 12 and put '1' in ocb of jump switch the trigger (for example for a door) will be activated for 12 seconds, then this time, the door will be closed and the lever will go up newly.
-Remark: not all 'jump switches' have reability function, you should use jump switch you find in guard.wad file.
-
-

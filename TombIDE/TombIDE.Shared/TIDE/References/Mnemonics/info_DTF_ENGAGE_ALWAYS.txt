@@ -1,1 +1,0 @@
-the detector will be always present on screen, at least until some of targets exits yet in the level.

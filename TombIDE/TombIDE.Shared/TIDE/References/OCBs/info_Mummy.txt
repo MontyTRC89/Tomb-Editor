@@ -1,3 +1,0 @@
-2 = Visible on ground, it will be activated after trigger and when lara goes near to it
-
-
