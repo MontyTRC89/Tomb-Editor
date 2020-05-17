@@ -676,7 +676,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets'))" />
-    <Error Condition="!Exists('..\packages\AssimpNet.3.3.2\build\AssimpNet.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\AssimpNet.3.3.2\build\AssimpNet.targets'))" />
   </Target>
   <Import Project="..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets" Condition="Exists('..\packages\MiniZ.Net.1.0.0\build\MiniZ.Net.targets')" />
   <PropertyGroup>
