@@ -37,6 +37,8 @@ namespace TombLib.LevelData
 
         /// <summary> Helper compilable version enumeration list. Can be used to populate various controls, like listbox. </summary>
         public static List<Game> CompilableVersions => AllVersions.Where(item => item >= Game.TR2).ToList();
+        /// <summary> Helper experimental compilable version enumeration list. Can be used to populate various controls, like listbox. </summary>
+        public static List<Game> ExperimentalVersions => AllVersions.Where(item => item == Game.TR2 || item == Game.TR5Main || item == Game.TR5).ToList();
 
     }
 

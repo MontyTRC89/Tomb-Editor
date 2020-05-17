@@ -19,6 +19,7 @@ using System.Threading;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using static TombEditor.Editor;
+using static TombLib.LevelData.TRVersion;
 
 namespace TombEditor.Forms
 {
@@ -374,8 +375,12 @@ namespace TombEditor.Forms
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
                 pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
-            // Populate game version list
-            comboGameVersion.Items.AddRange(TRVersion.CompilableVersions.Cast<object>().ToArray());
+            // Populate versions
+            List<Game> gameList = CompilableVersions;
+            //Remove experimental compilable versions
+            if (!_editor.Configuration.Editor_AllowExperimentalFeatures)
+                gameList.RemoveAll((version) => ExperimentalVersions.Contains(version));
+            comboGameVersion.Items.AddRange(gameList.Cast<object>().ToArray());
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
