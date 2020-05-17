@@ -71,8 +71,6 @@ namespace TombLib.Scripting.Compilers
 					ngcErrorMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
 
 					buildButton.Click(); // Try again, because NG Center tends to throw non-existent errors on the first try
-
-					ngcErrorMessageBox = null;
 				}
 
 				windowList = ngCenter.GetWindows();
@@ -201,19 +199,16 @@ namespace TombLib.Scripting.Compilers
 		{
 			CancellationToken token = new CancellationTokenSource(TimeSpan.FromSeconds(3)).Token;
 
-            Action KillProcess = () =>
-            {
-                while (true)
-                    if (token.IsCancellationRequested)
-                        return;
-                    else
-                        foreach (Process process in Process.GetProcessesByName("notepad"))
-                            if (process.MainWindowTitle.Contains("script_log"))
-                            {
-                                process.Kill();
-                                return;
-                            }
-            };
+			Action KillProcess = () =>
+			{
+				while (!token.IsCancellationRequested)
+					foreach (Process process in Process.GetProcessesByName("notepad"))
+						if (process.MainWindowTitle.Contains("script_log"))
+						{
+							process.Kill();
+							return;
+						}
+			};
 
 			return Task.Run(KillProcess, token);
 		}
