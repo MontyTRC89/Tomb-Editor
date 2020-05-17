@@ -977,9 +977,12 @@ namespace TombEditor
 
         public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
         {
-            // No owner = silent mode!
-            if (owner != null && DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
-                                 "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            bool silent  = !_editor.Configuration.UI_WarnBeforeDeletingObjects;
+                 silent &= !(instance is TriggerInstance || instance is PortalInstance);
+                 silent |= owner == null;
+
+            if (!silent && DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
+                "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
             if (instance is PositionBasedObjectInstance)
@@ -3892,7 +3895,7 @@ namespace TombEditor
 
             // HACK: Thanks to TRTomb, copying empty imported geometry crashes TE.
             // To prevent that, we block copying of such entries.
-            if ((instance as ImportedGeometryInstance)?.Model == null)
+            if (instance is ImportedGeometryInstance && (instance as ImportedGeometryInstance)?.Model == null)
                 return;
 
             if (_editor.SelectedObject == null && instance != null)
