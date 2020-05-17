@@ -139,7 +139,10 @@ namespace TombLib
                 Directory.CreateDirectory(Path.GetDirectoryName(newPath));
 
             if (File.Exists(oldPath))
+            {
+                if (File.Exists(newPath)) File.Delete(newPath);
                 File.Move(oldPath, newPath);
+            }
 
             return newPath;
         }
