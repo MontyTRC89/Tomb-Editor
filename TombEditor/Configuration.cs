@@ -11,7 +11,7 @@ namespace TombEditor
     // They will be loaded and saved automatically.
     public class Configuration : ConfigurationBase
     {
-        public override string ConfigName { get { return "Configs\\TombEditorConfiguration.xml"; } }
+        public override string ConfigName { get { return "TombEditorConfiguration.xml"; } }
 
         // Global editor options
 
