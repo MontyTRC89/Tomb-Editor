@@ -245,6 +245,14 @@ namespace WadTool
             RaiseEvent(new AnimationEditorCurrentAnimationChangedEvent(anim));
         }
 
+        // Animation editor animcommand changed
+        public class AnimationEditorAnimcommandChangedEvent : IEditorEvent
+        { }
+        public void AnimationEditorAnimcommandChanged()
+        {
+            RaiseEvent(new AnimationEditorAnimcommandChangedEvent());
+        }
+
         // Animation editor state change
         public class AnimationEditorStateChangeEvent : IEditorEvent
         {

@@ -47,6 +47,7 @@ namespace WadTool
                 int index = gridViewCommands.SelectedRows[0].Index;
                 _animCommands[index] = e.Command.Clone();
                 Invalidate();
+                _editor.Tool.AnimationEditorAnimcommandChanged();
             }
         }
 

@@ -142,7 +142,8 @@ namespace WadTool
             }
 
             if (obj is WadToolClass.AnimationEditorAnimationChangedEvent ||
-                obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
+                obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent ||
+                obj is WadToolClass.AnimationEditorAnimcommandChangedEvent)
             {
                 timeline.Invalidate();
             }
@@ -1588,7 +1589,9 @@ namespace WadTool
             if (path == null)
                 return;
 
-            if (Path.GetExtension(path) == ".anim")
+            bool fromXml = Path.GetExtension(path) == ".anim";
+
+            if (fromXml)
                 animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
             else
                 animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
@@ -1610,9 +1613,12 @@ namespace WadTool
 
             _editor.CurrentAnim.WadAnimation = animation;
 
-            // Restore animcommands & state changes
-            _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(oldCommands);
-            _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);
+            // Restore animcommands & state changes (only for generic imported anims)
+            if (!fromXml)
+            {
+                _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(oldCommands);
+                _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);
+            }
 
             _editor.CurrentAnim.DirectXAnimation = Animation.FromWad2(_editor.Moveable.Bones, animation);
 

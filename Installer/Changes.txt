@@ -22,7 +22,8 @@ Tomb Editor:
  * Fix lagging gizmo movement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
- * Add experimental TR3 compiler.
+ * Add experimental TR2 compiler.
+ * Add TR3 compiler.
  
 TombIDE:
  * Major refactoring and performance improvemets.
@@ -36,6 +37,7 @@ SoundTool:
 WadTool:
  * Fix extreme lag with very long animations.
  * Fix wrong copy animcommand behaviour.
+ * Don't duplicate animcommands on xml animation re-import.
  * Fix and animate sprite preview.
  
 General:
