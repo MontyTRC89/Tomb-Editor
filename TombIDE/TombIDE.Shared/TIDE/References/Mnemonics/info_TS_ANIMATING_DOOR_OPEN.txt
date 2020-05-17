@@ -1,2 +1,0 @@
-Used with Customize=CUST_SFX command.
-When you use an animating (fake) door for the elevator, this is the sound when it will be opened.

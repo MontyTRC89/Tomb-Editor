@@ -984,6 +984,7 @@ namespace TombEditor.Forms
             this.importRoomsToolStripMenuItem.Size = new System.Drawing.Size(232, 22);
             this.importRoomsToolStripMenuItem.Tag = "ImportRooms";
             this.importRoomsToolStripMenuItem.Text = "ImportRooms";
+            this.importRoomsToolStripMenuItem.Visible = false;
             // 
             // toolStripMenuItem2
             // 

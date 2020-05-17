@@ -1,4 +1,0 @@
-used in Paramaters=PARAM_MOVE_ITEM script command
-This flag will move the item, beginning from a slow speed that will be increased gradually, until to reach a max speed that will remain constant.
-The value you type in Speed field will be used as percentage to change the preset speed of this effect.
-If you type 100, no change will be performed. 200 will double the speed, 50 will reduce by half the preset speed. Ect.

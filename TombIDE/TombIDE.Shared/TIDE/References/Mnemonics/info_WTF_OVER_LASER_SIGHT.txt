@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_WTEXT script command
-Keep the text over laser sight view

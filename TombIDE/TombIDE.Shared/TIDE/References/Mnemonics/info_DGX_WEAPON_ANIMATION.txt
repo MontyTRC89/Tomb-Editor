@@ -1,3 +1,0 @@
-Used in DiagnosticType script command.
-Adding this flag you'll have on screen the infos about current weapon animation.
-The animations and state id for weapon management are not visible in lara's infos because the weapon works on specific slots like SHOTGUN_ANIM, GRENADE_GUN_ANIM ecc.

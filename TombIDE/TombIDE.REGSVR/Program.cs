@@ -19,7 +19,7 @@ namespace TombIDE.REGSVR
 
 		private static void RegisterNGCenterLibraries()
 		{
-			string systemDirectory = PathHelper.GetSystemDirectory();
+			string systemDirectory = DefaultPaths.GetSystemDirectory();
 
 			string MSCOMCTL = Path.Combine(systemDirectory, "Mscomctl.ocx");
 			string RICHTX32 = Path.Combine(systemDirectory, "Richtx32.ocx");

@@ -399,7 +399,7 @@ namespace TombIDE.ProjectMaster
 
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Path.Combine(PathHelper.GetProgramDirectory(), "TombEditor.exe"),
+				FileName = Path.Combine(DefaultPaths.GetProgramDirectory(), "TombEditor.exe"),
 				Arguments = "\"" + prj2Path + "\""
 			};
 

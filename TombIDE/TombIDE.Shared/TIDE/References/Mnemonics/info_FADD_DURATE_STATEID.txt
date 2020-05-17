@@ -1,2 +1,0 @@
-If you want you can keep this effect active until moveable is in current state id.
-Using this flag the time durate set in trigger window will be ignored, and the effect will be removed only when moveable will change its state Id with a value different than that used at start of effect.

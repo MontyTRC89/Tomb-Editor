@@ -1,2 +1,0 @@
-Used in Parameters=PARAM_MOVE_ITEM script command
-Direction from current position of item to move and the position of leading actor.

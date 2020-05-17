@@ -269,6 +269,8 @@ namespace TombIDE.ScriptEditor.Controls
 
 			if (!backgroundWorker.IsBusy)
 				backgroundWorker.RunWorkerAsync(data);
+
+			timer.Stop();
 		}
 	}
 }

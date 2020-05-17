@@ -1,4 +1,0 @@
-Used in Animation command.
-This condition verify if at given distance (set in DistanceForEnv field) there is a wall to north of Lara.
-WARNING: this condition works in absolute way looking only for cardinal point,  ignoring the current facing of lara so it should be used only with other env conditions to apply only for some specific room in hardcoded way.
-This condition considers like "wall" any floor higher than current lara position.

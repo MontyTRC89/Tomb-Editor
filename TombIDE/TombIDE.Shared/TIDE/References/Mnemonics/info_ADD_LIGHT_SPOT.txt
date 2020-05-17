@@ -1,9 +1,0 @@
-Used in AddEffect command
-This light works like a light-spot, i.e. it generates a cone of light following a given direction like the headlight of sidecar.
-For this light type it's important the facing to choose the direction of the light cone.
-The default facing is that of moveable where you add this effect, anyway you can change this facing using the FADD_ flags in FlagsEffect (FADD_) field.
-
-Remarks:
-- You could have trouble if there is in same time the jeep or boats using headerlight, because this add effect uses the same light resources to generate this light-spot.
-- With this kind of light you have to type  a very high Intensity value, about 200.
-- You cann't change the standard yellow-white color for spot light.

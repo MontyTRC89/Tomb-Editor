@@ -1,4 +1,0 @@
-The OCB of Guardian (Laser Head) will be used to reduce the count-down before the guaridan pointed Lara beginning his attacks.
-If you let 0 in OCB the guardian will require about 3 seconds before attack lara for first time.
-While if you set a number like 150, the guardian will attack lara immed
-

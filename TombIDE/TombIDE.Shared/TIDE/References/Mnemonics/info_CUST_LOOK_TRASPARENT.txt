@@ -1,5 +1,0 @@
-Permit to disable the transparency of lara while she is looking.
-
-Syntax: Customize=CUST_LOOK_TRASPARENT, ENABLED/DISABLED
-
-If you want remove transparency for Lara use DISABLED

@@ -128,7 +128,20 @@ namespace TombLib
 
         public string GetDefaultPath()
         {
-            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ConfigName);
+            // Since version 1.3, all configs are moved to /Configs subfolder. 
+            // This code must remain here so users won't lose their settings on drop-in replacement.
+
+            var startDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var oldPath  = Path.Combine(startDir, ConfigName);
+            var newPath  = Path.Combine(startDir, "Configs", ConfigName);
+
+            if (!Directory.Exists(Path.GetDirectoryName(newPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(newPath));
+
+            if (File.Exists(oldPath))
+                File.Move(oldPath, newPath);
+
+            return newPath;
         }
 
         public void Save(Stream stream)

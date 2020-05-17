@@ -1,1 +1,0 @@
-Perform animation only if lara is underwater

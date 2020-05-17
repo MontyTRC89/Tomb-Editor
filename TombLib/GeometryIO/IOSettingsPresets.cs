@@ -4,15 +4,51 @@ namespace TombLib.GeometryIO
 {
     public static class IOSettingsPresets
     {
-        public static List<IOGeometrySettingsPreset> GeometrySettingsPresets { get; private set; }
+        public static List<IOGeometrySettingsPreset> GeometryImportSettingsPresets { get; private set; }
+        public static List<IOGeometrySettingsPreset> GeometryExportSettingsPresets { get; private set; }
         public static List<IOGeometrySettingsPreset> AnimationSettingsPresets { get; private set; }
 
         static IOSettingsPresets()
         {
-            GeometrySettingsPresets = new List<IOGeometrySettingsPreset>();
+            GeometryExportSettingsPresets = new List<IOGeometrySettingsPreset>();
+
+            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Scale 128 (for Blender)",
+                Settings = new IOGeometrySettings
+                {
+                    Export = true,
+                    Scale = 128.0f,
+                    FlipUV_V = true
+                }
+            });
+
+            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Scale 1",
+                Settings = new IOGeometrySettings
+                {
+                    Export = true,
+                    Scale = 1024.0f,
+                    FlipUV_V = true
+                }
+            });
+
+            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Scale 1024",
+                Settings = new IOGeometrySettings
+                {
+                    Export = true,
+                    Scale = 1.0f,
+                    FlipUV_V = true
+                }
+            });
+
+            GeometryImportSettingsPresets = new List<IOGeometrySettingsPreset>();
 
             // Metasequoia
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia MQO Scale 1",
                 Settings = new IOGeometrySettings
@@ -27,7 +63,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia MQO Scale 1024",
                 Settings = new IOGeometrySettings
@@ -42,7 +78,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia MQO Scale 1/1024",
                 Settings = new IOGeometrySettings
@@ -57,7 +93,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia OBJ",
                 Settings = new IOGeometrySettings
@@ -71,7 +107,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Metasequoia PLY",
                 Settings = new IOGeometrySettings
@@ -86,7 +122,7 @@ namespace TombLib.GeometryIO
             });
 
             // Generic
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Generic OBJ",
                 Settings = new IOGeometrySettings
@@ -101,12 +137,12 @@ namespace TombLib.GeometryIO
             });
 
             // Blender
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Blender OBJ",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = 128.0f,
                     FlipZ = true,
                     FlipUV_V = true,
                     InvertFaces = true,
@@ -115,7 +151,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Blender DAE",
                 Settings = new IOGeometrySettings
@@ -128,7 +164,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "Blender PLY",
                 Settings = new IOGeometrySettings
@@ -143,7 +179,7 @@ namespace TombLib.GeometryIO
             });
 
             // 3ds Max
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "3ds Max FBX",
                 Settings = new IOGeometrySettings
@@ -157,7 +193,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "3ds Max OBJ",
                 Settings = new IOGeometrySettings
@@ -171,7 +207,7 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometrySettingsPresets.Add(new IOGeometrySettingsPreset
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
                 Name = "TRViewer 3DS",
                 Settings = new IOGeometrySettings
@@ -194,8 +230,8 @@ namespace TombLib.GeometryIO
                 Name = "3dsmax COLLADA",
                 Settings = new IOGeometrySettings
                 {
-                    ImportAnimations = true,
-                    ImportGeometry = false,
+                    ProcessAnimations = true,
+                    ProcessGeometry = false,
                     SwapAnimTranslationYZ = true
                 }
             });
@@ -206,8 +242,8 @@ namespace TombLib.GeometryIO
                 Name = "3dsmax Filmbox (FBX)",
                 Settings = new IOGeometrySettings
                 {
-                    ImportAnimations = true,
-                    ImportGeometry = false,
+                    ProcessAnimations = true,
+                    ProcessGeometry = false,
                     SwapAnimTranslationXZ = true
                 }
             });

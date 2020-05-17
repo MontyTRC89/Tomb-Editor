@@ -1,2 +1,0 @@
-By default a global trigger works always, from begin of current level until it is performed with a flag FGT_SINGLE_SHOT to disable it.
-Anyway if you want, you can disable your global trigger at start, and then to able it only in a second time using the flipeffect "Enable/Disable the GlobalTrigger...".

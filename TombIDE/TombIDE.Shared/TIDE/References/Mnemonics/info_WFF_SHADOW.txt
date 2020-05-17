@@ -1,6 +1,0 @@
-Used in WindowsFont= command.
-If you add this flag in WindowsFontFlags field, each character will have a sort of shadow.
-Technically this effect requires to print two times the same text, moving by a bit of pixels the position, and using two different colors.
-By default the shadow will be black, anyway you can change the color for shadow using the ShadowColorRgbId field.
-The shadow has two targets: create a simil-border to get more visible the text also over multicolor backgrounds, and to realize a 3d effect, where the effective text could seem it was upstairs a wall where the shadow of this text has been casted.
-Remark: this effect works fine with bold or ultra-bold characters, while less well with little/light caracters.

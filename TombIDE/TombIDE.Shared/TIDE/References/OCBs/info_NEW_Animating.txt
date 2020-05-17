@@ -1,6 +1,0 @@
-The OCB in animating will be used only when you use an ACTION trigger to move animating.
-In this circustance the OCB value will be used as speed for movement of animating.
-About the value to type you should remember that 1 sector are 1024 units, and the value you'll type will be added 30 times for second to current coordinate.
-For example if you type like speed the value 40 the animating will be moved of 1200 units (40 x 30 fps) for second, and this distance is a bit bigger than one sector.
-Remark: If you let 0 in OCB of animating the default speed used by "move animating" trigger will be of 30 units. 
-

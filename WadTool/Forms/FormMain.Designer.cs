@@ -96,8 +96,6 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.changeSlorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.convertSourceToTR5MainToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.darkMenuStrip1.SuspendLayout();
             this.darkToolStrip1.SuspendLayout();
@@ -132,7 +130,7 @@
             // 
             this.labelStatistics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.labelStatistics.Name = "labelStatistics";
-            this.labelStatistics.Size = new System.Drawing.Size(70, 18);
+            this.labelStatistics.Size = new System.Drawing.Size(68, 18);
             this.labelStatistics.Text = "                     ";
             // 
             // darkMenuStrip1
@@ -143,7 +141,6 @@
             this.fileToolStripMenuItem,
             this.createToolStripMenuItem,
             this.optionsToolStripMenuItem,
-            this.toolsToolStripMenuItem,
             this.helpToolStripMenuItem,
             this.debugToolStripMenuItem});
             this.darkMenuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -170,7 +167,7 @@
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(31, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
             // newWad2ToolStripMenuItem
@@ -179,7 +176,7 @@
             this.newWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newWad2ToolStripMenuItem.Name = "newWad2ToolStripMenuItem";
             this.newWad2ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newWad2ToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.newWad2ToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.newWad2ToolStripMenuItem.Text = "New Wad2";
             this.newWad2ToolStripMenuItem.Click += new System.EventHandler(this.newWad2ToolStripMenuItem_Click);
             // 
@@ -188,7 +185,7 @@
             this.toolStripMenuItem3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(337, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(277, 6);
             // 
             // openSourceWADToolStripMenuItem
             // 
@@ -197,7 +194,7 @@
             this.openSourceWADToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_Open_16;
             this.openSourceWADToolStripMenuItem.Name = "openSourceWADToolStripMenuItem";
             this.openSourceWADToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openSourceWADToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.openSourceWADToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.openSourceWADToolStripMenuItem.Text = "Open source";
             this.openSourceWADToolStripMenuItem.Click += new System.EventHandler(this.openSourceWADToolStripMenuItem_Click);
             // 
@@ -209,7 +206,7 @@
             this.openDestinationWadToolStripMenuItem.Name = "openDestinationWadToolStripMenuItem";
             this.openDestinationWadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.O)));
-            this.openDestinationWadToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.openDestinationWadToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.openDestinationWadToolStripMenuItem.Text = "Open destination";
             this.openDestinationWadToolStripMenuItem.Click += new System.EventHandler(this.openDestinationWad2ToolStripMenuItem_Click);
             // 
@@ -220,7 +217,7 @@
             this.openReferenceLevelToolStripMenuItem.Name = "openReferenceLevelToolStripMenuItem";
             this.openReferenceLevelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.O)));
-            this.openReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.openReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.openReferenceLevelToolStripMenuItem.Text = "Open reference Tomb Editor project";
             this.openReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.openReferenceLevelToolStripMenuItem_Click);
             // 
@@ -230,7 +227,7 @@
             this.closeReferenceLevelToolStripMenuItem.Enabled = false;
             this.closeReferenceLevelToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
             this.closeReferenceLevelToolStripMenuItem.Name = "closeReferenceLevelToolStripMenuItem";
-            this.closeReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.closeReferenceLevelToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.closeReferenceLevelToolStripMenuItem.Text = "Close reference Tomb Editor project";
             this.closeReferenceLevelToolStripMenuItem.Click += new System.EventHandler(this.closeReferenceLevelToolStripMenuItem_Click);
             // 
@@ -239,7 +236,7 @@
             this.toolStripMenuItem1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(337, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(277, 6);
             // 
             // saveWad2ToolStripMenuItem
             // 
@@ -249,7 +246,7 @@
             this.saveWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.save_16;
             this.saveWad2ToolStripMenuItem.Name = "saveWad2ToolStripMenuItem";
             this.saveWad2ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveWad2ToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.saveWad2ToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.saveWad2ToolStripMenuItem.Text = "Save Wad2";
             this.saveWad2ToolStripMenuItem.Click += new System.EventHandler(this.butSave_Click);
             // 
@@ -262,7 +259,7 @@
             this.saveWad2AsToolStripMenuItem.Name = "saveWad2AsToolStripMenuItem";
             this.saveWad2AsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.saveWad2AsToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.saveWad2AsToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.saveWad2AsToolStripMenuItem.Text = "Save Wad2 as...";
             this.saveWad2AsToolStripMenuItem.Click += new System.EventHandler(this.saveWad2AsToolStripMenuItem_Click);
             // 
@@ -271,7 +268,7 @@
             this.toolStripMenuItem2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(337, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(277, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -280,7 +277,7 @@
             this.exitToolStripMenuItem.Image = global::WadTool.Properties.Resources.door_opened_16;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -293,7 +290,7 @@
             this.newSpriteSequenceToolStripMenuItem});
             this.createToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.createToolStripMenuItem.Name = "createToolStripMenuItem";
-            this.createToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.createToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.createToolStripMenuItem.Text = "Create";
             // 
             // newMoveableToolStripMenuItem
@@ -301,7 +298,7 @@
             this.newMoveableToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newMoveableToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newMoveableToolStripMenuItem.Name = "newMoveableToolStripMenuItem";
-            this.newMoveableToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.newMoveableToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.newMoveableToolStripMenuItem.Text = "New moveable";
             this.newMoveableToolStripMenuItem.Click += new System.EventHandler(this.newMoveableToolStripMenuItem_Click);
             // 
@@ -310,7 +307,7 @@
             this.newStaticToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newStaticToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newStaticToolStripMenuItem.Name = "newStaticToolStripMenuItem";
-            this.newStaticToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.newStaticToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.newStaticToolStripMenuItem.Text = "New static";
             this.newStaticToolStripMenuItem.Click += new System.EventHandler(this.newStaticToolStripMenuItem_Click);
             // 
@@ -319,7 +316,7 @@
             this.newSpriteSequenceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newSpriteSequenceToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newSpriteSequenceToolStripMenuItem.Name = "newSpriteSequenceToolStripMenuItem";
-            this.newSpriteSequenceToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+            this.newSpriteSequenceToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.newSpriteSequenceToolStripMenuItem.Text = "New sprite sequence";
             this.newSpriteSequenceToolStripMenuItem.Click += new System.EventHandler(this.newSpriteSequenceToolStripMenuItem_Click);
             // 
@@ -328,7 +325,7 @@
             this.optionsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -339,7 +336,7 @@
             this.aboutWadToolToolStripMenuItem});
             this.helpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutWadToolToolStripMenuItem
@@ -347,7 +344,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 
@@ -369,14 +366,14 @@
             this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugToolStripMenuItem.Margin = new System.Windows.Forms.Padding(0, 0, 150, 0);
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.debugToolStripMenuItem.Text = "Debug";
             // 
             // debugAction0ToolStripMenuItem
             // 
             this.debugAction0ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction0ToolStripMenuItem.Name = "debugAction0ToolStripMenuItem";
-            this.debugAction0ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction0ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction0ToolStripMenuItem.Text = "Debug action 0";
             this.debugAction0ToolStripMenuItem.Click += new System.EventHandler(this.debugAction0ToolStripMenuItem_Click);
             // 
@@ -384,7 +381,7 @@
             // 
             this.debugAction1ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction1ToolStripMenuItem.Name = "debugAction1ToolStripMenuItem";
-            this.debugAction1ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction1ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction1ToolStripMenuItem.Text = "Debug action 1";
             this.debugAction1ToolStripMenuItem.Click += new System.EventHandler(this.debugAction1ToolStripMenuItem_Click);
             // 
@@ -392,7 +389,7 @@
             // 
             this.debugAction2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction2ToolStripMenuItem.Name = "debugAction2ToolStripMenuItem";
-            this.debugAction2ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction2ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction2ToolStripMenuItem.Text = "Debug action 1";
             this.debugAction2ToolStripMenuItem.Click += new System.EventHandler(this.debugAction2ToolStripMenuItem_Click);
             // 
@@ -401,7 +398,7 @@
             this.debugAction3ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction3ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction3ToolStripMenuItem.Name = "debugAction3ToolStripMenuItem";
-            this.debugAction3ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction3ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction3ToolStripMenuItem.Text = "Debug action 1";
             this.debugAction3ToolStripMenuItem.Click += new System.EventHandler(this.debugAction3ToolStripMenuItem_Click);
             // 
@@ -410,7 +407,7 @@
             this.debugAction4ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction4ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction4ToolStripMenuItem.Name = "debugAction4ToolStripMenuItem";
-            this.debugAction4ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction4ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction4ToolStripMenuItem.Text = "Debug action 4";
             this.debugAction4ToolStripMenuItem.Click += new System.EventHandler(this.debugAction4ToolStripMenuItem_Click);
             // 
@@ -419,7 +416,7 @@
             this.debugAction5ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction5ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction5ToolStripMenuItem.Name = "debugAction5ToolStripMenuItem";
-            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction5ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction5ToolStripMenuItem.Text = "Debug action 5";
             this.debugAction5ToolStripMenuItem.Click += new System.EventHandler(this.debugAction5ToolStripMenuItem_Click);
             // 
@@ -428,7 +425,7 @@
             this.debugAction6ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction6ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction6ToolStripMenuItem.Name = "debugAction6ToolStripMenuItem";
-            this.debugAction6ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction6ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction6ToolStripMenuItem.Text = "Debug action 6";
             this.debugAction6ToolStripMenuItem.Click += new System.EventHandler(this.debugAction6ToolStripMenuItem_Click);
             // 
@@ -437,7 +434,7 @@
             this.debugAction7ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction7ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction7ToolStripMenuItem.Name = "debugAction7ToolStripMenuItem";
-            this.debugAction7ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction7ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction7ToolStripMenuItem.Text = "Debug action 7";
             this.debugAction7ToolStripMenuItem.Click += new System.EventHandler(this.debugAction7ToolStripMenuItem_Click);
             // 
@@ -446,7 +443,7 @@
             this.debugAction8ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction8ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction8ToolStripMenuItem.Name = "debugAction8ToolStripMenuItem";
-            this.debugAction8ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction8ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction8ToolStripMenuItem.Text = "Debug action 8";
             this.debugAction8ToolStripMenuItem.Click += new System.EventHandler(this.debugAction8ToolStripMenuItem_Click);
             // 
@@ -455,7 +452,7 @@
             this.debugAction9ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.debugAction9ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.debugAction9ToolStripMenuItem.Name = "debugAction9ToolStripMenuItem";
-            this.debugAction9ToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.debugAction9ToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
             this.debugAction9ToolStripMenuItem.Text = "Debug action 9";
             this.debugAction9ToolStripMenuItem.Click += new System.EventHandler(this.debugAction9ToolStripMenuItem_Click);
             // 
@@ -491,7 +488,7 @@
             this.labelDest.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.labelDest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.labelDest.Name = "labelDest";
-            this.labelDest.Size = new System.Drawing.Size(70, 25);
+            this.labelDest.Size = new System.Drawing.Size(56, 25);
             this.labelDest.Text = "Destination:";
             // 
             // butNewWad2
@@ -557,7 +554,7 @@
             this.labelSource.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.labelSource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.labelSource.Name = "labelSource";
-            this.labelSource.Size = new System.Drawing.Size(46, 25);
+            this.labelSource.Size = new System.Drawing.Size(37, 25);
             this.labelSource.Text = "Source:";
             // 
             // butOpenSourceWad
@@ -585,7 +582,7 @@
             this.labelRefProject.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.labelRefProject.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.labelRefProject.Name = "labelRefProject";
-            this.labelRefProject.Size = new System.Drawing.Size(102, 25);
+            this.labelRefProject.Size = new System.Drawing.Size(83, 25);
             this.labelRefProject.Text = "Reference project:";
             // 
             // lblRefLevel
@@ -594,7 +591,7 @@
             this.lblRefLevel.Enabled = false;
             this.lblRefLevel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblRefLevel.Name = "lblRefLevel";
-            this.lblRefLevel.Size = new System.Drawing.Size(112, 25);
+            this.lblRefLevel.Size = new System.Drawing.Size(92, 25);
             this.lblRefLevel.Text = "(project not loaded)";
             this.lblRefLevel.Click += new System.EventHandler(this.lblRefLevel_Click);
             // 
@@ -910,7 +907,7 @@
             this.toolStripMenuItemMoveablesChangeSlot,
             this.toolStripMenuItemMoveablesDelete});
             this.contextMenuMoveableItem.Name = "contextMenuMoveableItem";
-            this.contextMenuMoveableItem.Size = new System.Drawing.Size(157, 99);
+            this.contextMenuMoveableItem.Size = new System.Drawing.Size(138, 99);
             // 
             // editSkeletonToolStripMenuItem
             // 
@@ -918,7 +915,7 @@
             this.editSkeletonToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editSkeletonToolStripMenuItem.Image = global::WadTool.Properties.Resources.skeleton_16;
             this.editSkeletonToolStripMenuItem.Name = "editSkeletonToolStripMenuItem";
-            this.editSkeletonToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.editSkeletonToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.editSkeletonToolStripMenuItem.Text = "Edit skeleton";
             this.editSkeletonToolStripMenuItem.Click += new System.EventHandler(this.editSkeletonToolStripMenuItem_Click);
             // 
@@ -928,7 +925,7 @@
             this.editAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editAnimationsToolStripMenuItem.Image = global::WadTool.Properties.Resources.animations_16;
             this.editAnimationsToolStripMenuItem.Name = "editAnimationsToolStripMenuItem";
-            this.editAnimationsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.editAnimationsToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.editAnimationsToolStripMenuItem.Text = "Edit animations";
             this.editAnimationsToolStripMenuItem.Click += new System.EventHandler(this.editAnimationsToolStripMenuItem_Click);
             // 
@@ -938,7 +935,7 @@
             this.toolStripMenuItem6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem6.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(153, 6);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(134, 6);
             // 
             // toolStripMenuItemMoveablesChangeSlot
             // 
@@ -946,7 +943,7 @@
             this.toolStripMenuItemMoveablesChangeSlot.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItemMoveablesChangeSlot.Image = global::WadTool.Properties.Resources.replace_16;
             this.toolStripMenuItemMoveablesChangeSlot.Name = "toolStripMenuItemMoveablesChangeSlot";
-            this.toolStripMenuItemMoveablesChangeSlot.Size = new System.Drawing.Size(156, 22);
+            this.toolStripMenuItemMoveablesChangeSlot.Size = new System.Drawing.Size(137, 22);
             this.toolStripMenuItemMoveablesChangeSlot.Text = "Change slot";
             this.toolStripMenuItemMoveablesChangeSlot.Click += new System.EventHandler(this.toolStripMenuItemMoveablesChangeSlot_Click);
             // 
@@ -956,7 +953,7 @@
             this.toolStripMenuItemMoveablesDelete.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItemMoveablesDelete.Image = global::WadTool.Properties.Resources.trash_16;
             this.toolStripMenuItemMoveablesDelete.Name = "toolStripMenuItemMoveablesDelete";
-            this.toolStripMenuItemMoveablesDelete.Size = new System.Drawing.Size(156, 22);
+            this.toolStripMenuItemMoveablesDelete.Size = new System.Drawing.Size(137, 22);
             this.toolStripMenuItemMoveablesDelete.Text = "Delete object";
             this.toolStripMenuItemMoveablesDelete.Click += new System.EventHandler(this.toolStripMenuItemMoveablesDelete_Click);
             // 
@@ -970,7 +967,7 @@
             this.changeSlorToolStripMenuItem,
             this.deleteObjectToolStripMenuItem});
             this.cmStatics.Name = "cmObject";
-            this.cmStatics.Size = new System.Drawing.Size(144, 77);
+            this.cmStatics.Size = new System.Drawing.Size(128, 77);
             // 
             // editObjectToolStripMenuItem
             // 
@@ -978,7 +975,7 @@
             this.editObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.editObjectToolStripMenuItem.Image = global::WadTool.Properties.Resources.edit_16;
             this.editObjectToolStripMenuItem.Name = "editObjectToolStripMenuItem";
-            this.editObjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.editObjectToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.editObjectToolStripMenuItem.Text = "Edit object";
             this.editObjectToolStripMenuItem.Click += new System.EventHandler(this.editObjectToolStripMenuItem_Click);
             // 
@@ -988,7 +985,7 @@
             this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(140, 6);
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(124, 6);
             // 
             // changeSlorToolStripMenuItem
             // 
@@ -996,7 +993,7 @@
             this.changeSlorToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.changeSlorToolStripMenuItem.Image = global::WadTool.Properties.Resources.replace_16;
             this.changeSlorToolStripMenuItem.Name = "changeSlorToolStripMenuItem";
-            this.changeSlorToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.changeSlorToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.changeSlorToolStripMenuItem.Text = "Change slot";
             this.changeSlorToolStripMenuItem.Click += new System.EventHandler(this.changeSlotToolStripMenuItem_Click);
             // 
@@ -1006,28 +1003,9 @@
             this.deleteObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteObjectToolStripMenuItem.Image = global::WadTool.Properties.Resources.trash_16;
             this.deleteObjectToolStripMenuItem.Name = "deleteObjectToolStripMenuItem";
-            this.deleteObjectToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.deleteObjectToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.deleteObjectToolStripMenuItem.Text = "Delete object";
             this.deleteObjectToolStripMenuItem.Click += new System.EventHandler(this.deleteObjectToolStripMenuItem_Click);
-            // 
-            // toolsToolStripMenuItem
-            // 
-            this.toolsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.convertSourceToTR5MainToolStripMenuItem});
-            this.toolsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
-            this.toolsToolStripMenuItem.Text = "Tools";
-            // 
-            // convertSourceToTR5MainToolStripMenuItem
-            // 
-            this.convertSourceToTR5MainToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.convertSourceToTR5MainToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.convertSourceToTR5MainToolStripMenuItem.Name = "convertSourceToTR5MainToolStripMenuItem";
-            this.convertSourceToTR5MainToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
-            this.convertSourceToTR5MainToolStripMenuItem.Text = "Convert source to TR5Main";
-            this.convertSourceToTR5MainToolStripMenuItem.Click += new System.EventHandler(this.ConvertSourceToTR5MainToolStripMenuItem_Click);
             // 
             // FormMain
             // 
@@ -1152,8 +1130,6 @@
         private System.Windows.Forms.ToolStripMenuItem openReferenceLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel labelRefProject;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem convertSourceToTR5MainToolStripMenuItem;
     }
 }
 

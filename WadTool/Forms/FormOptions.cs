@@ -7,7 +7,7 @@ namespace WadTool
     {
         private readonly WadToolClass _tool;
 
-        public FormOptions(WadToolClass tool)
+        public FormOptions(WadToolClass tool) : base(tool.Configuration)
         {
             InitializeComponent();
             InitializeDialog();

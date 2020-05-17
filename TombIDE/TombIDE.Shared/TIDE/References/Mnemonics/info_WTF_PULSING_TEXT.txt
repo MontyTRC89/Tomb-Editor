@@ -1,5 +1,0 @@
-Used with Parameters=PARAM_WTEXT script command
-This flag generates a text where its size will change from max size to min size, giving the idea of a pulsing heart.
-Note: the Size you type in the WindowsFont command linked with current PARAM_WTEXT command, will be used as littlest size while the bigger size will be the font size current + 30 %.
-
-It's advisable using always the WFF_CENTER_ALIGN flag in the WindowsFont command, for this effect type.

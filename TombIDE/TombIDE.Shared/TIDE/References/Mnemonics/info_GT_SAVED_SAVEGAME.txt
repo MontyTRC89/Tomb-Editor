@@ -1,1 +1,0 @@
-The condition will be true when player has just saved current game in some savegame.

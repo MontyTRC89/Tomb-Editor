@@ -1,3 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-This customize disable forever, in current level, the push-away animation of lara, when she has been touched and moved from enemies.
-The push-away animations are the 125, 126, 127 and 128 animations in lara slot.

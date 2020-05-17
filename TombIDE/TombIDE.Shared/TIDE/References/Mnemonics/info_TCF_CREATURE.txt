@@ -1,1 +1,0 @@
-Moveable is a creature: it borns, lives and dies. It has AI to move itself

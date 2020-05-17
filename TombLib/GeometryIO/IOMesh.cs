@@ -48,6 +48,50 @@ namespace TombLib.GeometryIO
             }
         }
 
+        public int NumIndices
+        {
+            get
+            {
+                var numIndieces = 0;
+                foreach (var submesh in Submeshes)
+                    foreach (var poly in submesh.Value.Polygons)
+                    {
+                        if (poly.Shape == IOPolygonShape.Triangle)
+                            numIndieces += 3;
+                        if (poly.Shape == IOPolygonShape.Quad)
+                            numIndieces += 4;
+                    }
+                return numIndieces;
+            }
+        }
+
+        public List<uint> Indices
+        {
+            get
+            {
+                List<uint> indices = new List<uint>();
+                foreach (var submesh in Submeshes)
+                    foreach (var poly in submesh.Value.Polygons)
+                        if(poly.Shape == IOPolygonShape.Quad)
+                        {
+                            indices.Add((uint)poly.Indices[0]);
+                            indices.Add((uint)poly.Indices[1]);
+                            indices.Add((uint)poly.Indices[3]);
+                            indices.Add((uint)poly.Indices[1]);
+                            indices.Add((uint)poly.Indices[2]);
+                            indices.Add((uint)poly.Indices[3]);
+                            
+                        }
+                        else if(poly.Shape == IOPolygonShape.Triangle)
+                        {
+                            indices.Add((uint)poly.Indices[0]);
+                            indices.Add((uint)poly.Indices[1]);
+                            indices.Add((uint)poly.Indices[2]);
+                        }
+                return indices;
+            }
+        }
+
         public int NumPolygons
         {
             get

@@ -1,5 +1,0 @@
-If you want insert the keypad to choose flor inside the elevator you must set this flag and (in ngle) to place the keypad oriented on wished elevator wall. Then you'll type the index of keypad in InnerKeyPadIndex field.
-Remember to use the "fake" keypad you find in Animating16_mip of ng.wad or ng2.wad and not the real keypad in switch_type1.
-The reason of this choice is given by a technical problem: the switch_type requires a switch trigger to work, but you elevator floor you have to place also dummy triggers and for this reason it's not possbile place both special trigger in some sectors.
-For this reason the management of "fake" keypad (of Animating16_mip) will be performed in hardcoded mode by engine.
-Apparentrly the keypad will work in same way of switch_type1 but with no need of special trigger to handle it.

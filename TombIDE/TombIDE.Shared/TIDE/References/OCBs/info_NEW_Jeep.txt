@@ -1,6 +1,0 @@
-Setting "1" in OCB field of the jeep you can enable a beam light for the jeep.
-This light works like that of the sidecar, anyway the light cone mesh you see in sidecar is missing on the jeep.
-If you wish add this mesh in the jeep you can have the showing/hiding of the new mesh (it has to be the mesh with index = 18) perfmored by trng engine when the light is on or off.
-Remark: if you add this new mesh remember to set it like "invisible" at start.
-See the sidecar object with Animation Editor to understand better how performing this job.
-

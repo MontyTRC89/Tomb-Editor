@@ -8,8 +8,10 @@
 
     public class IOGeometrySettings
     {
-        public bool ImportGeometry { get; set; } = true;
-        public bool ImportAnimations { get; set; } = false;
+        public bool Export { get; set; } = false;
+
+        public bool ProcessGeometry { get; set; } = true;
+        public bool ProcessAnimations { get; set; } = false;
 
         public bool SwapAnimTranslationXY { get; set; } = false;
         public bool SwapAnimTranslationXZ { get; set; } = false;

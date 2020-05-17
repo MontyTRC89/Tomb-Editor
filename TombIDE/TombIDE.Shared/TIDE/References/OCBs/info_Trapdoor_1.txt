@@ -1,4 +1,0 @@
-Enter 1-5 to make door open then close.
-
-Note: Set trigger timer to amount of seconds for door to be open
-

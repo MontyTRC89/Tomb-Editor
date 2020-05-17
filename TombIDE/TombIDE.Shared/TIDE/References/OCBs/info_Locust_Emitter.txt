@@ -1,7 +1,0 @@
-It can be deathable if you enter a high enough value in the OCB data field...somewhere around 96 is the limit.
-OCB code defines the number of locusts.
-OCB values used in the last revelation were: 12, 20 and 25
-
-Remark:
-Locust swarm can set heavy triggers in motorbike path or release a swarm from a shatter object. 
-

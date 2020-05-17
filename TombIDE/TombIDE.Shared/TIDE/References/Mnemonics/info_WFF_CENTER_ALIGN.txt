@@ -1,3 +1,0 @@
-Used in WindowsFont= command.
-The will be centerd at half of text frame.
-This align mode is suggested for titles.

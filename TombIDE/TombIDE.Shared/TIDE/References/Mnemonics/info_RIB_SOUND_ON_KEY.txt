@@ -1,2 +1,0 @@
-Used with Parameters=PARAM_INPUT_BOX
-Perform a sound effect, whose number you typed in SfxSound field of Parameters command, everytime the player hits a key.

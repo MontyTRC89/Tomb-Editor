@@ -53,14 +53,12 @@
     <Compile Include="Autocomplete\LuaAutocomplete.cs" />
     <Compile Include="Autocomplete\ScriptAutocomplete.cs" />
     <Compile Include="Compilers\NGCompiler.cs" />
-    <Compile Include="DefaultPaths.cs" />
     <Compile Include="ErrorDetection\LuaErrorDetection.cs" />
     <Compile Include="ErrorDetection\ScriptErrorDetection.cs" />
     <Compile Include="Helpers\ArgumentHelper.cs" />
     <Compile Include="Helpers\CommandHelper.cs" />
     <Compile Include="Helpers\DocumentHelper.cs" />
     <Compile Include="Helpers\LineHelper.cs" />
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="Objects\CompletionData.cs" />
     <Compile Include="Objects\ErrorLine.cs" />
     <Compile Include="Objects\HighlightingObject.cs" />

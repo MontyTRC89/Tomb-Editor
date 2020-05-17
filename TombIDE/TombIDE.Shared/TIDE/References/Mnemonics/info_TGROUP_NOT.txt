@@ -1,7 +1,0 @@
-Set as operator, to link current condition with previous conditions, the NOT operator.
-The NOT operator could be read as "AND NOT" because requires the previous condition was TRUE and that the current condition was NOT true.
-You use the NOT operator to invert a condition, this is very useful to create condition not yet presents in trigger condition list.
-For example if there is in trigger window the condition "Lara collide with object <#
-" but it's missing the inverse condition "Lara is NOT colliding with object <#
-", you can use the condition for collide and then add a TGROUP_NOT flag to first value of that exported condition to transforme it in "Lara is NOT colliding with object"
-See description of TGROUP_AND flag to have more information about the usage of boolean operators in TriggerGroup.

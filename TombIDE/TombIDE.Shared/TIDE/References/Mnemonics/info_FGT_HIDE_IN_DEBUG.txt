@@ -1,3 +1,0 @@
-Used in GlobalTrigger command.
-This flag doesn't change the behavior of the globaltrigger in runtime, but it removes the debugging mexages in debug mode (DGX_LOG_SCRIPT_COMMANDS diagnostic) for this globaltrigger.
-The reason to use this flag is when you are studying another script command but this global trigger continues to fill the log with many mexages not intersting for you.

@@ -1,3 +1,0 @@
-Used in Diary= command.
-In this layout the further image will be showed at center of screen in top-half side.
-Thre width of image in this layout is a bit larger than left/right layouts: the 60% of screen versus the 40% of previous layouts

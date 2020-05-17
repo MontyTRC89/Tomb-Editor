@@ -1,4 +1,0 @@
-This value forces the engine to change the real state-id number of your animation, replacing it with a neutral state-id.
-The advantage is to avoid some interference created by tomb4 engine in some circustances.
-You should use this FAN_ value when your special animation was breaked before reaching the last frame, only because lara is in the empty or she has problems with collisions or for status (water, falling, climbing)
-When an animation is performed with neutral state id (69 number) the game engine checks only for basic collisions but it doesn't perform any specific controll about what lara is doing and where she is.

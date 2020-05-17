@@ -1,7 +1,0 @@
-Start the Title section.
-Title section regards the creation of title.tr4 file will be showed at start of game, when on screen there are the menu: [New game] [Load game] [Options] ect.
-
-Statements in [Title] section are the same of [Level] sections but in [title] section are missing all statements for puzzle items.
-
-For description of [Title] statments see statement names in current table
-

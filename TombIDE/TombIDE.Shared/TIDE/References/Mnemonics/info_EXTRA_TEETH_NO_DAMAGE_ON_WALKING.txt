@@ -1,3 +1,0 @@
-Used in Enemy= command.
-You can enable the no-damage for lara when she moves slowly (walking).
-If you set this flag in Extra field of enemy= command with TEETH_SPIKES slot, lara will be able to walk in teeth spikes with no damage.

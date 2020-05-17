@@ -1,8 +1,0 @@
-If you use single door mode you cann't set also flag multi-door.
-In single door mode the elevator has a single door linked with elevator cage.
-This door will be moved up and down in according with elevator movement.
-When elevator reach a flor the door will be opened, when elevator starts from a floor the door will be closed.
-If you set this flag you have to type in FirstDoorIndex field the index for the door you placed near to elevator.
-Remark: you can use also a "fake" door you find in slot Animating2 in ng2.wad
-This animating will be moved, sliding it horizzontally, like a door by trng engine if you use single-door mode and you set its index in FirstDoorIndex field.
-There is a reason to use a fake door like this: when you use a real door,in fact, in some circustances (it depends by door type and by position of door respect to rooms linking) the engine will add an invisible sector collision in front of the door when it's closed. Since it's boring in many situations you can use the fake animating door to avoid this problem.

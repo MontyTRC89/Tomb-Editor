@@ -47,7 +47,7 @@ namespace TombLib.GeometryIO.Importers
             var newModel = new IOModel();
             var textures = new Dictionary<int, Texture>();
 
-            if (_settings.ImportGeometry)
+            if (_settings.ProcessGeometry)
             {
                 var tmpList = new List<IOMesh>();
 
@@ -205,7 +205,7 @@ namespace TombLib.GeometryIO.Importers
                     newModel.Meshes.Add(mesh);
             }
 
-            if (_settings.ImportAnimations && 
+            if (_settings.ProcessAnimations && 
                 scene.HasAnimations && scene.AnimationCount > 0)
             {
                 // Find all mesh nodes to count against animation nodes

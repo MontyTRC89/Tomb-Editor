@@ -1,3 +1,0 @@
-Used into Customize=CUST_BINOCULARS command
-If you wish a solid bar misure the intensity of some value in binocular screen, you have to use the BINT_BAR value in same field with ID for rectangle.
-Note: remember that when you use a bar, it's necessary you set in the PARAM_RECT command (linked with current binocular infos to show...) the values for Foreground color (the main color of the bar) and BackGround color (the background color, the empty color, of the bar).
