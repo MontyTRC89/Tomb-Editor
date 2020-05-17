@@ -1,7 +1,7 @@
 Version 1.3
 ===========
 Tomb Editor:
- * Export rooms to Wavefront OBJ and MQO formats.
+ * Export rooms to Collada, Wavefront OBJ, glTF2, x3d and MQO formats with lighting.
  * Add "Lighting Quality" feature to create natural smooth shadows with multipass raytracing.
  * Refactored palette and added ability to sample palette from selected texture set.
  * Add "Clear Shades" option for merged statics, which ignores static mesh's own shades before applying lighting.
@@ -22,6 +22,7 @@ Tomb Editor:
  * Fix lagging gizmo movement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Volume" object type for forward compatibility with TR5Main.
+ * Add experimental TR3 compiler.
  
 TombIDE:
  * Major refactoring and performance improvemets.

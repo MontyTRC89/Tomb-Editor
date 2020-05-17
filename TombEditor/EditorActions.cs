@@ -4132,7 +4132,7 @@ namespace TombEditor
                 saveFileDialog.Title = "Export current room";
                 saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter();
                 saveFileDialog.AddExtension = true;
-                saveFileDialog.DefaultExt = "obj";
+                saveFileDialog.DefaultExt = "dae";
                 saveFileDialog.FileName = _editor.SelectedRoom.Name;
 
                 if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
