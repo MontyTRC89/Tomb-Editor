@@ -528,8 +528,8 @@ namespace TombLib.LevelData
 
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]
         {
-            new FileFormat("TRLE sounds catalog", "txt"),
-            new FileFormat("Tomb Editor sounds catalog", "xml")
+            new FileFormat("TRLE sound catalog", "txt"),
+            new FileFormat("Tomb Editor sound catalog", "xml")
         };
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsXmlFiles = new[] { new FileFormat("XML file", "xml") };
 

@@ -979,7 +979,7 @@ namespace TombEditor
                 EditorActions.ReloadWads(args.Window);
             });
 
-            AddCommand("ReloadSounds", "Reload all sounds catalogs", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("ReloadSounds", "Reload all sound catalogs", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.ReloadSounds(args.Window);
             });

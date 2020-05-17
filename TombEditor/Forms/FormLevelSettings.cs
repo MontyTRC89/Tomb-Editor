@@ -1512,7 +1512,7 @@ namespace TombEditor.Forms
             if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogSearchColumn.Name)
             {
                 string result = LevelFileDialog.BrowseFile(this, _levelSettings, _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path,
-                    "Select a new sounds catalog file", WadSounds.FormatExtensions, VariableType.LevelDirectory, false);
+                    "Select a new sound catalog file", WadSounds.FormatExtensions, VariableType.LevelDirectory, false);
                 if (result != null)
                 {
                     _soundsCatalogsDataGridViewDataSource[e.RowIndex].Path = result;

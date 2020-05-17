@@ -130,7 +130,7 @@ namespace SoundTool
         private void SaveArchive(string filename = null)
         {
             if (filename == null)
-                filename = LevelFileDialog.BrowseFile(this, "Save sounds catalog to XML",
+                filename = LevelFileDialog.BrowseFile(this, "Save sound catalog to XML",
                                                          LevelSettings.FileFormatsSoundsXmlFiles,
                                                          true);
             if (filename == null)

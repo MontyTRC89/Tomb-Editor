@@ -86,7 +86,7 @@ namespace TombLib.Forms
                                 case DialogResult.No:
                                     return;
                                 case DialogResult.Cancel:
-                                    throw new OperationCanceledException("Canceled because sounds catalog file was not loadable");
+                                    throw new OperationCanceledException("Canceled because sound catalog file was not loadable");
                             }
                     });
             }
