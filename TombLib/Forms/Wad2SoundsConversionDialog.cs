@@ -115,7 +115,7 @@ namespace TombLib.Forms
                     {
                         if (DarkMessageBox.Show(this, "Are you trying to export sound info '" + row.Cells[2].Value + 
                                                 "' to Xml " +
-                                                "without having a valid sounds catalog loaded. You will lose your samples names if you don't load " +
+                                                "without having a valid sound catalog loaded. You will lose your samples names if you don't load " +
                                                 "a catalog. Do you want to continue?", "Confirm",
                                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                             continueProcedure = false;
@@ -272,7 +272,7 @@ namespace TombLib.Forms
 
         private void butSearchSoundsCatalogPath_Click(object sender, EventArgs e)
         {
-            string result = LevelFileDialog.BrowseFile(this, "Select sounds catalog to import",
+            string result = LevelFileDialog.BrowseFile(this, "Select sound catalog to import",
                                                        LevelSettings.FileFormatsSoundsCatalogs,
                                                        false);
             if (result != null)

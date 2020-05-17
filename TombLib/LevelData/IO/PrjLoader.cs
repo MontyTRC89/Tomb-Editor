@@ -1264,7 +1264,7 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
-                // XML_SOUND_SYSTEM: Read sounds catalog. We need it just for names, because we'll take 
+                // XML_SOUND_SYSTEM: Read sound catalog. We need it just for names, because we'll take 
                 // sound infos from SFX/SAM.
                 WadSounds sounds = null;
                 if (File.Exists(soundsPath))

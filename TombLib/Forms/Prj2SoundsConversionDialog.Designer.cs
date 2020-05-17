@@ -184,7 +184,7 @@ namespace TombLib.Forms
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(439, 17);
             this.darkLabel7.TabIndex = 1;
-            this.darkLabel7.Text = "Optional sounds catalog file (TXT, XML or SFX):";
+            this.darkLabel7.Text = "Optional sound catalog file (TXT, XML or SFX):";
             // 
             // tbSoundsCatalogPath
             // 

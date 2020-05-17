@@ -49,7 +49,7 @@ namespace TombEditor.Forms
 
         private void ButBrowseTxt_Click(object sender, EventArgs e)
         {
-            string result = LevelFileDialog.BrowseFile(this, "Select sounds catalog to import",
+            string result = LevelFileDialog.BrowseFile(this, "Select sound catalog to import",
                                                      LevelSettings.FileFormatsSoundsCatalogs,
                                                      false);
             if (result != null)

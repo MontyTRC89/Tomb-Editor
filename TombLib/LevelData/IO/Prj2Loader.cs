@@ -176,7 +176,7 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.SoundsCatalogs)
                 {
-                    progressReporter?.ReportInfo("Reading sounds catalogs...");
+                    progressReporter?.ReportInfo("Reading sound catalogs...");
 
                     var toLoad = new Dictionary<ReferencedSoundsCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundsCatalog>());
                     var list = new List<ReferencedSoundsCatalog>(); // Order matters
@@ -199,7 +199,7 @@ namespace TombLib.LevelData.IO
                         // Add catalog
                         list.Add(newSounds);
                         toLoad.Add(newSounds, path);
-                        progressReporter?.ReportInfo("Sounds catalog successfully loaded: " + path);
+                        progressReporter?.ReportInfo("Sound catalog successfully loaded: " + path);
                         return true;
                     });
 
@@ -524,7 +524,7 @@ namespace TombLib.LevelData.IO
                     wad.Key.SetPath(settings, wad.Value));
 
             // Load sound catalogs
-            progressReporter?.ReportInfo("Loading sounds catalogs into level");
+            progressReporter?.ReportInfo("Loading sound catalogs into level");
             if (!loadingSettings.IgnoreSoundsCatalogs)
                 Parallel.ForEach(SoundsCatalogsToLoad, catalog =>
                     catalog.Key.SetPath(settings, catalog.Value));

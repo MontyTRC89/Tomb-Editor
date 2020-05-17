@@ -222,7 +222,7 @@ namespace TombLib.Forms
 
         private void butSearchSoundsCatalogPath_Click(object sender, EventArgs e)
         {
-            string result = LevelFileDialog.BrowseFile(this, "Select sounds catalog to import",
+            string result = LevelFileDialog.BrowseFile(this, "Select sound catalog to import",
                                                        LevelSettings.FileFormatsSoundsCatalogs,
                                                        false);
             if (result != null)
