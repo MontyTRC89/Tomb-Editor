@@ -4734,7 +4734,6 @@ namespace TombEditor
 
         public static void MakeQuickItemGroup(IWin32Window owner)
         {
-            // FIXME: Hide all related UI elements for non-TRNG targets?
             if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
             {
                 _editor.SendMessage("Itemgroup is TRNG-only feature.", PopupType.Info);
