@@ -2623,11 +2623,15 @@ namespace TombEditor.Controls
             Effect skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
 
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+            // Get Horizon Id and try to retrieve moveable for skybox rendering
+            var version = _editor.Level.Settings.GameVersion;
+            WadMoveableId? horizonId = WadMoveableId.GetHorizon(version);
+            WadMoveable moveable = null;
+            if (horizonId.HasValue)
+                moveable = _editor?.Level?.Settings?.WadTryGetMoveable(horizonId.Value);
 
-            WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.SkyBox);
             if (moveable == null)
                 return;
-
             AnimatedModel model = _wadRenderer.GetMoveable(moveable);
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
@@ -2683,12 +2687,14 @@ namespace TombEditor.Controls
                     var currentInstance = movGroup.Last();
                     var model = _wadRenderer.GetMoveable(_editor?.Level?.Settings?.WadTryGetMoveable(currentInstance.WadObjectId));
                     var skin = model;
-
+                    var version = _editor.Level.Settings.GameVersion;
                     if (currentInstance.WadObjectId == WadMoveableId.Lara) // Show Lara
                     {
-                        WadMoveable skinMoveable = _editor?.Level?.Settings?.WadTryGetMoveable(WadMoveableId.LaraSkin);
-                        if (skinMoveable != null)
-                            skin = _wadRenderer.GetMoveable(skinMoveable);
+                        WadMoveableId laraSkinId = WadMoveableId.GetLaraSkin(version);
+                        WadMoveable moveableSkin = _editor.Level.Settings.WadTryGetMoveable(laraSkinId);
+                        if (moveableSkin != null)
+                            skin = _wadRenderer.GetMoveable(moveableSkin);
+
                     }
 
                     skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);

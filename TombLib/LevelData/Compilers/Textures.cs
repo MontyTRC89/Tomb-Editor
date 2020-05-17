@@ -1,4 +1,5 @@
 ﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace TombLib.LevelData.Compilers
 
             // I need to update the bumped tiles
             _textureInfoManager.UpdateTiles(spritePages.Count);
-            
+
             // DEBUG: dump the texture map
             //var tempImage = ImageC.FromByteArray(texture32Data, 256, numPages * 256);
             //tempImage.Save("H:\\testpack.jpg");
@@ -161,14 +162,18 @@ namespace TombLib.LevelData.Compilers
 
                     if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                     {
+                        ushort texW = (ushort)oldTexture.Texture.Image.Width;
+                        ushort texH = (ushort)oldTexture.Texture.Image.Height;
+                        ushort SpriteW = (ushort)((texW - 1) * 256 + 255);
+                        ushort SpriteH = (ushort)((texH - 1) * 256 + 255);
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;
-                        newTexture.Width = (ushort)((oldTexture.Texture.Image.Width - 1) * 256 + 255);
-                        newTexture.Height = (ushort)((oldTexture.Texture.Image.Height - 1) * 256 + 255);
-                        newTexture.TopSide = 0;
-                        newTexture.LeftSide = 0;
-                        newTexture.RightSide = 0;
-                        newTexture.BottomSide = 0;
+                        newTexture.Width = SpriteW;
+                        newTexture.Height = SpriteH;
+                        newTexture.TopSide = (short)oldTexture.Alignment.Y0;
+                        newTexture.LeftSide = (short)oldTexture.Alignment.X0;
+                        newTexture.RightSide = (short)oldTexture.Alignment.X1;
+                        newTexture.BottomSide = (short)oldTexture.Alignment.Y1;
                     }
                     else
                     {
@@ -196,6 +201,14 @@ namespace TombLib.LevelData.Compilers
             return texturePages;
         }
 
+        private static byte[] PackTextureMap32To16Bit(byte [] textureData, bool dither)
+        {
+            if (dither)
+                return PackTextureMap32To16BitDithered(textureData, 256);
+            else
+                return PackTextureMap32To16Bit(textureData);
+        }
+
         private static byte[] PackTextureMap32To16Bit(byte[] textureData)
         {
             int pixelCount = textureData.Length / 4;
@@ -221,15 +234,18 @@ namespace TombLib.LevelData.Compilers
                 }
                 else
                 {
+                    if (a1 > 0 && a1 < 255)
+                    {
+                        r = (byte)(r * (a1 / 255.0f));
+                        g = (byte)(g * (a1 / 255.0f));
+                        b = (byte)(b * (a1 / 255.0f));
+                    }
                     a = 0x8000;
                 }
 
-                if (r1 < 8)
-                    r = 0;
-                if (g1 < 8)
-                    g = 0;
-                if (b1 < 8)
-                    b = 0;
+                if (r1 < 8) r = 0;
+                if (g1 < 8) g = 0;
+                if (b1 < 8) b = 0;
 
                 ushort tmp = 0;
 
@@ -247,6 +263,94 @@ namespace TombLib.LevelData.Compilers
 
                 newTextureData[i * 2] = (byte)(tmp & 0xff);
                 newTextureData[i * 2 + 1] = (byte)((tmp & 0xff00) >> 8);
+            }
+            return newTextureData;
+        }
+
+        private static byte[] PackTextureMap32To16BitDithered(byte[] textureData, int pageSize)
+        {
+            // Stucki dithering matrix, it produces better result than Floyd-Steinberg
+            // with gradients
+            var ditherMatrix = new byte[,]
+            { { 0, 0, 0, 8, 4 },
+              { 2, 4, 8, 4, 2 },
+              { 1, 2, 4, 2, 1 } };
+
+            var seed = new Random(31459);
+            int pixelCount = textureData.Length / 4;
+            var height = pixelCount / pageSize;
+            byte[] newTextureData = new byte[pixelCount * 2];
+
+            for (int i = 0; i < pixelCount; i++)
+            {
+                int r1 = textureData[i * 4 + 2];
+                int g1 = textureData[i * 4 + 1];
+                int b1 = textureData[i * 4 + 0];
+                int r2 = (byte)(r1 >> 3) << 3;
+                int g2 = (byte)(g1 >> 3) << 3;
+                int b2 = (byte)(b1 >> 3) << 3;
+                int rE = r1 - r2;
+                int bE = g1 - g2;
+                int gE = b1 - b2;
+
+                for (int row = 0; row < 3; row++)
+                {
+                    int offsetY = (i / pageSize) + row;
+
+                    for (int col = 0; col < 5; col++)
+                    {
+                        int coefficient = ditherMatrix[row, col];
+                        int offsetX = (i % pageSize) + (col - 4);
+
+                        if (coefficient != 0 && offsetX >= 0 && offsetX < pageSize && offsetY >= 0 && offsetY < height)
+                        {
+                            // Add some noise to coefficient to reduce banding
+                            float finalCoeff = 42 - (seed.Next(0, 15));
+
+                            int offsetIndex = (offsetY * pageSize + offsetX) * 4;
+                            int newR = (int)((rE * coefficient) / finalCoeff);
+                            int newG = (int)((gE * coefficient) / finalCoeff);
+                            int newB = (int)((bE * coefficient) / finalCoeff);
+
+                            byte a = (byte)MathC.Clamp((textureData[offsetIndex + 3]), 0, 255);
+                            byte r = (byte)MathC.Clamp((textureData[offsetIndex + 2] + newR), 0, 255);
+                            byte g = (byte)MathC.Clamp((textureData[offsetIndex + 1] + newG), 0, 255);
+                            byte b = (byte)MathC.Clamp((textureData[offsetIndex + 0] + newB), 0, 255);
+
+                            if (r < 8 || a == 0) r = 0;
+                            if (g < 8 || a == 0) g = 0;
+                            if (b < 8 || a == 0) b = 0;
+
+                            if (a > 0 && a < 255)
+                            {
+                                // Convert true alpha to brightness with slight noise to prevent banding
+                                a -= (byte)seed.Next(0, MathC.Clamp((255 - a) / 20, 0, a));
+                                r  = (byte)(r * (a / 255.0f));
+                                g  = (byte)(g * (a / 255.0f));
+                                b  = (byte)(b * (a / 255.0f));
+                            }
+
+                            r /= 8;
+                            g /= 8;
+                            b /= 8;
+
+                            ushort tmp = 0;
+
+                            if (r == 255 && g == 255 && b == 255)
+                                tmp = 0xffff;
+                            else
+                            {
+                                tmp |= (ushort)(a == 0 ? 0 : 0x8000);
+                                tmp |= (ushort)(r << 10);
+                                tmp |= (ushort)(g << 5);
+                                tmp |= (ushort)b;
+                            }
+
+                            newTextureData[offsetIndex / 2] = (byte)((tmp & 0x00ff));
+                            newTextureData[offsetIndex / 2 + 1] = (byte)((tmp & 0xff00) >> 8);
+                        }
+                    }
+                }
             }
             return newTextureData;
         }

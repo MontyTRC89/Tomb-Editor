@@ -301,11 +301,11 @@ namespace TombLib.LevelData.Compilers
             writer.WriteBlockArray(Sectors);
 
             // Write room color
-            writer.Write((ushort)AmbientIntensity);
-            writer.Write((ushort)AmbientIntensity);
+            writer.Write((ushort)(AmbientIntensity));
+            writer.Write((ushort)(AmbientIntensity));
 
             // TODO: Light mode
-            writer.Write((ushort)0x00);
+            writer.Write(LightMode);
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Count);
@@ -384,8 +384,10 @@ namespace TombLib.LevelData.Compilers
             writer.WriteBlockArray(Sectors);
 
             // Write room color
-            writer.Write((ushort)AmbientIntensity);
-            writer.Write((ushort)AmbientIntensity);
+            writer.Write((ushort)(AmbientIntensity));
+
+            // Light mode is broken in TR3
+            writer.Write((ushort)0x00);
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Count);
@@ -399,9 +401,20 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(light.Color.Red);
                     writer.Write(light.Color.Green);
                     writer.Write(light.Color.Blue);
-                    writer.Write((byte)0xff);
-                    writer.Write((uint)light.Intensity);
-                    writer.Write((uint)light.Out);
+                    writer.Write(light.LightType);
+
+                    if (light.LightType == 0) // FIXME: TR3 sun type - UNKNOWN NORMALS FORMAT!
+                    {
+                        writer.Write((ushort)(light.X + (light.DirectionX * 1024.0f)));
+                        writer.Write((ushort)(light.Y + (light.DirectionY * 1024.0f)));
+                        writer.Write((ushort)(light.Z + (light.DirectionZ * 1024.0f)));
+                        writer.Write((ushort)0x0000); // Padding
+                    }
+                    else
+                    {
+                        writer.Write((uint)light.Intensity);
+                        writer.Write((uint)light.Out);
+                    }
                 }
             }
 

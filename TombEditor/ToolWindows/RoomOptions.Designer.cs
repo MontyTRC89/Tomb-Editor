@@ -421,18 +421,6 @@
             // comboRoomType
             // 
             this.comboRoomType.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboRoomType.Items.AddRange(new object[] {
-            "Normal",
-            "Water",
-            "Quicksand",
-            "Rain 1",
-            "Rain 2",
-            "Rain 3",
-            "Rain 4",
-            "Snow 1",
-            "Snow 2",
-            "Snow 3",
-            "Snow 4"});
             this.comboRoomType.Location = new System.Drawing.Point(3, 101);
             this.comboRoomType.Name = "comboRoomType";
             this.comboRoomType.Size = new System.Drawing.Size(81, 23);

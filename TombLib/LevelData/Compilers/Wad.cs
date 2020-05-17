@@ -16,6 +16,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
         private int _totalMeshSize = 0;
         private List<int> _finalSelectedSoundsList;
+        private List<int> _finalSoundIndicesList;
         private List<WadSoundInfo> _finalSoundInfosList;
         private List<WadSample> _finalSamplesList;
         private int _soundMapSize = 0;
@@ -687,13 +688,47 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareSoundsData()
         {
-            // Step 1: create the real list of sounds to compile
+            // Step 1: create the real list of sounds and indices to compile
+
             _finalSoundInfosList = new List<WadSoundInfo>();
             _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
 
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
                 if (_finalSelectedSoundsList.Contains(soundInfo.Id))
-                    _finalSoundInfosList.Add(soundInfo);
+                {
+                    // Check if sound is marked as indexed. If not, exclude it from processing.
+                    if (_level.Settings.GameVersion.UsesMainSfx() && !soundInfo.Indexed)
+                    {
+                        _progressReporter.ReportWarn("Sound info #" + soundInfo.Id +
+                            " was selected but isn't set as indexed for TR2-3 MAIN.SFX. It was removed.");
+                        _finalSelectedSoundsList.Remove(soundInfo.Id);
+                    }
+                    else
+                        _finalSoundInfosList.Add(soundInfo);
+                }
+
+            // Step 2: Prepare indices list to be written (needed only for TR2-3).
+            // For that, we iterate through ALL sound infos available and count how many samples
+            // each of them have. Then we build a list of needed sound IDs with appropriate 
+            // sample count, which is used later to store indices.
+            // Indices are not necessary for TR4-5, but are for TR2-3 cause main.sfx is used.
+
+            _finalSoundIndicesList = new List<int>();
+            int currentIndex = 0;
+            foreach (var sound in _level.Settings.GlobalSoundMap)
+            {
+                // Don't include indices for non-indexed sounds
+                if (_level.Settings.GameVersion.UsesMainSfx() && !sound.Indexed) continue;
+
+                if (_finalSoundInfosList.Contains(sound))
+                    foreach (var sample in sound.Samples)
+                    {
+                        _finalSoundIndicesList.Add(currentIndex);
+                        currentIndex++;
+                    }
+                else
+                    currentIndex += sound.Samples.Count;
+            }
 
             // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
             // There is no other way of guessing it except looking if there is a specific object in any of wads.
@@ -729,7 +764,7 @@ namespace TombLib.LevelData.Compilers
                 AddRemappedNGSound(467, 307, 1425);
             }
 
-            // Step 2: create the sound map
+            // Step 3: create the sound map
             switch (_level.Settings.GameVersion)
             {
                 case TRVersion.Game.TRNG:
@@ -755,50 +790,13 @@ namespace TombLib.LevelData.Compilers
             foreach (var sound in _finalSoundInfosList)
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
 
-            // Step 3: load samples
-            var samples = new List<WadSample>();
-            foreach (var soundInfo in _finalSoundInfosList)
-                foreach (var sample in soundInfo.Samples)
-                    samples.Add(sample);
+            // Samples aren't needed for TR2-3, skip this step
+            if (_level.Settings.GameVersion.UsesMainSfx())
+                return;
 
-            _finalSamplesList = new List<WadSample>();
-            SortedDictionary<int, WadSample> loadedSamples = new SortedDictionary<int, WadSample>();
-
-            bool samplesMissing = false;
-            Parallel.For(0, samples.Count, i =>
-            {
-                WadSample currentSample = WadSample.NullSample;
-                try
-                {
-                    string samplePath = WadSounds.TryGetSamplePath(_level.Settings, samples[i].FileName);
-
-                    // If sample was found, then load it...
-                    if (!string.IsNullOrEmpty(samplePath))
-                    {
-                        using (var stream = new FileStream(samplePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        {
-                            var buffer = new byte[stream.Length];
-                            if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
-                                throw new EndOfStreamException();
-                            currentSample = new WadSample(samplePath, WadSample.ConvertSampleFormat(buffer, false));
-                        }
-                    }
-                    // ... otherwise output null sample
-                    else
-                    {
-                        currentSample = WadSample.NullSample;
-                        logger.Warn(new FileNotFoundException(), "Unable to find sample '" + samplePath + "'");
-                        samplesMissing = true;
-                    }
-                }
-                catch (Exception exc)
-                {
-                    //logger.Warn(exc, "Unable to read file '" + samplePathInfos[i].FullPath + "'");
-                }
-
-                lock (loadedSamples)
-                    loadedSamples.Add(i, currentSample);
-            });
+            // Step 4: load samples
+            bool samplesMissing;
+            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, out samplesMissing);
 
             if (samplesMissing)
                 _progressReporter.ReportWarn("Some samples weren't found. Make sure sample paths are specified correctly. Check level settings for details.");
@@ -808,9 +806,12 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundMetadata(BinaryWriter writer)
         {
-            // In TRNG and TR5Main NumDemoData is used as sound map size
-            writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                  _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
+            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
+            {
+                // In TRNG and TR5Main NumDemoData is used as sound map size
+                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
+                                      _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
+            }
 
             using (var ms = new MemoryStream())
             {
@@ -820,20 +821,16 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < _finalSoundMap.Length; i++)
                         bw.Write(_finalSoundMap[i]);
 
-                    int numSounds = 0;
-                    for (int i = 0; i < _level.Settings.GlobalSoundMap.Count; i++)
-                        if (_finalSelectedSoundsList.Contains(_level.Settings.GlobalSoundMap[i].Id))
-                            numSounds++;
-
                     // Write sound details
                     int lastSampleIndex = 0;
                     bw.Write((uint)_finalSoundInfosList.Count);
                     for (int i = 0; i < _finalSoundInfosList.Count; i++)
                     {
                         var soundDetail = _finalSoundInfosList[i];
-
-                        if (soundDetail.Samples.Count > 0x3f)
+                        
+                        if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
+
                         ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
                         characteristics |= (ushort)(soundDetail.Samples.Count << 2);
                         if (soundDetail.DisablePanning)
@@ -843,7 +840,7 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR2)
+                        if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
                         {
                             var newSoundDetail = new tr_sound_details();
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
@@ -857,20 +854,23 @@ namespace TombLib.LevelData.Compilers
                             var newSoundDetail = new tr3_sound_details();
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
                             newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
-
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
                             newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
+                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
                             newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
                             newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
-
                         lastSampleIndex += soundDetail.Samples.Count;
                     }
 
-                    bw.Write((uint)lastSampleIndex);
-                    for (int i = 0; i < lastSampleIndex; i++)
-                        bw.Write(0);
+                    if (_level.Settings.GameVersion < TRVersion.Game.TR5Main && lastSampleIndex > 255)
+                        _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
+                            " samples, while maximum is 256. Level will crash. Turn off some sounds to prevent that.");
+
+                    // Write sample indices (not used but parsed in TR4-5)
+                    bw.Write((uint)_finalSoundIndicesList.Count);
+                    for (int i = 0; i < _finalSoundIndicesList.Count; i++)
+                        bw.Write((uint)_finalSoundIndicesList[i]);
                 }
 
                 writer.Write(ms.ToArray());

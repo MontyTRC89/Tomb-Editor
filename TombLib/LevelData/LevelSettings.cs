@@ -188,6 +188,7 @@ namespace TombLib.LevelData
         // Compiler options
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
+        public bool Dither16BitTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
         
         // For TR5 only
@@ -212,6 +213,33 @@ namespace TombLib.LevelData
         public static string VariableCreate(VariableType type)
         {
             return VariableBegin + type + VariableEnd;
+        }
+
+        public void ConvertLevelExtension()
+        {
+            var result = string.Empty;
+            switch (GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                    result = ".phd";
+                    break;
+                case TRVersion.Game.TR2:
+                case TRVersion.Game.TR3:
+                    result = ".tr2";
+                    break;
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TRNG:
+                default:
+                    result = ".tr4";
+                    break;
+                case TRVersion.Game.TR5:
+                    result = ".trc";
+                    break;
+                case TRVersion.Game.TR5Main:
+                    result = ".t5m";
+                    break;
+            }
+            GameLevelFilePath = Path.ChangeExtension(GameLevelFilePath, result);
         }
 
         public string GetVariable(VariableType type)
@@ -494,7 +522,8 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider I level", "phd"),
             new FileFormat("Tomb Raider II/III level", "tr2"),
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
-            new FileFormat("Tomb Raider Chronicles level", "trc")
+            new FileFormat("Tomb Raider Chronicles level", "trc"),
+            new FileFormat("TR5Main level", "t5m")
         };
 
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]

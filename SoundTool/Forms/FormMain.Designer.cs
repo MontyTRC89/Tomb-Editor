@@ -40,6 +40,11 @@
             this.unloadReferenceProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.buildMSFXStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indexStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unindexStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSoundToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
@@ -172,11 +177,60 @@
             // optionToolStripMenuItem
             // 
             this.optionToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.optionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.buildMSFXStripMenuItem,
+            this.indexStripMenuItem,
+            this.unindexStripMenuItem});
             this.optionToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.optionToolStripMenuItem.Name = "optionToolStripMenuItem";
-            this.optionToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.optionToolStripMenuItem.Text = "Options";
-            this.optionToolStripMenuItem.Click += new System.EventHandler(this.optionToolStripMenuItem_Click);
+            this.optionToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.optionToolStripMenuItem.Text = "Tools";
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.optionsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(211, 6);
+            // 
+            // buildMSFXStripMenuItem
+            // 
+            this.buildMSFXStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.buildMSFXStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.buildMSFXStripMenuItem.Name = "buildMSFXStripMenuItem";
+            this.buildMSFXStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.buildMSFXStripMenuItem.Text = "Build MAIN.SFX";
+            this.buildMSFXStripMenuItem.Click += new System.EventHandler(this.buildMSFXStripMenuItem_Click);
+            // 
+            // indexStripMenuItem
+            // 
+            this.indexStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.indexStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.indexStripMenuItem.Name = "indexStripMenuItem";
+            this.indexStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.indexStripMenuItem.Text = "Select all sounds for MAIN.SFX";
+            this.indexStripMenuItem.Click += new System.EventHandler(this.indexStripMenuItem3_Click);
+            // 
+            // unindexStripMenuItem
+            // 
+            this.unindexStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.unindexStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.unindexStripMenuItem.Name = "unindexStripMenuItem";
+            this.unindexStripMenuItem.Size = new System.Drawing.Size(214, 22);
+            this.unindexStripMenuItem.Text = "Deselect all sounds for MAIN.SFX";
+            this.unindexStripMenuItem.Click += new System.EventHandler(this.unindexStripMenuItem3_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -379,6 +433,11 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colID;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.ToolStripMenuItem optionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem unindexStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem buildMSFXStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem indexStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 

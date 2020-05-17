@@ -19,7 +19,7 @@ namespace TombEditor
         public bool Editor_ReloadFilesAutomaticallyWhenChanged { get; set; } = true;
         public bool Editor_OpenLastProjectOnStartup { get; set; } = false;
         public bool Editor_AllowMultipleInstances { get; set; } = false;
-
+        public bool Editor_AllowExperimentalFeatures { get; set; } = false;
 
         // Defaults
 

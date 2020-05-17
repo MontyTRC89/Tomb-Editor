@@ -38,7 +38,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(fakeTextures);
 
                 // 16 bit textures
-                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data);
+                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings.Dither16BitTextures);
                 writer.Write(texture16Data);
 
                 const int filler = 0;
@@ -153,10 +153,10 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 // Write animated textures
-                _objectTextureManager.WriteAnimatedTexturesForTr4(writer);
+                _textureInfoManager.WriteAnimatedTextures(writer);
 
                 // Write object textures
-                _objectTextureManager.WriteObjectTextures(writer, _level);
+                _textureInfoManager.WriteTextureInfos(writer,_level);
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
@@ -166,13 +166,16 @@ namespace TombLib.LevelData.Compilers
                 var lightmap = new byte[8192];
                 writer.Write(lightmap);
 
-                // TODO Figure out 'cinematic frames'
-                writer.Write((ushort)0);
+                const ushort numDemo = 0;
+                const ushort numCinematicFrames = 0;
+                writer.Write(numDemo);
+                writer.Write(numCinematicFrames);
 
-                // Write sounds
-                _soundManager.WriteSoundMetadata(writer);
+                // Write sound meta data
+                PrepareSoundsData();
+                WriteSoundMetadata(writer);
 
-                _soundManager.UpdateMainSfx();
+                writer.Flush();
             }
         }
     }

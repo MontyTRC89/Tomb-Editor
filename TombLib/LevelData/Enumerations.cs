@@ -23,6 +23,9 @@ namespace TombLib.LevelData
         /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TR5Main. Equal to deprecated TRVersion enum. </summary>
         public static Game Legacy(this Game ver) => ver == Game.TRNG ? Game.TR4 : (ver == Game.TR5Main ? Game.TR5 : ver);
 
+        /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TR5Main. Equal to deprecated TRVersion enum. </summary>
+        public static bool UsesMainSfx(this Game ver) => ver == Game.TR2  || ver == Game.TR3;
+
         /// <summary> Base enumeration. Contains all possible game versions.
         public static List<Game> AllVersions => Enum.GetValues(typeof(Game)).OfType<Game>().ToList();
 
@@ -33,8 +36,13 @@ namespace TombLib.LevelData
         public static List<Game> LegacyVersions => NativeVersions.Where(item => item != Game.TR5Main).ToList();
 
         /// <summary> Helper compilable version enumeration list. Can be used to populate various controls, like listbox. </summary>
-        public static List<Game> CompilableVersions => AllVersions.Where(item => item >= Game.TR4).ToList();
-
+        public static List<Game> CompilableVersions(bool experimental)
+        {
+            if (experimental)
+                return AllVersions.Where(item => item >= Game.TR2).ToList();
+            else
+                return AllVersions.Where(item => item >= Game.TR3 && item.Native() <= Game.TR4).ToList();
+        }
     }
 
     /// Only for TR5+

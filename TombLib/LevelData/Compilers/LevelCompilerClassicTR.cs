@@ -123,12 +123,12 @@ namespace TombLib.LevelData.Compilers
             //Write the level
             switch (_level.Settings.GameVersion)
             {
-                // case TRVersion.Game.TR2:
-                //     WriteLevelTr2();
-                //     break;
-                // case TRVersion.Game.TR3:
-                //     WriteLevelTr3();
-                //     break;
+                 case TRVersion.Game.TR2:
+                     WriteLevelTr2();
+                     break;
+                 case TRVersion.Game.TR3:
+                     WriteLevelTr3();
+                     break;
 
                 case TRVersion.Game.TR4:
                     WriteLevelTr4();
@@ -146,9 +146,10 @@ namespace TombLib.LevelData.Compilers
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
 
-            // Throw a warning about zero padding and agressive texture packing
-            if(_level.Settings.AgressiveTexturePacking && _level.Settings.TexturePadding == 0)
-                _progressReporter.ReportWarn("Agressive texture packing was used with zero padding. This will lead to dramatic texture border bleeding.\nPlease turn off agressive texture packing or increase padding to at least 1px.");
+            //Throw warning if texture pages count is big
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+                if (_textureInfoManager.NumObjectsPages + _textureInfoManager.NumRoomPages >= 28)
+                    _progressReporter.ReportWarn("The number of total texture pages is 28 or more. Texture glitches or crashes may occur.\nDisable padding, use aggressive texture packing or use less or smaller textures.");
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
@@ -422,6 +423,8 @@ namespace TombLib.LevelData.Compilers
 
         private void PrepareItems()
         {
+            bool isNewTR = _level.Settings.GameVersion > TRVersion.Game.TR3;
+
             ReportProgress(42, "Building items table");
 
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
@@ -442,7 +445,9 @@ namespace TombLib.LevelData.Compilers
                     Vector3 position = instance.Room.WorldPos + instance.Position;
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
                     ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
-                    if (TrCatalog.IsMoveableAI(_level.Settings.GameVersion, wadMoveable.Id.TypeId))
+
+                    // Split AI objects and normal objects (only for TR4+)
+                    if (isNewTR && TrCatalog.IsMoveableAI(_level.Settings.GameVersion, wadMoveable.Id.TypeId))
                     {
                         _aiItems.Add(new tr_ai_item
                         {
@@ -470,7 +475,7 @@ namespace TombLib.LevelData.Compilers
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             Intensity1 = color,
-                            Ocb = instance.Ocb,
+                            Ocb = isNewTR ? instance.Ocb : unchecked((short)color),
                             Flags = unchecked((ushort)flags)
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
@@ -482,9 +487,12 @@ namespace TombLib.LevelData.Compilers
                 }
 
             // Sort AI objects and put all LARA_START_POS objects (last AI object by ID) in front
-            _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
+            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
+            {
+                _aiItems = _aiItems.OrderByDescending(item => item.ObjectID).ThenBy(item => item.OCB).ToList();
+                ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
+            }
 
-            ReportProgress(45, "    Number of AI objects: " + _aiItems.Count);
             ReportProgress(45, "    Number of items: " + _items.Count);
 
             int maxSafeItemCount, maxItemCount;

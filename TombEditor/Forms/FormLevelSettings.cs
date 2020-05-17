@@ -19,11 +19,21 @@ using System.Threading;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 using static TombEditor.Editor;
+using static TombLib.LevelData.TRVersion;
 
 namespace TombEditor.Forms
 {
     public partial class FormLevelSettings : DarkForm
     {
+        private const string _catalogsPromptBase = "Sound catalogs (eg *.xml, sounds.txt, *.sfx/*.sam) from which sound infos will be loaded.\n";
+        private const string _catalogsPromptMSFX = "Warning: only single catalog may be used with TR2 and TR4 engines! Multiple catalogs may cause unexpected results.";
+        private const string _catalogsPromptNew = "If any sound info ID is duplicated in any of catalog, first one will be used.";
+
+        private const string _pathsPromptMSFX = "Sound paths are not available for this game version." + "\n" +
+            "If you want to recompile MAIN.SFX file, use SoundTool.";
+        private const string _pathsPromptNew = "Locations from which sound samples will be loaded." + "\n" +
+            "Each required sample will be searched in folders in top to bottom order.If not found, sound is not played.";
+
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private class PictureTooltip : ToolTip
@@ -365,8 +375,8 @@ namespace TombEditor.Forms
             foreach (VariableType variableType in Enum.GetValues(typeof(VariableType)))
                 pathVariablesDataGridView.Rows.Add(LevelSettings.VariableCreate(variableType), "");
 
-            // Populate game version list
-            comboGameVersion.Items.AddRange(TRVersion.CompilableVersions.Cast<object>().ToArray());
+            // Populate versions and remove experimental compilable versions if necessary
+            comboGameVersion.Items.AddRange(CompilableVersions(_editor.Configuration.Editor_AllowExperimentalFeatures).Cast<object>().ToArray());
 
             // Populate TR5 lists
             comboTr5Weather.Items.AddRange(Enum.GetValues(typeof(Tr5WeatherType)).Cast<object>().ToArray());
@@ -594,6 +604,7 @@ namespace TombEditor.Forms
 
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
+            cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
 
@@ -601,22 +612,39 @@ namespace TombEditor.Forms
             cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
 
             // Hide version-specific controls
-
+            // TRNG only
             bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
-
+            panelScripts.Visible = currentVersionToCheck;
             if (selectedSoundsDataGridView.Columns.Count >= 7)
             {
                 selectedSoundsDataGridView.Columns[5].Visible = currentVersionToCheck;
                 selectedSoundsDataGridView.Columns[6].Visible = currentVersionToCheck;
             }
 
-            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5 || _levelSettings.GameVersion == TRVersion.Game.TR5Main);
-            GameEnableQuickStartFeatureCheckBox.Visible = !currentVersionToCheck;
-            lblGameEnableQuickStartFeature1.Visible = !currentVersionToCheck;
+            // TR4 platform
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4);
+            lblGameEnableQuickStartFeature1.Visible = currentVersionToCheck;
+            GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
+
+            // TR5 platform
+            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
+
+            // TR4 and above
+            currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
+            panelFont.Enabled = !currentVersionToCheck;
+            panelSky.Enabled = !currentVersionToCheck;
+            lblCatalogsPrompt.Text = _catalogsPromptBase + (currentVersionToCheck ? _catalogsPromptMSFX : _catalogsPromptNew);
+            soundDataGridView.Visible = !currentVersionToCheck;
+            soundDataGridViewControls.Visible = !currentVersionToCheck;
+            lblPathsPrompt.Text = currentVersionToCheck ? _pathsPromptMSFX : _pathsPromptNew;
+            lblPathsPrompt.Dock = currentVersionToCheck ? DockStyle.Fill : DockStyle.Top;
+            lblPathsPrompt.TextAlign = currentVersionToCheck ? ContentAlignment.MiddleCenter : ContentAlignment.TopLeft;
+            lblPathsPrompt.AutoSize = !currentVersionToCheck;
+            lblPathsPrompt.ForeColor = currentVersionToCheck ? Colors.DisabledText : Colors.LightText;
         }
 
         private void FitPreview(Control form, Rectangle screenArea)
@@ -1075,6 +1103,7 @@ namespace TombEditor.Forms
             if (_levelSettings.GameVersion == gameVersion)
                 return;
             _levelSettings.GameVersion = gameVersion; // Must also check none enum values
+            _levelSettings.ConvertLevelExtension();
             UpdateDialog();
         }
 
@@ -1216,6 +1245,11 @@ namespace TombEditor.Forms
         private void numPadding_ValueChanged(object sender, EventArgs e)
         {
             _levelSettings.TexturePadding = (int)numPadding.Value;
+            UpdateDialog();
+        }
+        private void cbDither16BitTextures_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.Dither16BitTextures = cbDither16BitTextures.Checked;
             UpdateDialog();
         }
 

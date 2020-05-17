@@ -192,9 +192,9 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Check if bumpmapping could be assigned to parent.
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
-            public BumpMappingLevel BumpLevel()
+            public BumpMappingLevel BumpLevel(TRVersion.Game version)
             {
-                if(Texture is LevelTexture)
+                if (Texture is LevelTexture && version > TRVersion.Game.TR3)
                 {
                     var tex = Texture as LevelTexture;
                     if (!String.IsNullOrEmpty(tex.BumpPath))
@@ -375,7 +375,7 @@ namespace TombLib.LevelData.Compilers.Util
             public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, TRVersion.Game version, float maxTextureSize)
             {
                 BlendMode = child.BlendMode;
-                BumpLevel = parent.BumpLevel();
+                BumpLevel = parent.BumpLevel(version);
                 IsForRoom = parent.IsForRoom;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
@@ -386,10 +386,16 @@ namespace TombLib.LevelData.Compilers.Util
                     var coord = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
-                    // Apply texture distortion as countermeasure for hardcoded TR4-5 mapping correction
-                    if (version == TRVersion.Game.TR4 || version == TRVersion.Game.TR5)
-                        coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
-
+                    if (parent.Padding.All(p => p == 0))
+                        // If no padding exists, use legacy half-pixel correction blow-down for all cases.
+                        coord += IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
+                    else
+                    {
+                        // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
+                        if (version >= TRVersion.Game.TR4)
+                            coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
+                    }
+                    
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
                     coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
@@ -1055,7 +1061,7 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 if (ParentTextures[i].IsForRoom)
                 {
-                    if (ParentTextures[i].BumpLevel() != BumpMappingLevel.None)
+                    if (ParentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
                         bumpedTextures.Add(ParentTextures[i]);
                     else
                         roomTextures.Add(ParentTextures[i]);
@@ -1071,7 +1077,7 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     if (parentTextures[i].IsForRoom)
                     {
-                        if (parentTextures[i].BumpLevel() != BumpMappingLevel.None)
+                        if (parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
                             bumpedTextures.Add(parentTextures[i]);
                         else
                             roomTextures.Add(parentTextures[i]);
@@ -1172,7 +1178,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Tile and flags
                 ushort tile = (ushort)texture.Tile;
-                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR2) tile |= 0x8000;
+                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
 
                 // Blend mode
                 ushort attribute = (ushort)texture.BlendMode;

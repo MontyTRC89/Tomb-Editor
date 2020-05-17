@@ -200,7 +200,6 @@ namespace TombLib.Wad
                         while (!reader.EndOfStream)
                         {
                             var s = reader.ReadLine().Trim();
-
                             var sound = new WadSoundInfo(soundId);
                             
                             // Get the name (ends with :)
@@ -227,35 +226,72 @@ namespace TombLib.Wad
                             if (commentTokenIndex != -1)
                                 tokens.RemoveRange(commentTokenIndex, tokens.Count - commentTokenIndex);
 
+                            var anyTokenFound = false;
                             for (int i = 0; i < tokens.Count; i++)
                             {
                                 var   token = tokens[i];
                                 short temp  = 0;
 
                                 if (token.StartsWith("PIT", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(3), out temp))
+                                {
                                     sound.PitchFactor = temp;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.StartsWith("RAD", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(3), out temp))
+                                {
                                     sound.RangeInSectors = temp;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.StartsWith("VOL", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(3), out temp))
+                                {
                                     sound.Volume = temp;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.StartsWith("CH", StringComparison.InvariantCultureIgnoreCase) && short.TryParse(token.Substring(2), out temp))
+                                {
                                     sound.Chance = temp;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.Equals("P", StringComparison.InvariantCultureIgnoreCase))
+                                {
                                     sound.RandomizePitch = true;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.Equals("V", StringComparison.InvariantCultureIgnoreCase))
+                                {
                                     sound.RandomizeVolume = true;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.Equals("N", StringComparison.InvariantCultureIgnoreCase))
+                                {
                                     sound.DisablePanning = true;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.Equals("L", StringComparison.InvariantCultureIgnoreCase))
+                                {
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.Looped;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.Equals("R", StringComparison.InvariantCultureIgnoreCase))
+                                {
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotRewound;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.Equals("W", StringComparison.InvariantCultureIgnoreCase))
+                                {
                                     sound.LoopBehaviour = WadSoundLoopBehaviour.OneShotWait;
+                                    anyTokenFound = true;
+                                }
                                 else if (token.StartsWith("#g"))
+                                {
                                     sound.Global = true;
-                                else if (!token.StartsWith("#"))
+                                    anyTokenFound = true;
+                                }
+                                else if (!token.StartsWith("#") && !anyTokenFound)
                                     sound.Samples.Add(new WadSample(token + ".wav"));
+
+                                if (token.StartsWith("#"))
+                                    sound.Indexed = true;
                             }
 
                             sounds.SoundInfos.Add(sound);

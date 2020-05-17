@@ -253,6 +253,11 @@ namespace TombLib.Wad.TrLevels
 
                     int spriteX, spriteY, spriteWidth, spriteHeight;
 
+                    int x1 = oldSpriteTexture.LeftSide;
+                    int x2 = oldSpriteTexture.RightSide;
+                    int y1 = oldSpriteTexture.TopSide;
+                    int y2 = oldSpriteTexture.BottomSide;
+
                     if (oldLevel.Version == TRVersion.Game.TR1 ||
                         oldLevel.Version == TRVersion.Game.TR2 ||
                         oldLevel.Version == TRVersion.Game.TR3)
@@ -261,6 +266,7 @@ namespace TombLib.Wad.TrLevels
                         spriteY = oldSpriteTexture.Y;
                         spriteWidth = ((oldSpriteTexture.Width - 255) / 256 + 1);
                         spriteHeight = ((oldSpriteTexture.Height - 255) / 256 + 1);
+                        
                     }
                     else
                     {
@@ -273,7 +279,11 @@ namespace TombLib.Wad.TrLevels
                     // Add current sprite to the sequence
                     var spriteImage = ImageC.CreateNew(spriteWidth, spriteHeight);
                     spriteImage.CopyFrom(0, 0, tiles, spriteX, spriteY + oldSpriteTexture.Tile * 256, spriteWidth, spriteHeight);
-                    newSequence.Sprites.Add(new WadSprite { Texture = new WadTexture(spriteImage) });
+                    RectangleInt2 rect = new RectangleInt2(x1, y1, x2, y2);
+                    newSequence.Sprites.Add(new WadSprite {
+                        Texture = new WadTexture(spriteImage),
+                        Alignment = rect
+                    });
                 }
 
                 wad.SpriteSequences.Add(newSequence.Id, newSequence);
