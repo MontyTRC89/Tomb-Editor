@@ -24,6 +24,7 @@ namespace TombLib.LevelData
 
             Level result = new Level();
             result.Settings.GameVersion = version;
+            result.Settings.ConvertLevelExtension();
 
             if (result.Rooms[0] == null)
                 result.Rooms[0] = new Room(result, Room.DefaultRoomDimensions, Room.DefaultRoomDimensions, result.Settings.DefaultAmbientLight, "Room 0");

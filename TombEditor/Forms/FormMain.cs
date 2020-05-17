@@ -115,6 +115,15 @@ namespace TombEditor.Forms
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
             }
 
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+            {
+                addFlybyCameraToolStripMenuItem.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+                addBoxVolumeToolStripMenuItem.Enabled = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+            }
+
             if (obj is Editor.UndoStackChangedEvent)
             {
                 var stackEvent = (Editor.UndoStackChangedEvent)obj;

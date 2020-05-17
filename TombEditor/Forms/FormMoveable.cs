@@ -27,6 +27,9 @@ namespace TombEditor.Forms
 
         private void FormObject_Load(object sender, EventArgs e)
         {
+            // Disable version-specific controls
+            tbOCB.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR3;
+
             oldColor = _movable.Color;
             cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_movable.CodeBits & (1 << 1)) != 0;

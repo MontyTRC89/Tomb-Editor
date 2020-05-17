@@ -97,82 +97,12 @@ namespace TombLib.LevelData.Compilers
                 {
                     for (var z = 0; z < room.NumZSectors; z++)
                     {
-                        /*if (i == 1 && x == 1 && z == 1)
-                        {
-                            tempFloorData.Clear();
-                            tempFloorData.Add(0x03C7);
-                            tempFloorData.Add(0x0222);
-                            tempFloorData.Add(0x83F0);
-                            tempFloorData.Add(0x0100);
-
-                            // Build sector info
-                            var sector2 = GetSector(tempRoom, x, z);
-                            sector2.Floor = 0;
-                            sector2.Ceiling = 1;
-                            sector2.FloorDataIndex = 0;
-                            sector2.RoomBelow = 255;
-                            sector2.RoomAbove = 0;
-
-                            sector2.FloorDataIndex = checked((ushort)_floorData.Count);
-                            _floorData.AddRange(tempFloorData);
-                            
-                            // Update the sector
-                            SaveSector(tempRoom, x, z, sector2);
-
-                            continue;
-                        }
-
-                        if (i == 1 && x == 2 && z == 1)
-                        {
-                            tempFloorData.Clear();
-                            tempFloorData.Add(0x83A7);
-                            tempFloorData.Add(0x0355);
-
-                            // Build sector info
-                            var sector2 = GetSector(tempRoom, x, z);
-                            sector2.Floor = 0;
-                            sector2.Ceiling = 0;
-                            sector2.FloorDataIndex = 0;
-                            sector2.RoomBelow = 255;
-                            sector2.RoomAbove = 0;
-
-                            sector2.FloorDataIndex = checked((ushort)_floorData.Count);
-                            _floorData.AddRange(tempFloorData);
-
-                            // Update the sector
-                            SaveSector(tempRoom, x, z, sector2);
-
-                            continue;
-                        }
-
-                        if (i == 1 && x == 3 && z == 1)
-                        {
-                            tempFloorData.Clear();
-                            tempFloorData.Add(0x83E7);
-                            tempFloorData.Add(0x0166);
-
-                            // Build sector info
-                            var sector2 = GetSector(tempRoom, x, z);
-                            sector2.Floor = 0;
-                            sector2.Ceiling = 0;
-                            sector2.FloorDataIndex = 0;
-                            sector2.RoomBelow = 255;
-                            sector2.RoomAbove = 0;
-
-                            sector2.FloorDataIndex = checked((ushort)_floorData.Count);
-                            _floorData.AddRange(tempFloorData);
-
-                            // Update the sector
-                            SaveSector(tempRoom, x, z, sector2);
-
-                            continue;
-                        }*/
-
                         Block block = room.Blocks[x, z];
 
                         // If a sector is a wall and this room is a water room,
                         // It must be checked before if on the neighbour sector if there's a ceiling portal
-                        // because eventually a vertical portal will be added
+                        // because eventually a vertical portal will be added.
+
                         Room isWallWithCeilingPortal = null;
                         foreach (var portal in ceilingPortals)
                         {
@@ -401,13 +331,7 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(0x13);
             }
 
-            // If sector is Beetle
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
-                (block.Flags & BlockFlags.Beetle) != BlockFlags.None)
-            {
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add(0x15);
-            }
+            
 
             // If sector is Trigger triggerer
             if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
@@ -415,6 +339,13 @@ namespace TombLib.LevelData.Compilers
             {
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add(0x14);
+            }
+
+            // If sector is Beetle
+            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 &&
+                (block.Flags & BlockFlags.Beetle) != BlockFlags.None) {
+                lastFloorDataFunction = outFloorData.Count;
+                outFloorData.Add(0x15);
             }
 
             // Triggers

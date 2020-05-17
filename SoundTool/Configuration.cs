@@ -8,6 +8,9 @@ namespace SoundTool
         public override string ConfigName { get { return "SoundToolConfiguration.xml"; } }
 
         public string SoundTool_ReferenceProject { get; set; } = string.Empty;
+        public string SoundTool_LastCatalogPath { get; set; } = string.Empty;
+        public string SoundTool_LastMainSFXSamplePath { get; set; } = string.Empty;
+        public string SoundTool_LastMainSFXPath { get; set; } = "MAIN";
         public bool SoundTool_AllowMultipleInstances { get; set; } = false;
 
         public float UI_FormColor_Brightness { get; set; } = 100.0f;

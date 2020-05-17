@@ -137,6 +137,18 @@ namespace DarkUI.Controls
             }
         }
 
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            if (Enabled)
+            {
+                base.OnPaint(e);
+                return;
+            }
+
+            using (var b = new SolidBrush(Colors.DisabledText))
+                e.Graphics.DrawString(Text, Font, b, ClientRectangle);
+        }
+
         #endregion
     }
 }

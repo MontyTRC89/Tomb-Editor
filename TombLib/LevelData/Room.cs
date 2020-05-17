@@ -20,7 +20,8 @@ namespace TombLib.LevelData
 
     public enum RoomLightEffect : byte
     {
-        None, Default, Reflection, Glow, Movement, GlowAndMovement, Mist
+        // Movement and GlowAndMovement are respectively remapped to Flicker and Sunset exclusively for TR2.
+        None, Default, Reflection, Glow, Movement, GlowAndMovement, Mist, Flicker = Movement, Sunset = GlowAndMovement
     }
 
     public enum RoomLightInterpolationMode : byte

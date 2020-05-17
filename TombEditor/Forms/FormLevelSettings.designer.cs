@@ -98,14 +98,14 @@
             this.lblTr5ExtraSprites = new DarkUI.Controls.DarkLabel();
             this.tr5SpritesFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.tr5SpritesTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
-            this.panel8 = new System.Windows.Forms.Panel();
+            this.panelFont = new System.Windows.Forms.Panel();
             this.fontTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
             this.fontTextureFilePathBut = new DarkUI.Controls.DarkButton();
             this.fontTextureFilePathOptCustom = new DarkUI.Controls.DarkRadioButton();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.fontTextureFilePathOptAuto = new DarkUI.Controls.DarkRadioButton();
             this.fontTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
-            this.panel9 = new System.Windows.Forms.Panel();
+            this.panelSky = new System.Windows.Forms.Panel();
             this.skyTextureFilePathPicPreview = new System.Windows.Forms.PictureBox();
             this.skyTextureFilePathBut = new DarkUI.Controls.DarkButton();
             this.skyTextureFilePathOptCustom = new DarkUI.Controls.DarkRadioButton();
@@ -118,7 +118,7 @@
             this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
             this.butSearchSounds = new DarkUI.Controls.DarkButton();
             this.tbFilterSounds = new DarkUI.Controls.DarkTextBox();
-            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
+            this.lblCatalogsPrompt = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoundsCatalogSearchColumn = new DarkUI.Controls.DarkDataGridViewButtonColumn();
@@ -142,7 +142,7 @@
             this.soundDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.soundDataGridViewColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
-            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+            this.lblPathsPrompt = new DarkUI.Controls.DarkLabel();
             this.tabMisc = new System.Windows.Forms.TabPage();
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
@@ -150,7 +150,7 @@
             this.panelTr5LaraType = new System.Windows.Forms.Panel();
             this.comboLaraType = new DarkUI.Controls.DarkComboBox();
             this.lblLaraType = new DarkUI.Controls.DarkLabel();
-            this.panel10 = new System.Windows.Forms.Panel();
+            this.panelScripts = new System.Windows.Forms.Panel();
             this.scriptPathBut = new DarkUI.Controls.DarkButton();
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.tbScriptPath = new DarkUI.Controls.DarkTextBox();
@@ -179,6 +179,7 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cbDither16BitTextures = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -197,9 +198,9 @@
             this.tabSkyAndFont.SuspendLayout();
             this.panelTr5Sprites.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).BeginInit();
-            this.panel8.SuspendLayout();
+            this.panelFont.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).BeginInit();
-            this.panel9.SuspendLayout();
+            this.panelSky.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).BeginInit();
             this.tabSoundsCatalogs.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundsCatalogsDataGridView)).BeginInit();
@@ -209,7 +210,7 @@
             this.tabMisc.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
             this.panelTr5LaraType.SuspendLayout();
-            this.panel10.SuspendLayout();
+            this.panelScripts.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
@@ -1060,8 +1061,8 @@
             // 
             this.tabSkyAndFont.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabSkyAndFont.Controls.Add(this.panelTr5Sprites);
-            this.tabSkyAndFont.Controls.Add(this.panel8);
-            this.tabSkyAndFont.Controls.Add(this.panel9);
+            this.tabSkyAndFont.Controls.Add(this.panelFont);
+            this.tabSkyAndFont.Controls.Add(this.panelSky);
             this.tabSkyAndFont.Location = new System.Drawing.Point(4, 22);
             this.tabSkyAndFont.Name = "tabSkyAndFont";
             this.tabSkyAndFont.Padding = new System.Windows.Forms.Padding(3);
@@ -1147,19 +1148,19 @@
             this.tr5SpritesTextureFilePathTxt.TabIndex = 2;
             this.tr5SpritesTextureFilePathTxt.TextChanged += new System.EventHandler(this.tr5SpritesTextureFilePathTxt_TextChanged);
             // 
-            // panel8
+            // panelFont
             // 
-            this.panel8.Controls.Add(this.fontTextureFilePathPicPreview);
-            this.panel8.Controls.Add(this.fontTextureFilePathBut);
-            this.panel8.Controls.Add(this.fontTextureFilePathOptCustom);
-            this.panel8.Controls.Add(this.darkLabel8);
-            this.panel8.Controls.Add(this.fontTextureFilePathOptAuto);
-            this.panel8.Controls.Add(this.fontTextureFilePathTxt);
-            this.panel8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel8.Location = new System.Drawing.Point(3, 74);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(772, 68);
-            this.panel8.TabIndex = 2;
+            this.panelFont.Controls.Add(this.fontTextureFilePathPicPreview);
+            this.panelFont.Controls.Add(this.fontTextureFilePathBut);
+            this.panelFont.Controls.Add(this.fontTextureFilePathOptCustom);
+            this.panelFont.Controls.Add(this.darkLabel8);
+            this.panelFont.Controls.Add(this.fontTextureFilePathOptAuto);
+            this.panelFont.Controls.Add(this.fontTextureFilePathTxt);
+            this.panelFont.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelFont.Location = new System.Drawing.Point(3, 74);
+            this.panelFont.Name = "panelFont";
+            this.panelFont.Size = new System.Drawing.Size(772, 68);
+            this.panelFont.TabIndex = 2;
             // 
             // fontTextureFilePathPicPreview
             // 
@@ -1225,19 +1226,19 @@
             this.fontTextureFilePathTxt.TabIndex = 2;
             this.fontTextureFilePathTxt.TextChanged += new System.EventHandler(this.fontTextureFilePathTxt_TextChanged);
             // 
-            // panel9
+            // panelSky
             // 
-            this.panel9.Controls.Add(this.skyTextureFilePathPicPreview);
-            this.panel9.Controls.Add(this.skyTextureFilePathBut);
-            this.panel9.Controls.Add(this.skyTextureFilePathOptCustom);
-            this.panel9.Controls.Add(this.darkLabel9);
-            this.panel9.Controls.Add(this.skyTextureFilePathOptAuto);
-            this.panel9.Controls.Add(this.skyTextureFilePathTxt);
-            this.panel9.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel9.Location = new System.Drawing.Point(3, 3);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(772, 71);
-            this.panel9.TabIndex = 2;
+            this.panelSky.Controls.Add(this.skyTextureFilePathPicPreview);
+            this.panelSky.Controls.Add(this.skyTextureFilePathBut);
+            this.panelSky.Controls.Add(this.skyTextureFilePathOptCustom);
+            this.panelSky.Controls.Add(this.darkLabel9);
+            this.panelSky.Controls.Add(this.skyTextureFilePathOptAuto);
+            this.panelSky.Controls.Add(this.skyTextureFilePathTxt);
+            this.panelSky.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelSky.Location = new System.Drawing.Point(3, 3);
+            this.panelSky.Name = "panelSky";
+            this.panelSky.Size = new System.Drawing.Size(772, 71);
+            this.panelSky.TabIndex = 2;
             // 
             // skyTextureFilePathPicPreview
             // 
@@ -1319,7 +1320,7 @@
             this.tabSoundsCatalogs.Controls.Add(this.butAutodetectSoundsAndAssign);
             this.tabSoundsCatalogs.Controls.Add(this.butDeselectAllSounds);
             this.tabSoundsCatalogs.Controls.Add(this.butSelectAllSounds);
-            this.tabSoundsCatalogs.Controls.Add(this.darkLabel21);
+            this.tabSoundsCatalogs.Controls.Add(this.lblCatalogsPrompt);
             this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridView);
             this.tabSoundsCatalogs.Controls.Add(this.soundsCatalogsDataGridViewControls);
             this.tabSoundsCatalogs.Controls.Add(this.darkLabel50);
@@ -1385,16 +1386,16 @@
             this.tbFilterSounds.TabIndex = 100;
             this.tbFilterSounds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbFilterSounds_KeyDown);
             // 
-            // darkLabel21
+            // lblCatalogsPrompt
             // 
-            this.darkLabel21.AutoSize = true;
-            this.darkLabel21.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel21.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel21.Name = "darkLabel21";
-            this.darkLabel21.Size = new System.Drawing.Size(462, 26);
-            this.darkLabel21.TabIndex = 106;
-            this.darkLabel21.Text = "Sound catalogs (eg *.xml, sounds.txt, *.sfx/*.sam) from which sound infos will be" +
+            this.lblCatalogsPrompt.AutoSize = true;
+            this.lblCatalogsPrompt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblCatalogsPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblCatalogsPrompt.Location = new System.Drawing.Point(3, 3);
+            this.lblCatalogsPrompt.Name = "lblCatalogsPrompt";
+            this.lblCatalogsPrompt.Size = new System.Drawing.Size(462, 26);
+            this.lblCatalogsPrompt.TabIndex = 106;
+            this.lblCatalogsPrompt.Text = "Sound catalogs (eg *.xml, sounds.txt, *.sfx/*.sam) from which sound infos will be" +
     " loaded.\r\nIf any sound info ID is duplicated in any of catalog, first one will b" +
     "e used.";
             // 
@@ -1604,7 +1605,7 @@
             this.tabSamples.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabSamples.Controls.Add(this.soundDataGridViewControls);
             this.tabSamples.Controls.Add(this.soundDataGridView);
-            this.tabSamples.Controls.Add(this.darkLabel10);
+            this.tabSamples.Controls.Add(this.lblPathsPrompt);
             this.tabSamples.Location = new System.Drawing.Point(4, 22);
             this.tabSamples.Name = "tabSamples";
             this.tabSamples.Padding = new System.Windows.Forms.Padding(3);
@@ -1660,16 +1661,16 @@
             this.soundDataGridViewColumnSearch.Name = "soundDataGridViewColumnSearch";
             this.soundDataGridViewColumnSearch.Text = "Browse";
             // 
-            // darkLabel10
+            // lblPathsPrompt
             // 
-            this.darkLabel10.AutoSize = true;
-            this.darkLabel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(3, 3);
-            this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(555, 26);
-            this.darkLabel10.TabIndex = 1;
-            this.darkLabel10.Text = "Locations from which sound samples will be loaded.\r\nEach required sample will be " +
+            this.lblPathsPrompt.AutoSize = true;
+            this.lblPathsPrompt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblPathsPrompt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblPathsPrompt.Location = new System.Drawing.Point(3, 3);
+            this.lblPathsPrompt.Name = "lblPathsPrompt";
+            this.lblPathsPrompt.Size = new System.Drawing.Size(555, 26);
+            this.lblPathsPrompt.TabIndex = 1;
+            this.lblPathsPrompt.Text = "Locations from which sound samples will be loaded.\r\nEach required sample will be " +
     "searched in folders in top to bottom order. If not found, sound is not played.";
             // 
             // tabMisc
@@ -1677,7 +1678,7 @@
             this.tabMisc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabMisc.Controls.Add(this.panelTr5Weather);
             this.tabMisc.Controls.Add(this.panelTr5LaraType);
-            this.tabMisc.Controls.Add(this.panel10);
+            this.tabMisc.Controls.Add(this.panelScripts);
             this.tabMisc.Controls.Add(this.panel6);
             this.tabMisc.Controls.Add(this.panel12);
             this.tabMisc.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -1692,7 +1693,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 302);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 328);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1721,7 +1722,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 251);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 277);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1745,16 +1746,16 @@
             this.lblLaraType.TabIndex = 3;
             this.lblLaraType.Text = "TR5 Lara type:";
             // 
-            // panel10
+            // panelScripts
             // 
-            this.panel10.Controls.Add(this.scriptPathBut);
-            this.panel10.Controls.Add(this.darkLabel15);
-            this.panel10.Controls.Add(this.tbScriptPath);
-            this.panel10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel10.Location = new System.Drawing.Point(0, 201);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(778, 50);
-            this.panel10.TabIndex = 95;
+            this.panelScripts.Controls.Add(this.scriptPathBut);
+            this.panelScripts.Controls.Add(this.darkLabel15);
+            this.panelScripts.Controls.Add(this.tbScriptPath);
+            this.panelScripts.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelScripts.Location = new System.Drawing.Point(0, 227);
+            this.panelScripts.Name = "panelScripts";
+            this.panelScripts.Size = new System.Drawing.Size(778, 50);
+            this.panelScripts.TabIndex = 95;
             // 
             // scriptPathBut
             // 
@@ -1792,7 +1793,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 149);
+            this.panel6.Location = new System.Drawing.Point(0, 175);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -1829,6 +1830,7 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cbDither16BitTextures);
             this.panel12.Controls.Add(this.cbOverrideAllLightQuality);
             this.panel12.Controls.Add(this.cmbDefaultLightQuality);
             this.panel12.Controls.Add(this.darkLabel22);
@@ -1842,7 +1844,7 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 149);
+            this.panel12.Size = new System.Drawing.Size(778, 175);
             this.panel12.TabIndex = 91;
             // 
             // cbOverrideAllLightQuality
@@ -1883,7 +1885,7 @@
             // cbAgressiveFloordataPacking
             // 
             this.cbAgressiveFloordataPacking.AutoSize = true;
-            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 120);
+            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 143);
             this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
             this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(176, 17);
             this.cbAgressiveFloordataPacking.TabIndex = 105;
@@ -1894,7 +1896,7 @@
             // cbAgressiveTexturePacking
             // 
             this.cbAgressiveTexturePacking.AutoSize = true;
-            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 97);
+            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 120);
             this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
             this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(337, 17);
             this.cbAgressiveTexturePacking.TabIndex = 104;
@@ -2050,6 +2052,17 @@
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
+            // cbDither16BitTextures
+            // 
+            this.cbDither16BitTextures.AutoSize = true;
+            this.cbDither16BitTextures.Location = new System.Drawing.Point(3, 97);
+            this.cbDither16BitTextures.Name = "cbDither16BitTextures";
+            this.cbDither16BitTextures.Size = new System.Drawing.Size(135, 17);
+            this.cbDither16BitTextures.TabIndex = 109;
+            this.cbDither16BitTextures.Tag = "";
+            this.cbDither16BitTextures.Text = "Dither 16-bit textures";
+            this.cbDither16BitTextures.CheckedChanged += new System.EventHandler(this.cbDither16BitTextures_CheckedChanged);
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2095,11 +2108,11 @@
             this.panelTr5Sprites.ResumeLayout(false);
             this.panelTr5Sprites.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tr5SpritesTextureFilePathPicPreview)).EndInit();
-            this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
+            this.panelFont.ResumeLayout(false);
+            this.panelFont.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fontTextureFilePathPicPreview)).EndInit();
-            this.panel9.ResumeLayout(false);
-            this.panel9.PerformLayout();
+            this.panelSky.ResumeLayout(false);
+            this.panelSky.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.skyTextureFilePathPicPreview)).EndInit();
             this.tabSoundsCatalogs.ResumeLayout(false);
             this.tabSoundsCatalogs.PerformLayout();
@@ -2111,8 +2124,8 @@
             this.tabMisc.ResumeLayout(false);
             this.panelTr5Weather.ResumeLayout(false);
             this.panelTr5LaraType.ResumeLayout(false);
-            this.panel10.ResumeLayout(false);
-            this.panel10.PerformLayout();
+            this.panelScripts.ResumeLayout(false);
+            this.panelScripts.PerformLayout();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.panel12.ResumeLayout(false);
@@ -2139,12 +2152,12 @@
         private DarkUI.Controls.DarkButton gameDirectoryBut;
         private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkTextBox gameDirectoryTxt;
-        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Panel panelFont;
         private DarkUI.Controls.DarkRadioButton fontTextureFilePathOptCustom;
         private DarkUI.Controls.DarkLabel darkLabel8;
         private DarkUI.Controls.DarkRadioButton fontTextureFilePathOptAuto;
         private DarkUI.Controls.DarkTextBox fontTextureFilePathTxt;
-        private System.Windows.Forms.Panel panel9;
+        private System.Windows.Forms.Panel panelSky;
         private DarkUI.Controls.DarkButton skyTextureFilePathBut;
         private DarkUI.Controls.DarkRadioButton skyTextureFilePathOptCustom;
         private DarkUI.Controls.DarkLabel darkLabel9;
@@ -2199,7 +2212,7 @@
         private System.Windows.Forms.Panel panelTr5LaraType;
         private DarkUI.Controls.DarkComboBox comboLaraType;
         private DarkUI.Controls.DarkLabel lblLaraType;
-        private System.Windows.Forms.Panel panel10;
+        private System.Windows.Forms.Panel panelScripts;
         private DarkUI.Controls.DarkButton scriptPathBut;
         private DarkUI.Controls.DarkLabel darkLabel15;
         private DarkUI.Controls.DarkTextBox tbScriptPath;
@@ -2231,12 +2244,12 @@
         private DarkUI.Controls.DarkDataGridView staticMeshMergeDataGridView;
         private DarkUI.Controls.DarkLabel darkLabel50;
         private DarkUI.Controls.DarkLabel darkLabel19;
-        private DarkUI.Controls.DarkLabel darkLabel21;
+        private DarkUI.Controls.DarkLabel lblCatalogsPrompt;
         private TombLib.Controls.DarkDataGridViewControls soundDataGridViewControls;
         private DarkUI.Controls.DarkDataGridView soundDataGridView;
         private System.Windows.Forms.DataGridViewTextBoxColumn soundDataGridViewColumnPath;
         private DarkUI.Controls.DarkDataGridViewButtonColumn soundDataGridViewColumnSearch;
-        private DarkUI.Controls.DarkLabel darkLabel10;
+        private DarkUI.Controls.DarkLabel lblPathsPrompt;
         private DarkUI.Controls.DarkButton butDeselectAllSounds;
         private DarkUI.Controls.DarkButton butSelectAllSounds;
         private DarkUI.Controls.DarkButton butSearchSounds;
@@ -2287,5 +2300,6 @@
         private DarkUI.Controls.DarkLabel darkLabel22;
         private DarkUI.Controls.DarkCheckBox cbOverrideAllLightQuality;
         private DarkUI.Controls.DarkComboBox cmbDefaultLightQuality;
+        private DarkUI.Controls.DarkCheckBox cbDither16BitTextures;
     }
 }

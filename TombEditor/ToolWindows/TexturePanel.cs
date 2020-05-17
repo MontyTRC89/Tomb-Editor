@@ -51,6 +51,12 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                UpdateUI();
+
             // Update texture map
             if (obj is Editor.SelectedTexturesChangedEvent)
             {
@@ -112,6 +118,18 @@ namespace TombEditor.ToolWindows
             }
         }
 
+        private void UpdateUI()
+        {
+            butDeleteTexture.Enabled =
+            butBrowseTexture.Enabled =
+            butAnimationRanges.Enabled =
+            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
+
+            butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
+                (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
+                 _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+        }
+
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
         {
             if (panelTextureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
@@ -120,12 +138,7 @@ namespace TombEditor.ToolWindows
                 panelTextureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
                 _editor.SelectedLevelTextureChanged(selectedTexture);
             }
-
-            butDeleteTexture.Enabled = 
-            butBrowseTexture.Enabled =
-            butAnimationRanges.Enabled =
-            butBumpMaps.Enabled =
-            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
+            UpdateUI();
         }
 
         private void comboCurrentTexture_DropDown(object sender, EventArgs e)

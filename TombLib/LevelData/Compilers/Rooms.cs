@@ -175,24 +175,32 @@ namespace TombLib.LevelData.Compilers
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            if (_level.Settings.GameVersion == TRVersion.Game.TR2)
-                newRoom.AmbientIntensity = 0xFFF; // TODO: correct ambient light
-            else if (_level.Settings.GameVersion == TRVersion.Game.TR3)
-                newRoom.AmbientIntensity = PackColorTo16Bit(room.AmbientLight);
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+                newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.AmbientLight);
             else
-                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | ((uint)roomAmbientColor.Green << 8) | roomAmbientColor.Blue;
+                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | 
+                                           ((uint)roomAmbientColor.Green << 8) | 
+                                                  roomAmbientColor.Blue;
+
+            // Properly identify game version to swap light mode, quicksand and no lensflare flags
+            bool isTR2  = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
+            bool isTR23 = isTR2 || room.Level.Settings.GameVersion == TRVersion.Game.TR3;
+            bool isNL   = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
+            bool isNG   = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             // Room flags
             if (room.FlagHorizon)
                 newRoom.Flags |= 0x0008;
-            if (room.FlagDamage)
-                newRoom.Flags |= 0x0010;
             if (room.FlagOutside)
                 newRoom.Flags |= 0x0020;
-            if (room.FlagNoLensflare)
-                newRoom.Flags |= 0x0080;
-            if (room.FlagCold)
+
+            // TRNG-specific flags
+            if (isNG && room.FlagDamage)
+                newRoom.Flags |= 0x0010;
+            if (isNG && room.FlagCold)
                 newRoom.Flags |= 0x1000;
+            if (isNL && room.FlagNoLensflare)
+                newRoom.Flags |= 0x0080;
 
             // Room type
             switch (room.Type)
@@ -201,13 +209,16 @@ namespace TombLib.LevelData.Compilers
                     newRoom.Flags |= 0x0001;
                     break;
                 case RoomType.Quicksand:
-                    newRoom.Flags |= 0x0004;
+                    if (isNL)
+                        newRoom.Flags |= 0x0004;
+                    else
+                        newRoom.Flags |= 0x0080;
                     break;
                 case RoomType.Rain:
-                    newRoom.Flags |= 0x0800;
+                    if (isNG) newRoom.Flags |= 0x0800;
                     break;
                 case RoomType.Snow:
-                    newRoom.Flags |= 0x0400;
+                    if (isNG) newRoom.Flags |= 0x0400;
                     break;
             }
 
@@ -231,7 +242,8 @@ namespace TombLib.LevelData.Compilers
                 switch (room.Type)
                 {
                     case RoomType.Water:
-                        lightEffect = RoomLightEffect.Glow;
+                        if (!isTR2)
+                            lightEffect = RoomLightEffect.Glow; // TR2 does water glowing automatically
                         break;
                     case RoomType.Quicksand:
                         lightEffect = RoomLightEffect.Movement;
@@ -249,20 +261,26 @@ namespace TombLib.LevelData.Compilers
             switch (lightEffect)
             {
                 case RoomLightEffect.GlowAndMovement:
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
+                    newRoom.LightMode = 3; // Used in TR2 only
+                    newRoom.Flags |= 0x0100;
+                    break;
+
                 case RoomLightEffect.Movement:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
-                    if (lightEffect == RoomLightEffect.GlowAndMovement)
-                        newRoom.Flags |= 0x0100;
+                    newRoom.LightMode = 1; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
+                    newRoom.LightMode = 2; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Reflection:
                     newRoom.Flags |= 0x0200;
+                    newRoom.LightMode = 2; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.None:
@@ -368,7 +386,8 @@ namespace TombLib.LevelData.Compilers
                             Lighting2 = 0,
                             Attributes = (ushort)lightingEffect
                         };
-                        trVertex.Lighting2 = PackColorTo16Bit(color);
+                        trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
+
                         // Check for maximum vertices reached
                         if (roomVertices.Count >= 65536)
                         {
@@ -424,6 +443,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Add geometry imported objects
+                int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (geometry.Model?.DirectXModel == null)
@@ -442,8 +462,6 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var submesh in mesh.Submeshes)
                         {
-                            var indexList = new List<int>();
-
                             for (int j = 0; j < mesh.Vertices.Count; j++)
                             {
                                 // Apply the transform to the vertex
@@ -466,13 +484,13 @@ namespace TombLib.LevelData.Compilers
 
                                 // Pack the light according to chosen lighting model
                                 if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
-                                    trVertex.Lighting2 = PackColorTo16Bit(mesh.Vertices[j].Color);
+                                    trVertex.Lighting2 = PackLightColor(mesh.Vertices[j].Color, _level.Settings.GameVersion);
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackColorTo16Bit(CalculateLightForCustomVertex(room, position, normal, true,room.AmbientLight*128));
+                                    trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
                                 else
-                                    trVertex.Lighting2 = PackColorTo16Bit(room.AmbientLight);
+                                    trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
 
                                 // Check for maximum vertices reached
                                 if (roomVertices.Count >= 65536)
@@ -480,15 +498,7 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
                                 }
 
-                                var existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position &&
-                                                                              v.Lighting2 == trVertex.Lighting2);
-
-                                if (existingIndex == -1)
-                                {
-                                    existingIndex = roomVertices.Count;
-                                    roomVertices.Add(trVertex);
-                                }
-                                indexList.Add(existingIndex);
+                                roomVertices.Add(trVertex);
                             }
 
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
@@ -499,9 +509,13 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
                                 }
 
-                                ushort index0 = (ushort)(indexList[j + 0]);
-                                ushort index1 = (ushort)(indexList[j + 1]);
-                                ushort index2 = (ushort)(indexList[j + 2]);
+                                var triangle = new tr_face3();
+
+                                ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
+                                ushort index1 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 1]);
+                                ushort index2 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 2]);
+
+                                triangle.Texture = 20;
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
@@ -526,6 +540,8 @@ namespace TombLib.LevelData.Compilers
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
+
+                            geometryVertexIndexBase += mesh.Vertices.Count;
                         }
                     }
                 }
@@ -703,16 +719,16 @@ namespace TombLib.LevelData.Compilers
                                     break;
                                 }
                             }
-                            else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                            else if ((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) 
+                                    || isTR23) // Always check portal edges for TR2 because of special room light modes
                             {
                                 // Disable movement for portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
                                     portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
                                 {
                                     // Still allow movement, if adjoining room has very same properties
-                                    if (!((otherRoomLightEffect == RoomLightEffect.Movement ||
-                                            otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
-                                            portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                    if (!(otherRoomLightEffect == lightEffect &&
+                                          portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
                                         allowMovement = false;
                                 }
                             }
@@ -742,16 +758,51 @@ namespace TombLib.LevelData.Compilers
                     if (allowGlow     && (lightEffect == RoomLightEffect.Glow     || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x4000;
 
-                    // FIXME: Workaround for desynced water reflections (possibly make it an option in TR5Main?)
-                    // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
-                    // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
-                    // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
-                    // This is original TR renderer bug and should be resolved in TR5Main DX11 renderer.
 
                     if (lightEffect == RoomLightEffect.None && trVertex.Attributes != 0x0000)
-                        continue;
+                    {
+                        // Workaround for desynced water reflections (possibly make it an option in TR5Main?)
+                        // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
+                        // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
+                        // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
+                        // This is original TR renderer bug and should be resolved in TR5Main DX11 renderer.
+                        // Do not remove this condition.
+                    }
+                    else
+                        trVertex.Attributes = flags;
 
-                    trVertex.Attributes = flags;
+                    // Remap vertex flags to LightEffect intensity for TR2.
+                    // FIXME: In original TR2 winroomedit and Dxtre3d, intensity value was based on dummy light object
+                    // placed in a room. As we don't have this mechanism yet, just assign effect to whole room.
+
+                    if (isTR2)
+                    {
+                        bool glowMapped = (trVertex.Attributes & 0x4000) != 0;
+                        bool moveMapped = (trVertex.Attributes & 0x2000) != 0;
+
+                        // Clear existing flags
+                        trVertex.Attributes = unchecked((ushort)((short)trVertex.Attributes & ~0x6000));
+
+                        // Force remap if sunset effect is used.
+                        // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
+                        if (room.LightEffect == RoomLightEffect.Sunset)
+                        {
+                            if (allowMovement)
+                                trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
+                        }
+                        else
+                        {
+                            // Remap TR3+ glow / movement to TR2 glow / flicker
+                            if (glowMapped || moveMapped)
+                                trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
+                        }
+                    }
+
+                    // Additionally set "no movement" flag for water rooms. This feature is present in TR2-3, in later games
+                    // 0x8000 flag is broken.
+                    if (isTR23 && !allowMovement)
+                        trVertex.Attributes |= 0x8000;
+
                     roomVertices[i] = trVertex;
                 }
 
@@ -797,7 +848,7 @@ namespace TombLib.LevelData.Compilers
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Intensity1 = PackColorTo16Bit(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X)),
+                    Intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion),
                     Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 0x0001 : instance.Ocb)
                 });
             }
@@ -838,7 +889,7 @@ namespace TombLib.LevelData.Compilers
             if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 trVertex.Color = PackColorTo32Bit(Color);
             else
-                trVertex.Lighting2 = PackColorTo16Bit(Color);
+                trVertex.Lighting2 = PackLightColor(Color, room.Level.Settings.GameVersion);
 
             // Add vertex
             vertexIndex = (ushort)roomVertices.Count;
@@ -853,15 +904,22 @@ namespace TombLib.LevelData.Compilers
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                // If target game is <= TR4 then ignore all special lights and fog bulbs
+                // If target game is <= TR3 then ignore all special lights (except sun for TR3) and fog bulbs
                 if (_level.Settings.GameVersion < TRVersion.Game.TR4 &&
-                      (light.Type == LightType.Spot || light.Type == LightType.Sun || light.Type == LightType.FogBulb))
+                    (light.Type == LightType.Spot || light.Type == LightType.Shadow || light.Type == LightType.FogBulb))
+                    continue;
+
+                // FIXME: For now sun type is blocked for TR3 because normal format is yet to be figured out
+                // Change to TRVersion.Game.TR3 when fixed.
+                if (_level.Settings.GameVersion < TRVersion.Game.TR4 && light.Type == LightType.Sun)
                     continue;
 
                 if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
+
                 tr_color color = PackColorTo24Bit(light.Color);
                 ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
+
                 if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
                     continue;
                 lightCount += 1;
@@ -1573,6 +1631,14 @@ namespace TombLib.LevelData.Compilers
                 }
         }
 
+        private static ushort PackLightColor(Vector3 color, TRVersion.Game version)
+        {
+            if (version >= TRVersion.Game.TR3)
+                return PackColorTo16Bit(color);
+            else
+                return PackColorTo13BitGreyscale(color);
+        }
+
         private static ushort PackColorTo16Bit(Vector3 color)
         {
             color *= 16.0f;
@@ -1584,6 +1650,21 @@ namespace TombLib.LevelData.Compilers
             tmp |= (ushort)((ushort)color.Y << 5);
             tmp |= (ushort)color.Z;
             return tmp;
+        }
+
+        // Takes the average color value and packs it into an inversed 13 Bit luma value (Higher = Darker)
+        // Used for TR1? and TR2 and TR3 for AmbientInensity
+        private static ushort PackColorTo13BitGreyscale(Vector3 color)
+        {
+            float avg = MathC.Clamp(color.GetLuma(), 0, 1);
+            // invert
+            avg = 1.0f - avg;
+            // multiply by 128 to get 8 bits
+            avg *= 255.0f;
+            ushort value = (ushort)avg;
+            //bitshift to left for whatever reason
+            value <<= 5;
+            return value;
         }
 
         private static uint PackColorTo32Bit(Vector3 color)

@@ -35,10 +35,6 @@ namespace TombLib.Wad
         public override string ToString() => "Uncertain game version - " + ToString(TRVersion.Game.TR4);
         public string ShortName(TRVersion.Game gameVersion) => TrCatalog.GetMoveableName(gameVersion, TypeId);
 
-        public static WadMoveableId Lara = new WadMoveableId(0);
-        public static WadMoveableId LaraSkin = new WadMoveableId(8);
-        public static WadMoveableId SkyBox = new WadMoveableId(459);
-
         public bool IsWaterfall(TRVersion.Game gameVersion)
         {
             return (gameVersion.Native() == TRVersion.Game.TR4 && TypeId >= 423 && TypeId <= 425) ||
@@ -48,6 +44,41 @@ namespace TombLib.Wad
         {
             return (gameVersion.Native() == TRVersion.Game.TR4 && TypeId >= 461 && TypeId <= 462) ||
                    (gameVersion.Native() >= TRVersion.Game.TR5 && TypeId >= 456 && TypeId <= 457);
+        }
+
+        public static WadMoveableId Lara = new WadMoveableId(0);
+
+        public static WadMoveableId GetLaraSkin(TRVersion.Game gameVersion) {
+            switch (gameVersion) {
+                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR2:
+                    return new WadMoveableId(0);
+                case TRVersion.Game.TR3:
+                    return new WadMoveableId(315);
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TRNG:
+                case TRVersion.Game.TR5Main:
+                    return new WadMoveableId(8);
+                default:
+                    return new WadMoveableId(0);
+            }
+        }
+
+        public static WadMoveableId? GetHorizon(TRVersion.Game gameVersion) {
+            switch (gameVersion) {
+                case TRVersion.Game.TR2:
+                    return new WadMoveableId(254);
+                case TRVersion.Game.TR3:
+                    return new WadMoveableId(355);
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TR5:
+                case TRVersion.Game.TRNG:
+                case TRVersion.Game.TR5Main:
+                    return new WadMoveableId(459);
+                default:
+                    return null;
+            }
         }
     }
 

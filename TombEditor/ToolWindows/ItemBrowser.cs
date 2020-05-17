@@ -38,7 +38,8 @@ namespace TombEditor.ToolWindows
         private void EditorEventRaised(IEditorEvent obj)
         {
             // Update available items combo box
-            if (obj is Editor.LoadedWadsChangedEvent)
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
             {
                 var allMoveables = _editor.Level.Settings.WadGetAllMoveables();
                 var allStatics   = _editor.Level.Settings.WadGetAllStatics();
@@ -80,18 +81,20 @@ namespace TombEditor.ToolWindows
                 else
                 {
                     comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
+                    var version = _editor.Level.Settings.GameVersion;
                     if (e.Current.Value.MoveableId == WadMoveableId.Lara) // Show Lara's skin
                     {
-                        WadMoveable moveable = _editor.Level.Settings.WadTryGetMoveable(WadMoveableId.LaraSkin);
-                        if (moveable != null)
-                            panelItem.CurrentObject = moveable;
+                        WadMoveableId laraSkinId = WadMoveableId.GetLaraSkin(version); 
+                        WadMoveable moveableSkin = _editor.Level.Settings.WadTryGetMoveable(laraSkinId);
+                        if (moveableSkin != null)
+                            panelItem.CurrentObject = moveableSkin;
                     }
                     panelItem.Invalidate();
                 }
             }
 
             // Update tooltip texts
-            if(obj is Editor.ConfigurationChangedEvent)
+            if (obj is Editor.ConfigurationChangedEvent)
             {
                 if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
@@ -100,7 +103,7 @@ namespace TombEditor.ToolWindows
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            var searchPopUp = new PopUpSearch(comboItems);
+            var searchPopUp = new PopUpSearch(comboItems, _editor.Level.Settings.GameVersion);
             searchPopUp.Show(this);
         }
 

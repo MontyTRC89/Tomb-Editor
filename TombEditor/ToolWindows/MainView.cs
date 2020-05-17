@@ -121,8 +121,17 @@ namespace TombEditor.ToolWindows
                 butStamp.Enabled = selectedObject is ISpatial;
             }
 
-            // Update editor mode
-            if (obj is Editor.ModeChangedEvent)
+            // Disable version-specific controls
+            if (obj is Editor.InitEvent ||
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+            {
+                butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+                butAddBoxVolume.Enabled = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+            }
+
+                // Update editor mode
+                if (obj is Editor.ModeChangedEvent)
             {
                 ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 

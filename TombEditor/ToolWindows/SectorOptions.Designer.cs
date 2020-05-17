@@ -191,7 +191,7 @@
             this.butFlagTriggerTriggerer.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butFlagTriggerTriggerer.Checked = false;
             this.butFlagTriggerTriggerer.Image = global::TombEditor.Properties.Resources.sectortype_TriggerTriggerer_16;
-            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(32, 113);
+            this.butFlagTriggerTriggerer.Location = new System.Drawing.Point(3, 113);
             this.butFlagTriggerTriggerer.Name = "butFlagTriggerTriggerer";
             this.butFlagTriggerTriggerer.Size = new System.Drawing.Size(24, 24);
             this.butFlagTriggerTriggerer.TabIndex = 9;
@@ -245,7 +245,7 @@
             this.butFlagBeetle.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.butFlagBeetle.Checked = false;
             this.butFlagBeetle.Image = global::TombEditor.Properties.Resources.sectortype_Beetle_16;
-            this.butFlagBeetle.Location = new System.Drawing.Point(3, 113);
+            this.butFlagBeetle.Location = new System.Drawing.Point(32, 113);
             this.butFlagBeetle.Name = "butFlagBeetle";
             this.butFlagBeetle.Size = new System.Drawing.Size(24, 24);
             this.butFlagBeetle.TabIndex = 8;
