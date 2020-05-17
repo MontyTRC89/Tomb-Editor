@@ -61,7 +61,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_ADD_DEATH_ANIMATION, SlotOfCreature, AnimNumber.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_ADD_DEATH_ANIMATION, {Creature slot}, {Animation number}.
         /// </summary>
         public static string CUST_ADD_DEATH_ANIMATION {
             get {
@@ -70,7 +70,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_AMMO, SlotOfAmmo, Ammo flags (AMMO_...), Damage, ShotsForBox, ShotsWithWeapon, Extra, IdTriggerGroupWhenHitEnemy, DamageForExplosion, Speed, Gravity, IdAddEffectToAmmo, IdTriggerGroupAtEnd.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_AMMO, {Ammo slot}, {Ammo flags (AMMO_...)}, {Damage}, {Shots in box}, {Shots with weapon}, {Extra}, {ID of TriggerGroup when hit enemy}, {Damage for explosion}, {Speed}, {Gravity}, {ID of AddEffect to ammo}, {ID of TriggerGroup at end}.
         /// </summary>
         public static string CUST_AMMO {
             get {
@@ -79,7 +79,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_BACKGROUND, BackGroundType (BKGDT_...), Flags (BKGDF_...), Parameter, ImageId.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_BACKGROUND, {Background type (BKGDT_...)}, {Flags (BKGDF_...)}, {Parameter}, {Image ID}.
         /// </summary>
         public static string CUST_BACKGROUND {
             get {
@@ -88,7 +88,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_BAR, BarType (BAR_...), FlagsBar (FBAR_...), XOrigin, YOrigin, XSize, YSize, IdColor1, IdColor2, Extra.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_BAR, {Bar type (BAR_...)}, {Flags (FBAR_...)}, {X origin}, {Y origin}, {X size}, {Y size}, {Color1 ID}, {Color2 ID}, {Extra}.
         /// </summary>
         public static string CUST_BAR {
             get {
@@ -97,7 +97,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_BIKE_VS_ENEMIES, Slot+(HIT_...) flag array.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_BIKE_VS_ENEMIES, {Slot + (HIT_...) flags (*Array*)}.
         /// </summary>
         public static string CUST_BIKE_VS_ENEMIES {
             get {
@@ -106,7 +106,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_BINOCULARS, FLAGS (BINF_...), Parameter, CompassImage, CompassRectAndFlags, SextantImage, SextantRectAndFlags, LightnessRectAndFlags, ZoomRectAndFlags, LightSwitchRectAndFlags, FontID.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_BINOCULARS, {Flags (BINF_...)}, {Parameter}, {Compass image}, {Compass rect and flags}, {Sextant image}, {Sextant rect and flags}, {Lightness rect and flags}, {Zoom rect and flags}, {LightSwitch rect and flags}, {Font ID}.
         /// </summary>
         public static string CUST_BINOCULARS {
             get {
@@ -115,7 +115,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_CAMERA, Flags (FCAM_...), DistanceChaseCam, VOrientChaseCam, HOrientChaseCam, DistanceCombatCam, VOrientCombatCam, DistanceLookCam, HeightLookCam, SpeedCamera.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_CAMERA, {Flags (FCAM_...)}, {Distance from ChaseCam}, {V orient of ChaseCam}, {H orient of ChaseCam}, {Distance from CombatCam}, {V orient of CombatCam}, {Distance from LookCam}, {Height of LookCam}, {Camera speed}.
         /// </summary>
         public static string CUST_CAMERA {
             get {
@@ -124,7 +124,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_CD_SINGLE_PLAYBACK, CdMode value (CDM_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_CD_SINGLE_PLAYBACK, {CDMode value (CDM_...)}.
         /// </summary>
         public static string CUST_CD_SINGLE_PLAYBACK {
             get {
@@ -133,7 +133,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_DARTS, IdCustDarts, Dart Flags (DRT_...), IdAddEffect, Speed, EmittingTimer, PrimaryColorIDRgb, SecondaryColorIDRgb, IdTriggerGroup.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_DARTS, {CustDarts ID}, {Dart flags (DRT_...)}, {AddEffect ID}, {Speed}, {Emitting timer}, {Primary color RGB ID}, {Secondary color RGB ID}, {TriggerGroup ID}.
         /// </summary>
         public static string CUST_DARTS {
             get {
@@ -178,7 +178,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_ESCAPE_FLY_CAMERA, ENABLED / DISABLED, KeyBoardScanCode.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_ESCAPE_FLY_CAMERA, ENABLED / DISABLED, {Keyboard Scancode}.
         /// </summary>
         public static string CUST_ESCAPE_FLY_CAMERA {
             get {
@@ -187,7 +187,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_FIX_BUGS, BugsToFix flags (BUGF_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_FIX_BUGS, {BugsToFix flags (BUGF_...)}.
         /// </summary>
         public static string CUST_FIX_BUGS {
             get {
@@ -205,7 +205,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_FLARE, Flags for Flare (FFL_...), SecondsOfLifeTime, Red, Green, Blue, Intensity.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_FLARE, {Flags for flare (FFL_...)}, {Life time in seconds}, {Red}, {Green}, {Blue}, {Intensity}.
         /// </summary>
         public static string CUST_FLARE {
             get {
@@ -214,7 +214,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_FMV_CUTSCENE, Flags (FMV_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_FMV_CUTSCENE, {Flags (FMV_...)}.
         /// </summary>
         public static string CUST_FMV_CUTSCENE {
             get {
@@ -223,7 +223,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_HAIR_TYPE, HairType  (HAIR_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_HAIR_TYPE, {Hair type (HAIR_...)}.
         /// </summary>
         public static string CUST_HAIR_TYPE {
             get {
@@ -232,7 +232,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_HARPOON, HarpoonFlags (HRP_...), TopBorder, DistanceFromCam, Orient_X, Orient_Y, Orient_Z, HarpoonSpeed, HarpoonGravity.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_HARPOON, {Harpoon flags (HRP_...)}, {Top border}, {Distance from cam}, {X orient}, {Y orient}, {Z orient}, {Harpoon speed}, {Harpoon gravity}.
         /// </summary>
         public static string CUST_HARPOON {
             get {
@@ -241,7 +241,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_INNER_SCREENSHOT, QualityScreenshotFlags (QSF_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_INNER_SCREENSHOT, {Quality of screenshot flags (QSF_...)}.
         /// </summary>
         public static string CUST_INNER_SCREENSHOT {
             get {
@@ -259,7 +259,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_KEEP_LARA_HP, TargetLevel.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_KEEP_LARA_HP, {Target level}.
         /// </summary>
         public static string CUST_KEEP_LARA_HP {
             get {
@@ -268,7 +268,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_LIGHT_OBJECT 34, SlotLight, Red, Green, Blue, Intensity, Time ; Not sure what the author meant with that 34... Probably useless?.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_LIGHT_OBJECT 34, {Light slot}, {Red}, {Green}, {Blue}, {Intensity}, {Time} ; Not sure what the author meant with that 34... Probably useless?.
         /// </summary>
         public static string CUST_LIGHT_OBJECT {
             get {
@@ -286,7 +286,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_NEW_SOUND_ENGINE, NewSoundEngine flags (NSE_...), SoundExtension (SEXT_...), LongFadeOut, ShortFadeOut.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_NEW_SOUND_ENGINE, {New sound engine flags (NSE_...)}, {Sound extension (SEXT_...)}, {Long fade-out}, {Short fade-out}.
         /// </summary>
         public static string CUST_NEW_SOUND_ENGINE {
             get {
@@ -304,7 +304,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_PARALLEL_BARS, FlagsParallelBar (PB_...), SpeedForSlide, MaxTurns.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_PARALLEL_BARS, {Parallel bar flags (PB_...)}, {Speed for slide}, {Max turns}.
         /// </summary>
         public static string CUST_PARALLEL_BARS {
             get {
@@ -313,7 +313,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_PAUSE_FLY_CAMERA, ENABLED / DISABLED, KeyBoardScanCode.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_PAUSE_FLY_CAMERA, ENABLED / DISABLED, {Keyboard Scancode}.
         /// </summary>
         public static string CUST_PAUSE_FLY_CAMERA {
             get {
@@ -322,7 +322,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_RAIN, FlagsForRain (FR_...), DropSize, SprinklerAmount, MaxRain, MinRain, Float1, Float4, Float8, Float16, Extra.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_RAIN, {Rain flags (FR_...)}, {Drop size}, {Sprinkler amount}, {Max rain}, {Min rain}, {Float1}, {Float4}, {Float8}, {Float16}, {Extra}.
         /// </summary>
         public static string CUST_RAIN {
             get {
@@ -331,7 +331,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_ROLLING_BOAT, SlotBoat, FlagsRollingBoats (FRB_...), SwingingSpeed, PitchingSpeed, RollingSFX.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_ROLLING_BOAT, {Boat slot}, {Rolling boat flags (FRB_...)}, {Swinging speed}, {Pitching speed}, {Rolling SFX}.
         /// </summary>
         public static string CUST_ROLLING_BOAT {
             get {
@@ -340,7 +340,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_ROLLINGBALL_PUSHING, Distance, PushAnim, FailedAnim, FrameOfMoving, FrameOfActivation, FramesOfInvulnerability, Speed.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_ROLLINGBALL_PUSHING, {Distance}, {Push animation}, {Failed animation}, {Movement frame}, {Activation frame}, {Invulnerability frame}, {Speed}.
         /// </summary>
         public static string CUST_ROLLINGBALL_PUSHING {
             get {
@@ -358,7 +358,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SCREENSHOT_CAPTURE, SecondsOfDurate, FrameGap, QualityScreenshotFlag (QSF_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SCREENSHOT_CAPTURE, {Duration in seconds}, {Frame gap}, {Quality of screenshot flags (QSF_...)}.
         /// </summary>
         public static string CUST_SCREENSHOT_CAPTURE {
             get {
@@ -367,7 +367,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_CREDITS_LEVEL, NumberOfEndLevel.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_CREDITS_LEVEL, {Final level number}.
         /// </summary>
         public static string CUST_SET_CREDITS_LEVEL {
             get {
@@ -376,7 +376,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_INV_ITEM, SlotOfItem.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_INV_ITEM, {Item slot}.
         /// </summary>
         public static string CUST_SET_INV_ITEM {
             get {
@@ -385,7 +385,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_JEEP_KEY_SLOT, SlotForJeepKey.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_JEEP_KEY_SLOT, {Jeep key slot}.
         /// </summary>
         public static string CUST_SET_JEEP_KEY_SLOT {
             get {
@@ -403,7 +403,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_SECRET_NUMBER, NumberOfSecrets.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_SECRET_NUMBER, {Number of secrets}.
         /// </summary>
         public static string CUST_SET_SECRET_NUMBER {
             get {
@@ -412,7 +412,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_STATIC_DAMAGE, Damage, PoisonIntensity.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_STATIC_DAMAGE, {Damage}, {Poison intensity}.
         /// </summary>
         public static string CUST_SET_STATIC_DAMAGE {
             get {
@@ -421,7 +421,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_STILL_COLLISION, Collision Flags (COLL_...), LowerHeight, MoveableArray.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_STILL_COLLISION, {Collision flags (COLL_...)}, {Lower height}, {Moveable (*Array*)}.
         /// </summary>
         public static string CUST_SET_STILL_COLLISION {
             get {
@@ -430,7 +430,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_TEXT_COLOR, Text Type (TT_...), Color for Text (CL_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SET_TEXT_COLOR, {Text type (TT_...)}, {Text color (CL_...)}.
         /// </summary>
         public static string CUST_SET_TEXT_COLOR {
             get {
@@ -439,7 +439,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SFX, TypeSound (TS_...), Sound Effect Number.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SFX, {Sound type (TS_...)}, {Sound effect number}.
         /// </summary>
         public static string CUST_SFX {
             get {
@@ -448,7 +448,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SHATTER_RANGE, FirstStaticAsShatter, LastStaticAsShatter.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SHATTER_RANGE, {First static as shatter}, {Last static as shatter}.
         /// </summary>
         public static string CUST_SHATTER_RANGE {
             get {
@@ -457,7 +457,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SHATTER_SPECIFIC, Slot1, Slot2, Slot3, SlotN.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SHATTER_SPECIFIC, {Slot1}, {Slot2}, {Slot3}, {SlotN (*Array*)}.
         /// </summary>
         public static string CUST_SHATTER_SPECIFIC {
             get {
@@ -466,7 +466,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SHOW_AMMO_COUNTER, Color, FormatFlags (FT_...) , BlinkTime, SizeCharacter (SC_...), ShowCounterFlags (SHOWC_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SHOW_AMMO_COUNTER, {Color}, {Format flags (FT_...)}, {Blink time}, {Character size (SC_...)}, {Show counter flags (SHOWC_...)}.
         /// </summary>
         public static string CUST_SHOW_AMMO_COUNTER {
             get {
@@ -475,7 +475,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SLOT_FLAGS, Slot, FlagsForSlot (FFS_...).
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SLOT_FLAGS, {Slot}, {Slot flags (FFS_...)}.
         /// </summary>
         public static string CUST_SLOT_FLAGS {
             get {
@@ -484,7 +484,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_SPEED_MOVING, Speed.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_SPEED_MOVING, {Speed}.
         /// </summary>
         public static string CUST_SPEED_MOVING {
             get {
@@ -493,7 +493,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_STATIC_TRANSPARENCY, GlassOpacity, IceOpacity.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_STATIC_TRANSPARENCY, {Glass opacity}, {Ice opacity}.
         /// </summary>
         public static string CUST_STATIC_TRANSPARENCY {
             get {
@@ -511,7 +511,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_TITLE_FMV, FmvNumber, TestMultiPlay.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_TITLE_FMV, {FMV number}, {Test Multi-Play}.
         /// </summary>
         public static string CUST_TITLE_FMV {
             get {
@@ -529,7 +529,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_WATERFALL_SPEED, PixelScroll.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_WATERFALL_SPEED, {Pixel scroll}.
         /// </summary>
         public static string CUST_WATERFALL_SPEED {
             get {
@@ -538,7 +538,7 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [Level] Customize= CUST_WEAPON, SlotOfWeapon, Weapon flags (WEAP_...) , SoundForShot, FramesForRecharge, DurateFlash, Extra, MaxDistanceForAiming, FrameToTakeWeapon, FrameToLetWeapon, Random, VPositionOfWeapon, Unknown, FrameCounter, FrameMinRange, FrameMaxRange, OrigX, OrigY, OrigZ, OrigOrient.
+        ///   Looks up a localized string similar to [Level] Customize= CUST_WEAPON, {Weapon slot}, {Weapon flags (WEAP_...)}, {Shot sound}, {Recharge frame}, {Flash duration}, {Extra}, {Max distance for aiming}, {TakeWeapon frame}, {LetWeapon frame}, {Random}, {V position of weapon}, {Unknown}, {Counter frame}, {MinRange frame}, {MaxRange frame}, {X origin}, {Y origin}, {Z origin}, {Origin orient}.
         /// </summary>
         public static string CUST_WEAPON {
             get {

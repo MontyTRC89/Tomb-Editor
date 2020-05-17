@@ -169,6 +169,9 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void MoveCaretToMousePosition()
 		{
+			if (!string.IsNullOrEmpty(SelectedText))
+				return;
+
 			TextViewPosition? position = TextArea.TextView.GetPosition(Mouse.GetPosition(TextArea.TextView) + TextArea.TextView.ScrollOffset);
 
 			if (position != null)
