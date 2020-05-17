@@ -96,9 +96,9 @@ namespace TombLib.GeometryIO
 
         public static IReadOnlyList<FileFormat> FileExtensions { get; } = new List<FileFormat>()
         {
-            new FileFormat("Collada", "dae"),
             new FileFormat("Wavefront Object", "obj"),
             new FileFormat("Metasequoia", "mqo"),
+            new FileFormat("Collada", "dae"),
             new FileFormat("X3D Extensible 3D", "x3d"),
             new FileFormat("glTF 2.0", "gltf")
         };
