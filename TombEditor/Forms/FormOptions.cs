@@ -8,6 +8,7 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Forms;
 using TombLib.Utils;
+using static TombLib.LevelData.TRVersion;
 
 namespace TombEditor.Forms
 {
@@ -18,13 +19,13 @@ namespace TombEditor.Forms
 
         public FormOptions(Editor editor) : base(editor.Configuration, new List<string>() { "UI_ColorScheme" })
         {
+            _editor = editor;
+            _editor.EditorEventRaised += EditorEventRaised;
+
             InitializeComponent();
             InitializeDialog();
             this.SetActualSize(630, 540);
             this.LockWidth();
-
-            _editor = editor;
-            _editor.EditorEventRaised += EditorEventRaised;
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -42,7 +43,11 @@ namespace TombEditor.Forms
                 catch { throw; }
 
             // Populate versions
-            cmbGameVersion.Items.AddRange(TRVersion.CompilableVersions.Cast<object>().ToArray());
+            List<Game> gameList = CompilableVersions;
+            //Remove experimental compilable versions
+            if(!_editor.Configuration.Editor_AllowExperimentalFeatures)
+                gameList.RemoveAll((version) => ExperimentalVersions.Contains(version));
+            cmbGameVersion.Items.AddRange(gameList.Cast<object>().ToArray());
 
             // Populate color scheme presets
             typeof(ColorScheme)
