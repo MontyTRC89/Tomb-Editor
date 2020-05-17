@@ -5,7 +5,7 @@ namespace SoundTool
 {
     public class Configuration : ConfigurationBase
     {
-        public override string ConfigName { get { return "SoundToolConfiguration.xml"; } }
+        public override string ConfigName { get { return "Configs\\SoundToolConfiguration.xml"; } }
 
         public string SoundTool_ReferenceProject { get; set; } = string.Empty;
         public bool SoundTool_AllowMultipleInstances { get; set; } = false;
