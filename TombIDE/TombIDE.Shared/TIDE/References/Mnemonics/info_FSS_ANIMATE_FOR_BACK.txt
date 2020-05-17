@@ -1,4 +1,0 @@
-Used with Parameters=PARAM_SHOW_SPRITE script command.
-Used togheter with the FSS_ANIMATE flag to create an animated sprite with forward-backward sequence, where the sprite index will increase upto the max and then it will be decreased upto the min, like:
-1234321234
-Read also the FSS_ANIMATE flag for more infos.

@@ -1,9 +1,0 @@
-Used in Customize=CUST_BAR command
-This flag will keep always on screen the current bar.
-The FBAR_DRAW_ALWAYS flag doesn't work with all bars.
-You can use it with:
-BAR_HEALTH
-BAR_DASH
-BAR_AIR
-BAR_DAMAGE
-BAR_COLD

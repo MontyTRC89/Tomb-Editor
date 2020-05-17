@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TombLib.Utils;
+using System.Numerics;
+using System.Reflection;
 
 namespace TombLib.GeometryIO.Exporters
 {
@@ -19,95 +17,277 @@ namespace TombLib.GeometryIO.Exporters
 
         public override bool ExportToFile(IOModel model, string filename)
         {
-            /*var path = Path.GetDirectoryName(filename);
+            var path = Path.GetDirectoryName(filename);
             var materialPath = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
-
-            var mesh = model.Meshes[0];
             var materials = new List<IOMaterial>();
 
-            foreach (var pair in mesh.Submeshes)
+            foreach (var mesh in model.Meshes)
             {
-                var material = pair.Key;
-                var submesh = pair.Value;
-
-                // If no polygons, then no need to consider this material
-                if (submesh.Polygons.Count == 0)
+                if (mesh.Positions.Count == 0)
                     continue;
 
-                material.Path = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
-                materials.Add(material);
+                foreach (var pair in mesh.Submeshes)
+                {
+                    var material = pair.Key;
+                    var submesh = pair.Value;
+
+                    // Avoid duplicating materials
+                    if (materials.Any(m => m.Name == material.Name))
+                        continue;
+
+                    // If no polygons, then no need to consider this material
+                    if (submesh.Polygons.Count == 0)
+                        continue;
+
+                    material.Path = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
+                    materials.Add(material);
+                }
             }
 
             using (var writer = new StreamWriter(filename, false))
             {
-                writer.WriteLine("# Exported by Tomb Editor");
-                writer.WriteLine("matlib " + Path.GetFileNameWithoutExtension(filename) + ".mtl");
-                writer.WriteLine("o " + mesh.Name);
+                writer.WriteLine("# Exported by Tomb Editor " + Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n");
+                writer.WriteLine("mtllib " + Path.GetFileNameWithoutExtension(filename) + ".mtl" + "\n");
+
+                // Optimize all data
+                var poscol = new List<Vector3[]>();
+                var poscolIndices = new Dictionary<int, int>();
+
+                var normals = new List<Vector3>();
+                var normalIndices = new Dictionary<int, int>();
+
+                var uvs = new List<Vector2>();
+                var uvIndices = new Dictionary<int, int>();
+
+                int meshCount = 0;
+                foreach (var mesh in model.Meshes)
+                {
+                    if (mesh.Positions.Count == 0)
+                        continue;
+
+                    for (int i = 0; i < mesh.Positions.Count; i++)
+                    {
+                        var position = ApplyAxesTransforms(mesh.Positions[i]);
+                        var colour = ApplyColorTransform(mesh.Colors.Count > i ? mesh.Colors[i] : new Vector4(2)).To3();
+
+                        int found = -1;
+                        for (int j = 0; j < poscol.Count; j++)
+                            if (poscol[j][0] == position && 
+                                poscol[j][1] == colour)
+                            {
+                                found = j;
+                                break;
+                            }
+
+                        if (found == -1)
+                        {
+                            found = poscol.Count;
+                            poscol.Add(new Vector3[2] { position, colour });
+                        }
+
+                        poscolIndices.Add(i + meshCount, found);
+                    }
+                    meshCount += mesh.Positions.Count;
+                }
+
+                meshCount = 0;
+                foreach (var mesh in model.Meshes)
+                {
+                    if (mesh.Normals.Count == 0)
+                        mesh.CalculateNormals();
+
+                    for (int i = 0; i < mesh.Normals.Count; i++)
+                    {
+                        var normal = mesh.Normals[i];
+                        int found = -1;
+                        for (int j = 0; j < normals.Count; j++)
+                            if (normals[j] == normal)
+                            {
+                                found = j;
+                                break;
+                            }
+
+                        if (found == -1)
+                        {
+                            found = normals.Count;
+                            normals.Add(normal);
+                        }
+
+                        normalIndices.Add(i + meshCount, found);
+                    }
+                    meshCount += mesh.Normals.Count;
+                }
+
+                meshCount = 0;
+                foreach (var mesh in model.Meshes)
+                {
+                    if (mesh.UV.Count == 0)
+                        continue;
+
+                    for (int i = 0; i < mesh.UV.Count; i++)
+                    {
+                        var uv = mesh.UV[i];
+                        int found = -1;
+                        for (int j = 0; j < uvs.Count; j++)
+                            if (uvs[j] == uv)
+                            {
+                                found = j;
+                                break;
+                            }
+
+                        if (found == -1)
+                        {
+                            found = uvs.Count;
+                            uvs.Add(uv);
+                        }
+
+                        uvIndices.Add(i + meshCount, found);
+                    }
+                    meshCount += mesh.UV.Count;
+                }
 
                 // Save vertices
-                foreach (var vertex in mesh.Positions)
+                if (!_settings.UseVertexColor)
                 {
-                    var position = ApplyAxesTransforms(vertex);
-                    writer.WriteLine("v " + position.X.ToString(CultureInfo.InvariantCulture) + " " +
-                                            position.Y.ToString(CultureInfo.InvariantCulture) + " " +
-                                            position.Z.ToString(CultureInfo.InvariantCulture));
+                    foreach (var pc in poscol)
+                    {
+                        writer.WriteLine("v " + pc[0].X.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[0].Y.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[0].Z.ToString(CultureInfo.InvariantCulture));
+                    }
                 }
+                else
+                {
+                    // Include vertex colour, it may be parsed correctly by some software, e.g. MeshMixer and MeshLab.
+                    foreach (var pc in poscol)
+                    {
+                        writer.WriteLine("v " + pc[0].X.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[0].Y.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[0].Z.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[1].X.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[1].Y.ToString(CultureInfo.InvariantCulture) + " " +
+                                                pc[1].Z.ToString(CultureInfo.InvariantCulture));
+                    }
+                }
+                writer.WriteLine("# " + poscol.Count + " vertices total.\n");
+
+                // Save normals
+                foreach (var normal in normals)
+                {
+                    writer.WriteLine("vn " + normal.X.ToString(CultureInfo.InvariantCulture) + " " +
+                                             normal.Y.ToString(CultureInfo.InvariantCulture) + " " +
+                                             normal.Z.ToString(CultureInfo.InvariantCulture));
+                }
+                writer.WriteLine("# " + normals.Count + " normals total.\n");
 
                 // Save UVs
-                foreach (var uv in mesh.UV)
+                foreach (var uv in uvs)
                 {
-                    var newUV = ApplyUVTransform(uv, mesh.Submeshes[0].Material.tex mesh.Texture.Image.Width, mesh.Texture.Image.Height);
-                    writer.WriteLine("vt " + newUV.X.ToString(CultureInfo.InvariantCulture) + " " +
-                                             newUV.Y.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteLine("vt " + uv.X.ToString(CultureInfo.InvariantCulture) + " " +
+                                    (1.0f - uv.Y).ToString(CultureInfo.InvariantCulture) + " 0.000");
                 }
+                writer.WriteLine("# " + uvs.Count + " UVs total.\n");
 
-                // Save faces
-                writer.WriteLine("usemtl Room");
-                writer.WriteLine("s off");
-                foreach (var submesh in mesh.Submeshes)
-                    foreach (var poly in submesh.Value.Polygons)
+                int pCount = 0;
+                int uCount = 0;
+                int nCount = 0;
+
+                foreach (var mesh in model.Meshes)
+                {
+                    writer.WriteLine("o " + mesh.Name + "\n");
+
+                    // Save faces
+                    IOMaterial lastMaterial = null;
+                    int faceCount = 0;
+
+                    foreach (var submesh in mesh.Submeshes)
                     {
-                        var indices = new List<int>();
-                        indices.Add(poly.Indices[0] + 1);
-                        indices.Add(poly.Indices[1] + 1);
-                        indices.Add(poly.Indices[2] + 1);
-                        if (poly.Shape == IOPolygonShape.Quad)
-                            indices.Add(poly.Indices[3] + 1);
+                        if (submesh.Value.Polygons.Count == 0)
+                            continue;
 
-                        // Change vertex winding
-                        if (_settings.InvertFaces)
-                            indices.Reverse();
-
-                        var v1 = indices[0];
-                        var v2 = indices[1];
-                        var v3 = indices[2];
-                        var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
-
-                        if (poly.Shape == IOPolygonShape.Triangle)
+                        if (lastMaterial == null || lastMaterial != submesh.Key)
                         {
-                            writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3);
+                            lastMaterial = submesh.Key;
+                            writer.WriteLine("\n" + "usemtl " + lastMaterial.Name.ToString());
                         }
-                        else
+
+                        foreach (var poly in submesh.Value.Polygons)
                         {
-                            writer.WriteLine("f " + v1 + "/" + v1 + " " + v2 + "/" + v2 + " " + v3 + "/" + v3 + " " + v4 + "/" + v4);
+                            var indices = new List<int>();
+                            indices.Add(poly.Indices[0]);
+                            indices.Add(poly.Indices[1]);
+                            indices.Add(poly.Indices[2]);
+                            if (poly.Shape == IOPolygonShape.Quad)
+                                indices.Add(poly.Indices[3]);
+
+                            // Change vertex winding
+                            if (_settings.InvertFaces)
+                                indices.Reverse();
+
+                            var v1 = indices[0];
+                            var v2 = indices[1];
+                            var v3 = indices[2];
+                            var v4 = (poly.Shape == IOPolygonShape.Quad ? indices[3] : 0);
+
+                            if (poly.Shape == IOPolygonShape.Triangle)
+                            {
+                                writer.WriteLine("f  " + (poscolIndices[v1 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v1 + uCount] + 1) + "/"
+                                                       + (normalIndices[v1 + nCount] + 1) + " "
+                                                       + (poscolIndices[v2 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v2 + uCount] + 1) + "/"
+                                                       + (normalIndices[v2 + nCount] + 1) + " "
+                                                       + (poscolIndices[v3 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v3 + uCount] + 1) + "/"
+                                                       + (normalIndices[v3 + nCount] + 1));
+                            }
+                            else
+                            {
+                                writer.WriteLine("f  " + (poscolIndices[v1 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v1 + uCount] + 1) + "/"
+                                                       + (normalIndices[v1 + nCount] + 1) + " "
+                                                       + (poscolIndices[v2 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v2 + uCount] + 1) + "/"
+                                                       + (normalIndices[v2 + nCount] + 1) + " "
+                                                       + (poscolIndices[v3 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v3 + uCount] + 1) + "/"
+                                                       + (normalIndices[v3 + nCount] + 1) + " "
+                                                       + (poscolIndices[v4 + pCount] + 1) + "/"
+                                                       + (uvIndices    [v4 + uCount] + 1) + "/"
+                                                       + (normalIndices[v4 + nCount] + 1));
+                            }
+                            faceCount++;
                         }
                     }
+                    pCount += mesh.Positions.Count;
+                    uCount += mesh.UV.Count;
+                    nCount += mesh.Normals.Count;
+
+                    writer.WriteLine("# " + faceCount + " faces total.\n");
+                }
             }
 
             using (var writer = new StreamWriter(materialPath, false))
             {
-                writer.WriteLine("# Exported by Tomb Editor");
+                writer.WriteLine("# Exported by Tomb Editor " +
+                    Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n");
 
                 foreach (var material in materials)
                 {
                     writer.WriteLine("newmtl " + material.Name);
-                    writer.WriteLine("Ka 1.000000 1.000000 1.000000");
-                    writer.WriteLine("Ni 1.000000");
-                    writer.WriteLine("d 1.000000");
-                    writer.WriteLine("illum 2");
-                    writer.WriteLine("map_Kd " + GetTexturePath(path, material.Texture));
+                    writer.WriteLine("    Ka 1.000000 1.000000 1.000000");
+                    writer.WriteLine("    Kd 1.000000 1.000000 1.000000");
+                    writer.WriteLine("    Ks 1.000000 1.000000 1.000000");
+                    writer.WriteLine("    Ke 1.000000 1.000000 1.000000");
+                    writer.WriteLine("    Ni 1.000000");
+                    writer.WriteLine("    Ns 10.000000");
+                    writer.WriteLine("    d 1.000000");
+                    writer.WriteLine("    illum 2");
+                    writer.WriteLine("    map_Ka " + material.TexturePath);
+                    writer.WriteLine("    map_Kd " + material.TexturePath);
+                    writer.WriteLine("\n");
                 }
-            }*/
+            }
 
             return true;
         }

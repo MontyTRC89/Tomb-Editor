@@ -1,6 +1,0 @@
-Used in TriggerGroup command.
-Adding this flag to first of triplex parameter of exported trigger data, you can replace the index on that perform some action, with the item that has excutes the trigger that enables this triggergroup.
-You could use this flag when you create an heavy trigger to perform this triggergroup and you want that all action trigger will be redirect to moveable that has just enabled the trigger group.
-For example if you export an action trigger to kill (any) moveable, and then you perorm this triggergroup with an heavy trigger, when any moveable move on it, the action (to kill) will be applied on this moveable.
-Pratically with this method you can create trigger to kill enemies (or other action on them) where it will be the same moveable to enable it.
-Remark: to realize this trick is problem you need to use also an Enemy= command with the NEF_EASY_HEAVY_ENABLING to permit to many different moveables to enable all heavy triggers they meet in their path.

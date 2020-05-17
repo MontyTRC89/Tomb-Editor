@@ -1,1 +1,0 @@
-It's the same that don't insert any Rain= command in script

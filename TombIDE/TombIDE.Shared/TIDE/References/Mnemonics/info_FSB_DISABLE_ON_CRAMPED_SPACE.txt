@@ -1,4 +1,0 @@
-Used in StandBy command.
-This flag is strongly suggested when you use stand-by in native mode, i.e. with automatic activation after a time of inactivity.
-Since you cann't know where Lara will be when the stand-by starts, it could happen that lara, in that moment, is in a cramped space. In this situation the rotation of camera could be very difficultous. To avoid this problem you can set the FSB_DISABLE_ON_CRAMPED_SPACE flag and in this way the stand-by will NOT begin when lara has around to her some too closed wall.
-Remark: this method works fine only when the distance you set is less than 2048, while with higher values some very far wall could be not correctly computed and it could create problems.

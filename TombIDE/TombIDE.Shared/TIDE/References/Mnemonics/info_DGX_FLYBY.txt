@@ -1,3 +1,0 @@
-Used in DiagnosticType script command.
-Enable the info about current flyby sequence.
-Remark: the info will be showed only while a flyby sequence is running.

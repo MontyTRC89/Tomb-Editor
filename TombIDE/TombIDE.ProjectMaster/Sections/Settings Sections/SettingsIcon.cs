@@ -91,12 +91,12 @@ namespace TombIDE.ProjectMaster
 				if (_ide.Project.GameVersion == TRVersion.Game.TR4 || _ide.Project.GameVersion == TRVersion.Game.TRNG)
 				{
 					if (_ide.Project.GameVersion == TRVersion.Game.TRNG && File.Exists(Path.Combine(_ide.Project.EnginePath, "flep.exe")))
-						icoFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), "FLEP.ico");
+						icoFilePath = Path.Combine(DefaultPaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), "FLEP.ico");
 					else
-						icoFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
+						icoFilePath = Path.Combine(DefaultPaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
 				}
 				else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
-					icoFilePath = Path.Combine(PathHelper.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
+					icoFilePath = Path.Combine(DefaultPaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
 
 				ApplyIconToExe(icoFilePath);
 			}

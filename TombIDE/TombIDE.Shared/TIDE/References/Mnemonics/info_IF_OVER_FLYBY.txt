@@ -1,3 +1,0 @@
-Used in Image= command.
-This flag works only with pop up images.
-By default when a flyby sequence begins the further pop up image will be hidden, like other special objects (keypad, detector or picked up items), but if you want have a pop up image showed over a flyby sequence you can add this flag to ImageFlags field.

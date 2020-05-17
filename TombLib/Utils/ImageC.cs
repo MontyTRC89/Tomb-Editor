@@ -386,10 +386,10 @@ namespace TombLib.Utils
             new FileFormat("Portable Network Graphics", "png"),
             new FileFormat("Truevision Targa", "tga"),
             new FileFormat("Windows Bitmap", "bmp", "dib"),
-            new FileFormat("Jpeg Image (Not recommended)", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
-            new FileFormat("Graphics Interchange Format (Not recommended)", "gif"),
+            new FileFormat("Jpeg Image", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
+            new FileFormat("Graphics Interchange Format", "gif"),
             new FileFormat("Photoshop File", "psd"),
-            new FileFormat("Windows Meta File (Not recommended)", "wmf", "emf")
+            new FileFormat("Windows Meta File", "wmf", "emf")
         };
 
         public static IReadOnlyList<FileFormat> SaveFileFileExtensions { get; } = new List<FileFormat>()
@@ -397,7 +397,7 @@ namespace TombLib.Utils
             new FileFormat("Portable Network Graphics", "png"),
             new FileFormat("Windows Bitmap", "bmp", "dib"),
             new FileFormat("Jpeg Image", "jpg", "jpeg", "jpe", "jif", "jfif", "jfi"),
-            new FileFormat("Graphics Interchange Format (Not recommended)", "gif")
+            new FileFormat("Graphics Interchange Format", "gif")
         };
 
         private static ImageC FromSystemDrawingBitmapMatchingPixelFormat(Bitmap bitmap)

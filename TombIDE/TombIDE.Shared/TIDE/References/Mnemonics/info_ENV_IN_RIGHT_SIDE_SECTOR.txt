@@ -1,2 +1,0 @@
-This condition work in similar way of ENV_IN_LEFT_SIDE_SECTOR condition but in this case it works for right side.
-Read the description of ENV_IN_LEFT_SIDE_SECTOR constant to understand the logical of this condition.

@@ -343,7 +343,7 @@ namespace WadTool
 
                 using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                 {
-                    form.AddPreset(IOSettingsPresets.GeometrySettingsPresets);
+                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return;
 
@@ -831,7 +831,7 @@ namespace WadTool
             // Import the model
             try
             {
-                var settings = new IOGeometrySettings() { ImportAnimations = true, ImportGeometry = false };
+                var settings = new IOGeometrySettings() { ProcessAnimations = true, ProcessGeometry = false };
                 using (var form = new GeometryIOSettingsDialog(settings))
                 {
                     form.AddPreset(IOSettingsPresets.AnimationSettingsPresets);

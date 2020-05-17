@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Text;
+using System.IO.Compression;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -17,10 +17,10 @@ namespace TombIDE.ScriptEditor.Forms
 
 	internal enum ReferenceType
 	{
-		OCB,
+		OCBs,
 		OLDCommands,
 		NEWCommands,
-		Other
+		Mnemonics
 	}
 
 	internal partial class FormMnemonicInfo : DarkForm
@@ -111,6 +111,7 @@ namespace TombIDE.ScriptEditor.Forms
 
 			RichTextBox textBox = new RichTextBox
 			{
+				Text = GetFlagDescription(flag.TrimEnd('='), type),
 				ForeColor = Color.Gainsboro,
 				BackColor = Color.FromArgb(48, 48, 48),
 				Font = new Font("Microsoft Sans Serif", 12f),
@@ -118,25 +119,6 @@ namespace TombIDE.ScriptEditor.Forms
 				Dock = DockStyle.Fill,
 				ReadOnly = true
 			};
-
-			switch (type)
-			{
-				case ReferenceType.OCB:
-					textBox.Text = GetOCBDescription(flag);
-					break;
-
-				case ReferenceType.OLDCommands:
-					textBox.Text = GetCommandDescription(flag.TrimEnd('='), type);
-					break;
-
-				case ReferenceType.NEWCommands:
-					textBox.Text = GetCommandDescription(flag.TrimEnd('='), type);
-					break;
-
-				default:
-					textBox.Text = GetFlagDescription(flag);
-					break;
-			}
 
 			newTabPage.Controls.Add(textBox);
 			tabControl.TabPages.Add(newTabPage);
@@ -157,32 +139,17 @@ namespace TombIDE.ScriptEditor.Forms
 				Hide();
 		}
 
-		private string GetCommandDescription(string flag, ReferenceType type)
+		private string GetFlagDescription(string flag, ReferenceType type)
 		{
 			string result = string.Empty;
 
 			try
 			{
-				string filePath = Path.Combine(PathHelper.GetMnemonicDefinitionsPath(), "info_" + flag + ".txt");
+				result = GetDescriptionFromRDDA(flag, type);
 
-				switch (type)
-				{
-					case ReferenceType.OLDCommands:
-						filePath = Path.Combine(PathHelper.GetOLDCommandDefinitionsPath(), "info_" + flag + ".txt");
-						break;
+				if (string.IsNullOrEmpty(result) && type == ReferenceType.Mnemonics)
+					result = GetDescriptionFromPlugin(flag);
 
-					case ReferenceType.NEWCommands:
-						filePath = Path.Combine(PathHelper.GetNEWCommandDefinitionsPath(), "info_" + flag + ".txt");
-						break;
-
-					default:
-						return null;
-				}
-
-				if (File.Exists(filePath))
-					result = File.ReadAllText(filePath, Encoding.GetEncoding(1252));
-
-				// Fix Nickelony's persistent problems with line endings
 				if (!string.IsNullOrEmpty(result))
 					result = Regex.Replace(result, @"\r\n?|\n", "\n");
 			}
@@ -194,55 +161,41 @@ namespace TombIDE.ScriptEditor.Forms
 			return result;
 		}
 
-		private string GetFlagDescription(string flag)
+		private string GetDescriptionFromRDDA(string flag, ReferenceType type)
 		{
-			string result = string.Empty;
+			string archivePath = Path.Combine(DefaultPaths.GetReferenceDescriptionsPath(), GetRDDAFileName(type));
+			string flagDescriptionFileName = "info_" + flag.TrimStart('_').Replace(" ", "_").Replace("/", string.Empty) + ".txt";
 
-			try
-			{
-				string mnemonicPath = Path.Combine(PathHelper.GetMnemonicDefinitionsPath(), "info_" + flag + ".txt");
+			using (FileStream file = File.OpenRead(archivePath))
+			using (ZipArchive archive = new ZipArchive(file))
+				foreach (ZipArchiveEntry entry in archive.Entries)
+					if (entry.Name.Equals(flagDescriptionFileName, StringComparison.OrdinalIgnoreCase))
+						using (Stream stream = entry.Open())
+						using (StreamReader reader = new StreamReader(stream))
+							return reader.ReadToEnd();
 
-				if (File.Exists(mnemonicPath))
-					result = File.ReadAllText(mnemonicPath, Encoding.GetEncoding(1252));
-				else
-					foreach (PluginMnemonic mnemonic in ScriptKeywords.PluginMnemonics) // Search for a definition in the plugin mnemonics list
-						if (mnemonic.FlagName == flag)
-							result = mnemonic.Description;
-
-				// Fix Nickelony's persistent problems with line endings
-				if (!string.IsNullOrEmpty(result))
-					result = Regex.Replace(result, @"\r\n?|\n", "\n");
-			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-
-			return result;
+			return string.Empty;
 		}
 
-		private string GetOCBDescription(string flag)
+		private string GetDescriptionFromPlugin(string flag)
 		{
-			string result = string.Empty;
+			foreach (PluginMnemonic mnemonic in ScriptKeywords.PluginMnemonics) // Search for a definition in the plugin mnemonics list
+				if (mnemonic.FlagName.Equals(flag, StringComparison.OrdinalIgnoreCase))
+					return mnemonic.Description;
 
-			try
+			return string.Empty;
+		}
+
+		private string GetRDDAFileName(ReferenceType type)
+		{
+			switch (type)
 			{
-				string ocbPath = Path.Combine(PathHelper.GetOCBDefinitionsPath(),
-					"info_" + flag.TrimStart('_').Replace(" ", "_").Replace("/", string.Empty) + ".txt");
-
-				if (File.Exists(ocbPath))
-					result = File.ReadAllText(ocbPath, Encoding.GetEncoding(1252));
-
-				// Fix Nickelony's persistent problems with line endings
-				if (!string.IsNullOrEmpty(result))
-					result = Regex.Replace(result, @"\r\n?|\n", "\n");
+				case ReferenceType.Mnemonics: return "Mnemonic Constants.rdda";
+				case ReferenceType.OLDCommands: return "OLD Commands.rdda";
+				case ReferenceType.NEWCommands: return "NEW Commands.rdda";
+				case ReferenceType.OCBs: return "OCBs.rdda";
+				default: return string.Empty;
 			}
-			catch (Exception ex)
-			{
-				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-
-			return result;
 		}
 
 		private void HandleMiddleMouseTabClosing(MouseEventArgs e)

@@ -1,2 +1,0 @@
-Used in StandBy command.
-This settings will quit stand-by mode when lara will be hurt by some enemies or traps.

@@ -1,3 +1,0 @@
-Used in Parameters=PARAM_MOVE_ITEM script command
-With this flag you replace the given value in IndexItem field with the index of current enemy set as leading actor.
-This is an interesting way to use over and over the same parameter=PARAM_MOVE_ITEM to do move different enemies. Just you set as leading actor a different enemy and you can use again the same PARAM_MOVE_ITEM to move also this new enemy.

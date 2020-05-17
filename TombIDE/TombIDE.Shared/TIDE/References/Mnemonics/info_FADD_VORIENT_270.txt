@@ -1,3 +1,0 @@
-Used in AddEffect command.
-Change vertical orienting by 270 degrees of moveable in temporary way before apply the compute of DispX, DispY, DispZ.
-See also the description of FADD_VORIENT_90 flag to understand the particular situation when you should use these flags.

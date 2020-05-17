@@ -1,2 +1,0 @@
-This flag will be used only for ADD_SMOKE type effect.
-There are two different smoke emitters: the default is a common smoke will go up and disappear in fast time, while other is the exahust smoke you see also in jeep or sidecar. If you want use exhaust smoke set this flag, while you want a more traditional smoke don'use this flag.

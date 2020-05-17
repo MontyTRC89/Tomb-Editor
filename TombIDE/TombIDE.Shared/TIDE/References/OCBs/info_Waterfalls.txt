@@ -1,5 +1,0 @@
-Enter 668 to can antitrigger it. (You must also set [Invisible] button to get trigger/antitrigger for waterfall)
-
-Other valid value is "2" used to get slow down the start effect. It has been used in level "The Tomb of Semerkhet" to simulate the yellow laser ray.
-Also value  777 is used in the last revelation.
-

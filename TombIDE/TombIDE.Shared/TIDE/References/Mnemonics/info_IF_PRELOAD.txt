@@ -1,7 +1,0 @@
-Used in Image= command.
-By default the image will be loaded from disk in same moment it should be drawn on screen.
-This operation requires sometimes some instant and the game remains froze for that short period.
-To avoid this stop you can force trng to preload the image while it is loading other data of current level (when you see the loading bar on screen)
-In this way the image will be already in RAM memory and it will be displayed immediatly.
-Remark: since the bmp images could be very heavy (one MB or more) it's advisable don't exagerate with the number of preloaded images for same level. I suggest to remain in the complessive limit of 15 Mb of preloaded images in same level.
-Differently the size of images preloaded in different levels is not cumulative since trng will discard them when a level has been discarded, of course.

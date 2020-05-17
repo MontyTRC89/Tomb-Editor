@@ -1,3 +1,0 @@
-Stop and go mode is similar to yo yo mode, but in this case the elevator stop and stay for some second (2 for elevator door less, 3 seconds for elevator with doors) in each floor.
-Differently by yo yo mode, using stop and go mode you can place the doors (multi or single) and you can set a various number of floors.
-Also stop and go mode may heart lara (like all elevators)

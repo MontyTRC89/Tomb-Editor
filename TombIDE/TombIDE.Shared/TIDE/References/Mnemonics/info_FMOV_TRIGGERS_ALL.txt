@@ -1,1 +1,0 @@
-Enable all common triggers that item meets in its path. The "common" triggers are the triggers enabled by Lara. You can use this flag to do work this item like the Mechanical Scarab to enable some trap.

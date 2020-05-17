@@ -1,9 +1,0 @@
-0 - 128 = Total number of scarab you want
-1000 += Scarab appear from the floor
-2000 += Scarab appear from the ceiling
-4000 += Scarab slow release followed by a gush
-
-Remarks:
-- To clear all active scarabs, use a Flipeffect trigger with a value of 31.
-- The beetle swarm was used in conjunction with either PUZZLE_ITEM12 or PICKUP_ITEM1, both of which are scarabs that attach to the wall and require a crowbar to pick off. The swarm of beetles sometimes shoots out of the "hole" behind the wall scarab. A special texture tile is used to create the illusion that they come from the hole in the wall. To do this you simply designate the trigger for PUZZLE_ITEM12 or PICKUP_ITEM1 as a key trigger (and type in an OCB setting of 2 to position it on the wall in-game), then trigger the LITTLE_BEETLE to the same square. (Raise LITTLE_BEETLE up to the height of the "hole") Make sure you have the correct settings in the OCB menu for the LITTLE_BEETLE and that you have left a crowbar somewhere as a pick up!
-

@@ -1,2 +1,0 @@
-Used in Customize=CUST_HARPOON command.
-Since harpoon weapon uses the slot of crossbow,  by default the harpoon has three different ammo types (normal, poison, explosive). If you wish having the harpoon gun classic you can use this flag to have a single type of ammo in inventory for this weapon.

@@ -1,3 +1,0 @@
-Used in SavegamePanel= script command.
-In this layout the image is in top-right corner, there is no info frame and the savegame list will be in bottom half of screen.
-Remark: since in this layout the top-left corner will reamain empty you could insert in this space a logo of your adventure drawing it directly in background image.

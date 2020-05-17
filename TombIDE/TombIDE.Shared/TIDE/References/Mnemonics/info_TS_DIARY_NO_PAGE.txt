@@ -1,2 +1,0 @@
-Used with Customize=CUST_SFX command.
-This sound will be played when the user tries to change page of the Diary but there is no more pages in that direction (next or previous)

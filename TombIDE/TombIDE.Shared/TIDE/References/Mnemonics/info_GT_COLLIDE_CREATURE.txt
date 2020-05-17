@@ -1,3 +1,0 @@
-This global trigger works like GT_COLLIDE_SLOT but in this case the condition will be true for each moveable that is a "creature" type.
-A creature is a moveable following AI rules, it's able to move byself.
-Remark: this global trigger will ignore the value typed in Parameter field.

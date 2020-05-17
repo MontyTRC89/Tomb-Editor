@@ -29,7 +29,7 @@ namespace TombIDE.ProjectMaster
 			prj2FileWatcher.Path = _ide.Project.LevelsPath;
 			levelFolderWatcher.Path = _ide.Project.LevelsPath;
 
-			string pluginsFolderPath = PathHelper.GetTRNGPluginsPath();
+			string pluginsFolderPath = DefaultPaths.GetTRNGPluginsPath();
 
 			if (!Directory.Exists(pluginsFolderPath))
 				Directory.CreateDirectory(pluginsFolderPath);
@@ -185,7 +185,7 @@ namespace TombIDE.ProjectMaster
 		/// </summary>
 		private void LookForUndefinedPlugins()
 		{
-			foreach (string directory in Directory.GetDirectories(PathHelper.GetTRNGPluginsPath()))
+			foreach (string directory in Directory.GetDirectories(DefaultPaths.GetTRNGPluginsPath()))
 			{
 				if (!IsValidPluginFolder(directory))
 					continue;
@@ -235,7 +235,7 @@ namespace TombIDE.ProjectMaster
 
 		private void HandleScriptReferenceFiles()
 		{
-			string[] referenceFiles = Directory.GetFiles(PathHelper.GetInternalNGCPath(), "plugin_*.script", SearchOption.TopDirectoryOnly);
+			string[] referenceFiles = Directory.GetFiles(DefaultPaths.GetInternalNGCPath(), "plugin_*.script", SearchOption.TopDirectoryOnly);
 
 			// Delete all .script files from the internal /NGC/ folder
 			foreach (string file in referenceFiles)
@@ -251,7 +251,7 @@ namespace TombIDE.ProjectMaster
 
 				if (File.Exists(scriptFilePath))
 				{
-					string destPath = Path.Combine(PathHelper.GetInternalNGCPath(), Path.GetFileName(scriptFilePath));
+					string destPath = Path.Combine(DefaultPaths.GetInternalNGCPath(), Path.GetFileName(scriptFilePath));
 					File.Copy(scriptFilePath, destPath, true);
 				}
 			}

@@ -1,1 +1,0 @@
-Lara damaged only while her feet touch the floor of current room. To use for simulation of electric floor or very hot floor.

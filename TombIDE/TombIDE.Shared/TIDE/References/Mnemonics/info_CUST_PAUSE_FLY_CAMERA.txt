@@ -1,9 +1,0 @@
-Used to allow at player to stop temporary a flyby sequence keeping down the wished key.
-
-Syntax: Customize=CUST_PAUSE_FLY_CAMERA, ENABLED/DISABLED, KeyBoardScanCode
-
-About KeyBoardScancode value it will be the code of keystroke to use to freeze  a flyby sequence. You find the list of scan codes in "Reference" panel of NG_Center, in the section named "KEYBOARD SCANCODES list".
-
-If you type IGNORE in this field the default value will be 25 (KeyP)
-
-Remark: it's necessary keep down continuosly the key to freeze the flyby camera.

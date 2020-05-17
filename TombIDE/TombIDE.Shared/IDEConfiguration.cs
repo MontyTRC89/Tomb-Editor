@@ -35,6 +35,10 @@ namespace TombIDE.Shared
 
 		/* ScriptEditor */
 
+		public bool UseNewIncludeMethod { get; set; } = true;
+		public bool ShowCompilerLogsAfterBuild { get; set; } = true;
+		public bool ReindentOnSave { get; set; } = false;
+
 		public bool View_ShowObjBrowser { get; set; } = true;
 		public bool View_ShowFileList { get; set; } = true;
 		public bool View_ShowInfoBox { get; set; } = true;
@@ -42,14 +46,12 @@ namespace TombIDE.Shared
 		public bool View_ShowStatusStrip { get; set; } = true;
 		public bool View_SwapPanels { get; set; } = false;
 
-		public bool Tidy_ReindentOnSave { get; set; } = false;
-
 		public bool InfoBox_AlwaysOnTop { get; set; } = true;
 		public bool InfoBox_CloseTabsOnClose { get; set; } = false;
 
 		public static string GetDefaultPath()
 		{
-			return Path.Combine(PathHelper.GetConfigsPath(), "TombIDEConfiguration.xml");
+			return Path.Combine(DefaultPaths.GetConfigsPath(), "TombIDEConfiguration.xml");
 		}
 
 		public void Save(Stream stream)
@@ -66,8 +68,8 @@ namespace TombIDE.Shared
 			}
 			catch (IOException)
 			{
-				if (!Directory.Exists(PathHelper.GetConfigsPath()))
-					Directory.CreateDirectory(PathHelper.GetConfigsPath());
+				if (!Directory.Exists(DefaultPaths.GetConfigsPath()))
+					Directory.CreateDirectory(DefaultPaths.GetConfigsPath());
 
 				using (XmlWriter writer = XmlWriter.Create(path))
 					new XmlSerializer(typeof(IDEConfiguration)).Serialize(writer, new IDEConfiguration());
@@ -96,8 +98,8 @@ namespace TombIDE.Shared
 			}
 			catch (IOException)
 			{
-				if (!Directory.Exists(PathHelper.GetConfigsPath()))
-					Directory.CreateDirectory(PathHelper.GetConfigsPath());
+				if (!Directory.Exists(DefaultPaths.GetConfigsPath()))
+					Directory.CreateDirectory(DefaultPaths.GetConfigsPath());
 
 				using (XmlWriter writer = XmlWriter.Create(filePath))
 					new XmlSerializer(typeof(IDEConfiguration)).Serialize(writer, new IDEConfiguration());

@@ -1,2 +1,0 @@
-If you want have a progress bar on screen to signal the level of current damage in current room it's necessary to use always this flag.
-With indirect bar the vitality of lara reamins untouched until the indirect bar become empty (or full if you set flag DMG_INCREASE_BAR)

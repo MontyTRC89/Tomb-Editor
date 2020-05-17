@@ -1,6 +1,0 @@
-Used in Animation command.
-This fan flag could be used when your custom animation move lara between two different places, like from "ground" to "water", or vice-versa.
-You have to type the new place (where lara should be at end of your animation) in Extra field.
-You can type one PLACE_ value in extra field to set the new environment of Lara.
-
-Remark: when you create an animation to move lara between different places it's very probable you need to add a standard [SetPosition] command to move lara in new position but also to adjust the different pivot position used in according with ground, underwater, floating ect.

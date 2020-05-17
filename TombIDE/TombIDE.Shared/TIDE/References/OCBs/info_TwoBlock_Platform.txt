@@ -1,5 +1,0 @@
-0 - 15 = Movement speed 
-16 * X +=  where X is number of clicks for elevation.
-
-Set trigger type to "Dummy".
-

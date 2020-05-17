@@ -1,1 +1,0 @@
-Lara is (almost) exaclty at center of current sector. This is the position for lara when she is able to jump over a rope, for example.

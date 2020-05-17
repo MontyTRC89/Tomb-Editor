@@ -1,5 +1,0 @@
-Used into Customize=CUST_BACKGROUND command
-This flag works in according with the BKGDT_LOADING_LEVEL type.
-If you wish that the image will be showed at least for a given time, you can add the BKGDF_MINIMAL_LOADING_TIME flag, and set in Parameter field the number of seconds in that the image will be (at least) showed.
-Note: in the case the loading of next level will require an higher time to be loaded you cann't reduce this loading time with this setting, of course.
-You should use this flag only to be sure that the player was able to see the image you used for loading screen, for example, because there are some texts you wish he was able to read before next level began.

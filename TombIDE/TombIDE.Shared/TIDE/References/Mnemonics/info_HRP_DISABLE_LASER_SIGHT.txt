@@ -1,2 +1,0 @@
-Used in Customize=CUST_HARPOON command.
-If you want forbid the usage of laser sight with the harpon gun, you can add this flag.

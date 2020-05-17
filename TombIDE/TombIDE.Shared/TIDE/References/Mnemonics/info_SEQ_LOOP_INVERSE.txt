@@ -1,8 +1,0 @@
-This flag works only if you set also SEQ_LOOP flag.
-While the single SEQ_LOOP flag set an infinite loop with this sequence (supposing 4 textures from 0 to 3):
-
-0 1 2 3 0 1 2 3 0 1 2 3 ....
-
-When you set also the SEQ_LOOP_INVERSE flag, the sequence will be:
-
-0 1 2 3 2 1 0 1 2 3 2 1 0 ..

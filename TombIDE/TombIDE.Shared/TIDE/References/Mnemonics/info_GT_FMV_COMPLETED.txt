@@ -1,5 +1,0 @@
-Used in GlobalTrigger= command.
-This global trigger will be engaged when the FMV with number typed in Parameter field has been just completed.
-This global trigger is very useful when you wish change something in game only at end of a video-cutscene (FMV).
-Usally you'll use a FMV to show some fact or actions about lara and for this reason it's probably you wish that, at end of movie, something in game was changed: like loading of new level, or enabling a flipmap or moving lara in other side of level.
-In all above cirustances you should use this global trigger to be sure that the triggers (stored in a triggergroup called by this GlobalTrigger command) will be performed excactly at first frame following the ending of given FMV.
