@@ -9,7 +9,7 @@ namespace WadTool
 
     public class Configuration : ConfigurationBase
     {
-        public override string ConfigName { get { return "Configs\\WadToolConfiguration.xml"; } }
+        public override string ConfigName { get { return "WadToolConfiguration.xml"; } }
 
         public bool Tool_MakeEmptyWadAtStartup { get; set; } = false;
         public string Tool_ReferenceProject { get; set; } = string.Empty;

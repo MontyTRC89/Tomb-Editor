@@ -132,8 +132,8 @@ namespace TombLib
             // This code must remain here so users won't lose their settings on drop-in replacement.
 
             var startDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var oldPath  = Path.Combine(startDir, Path.GetFileName(ConfigName));
-            var newPath  = Path.Combine(startDir, ConfigName);
+            var oldPath  = Path.Combine(startDir, ConfigName);
+            var newPath  = Path.Combine(startDir, "Configs", ConfigName);
 
             if (!Directory.Exists(Path.GetDirectoryName(newPath)))
                 Directory.CreateDirectory(Path.GetDirectoryName(newPath));
