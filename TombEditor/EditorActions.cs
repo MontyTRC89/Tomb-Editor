@@ -4130,7 +4130,7 @@ namespace TombEditor
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Title = "Export current room";
-                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter();
+                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
                 saveFileDialog.AddExtension = true;
                 saveFileDialog.DefaultExt = "dae";
                 saveFileDialog.FileName = _editor.SelectedRoom.Name;
@@ -4143,9 +4143,9 @@ namespace TombEditor
                         string resultingExtension = Path.GetExtension(saveFileDialog.FileName).ToLowerInvariant();
 
                         if (resultingExtension.Equals(".mqo"))
-                            settingsDialog.SelectPreset("Metasequoia MQO scale 1");
-                        else if (resultingExtension.Equals(".obj"))
-                            settingsDialog.SelectPreset("Blender OBJ");
+                            settingsDialog.SelectPreset("Scale 1024");
+                        else
+                            settingsDialog.SelectPreset("Scale 128 (for Blender)");
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
