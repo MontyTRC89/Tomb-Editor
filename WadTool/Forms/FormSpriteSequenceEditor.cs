@@ -115,7 +115,7 @@ namespace WadTool
         {
             using (var fileDialog = new SaveFileDialog())
             {
-                fileDialog.Filter = ImageC.SaveFileFileExtensions.GetFilter();
+                fileDialog.Filter = ImageC.SaveFileFileExtensions.GetFilter(true);
                 if (!string.IsNullOrWhiteSpace(_currentPath))
                     try
                     {

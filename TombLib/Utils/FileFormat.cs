@@ -20,24 +20,32 @@ namespace TombLib.Utils
 
     public static class FileFormatFunctions
     {
-        public static string GetFilter(this IEnumerable<FileFormat> fileFormats)
+        public static string GetFilter(this IEnumerable<FileFormat> fileFormats, bool noGeneric = false)
         {
             // Early exit if there are no extensions
             const string allFiles = "All files (*.*)|*.*";
             if (fileFormats.FirstOrDefault().Description == null)
                 return allFiles;
 
-            // Enumerate all supported formats
-            string result = "Any supported format|";
-            foreach (FileFormat fileFormat in fileFormats)
-                foreach (string extension in fileFormat.Extensions)
-                    result += "*." + extension + ";";
-            result = result.Substring(0, result.Length - 1);
+            var result = string.Empty;
+
+            if (!noGeneric)
+            {
+                // Enumerate all supported formats
+                result += "Any supported format|";
+                foreach (FileFormat fileFormat in fileFormats)
+                    foreach (string extension in fileFormat.Extensions)
+                        result += "*." + extension + ";";
+                result = result.Substring(0, result.Length - 1) + "|";
+            }
 
             // Add every format type separately
-            foreach (FileFormat fileFormat in fileFormats)
+            var formatList = fileFormats.ToList();
+            for (int i = 0; i < formatList.Count; i++)
             {
-                result += "|" + fileFormat.Description + " (";
+                if (i > 0) result += "|";
+                var fileFormat = formatList[i];
+                result += fileFormat.Description + " (";
                 foreach (string extension in fileFormat.Extensions)
                     result += "*." + extension + ", ";
                 result = result.Substring(0, result.Length - 2) + ")";
@@ -49,7 +57,7 @@ namespace TombLib.Utils
             }
 
             // Add all files
-            result += "|" + allFiles;
+            if (!noGeneric) result += "|" + allFiles;
             return result;
         }
 

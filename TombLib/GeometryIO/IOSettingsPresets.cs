@@ -12,10 +12,9 @@ namespace TombLib.GeometryIO
         {
             GeometryExportSettingsPresets = new List<IOGeometrySettingsPreset>();
 
-            // Metasequoia
             GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Blender OBJ",
+                Name = "Scale 128 (for Blender)",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
@@ -26,7 +25,7 @@ namespace TombLib.GeometryIO
 
             GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Metasequoia MQO scale 1",
+                Name = "Scale 1",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
@@ -37,7 +36,7 @@ namespace TombLib.GeometryIO
 
             GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Metasequoia MQO scale 1024",
+                Name = "Scale 1024",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
