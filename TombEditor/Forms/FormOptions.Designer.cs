@@ -101,6 +101,8 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.tabSubPanel2 = new DarkUI.Controls.DarkPanel();
             this.panel1 = new DarkUI.Controls.DarkPanel();
+            this.darkGroupBox11 = new DarkUI.Controls.DarkGroupBox();
+            this.darkCheckBox38 = new DarkUI.Controls.DarkCheckBox();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.darkNumericUpDown1 = new DarkUI.Controls.DarkNumericUpDown();
             this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
@@ -238,8 +240,6 @@
             this.darkNumericUpDown20 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
-            this.darkGroupBox11 = new DarkUI.Controls.DarkGroupBox();
-            this.darkCheckBox38 = new DarkUI.Controls.DarkCheckBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -250,6 +250,7 @@
             this.tabPage2.SuspendLayout();
             this.tabSubPanel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.darkGroupBox11.SuspendLayout();
             this.darkGroupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown1)).BeginInit();
             this.darkGroupBox10.SuspendLayout();
@@ -308,7 +309,6 @@
             this.darkGroupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown20)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown21)).BeginInit();
-            this.darkGroupBox11.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabbedContainer
@@ -321,6 +321,7 @@
             this.tabbedContainer.Controls.Add(this.tabPage8);
             this.tabbedContainer.Controls.Add(this.tabPage3);
             this.tabbedContainer.Controls.Add(this.tabPage4);
+            this.tabbedContainer.Size = new System.Drawing.Size(394, 537);
             // 
             // tabPage6
             // 
@@ -673,7 +674,7 @@
             this.darkLabel58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel58.Location = new System.Drawing.Point(12, 611);
             this.darkLabel58.Name = "darkLabel58";
-            this.darkLabel58.Size = new System.Drawing.Size(69, 13);
+            this.darkLabel58.Size = new System.Drawing.Size(70, 13);
             this.darkLabel58.TabIndex = 60;
             this.darkLabel58.Text = "Beetle mark:";
             // 
@@ -733,7 +734,7 @@
             this.darkLabel55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel55.Location = new System.Drawing.Point(12, 524);
             this.darkLabel55.Name = "darkLabel55";
-            this.darkLabel55.Size = new System.Drawing.Size(28, 13);
+            this.darkLabel55.Size = new System.Drawing.Size(29, 13);
             this.darkLabel55.TabIndex = 54;
             this.darkLabel55.Text = "Box:";
             // 
@@ -873,7 +874,7 @@
             this.darkLabel48.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel48.Location = new System.Drawing.Point(12, 321);
             this.darkLabel48.Name = "darkLabel48";
-            this.darkLabel48.Size = new System.Drawing.Size(68, 13);
+            this.darkLabel48.Size = new System.Drawing.Size(69, 13);
             this.darkLabel48.TabIndex = 40;
             this.darkLabel48.Text = "Border wall:";
             // 
@@ -1113,7 +1114,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(386, 484);
+            this.tabPage2.Size = new System.Drawing.Size(386, 511);
             this.tabPage2.TabIndex = 17;
             this.tabPage2.Text = "General";
             // 
@@ -1124,7 +1125,7 @@
             this.tabSubPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel2.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel2.Name = "tabSubPanel2";
-            this.tabSubPanel2.Size = new System.Drawing.Size(380, 478);
+            this.tabSubPanel2.Size = new System.Drawing.Size(380, 505);
             this.tabSubPanel2.TabIndex = 2;
             // 
             // panel1
@@ -1139,8 +1140,29 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel1.Size = new System.Drawing.Size(363, 531);
+            this.panel1.Size = new System.Drawing.Size(363, 514);
             this.panel1.TabIndex = 9;
+            // 
+            // darkGroupBox11
+            // 
+            this.darkGroupBox11.Controls.Add(this.darkCheckBox38);
+            this.darkGroupBox11.Dock = System.Windows.Forms.DockStyle.Top;
+            this.darkGroupBox11.Location = new System.Drawing.Point(3, 467);
+            this.darkGroupBox11.Name = "darkGroupBox11";
+            this.darkGroupBox11.Size = new System.Drawing.Size(357, 44);
+            this.darkGroupBox11.TabIndex = 9;
+            this.darkGroupBox11.TabStop = false;
+            this.darkGroupBox11.Text = "Misc";
+            // 
+            // darkCheckBox38
+            // 
+            this.darkCheckBox38.AutoSize = true;
+            this.darkCheckBox38.Location = new System.Drawing.Point(6, 21);
+            this.darkCheckBox38.Name = "darkCheckBox38";
+            this.darkCheckBox38.Size = new System.Drawing.Size(175, 17);
+            this.darkCheckBox38.TabIndex = 2;
+            this.darkCheckBox38.Tag = "Editor_AllowExperimentalFeatures";
+            this.darkCheckBox38.Text = "Enable experimental features";
             // 
             // darkGroupBox1
             // 
@@ -1148,9 +1170,9 @@
             this.darkGroupBox1.Controls.Add(this.cbEnableLogging);
             this.darkGroupBox1.Controls.Add(this.darkLabel1);
             this.darkGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox1.Location = new System.Drawing.Point(3, 397);
+            this.darkGroupBox1.Location = new System.Drawing.Point(3, 391);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(357, 77);
+            this.darkGroupBox1.Size = new System.Drawing.Size(357, 76);
             this.darkGroupBox1.TabIndex = 6;
             this.darkGroupBox1.TabStop = false;
             this.darkGroupBox1.Text = "Logging";
@@ -1198,9 +1220,9 @@
             this.darkGroupBox10.Controls.Add(this.darkCheckBox22);
             this.darkGroupBox10.Controls.Add(this.darkCheckBox2);
             this.darkGroupBox10.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox10.Location = new System.Drawing.Point(3, 272);
+            this.darkGroupBox10.Location = new System.Drawing.Point(3, 267);
             this.darkGroupBox10.Name = "darkGroupBox10";
-            this.darkGroupBox10.Size = new System.Drawing.Size(357, 125);
+            this.darkGroupBox10.Size = new System.Drawing.Size(357, 124);
             this.darkGroupBox10.TabIndex = 4;
             this.darkGroupBox10.TabStop = false;
             this.darkGroupBox10.Text = "Defaults";
@@ -1278,7 +1300,7 @@
             this.darkCheckBox2.AutoSize = true;
             this.darkCheckBox2.Location = new System.Drawing.Point(6, 79);
             this.darkCheckBox2.Name = "darkCheckBox2";
-            this.darkCheckBox2.Size = new System.Drawing.Size(340, 17);
+            this.darkCheckBox2.Size = new System.Drawing.Size(339, 17);
             this.darkCheckBox2.TabIndex = 6;
             this.darkCheckBox2.Tag = "Editor_RespectFlybyPatchOnPrjImport";
             this.darkCheckBox2.Text = "Respect T4Larson\'s mousepatch flyby handling on PRJ import";
@@ -1291,9 +1313,9 @@
             this.darkGroupBox2.Controls.Add(this.darkLabel67);
             this.darkGroupBox2.Controls.Add(this.darkCheckBox1);
             this.darkGroupBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox2.Location = new System.Drawing.Point(3, 153);
+            this.darkGroupBox2.Location = new System.Drawing.Point(3, 149);
             this.darkGroupBox2.Name = "darkGroupBox2";
-            this.darkGroupBox2.Size = new System.Drawing.Size(357, 119);
+            this.darkGroupBox2.Size = new System.Drawing.Size(357, 118);
             this.darkGroupBox2.TabIndex = 7;
             this.darkGroupBox2.TabStop = false;
             this.darkGroupBox2.Text = "System";
@@ -1380,7 +1402,7 @@
             this.darkGroupBox7.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox7.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox7.Name = "darkGroupBox7";
-            this.darkGroupBox7.Size = new System.Drawing.Size(357, 153);
+            this.darkGroupBox7.Size = new System.Drawing.Size(357, 149);
             this.darkGroupBox7.TabIndex = 8;
             this.darkGroupBox7.TabStop = false;
             this.darkGroupBox7.Text = "Autosave";
@@ -1388,7 +1410,7 @@
             // darkCheckBox13
             // 
             this.darkCheckBox13.AutoSize = true;
-            this.darkCheckBox13.Location = new System.Drawing.Point(6, 102);
+            this.darkCheckBox13.Location = new System.Drawing.Point(6, 99);
             this.darkCheckBox13.Name = "darkCheckBox13";
             this.darkCheckBox13.Size = new System.Drawing.Size(185, 17);
             this.darkCheckBox13.TabIndex = 12;
@@ -1402,7 +1424,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown38.Location = new System.Drawing.Point(254, 124);
+            this.darkNumericUpDown38.Location = new System.Drawing.Point(254, 121);
             this.darkNumericUpDown38.LoopValues = false;
             this.darkNumericUpDown38.Name = "darkNumericUpDown38";
             this.darkNumericUpDown38.Size = new System.Drawing.Size(64, 22);
@@ -1412,7 +1434,7 @@
             // darkCheckBox12
             // 
             this.darkCheckBox12.AutoSize = true;
-            this.darkCheckBox12.Location = new System.Drawing.Point(6, 125);
+            this.darkCheckBox12.Location = new System.Drawing.Point(6, 122);
             this.darkCheckBox12.Name = "darkCheckBox12";
             this.darkCheckBox12.Size = new System.Drawing.Size(256, 17);
             this.darkCheckBox12.TabIndex = 9;
@@ -1538,7 +1560,7 @@
             this.darkCheckBox8.AutoSize = true;
             this.darkCheckBox8.Location = new System.Drawing.Point(294, 18);
             this.darkCheckBox8.Name = "darkCheckBox8";
-            this.darkCheckBox8.Size = new System.Drawing.Size(49, 17);
+            this.darkCheckBox8.Size = new System.Drawing.Size(50, 17);
             this.darkCheckBox8.TabIndex = 44;
             this.darkCheckBox8.Tag = "Rendering3D_FontIsBold";
             this.darkCheckBox8.Text = "Bold";
@@ -1644,7 +1666,7 @@
             this.cbGeometryLightPreview.AutoSize = true;
             this.cbGeometryLightPreview.Location = new System.Drawing.Point(6, 44);
             this.cbGeometryLightPreview.Name = "cbGeometryLightPreview";
-            this.cbGeometryLightPreview.Size = new System.Drawing.Size(196, 17);
+            this.cbGeometryLightPreview.Size = new System.Drawing.Size(197, 17);
             this.cbGeometryLightPreview.TabIndex = 41;
             this.cbGeometryLightPreview.Tag = "Rendering3D_HighQualityLightPreview";
             this.cbGeometryLightPreview.Text = "Use real Light Quality for preview";
@@ -1799,7 +1821,7 @@
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel14.Location = new System.Drawing.Point(3, 358);
             this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(110, 13);
+            this.darkLabel14.Size = new System.Drawing.Size(111, 13);
             this.darkLabel14.TabIndex = 19;
             this.darkLabel14.Text = "Block outline width:";
             // 
@@ -3058,32 +3080,11 @@
             this.darkNumericUpDown21.TabIndex = 27;
             this.darkNumericUpDown21.Tag = "Rendering3D_NavigationSpeedKeyRotate";
             // 
-            // darkGroupBox11
-            // 
-            this.darkGroupBox11.Controls.Add(this.darkCheckBox38);
-            this.darkGroupBox11.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox11.Location = new System.Drawing.Point(3, 474);
-            this.darkGroupBox11.Name = "darkGroupBox11";
-            this.darkGroupBox11.Size = new System.Drawing.Size(357, 54);
-            this.darkGroupBox11.TabIndex = 9;
-            this.darkGroupBox11.TabStop = false;
-            this.darkGroupBox11.Text = "Misc";
-            // 
-            // darkCheckBox38
-            // 
-            this.darkCheckBox38.AutoSize = true;
-            this.darkCheckBox38.Location = new System.Drawing.Point(6, 21);
-            this.darkCheckBox38.Name = "darkCheckBox38";
-            this.darkCheckBox38.Size = new System.Drawing.Size(175, 17);
-            this.darkCheckBox38.TabIndex = 2;
-            this.darkCheckBox38.Tag = "Editor_AllowExperimentalFeatures";
-            this.darkCheckBox38.Text = "Enable experimental features";
-            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 555);
+            this.ClientSize = new System.Drawing.Size(614, 582);
             this.Name = "FormOptions";
             this.tabbedContainer.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
@@ -3100,6 +3101,8 @@
             this.tabSubPanel2.ResumeLayout(false);
             this.tabSubPanel2.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.darkGroupBox11.ResumeLayout(false);
+            this.darkGroupBox11.PerformLayout();
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown1)).EndInit();
@@ -3172,8 +3175,6 @@
             this.darkGroupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown20)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown21)).EndInit();
-            this.darkGroupBox11.ResumeLayout(false);
-            this.darkGroupBox11.PerformLayout();
             this.ResumeLayout(false);
 
         }

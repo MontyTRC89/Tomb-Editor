@@ -24,7 +24,7 @@ namespace TombEditor.Forms
 
             InitializeComponent();
             InitializeDialog();
-            this.SetActualSize(630, 540);
+            this.SetActualSize(630, 570);
             this.LockWidth();
         }
 
@@ -42,12 +42,8 @@ namespace TombEditor.Forms
                       cmbRendering3DFont.Items.Add(font.Name); }
                 catch { throw; }
 
-            // Populate versions
-            List<Game> gameList = CompilableVersions;
-            //Remove experimental compilable versions
-            if(!_editor.Configuration.Editor_AllowExperimentalFeatures)
-                gameList.RemoveAll((version) => ExperimentalVersions.Contains(version));
-            cmbGameVersion.Items.AddRange(gameList.Cast<object>().ToArray());
+            // Populate versions and remove experimental compilable versions if necessary
+            cmbGameVersion.Items.AddRange(CompilableVersions(_editor.Configuration.Editor_AllowExperimentalFeatures).Cast<object>().ToArray());
 
             // Populate color scheme presets
             typeof(ColorScheme)

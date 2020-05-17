@@ -33,6 +33,17 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            // Update level-specific UI
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+            {
+                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                    DockText = "Legacy triggers";
+                else
+                    DockText = "Triggers";
+            }
+
             // Update the trigger control
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
