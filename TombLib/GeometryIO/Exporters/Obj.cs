@@ -68,8 +68,8 @@ namespace TombLib.GeometryIO.Exporters
                     for (int i = 0; i < mesh.Positions.Count; i++)
                     {
                         var position = ApplyAxesTransforms(mesh.Positions[i]);
+                        var colour = ApplyColorTransform(mesh.Colors.Count > i ? mesh.Colors[i] : new Vector4(2)).To3();
 
-                        Vector3 colour = (mesh.Colors.Count > i ? mesh.Colors[i].To3() : Vector3.One);
                         int found = -1;
                         for (int j = 0; j < poscol.Count; j++)
                             if (poscol[j][0] == position && 
@@ -184,7 +184,7 @@ namespace TombLib.GeometryIO.Exporters
                 foreach (var uv in uvs)
                 {
                     writer.WriteLine("vt " + uv.X.ToString(CultureInfo.InvariantCulture) + " " +
-                                             (1.0f - uv.Y).ToString(CultureInfo.InvariantCulture) + " 0.000");
+                                    (1.0f - uv.Y).ToString(CultureInfo.InvariantCulture) + " 0.000");
                 }
                 writer.WriteLine("# " + uvs.Count + " UVs total.\n");
 

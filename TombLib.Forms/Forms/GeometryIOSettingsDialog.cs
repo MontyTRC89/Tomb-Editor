@@ -110,12 +110,10 @@ namespace TombLib.Forms
         {
             groupAnims.Enabled = settings.ProcessAnimations;
             groupAxis.Enabled = settings.ProcessGeometry;
-            groupTextures.Enabled = settings.ProcessGeometry;
+            groupTextures.Enabled = settings.ProcessGeometry && !settings.Export;
             nmScale.Enabled = settings.ProcessGeometry;
             cbImportBakedLight.Enabled = settings.ProcessGeometry;
             cbSortByName.Enabled = !settings.Export;
-            cbPremultiplyUV.Enabled = !settings.Export;
-            cbWrapUV.Enabled = !settings.Export;
 
             cbFlipX.Checked = settings.FlipX;
             cbFlipY.Checked = settings.FlipY;
