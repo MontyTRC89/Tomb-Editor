@@ -71,6 +71,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 			InitializeRenderers();
 
 			BindEventMethods();
+
+			CommentPrefix = ";";
 		}
 
 		private void InitializeBackgroundWorkers()
