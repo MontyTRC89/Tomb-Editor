@@ -59,6 +59,7 @@ namespace TombLib.GeometryIO.Exporters
                 var uvs = new List<Vector2>();
                 var uvIndices = new Dictionary<int, int>();
 
+                // Pack positions and colours
                 int meshCount = 0;
                 foreach (var mesh in model.Meshes)
                 {
@@ -90,6 +91,7 @@ namespace TombLib.GeometryIO.Exporters
                     meshCount += mesh.Positions.Count;
                 }
 
+                // Pack normals
                 meshCount = 0;
                 foreach (var mesh in model.Meshes)
                 {
@@ -118,6 +120,7 @@ namespace TombLib.GeometryIO.Exporters
                     meshCount += mesh.Normals.Count;
                 }
 
+                // Pack UV coords
                 meshCount = 0;
                 foreach (var mesh in model.Meshes)
                 {
@@ -277,10 +280,7 @@ namespace TombLib.GeometryIO.Exporters
                     writer.WriteLine("newmtl " + material.Name);
                     writer.WriteLine("    Ka 1.000000 1.000000 1.000000");
                     writer.WriteLine("    Kd 1.000000 1.000000 1.000000");
-                    writer.WriteLine("    Ks 1.000000 1.000000 1.000000");
-                    writer.WriteLine("    Ke 1.000000 1.000000 1.000000");
                     writer.WriteLine("    Ni 1.000000");
-                    writer.WriteLine("    Ns 10.000000");
                     writer.WriteLine("    d 1.000000");
                     writer.WriteLine("    illum 2");
                     writer.WriteLine("    map_Ka " + material.TexturePath);
