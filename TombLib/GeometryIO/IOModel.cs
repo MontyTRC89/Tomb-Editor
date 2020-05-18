@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
 
@@ -43,7 +44,7 @@ namespace TombLib.GeometryIO
         public IOMaterial GetMaterial(Texture texture, bool blending, int page, bool doubleSided, int shininess)
         {
             foreach (var mat in Materials)
-                if(mat.Page == page)
+                if (mat.Page == page)
                     if (mat.Texture.Equals(texture))
                         if (mat.AdditiveBlending == blending)
                             if (mat.DoubleSided == doubleSided)
@@ -51,5 +52,7 @@ namespace TombLib.GeometryIO
                                     return mat;
             return null;
         }
+
+        public List<IOMaterial> UsedMaterials => Materials.Where(mat => Meshes.Any(m => m.Submeshes.Any(s => s.Key == mat && s.Value.Polygons.Count > 0))).ToList();
     }
 }
