@@ -91,6 +91,13 @@ namespace TombLib.GeometryIO
 
         protected Vector4 ApplyColorTransform(Vector4 color)
         {
+            // Clamp each value separately to prevent overflows which are possible because TE doesn't internally
+            // clamp its vertex lighting to 2.0f.
+
+            color.X = MathC.Clamp(color.X, 0.0f, 2.0f);
+            color.Y = MathC.Clamp(color.Y, 0.0f, 2.0f);
+            color.Z = MathC.Clamp(color.Z, 0.0f, 2.0f);
+            color.W = MathC.Clamp(color.W, 0.0f, 1.0f);
             return new Vector4(color.X / 2.0f, color.Y / 2.0f, color.Z / 2.0f, color.W);
         }
 

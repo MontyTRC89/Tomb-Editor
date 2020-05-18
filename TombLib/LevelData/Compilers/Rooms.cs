@@ -1,19 +1,12 @@
-﻿using Assimp;
-using SharpDX.Toolkit.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using TombLib.GeometryIO;
 using TombLib.Utils;
 using TombLib.Wad;
-using TombLib.Wad.TrLevels;
-using static TombLib.Utils.VectorUtils;
-using BlendMode = TombLib.Utils.BlendMode;
-using Matrix4x4 = System.Numerics.Matrix4x4;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -457,10 +450,10 @@ namespace TombLib.LevelData.Compilers
                         if (!geometry.MeshNameMatchesFilter(mesh.Name))
                             continue;
 
+                        var indexList = new List<int>();
+
                         foreach (var submesh in mesh.Submeshes)
                         {
-                            var indexList = new List<int>();
-
                             for (int j = 0; j < mesh.Vertices.Count; j++)
                             {
                                 // Apply the transform to the vertex
@@ -481,9 +474,14 @@ namespace TombLib.LevelData.Compilers
                                     Attributes = 0
                                 };
 
+                                var existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position);
+
                                 // Pack the light according to chosen lighting model
                                 if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                                {
+
                                     trVertex.Lighting2 = PackLightColor(mesh.Vertices[j].Color, _level.Settings.GameVersion);
+                                }
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
@@ -496,9 +494,6 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
                                 }
-
-                                var existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position &&
-                                                                              v.Lighting2 == trVertex.Lighting2);
 
                                 if (existingIndex == -1)
                                 {
