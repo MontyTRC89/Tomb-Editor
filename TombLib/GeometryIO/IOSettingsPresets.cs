@@ -5,16 +5,16 @@ namespace TombLib.GeometryIO
     public static class IOSettingsPresets
     {
         public static List<IOGeometrySettingsPreset> GeometryImportSettingsPresets { get; private set; }
-        public static List<IOGeometrySettingsPreset> GeometryExportSettingsPresets { get; private set; }
+        public static List<IOGeometrySettingsPreset> RoomExportSettingsPresets { get; private set; }
         public static List<IOGeometrySettingsPreset> AnimationSettingsPresets { get; private set; }
 
         static IOSettingsPresets()
         {
-            GeometryExportSettingsPresets = new List<IOGeometrySettingsPreset>();
+            RoomExportSettingsPresets = new List<IOGeometrySettingsPreset>();
 
-            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Scale 128 (for Blender)",
+                Name = "Downscale by 128 (for Blender)",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
@@ -23,9 +23,9 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Scale 1",
+                Name = "Downscale by 1024",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
@@ -34,9 +34,9 @@ namespace TombLib.GeometryIO
                 }
             });
 
-            GeometryExportSettingsPresets.Add(new IOGeometrySettingsPreset
+            RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Scale 1024",
+                Name = "Original scale",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,

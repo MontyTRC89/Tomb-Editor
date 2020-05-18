@@ -4146,13 +4146,13 @@ namespace TombEditor
                 {
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
                     {
-                        settingsDialog.AddPreset(IOSettingsPresets.GeometryExportSettingsPresets);
+                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
                         string resultingExtension = Path.GetExtension(saveFileDialog.FileName).ToLowerInvariant();
 
                         if (resultingExtension.Equals(".mqo"))
-                            settingsDialog.SelectPreset("Scale 1024");
+                            settingsDialog.SelectPreset("Downscale by 1024");
                         else
-                            settingsDialog.SelectPreset("Scale 128 (for Blender)");
+                            settingsDialog.SelectPreset("Downscale by 128 (for Blender)");
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {
