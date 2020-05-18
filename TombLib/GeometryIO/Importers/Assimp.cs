@@ -157,7 +157,7 @@ namespace TombLib.GeometryIO.Importers
                         // Create colors
                         if (hasColors)
                         {
-                            var color = new Vector4(colors[i].R, colors[i].G, colors[i].B, colors[i].A);
+                            var color = ApplyColorTransform(new Vector4(colors[i].R, colors[i].G, colors[i].B, colors[i].A));
                             newMesh.Colors.Add(color);
                         }
                     }

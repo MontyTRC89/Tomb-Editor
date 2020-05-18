@@ -90,8 +90,23 @@ namespace TombEditor
             Created = created;
             UndoObject = obj;
 
-            Valid = () => UndoObject != null && ((Created && UndoObject.Room != null) ||
-                        (!Created && Room.ExistsInLevel && Room.LocalArea.Width > UndoObject.SectorPosition.X && Room.LocalArea.Height > UndoObject.SectorPosition.Y));
+            Valid = () =>
+            {
+                var result = UndoObject != null && ((Created && UndoObject.Room != null) ||
+                (!Created && Room.ExistsInLevel && Room.LocalArea.Width > UndoObject.SectorPosition.X && Room.LocalArea.Height > UndoObject.SectorPosition.Y));
+
+                if (!result) return result;
+
+                // Special case for imported geometry: in case user deletes model from geometry list, we should prevent it from reappearing on the map.
+
+                if (UndoObject is ImportedGeometryInstance)
+                {
+                    var geo = UndoObject as ImportedGeometryInstance;
+                    if (!Room.Level.Settings.ImportedGeometries.Contains(geo.Model))
+                        return false;
+                }
+                return result;
+            };            
 
             UndoAction = () =>
             {
