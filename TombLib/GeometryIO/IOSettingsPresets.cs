@@ -232,7 +232,7 @@ namespace TombLib.GeometryIO
                 {
                     ProcessAnimations = true,
                     ProcessGeometry = false,
-                    SwapAnimTranslationYZ = true
+                    SwapYZ = true
                 }
             });
 
@@ -243,8 +243,7 @@ namespace TombLib.GeometryIO
                 Settings = new IOGeometrySettings
                 {
                     ProcessAnimations = true,
-                    ProcessGeometry = false,
-                    SwapAnimTranslationXZ = true
+                    ProcessGeometry = false
                 }
             });
         }

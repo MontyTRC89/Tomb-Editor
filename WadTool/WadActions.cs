@@ -835,6 +835,13 @@ namespace WadTool
                 using (var form = new GeometryIOSettingsDialog(settings))
                 {
                     form.AddPreset(IOSettingsPresets.AnimationSettingsPresets);
+                    string resultingExtension = Path.GetExtension(fileName).ToLowerInvariant();
+
+                    if (resultingExtension.Equals(".fbx"))
+                        form.SelectPreset("3dsmax Filmbox (FBX)");
+                    else if (resultingExtension.Equals(".dae"))
+                        form.SelectPreset("3dsmax COLLADA");
+
                     if (form.ShowDialog(owner) != DialogResult.OK)
                         return null;
 
