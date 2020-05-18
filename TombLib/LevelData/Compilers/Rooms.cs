@@ -1,12 +1,19 @@
-﻿using System;
+﻿using Assimp;
+using SharpDX.Toolkit.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using TombLib.GeometryIO;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.TrLevels;
+using static TombLib.Utils.VectorUtils;
+using BlendMode = TombLib.Utils.BlendMode;
+using Matrix4x4 = System.Numerics.Matrix4x4;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -23,24 +30,13 @@ namespace TombLib.LevelData.Compilers
             Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
                 room.RebuildLighting(true);
             });
-
             ReportProgress(15, "Building rooms");
+
             foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
                 _roomsUnmapping.Add(room);
             }
-
-            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
-
-
-            // TODO Enable parallization
-            //Parallel.ForEach(_roomsRemappingDictionary.Keys, (Room room) =>
-            //{
-            //    tr_room trRoom = BuildRoom(room);
-            //    lock (_tempRooms)
-            //        _tempRooms.Add(room, trRoom);
-            //});
 
             foreach (var room in _roomsRemappingDictionary.Keys)
                 _tempRooms.Add(room, BuildRoom(room));
@@ -86,7 +82,7 @@ namespace TombLib.LevelData.Compilers
             _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
             var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
-                foreach(var room in rooms)
+                foreach (var room in rooms)
                     MatchDoorShades(rooms, room, flipped == 1);
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
@@ -97,10 +93,10 @@ namespace TombLib.LevelData.Compilers
                     if (!v.IsOnPortal)
                         continue;
 
-                    var sig = new ShadeMatchSignature() 
-                    { 
-                        IsWater = ((trRoom.Flags & 1) == 1), 
-                        AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1, 
+                    var sig = new ShadeMatchSignature()
+                    {
+                        IsWater = ((trRoom.Flags & 1) == 1),
+                        AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1,
                         Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
                     };
 
@@ -131,9 +127,10 @@ namespace TombLib.LevelData.Compilers
                         (!light.IsStaticallyUsed && !forImportedGeometry))
                         continue;
 
-                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);                    
+                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                 }
-            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
+
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
         }
 
         private tr_room BuildRoom(Room room)
@@ -218,7 +215,6 @@ namespace TombLib.LevelData.Compilers
                     if (isNG) newRoom.Flags |= 0x0800;
                     break;
                 case RoomType.Snow:
-                    if (isNG) newRoom.Flags |= 0x0400;
                     break;
             }
 
@@ -228,7 +224,7 @@ namespace TombLib.LevelData.Compilers
             bool waterSchemeSet = false;
 
             // Calculate bottom room-based water scheme in advance, if mode is default, mist or reflection
-            if (waterPortals.Count > 0 && room.Type < RoomType.Water && 
+            if (waterPortals.Count > 0 && room.Type < RoomType.Water &&
                 (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection || lightEffect == RoomLightEffect.Mist))
             {
                 var waterRoom = waterPortals.First().AdjoiningRoom;
@@ -369,11 +365,11 @@ namespace TombLib.LevelData.Compilers
                         }
                         else
                         {
-                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                                // Apply Shade factor
-                                color *= shade;
+                            color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                            //Apply Shade factor
+                            color *= shade;
                         }
-                        
+
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -396,6 +392,7 @@ namespace TombLib.LevelData.Compilers
 
                         roomVertices.Add(trVertex);
                     }
+
                     for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
                     {
                         WadPolygon poly = wadStatic.Mesh.Polys[i];
@@ -462,6 +459,8 @@ namespace TombLib.LevelData.Compilers
 
                         foreach (var submesh in mesh.Submeshes)
                         {
+                            var indexList = new List<int>();
+
                             for (int j = 0; j < mesh.Vertices.Count; j++)
                             {
                                 // Apply the transform to the vertex
@@ -498,7 +497,15 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
                                 }
 
-                                roomVertices.Add(trVertex);
+                                var existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position &&
+                                                                              v.Lighting2 == trVertex.Lighting2);
+
+                                if (existingIndex == -1)
+                                {
+                                    existingIndex = roomVertices.Count;
+                                    roomVertices.Add(trVertex);
+                                }
+                                indexList.Add(existingIndex);
                             }
 
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
@@ -509,13 +516,9 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
                                 }
 
-                                var triangle = new tr_face3();
-
-                                ushort index0 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 0]);
-                                ushort index1 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 1]);
-                                ushort index2 = (ushort)(geometryVertexIndexBase + submesh.Value.Indices[j + 2]);
-
-                                triangle.Texture = 20;
+                                ushort index0 = (ushort)(indexList[j + 0]);
+                                ushort index1 = (ushort)(indexList[j + 1]);
+                                ushort index2 = (ushort)(indexList[j + 2]);
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
@@ -540,8 +543,6 @@ namespace TombLib.LevelData.Compilers
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
-
-                            geometryVertexIndexBase += mesh.Vertices.Count;
                         }
                     }
                 }
@@ -622,7 +623,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     var trVertex = roomVertices[i];
                     ushort flags = 0x0000;
-                    
+
                     bool allowMovement = true;
                     bool allowGlow = true;
 
@@ -655,7 +656,7 @@ namespace TombLib.LevelData.Compilers
                             var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
                             var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
                             var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
-                            
+
                             bool isTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
                                                        connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
                                                        connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
@@ -664,23 +665,23 @@ namespace TombLib.LevelData.Compilers
                             bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn &&
                                                     !connectionInfo2.IsTriangularPortal &&
                                                     !connectionInfo3.IsTriangularPortal &&
-                                                    !connectionInfo4.IsTriangularPortal 
+                                                    !connectionInfo4.IsTriangularPortal
                                                     ||
                                                     !connectionInfo1.IsTriangularPortal &&
                                                     connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn &&
                                                     !connectionInfo3.IsTriangularPortal &&
-                                                    !connectionInfo4.IsTriangularPortal 
+                                                    !connectionInfo4.IsTriangularPortal
                                                     ||
                                                     !connectionInfo1.IsTriangularPortal &&
                                                     !connectionInfo2.IsTriangularPortal &&
                                                     connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp &&
-                                                    !connectionInfo4.IsTriangularPortal 
+                                                    !connectionInfo4.IsTriangularPortal
                                                     ||
                                                     !connectionInfo1.IsTriangularPortal &&
                                                     !connectionInfo2.IsTriangularPortal &&
                                                     !connectionInfo3.IsTriangularPortal &&
                                                     connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp;
-                                                       
+
                             // A bit complex but working code for water surface movement.
                             // Works better than winroomedit as it takes adjacent portals into account.
                             if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
@@ -803,6 +804,7 @@ namespace TombLib.LevelData.Compilers
                     if (isTR23 && !allowMovement)
                         trVertex.Attributes |= 0x8000;
 
+                    trVertex.Attributes = flags;
                     roomVertices[i] = trVertex;
                 }
 
@@ -832,8 +834,9 @@ namespace TombLib.LevelData.Compilers
             }
 
             ConvertPortals(room, tempIdPortals, newRoom);
-
             ConvertSectors(room, newRoom);
+
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var instance in room.Objects.OfType<StaticInstance>())
             {
@@ -1147,7 +1150,7 @@ namespace TombLib.LevelData.Compilers
 
                     oppositeStartX = portal.AdjoiningRoom.NumXSectors - 2;
                     oppositeEndX = portal.AdjoiningRoom.NumXSectors - 2;
-                    oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) + 
+                    oppositeStartZ = Math.Min(portal.Area.Y0, portal.Area.Y1) +
                         portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
                     oppositeEndZ = Math.Max(portal.Area.Y0, portal.Area.Y1) +
                         portal.Room.Position.Z - portal.AdjoiningRoom.Position.Z;
@@ -1477,7 +1480,7 @@ namespace TombLib.LevelData.Compilers
                 // but now we have flags
                 bool isWaterAndDryPair = ((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1);
 
-                if (!isWaterAndDryPair || (isWaterAndDryPair && 
+                if (!isWaterAndDryPair || (isWaterAndDryPair &&
                     (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate ||
                      otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate)))
                 {
@@ -1524,7 +1527,7 @@ namespace TombLib.LevelData.Compilers
                                 if (v1.Position.Z >= z1 && v1.Position.Z <= z2)
                                 {
                                     v1.IsOnPortal = true;
-                                    room.Vertices[i] = v1; 
+                                    room.Vertices[i] = v1;
 
                                     int otherX = v1.Position.X + room.Info.X - otherRoom.Info.X;
                                     int otherY = v1.Position.Y;
