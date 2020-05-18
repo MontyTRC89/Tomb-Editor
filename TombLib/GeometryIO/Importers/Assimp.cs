@@ -310,9 +310,13 @@ namespace TombLib.GeometryIO.Importers
                                     float rY = key.Value.Y;
                                     float rZ = key.Value.Z;
 
-                                    if (_settings.SwapAnimTranslationXY) { var temp = rX; rX = rY; rY = temp; }
-                                    if (_settings.SwapAnimTranslationXZ) { var temp = rX; rX = rZ; rZ = temp; }
-                                    if (_settings.SwapAnimTranslationYZ) { var temp = rY; rY = rZ; rZ = temp; }
+                                    if (_settings.SwapXY) { var temp = rX; rX = rY; rY = temp; }
+                                    if (_settings.SwapXZ) { var temp = rX; rX = rZ; rZ = temp; }
+                                    if (_settings.SwapYZ) { var temp = rY; rY = rZ; rZ = temp; }
+
+                                    if (_settings.FlipX) { rX = -rX; }
+                                    if (_settings.FlipY) { rY = -rY; }
+                                    if (_settings.FlipZ) { rZ = -rZ; }
 
                                     ioAnim.Frames[frameIndex].Offset += new Vector3(rX, rY, rZ);
                                 }

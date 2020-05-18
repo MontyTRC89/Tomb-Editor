@@ -13,10 +13,6 @@
         public bool ProcessGeometry { get; set; } = true;
         public bool ProcessAnimations { get; set; } = false;
 
-        public bool SwapAnimTranslationXY { get; set; } = false;
-        public bool SwapAnimTranslationXZ { get; set; } = false;
-        public bool SwapAnimTranslationYZ { get; set; } = false;
-
         public bool SwapXY { get; set; } = false;
         public bool SwapXZ { get; set; } = false;
         public bool SwapYZ { get; set; } = false;

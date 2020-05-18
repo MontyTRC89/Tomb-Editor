@@ -31,20 +31,15 @@
             this.lblPreset = new DarkUI.Controls.DarkLabel();
             this.cmbPresetList = new DarkUI.Controls.DarkComboBox();
             this.panelContents = new DarkUI.Controls.DarkSectionPanel();
-            this.groupAnims = new DarkUI.Controls.DarkGroupBox();
-            this.cbSwapYZTrans = new DarkUI.Controls.DarkCheckBox();
-            this.cbSwapXZTrans = new DarkUI.Controls.DarkCheckBox();
-            this.cbSwapXYTrans = new DarkUI.Controls.DarkCheckBox();
             this.groupMisc = new DarkUI.Controls.DarkGroupBox();
+            this.cbSortByName = new DarkUI.Controls.DarkCheckBox();
             this.cbImportBakedLight = new DarkUI.Controls.DarkCheckBox();
             this.groupTextures = new DarkUI.Controls.DarkGroupBox();
             this.groupSize = new DarkUI.Controls.DarkGroupBox();
             this.groupAxis = new DarkUI.Controls.DarkGroupBox();
             this.cbInvertFaces = new DarkUI.Controls.DarkCheckBox();
-            this.cbSortByName = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).BeginInit();
             this.panelContents.SuspendLayout();
-            this.groupAnims.SuspendLayout();
             this.groupMisc.SuspendLayout();
             this.groupTextures.SuspendLayout();
             this.groupSize.SuspendLayout();
@@ -55,7 +50,7 @@
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(141, 304);
+            this.butOK.Location = new System.Drawing.Point(141, 269);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 16;
@@ -67,7 +62,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(227, 304);
+            this.butCancel.Location = new System.Drawing.Point(227, 269);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 17;
@@ -202,7 +197,7 @@
             this.lblPreset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblPreset.AutoSize = true;
             this.lblPreset.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblPreset.Location = new System.Drawing.Point(5, 267);
+            this.lblPreset.Location = new System.Drawing.Point(5, 232);
             this.lblPreset.Name = "lblPreset";
             this.lblPreset.Size = new System.Drawing.Size(41, 13);
             this.lblPreset.TabIndex = 5;
@@ -213,7 +208,7 @@
             this.cmbPresetList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbPresetList.FormattingEnabled = true;
-            this.cmbPresetList.Location = new System.Drawing.Point(52, 263);
+            this.cmbPresetList.Location = new System.Drawing.Point(52, 228);
             this.cmbPresetList.Name = "cmbPresetList";
             this.cmbPresetList.Size = new System.Drawing.Size(243, 23);
             this.cmbPresetList.TabIndex = 15;
@@ -221,7 +216,9 @@
             // 
             // panelContents
             // 
-            this.panelContents.Controls.Add(this.groupAnims);
+            this.panelContents.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelContents.Controls.Add(this.groupMisc);
             this.panelContents.Controls.Add(this.groupTextures);
             this.panelContents.Controls.Add(this.groupSize);
@@ -231,62 +228,35 @@
             this.panelContents.Location = new System.Drawing.Point(6, 6);
             this.panelContents.Name = "panelContents";
             this.panelContents.SectionHeader = null;
-            this.panelContents.Size = new System.Drawing.Size(301, 292);
+            this.panelContents.Size = new System.Drawing.Size(301, 257);
             this.panelContents.TabIndex = 7;
-            // 
-            // groupAnims
-            // 
-            this.groupAnims.Controls.Add(this.cbSwapYZTrans);
-            this.groupAnims.Controls.Add(this.cbSwapXZTrans);
-            this.groupAnims.Controls.Add(this.cbSwapXYTrans);
-            this.groupAnims.Location = new System.Drawing.Point(140, 157);
-            this.groupAnims.Name = "groupAnims";
-            this.groupAnims.Size = new System.Drawing.Size(155, 100);
-            this.groupAnims.TabIndex = 10;
-            this.groupAnims.TabStop = false;
-            this.groupAnims.Text = "Animations";
-            // 
-            // cbSwapYZTrans
-            // 
-            this.cbSwapYZTrans.Location = new System.Drawing.Point(6, 65);
-            this.cbSwapYZTrans.Name = "cbSwapYZTrans";
-            this.cbSwapYZTrans.Size = new System.Drawing.Size(134, 19);
-            this.cbSwapYZTrans.TabIndex = 14;
-            this.cbSwapYZTrans.Text = "Swap Y / Z translation";
-            // 
-            // cbSwapXZTrans
-            // 
-            this.cbSwapXZTrans.Location = new System.Drawing.Point(6, 43);
-            this.cbSwapXZTrans.Name = "cbSwapXZTrans";
-            this.cbSwapXZTrans.Size = new System.Drawing.Size(134, 19);
-            this.cbSwapXZTrans.TabIndex = 13;
-            this.cbSwapXZTrans.Text = "Swap X / Z translation";
-            // 
-            // cbSwapXYTrans
-            // 
-            this.cbSwapXYTrans.Location = new System.Drawing.Point(6, 21);
-            this.cbSwapXYTrans.Name = "cbSwapXYTrans";
-            this.cbSwapXYTrans.Size = new System.Drawing.Size(134, 19);
-            this.cbSwapXYTrans.TabIndex = 12;
-            this.cbSwapXYTrans.Text = "Swap X / Y translation";
             // 
             // groupMisc
             // 
             this.groupMisc.Controls.Add(this.cbSortByName);
             this.groupMisc.Controls.Add(this.cbImportBakedLight);
-            this.groupMisc.Location = new System.Drawing.Point(6, 192);
+            this.groupMisc.Location = new System.Drawing.Point(140, 157);
             this.groupMisc.Name = "groupMisc";
-            this.groupMisc.Size = new System.Drawing.Size(128, 65);
+            this.groupMisc.Size = new System.Drawing.Size(155, 65);
             this.groupMisc.TabIndex = 0;
             this.groupMisc.TabStop = false;
             this.groupMisc.Text = "Misc";
+            // 
+            // cbSortByName
+            // 
+            this.cbSortByName.AutoSize = true;
+            this.cbSortByName.Location = new System.Drawing.Point(6, 44);
+            this.cbSortByName.Name = "cbSortByName";
+            this.cbSortByName.Size = new System.Drawing.Size(93, 17);
+            this.cbSortByName.TabIndex = 8;
+            this.cbSortByName.Text = "Sort by name";
             // 
             // cbImportBakedLight
             // 
             this.cbImportBakedLight.AutoSize = true;
             this.cbImportBakedLight.Location = new System.Drawing.Point(6, 21);
             this.cbImportBakedLight.Name = "cbImportBakedLight";
-            this.cbImportBakedLight.Size = new System.Drawing.Size(114, 17);
+            this.cbImportBakedLight.Size = new System.Drawing.Size(113, 17);
             this.cbImportBakedLight.TabIndex = 7;
             this.cbImportBakedLight.Text = "Vertex color light";
             // 
@@ -324,7 +294,7 @@
             this.groupAxis.Controls.Add(this.cbFlipX);
             this.groupAxis.Location = new System.Drawing.Point(6, 6);
             this.groupAxis.Name = "groupAxis";
-            this.groupAxis.Size = new System.Drawing.Size(128, 180);
+            this.groupAxis.Size = new System.Drawing.Size(128, 216);
             this.groupAxis.TabIndex = 8;
             this.groupAxis.TabStop = false;
             this.groupAxis.Text = "Axis";
@@ -338,15 +308,6 @@
             this.cbInvertFaces.TabIndex = 6;
             this.cbInvertFaces.Text = "Invert faces";
             // 
-            // cbSortByName
-            // 
-            this.cbSortByName.AutoSize = true;
-            this.cbSortByName.Location = new System.Drawing.Point(6, 44);
-            this.cbSortByName.Name = "cbSortByName";
-            this.cbSortByName.Size = new System.Drawing.Size(93, 17);
-            this.cbSortByName.TabIndex = 8;
-            this.cbSortByName.Text = "Sort by name";
-            // 
             // GeometryIOSettingsDialog
             // 
             this.AcceptButton = this.butOK;
@@ -354,7 +315,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(313, 333);
+            this.ClientSize = new System.Drawing.Size(313, 298);
             this.Controls.Add(this.panelContents);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -370,7 +331,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).EndInit();
             this.panelContents.ResumeLayout(false);
             this.panelContents.PerformLayout();
-            this.groupAnims.ResumeLayout(false);
             this.groupMisc.ResumeLayout(false);
             this.groupMisc.PerformLayout();
             this.groupTextures.ResumeLayout(false);
@@ -406,10 +366,6 @@
         private DarkUI.Controls.DarkCheckBox cbInvertFaces;
         private DarkUI.Controls.DarkGroupBox groupMisc;
         private DarkUI.Controls.DarkCheckBox cbImportBakedLight;
-        private DarkUI.Controls.DarkGroupBox groupAnims;
-        private DarkUI.Controls.DarkCheckBox cbSwapXZTrans;
-        private DarkUI.Controls.DarkCheckBox cbSwapXYTrans;
-        private DarkUI.Controls.DarkCheckBox cbSwapYZTrans;
         private DarkUI.Controls.DarkCheckBox cbSortByName;
     }
 }

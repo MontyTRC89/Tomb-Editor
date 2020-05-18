@@ -108,8 +108,7 @@ namespace TombLib.Forms
 
         private void UpdateControls(IOGeometrySettings settings)
         {
-            groupAnims.Enabled = settings.ProcessAnimations;
-            groupAxis.Enabled = settings.ProcessGeometry;
+            cbInvertFaces.Enabled = !settings.ProcessAnimations;
             groupTextures.Enabled = settings.ProcessGeometry && !settings.Export;
             nmScale.Enabled = settings.ProcessGeometry;
             cbImportBakedLight.Enabled = settings.ProcessGeometry;
@@ -128,10 +127,6 @@ namespace TombLib.Forms
             cbInvertFaces.Checked = settings.InvertFaces;
             cbImportBakedLight.Checked = settings.UseVertexColor;
             cbSortByName.Checked = settings.SortByName;
-
-            cbSwapXYTrans.Checked = settings.SwapAnimTranslationXY;
-            cbSwapXZTrans.Checked = settings.SwapAnimTranslationXZ;
-            cbSwapYZTrans.Checked = settings.SwapAnimTranslationYZ;
         }
 
         private void UpdateSettings()
@@ -149,10 +144,6 @@ namespace TombLib.Forms
             Settings.InvertFaces = cbInvertFaces.Checked;
             Settings.UseVertexColor = cbImportBakedLight.Checked;
             Settings.SortByName = cbSortByName.Checked;
-
-            Settings.SwapAnimTranslationXY = cbSwapXYTrans.Checked;
-            Settings.SwapAnimTranslationXZ = cbSwapXZTrans.Checked;
-            Settings.SwapAnimTranslationYZ = cbSwapYZTrans.Checked;
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -188,10 +179,6 @@ namespace TombLib.Forms
             cbWrapUV.CheckedChanged += ModifiedPresetEvent;
             nmScale.ValueChanged += ModifiedPresetEvent;
 
-            cbSwapXYTrans.CheckedChanged += ModifiedPresetEvent;
-            cbSwapXZTrans.CheckedChanged += ModifiedPresetEvent;
-            cbSwapYZTrans.CheckedChanged += ModifiedPresetEvent;
-
             cbImportBakedLight.CheckedChanged += ModifiedPresetEvent;
             cbSortByName.CheckedChanged += ModifiedPresetEvent;
         }
@@ -208,10 +195,6 @@ namespace TombLib.Forms
             cbPremultiplyUV.CheckedChanged -= ModifiedPresetEvent;
             cbWrapUV.CheckedChanged -= ModifiedPresetEvent;
             nmScale.ValueChanged -= ModifiedPresetEvent;
-
-            cbSwapXYTrans.CheckedChanged -= ModifiedPresetEvent;
-            cbSwapXZTrans.CheckedChanged -= ModifiedPresetEvent;
-            cbSwapYZTrans.CheckedChanged -= ModifiedPresetEvent;
 
             cbImportBakedLight.CheckedChanged -= ModifiedPresetEvent;
             cbSortByName.CheckedChanged -= ModifiedPresetEvent;
