@@ -4177,15 +4177,17 @@ namespace TombEditor
                                     {
                                         if (result.Warnings.Count > 0)
                                         {
-                                            string warningmessage = "";
-                                            result.Warnings.ForEach((warning) =>
+                                            if (result.Warnings.Count < 5)
                                             {
-                                                warningmessage += warning + "\n";
-                                            });
-                                            _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
+                                                string warningmessage = "";
+                                                result.Warnings.ForEach(warning => warningmessage += warning + "\n");
+                                                _editor.SendMessage("Room export successful with warnings: \n" + warningmessage, PopupType.Warning);
+                                            }
+                                            else
+                                                _editor.SendMessage("Room export successful with multiple warnings.", PopupType.Warning);
                                         }
                                         else
-                                            _editor.SendMessage("Room export successful", PopupType.Info);
+                                            _editor.SendMessage("Room export successful.", PopupType.Info);
                                     }
                                 }
                                 else

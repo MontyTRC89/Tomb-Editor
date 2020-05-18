@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using TombLib.Graphics;
 using TombLib.LevelData;
@@ -27,11 +28,42 @@ namespace TombLib.GeometryIO
         }
     }
 
+    public class SplitPageReference
+    {
+        public int Index { get; }
+        public string Path { get; }
+
+        private int _startX;
+        private int _startY;
+        private int _width;
+        private int _height;
+        private Texture _texture;
+
+        public SplitPageReference(Texture texture, int index, int x, int y, string path)
+        {
+            var splitSize = RoomGeometryExporter.SplitPageSize;
+
+            Index = index;
+            Path = path;
+            _startX = x * splitSize;
+            _startY = y * splitSize;
+            _width = (x * splitSize + splitSize > texture.Image.Width ? texture.Image.Width - x * splitSize : splitSize);
+            _height = (y * splitSize + splitSize > texture.Image.Height ? texture.Image.Height - y * splitSize : splitSize);
+            _texture = texture;
+        }
+
+        public void SaveTexture()
+        {
+            ImageC newImage = ImageC.CreateNew(RoomGeometryExporter.SplitPageSize, RoomGeometryExporter.SplitPageSize);
+            newImage.CopyFrom(0, 0, _texture.Image, _startX, _startY, _width, _height);
+            newImage.Save(Path);
+        }
+    }
+
     public static class RoomGeometryExporter
     {
         public const string RoomIdentifier = "TeRoom_";
-
-        const int SplitPageSize = 256;
+        public const int SplitPageSize = 256;
 
         private static Vector2 GetNormalizedPageUVs(Vector2 uv, int textureWidth, int textureHeight, int page)
         {
@@ -62,6 +94,7 @@ namespace TombLib.GeometryIO
                 //Prepare data for export
                 var model = new IOModel();
                 var usedTextures = new List<Texture>();
+                var splitPages = new List<SplitPageReference>();
 
                 foreach (var room in roomsToExport)
                 {
@@ -93,23 +126,15 @@ namespace TombLib.GeometryIO
                     {
                         for (int x  = 0; x < numXPages; x++)
                         {
-                            int page = y * numXPages + x;
-                            int startX = x * SplitPageSize;
-                            int startY = y * SplitPageSize;
-                            int width = (x * SplitPageSize + SplitPageSize > tex.Image.Width ? tex.Image.Width - x * SplitPageSize : SplitPageSize);
-                            int height = (y * SplitPageSize + SplitPageSize > tex.Image.Height ? tex.Image.Height - y * SplitPageSize : SplitPageSize);
-
-                            ImageC newImage = ImageC.CreateNew(SplitPageSize, SplitPageSize);
-                            newImage.CopyFrom(0, 0, tex.Image, startX, startY, width, height);
-
+                            // Generate future page reference but postpone actual file creation until model is made.
                             string textureFileName = baseName + "_" + x + "_" + y + ".png";
-                            string absoluteTexturefilePath = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
-                            newImage.Save(absoluteTexturefilePath);
+                            var page = new SplitPageReference(tex, y * numXPages + x, x, y, Path.Combine(Path.GetDirectoryName(filePath), textureFileName));
+                            splitPages.Add(page);
 
-                            var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + page, tex, absoluteTexturefilePath, false, false, 0, page);
-                            var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + page, tex, absoluteTexturefilePath, false, true, 0, page);
-                            var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + page, tex, absoluteTexturefilePath, true, false, 0, page);
-                            var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + page, tex, absoluteTexturefilePath, true, true, 0, page);
+                            var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + page.Index, tex, page.Path, false, false, 0, page.Index);
+                            var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, false, true, 0, page.Index);
+                            var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + page.Index, tex, page.Path, true, false, 0, page.Index);
+                            var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + page.Index, tex, page.Path, true, true, 0, page.Index);
 
                             model.Materials.Add(matOpaque);
                             model.Materials.Add(matOpaqueDoubleSided);
@@ -140,13 +165,9 @@ namespace TombLib.GeometryIO
                     int yOff = room.Position.Y;
                     int zOff = room.Position.Z;
 
-                    //Append the Offset to the Mesh name, we can later calculate the correct position
+                    // Append the Offset to the Mesh name, we can later calculate the correct position
                     string meshFormat = "TeRoom_{0}_{1}_{2}_{3}";
                     var mesh = new IOMesh(string.Format(meshFormat, index, xOff, yOff, zOff));
-
-                    // Add submeshes
-                    foreach (var material in model.Materials)
-                        mesh.Submeshes.Add(material, new IOSubmesh(material));
 
                     int lastIndex = 0;
                     for (int x = 0; x < room.NumXSectors; x++)
@@ -230,9 +251,10 @@ namespace TombLib.GeometryIO
                                                             textureArea1.DoubleSided,
                                                             0);
 
-                                var submesh = mesh.Submeshes[mat];
-                                submesh.Polygons.Add(poly);
+                                if (!mesh.Submeshes.ContainsKey(mat))
+                                    mesh.Submeshes.Add(mat, new IOSubmesh(mat));
 
+                                mesh.Submeshes[mat].Polygons.Add(poly);
                                 lastIndex += 4;
                             }
                             else
@@ -274,14 +296,22 @@ namespace TombLib.GeometryIO
                                                             textureArea.DoubleSided,
                                                             0);
 
-                                var submesh = mesh.Submeshes[mat];
-                                submesh.Polygons.Add(poly);
+                                if (!mesh.Submeshes.ContainsKey(mat))
+                                    mesh.Submeshes.Add(mat, new IOSubmesh(mat));
+
+                                mesh.Submeshes[mat].Polygons.Add(poly);
                                 lastIndex += 3;
                             }
                         }
                     }
                     model.Meshes.Add(mesh);
                 }
+
+                // Save only texture pages which are actually used in model.
+                foreach (var page in splitPages)
+                    if (model.UsedMaterials.Any(mat => mat.TexturePath == page.Path))
+                        page.SaveTexture();
+
                 result.Model = model;
 
                 if (!result.Valid())
