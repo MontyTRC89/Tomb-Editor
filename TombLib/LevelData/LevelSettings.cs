@@ -111,6 +111,10 @@ namespace TombLib.LevelData
         public const string VariableEnd = ")";
         public static readonly char Dir = Path.DirectorySeparatorChar;
 
+        // Identify if current level was loaded from prj2 with unknown chunks, possibly
+        // indicating that data loss occured.
+        public bool HasUnknownData { get; set; } = false;
+
         // New sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();
