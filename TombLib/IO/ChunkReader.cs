@@ -13,11 +13,11 @@ namespace TombLib.IO
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
         private readonly BinaryReaderEx _reader;
-        private List<ChunkId> _knownChunkList;
+        private HashSet<ChunkId> _knownChunkList;
 
         public bool UnknownChunksFound { get; private set; }
 
-        public ChunkReader(byte[] expectedMagicNumber, Stream stream, List<ChunkId> knownChunkList = null)
+        public ChunkReader(byte[] expectedMagicNumber, Stream stream, HashSet<ChunkId> knownChunkList = null)
         {
             _knownChunkList = knownChunkList;
 

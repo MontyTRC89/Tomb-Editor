@@ -41,12 +41,12 @@ namespace TombLib.Wad
             if (magicNumber.SequenceEqual(Wad2Chunks.MagicNumberObsolete))
             {
                 // TODO In the long term it would be good to get rid of this obsolete code.
-                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumberObsolete, stream))
+                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumberObsolete, stream, Wad2Chunks.ChunkList))
                     return LoadWad2(chunkIO, true);
             }
             else
             {
-                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream))
+                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream, Wad2Chunks.ChunkList))
                     return LoadWad2(chunkIO, false);
             }
         }

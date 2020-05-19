@@ -26,6 +26,7 @@ namespace TombLib.Wad
 
     public class Wad2
     {
+        public bool HasUnknownData { get; set; } = false;
         public SoundSystem SoundSystem { get; set; }
         public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();

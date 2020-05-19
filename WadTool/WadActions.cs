@@ -49,6 +49,9 @@ namespace WadTool
                         return;
                     }
 
+                    if (newWad.HasUnknownData)
+                        tool.SendMessage("Loaded wad2 is of newer version.\nSome data was lost. Don't save this wad2 and use newest version of Wad Tool.", PopupType.Warning);
+
                     newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
                 }
             }
