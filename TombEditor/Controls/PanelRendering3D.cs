@@ -2771,12 +2771,7 @@ namespace TombEditor.Controls
 
             // If picking for imported geometry is disabled, then draw geometry translucent
             if (DisablePickingForImportedGeometry)
-            {
-                geometryEffect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 0.6f, 1.0f));
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-            }
-            else
-                geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
 
             var geoGroup = new List<ImportedGeometryInstance>();
             ImportedGeometryInstance _lastObject = null;
@@ -2808,8 +2803,13 @@ namespace TombEditor.Controls
                         {
                             geometryEffect.Parameters["ModelViewProjection"].SetValue((geo.ObjectMatrix * viewProjection).ToSharpDX());
 
+                            // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
                             if (!disableSelection && _editor.SelectedObject == geo)
                                 geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                            else if (DisablePickingForImportedGeometry)
+                                geometryEffect.Parameters["Color"].SetValue(new Vector4(0.1f, 0.1f, 1.0f, 1.0f));
+                            else
+                                geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
 
                             foreach (var submesh in mesh.Submeshes)
                             {
