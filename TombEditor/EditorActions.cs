@@ -4375,6 +4375,9 @@ namespace TombEditor
                         foreach (Room r in newLevel.Rooms.Where(room => room != null))
                             r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         AddProjectToRecent(fileName);
+
+                        if (newLevel.Settings.HasUnknownData)
+                            _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Don't save this project and use newest version of Tomb Editor.", PopupType.Warning);
                     }
 
                     _editor.Level = newLevel;

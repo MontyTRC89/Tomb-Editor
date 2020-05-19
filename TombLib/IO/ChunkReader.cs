@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -11,11 +12,15 @@ namespace TombLib.IO
     public class ChunkReader : IDisposable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-
         private readonly BinaryReaderEx _reader;
+        private List<ChunkId> _knownChunkList;
 
-        public ChunkReader(byte[] expectedMagicNumber, Stream stream)
+        public bool UnknownChunksFound { get; private set; }
+
+        public ChunkReader(byte[] expectedMagicNumber, Stream stream, List<ChunkId> knownChunkList = null)
         {
+            _knownChunkList = knownChunkList;
+
             // Check file type
             byte[] magicNumber = new byte[expectedMagicNumber.Length];
             stream.Read(magicNumber, 0, expectedMagicNumber.Length);
@@ -61,6 +66,11 @@ namespace TombLib.IO
                 ChunkId chunkID = ChunkId.FromStream(_reader);
                 if (chunkID == ChunkId.Empty) // End reached
                     break;
+
+                // Check if chunk is known, and if not, mark it
+                if (_knownChunkList != null && !UnknownChunksFound &&
+                    !_knownChunkList.Contains(chunkID))
+                    UnknownChunksFound = true;
 
                 // Read up to a 64 bit number for the chunk size
                 long chunkSize = LEB128.ReadLong(_reader);

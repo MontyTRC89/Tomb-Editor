@@ -1,10 +1,14 @@
-﻿using TombLib.IO;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TombLib.IO;
 
 namespace TombLib.LevelData.IO
 {
     // TODO Add documentation for binary offsets of the chunks
     internal static class Prj2Chunks
-    {
+    {        
+        public static List<ChunkId> ChunkList => typeof(Prj2Chunks).GetFields().Where(f => f.FieldType == typeof(ChunkId)).Select(v => v.GetValue(v)).Cast<ChunkId>().ToList();
+
         public static readonly byte[] MagicNumber = new byte[] { 0x50, 0x52, 0x4A, 0x32 };
 
         public static readonly ChunkId Settings = ChunkId.FromString("TeSettings");

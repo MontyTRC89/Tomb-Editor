@@ -33,7 +33,7 @@ namespace TombLib.LevelData.IO
         public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter) => LoadFromPrj2(filename, stream, progressReporter, new Settings());
         public static Level LoadFromPrj2(string filename, Stream stream, IProgressReporter progressReporter, Settings loadSettings)
         {
-            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream))
+            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream, Prj2Chunks.ChunkList))
             {
                 LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
                 Level level = new Level();
@@ -53,6 +53,7 @@ namespace TombLib.LevelData.IO
                     return false;
                 });
 
+                level.Settings.HasUnknownData = chunkIO.UnknownChunksFound;
                 return level;
             }
         }
@@ -65,7 +66,7 @@ namespace TombLib.LevelData.IO
         public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Stream stream) => LoadFromPrj2OnlyObjects(filename, stream, new Settings());
         public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Stream stream, Settings loadSettings)
         {
-            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream))
+            using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream, Prj2Chunks.ChunkList))
             {
                 LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
                 LoadedObjects loadedObjects = new LoadedObjects { Settings = new LevelSettings(), Objects = new List<ObjectInstance>() };
