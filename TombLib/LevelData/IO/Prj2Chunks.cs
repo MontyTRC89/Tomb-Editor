@@ -105,6 +105,7 @@ namespace TombLib.LevelData.IO
         /******/public static readonly ChunkId RoomLightEffectStrength2 = ChunkId.FromString("TeRoomLightEffectStrength2");
         /******/public static readonly ChunkId RoomReverberation = ChunkId.FromString("TeReverb");
         /******/public static readonly ChunkId RoomLocked = ChunkId.FromString("TeLocked");
+        /******/public static readonly ChunkId RoomHidden = ChunkId.FromString("TeHidden");
         /******/public static readonly ChunkId Objects = ChunkId.FromString("TeObjects");
         /******/public static readonly ChunkId RoomTags = ChunkId.FromString("TeTags");
         /**********/public static readonly ChunkId ObjectMovable = ChunkId.FromString("TeMov");

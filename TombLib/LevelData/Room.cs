@@ -65,6 +65,7 @@ namespace TombLib.LevelData
         public bool FlagExcludeFromPathFinding { get; set; }
         public Reverberation Reverberation { get; set; }
         public bool Locked { get; set; }
+        public bool Hidden { get; set; }
         public ImportedGeometryMesh ExternalRoomMesh { get; set; }
 
         public List<string> Tags { get; set; } = new List<string>();
