@@ -119,6 +119,7 @@ namespace TombEditor.ToolWindows
                 cbHorizon.Checked = room.FlagHorizon;
                 cbNoLensflare.Checked = room.FlagNoLensflare;
                 cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
+                butHidden.Checked = room.Hidden;
 
                 if (!tbRoomTags.ReadOnly) // Only update tags field if we're not in the process of editing
                 {

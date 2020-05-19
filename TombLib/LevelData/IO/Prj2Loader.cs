@@ -774,6 +774,8 @@ namespace TombLib.LevelData.IO
                         room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLocked)
                         room.Locked = chunkIO.ReadChunkBool(chunkSize2);
+                    else if (id2 == Prj2Chunks.RoomHidden)
+                        room.Hidden = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomAlternate)
                     {
                         short alternateGroup = 1;

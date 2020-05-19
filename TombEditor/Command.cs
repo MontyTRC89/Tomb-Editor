@@ -893,6 +893,12 @@ namespace TombEditor
                 args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
             });
 
+            AddCommand("HideRoom", "Hide room", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                args.Editor.SelectedRoom.Hidden = !args.Editor.SelectedRoom.Hidden;
+                args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
+            });
+
             AddCommand("SplitRoom", "Split room", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.SplitRoom(args.Window);
