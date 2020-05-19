@@ -474,8 +474,6 @@ namespace TombLib.LevelData.Compilers
                                     Attributes = 0
                                 };
 
-                                var existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position);
-
                                 // Pack the light according to chosen lighting model
                                 if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                                 {
@@ -495,7 +493,12 @@ namespace TombLib.LevelData.Compilers
                                     throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
                                 }
 
-                                if (existingIndex == -1)
+                                // HACK: Find a vertex with same coordinates and merge with it.
+                                // This is needed to overcome disjointed vertices bug buried deep in geometry importer.
+                                // We still preserve sharp edges if explicitly specified by flag though.
+
+                                int existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position);
+                                if (geometry.SharpEdges || existingIndex == -1)
                                 {
                                     existingIndex = roomVertices.Count;
                                     roomVertices.Add(trVertex);

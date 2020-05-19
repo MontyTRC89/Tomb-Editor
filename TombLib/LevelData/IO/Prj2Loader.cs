@@ -1238,6 +1238,8 @@ namespace TombLib.LevelData.IO
                     {
                         if (id4 == Prj2Chunks.ObjectImportedGeometryLightingModel)
                             instance.LightingModel = (ImportedGeometryLightingModel)chunkIO.ReadChunkInt(chunkSize4);
+                        else if (id4 == Prj2Chunks.ObjectImportedGeometrySharpEdges)
+                            instance.SharpEdges = chunkIO.Raw.ReadBoolean();
                         else if (id4 == Prj2Chunks.ObjectImportedGeometryMeshFilter)
                             instance.MeshFilter = chunkIO.Raw.ReadStringUTF8();
                         else

@@ -16,6 +16,7 @@ namespace TombLib.LevelData
         public float Scale { get; set; } = 1.0f;
         public string MeshFilter { get; set; } = "";
         public ImportedGeometryLightingModel LightingModel { get; set; } = ImportedGeometryLightingModel.CalculateFromLightsInRoom;
+        public bool SharpEdges { get; set; } = false;
 
         private float _roll { get; set; }
         private float _rotationX { get; set; }

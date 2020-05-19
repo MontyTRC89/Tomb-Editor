@@ -635,6 +635,7 @@ namespace TombLib.LevelData.IO
                                 levelSettingIds.ImportedGeometries[instance.Model]);
 
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
+                            chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometrySharpEdges, instance.SharpEdges);
                             if (instance.MeshFilter != null && instance.MeshFilter != "")
                                 chunkIO.WriteChunkString(Prj2Chunks.ObjectImportedGeometryMeshFilter, instance.MeshFilter);
                         });
