@@ -31,6 +31,8 @@ namespace TombLib.LevelData.Compilers
                 _roomsUnmapping.Add(room);
             }
 
+            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
+
             foreach (var room in _roomsRemappingDictionary.Keys)
                 _tempRooms.Add(room, BuildRoom(room));
 
@@ -833,8 +835,6 @@ namespace TombLib.LevelData.Compilers
 
             ConvertPortals(room, tempIdPortals, newRoom);
             ConvertSectors(room, newRoom);
-
-            _staticsTable = new Dictionary<StaticInstance, int>(new ReferenceEqualityComparer<StaticInstance>());
 
             foreach (var instance in room.Objects.OfType<StaticInstance>())
             {
