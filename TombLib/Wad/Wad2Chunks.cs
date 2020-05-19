@@ -1,9 +1,13 @@
-﻿using TombLib.IO;
+﻿using System.Collections.Generic;
+using System.Linq;
+using TombLib.IO;
 
 namespace TombLib.Wad
 {
     public static class Wad2Chunks
     {
+        public static HashSet<ChunkId> ChunkList => new HashSet<ChunkId>(typeof(Wad2Chunks).GetFields().Where(f => f.FieldType == typeof(ChunkId)).Select(v => v.GetValue(v)).Cast<ChunkId>());
+
         public static readonly byte[] MagicNumberObsolete = new byte[] { 0x57, 0x61, 0x64, 0x32 };
         public static readonly byte[] MagicNumber = new byte[] { 0x57, 0x41, 0x44, 0x32 };
         public static readonly ChunkId GameVersion = ChunkId.FromString("W2SuggestedGameVersion");

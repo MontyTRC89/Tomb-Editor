@@ -3756,6 +3756,9 @@ namespace TombEditor
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
 
+            if (results.Any(result => result?.Wad.HasUnknownData ?? false))
+                _editor.SendMessage("Loaded wad2 is of newer version than your editor.\nSome data was lost. Please use newer version of Tomb Editor.", PopupType.Warning);
+
             // Update level
             _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
             _editor.Level.Settings.SoundsCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
