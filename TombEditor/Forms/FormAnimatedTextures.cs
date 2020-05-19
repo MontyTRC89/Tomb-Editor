@@ -160,30 +160,19 @@ namespace TombEditor.Forms
             if (obj is Editor.LevelChangedEvent || obj is Editor.LoadedTexturesChangedEvent)
                 Close();
 
-            // Update texture combo box and reset texture map
-            if (obj is Editor.InitEvent)
-            {
-                comboCurrentTexture.Items.Clear();
-                comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
-                comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
-
-                texturesDataGridViewColumnTexture.DataSource = new BindingList<LevelTexture>(_editor.Level.Settings.Textures);
-                if (obj is Editor.LoadedTexturesChangedEvent && ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect != null)
-                    comboCurrentTexture.SelectedItem = ((Editor.LoadedTexturesChangedEvent)obj).NewToSelect;
-
-                textureMap.Invalidate();
-            }
-
             // Update animated texture set combo box
-            if (obj is Editor.InitEvent || obj is Editor.AnimatedTexturesChangedEvent)
+            if (obj is Editor.AnimatedTexturesChangedEvent)
             {
                 while (comboAnimatedTextureSets.Items.Count > _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.RemoveAt(comboAnimatedTextureSets.Items.Count - 1);
+
                 for (int i = 0; i < comboAnimatedTextureSets.Items.Count; ++i)
                     if (!ReferenceEquals(comboAnimatedTextureSets.Items[i], _editor.Level.Settings.AnimatedTextureSets[i]))
                         comboAnimatedTextureSets.Items[i] = _editor.Level.Settings.AnimatedTextureSets[i];
+
                 while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)
                     comboAnimatedTextureSets.Items.Add(_editor.Level.Settings.AnimatedTextureSets[comboAnimatedTextureSets.Items.Count]);
+
                 if (comboAnimatedTextureSets.SelectedItem == null)
                     if (comboAnimatedTextureSets.Items.Count > 0)
                         comboAnimatedTextureSets.SelectedIndex = comboAnimatedTextureSets.Items.Count - 1;
@@ -192,11 +181,8 @@ namespace TombEditor.Forms
                 comboAnimatedTextureSets.Invalidate();
 
                 UpdateCurrentAnimationDisplay();
-            }
-
-            // Invalidate texture view
-            if (obj is Editor.AnimatedTexturesChangedEvent)
                 textureMap.Invalidate();
+            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -244,10 +230,19 @@ namespace TombEditor.Forms
         private void SetupControls()
         {
             // Clear previous elements
+            comboCurrentTexture.Items.Clear();
+            comboAnimatedTextureSets.Items.Clear();
             comboEffect.Items.Clear();
             comboUvRotate.Items.Clear();
             comboFps.Items.Clear();
-            comboAnimatedTextureSets.Items.Clear();
+
+            // Populate texture list
+            comboCurrentTexture.Items.AddRange(_editor.Level.Settings.Textures.ToArray());
+            comboCurrentTexture.SelectedItem = _editor.Level.Settings.Textures.FirstOrDefault();
+
+            // Populate anim sets list
+            while (comboAnimatedTextureSets.Items.Count < _editor.Level.Settings.AnimatedTextureSets.Count)
+                comboAnimatedTextureSets.Items.Add(_editor.Level.Settings.AnimatedTextureSets[comboAnimatedTextureSets.Items.Count]);
 
             // Add common animation types
             comboEffect.Items.Add(AnimatedTextureAnimationType.Frames);
