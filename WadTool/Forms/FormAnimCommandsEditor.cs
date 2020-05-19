@@ -93,7 +93,7 @@ namespace WadTool
             base.OnShown(e);
             if (gridViewCommands.SelectedRows.Count > 0)
                 gridViewCommands.FirstDisplayedScrollingRowIndex = gridViewCommands.SelectedRows[0].Index;
-            else
+            else if (gridViewCommands.Rows.Count > 0)
                 gridViewCommands.Rows[0].Selected = true; // Select 1st row by default
         }
 
@@ -107,6 +107,9 @@ namespace WadTool
                 int index = row.Index;
                 _animCommands.RemoveAt(index);
             }
+
+            if (gridViewCommands.SelectedRows.Count == 0)
+                animCommandEditor.Command = null;
         }
 
         private void MoveCommand(bool down)
