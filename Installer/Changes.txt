@@ -1,7 +1,7 @@
 Version 1.3
 ===========
 Tomb Editor:
- * Export and reimport rooms using Collada, Wavefront OBJ, glTF2, x3d and MQO formats with lighting.
+ * Export and reimport rooms using Wavefront OBJ, Collada, glTF2, x3d and MQO formats with lighting.
  * Add "Hide room" feature which disables all original Tomb Editor-generated room geometry without untexturing it.
  * Add "Lighting Quality" feature to create natural smooth shadows with multipass raytracing.
  * Refactored palette and added ability to sample palette from selected texture set.
