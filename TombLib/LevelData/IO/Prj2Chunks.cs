@@ -128,6 +128,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectImportedGeometry3 = ChunkId.FromString("TeImp3");
         /**********/public static readonly ChunkId ObjectImportedGeometryMeshFilter = ChunkId.FromString("TeImpMshF");
         /**********/public static readonly ChunkId ObjectImportedGeometryLightingModel = ChunkId.FromString("TeImpLM");
+        /**********/public static readonly ChunkId ObjectImportedGeometrySharpEdges = ChunkId.FromString("TeShEdg");
         /**********/public static readonly ChunkId ObjectLight = ChunkId.FromString("TeLig");
         /**********/public static readonly ChunkId ObjectLight2 = ChunkId.FromString("TeLig2");
         /**********/public static readonly ChunkId ObjectLight3 = ChunkId.FromString("TeLig3");
