@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -41,21 +40,9 @@
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
             this.cbSharpEdges = new DarkUI.Controls.DarkCheckBox();
+            this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
             this.darkGroupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // importedGeometryManager
-            // 
-            this.importedGeometryManager.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.importedGeometryManager.LevelSettings = null;
-            this.importedGeometryManager.Location = new System.Drawing.Point(6, 49);
-            this.importedGeometryManager.Name = "importedGeometryManager";
-            this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(735, 289);
-            this.importedGeometryManager.TabIndex = 0;
-            this.importedGeometryManager.MouseDoubleClick += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.importedGeometryManager_MouseDoubleClick);
             // 
             // butCancel
             // 
@@ -154,7 +141,7 @@
             "Calculate from lights in room"});
             this.comboLightingModel.Location = new System.Drawing.Point(128, 64);
             this.comboLightingModel.Name = "comboLightingModel";
-            this.comboLightingModel.Size = new System.Drawing.Size(500, 23);
+            this.comboLightingModel.Size = new System.Drawing.Size(471, 23);
             this.comboLightingModel.TabIndex = 3;
             // 
             // darkLabel4
@@ -189,11 +176,24 @@
             // 
             this.cbSharpEdges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbSharpEdges.AutoSize = true;
-            this.cbSharpEdges.Location = new System.Drawing.Point(635, 67);
+            this.cbSharpEdges.Location = new System.Drawing.Point(606, 67);
             this.cbSharpEdges.Name = "cbSharpEdges";
-            this.cbSharpEdges.Size = new System.Drawing.Size(90, 17);
+            this.cbSharpEdges.Size = new System.Drawing.Size(120, 17);
             this.cbSharpEdges.TabIndex = 7;
-            this.cbSharpEdges.Text = "Sharp edges";
+            this.cbSharpEdges.Text = "Force sharp edges";
+            // 
+            // importedGeometryManager
+            // 
+            this.importedGeometryManager.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.importedGeometryManager.LevelSettings = null;
+            this.importedGeometryManager.Location = new System.Drawing.Point(6, 49);
+            this.importedGeometryManager.Name = "importedGeometryManager";
+            this.importedGeometryManager.SelectedImportedGeometry = null;
+            this.importedGeometryManager.Size = new System.Drawing.Size(735, 289);
+            this.importedGeometryManager.TabIndex = 0;
+            this.importedGeometryManager.MouseDoubleClick += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.importedGeometryManager_MouseDoubleClick);
             // 
             // FormImportedGeometry
             // 
