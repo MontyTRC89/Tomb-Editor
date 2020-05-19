@@ -18,6 +18,7 @@ Tomb Editor:
  * Fix disjointed vertices on imported room geometry.
  * Fix epic bug because of which every sound source was created twice.
  * Fix lots of bugs with imported geometry handling.
+ * Fix texture selection combobox not populating properly in animated textures dialog.
  * Ask for automatic reconnection of all offline media on reconnecting just one.
  * Fix lagging gizmo movement.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
