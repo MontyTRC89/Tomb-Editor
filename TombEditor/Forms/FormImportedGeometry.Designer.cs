@@ -147,7 +147,7 @@
             // darkLabel4
             // 
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel4.Location = new System.Drawing.Point(6, 65);
+            this.darkLabel4.Location = new System.Drawing.Point(6, 66);
             this.darkLabel4.Name = "darkLabel4";
             this.darkLabel4.Size = new System.Drawing.Size(107, 17);
             this.darkLabel4.TabIndex = 6;
@@ -188,10 +188,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.importedGeometryManager.LevelSettings = null;
-            this.importedGeometryManager.Location = new System.Drawing.Point(6, 49);
+            this.importedGeometryManager.Location = new System.Drawing.Point(6, 40);
             this.importedGeometryManager.Name = "importedGeometryManager";
             this.importedGeometryManager.SelectedImportedGeometry = null;
-            this.importedGeometryManager.Size = new System.Drawing.Size(735, 289);
+            this.importedGeometryManager.Size = new System.Drawing.Size(735, 298);
             this.importedGeometryManager.TabIndex = 0;
             this.importedGeometryManager.MouseDoubleClick += new System.EventHandler<System.Windows.Forms.MouseEventArgs>(this.importedGeometryManager_MouseDoubleClick);
             // 
