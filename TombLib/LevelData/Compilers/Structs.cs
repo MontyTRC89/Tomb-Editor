@@ -30,6 +30,12 @@ namespace TombLib.LevelData.Compilers
         public byte Red;
         public byte Green;
         public byte Blue;
+
+        public void write(BinaryWriter writer) {
+            writer.Write(Red);
+            writer.Write(Green);
+            writer.Write(Blue);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
