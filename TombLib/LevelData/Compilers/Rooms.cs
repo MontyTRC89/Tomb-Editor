@@ -622,7 +622,7 @@ namespace TombLib.LevelData.Compilers
 
                 int numPolygons = roomQuads.Count + roomTriangles.Count;
                 if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 3000)
-                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
+                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to unmerge statics or remove some imported geometry objects.");
 
                 // Assign vertex effects
 
