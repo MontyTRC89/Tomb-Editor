@@ -299,6 +299,7 @@ namespace TombLib.LevelData.Compilers
             // Generate geometry
             {
                 // Add room geometry
+
                 var vertexPositions = room.RoomGeometry.VertexPositions;
                 var vertexColors = room.RoomGeometry.VertexColors;
 
@@ -308,13 +309,17 @@ namespace TombLib.LevelData.Compilers
                 var roomTriangles = new List<tr_face3>();
                 var roomQuads = new List<tr_face4>();
 
+                // Merge static meshes
+
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
                     // Сheck if static Mesh is in the Auto Merge list
                     var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
                         mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
+
                     if (entry == null)
                         continue;
+
                     bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
                     bool clearShades = entry.ClearShades;
                     int meshVertexBase = roomVertices.Count;
@@ -322,6 +327,7 @@ namespace TombLib.LevelData.Compilers
                                          Matrix4x4.CreateTranslation(staticMesh.Position);
                     var normalTransform = staticMesh.RotationMatrix;
                     WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
+
                     for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
                     {
                         // Apply the transform to the vertex
@@ -377,14 +383,8 @@ namespace TombLib.LevelData.Compilers
                             Lighting2 = 0,
                             Attributes = (ushort)lightingEffect
                         };
+
                         trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
-
-                        // Check for maximum vertices reached
-                        if (roomVertices.Count >= 65536)
-                        {
-                            throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
-                        }
-
                         roomVertices.Add(trVertex);
                     }
 
@@ -395,6 +395,7 @@ namespace TombLib.LevelData.Compilers
                         ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
                         ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
                         ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+
                         if (poly.Shape == WadPolygonShape.Triangle)
                         {
 
@@ -435,6 +436,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Add geometry imported objects
+
                 int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
@@ -479,20 +481,17 @@ namespace TombLib.LevelData.Compilers
                                 // Pack the light according to chosen lighting model
                                 if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                                 {
-
                                     trVertex.Lighting2 = PackLightColor(mesh.Vertices[j].Color, _level.Settings.GameVersion);
                                 }
                                 else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
                                          position.X >= 0 && position.Z >= 0 &&
                                          position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                    trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
-                                else
-                                    trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
-
-                                // Check for maximum vertices reached
-                                if (roomVertices.Count >= 65536)
                                 {
-                                    throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
+                                    trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
+                                }
+                                else
+                                {
+                                    trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
                                 }
 
                                 // HACK: Find a vertex with same coordinates and merge with it.
@@ -510,12 +509,6 @@ namespace TombLib.LevelData.Compilers
 
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                             {
-                                int numPolygons = roomQuads.Count + roomTriangles.Count;
-                                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 3000)
-                                {
-                                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
-                                }
-
                                 ushort index0 = (ushort)(indexList[j + 0]);
                                 ushort index1 = (ushort)(indexList[j + 1]);
                                 ushort index2 = (ushort)(indexList[j + 2]);
@@ -546,6 +539,8 @@ namespace TombLib.LevelData.Compilers
                         }
                     }
                 }
+
+                // Add room's own geometry
 
                 if (!room.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
@@ -619,6 +614,17 @@ namespace TombLib.LevelData.Compilers
                                     }
                                 }
                             }
+
+                // Check for the limits reached
+
+                if (roomVertices.Count >= 65536)
+                    throw new Exception("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
+
+                int numPolygons = roomQuads.Count + roomTriangles.Count;
+                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 3000)
+                    throw new Exception("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit = 3000)! Try to remove some imported geometry objects.");
+
+                // Assign vertex effects
 
                 for (int i = 0; i < roomVertices.Count; ++i)
                 {
@@ -815,6 +821,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Build portals
+
             var tempIdPortals = new List<PortalInstance>();
 
             for (var z = 0; z < room.NumZSectors; z++)
