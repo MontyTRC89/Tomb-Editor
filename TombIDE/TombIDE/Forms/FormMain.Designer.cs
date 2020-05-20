@@ -324,7 +324,6 @@
 			this.Controls.Add(this.panel_Main);
 			this.Controls.Add(this.panel_Programs);
 			this.Controls.Add(this.panel_CoverLoading);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(1070, 640);
 			this.Name = "FormMain";
