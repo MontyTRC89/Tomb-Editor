@@ -4067,6 +4067,13 @@ namespace TombEditor
 
         public static bool SaveLevel(IWin32Window owner, bool askForPath)
         {
+            // Disable saving if level has unknown data (i.e. new prj2 version opened in old editor version)
+            if (_editor.Level.Settings.HasUnknownData)
+            {
+                _editor.SendMessage("Project is in read-only mode because it was created in newer version of Tomb Editor.\nUse newest Tomb Editor version to edit and save this project.", PopupType.Warning);
+                return false;
+            }
+
             string fileName = _editor.Level.Settings.LevelFilePath;
 
             // Show save dialog if necessary
@@ -4379,7 +4386,7 @@ namespace TombEditor
                         AddProjectToRecent(fileName);
 
                         if (newLevel.Settings.HasUnknownData)
-                            _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Don't save this project and use newest version of Tomb Editor.", PopupType.Warning);
+                            _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
                     }
 
                     _editor.Level = newLevel;
