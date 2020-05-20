@@ -23,9 +23,10 @@ namespace TombIDE
 		{
 			_ide = ide;
 
-			InitializeComponent();
+            InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
-			ApplySavedSettings();
+            ApplySavedSettings();
 
 			FillProjectList();
 		}
