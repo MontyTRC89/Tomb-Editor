@@ -4599,7 +4599,7 @@
 		<moveable id="121" name="BIG_SCORPION" />
 		<moveable id="122" name="SMALL_SCORPION" />
 		<moveable id="123" name="BABOON_NORMAL" />
-		<moveable id="124" name="BABOON_INV" />
+		<moveable id="124" name="BABOON_INV" use_body_from="123" />
 		<moveable id="125" name="BABOON_SILENT" />
 		<moveable id="126" name="LITTLE_BEETLE" />
 		<moveable id="127" name="LOCUSTS" />
@@ -4691,28 +4691,29 @@
 		<moveable id="248" name="MUTANT2" />
 		<moveable id="249" name="LIZARD" />
 		<moveable id="250" name="TONY_BOSS" />
-		<moveable id="251" name="PUNA_BOSS" />
-		<moveable id="252" name="SOPHIA_LEE_BOSS" />
-		<moveable id="253" name="LASER_BOLT" />
-		<moveable id="254" name="SKELETON" />
-		<moveable id="255" name="MUMMY" />
-		<moveable id="256" name="ENEMY_JEEP" />
-		<moveable id="257" name="HORSE" />
-		<moveable id="258" name="HORSEMAN" />
-		<moveable id="259" name="DEMIGOD1" />
-		<moveable id="260" name="DEMIGOD2" />
-		<moveable id="261" name="DEMIGOD3" />
-		<moveable id="262" name="SETHA" />
-		<moveable id="263" name="KNIGHT_TEMPLAR" />
-		<moveable id="264" name="AHMET" />
-		<moveable id="265" name="BIG_BEETLE" />
-		<moveable id="266" name="JEAN_YVES" />
-		<moveable id="267" name="WRAITH1" />
-		<moveable id="268" name="WRAITH2" />
-		<moveable id="269" name="WRAITH3" />
-		<moveable id="270" name="WRAITH4" />
-		<moveable id="271" name="LARA_DOUBLE" />
-		<moveable id="272" name="COMPY" />
+		<moveable id="251" name="TONY_BOSS_FLAME" />
+		<moveable id="252" name="PUNA_BOSS" />
+		<moveable id="253" name="SOPHIA_LEE_BOSS" />
+		<moveable id="254" name="LASER_BOLT" />
+		<moveable id="255" name="SKELETON" />
+		<moveable id="256" name="MUMMY" />
+		<moveable id="257" name="ENEMY_JEEP" />
+		<moveable id="258" name="HORSE" />
+		<moveable id="259" name="HORSEMAN" />
+		<moveable id="260" name="DEMIGOD1" />
+		<moveable id="261" name="DEMIGOD2" />
+		<moveable id="262" name="DEMIGOD3" />
+		<moveable id="263" name="SETHA" />
+		<moveable id="264" name="KNIGHT_TEMPLAR" />
+		<moveable id="265" name="AHMET" />
+		<moveable id="266" name="BIG_BEETLE" />
+		<moveable id="267" name="JEAN_YVES" />
+		<moveable id="268" name="WRAITH1" />
+		<moveable id="269" name="WRAITH2" />
+		<moveable id="270" name="WRAITH3" />
+		<moveable id="271" name="WRAITH4" />
+		<moveable id="272" name="LARA_DOUBLE" />
+		<moveable id="273" name="COMPY" />
 		<moveable id="274" name="HYDRA" />
 		<moveable id="275" name="GUARDIAN" />
 		<moveable id="276" name="SCIENTIST" />
@@ -4729,6 +4730,9 @@
 		<moveable id="287" name="ROMAN_GOD1" />
 		<moveable id="288" name="ROMAN_GOD2" />
 		<moveable id="289" name="LAGOON_WITCH" />
+		<moveable id="290" name="BOSS_SHIELD" />
+		<moveable id="291" name="BOSS_EXPLOSION_SHOCKWAVE" />
+		<moveable id="292" name="BOSS_EXPLOSION_RING" />
 		<moveable id="320" name="SPRINGBOARD" />
 		<moveable id="321" name="ROLLING_SPINDLE" />
 		<moveable id="322" name="DISK_SHOOTER" />
