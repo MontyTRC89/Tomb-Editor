@@ -36,6 +36,7 @@ namespace TombIDE
 		public FormMain(IDE ide, Project project)
 		{
 			InitializeComponent();
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
 			_ide = ide;
 			_ide.Project = project;
