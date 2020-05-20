@@ -266,6 +266,12 @@ namespace TombLib.LevelData
         {
             bool result = false;
 
+            if (Room.Position != _lastRoomPosition)
+            {
+                result = true;
+                _lastRoomPosition = Room.Position;
+            }
+
             if (Position != _lastPosition)
             {
                 result = true;
@@ -307,6 +313,7 @@ namespace TombLib.LevelData
 
             return result;
         }
+        private VectorInt3 _lastRoomPosition = new VectorInt3(int.MinValue);
         private Vector3 _lastPosition = new Vector3(float.MinValue);
         private Vector3 _lastRotation = new Vector3(float.MinValue);
         private Vector3 _lastScale = new Vector3(float.MinValue);

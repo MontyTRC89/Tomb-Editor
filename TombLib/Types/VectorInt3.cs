@@ -10,6 +10,11 @@ namespace TombLib
         public int Y;
         public int Z;
 
+        public VectorInt3(int all)
+        {
+            X = all; Y = all; Z = all;
+        }
+
         public VectorInt3(int x, int y, int z)
         {
             X = x;
