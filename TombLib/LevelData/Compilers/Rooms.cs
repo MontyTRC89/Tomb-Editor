@@ -436,7 +436,6 @@ namespace TombLib.LevelData.Compilers
 
                 // Add geometry imported objects
 
-                int geometryVertexIndexBase = roomVertices.Count;
                 foreach (var geometry in room.Objects.OfType<ImportedGeometryInstance>())
                 {
                     if (geometry.Model?.DirectXModel == null)
