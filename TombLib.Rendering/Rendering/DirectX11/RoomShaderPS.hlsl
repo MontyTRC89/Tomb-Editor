@@ -158,6 +158,9 @@ float4 main(PixelInputType input) : SV_TARGET
 
 		result.w = 1.0f - (1.0f - result.w) * sectorAreaStrength;
 	}
+	
+	// Use overlay's alpha as global alpha for any mode (needed for hidden rooms), as we've run out of flag space.
+	result *= input.Overlay.w;
 
     if ((result.x + result.y + result.z + result.w) < 0.02f)
         discard;

@@ -22,8 +22,9 @@ struct VertexInputType
 	// Bit 2 - 3: Y coordinate
 	// Bit 4: Highlighted
 	// Bit 5: Dimmed
-	// Bit 6: Is colored?
-	// Bit 7 - 31: either coloring or texture index
+	// Bit 6: Is textured?
+	// Bit 7: Selection
+	// Bit 8 - 31: either coloring or texture index
     uint EditorUv : EDITORUVANDSECTORTEXTURE;
 };
 

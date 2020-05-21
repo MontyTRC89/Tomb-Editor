@@ -37,9 +37,6 @@ namespace TombEditor.Controls
         public bool ShowCardinalDirections { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowHorizon { get; set; }
-        private bool _drawIllegalSlopes = false;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowIllegalSlopes { get { return _drawIllegalSlopes; } set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms.Clear(); } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowMoveables { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -56,15 +53,41 @@ namespace TombEditor.Controls
         public bool ShowLightMeshes { get; set; } = true;
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowOtherObjects { get; set; } = true;
-        private bool _drawSlideDirections = false;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowSlideDirections { get { return _drawSlideDirections; } set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); } }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DisablePickingForImportedGeometry { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowExtraBlendingModes { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowLightingWhiteTextureOnly { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowRealTintForMergedStatics { get; set; }
+
+        // These options require explicit setters because they probe into room cache.
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowSlideDirections
+        {
+            get { return _drawSlideDirections; }
+            set { if (value == _drawSlideDirections) return; _drawSlideDirections = value; _renderingCachedRooms.Clear(); }
+        }
+        private bool _drawSlideDirections = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowIllegalSlopes 
+        { 
+            get { return _drawIllegalSlopes; } 
+            set { if (value == _drawIllegalSlopes) return; _drawIllegalSlopes = value; _renderingCachedRooms.Clear(); }
+        }
+        private bool _drawIllegalSlopes = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DisablePickingForHiddenRooms
+        {
+            get { return _disablePickingForHiddenRooms; }
+            set { if (value == _disablePickingForHiddenRooms) return; _disablePickingForHiddenRooms = value; _renderingCachedRooms.Clear(); }
+        }
+        private bool _disablePickingForHiddenRooms = false;
+
 
         private Camera _oldCamera;
 
@@ -152,6 +175,7 @@ namespace TombEditor.Controls
                             DrawIllegalSlopes = ShowIllegalSlopes,
                             DrawSlideDirections = ShowSlideDirections,
                             ProbeAttributesThroughPortals = _editor.Configuration.UI_ProbeAttributesThroughPortals,
+                            HideHiddenRooms = DisablePickingForHiddenRooms
                         };
 
                         if (_editor.SelectedRoom == room)
@@ -1746,10 +1770,13 @@ namespace TombEditor.Controls
                         }
                     }
 
-                // Check room geometry
-                var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
-                if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
-                    result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
+                if (!DisablePickingForHiddenRooms || (!room.Hidden || room != _editor.SelectedRoom))
+                {
+                    // Check room geometry
+                    var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
+                    if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
+                        result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
+                }
             }
 
             return result;

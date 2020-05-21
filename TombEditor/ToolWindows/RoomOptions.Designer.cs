@@ -33,6 +33,7 @@
             this.comboPortalShade = new DarkUI.Controls.DarkComboBox();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.comboLightEffect = new DarkUI.Controls.DarkComboBox();
+            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butSelectPreviousRoom = new DarkUI.Controls.DarkButton();
@@ -50,7 +51,6 @@
             this.butCropRoom = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butHidden = new DarkUI.Controls.DarkButton();
-            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -272,6 +272,19 @@
             this.toolTip.SetToolTip(this.comboLightEffect, "Light / transform effect on room vertices");
             this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
             // 
+            // tbRoomTags
+            // 
+            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
+            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
+            this.tbRoomTags.Name = "tbRoomTags";
+            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
+            this.tbRoomTags.TabIndex = 2;
+            this.tbRoomTags.Tag = "SetRoomTags";
+            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
+            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
+            // 
             // darkLabel2
             // 
             this.darkLabel2.AutoSize = true;
@@ -301,10 +314,10 @@
             this.butSelectPreviousRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.butSelectPreviousRoom.Checked = false;
             this.butSelectPreviousRoom.Image = global::TombEditor.Properties.Resources.actions_back_16;
-            this.butSelectPreviousRoom.Location = new System.Drawing.Point(228, 86);
+            this.butSelectPreviousRoom.Location = new System.Drawing.Point(228, 144);
             this.butSelectPreviousRoom.Name = "butSelectPreviousRoom";
             this.butSelectPreviousRoom.Size = new System.Drawing.Size(24, 22);
-            this.butSelectPreviousRoom.TabIndex = 113;
+            this.butSelectPreviousRoom.TabIndex = 24;
             this.butSelectPreviousRoom.Tag = "SelectPreviousRoom";
             // 
             // butNewRoom
@@ -345,10 +358,10 @@
             this.butLocked.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butLocked.Checked = false;
             this.butLocked.Image = global::TombEditor.Properties.Resources.general_Lock_16;
-            this.butLocked.Location = new System.Drawing.Point(258, 86);
+            this.butLocked.Location = new System.Drawing.Point(258, 144);
             this.butLocked.Name = "butLocked";
             this.butLocked.Size = new System.Drawing.Size(24, 22);
-            this.butLocked.TabIndex = 20;
+            this.butLocked.TabIndex = 25;
             this.butLocked.Tag = "LockRoom";
             // 
             // comboFlipMap
@@ -383,10 +396,10 @@
             this.butRoomUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butRoomUp.Checked = false;
             this.butRoomUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
-            this.butRoomUp.Location = new System.Drawing.Point(258, 114);
+            this.butRoomUp.Location = new System.Drawing.Point(258, 86);
             this.butRoomUp.Name = "butRoomUp";
             this.butRoomUp.Size = new System.Drawing.Size(24, 23);
-            this.butRoomUp.TabIndex = 22;
+            this.butRoomUp.TabIndex = 21;
             this.butRoomUp.Tag = "MoveRoomUp";
             // 
             // comboReverberation
@@ -433,10 +446,10 @@
             this.butRoomDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butRoomDown.Checked = false;
             this.butRoomDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
-            this.butRoomDown.Location = new System.Drawing.Point(258, 143);
+            this.butRoomDown.Location = new System.Drawing.Point(258, 115);
             this.butRoomDown.Name = "butRoomDown";
             this.butRoomDown.Size = new System.Drawing.Size(24, 23);
-            this.butRoomDown.TabIndex = 24;
+            this.butRoomDown.TabIndex = 23;
             this.butRoomDown.Tag = "MoveRoomDown";
             // 
             // butEditRoomName
@@ -455,10 +468,10 @@
             this.butCropRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCropRoom.Checked = false;
             this.butCropRoom.Image = global::TombEditor.Properties.Resources.general_crop_16;
-            this.butCropRoom.Location = new System.Drawing.Point(228, 114);
+            this.butCropRoom.Location = new System.Drawing.Point(228, 86);
             this.butCropRoom.Name = "butCropRoom";
             this.butCropRoom.Size = new System.Drawing.Size(24, 23);
-            this.butCropRoom.TabIndex = 21;
+            this.butCropRoom.TabIndex = 20;
             this.butCropRoom.Tag = "CropRoom";
             // 
             // butSplitRoom
@@ -466,10 +479,10 @@
             this.butSplitRoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSplitRoom.Checked = false;
             this.butSplitRoom.Image = global::TombEditor.Properties.Resources.actions_Split_16;
-            this.butSplitRoom.Location = new System.Drawing.Point(228, 143);
+            this.butSplitRoom.Location = new System.Drawing.Point(228, 115);
             this.butSplitRoom.Name = "butSplitRoom";
             this.butSplitRoom.Size = new System.Drawing.Size(24, 23);
-            this.butSplitRoom.TabIndex = 23;
+            this.butSplitRoom.TabIndex = 22;
             this.butSplitRoom.Tag = "SplitRoom";
             // 
             // butHidden
@@ -480,21 +493,8 @@
             this.butHidden.Location = new System.Drawing.Point(228, 172);
             this.butHidden.Name = "butHidden";
             this.butHidden.Size = new System.Drawing.Size(54, 22);
-            this.butHidden.TabIndex = 114;
+            this.butHidden.TabIndex = 26;
             this.butHidden.Tag = "HideRoom";
-            // 
-            // tbRoomTags
-            // 
-            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
-            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
-            this.tbRoomTags.Name = "tbRoomTags";
-            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
-            this.tbRoomTags.TabIndex = 2;
-            this.tbRoomTags.Tag = "SetRoomTags";
-            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
-            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
             // 
             // RoomOptions
             // 

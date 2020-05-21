@@ -53,6 +53,7 @@ namespace TombEditor
         public bool Rendering3D_ToolboxVisible { get; set; } = true;
         public Point Rendering3D_ToolboxPosition { get; set; } = new Point(15, 45);
         public bool Rendering3D_DisablePickingForImportedGeometry { get; set; } = false;
+        public bool Rendering3D_DisablePickingForHiddenRooms { get; set; } = true;
         public bool Rendering3D_ShowPortals { get; set; } = false;
         public bool Rendering3D_ShowHorizon { get; set; } = false;
         public bool Rendering3D_ShowAllRooms { get; set; } = false;

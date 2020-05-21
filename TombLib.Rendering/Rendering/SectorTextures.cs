@@ -52,6 +52,7 @@ namespace TombLib.Rendering
         public bool Selected;
         public bool Highlighted;
         public bool Dimmed;
+        public bool Hidden;
     }
 
     public class SectorTextureDefault
@@ -64,6 +65,7 @@ namespace TombLib.Rendering
         public bool ProbeAttributesThroughPortals = true;
         public bool DrawIllegalSlopes = true;
         public bool DrawSlideDirections = true;
+        public bool HideHiddenRooms = true;
 
         public static readonly HashSet<SectorColoringType> IgnoredHighlights = new HashSet<SectorColoringType>
         {
@@ -497,6 +499,7 @@ namespace TombLib.Rendering
                 Overlay = Overlay,
                 SectorTexture = SectorTexture,
                 Dimmed = Dimmed,
+                Hidden = room.Hidden && HideHiddenRooms,
                 Selected = (SelectionArea.Contains(new VectorInt2(x, z))),
                 Highlighted = (HighlightArea.Contains(new VectorInt2(x, z)))
             };
