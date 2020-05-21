@@ -1770,7 +1770,10 @@ namespace TombEditor.Controls
                         }
                     }
 
-                if (!DisablePickingForHiddenRooms || (!room.Hidden || room != _editor.SelectedRoom))
+                // Pick hidden rooms only for place action, if they are not selected or if global picking setting is off.
+
+                if (!DisablePickingForHiddenRooms || 
+                    (!room.Hidden || room != _editor.SelectedRoom || _editor.Action is IEditorActionPlace))
                 {
                     // Check room geometry
                     var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));

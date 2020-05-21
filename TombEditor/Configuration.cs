@@ -161,7 +161,7 @@ namespace TombEditor
             "Undo", "Redo", "|",
             "CenterCamera", "DrawPortals", "DrawAllRooms", "DrawHorizon", "DrawRoomNames",
             "DrawCardinalDirections", "DrawExtraBlendingModes", "DrawIllegalSlopes",
-            "DrawSlideDirections", "DisableGeometryPicking", "DrawObjects", "|",
+            "DrawSlideDirections", "DisableHiddenRoomPicking", "DisableGeometryPicking", "DrawObjects", "|",
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",
             "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
