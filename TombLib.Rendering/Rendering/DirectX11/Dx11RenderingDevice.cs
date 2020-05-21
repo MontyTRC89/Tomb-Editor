@@ -173,7 +173,7 @@ namespace TombLib.Rendering.DirectX11
                 BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
                 {
                     BlendStateDescription desc = BlendStateDescription.Default();
-                    //desc.AlphaToCoverageEnable = true;
+                    desc.AlphaToCoverageEnable = true;
                     desc.RenderTarget[0].IsBlendEnabled = true;
                     desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
                     desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
@@ -286,11 +286,11 @@ namespace TombLib.Rendering.DirectX11
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint CompressColor(Vector3 color, bool average = true)
+        public static uint CompressColor(Vector3 color, float alpha = 1.0f, bool average = true)
         {
             float multiplier = average ? 128.0f : 255.0f;
             color = Vector3.Max(new Vector3(), Vector3.Min(new Vector3(255.0f), color * multiplier + new Vector3(0.5f)));
-            return ((uint)color.X) | (((uint)color.Y) << 8) | (((uint)color.Z) << 16) | 0xff000000;
+            return ((uint)color.X) | (((uint)color.Y) << 8) | (((uint)color.Z) << 16) | ((uint)(MathC.Clamp(alpha, 0, 1) * 255.0f) << 24);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

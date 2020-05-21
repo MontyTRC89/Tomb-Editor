@@ -1529,6 +1529,12 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("DisableHiddenRoomPicking", "Disable hidden room picking", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_DisablePickingForHiddenRooms = !args.Editor.Configuration.Rendering3D_DisablePickingForHiddenRooms;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DrawAllRooms", "Draw all rooms", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowAllRooms = !args.Editor.Configuration.Rendering3D_ShowAllRooms;
