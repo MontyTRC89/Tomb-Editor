@@ -145,28 +145,17 @@ namespace TombEditor.Controls
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
                 foreach (string path in paths)
                 {
-                    ImportedGeometryInfo info = ImportedGeometryInfo.Default;
-                    info.Path = path;
-                    info.Name = PathC.GetFileNameWithoutExtensionTry(path);
-
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
                         settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
+                        settingsDialog.SelectPreset("Normal scale to TR scale");
+
                         if (settingsDialog.ShowDialog(this) == DialogResult.Cancel)
                             continue;
 
-                        info.Scale = settingsDialog.Settings.Scale;
-                        info.SwapXY = settingsDialog.Settings.SwapXY;
-                        info.SwapXZ = settingsDialog.Settings.SwapXZ;
-                        info.SwapYZ = settingsDialog.Settings.SwapYZ;
-                        info.InvertFaces = settingsDialog.Settings.InvertFaces;
-                        info.FlipX = settingsDialog.Settings.FlipX;
-                        info.FlipY = settingsDialog.Settings.FlipY;
-                        info.FlipZ = settingsDialog.Settings.FlipZ;
-                        info.FlipUV_V = settingsDialog.Settings.FlipUV_V;
+                        var info = new ImportedGeometryInfo(LevelSettings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
+                        importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                     }
-
-                    importInfos.Add(new KeyValuePair<ImportedGeometry, ImportedGeometryInfo>(new ImportedGeometry(), info));
                 }
 
                 LevelSettings.ImportedGeometryUpdate(importInfos);
@@ -248,7 +237,7 @@ namespace TombEditor.Controls
                     if (_dataGridViewDataSource[i].Object == value)
                     {
                         dataGridView.ClearSelection();
-                        dataGridView.SelectedRows[i].Selected = true;
+                        dataGridView.Rows[i].Selected = true;
                         return;
                     }
             }

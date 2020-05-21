@@ -14,18 +14,7 @@ namespace TombLib.GeometryIO
 
             RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Downscale by 128 (for Blender)",
-                Settings = new IOGeometrySettings
-                {
-                    Export = true,
-                    Scale = 128.0f,
-                    FlipUV_V = true
-                }
-            });
-
-            RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
-            {
-                Name = "Downscale by 1024",
+                Name = "Normal scale",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
@@ -36,7 +25,7 @@ namespace TombLib.GeometryIO
 
             RoomExportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Original scale",
+                Name = "Keep original TR scale",
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
@@ -47,10 +36,20 @@ namespace TombLib.GeometryIO
 
             GeometryImportSettingsPresets = new List<IOGeometrySettingsPreset>();
 
+            // Generic
+            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
+            {
+                Name = "Normal scale to TR scale",
+                Settings = new IOGeometrySettings
+                {
+                    Scale = 1024.0f,
+                }
+            });
+
             // Metasequoia
             GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
             {
-                Name = "Metasequoia MQO Scale 1",
+                Name = "Metasequoia MQO unscaled",
                 Settings = new IOGeometrySettings
                 {
                     Scale = 1.0f,
@@ -116,36 +115,6 @@ namespace TombLib.GeometryIO
                     SwapYZ = true,
                     FlipZ = false,
                     FlipUV_V = true,
-                    PremultiplyUV = true,
-                    WrapUV = true
-                }
-            });
-
-            // Generic
-            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
-            {
-                Name = "Generic OBJ",
-                Settings = new IOGeometrySettings
-                {
-                    Scale = 1.0f,
-                    FlipZ = true,
-                    FlipUV_V = true,
-                    InvertFaces = true,
-                    PremultiplyUV = true,
-                    WrapUV = true
-                }
-            });
-
-            // Blender
-            GeometryImportSettingsPresets.Add(new IOGeometrySettingsPreset
-            {
-                Name = "Blender OBJ",
-                Settings = new IOGeometrySettings
-                {
-                    Scale = 128.0f,
-                    FlipZ = true,
-                    FlipUV_V = true,
-                    InvertFaces = true,
                     PremultiplyUV = true,
                     WrapUV = true
                 }

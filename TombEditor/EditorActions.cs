@@ -3570,6 +3570,38 @@ namespace TombEditor
                                       .Any(obj => obj is ItemInstance && ((ItemInstance)obj).ItemType == new ItemType(WadMoveableId.Lara));
         }
 
+        public static bool AddAndPlaceImportedGeometry(IWin32Window owner, VectorInt2 position, string file)
+        {
+            if (!File.Exists(file))
+                return false;
+
+            ImportedGeometry geometryToPlace = _editor.Level.Settings.ImportedGeometries.Find(
+                item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
+
+            if (geometryToPlace == null)
+            {
+                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
+                    settingsDialog.SelectPreset("Normal scale to TR scale");
+
+                    if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
+                        return false;
+
+                    geometryToPlace = new ImportedGeometry();
+                    var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory), settingsDialog.Settings);
+                    _editor.Level.Settings.ImportedGeometryUpdate(geometryToPlace, info);
+                    _editor.Level.Settings.ImportedGeometries.Add(geometryToPlace);
+                    _editor.LoadedImportedGeometriesChange();
+                }
+            }
+
+            PlaceObject(_editor.SelectedRoom, position,
+                new ImportedGeometryInstance { Model = geometryToPlace });
+
+            return true;
+        }
+
         public static IEnumerable<LevelTexture> AddTexture(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
         {
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
@@ -4156,12 +4188,7 @@ namespace TombEditor
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
                     {
                         settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
-                        string resultingExtension = Path.GetExtension(saveFileDialog.FileName).ToLowerInvariant();
-
-                        if (resultingExtension.Equals(".mqo"))
-                            settingsDialog.SelectPreset("Downscale by 1024");
-                        else
-                            settingsDialog.SelectPreset("Downscale by 128 (for Blender)");
+                        settingsDialog.SelectPreset("Normal scale");
 
                         if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
                         {

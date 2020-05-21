@@ -386,6 +386,8 @@ namespace TombLib.LevelData.Compilers
 
                         trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
                         roomVertices.Add(trVertex);
+
+                        GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
                     }
 
                     for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
