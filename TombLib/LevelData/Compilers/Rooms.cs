@@ -386,8 +386,7 @@ namespace TombLib.LevelData.Compilers
 
                         trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
                         roomVertices.Add(trVertex);
-
-                        GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
+                        roomVerticesDictionary.Add(trVertex.GetHashCode(), (ushort)roomVertices.Count);
                     }
 
                     for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
@@ -507,6 +506,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 existingIndex = roomVertices.Count;
                                 roomVertices.Add(trVertex);
+                                roomVerticesDictionary.Add(trVertex.GetHashCode(), (ushort)roomVertices.Count);
                             }
                             else
                             {
@@ -515,13 +515,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     existingIndex = roomVertices.Count;
                                     roomVertices.Add(trVertex);
+                                    roomVerticesDictionary.Add(trVertex.GetHashCode(), (ushort)roomVertices.Count);
                                 }
-
-                                // Addititionally try to add vertex to dictionary so it will merge with original geometry.
-                                // This ignores original vertex colour, as it may be different because of recalculated
-                                // normals or vertex paint applied.
-
-                                GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
                             }
 
                             indexList.Add(existingIndex);
