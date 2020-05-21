@@ -1806,8 +1806,26 @@ namespace TombLib.LevelData
             return sampleSum;
         }
 
+        public static float GetRaytraceResult(Room room, LightInstance light, Vector3 position, bool highQuality)
+        {
+            float result = 1.0f;
+            if (light.Type != LightType.Effect && light.Type != LightType.FogBulb)
+            {
+                int numSamples;
+                if (highQuality)
+                    numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
+                else
+                    numSamples = 1;
+                result = GetSampleSumFromLightTracing(numSamples, room, position, light);
+
+                if (result < 0.000001f)
+                    return 0;
+            }
+            return result;
+        }
+
         public static Vector3 CalculateLightForVertex(Room room, LightInstance light, Vector3 position, 
-                                                      Vector3 normal, bool forRooms, bool highQuality)
+                                                      Vector3 normal, bool legacyPointLightModel, bool highQuality)
         {
             if (!light.Enabled)
                 return Vector3.Zero;
@@ -1839,32 +1857,23 @@ namespace TombLib.LevelData
                         // Calculate light diffuse value
                         int diffuse = (int)(light.Intensity * 8192);
 
-                        // Calculate the length squared of the normal vector
-                        float dotN = Vector3.Dot((!forRooms ? -lightVector : normal), normal);
-
-                        // Do raytracing
-                        float sampleSum = 1.0f;
-                        if (dotN <= 0 || forRooms)
-                        {
-                            int numSamples;
-                            if (highQuality)
-                                numSamples = GetLightSampleCount(light, light.Quality);
-                            else 
-                                numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
-                            sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
-                            if (sampleSum < 0.000001f)
-                                return Vector3.Zero;
-                        }
-
                         // Calculate the attenuation
                         float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
                         if (attenuaton > 1.0f)
                             attenuaton = 1.0f;
                         if (attenuaton <= 0.0f)
                             return Vector3.Zero;
-                        
+
+                        // Calculate the length squared of the normal vector
+                        float dotN = Vector3.Dot((legacyPointLightModel ? normal : -lightVector), normal);
+                        if (dotN <= 0)
+                            return Vector3.Zero;
+
+                        // Get raytrace result
+                        var raytraceResult = GetRaytraceResult(room, light, position, highQuality);
+
                         // Calculate final light color
-                        float diffuseIntensity = dotN * attenuaton * sampleSum;
+                        float diffuseIntensity = dotN * attenuaton * raytraceResult;
                         diffuseIntensity = Math.Max(0, diffuseIntensity);
                         float finalIntensity = diffuseIntensity * diffuse;
                         return finalIntensity * light.Color * (1.0f / 64.0f);
@@ -1891,34 +1900,21 @@ namespace TombLib.LevelData
 
                 case LightType.Sun:
                     {
-                        // Do raytracing now for saving CPU later
-                        float sampleSum = 1.0f;
-                        if (forRooms)
-                        {
-                            int numSamples;
-                            if (highQuality)
-                                numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
-                            else
-                                numSamples = 1;
-                            sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
-
-                            if (sampleSum < 0.000001f)
-                                return Vector3.Zero;
-                        }
-
                         // Calculate the light direction
                         lightDirection = light.GetDirection();
 
                         // Calculate diffuse lighting
                         float diffuse = -Vector3.Dot(lightDirection, normal);
-
                         if (diffuse <= 0)
                             return Vector3.Zero;
-
-                        if (diffuse > 1)
+                        if (diffuse > 1.0f)
                             diffuse = 1.0f;
 
-                        float finalIntensity = diffuse * light.Intensity * 8192.0f * sampleSum;
+                        // Get raytrace result
+                        var raytraceResult = GetRaytraceResult(room, light, position, highQuality);
+
+                        // Calculate final light color
+                        float finalIntensity = diffuse * light.Intensity * 8192.0f * raytraceResult;
                         if (finalIntensity < 0)
                             return Vector3.Zero;
                         return finalIntensity * light.Color * (1.0f / 64.0f);
@@ -1948,20 +1944,6 @@ namespace TombLib.LevelData
                         if (d < cosO2)
                             return Vector3.Zero;
 
-                        float sampleSum = 1.0f;
-                        if (forRooms)
-                        {
-                            int numSamples;
-                            if (highQuality)
-                                numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
-                            else
-                                numSamples = 1;
-                            sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
-
-                            if (sampleSum < 0.000001f)
-                                return Vector3.Zero;
-                        }
-
                         // Calculate light diffuse value
                         float factor = (float)(1.0f - (d - cosI2) / (cosO2 - cosI2));
                         if (factor > 1.0f)
@@ -1984,7 +1966,10 @@ namespace TombLib.LevelData
                         if (dot1 > 1.0f)
                             dot1 = 1.0f;
 
-                        float finalIntensity = attenuation * dot1 * factor * light.Intensity * 8192.0f * sampleSum;
+                        // Get raytrace result
+                        var raytraceResult = GetRaytraceResult(room, light, position, highQuality);
+
+                        float finalIntensity = attenuation * dot1 * factor * light.Intensity * 8192.0f * raytraceResult;
                         return finalIntensity * light.Color * (1.0f / 64.0f);
                     }
                     break;
@@ -2020,7 +2005,7 @@ namespace TombLib.LevelData
                     foreach (var light in lights) // No Linq here because it's slow
                     {
                         if (light.IsStaticallyUsed)
-                            color += CalculateLightForVertex(room, light, position, normal, true, highQuality);
+                            color += CalculateLightForVertex(room, light, position, normal, false, highQuality);
                     }
 
                     // Apply color
