@@ -385,8 +385,8 @@ namespace TombLib.LevelData.Compilers
                         };
 
                         trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
-                        roomVertices.Add(trVertex);
                         roomVerticesDictionary.Add(trVertex.GetHashCode(), (ushort)roomVertices.Count);
+                        roomVertices.Add(trVertex);
                     }
 
                     for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
@@ -505,8 +505,8 @@ namespace TombLib.LevelData.Compilers
                             if (geometry.SharpEdges)
                             {
                                 existingIndex = roomVertices.Count;
-                                roomVertices.Add(trVertex);
                                 roomVerticesDictionary.Add(trVertex.GetHashCode(), (ushort)roomVertices.Count);
+                                roomVertices.Add(trVertex);
                             }
                             else
                             {
@@ -514,8 +514,8 @@ namespace TombLib.LevelData.Compilers
                                 if (existingIndex == -1)
                                 {
                                     existingIndex = roomVertices.Count;
-                                    roomVertices.Add(trVertex);
                                     roomVerticesDictionary.Add(trVertex.GetHashCode(), (ushort)roomVertices.Count);
+                                    roomVertices.Add(trVertex);
                                 }
                             }
 
