@@ -119,6 +119,21 @@ namespace TombLib.LevelData
         public bool FlipZ { get; set; }
         public bool FlipUV_V { get; set; }
         public bool InvertFaces { get; set; }
+
+        public ImportedGeometryInfo(string path, IOGeometrySettings settings)
+        {
+            Name = PathC.GetFileNameWithoutExtensionTry(path);
+            Path = path;
+            Scale = settings.Scale;
+            SwapXY = settings.SwapXY;
+            SwapXZ = settings.SwapXZ;
+            SwapYZ = settings.SwapYZ;
+            InvertFaces = settings.InvertFaces;
+            FlipX = settings.FlipX;
+            FlipY = settings.FlipY;
+            FlipZ = settings.FlipZ;
+            FlipUV_V = settings.FlipUV_V;
+        }
     }
 
     public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>

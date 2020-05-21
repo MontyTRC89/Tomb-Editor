@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -1361,22 +1360,7 @@ namespace TombEditor.Controls
                         if (!ImportedGeometry.FileExtensions.Matches(file))
                             continue;
 
-                        ImportedGeometry geometryToDrop = _editor.Level.Settings.ImportedGeometries.Find(
-                            item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
-                        if (geometryToDrop == null)
-                        {
-                            var info = ImportedGeometryInfo.Default;
-                            info.Path = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
-                            info.Name = Path.GetFileNameWithoutExtension(file);
-
-                            geometryToDrop = new ImportedGeometry();
-                            _editor.Level.Settings.ImportedGeometryUpdate(geometryToDrop, info);
-                            _editor.Level.Settings.ImportedGeometries.Add(geometryToDrop);
-                            _editor.LoadedImportedGeometriesChange();
-                        }
-
-                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos,
-                            new ImportedGeometryInstance { Model = geometryToDrop });
+                        EditorActions.AddAndPlaceImportedGeometry(this, newBlockPicking.Pos, file);
                     }
                 }
             }
