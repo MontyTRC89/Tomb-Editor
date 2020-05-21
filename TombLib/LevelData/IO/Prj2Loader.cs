@@ -1069,7 +1069,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectLight || id3 == Prj2Chunks.ObjectLight2 || id3 == Prj2Chunks.ObjectLight3)
+                else if (id3 == Prj2Chunks.ObjectLight3)
                 {
                     var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -1084,17 +1084,47 @@ namespace TombLib.LevelData.IO
                     instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
                     instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
                     instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
-
-                    if (id3 == Prj2Chunks.ObjectLight2)
-                        instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
-                    else
-                        instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
-
-                    if (id3 == Prj2Chunks.ObjectLight3)
-                        instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
-                    else
-                        instance.Quality = LightQuality.Default;
-
+                    instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
+                    instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
+                    instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectLight2) {
+                    var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Intensity = chunkIO.Raw.ReadSingle();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.InnerRange = chunkIO.Raw.ReadSingle();
+                    instance.OuterRange = chunkIO.Raw.ReadSingle();
+                    instance.InnerAngle = chunkIO.Raw.ReadSingle();
+                    instance.OuterAngle = chunkIO.Raw.ReadSingle();
+                    instance.Enabled = chunkIO.Raw.ReadBoolean();
+                    instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
+                    instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
+                    instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
+                    instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
+                    instance.Quality = LightQuality.Default;
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectLight) {
+                    var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
+                    instance.Intensity = chunkIO.Raw.ReadSingle();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.InnerRange = chunkIO.Raw.ReadSingle();
+                    instance.OuterRange = chunkIO.Raw.ReadSingle();
+                    instance.InnerAngle = chunkIO.Raw.ReadSingle();
+                    instance.OuterAngle = chunkIO.Raw.ReadSingle();
+                    instance.Enabled = chunkIO.Raw.ReadBoolean();
+                    instance.IsObstructedByRoomGeometry = chunkIO.Raw.ReadBoolean();
+                    instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
+                    instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
+                    instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
+                    instance.Quality = LightQuality.Default;
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
