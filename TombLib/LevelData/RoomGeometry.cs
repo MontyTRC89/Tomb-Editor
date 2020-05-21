@@ -1821,7 +1821,6 @@ namespace TombLib.LevelData
                 case LightType.Point:
                 case LightType.Shadow:
 
-
                     // Get the light vector
                     lightVector = position - light.Position;
 
@@ -1847,21 +1846,23 @@ namespace TombLib.LevelData
                         float sampleSum = 1.0f;
                         if (dotN <= 0 || forRooms)
                         {
-                            if (highQuality) {
-                                int numSamples = GetLightSampleCount(light, light.Quality);
-                                sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
-                            }
-                            else {
-                                int numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
-                                sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
-                            }
+                            int numSamples;
+                            if (highQuality)
+                                numSamples = GetLightSampleCount(light, light.Quality);
+                            else 
+                                numSamples = GetLightSampleCount(light, room.Level.Settings.DefaultLightQuality);
+                            sampleSum = GetSampleSumFromLightTracing(numSamples, room, position, light);
+                            if (sampleSum < 0.000001f)
+                                return Vector3.Zero;
                         }
+
                         // Calculate the attenuation
                         float attenuaton = (light.OuterRange * 1024.0f - distance) / (light.OuterRange * 1024.0f - light.InnerRange * 1024.0f);
                         if (attenuaton > 1.0f)
                             attenuaton = 1.0f;
                         if (attenuaton <= 0.0f)
                             return Vector3.Zero;
+                        
                         // Calculate final light color
                         float diffuseIntensity = dotN * attenuaton * sampleSum;
                         diffuseIntensity = Math.Max(0, diffuseIntensity);
