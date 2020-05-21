@@ -430,7 +430,6 @@ namespace TombLib.LevelData.Compilers
                                 roomQuads.Add(quad);
                                 _mergedStaticMeshTextureInfos.Add(poly, result);
                             }
-
                         }
                     }
                 }
@@ -448,70 +447,92 @@ namespace TombLib.LevelData.Compilers
                                          Matrix4x4.CreateScale(geometry.Scale) *
                                          Matrix4x4.CreateTranslation(geometry.Position);
                     var normalTransform = geometry.RotationMatrix;
+                    var indexList = new List<int>();
+                    int baseIndex = 0;
 
                     foreach (var mesh in meshes)
                     {
                         if (!geometry.MeshNameMatchesFilter(mesh.Name))
                             continue;
 
-                        var indexList = new List<int>();
+                        int currentMeshIndexCount = 0;
 
-                        foreach (var submesh in mesh.Submeshes)
+                        for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
-                            for (int j = 0; j < mesh.Vertices.Count; j++)
+                            var vertex = mesh.Vertices[j];
+
+                            // Apply the transform to the vertex
+                            Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
+                            Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
+                            normal = Vector3.Normalize(normal);
+
+                            var trVertex = new tr_room_vertex
                             {
-                                // Apply the transform to the vertex
-                                Vector3 position = MathC.HomogenousTransform(mesh.Vertices[j].Position, worldTransform);
-                                Vector3 normal = MathC.HomogenousTransform(mesh.Vertices[j].Normal, normalTransform);
-                                normal = Vector3.Normalize(normal);
-
-                                var trVertex = new tr_room_vertex
+                                Position = new tr_vertex
                                 {
-                                    Position = new tr_vertex
-                                    {
-                                        X = (short)position.X,
-                                        Y = (short)-(position.Y + room.WorldPos.Y),
-                                        Z = (short)position.Z
-                                    },
-                                    Lighting1 = 0,
-                                    Lighting2 = 0,
-                                    Attributes = 0
-                                };
+                                    X = (short)position.X,
+                                    Y = (short)-(position.Y + room.WorldPos.Y),
+                                    Z = (short)position.Z
+                                },
+                                Lighting1 = 0,
+                                Lighting2 = 0,
+                                Attributes = 0
+                            };
 
-                                // Pack the light according to chosen lighting model
-                                if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
-                                {
-                                    trVertex.Lighting2 = PackLightColor(mesh.Vertices[j].Color, _level.Settings.GameVersion);
-                                }
-                                else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
-                                         position.X >= 0 && position.Z >= 0 &&
-                                         position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
-                                {
-                                    trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
-                                }
-                                else
-                                {
-                                    trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
-                                }
+                            // Pack the light according to chosen lighting model
+                            if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
+                            {
+                                trVertex.Lighting2 = PackLightColor(vertex.Color, _level.Settings.GameVersion);
+                            }
+                            else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
+                                     position.X >= 0 && position.Z >= 0 &&
+                                     position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
+                            {
+                                trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
+                            }
+                            else
+                            {
+                                trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
+                            }
 
-                                // HACK: Find a vertex with same coordinates and merge with it.
-                                // This is needed to overcome disjointed vertices bug buried deep in geometry importer.
-                                // We still preserve sharp edges if explicitly specified by flag though.
+                            // HACK: Find a vertex with same coordinates and merge with it.
+                            // This is needed to overcome disjointed vertices bug buried deep in geometry importer AND assimp's own
+                            // strange behaviour which splits imported geometry based on materials.
+                            // We still preserve sharp edges if explicitly specified by flag though.
 
-                                int existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position);
-                                if (geometry.SharpEdges || existingIndex == -1)
+                            int existingIndex;
+                            if (geometry.SharpEdges)
+                            {
+                                existingIndex = roomVertices.Count;
+                                roomVertices.Add(trVertex);
+                            }
+                            else
+                            {
+                                existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position);
+                                if (existingIndex == -1)
                                 {
                                     existingIndex = roomVertices.Count;
                                     roomVertices.Add(trVertex);
                                 }
-                                indexList.Add(existingIndex);
+
+                                // Addititionally try to add vertex to dictionary so it will merge with original geometry.
+                                // This ignores original vertex colour, as it may be different because of recalculated
+                                // normals or vertex paint applied.
+
+                                GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
                             }
 
+                            indexList.Add(existingIndex);
+                            currentMeshIndexCount++;
+                        }
+
+                        foreach (var submesh in mesh.Submeshes)
+                        {
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                             {
-                                ushort index0 = (ushort)(indexList[j + 0]);
-                                ushort index1 = (ushort)(indexList[j + 1]);
-                                ushort index2 = (ushort)(indexList[j + 2]);
+                                ushort index0 = (ushort)(indexList[j + baseIndex + 0]);
+                                ushort index1 = (ushort)(indexList[j + baseIndex + 1]);
+                                ushort index2 = (ushort)(indexList[j + baseIndex + 2]);
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
@@ -537,6 +558,8 @@ namespace TombLib.LevelData.Compilers
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
                         }
+
+                        baseIndex += currentMeshIndexCount;
                     }
                 }
 
@@ -889,16 +912,21 @@ namespace TombLib.LevelData.Compilers
                 Z = 0
             };
 
-            // Do the check here, so we can save some time with unuseful calculations
-            ushort vertexIndex;
-            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
-                return vertexIndex;
-
             // Ignore this for TRNG ad TR4
             if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 trVertex.Color = PackColorTo32Bit(Color);
             else
                 trVertex.Lighting2 = PackLightColor(Color, room.Level.Settings.GameVersion);
+
+            return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
+        }
+
+        private static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, tr_room_vertex trVertex)
+        {
+            // Do the check here, so we can save some time with unuseful calculations
+            ushort vertexIndex;
+            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
+                return vertexIndex;
 
             // Add vertex
             vertexIndex = (ushort)roomVertices.Count;
