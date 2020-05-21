@@ -2678,7 +2678,7 @@ namespace TombEditor.Controls
             if (moveablesToDraw.Count == 0)
                 return;
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
@@ -2884,7 +2884,7 @@ namespace TombEditor.Controls
             if (staticsToDraw.Count == 0)
                 return;
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
