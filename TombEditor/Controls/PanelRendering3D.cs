@@ -2732,7 +2732,7 @@ namespace TombEditor.Controls
             if (moveablesToDraw.Count == 0)
                 return;
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
@@ -2938,7 +2938,7 @@ namespace TombEditor.Controls
             if (staticsToDraw.Count == 0)
                 return;
 
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
@@ -3256,6 +3256,11 @@ namespace TombEditor.Controls
                 TransformMatrix = viewProjection,
                 ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly
             });
+            var renderArgs = new RenderingDrawingRoom.RenderArgs
+            {
+                RenderTarget = SwapChain,
+                StateBuffer = _renderingStateBuffer
+            };
 
             // Reset
             List<Text> textToDraw = new List<Text>();
@@ -3315,14 +3320,10 @@ namespace TombEditor.Controls
             if (ShowHorizon)
                 DrawSkybox(viewProjection);
 
-            // Draw rooms
+            // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
-            foreach (Room room in roomsToDraw)
-                _renderingCachedRooms[room].Render(new RenderingDrawingRoom.RenderArgs
-                {
-                    RenderTarget = SwapChain,
-                    StateBuffer = _renderingStateBuffer
-                });
+            foreach (Room room in roomsToDraw.Where(r => !r.Hidden))
+                _renderingCachedRooms[room].Render(renderArgs);
 
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
@@ -3361,6 +3362,11 @@ namespace TombEditor.Controls
                 // Draw light objects and bounding volumes only for current room
                 DrawLights(viewProjection, effect, roomsToDraw, textToDraw);
             }
+
+            // Draw disabled rooms, so they don't conceal all geometry behind
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            foreach (Room room in roomsToDraw.Where(r => r.Hidden))
+                _renderingCachedRooms[room].Render(renderArgs);
 
             // Draw the height of the object
             DrawDebugLines(viewProjection, effect);
