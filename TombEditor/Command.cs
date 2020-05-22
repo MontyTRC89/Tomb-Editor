@@ -1511,6 +1511,12 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
+            AddCommand("HideTransparentFaces", "Hide transparent faces", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.Rendering3D_HideTransparentFaces = !args.Editor.Configuration.Rendering3D_HideTransparentFaces;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly = !args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
