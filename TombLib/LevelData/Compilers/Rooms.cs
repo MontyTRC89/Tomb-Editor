@@ -782,6 +782,38 @@ namespace TombLib.LevelData.Compilers
                     if (allowGlow     && (lightEffect == RoomLightEffect.Glow     || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x4000;
 
+                    // Remap vertex flags to LightEffect intensity for TR2.
+                    // FIXME: In original TR2 winroomedit and Dxtre3d, intensity value was based on dummy light object
+                    // placed in a room. As we don't have this mechanism yet, just assign effect to whole room.
+
+                    if (isTR2)
+                    {
+                        bool glowMapped = (flags & 0x4000) != 0;
+                        bool moveMapped = (flags & 0x2000) != 0;
+
+                        // Clear existing flags
+                        flags = unchecked((ushort)((short)trVertex.Attributes & ~0x6000));
+
+                        // Force remap if sunset effect is used.
+                        // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
+                        if (room.LightEffect == RoomLightEffect.Sunset)
+                        {
+                            if (allowMovement)
+                                flags |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
+                        }
+                        else
+                        {
+                            // Remap TR3+ glow / movement to TR2 glow / flicker
+                            if (glowMapped || moveMapped)
+                                flags |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
+                        }
+                    }
+
+                    // Additionally set "no movement" flag for water rooms. This feature is present in TR2-3, in later games
+                    // 0x8000 flag is broken.
+                    if (isTR23 && !allowMovement)
+                        flags |= 0x8000;
+
 
                     if (lightEffect == RoomLightEffect.None && trVertex.Attributes != 0x0000)
                     {
@@ -795,39 +827,6 @@ namespace TombLib.LevelData.Compilers
                     else
                         trVertex.Attributes = flags;
 
-                    // Remap vertex flags to LightEffect intensity for TR2.
-                    // FIXME: In original TR2 winroomedit and Dxtre3d, intensity value was based on dummy light object
-                    // placed in a room. As we don't have this mechanism yet, just assign effect to whole room.
-
-                    if (isTR2)
-                    {
-                        bool glowMapped = (trVertex.Attributes & 0x4000) != 0;
-                        bool moveMapped = (trVertex.Attributes & 0x2000) != 0;
-
-                        // Clear existing flags
-                        trVertex.Attributes = unchecked((ushort)((short)trVertex.Attributes & ~0x6000));
-
-                        // Force remap if sunset effect is used.
-                        // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
-                        if (room.LightEffect == RoomLightEffect.Sunset)
-                        {
-                            if (allowMovement)
-                                trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
-                        }
-                        else
-                        {
-                            // Remap TR3+ glow / movement to TR2 glow / flicker
-                            if (glowMapped || moveMapped)
-                                trVertex.Attributes |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
-                        }
-                    }
-
-                    // Additionally set "no movement" flag for water rooms. This feature is present in TR2-3, in later games
-                    // 0x8000 flag is broken.
-                    if (isTR23 && !allowMovement)
-                        trVertex.Attributes |= 0x8000;
-
-                    trVertex.Attributes = flags;
                     roomVertices[i] = trVertex;
                 }
 
