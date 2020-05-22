@@ -3444,9 +3444,14 @@ namespace TombEditor.Controls
             // Construct vertex array
             List<SolidVertex> vertices = new List<SolidVertex>();
 
+            var startColor = new Vector4(0.8f, 1.0f, 0.8f, 1.0f);
+            var endColor = new Vector4(1.0f, 0.8f, 0.8f, 1.0f);
+
             float th = _flybyPathThickness;
             for (int i = 0; i < pointList.Count - 1; i++)
             {
+                var color = Vector4.Lerp(startColor, endColor, (float)i / (float)pointList.Count);
+
                 var points = new List<Vector3[]>()
                 {
                     new Vector3[]
@@ -3467,7 +3472,7 @@ namespace TombEditor.Controls
                 {
                     var v = new SolidVertex();
                     v.Position = points[_flybyPathIndices[j].Y][_flybyPathIndices[j].X];
-                    v.Color = Vector4.One;
+                    v.Color = color;
                     vertices.Add(v);
                 }
             }
