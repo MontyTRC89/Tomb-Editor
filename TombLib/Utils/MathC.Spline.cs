@@ -6,24 +6,24 @@ namespace TombLib
 {
     // Ported code from: http://www.java-gaming.org/index.php?topic=9830.0
 
-    public class Cubic
+    public static class Spline
     {
-        private float a, b, c, d;
-
-        public Cubic(float a, float b, float c, float d)
+        private class Cubic
         {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-            this.d = d;
+            private float a, b, c, d;
+
+            public Cubic(float a, float b, float c, float d)
+            {
+                this.a = a;
+                this.b = b;
+                this.c = c;
+                this.d = d;
+            }
+
+            public float Eval(float u) => (((d * u) + c) * u + b) * u + a;
         }
 
-        public float Eval(float u) => (((d* u) + c) * u + b) * u + a;
-    }
-
-    public abstract class BasicSpline
-    {
-        protected List<Cubic> CalcNaturalCubic(List<float> points)
+        private static List<Cubic> CalcNaturalCubic(List<float> points)
         {
             if (points.Count <= 1)
                 return new List<Cubic>();
@@ -90,25 +90,20 @@ namespace TombLib
 
             return result;
         }
-    }
 
-    public class Spline3D : BasicSpline
-    {
-        public List<Vector3> Points { get; } = new List<Vector3>();
-
-        public List<Vector3> CalculateSpline(int pointCount)
+        public static List<Vector3> Calculate(List<Vector3> points, int subdivisions)
         {
-            if (Points.Count <= 1)
-                return Points;
+            if (points.Count <= 1)
+                return points;
 
-            var pX = CalcNaturalCubic(Points.Select(p => p.X).ToList());
-            var pY = CalcNaturalCubic(Points.Select(p => p.Y).ToList());
-            var pZ = CalcNaturalCubic(Points.Select(p => p.Z).ToList());
+            var pX = CalcNaturalCubic(points.Select(p => p.X).ToList());
+            var pY = CalcNaturalCubic(points.Select(p => p.Y).ToList());
+            var pZ = CalcNaturalCubic(points.Select(p => p.Z).ToList());
 
             var result = new List<Vector3>();
-            float grain = 1.0f / pointCount;
+            float grain = 1.0f / subdivisions;
 
-            for (int i = 0; i < pointCount; i++)
+            for (int i = 0; i < subdivisions; i++)
             {
                 var currPos = i * grain * pX.Count;
                 var currCube = (int)(currPos);
@@ -116,7 +111,7 @@ namespace TombLib
 
                 result.Add(new Vector3(pX[currCube].Eval(cubePos), pY[currCube].Eval(cubePos), pZ[currCube].Eval(cubePos)));
             }
-            result.Add(Points.Last()); // Add last point
+            result.Add(points.Last()); // Add last point
 
             return result;
         }
