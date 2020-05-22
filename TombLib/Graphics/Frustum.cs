@@ -12,17 +12,18 @@ namespace TombLib.Graphics
         {
             var pos = camera.GetPosition();
             var target = camera.Target;
-            var dir = target - pos;
+            var dir = target-pos;
             dir = System.Numerics.Vector3.Normalize(dir);
             var frustumParams = new FrustumCameraParams()
             {
                 Position = pos.ToSharpDX(),
                 LookAtDir = dir.ToSharpDX(),
-                UpDir = new Vector3(0.0f, -1.0f, 0.0f),
+                UpDir = new Vector3(0.0f, 1.0f, 0.0f),
                 FOV = camera.FieldOfView,
-                AspectRatio = viewportSize.Width / viewportSize.Height,
-                ZFar = camera.Distance,
-                ZNear = camera.MinDistance
+                AspectRatio = (float)viewportSize.Width / viewportSize.Height,
+                ZFar = 102400, // 100 squares
+                ZNear = 256,
+                
             };
 
             _frustum = BoundingFrustum.FromCamera(frustumParams);
@@ -33,7 +34,6 @@ namespace TombLib.Graphics
             var min = new Vector3(box.Minimum.X, box.Minimum.Y, box.Minimum.Z);
             var max = new Vector3(box.Maximum.X, box.Maximum.Y, box.Maximum.Z);
             var sharpBox = new SharpDX.BoundingBox(min, max);
-
             var contains = _frustum.Contains(ref sharpBox);
             return (contains == ContainmentType.Contains || contains == ContainmentType.Intersects);
         }
