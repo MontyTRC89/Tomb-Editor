@@ -1,21 +1,23 @@
 ﻿using SharpDX;
+using System;
 using System.Drawing;
 
 namespace TombLib.Graphics
 {
-    public class Frustum
+    public struct Frustum
     {
         private BoundingFrustum _frustum;
 
         public Frustum(Camera camera, Size viewportSize)
         {
-            var pos = camera.GetPosition().ToSharpDX();
-            pos.Y = -pos.Y;
-
+            var pos = camera.GetPosition();
+            var target = camera.Target;
+            var dir = target - pos;
+            dir = System.Numerics.Vector3.Normalize(dir);
             var frustumParams = new FrustumCameraParams()
             {
-                Position = pos,
-                LookAtDir = new Vector3(camera.RotationX, -camera.RotationY, 0.0f),
+                Position = pos.ToSharpDX(),
+                LookAtDir = dir.ToSharpDX(),
                 UpDir = new Vector3(0.0f, -1.0f, 0.0f),
                 FOV = camera.FieldOfView,
                 AspectRatio = viewportSize.Width / viewportSize.Height,
