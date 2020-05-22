@@ -173,7 +173,6 @@ namespace TombLib.Rendering.DirectX11
                 BlendingDisabled = new BlendState(Device, BlendStateDescription.Default());
                 {
                     BlendStateDescription desc = BlendStateDescription.Default();
-                    desc.AlphaToCoverageEnable = true;
                     desc.RenderTarget[0].IsBlendEnabled = true;
                     desc.RenderTarget[0].SourceBlend = desc.RenderTarget[0].SourceAlphaBlend = BlendOption.One;
                     desc.RenderTarget[0].DestinationBlend = desc.RenderTarget[0].DestinationAlphaBlend = BlendOption.InverseSourceAlpha;
