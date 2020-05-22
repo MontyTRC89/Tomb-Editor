@@ -3437,9 +3437,8 @@ namespace TombEditor.Controls
             flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
             // Calculate spline path
-            var spline = new Spline3D();
-            flybyCameras.ForEach(cam => spline.Points.Add(cam.Position + cam.Room.WorldPos));
-            var pointList = spline.CalculateSpline(flybyCameras.Count * _flybyPathSmoothness);
+            var camList = flybyCameras.Select(cam => cam.Position + cam.Room.WorldPos).ToList();
+            var pointList = Spline.Calculate(camList, flybyCameras.Count * _flybyPathSmoothness);
 
             // Construct vertex array
             List<SolidVertex> vertices = new List<SolidVertex>();
