@@ -163,6 +163,7 @@ namespace TombEditor.Controls
         // Other drawing consts
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
+        private const float _coneRadius = 1024.0f;
 
         // Rendering state
         private RenderingStateBuffer _renderingStateBuffer;
@@ -304,7 +305,7 @@ namespace TombEditor.Controls
                 _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleSphereRadius);
                 _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleCubeRadius, 8);
 
-                _cone = GeometricPrimitive.Cone.New(_legacyDevice, 1024, 1024, 18);
+                _cone = GeometricPrimitive.Cone.New(_legacyDevice, _coneRadius, _coneRadius, 18);
 
                 // This effect is used for editor special meshes like sinks, cameras, light meshes, etc
                 new BasicEffect(_legacyDevice);
@@ -2422,6 +2423,7 @@ namespace TombEditor.Controls
                 foreach (var instance in room.Objects.OfType<CameraInstance>())
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
                     var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
@@ -2543,6 +2545,7 @@ namespace TombEditor.Controls
                     {
                         if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
                             continue;
+
                         _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
                         Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
@@ -2628,32 +2631,54 @@ namespace TombEditor.Controls
                     }
             }
 
+            // Draw extra flyby cones
+
             _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
-            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
+            bool wireframe = false;
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
+                    Vector4 color;
+                    Matrix4x4 model;
+
                     if (_editor.SelectedObject == instance)
                     {
-                        // Outer cone
                         float coneAngle = (float)Math.Atan2(512, 1024);
                         float cutoffScaleH = 1;
                         float cutoffScaleW = instance.Fov * (float)(Math.PI / 360) / coneAngle * cutoffScaleH;
+                        model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
+                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
-                        Matrix4x4 model = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * instance.ObjectMatrix;
-
-                        effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
-                        effect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                        if (wireframe == false)
+                        {
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                            wireframe = true;
+                        }
                     }
-                }
+                    else
+                    {
+                        model = Matrix4x4.CreateTranslation(new Vector3(0, 0, -_coneRadius * 1.2f)) *
+                                Matrix4x4.CreateRotationY((float)Math.PI) *
+                                Matrix4x4.CreateScale(1 / _coneRadius * _littleCubeRadius * 2.0f) *
+                                instance.ObjectMatrix;
+                        color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                        if (wireframe == true)
+                        {
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                            wireframe = false;
+                        }
+                    }
+
+                    effect.Parameters["ModelViewProjection"].SetValue((model * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(color);
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+                }
         }
 
         private void DrawSkybox(Matrix4x4 viewProjection)
