@@ -4,29 +4,45 @@ using System.Drawing;
 
 namespace TombLib.Graphics
 {
-    public struct Frustum
+    public class Frustum
     {
-        //Divisor used for position to keep frustum culling in the distance stable
+        // Divisor used for position to keep frustum culling in the distance stable
         private const float FRUSTUM_DIVISOR = 1024.0f; 
         private BoundingFrustum _frustum;
+        private System.Numerics.Vector3 _lastGoodDir;
 
-        public Frustum(Camera camera, Size viewportSize)
+        public Frustum()
         {
-            //Pre-divide the position to make them small
+            _lastGoodDir = new System.Numerics.Vector3(float.MinValue);
+        }
+
+        public void Update(Camera camera, Size viewportSize)
+        {
+            // Pre-divide the position to make them small
             var pos = camera.GetPosition() / FRUSTUM_DIVISOR;
             var target = camera.Target / FRUSTUM_DIVISOR;
-            var dir = target-pos;
-            dir = System.Numerics.Vector3.Normalize(dir);
+            var dir = System.Numerics.Vector3.Normalize(target - pos);
+            
+            // Keep last good direction for cases when NaN may happen, otherwise
+            // use last good direction
+            if (Math.Abs(dir.Y) == 1)
+                dir = _lastGoodDir;
+            else
+                _lastGoodDir = dir;
+
+            var up = System.Numerics.Vector3.Cross(System.Numerics.Vector3.Cross(dir, new System.Numerics.Vector3(0, 1, 0)), dir);
+
             var frustumParams = new FrustumCameraParams()
             {
                 Position = pos.ToSharpDX(),
                 LookAtDir = dir.ToSharpDX(),
-                UpDir = new Vector3(0.0f, 1.0f, 0.0f),
-                FOV = camera.FieldOfView,
-                AspectRatio = (float)viewportSize.Width / viewportSize.Height,
-                ZFar = FRUSTUM_DIVISOR*200,
-                ZNear = 1/FRUSTUM_DIVISOR,
-                
+                UpDir = up.ToSharpDX(),
+                AspectRatio = viewportSize.Width / (float)viewportSize.Height,
+                ZFar = FRUSTUM_DIVISOR * 200,
+                ZNear = 1 / FRUSTUM_DIVISOR,
+
+                // Blow up FOV a bit for cases when out-of-bounds objects are used
+                FOV = camera.FieldOfView * 1.2f, 
             };
 
             _frustum = BoundingFrustum.FromCamera(frustumParams);
