@@ -135,6 +135,32 @@ namespace TombEditor.Controls
         private Buffer<SolidVertex> _prismVertexBuffer;
         private bool _drawFlybyPath;
 
+        // Flyby stuff
+        private const float _flybyPathThickness = 32.0f;
+        private const int _flybyPathSmoothness = 7;
+        private static readonly List<VectorInt2> _flybyPathIndices = new List<VectorInt2>()
+        {
+            new VectorInt2(0, 0),
+            new VectorInt2(0, 1),
+            new VectorInt2(2, 0),
+            new VectorInt2(2, 0),
+            new VectorInt2(0, 1),
+            new VectorInt2(2, 1),
+            new VectorInt2(2, 1),
+            new VectorInt2(2, 0),
+            new VectorInt2(1, 1),
+            new VectorInt2(1, 1),
+            new VectorInt2(2, 0),
+            new VectorInt2(1, 0),
+            new VectorInt2(1, 0),
+            new VectorInt2(1, 1),
+            new VectorInt2(0, 0),
+            new VectorInt2(0, 0),
+            new VectorInt2(1, 1),
+            new VectorInt2(0, 1)
+        };
+
+        // Other drawing consts
         private const float _littleCubeRadius = 128.0f;
         private const float _littleSphereRadius = 128.0f;
 
@@ -1813,15 +1839,6 @@ namespace TombEditor.Controls
                 _legacyDevice.Draw(PrimitiveType.LineList, 2);
             }
 
-            if (_drawFlybyPath)
-            {
-                _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
-                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.LineList, _flybyPathVertexBuffer.ElementCount);
-            }
-
             if (drawRoomBounds)
             {
                 if (_editor.SelectedRooms.Count > 0)
@@ -1831,6 +1848,16 @@ namespace TombEditor.Controls
                 else
                     // Draw room bounding box
                     DrawRoomBoundingBox(viewProjection, effect, _editor.SelectedRoom);
+            }
+
+            if (_drawFlybyPath)
+            {
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
+                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                effect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.Draw(PrimitiveType.TriangleStrip, _flybyPathVertexBuffer.ElementCount);
             }
         }
 
@@ -2433,9 +2460,8 @@ namespace TombEditor.Controls
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * viewProjection,
-                            "Flyby camera (" + instance.Sequence + ":" + instance.Number + ") " +
+                            "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
                                 "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
-                                "\nRoll = " + instance.Roll + ", XRot = " + instance.RotationX + ", YRot = " + instance.RotationY +
                                 "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -3362,10 +3388,8 @@ namespace TombEditor.Controls
             // Get the distance between point and floor in units
             float height = instance.Position.Y - GetFloorHeight(room, instance.Position);
 
-            string message = "Position: [" + instance.Position.X + ", " + instance.Position.Y + ", " + instance.Position.Z + "]";
-            message += "\nSector Position: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "]";
-            message += "\nHeight: " + Math.Round(height) + " units(" + height / 256.0f +
-                       " clicks)";
+            string message = "Pos: [" + Math.Round(instance.Position.X) + ", " + Math.Round(instance.Position.Y) + ", " + Math.Round(instance.Position.Z) + "]";
+            message += "\nSector Pos: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "]";
 
             return message;
         }
@@ -3412,24 +3436,40 @@ namespace TombEditor.Controls
             // Sort cameras
             flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
 
-            // Create a vertex array
+            // Calculate spline path
+            var spline = new Spline3D();
+            flybyCameras.ForEach(cam => spline.Points.Add(cam.Position + cam.Room.WorldPos));
+            var pointList = spline.CalculateSpline(flybyCameras.Count * _flybyPathSmoothness);
+
+            // Construct vertex array
             List<SolidVertex> vertices = new List<SolidVertex>();
 
-            for (int i = 0; i < flybyCameras.Count - 1; i++)
+            float th = _flybyPathThickness;
+            for (int i = 0; i < pointList.Count - 1; i++)
             {
-                Vector3 room1pos = flybyCameras[i].Room.WorldPos;
-                Vector3 room2pos = flybyCameras[i + 1].Room.WorldPos;
+                var points = new List<Vector3[]>()
+                {
+                    new Vector3[]
+                    {
+                        pointList[i],
+                        new Vector3(pointList[i].X + th, pointList[i].Y + th, pointList[i].Z + th),
+                        new Vector3(pointList[i].X - th, pointList[i].Y + th, pointList[i].Z + th)
+                    },
+                    new Vector3[]
+                    {
+                        pointList[i],
+                        new Vector3(pointList[i + 1].X + th, pointList[i + 1].Y + th, pointList[i + 1].Z + th),
+                        new Vector3(pointList[i + 1].X - th, pointList[i + 1].Y + th, pointList[i + 1].Z + th)
+                    }
+                };
 
-                var v1 = new SolidVertex();
-                v1.Position = flybyCameras[i].Position + room1pos;
-                v1.Color = Vector4.One;
-
-                var v2 = new SolidVertex();
-                v2.Position = flybyCameras[i + 1].Position + room2pos;
-                v2.Color = Vector4.One;
-
-                vertices.Add(v1);
-                vertices.Add(v2);
+                for(int j = 0; j < _flybyPathIndices.Count; j++)
+                {
+                    var v = new SolidVertex();
+                    v.Position = points[_flybyPathIndices[j].Y][_flybyPathIndices[j].X];
+                    v.Color = Vector4.One;
+                    vertices.Add(v);
+                }
             }
 
             // Prepare the Vertex Buffer
