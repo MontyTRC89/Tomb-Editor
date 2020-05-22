@@ -16,6 +16,7 @@ float4x4 ModelViewProjection;
 
 float4 Color;
 bool TextureEnabled;
+bool AlphaTest;
 
 Texture2D Texture;
 sampler TextureSampler;
@@ -39,6 +40,9 @@ float4 PS(PixelInputType input) : SV_TARGET
 
     if (TextureEnabled)
         pixel = Texture.Sample(TextureSampler, input.UV);
+		
+	if (AlphaTest == true && pixel.w <= 0.05f)
+		discard;
 
 	float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
 	float3 colorMul = min(input.Color.xyz, 1.0f);
