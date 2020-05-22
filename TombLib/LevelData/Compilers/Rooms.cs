@@ -744,7 +744,7 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
                             else if ((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) 
-                                    || isTR23) // Always check portal edges for TR2 because of special room light modes
+                                    || isTR23) // Always check portal edges for TR2-3 because of "no movement" 0x8000 flag in that games
                             {
                                 // Disable movement for portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
