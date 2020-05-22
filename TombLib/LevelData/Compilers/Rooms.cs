@@ -336,7 +336,8 @@ namespace TombLib.LevelData.Compilers
                         normal = Vector3.Normalize(normal);
                         int lightingEffect = 0;
                         float shade = 1.0f;
-                        if (interpretShadesAsMovement)
+                        if (interpretShadesAsMovement &&
+                            _level.Settings.GameVersion >= TRVersion.Game.TR3)
                         {
                             if (j < wadStatic.Mesh.VerticesShades.Count)
                             {
