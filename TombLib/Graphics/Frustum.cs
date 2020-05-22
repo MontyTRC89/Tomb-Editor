@@ -1,5 +1,6 @@
 ﻿using SharpDX;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace TombLib.Graphics
@@ -54,6 +55,18 @@ namespace TombLib.Graphics
             var sharpSphere = new SharpDX.BoundingSphere(vec, sphere.Radius / FRUSTUM_DIVISOR) ;
             var contains = _frustum.Contains(ref sharpSphere);
             return (contains == ContainmentType.Contains || contains == ContainmentType.Intersects);
+        }
+
+        public List<System.Numerics.Vector3> GetDebugPoints()
+        {
+            var vertices = _frustum.GetCorners();
+
+            List<System.Numerics.Vector3> result = new List<System.Numerics.Vector3>();
+
+            foreach (var v in vertices)
+                result.Add(new System.Numerics.Vector3(v.X, v.Y, v.Z));
+
+            return result;
         }
     }
 }

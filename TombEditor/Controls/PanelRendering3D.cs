@@ -3276,7 +3276,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
             // Initialize frustum
-            var frustum = new Frustum(Camera, Size);
+            var frustum = new Frustum(Camera, ClientSize);
 
             // Collect stuff to draw
             var roomsToDraw = CollectRoomsToDraw();
@@ -3380,6 +3380,27 @@ namespace TombEditor.Controls
 
             // Draw the height of the object
             DrawDebugLines(viewProjection, effect);
+
+            // Debug output frustum
+
+            {
+                var pts = frustum.GetDebugPoints();
+
+                _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
+                _legacyDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
+                effect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+
+                foreach (var v in pts)
+                {
+                    var v2 = v * 1024.0f;
+                    Matrix4x4 model2 = Matrix4x4.CreateTranslation(v2);
+                    effect.Parameters["ModelViewProjection"].SetValue((model2).ToSharpDX());
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                }
+            }
+
 
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
