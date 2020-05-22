@@ -3276,11 +3276,11 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
             // Initialize frustum
-            var frustum = new Frustum(Camera, Size);
+            //var frustum = new Frustum(Camera, Size);
 
             // Collect stuff to draw
             var roomsToDraw = CollectRoomsToDraw();
-            roomsToDraw = roomsToDraw.Where(r => frustum.Contains(r.WorldBoundingBox)).ToArray();
+            //roomsToDraw = roomsToDraw.Where(r => frustum.Contains(r.WorldBoundingBox)).ToArray();
 
             var moveablesToDraw = CollectMoveablesToDraw(roomsToDraw);
             var staticsToDraw = CollectStaticsToDraw(roomsToDraw);

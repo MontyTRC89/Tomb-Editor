@@ -25,6 +25,7 @@ Tomb Editor:
  * Fix texture selection combobox not populating properly in animated textures dialog.
  * Ask for automatic reconnection of all found offline media on reconnecting just one.
  * Fix lagging gizmo movement.
+ * Fix prj importing for all-wall room cases.
  * Add experimental "Moveable Tint" feature for forward compatibility with TR5Main.
  * Add experimental "Trigger Volume" object type for forward compatibility with TR5Main.
  * Add experimental TR2 compiler.
