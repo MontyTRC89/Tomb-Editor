@@ -16,6 +16,8 @@
         private void InitializeComponent()
         {
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+            this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
             this.butFaceEdit = new System.Windows.Forms.ToolStripButton();
@@ -29,11 +31,13 @@
             this.butDrawRoomNames = new System.Windows.Forms.ToolStripButton();
             this.butDrawCardinalDirections = new System.Windows.Forms.ToolStripButton();
             this.butDrawExtraBlendingModes = new System.Windows.Forms.ToolStripButton();
+            this.butHideTransparentFaces = new System.Windows.Forms.ToolStripButton();
             this.butDrawWhiteLighting = new System.Windows.Forms.ToolStripButton();
             this.butDrawStaticTint = new System.Windows.Forms.ToolStripButton();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
             this.butDisableGeometryPicking = new System.Windows.Forms.ToolStripButton();
+            this.butDisableHiddenRoomPicking = new System.Windows.Forms.ToolStripButton();
             this.butDrawObjects = new System.Windows.Forms.ToolStripDropDownButton();
             this.butDrawMoveables = new System.Windows.Forms.ToolStripMenuItem();
             this.butDrawStatics = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,10 +70,7 @@
             this.butEditLevelSettings = new System.Windows.Forms.ToolStripButton();
             this.butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
             this.butSearch = new System.Windows.Forms.ToolStripButton();
-            this.butDisableHiddenRoomPicking = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
-            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,6 +94,7 @@
             this.butDrawRoomNames,
             this.butDrawCardinalDirections,
             this.butDrawExtraBlendingModes,
+            this.butHideTransparentFaces,
             this.butDrawWhiteLighting,
             this.butDrawStaticTint,
             this.butDrawIllegalSlopes,
@@ -132,6 +134,32 @@
             this.toolStrip.TabIndex = 12;
             this.toolStrip.Text = "darkToolStrip1";
             this.toolStrip.MouseClick += new System.Windows.Forms.MouseEventHandler(this.toolStrip_MouseClick);
+            // 
+            // panel3D
+            // 
+            this.panel3D.AllowDrop = true;
+            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Location = new System.Drawing.Point(3, 31);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.ShowLightingWhiteTextureOnly = false;
+            this.panel3D.ShowRealTintForMergedStatics = false;
+            this.panel3D.Size = new System.Drawing.Size(833, 255);
+            this.panel3D.TabIndex = 13;
+            // 
+            // panel2DMap
+            // 
+            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
+            this.panel2DMap.Name = "panel2DMap";
+            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
+            this.panel2DMap.TabIndex = 14;
+            this.panel2DMap.Visible = false;
             // 
             // but2D
             // 
@@ -280,6 +308,17 @@
             this.butDrawExtraBlendingModes.Size = new System.Drawing.Size(23, 25);
             this.butDrawExtraBlendingModes.Tag = "DrawExtraBlendingModes";
             // 
+            // butHideTransparentFaces
+            // 
+            this.butHideTransparentFaces.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butHideTransparentFaces.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butHideTransparentFaces.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butHideTransparentFaces.Image = global::TombEditor.Properties.Resources.actions_AlphaTest_16;
+            this.butHideTransparentFaces.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butHideTransparentFaces.Name = "butHideTransparentFaces";
+            this.butHideTransparentFaces.Size = new System.Drawing.Size(23, 25);
+            this.butHideTransparentFaces.Tag = "HideTransparentFaces";
+            // 
             // butDrawWhiteLighting
             // 
             this.butDrawWhiteLighting.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -336,6 +375,17 @@
             this.butDisableGeometryPicking.Size = new System.Drawing.Size(23, 25);
             this.butDisableGeometryPicking.Tag = "DisableGeometryPicking";
             // 
+            // butDisableHiddenRoomPicking
+            // 
+            this.butDisableHiddenRoomPicking.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butDisableHiddenRoomPicking.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butDisableHiddenRoomPicking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butDisableHiddenRoomPicking.Image = global::TombEditor.Properties.Resources.actions_HideHiddenRooms_16;
+            this.butDisableHiddenRoomPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butDisableHiddenRoomPicking.Name = "butDisableHiddenRoomPicking";
+            this.butDisableHiddenRoomPicking.Size = new System.Drawing.Size(23, 25);
+            this.butDisableHiddenRoomPicking.Tag = "DisableHiddenRoomPicking";
+            // 
             // butDrawObjects
             // 
             this.butDrawObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -362,7 +412,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -374,7 +424,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -386,7 +436,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -398,7 +448,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -409,7 +459,7 @@
             this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawVolumes.Name = "butDrawVolumes";
-            this.butDrawVolumes.Size = new System.Drawing.Size(202, 22);
+            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
             this.butDrawVolumes.Tag = "DrawVolumes";
             this.butDrawVolumes.Text = "DrawVolumes";
             // 
@@ -421,7 +471,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -433,7 +483,7 @@
             this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
+            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
             this.butDrawLightRadius.Tag = "DrawLightRadius";
             this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
@@ -609,7 +659,7 @@
             this.butCompileLevelAndPlay.Image = global::TombEditor.Properties.Resources.actions_play_16;
             this.butCompileLevelAndPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileLevelAndPlay.Name = "butCompileLevelAndPlay";
-            this.butCompileLevelAndPlay.Size = new System.Drawing.Size(23, 25);
+            this.butCompileLevelAndPlay.Size = new System.Drawing.Size(24, 24);
             this.butCompileLevelAndPlay.Tag = "BuildAndPlay";
             // 
             // butTextureFloor
@@ -620,7 +670,7 @@
             this.butTextureFloor.Image = global::TombEditor.Properties.Resources.texture_Floor2_16;
             this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureFloor.Name = "butTextureFloor";
-            this.butTextureFloor.Size = new System.Drawing.Size(23, 20);
+            this.butTextureFloor.Size = new System.Drawing.Size(24, 24);
             this.butTextureFloor.Tag = "TextureFloor";
             // 
             // butAddBoxVolume
@@ -711,17 +761,6 @@
             this.butSearch.Size = new System.Drawing.Size(24, 24);
             this.butSearch.Tag = "Search";
             // 
-            // butDisableHiddenRoomPicking
-            // 
-            this.butDisableHiddenRoomPicking.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDisableHiddenRoomPicking.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDisableHiddenRoomPicking.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDisableHiddenRoomPicking.Image = global::TombEditor.Properties.Resources.actions_HideHiddenRooms_16;
-            this.butDisableHiddenRoomPicking.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDisableHiddenRoomPicking.Name = "butDisableHiddenRoomPicking";
-            this.butDisableHiddenRoomPicking.Size = new System.Drawing.Size(23, 25);
-            this.butDisableHiddenRoomPicking.Tag = "DisableHiddenRoomPicking";
-            // 
             // butSearchAndReplaceObjects
             // 
             this.butSearchAndReplaceObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -732,32 +771,6 @@
             this.butSearchAndReplaceObjects.Name = "butSearchAndReplaceObjects";
             this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(24, 24);
             this.butSearchAndReplaceObjects.Tag = "SearchAndReplaceObjects";
-            // 
-            // panel3D
-            // 
-            this.panel3D.AllowDrop = true;
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Location = new System.Drawing.Point(3, 31);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.ShowLightingWhiteTextureOnly = false;
-            this.panel3D.ShowRealTintForMergedStatics = false;
-            this.panel3D.Size = new System.Drawing.Size(833, 255);
-            this.panel3D.TabIndex = 13;
-            // 
-            // panel2DMap
-            // 
-            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
-            this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
-            this.panel2DMap.TabIndex = 14;
-            this.panel2DMap.Visible = false;
             // 
             // MainView
             // 
@@ -833,5 +846,6 @@
         private System.Windows.Forms.ToolStripButton butAddSphereVolume;
         private System.Windows.Forms.ToolStripButton butDrawStaticTint;
         private System.Windows.Forms.ToolStripButton butDisableHiddenRoomPicking;
+        private System.Windows.Forms.ToolStripButton butHideTransparentFaces;
     }
 }
