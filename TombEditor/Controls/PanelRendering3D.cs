@@ -3275,8 +3275,13 @@ namespace TombEditor.Controls
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
+            // Initialize frustum
+            var frustum = new Frustum(Camera, Size);
+
             // Collect stuff to draw
             var roomsToDraw = CollectRoomsToDraw();
+            roomsToDraw = roomsToDraw.Where(r => frustum.Contains(r.WorldBoundingBox)).ToArray();
+
             var moveablesToDraw = CollectMoveablesToDraw(roomsToDraw);
             var staticsToDraw = CollectStaticsToDraw(roomsToDraw);
             var importedGeometryToDraw = CollectImportedGeometryToDraw(roomsToDraw);
