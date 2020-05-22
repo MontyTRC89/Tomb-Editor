@@ -15,17 +15,17 @@ namespace TombLib.Graphics
             //Pre-divide the position to make them small
             var pos = camera.GetPosition() / FRUSTUM_DIVISOR;
             var target = camera.Target / FRUSTUM_DIVISOR;
-            var dir = target-pos;
+            var dir = target - pos;
             dir = System.Numerics.Vector3.Normalize(dir);
             var frustumParams = new FrustumCameraParams()
             {
                 Position = pos.ToSharpDX(),
                 LookAtDir = dir.ToSharpDX(),
                 UpDir = new Vector3(0.0f, 1.0f, 0.0f),
-                FOV = camera.FieldOfView,
-                AspectRatio = (float)viewportSize.Width / viewportSize.Height,
-                ZFar = FRUSTUM_DIVISOR*200,
-                ZNear = 1/FRUSTUM_DIVISOR,
+                FOV = camera.FieldOfView * 1.2f,
+                AspectRatio = (float)viewportSize.Width / (float)viewportSize.Height,
+                ZFar = FRUSTUM_DIVISOR * 200,
+                ZNear = 1 / FRUSTUM_DIVISOR,
                 
             };
 
