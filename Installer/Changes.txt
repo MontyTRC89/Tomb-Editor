@@ -13,6 +13,7 @@ Tomb Editor:
  * Allow editing ghost blocks with QAWS keys.
  * Allow undo while editing static and moveable properties, such as colour, OCB and such.
  * Additional view option to hide light radius (under "Show other objects" dropdown in toolbar).
+ * Properly draw flyby path using splines.
  * Use two decimal places for flyby options.
  * An option to dither 16-bit textures.
  * Animate ghost blocks on selection.
