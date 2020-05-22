@@ -927,13 +927,22 @@ namespace TombLib.LevelData
         /// <summary>Transforms the coordinates of QAFaces in such a way that the lowest one falls on Y = 0</summary>
         public void NormalizeRoomY()
         {
+            // Exclusive case: all blocks are walls
+            bool allBlocksAreWalls = true;
+            foreach (var block in Blocks)
+                if (!block.IsAnyWall)
+                {
+                    allBlocksAreWalls = false;
+                    break;
+                }
+            
             // Determine lowest QAFace
             short lowest = short.MaxValue;
             for (int z = 0; z < NumZSectors; z++)
                 for (int x = 0; x < NumXSectors; x++)
                 {
                     var b = Blocks[x, z];
-                    if (!b.IsAnyWall)
+                    if (allBlocksAreWalls || !b.IsAnyWall)
                         for (BlockEdge edge = 0; edge < BlockEdge.Count; ++edge)
                             lowest = Math.Min(lowest, b.Floor.GetHeight(edge));
                 }
