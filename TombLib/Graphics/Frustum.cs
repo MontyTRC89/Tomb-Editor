@@ -7,24 +7,29 @@ namespace TombLib.Graphics
 {
     public struct Frustum
     {
-        //Divisor used for position to keep frustum culling in the distance stable
+        // Divisor used for position to keep frustum culling in the distance stable
         private const float FRUSTUM_DIVISOR = 1024.0f; 
         private BoundingFrustum _frustum;
 
         public Frustum(Camera camera, Size viewportSize)
         {
-            //Pre-divide the position to make them small
+            // Pre-divide the position to make them small
             var pos = camera.GetPosition() / FRUSTUM_DIVISOR;
             var target = camera.Target / FRUSTUM_DIVISOR;
-            var dir = target - pos;
-            dir = System.Numerics.Vector3.Normalize(dir);
+            var dir = System.Numerics.Vector3.Normalize(target - pos);
+            var up  = System.Numerics.Vector3.Cross(System.Numerics.Vector3.Cross(dir, new System.Numerics.Vector3(0, 1, 0)), dir);
+
+            // Clamp up vector to minimum to prevent NANI
+            if (up == System.Numerics.Vector3.Zero)
+                up = new System.Numerics.Vector3(float.MinValue);
+
             var frustumParams = new FrustumCameraParams()
             {
                 Position = pos.ToSharpDX(),
                 LookAtDir = dir.ToSharpDX(),
-                UpDir = new Vector3(0.0f, 1.0f, 0.0f),
-                FOV = camera.FieldOfView * 1.2f,
-                AspectRatio = (float)viewportSize.Width / (float)viewportSize.Height,
+                UpDir = up.ToSharpDX(),
+                FOV = camera.FieldOfView,
+                AspectRatio = viewportSize.Width / (float)viewportSize.Height,
                 ZFar = FRUSTUM_DIVISOR * 200,
                 ZNear = 1 / FRUSTUM_DIVISOR,
                 
@@ -55,18 +60,6 @@ namespace TombLib.Graphics
             var sharpSphere = new SharpDX.BoundingSphere(vec, sphere.Radius / FRUSTUM_DIVISOR) ;
             var contains = _frustum.Contains(ref sharpSphere);
             return (contains == ContainmentType.Contains || contains == ContainmentType.Intersects);
-        }
-
-        public List<System.Numerics.Vector3> GetDebugPoints()
-        {
-            var vertices = _frustum.GetCorners();
-
-            List<System.Numerics.Vector3> result = new List<System.Numerics.Vector3>();
-
-            foreach (var v in vertices)
-                result.Add(new System.Numerics.Vector3(v.X, v.Y, v.Z));
-
-            return result;
         }
     }
 }
