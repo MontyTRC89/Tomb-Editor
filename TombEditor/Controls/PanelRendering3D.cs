@@ -61,6 +61,8 @@ namespace TombEditor.Controls
         public bool ShowLightingWhiteTextureOnly { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowRealTintForMergedStatics { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowTransparency { get; set; }
 
         // These options require explicit setters because they probe into room cache.
 
@@ -2734,6 +2736,7 @@ namespace TombEditor.Controls
 
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
+            skinnedModelEffect.Parameters["AlphaTest"].SetValue(ShowTransparency);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
             var movGroup = new List<MoveableInstance>();
@@ -2830,6 +2833,7 @@ namespace TombEditor.Controls
                 return;
 
             var geometryEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
+            geometryEffect.Parameters["AlphaTest"].SetValue(ShowTransparency);
 
             // Before drawing custom geometry, apply a depth bias for reducing Z fighting
             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
@@ -2940,6 +2944,7 @@ namespace TombEditor.Controls
 
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
+            staticMeshEffect.Parameters["AlphaTest"].SetValue(ShowTransparency);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
             var stGroup = new List<StaticInstance>();
