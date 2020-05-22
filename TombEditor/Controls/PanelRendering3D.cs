@@ -92,6 +92,7 @@ namespace TombEditor.Controls
 
 
         private Camera _oldCamera;
+        private Frustum _frustum;
 
         // Overall state
         private readonly Editor _editor;
@@ -188,6 +189,8 @@ namespace TombEditor.Controls
             {
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
+
+                _frustum = new Frustum();
 
                 _toolHandler = new ToolHandler(this);
                 _movementTimer = new MovementTimer(MoveTimer_Tick);
@@ -3275,12 +3278,12 @@ namespace TombEditor.Controls
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-            // Initialize frustum
-            //var frustum = new Frustum(Camera, Size);
+            // Update frustum
+            _frustum.Update(Camera, ClientSize);
 
             // Collect stuff to draw
             var roomsToDraw = CollectRoomsToDraw();
-            //roomsToDraw = roomsToDraw.Where(r => frustum.Contains(r.WorldBoundingBox)).ToArray();
+            roomsToDraw = roomsToDraw.Where(r => _frustum.Contains(r.WorldBoundingBox)).ToArray();
 
             var moveablesToDraw = CollectMoveablesToDraw(roomsToDraw);
             var staticsToDraw = CollectStaticsToDraw(roomsToDraw);
