@@ -1280,6 +1280,8 @@ namespace TombLib.LevelData.IO
                             instance.SharpEdges = chunkIO.Raw.ReadBoolean();
                         else if (id4 == Prj2Chunks.ObjectImportedGeometryHidden)
                             instance.Hidden = chunkIO.Raw.ReadBoolean();
+                        else if (id4 == Prj2Chunks.ObjectImportedGeometryMeshFilter)
+                            chunkIO.Raw.ReadStringUTF8(); // DEPRECATED: MeshFilter
                         else
                             return false;
                         return true;
