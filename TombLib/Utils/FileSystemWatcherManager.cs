@@ -248,6 +248,7 @@ namespace TombLib.Utils
                         // Create (or find) entry in queue
                         ReloadingObjInfo info;
                         for (int i = 0; i < _objsToReloadQueue.Count; ++i)
+                            if(_objsToReloadQueue[i].Key != null && watchedObj != null)
                             if (watchedObj.IsRepresentingSameObject(_objsToReloadQueue[i].Key))
                             {
                                 info = _objsToReloadQueue[i].Value;
