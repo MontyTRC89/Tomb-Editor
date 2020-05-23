@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Windows.Forms;
+using System.Windows.Media;
 using TombLib.LevelData;
 using TombLib.Scripting.TextEditors;
 using TombLib.Scripting.TextEditors.SyntaxHighlighting;
@@ -26,6 +27,8 @@ namespace TombEditor.Forms
 
             LoadVolume(volume);
 
+            tbScript.TextEditor.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(_configs.Lua.ColorScheme.Background));
+            tbScript.TextEditor.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(_configs.Lua.ColorScheme.Foreground));
             tbScript.TextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting(_configs.Lua.ColorScheme);
             tbScript.TextEditor.UpdateSettings(_configs.Lua);
         }
@@ -92,7 +95,7 @@ namespace TombEditor.Forms
         private void UpdateFlags()
         {
             _flagsLocked = true;
-            cbLara.Checked = _volume.Activators.HasFlag(VolumeActivators.Lara);
+            cbLara.Checked = _volume.Activators.HasFlag(VolumeActivators.Player);
             cbNPC.Checked = _volume.Activators.HasFlag(VolumeActivators.NPCs);
             cbOtherMoveables.Checked = _volume.Activators.HasFlag(VolumeActivators.OtherMoveables);
             cbStatics.Checked = _volume.Activators.HasFlag(VolumeActivators.Statics);
@@ -145,7 +148,7 @@ namespace TombEditor.Forms
         private void cbLara_CheckedChanged(object sender, EventArgs e)
         {
             if (_flagsLocked) return;
-            _volume.Activators ^= VolumeActivators.Lara;
+            _volume.Activators ^= VolumeActivators.Player;
             UpdateFlags();
         }
 
@@ -162,7 +165,7 @@ namespace TombEditor.Forms
             _volume.Activators ^= VolumeActivators.OtherMoveables;
             UpdateFlags();
         }
-
+        
         private void cbStatics_CheckedChanged(object sender, EventArgs e)
         {
             if (_flagsLocked) return;
