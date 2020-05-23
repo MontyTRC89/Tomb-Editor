@@ -3381,6 +3381,7 @@ namespace TombEditor.Controls
 
             // Draw disabled rooms, so they don't conceal all geometry behind
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
             foreach (Room room in roomsToDraw.Where(r => r.Hidden))
                 _renderingCachedRooms[room].Render(renderArgs);
 

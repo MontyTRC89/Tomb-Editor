@@ -327,7 +327,6 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Import / export settings";
             ((System.ComponentModel.ISupportInitialize)(this.nmScale)).EndInit();
             this.panelContents.ResumeLayout(false);
             this.panelContents.PerformLayout();
