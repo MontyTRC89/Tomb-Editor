@@ -4347,7 +4347,6 @@ namespace TombEditor
                     var newImported = new ImportedGeometryInstance();
                     newImported.Position = Vector3.Zero;
                     newImported.Model = newObject;
-                    newImported.MeshFilter = newObject.DirectXModel.Meshes[pair.Key].Name;
                     room.AddObject(_editor.Level, newImported);
                 }
             }

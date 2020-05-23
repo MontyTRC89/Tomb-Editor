@@ -637,8 +637,7 @@ namespace TombLib.LevelData.IO
 
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
                             chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometrySharpEdges, instance.SharpEdges);
-                            if (instance.MeshFilter != null && instance.MeshFilter != "")
-                                chunkIO.WriteChunkString(Prj2Chunks.ObjectImportedGeometryMeshFilter, instance.MeshFilter);
+                            chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryHidden, instance.Hidden);
                         });
                     else
                         logger.Warn("Object " + o + " not supported.");

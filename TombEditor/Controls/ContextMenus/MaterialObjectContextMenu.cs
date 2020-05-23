@@ -67,11 +67,20 @@ namespace TombEditor.Controls.ContextMenus
 
             if (targetObject is ImportedGeometryInstance)
             {
+                var geo = (ImportedGeometryInstance)targetObject;
+
+                Items.Add(new ToolStripMenuItem("Hide in editor", Properties.Resources.toolbox_Invisible_16, (o, e) =>
+                {
+                    geo.Hidden = !geo.Hidden;
+                    _editor.ObjectChange(geo, ObjectChangeType.Change);
+                })
+                { Checked = geo.Hidden });
+
                 Items.Add(new ToolStripMenuItem("Reload imported geometry", Properties.Resources.actions_refresh_16, (o, e) =>
                 {
                     _editor.Level.Settings.ImportedGeometryUpdate(
-                        ((ImportedGeometryInstance)targetObject).Model,
-                        ((ImportedGeometryInstance)targetObject).Model.Info);
+                        geo.Model,
+                        geo.Model.Info);
                 }));
             }
 

@@ -21,9 +21,9 @@ namespace TombEditor.Forms
             OldLevelSettings = levelSettings;
             NewLevelSettings = levelSettings.Clone();
             importedGeometryManager.LevelSettings = NewLevelSettings;
-            tbMeshFilter.Text = instance.MeshFilter;
             comboLightingModel.SelectedIndex = (int)_instance.LightingModel;
             cbSharpEdges.Checked = _instance.SharpEdges;
+            cbHide.Checked = _instance.Hidden;
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
@@ -54,9 +54,9 @@ namespace TombEditor.Forms
         private void butOk_Click(object sender, EventArgs e)
         {
             _instance.Model = OldLevelSettings.ImportedGeometryFromID(_currentModel) ?? NewLevelSettings.ImportedGeometryFromID(_currentModel);
-            _instance.MeshFilter = tbMeshFilter.Text;
             _instance.LightingModel = (ImportedGeometryLightingModel)comboLightingModel.SelectedIndex;
             _instance.SharpEdges = cbSharpEdges.Checked;
+            _instance.Hidden = cbHide.Checked;
             DialogResult = DialogResult.OK;
             Close();
         }

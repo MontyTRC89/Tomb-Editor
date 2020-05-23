@@ -14,9 +14,10 @@ namespace TombLib.LevelData
         public ImportedGeometry Model { get; set; }
         public float DefaultScale => 1.0f;
         public float Scale { get; set; } = 1.0f;
-        public string MeshFilter { get; set; } = "";
         public ImportedGeometryLightingModel LightingModel { get; set; } = ImportedGeometryLightingModel.CalculateFromLightsInRoom;
         public bool SharpEdges { get; set; } = false;
+        public bool Hidden { get; set; } = false;
+
 
         private float _roll { get; set; }
         private float _rotationX { get; set; }
@@ -78,14 +79,6 @@ namespace TombLib.LevelData
                     return;
                 args.DestinationLevelSettings.ImportedGeometries.Add(Model);
             }
-        }
-
-        public bool MeshNameMatchesFilter(string meshName)
-        {
-            // Filter check should be done only if imported geometry has a filter
-            if (MeshFilter == null || MeshFilter == "") return true;
-
-            return (meshName.ToLower() == MeshFilter.ToLower());
         }
 
         public string PrimaryAttribDesc => "Model";

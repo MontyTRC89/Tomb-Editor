@@ -1708,15 +1708,7 @@ namespace TombEditor.Controls
                         if (ShowImportedGeometry && !DisablePickingForImportedGeometry)
                         {
                             var geometry = (ImportedGeometryInstance)instance;
-
-                            bool testedMesh = false;
-                            foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
-                                if (geometry.MeshNameMatchesFilter(mesh.Name))
-                                {
-                                    DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
-                                    testedMesh = true;
-                                }
-                            if (!testedMesh)
+                            if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
                             {
                                 BoundingBox box = new BoundingBox(
                                     room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
@@ -1724,6 +1716,9 @@ namespace TombEditor.Controls
                                 if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
                                     result = new PickingResultObject(distance, instance);
                             }
+                            else
+                                foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
+                                    DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
                         }
                     }
                     else if (instance is VolumeInstance)
@@ -2610,32 +2605,29 @@ namespace TombEditor.Controls
 
                 foreach (Room room in roomsWhoseObjectsToDraw)
                     foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
-                    {
-                        if (instance.Model?.DirectXModel != null)
-                            if (instance.Model.DirectXModel.Meshes.Any(mesh => instance.MeshNameMatchesFilter(mesh.Name)))
-                                continue;
-
-                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
-                        if (_editor.SelectedObject == instance)
+                        if (instance.Model?.DirectXModel == null || instance.Hidden)
                         {
-                            color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                            Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                            if (_editor.SelectedObject == instance)
+                            {
+                                color = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                            // Add text message
-                            textToDraw.Add(CreateTextTagForObject(
-                                instance.RotationPositionMatrix * viewProjection,
-                                instance.ToString()));
+                                // Add text message
+                                textToDraw.Add(CreateTextTagForObject(
+                                    instance.RotationPositionMatrix * viewProjection,
+                                    instance.ToString()));
 
-                            // Add the line height of the object
-                            AddObjectHeightLine(room, instance.Position);
+                                // Add the line height of the object
+                                AddObjectHeightLine(room, instance.Position);
+                            }
+
+                            effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                            effect.Parameters["Color"].SetValue(color);
+
+                            effect.Techniques[0].Passes[0].Apply();
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                         }
-
-                        effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(color);
-
-                        effect.Techniques[0].Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-                    }
             }
 
             // Draw extra flyby cones
@@ -2861,11 +2853,12 @@ namespace TombEditor.Controls
                     var model = currentInstance.Model.DirectXModel;
                     var meshes = model.Meshes;
 
+                    if (instance.Hidden)
+                        continue;
+
                     for (var i = 0; i < meshes.Count; i++)
                     {
                         var mesh = meshes[i];
-                        if (!instance.MeshNameMatchesFilter(mesh.Name))
-                            continue;
                         if (mesh.Vertices.Count == 0)
                             continue;
 
@@ -3336,7 +3329,7 @@ namespace TombEditor.Controls
 
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
-            foreach (Room room in roomsToDraw.Where(r => !r.Hidden))
+            foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Hidden))
                 _renderingCachedRooms[room].Render(renderArgs);
 
             // Determine if selection should be visible or not.
@@ -3380,10 +3373,15 @@ namespace TombEditor.Controls
             }
 
             // Draw disabled rooms, so they don't conceal all geometry behind
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
-            foreach (Room room in roomsToDraw.Where(r => r.Hidden))
-                _renderingCachedRooms[room].Render(renderArgs);
+            var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Hidden).ToList();
+            if (hiddenRooms.Count > 0)
+            {
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+                _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
+                foreach (Room room in hiddenRooms)
+                    _renderingCachedRooms[room].Render(renderArgs);
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+            }
 
             // Draw the height of the object and room bounding box
             DrawDebugLines(viewProjection, effect);

@@ -1247,12 +1247,17 @@ namespace TombLib.LevelData.IO
                          id3 == Prj2Chunks.ObjectImportedGeometry2)
                 {
                     var instance = new ImportedGeometryInstance();
+
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
                     instance.Roll = chunkIO.Raw.ReadSingle();
                     instance.Scale = chunkIO.Raw.ReadSingle();
-                    if (!(id3 == Prj2Chunks.ObjectImportedGeometry && chunkSize3 == 30)) // For some time we accidentally emitted MeshFilter but still emitted the old ObjectImportedGeometry chunk name unfortunately. Thus we need to check chunk size too.
-                        instance.MeshFilter = chunkIO.Raw.ReadStringUTF8();
+
+                    // For some time we accidentally emitted MeshFilter but still emitted the old ObjectImportedGeometry 
+                    // chunk name unfortunately. Thus we need to check chunk size too.
+                    if (!(id3 == Prj2Chunks.ObjectImportedGeometry && chunkSize3 == 30))
+                        chunkIO.Raw.ReadStringUTF8(); // DEPRECATED: MeshFilter
+
                     instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
@@ -1273,8 +1278,8 @@ namespace TombLib.LevelData.IO
                             instance.LightingModel = (ImportedGeometryLightingModel)chunkIO.ReadChunkInt(chunkSize4);
                         else if (id4 == Prj2Chunks.ObjectImportedGeometrySharpEdges)
                             instance.SharpEdges = chunkIO.Raw.ReadBoolean();
-                        else if (id4 == Prj2Chunks.ObjectImportedGeometryMeshFilter)
-                            instance.MeshFilter = chunkIO.Raw.ReadStringUTF8();
+                        else if (id4 == Prj2Chunks.ObjectImportedGeometryHidden)
+                            instance.Hidden = chunkIO.Raw.ReadBoolean();
                         else
                             return false;
                         return true;
