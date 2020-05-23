@@ -51,7 +51,7 @@ namespace TombLib.Utils
 
         // Returns an empty collection if no folder is chosen.
         // "currentPath" should be a directory path containing placeholders (or null).
-        public static IEnumerable<string> BrowseFiles(IWin32Window owner, LevelSettings levelSettings, string currentPath, string title, IEnumerable<FileFormat> fileFormats, VariableType? baseDirType)
+        public static IEnumerable<string> BrowseFiles(IWin32Window owner, LevelSettings levelSettings, string currentPath, string title, IEnumerable<FileFormat> fileFormats, VariableType? baseDirType = null)
         {
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
