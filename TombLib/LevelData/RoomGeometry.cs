@@ -2005,7 +2005,7 @@ namespace TombLib.LevelData
                     foreach (var light in lights) // No Linq here because it's slow
                     {
                         if (light.IsStaticallyUsed)
-                            color += CalculateLightForVertex(room, light, position, normal, false, highQuality);
+                            color += CalculateLightForVertex(room, light, position, normal, true, highQuality);
                     }
 
                     // Apply color
