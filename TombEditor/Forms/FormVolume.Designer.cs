@@ -227,6 +227,7 @@
             this.Controls.Add(this.panelControls);
             this.Controls.Add(this.panelButtons);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MinimumSize = new System.Drawing.Size(500, 300);
             this.Name = "FormVolume";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
