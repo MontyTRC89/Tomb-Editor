@@ -1876,10 +1876,9 @@ namespace TombEditor.Controls
         private void DrawFlybyPath(Matrix4x4 viewProjection, Effect effect)
         {
             // Add the path of the flyby
-            if (_editor.SelectedObject is FlybyCameraInstance)
+            if (_editor.SelectedObject is FlybyCameraInstance &&
+                AddFlybyPath(((FlybyCameraInstance)_editor.SelectedObject).Sequence))
             {
-                AddFlybyPath(((FlybyCameraInstance)_editor.SelectedObject).Sequence);
-
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                 _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
                 _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
@@ -3465,7 +3464,7 @@ namespace TombEditor.Controls
             _drawHeightLine = true;
         }
 
-        private void AddFlybyPath(int sequence)
+        private bool AddFlybyPath(int sequence)
         {
             // Collect all flyby cameras
             List<FlybyCameraInstance> flybyCameras = new List<FlybyCameraInstance>();
@@ -3479,7 +3478,7 @@ namespace TombEditor.Controls
 
             // Is it actually necessary to show the path?
             if (flybyCameras.Count < 2)
-                return;
+                return false;
 
             // Sort cameras
             flybyCameras.Sort((x, y) => x.Number.CompareTo(y.Number));
@@ -3528,6 +3527,8 @@ namespace TombEditor.Controls
             if (_flybyPathVertexBuffer != null)
                 _flybyPathVertexBuffer.Dispose();
             _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+
+            return true;
         }
 
         private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>, IComparer<ImportedGeometryInstance>
