@@ -34,11 +34,31 @@ Tomb Editor:
  * Add TR3 compiler.
  
 TombIDE:
+	General:
  * Major refactoring and performance improvemets.
- * Level batch compiling.
- * Added F1 functionality similar to NG Center.
+ * Fixed many bugs.
+	ProjectMaster:
+ * NEW: Added level batch compiling.
+ * Added a warrning indicator when plugins are missing.
+ * Other minor bug fixes and adjustments
+	ScriptEditor:
+ * NEW: Added context-sensitive autocomplete.
+ * NEW: Added live error underlining.
+ * NEW: Added a new, improved #INCLUDE compiling method.
+ * NEW: Added F1 functionality similar to NG Center.
+ * NEW: Added many new features to the FileList, such as file creation etc.
+ * NEW: Added a new Find & Replace dialog with tons of new features.
+ * NEW: Added a DEBUG mode for finding errors inside NG_Center.
+ * NEW: Added custom color schemes.
+ * NEW: Added section separators for Classic Script.
  * Added OCB list to reference browser.
- * Disable persistent TRNG scripter notepad.exe nagging.
+ * Added OLD Commands list to reference browser.
+ * Added NEW Commands list to reference browser.
+ * Added Sound SFX Indices list to reference browser.
+ * Completely reworked the Settings window.
+ * Completely reworked the syntax preview in the status bar.
+ * Completely reworked the flag definition window.
+ * Disabled persistent TRNG scripter notepad.exe nagging.
 
 SoundTool:
  * Allow multiple instances option.
