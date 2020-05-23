@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace TombLib.Graphics
 {
@@ -9,5 +10,14 @@ namespace TombLib.Graphics
             matrix.M21, matrix.M22, matrix.M23, matrix.M24,
             matrix.M31, matrix.M32, matrix.M33, matrix.M34,
             matrix.M41, matrix.M42, matrix.M43, matrix.M44);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static SharpDX.Vector3 ToSharpDX(this Vector3 vec) => new SharpDX.Vector3(vec.X, vec.Y, vec.Z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static SharpDX.Vector2 ToSharpDX(this Vector2 vec) => new SharpDX.Vector2(vec.X, vec.Y);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 ToSystem(this SharpDX.Vector3 vec) => new Vector3(vec.X, vec.Y, vec.Z);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2 ToSystem(this SharpDX.Vector2 vec) => new Vector2(vec.X, vec.Y);
     }
 }

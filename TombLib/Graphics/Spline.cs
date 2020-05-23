@@ -34,19 +34,6 @@ namespace TombLib
             float[] delta = new float[num + 1];
             float[] D = new float[num + 1];
 
-            /*
-                 We solve the equation
-                [2 1       ] [D[0]]   [3(x[1] - x[0])  ]
-                |1 4 1     | |D[1]|   |3(x[2] - x[0])  |
-                |  1 4 1   | | .  | = |      .         |
-                |    ..... | | .  |   |      .         |
-                |     1 4 1| | .  |   |3(x[n] - x[n-2])|
-                [       1 2] [D[n]]   [3(x[n] - x[n-1])]
-
-                by using row operations to convert the matrix to upper triangular
-                and then back sustitution.  The D[i] are the derivatives at the knots.
-            */
-
             gamma[0] = 1.0f / 2.0f;
             for (int i = 1; i < num; i++)
                 gamma[i] = 1.0f / (4.0f - gamma[i - 1]);
