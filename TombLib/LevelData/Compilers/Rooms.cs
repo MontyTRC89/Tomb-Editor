@@ -452,9 +452,6 @@ namespace TombLib.LevelData.Compilers
 
                     foreach (var mesh in meshes)
                     {
-                        if (!geometry.MeshNameMatchesFilter(mesh.Name))
-                            continue;
-
                         int currentMeshIndexCount = 0;
 
                         for (int j = 0; j < mesh.Vertices.Count; j++)
