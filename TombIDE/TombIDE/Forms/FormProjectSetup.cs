@@ -28,6 +28,14 @@ namespace TombIDE
 
 		#region Events
 
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+
+			textBox_ProjectName.Text = "New Project";
+			textBox_ProjectName.SelectAll();
+		}
+
 		private void button_Help_Click(object sender, EventArgs e)
 		{
 			using (FormEngineHelp form = new FormEngineHelp(Cursor.Position))

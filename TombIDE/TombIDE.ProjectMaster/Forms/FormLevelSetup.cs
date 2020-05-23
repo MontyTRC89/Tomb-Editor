@@ -31,6 +31,14 @@ namespace TombIDE.ProjectMaster
 
 		#region Events
 
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+
+			textBox_LevelName.Text = "New Level";
+			textBox_LevelName.SelectAll();
+		}
+
 		private void textBox_LevelName_TextChanged(object sender, EventArgs e)
 		{
 			if (!checkBox_CustomFileName.Checked)
