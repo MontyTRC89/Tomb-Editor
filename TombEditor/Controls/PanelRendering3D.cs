@@ -1886,7 +1886,7 @@ namespace TombEditor.Controls
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
                 effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.TriangleStrip, _flybyPathVertexBuffer.ElementCount);
+                _legacyDevice.Draw(PrimitiveType.TriangleStripWithAdjacency, _flybyPathVertexBuffer.ElementCount);
             }
         }
 
