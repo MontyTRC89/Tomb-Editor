@@ -136,7 +136,6 @@ namespace TombEditor.Controls
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
         private Buffer<SolidVertex> _prismVertexBuffer;
-        private bool _drawFlybyPath;
 
         // Flyby stuff
         private const float _flybyPathThickness = 32.0f;
@@ -1827,7 +1826,7 @@ namespace TombEditor.Controls
             var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds ||
                 ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms));
 
-            if (!_drawFlybyPath && !_drawHeightLine && !drawRoomBounds)
+            if (!_drawHeightLine && !drawRoomBounds)
                 return;
 
             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
@@ -1855,16 +1854,8 @@ namespace TombEditor.Controls
                     // Draw room bounding box
                     DrawRoomBoundingBox(viewProjection, effect, _editor.SelectedRoom);
             }
-
-            if (_drawFlybyPath)
-            {
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.TriangleStrip, _flybyPathVertexBuffer.ElementCount);
-            }
         }
 
         private void DrawRoomBoundingBox(Matrix4x4 viewProjection, Effect solidEffect, Room room)
@@ -1882,6 +1873,23 @@ namespace TombEditor.Controls
             solidEffect.Parameters["ModelViewProjection"].SetValue((scaleMatrix * translateMatrix * viewProjection).ToSharpDX());
             solidEffect.CurrentTechnique.Passes[0].Apply();
             _legacyDevice.DrawIndexed(PrimitiveType.LineList, _linesCube.IndexBuffer.ElementCount);
+        }
+
+        private void DrawFlybyPath(Matrix4x4 viewProjection, Effect effect)
+        {
+            // Add the path of the flyby
+            if (_editor.SelectedObject is FlybyCameraInstance)
+            {
+                AddFlybyPath(((FlybyCameraInstance)_editor.SelectedObject).Sequence);
+
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                _legacyDevice.SetVertexBuffer(_flybyPathVertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _flybyPathVertexBuffer));
+                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                effect.CurrentTechnique.Passes[0].Apply();
+                _legacyDevice.Draw(PrimitiveType.TriangleStrip, _flybyPathVertexBuffer.ElementCount);
+            }
         }
 
         private string BuildTriggeredByMessage(ObjectInstance instance)
@@ -2473,9 +2481,6 @@ namespace TombEditor.Controls
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
-
-                        // Add the path of the flyby
-                        AddFlybyPath(instance.Sequence);
                     }
 
                     effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
@@ -3273,7 +3278,6 @@ namespace TombEditor.Controls
             // Reset
             List<Text> textToDraw = new List<Text>();
             _drawHeightLine = false;
-            _drawFlybyPath = false;
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -3372,8 +3376,10 @@ namespace TombEditor.Controls
             {
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
                 DrawObjects(viewProjection, effect, roomsToDraw, textToDraw);
-                // Draw light objects and bounding volumes only for current room
+                // Draw light objects and bounding volumes
                 DrawLights(viewProjection, effect, roomsToDraw, textToDraw);
+                // Draw flyby path
+                DrawFlybyPath(viewProjection, effect);
             }
 
             // Draw disabled rooms, so they don't conceal all geometry behind
@@ -3381,7 +3387,7 @@ namespace TombEditor.Controls
             foreach (Room room in roomsToDraw.Where(r => r.Hidden))
                 _renderingCachedRooms[room].Render(renderArgs);
 
-            // Draw the height of the object
+            // Draw the height of the object and room bounding box
             DrawDebugLines(viewProjection, effect);
 
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -3524,8 +3530,6 @@ namespace TombEditor.Controls
             if (_flybyPathVertexBuffer != null)
                 _flybyPathVertexBuffer.Dispose();
             _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
-
-            _drawFlybyPath = true;
         }
 
         private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>, IComparer<ImportedGeometryInstance>

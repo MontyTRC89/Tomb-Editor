@@ -69,11 +69,6 @@ namespace TombLib
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Clamp(float value, float min, float max) => value < min ? min : value > max ? max : value;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static SharpDX.Vector3 ToSharpDX(this Vector3 vec) => new SharpDX.Vector3(vec.X, vec.Y, vec.Z);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static SharpDX.Vector2 ToSharpDX(this Vector2 vec) => new SharpDX.Vector2(vec.X, vec.Y);
-
         /// <summary>
         /// Fast round from here: https://stackoverflow.com/questions/40460850/significant-drop-in-performance-of-math-round-on-x64-platform
         /// Needed for lots of round operations, such as in an extremely large amount of 2D graphics drawing.
