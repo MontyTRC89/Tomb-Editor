@@ -15,7 +15,7 @@ namespace TombLib.LevelData
     [Flags]
     public enum VolumeActivators : ushort
     {
-        Lara = 1,
+        Player = 1,
         NPCs = 2,
         OtherMoveables = 4,
         Statics = 8,
@@ -163,7 +163,7 @@ namespace TombLib.LevelData
             return VolumeShape.Undefined;
         }
 
-        public VolumeActivators Activators { get; set; } = VolumeActivators.Lara;
+        public VolumeActivators Activators { get; set; } = VolumeActivators.Player;
         public VolumeScriptInstance Scripts { get; set; } = new VolumeScriptInstance() { Name = "New volume script" };
     }
 }

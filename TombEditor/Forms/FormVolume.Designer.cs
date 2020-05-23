@@ -20,7 +20,6 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cbLara = new DarkUI.Controls.DarkCheckBox();
             this.panelControls = new System.Windows.Forms.Panel();
-            this.tbScript = new TombLib.Scripting.TextEditors.Controls.LuaTextBox();
             this.cbFlybys = new DarkUI.Controls.DarkCheckBox();
             this.cbStatics = new DarkUI.Controls.DarkCheckBox();
             this.cbOtherMoveables = new DarkUI.Controls.DarkCheckBox();
@@ -30,6 +29,7 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.cmbEvent = new DarkUI.Controls.DarkComboBox();
+            this.tbScript = new TombLib.Scripting.TextEditors.Controls.LuaTextBox();
             this.panelButtons.SuspendLayout();
             this.panelControls.SuspendLayout();
             this.SuspendLayout();
@@ -76,9 +76,9 @@
             this.cbLara.AutoSize = true;
             this.cbLara.Location = new System.Drawing.Point(115, 368);
             this.cbLara.Name = "cbLara";
-            this.cbLara.Size = new System.Drawing.Size(47, 17);
+            this.cbLara.Size = new System.Drawing.Size(56, 17);
             this.cbLara.TabIndex = 17;
-            this.cbLara.Text = "Lara";
+            this.cbLara.Text = "Player";
             this.cbLara.CheckedChanged += new System.EventHandler(this.cbLara_CheckedChanged);
             // 
             // panelControls
@@ -100,25 +100,11 @@
             this.panelControls.Size = new System.Drawing.Size(719, 393);
             this.panelControls.TabIndex = 87;
             // 
-            // tbScript
-            // 
-            this.tbScript.AllowDrop = true;
-            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tbScript.Location = new System.Drawing.Point(6, 37);
-            this.tbScript.Name = "tbScript";
-            this.tbScript.Size = new System.Drawing.Size(708, 297);
-            this.tbScript.TabIndex = 22;
-            this.tbScript.DragDrop += new System.Windows.Forms.DragEventHandler(this.textEditor_DragDrop);
-            this.tbScript.DragEnter += new System.Windows.Forms.DragEventHandler(this.textEditor_DragEnter);
-            // 
             // cbFlybys
             // 
             this.cbFlybys.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbFlybys.AutoSize = true;
-            this.cbFlybys.Location = new System.Drawing.Point(410, 368);
+            this.cbFlybys.Location = new System.Drawing.Point(419, 368);
             this.cbFlybys.Name = "cbFlybys";
             this.cbFlybys.Size = new System.Drawing.Size(57, 17);
             this.cbFlybys.TabIndex = 21;
@@ -129,7 +115,7 @@
             // 
             this.cbStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbStatics.AutoSize = true;
-            this.cbStatics.Location = new System.Drawing.Point(345, 368);
+            this.cbStatics.Location = new System.Drawing.Point(354, 368);
             this.cbStatics.Name = "cbStatics";
             this.cbStatics.Size = new System.Drawing.Size(59, 17);
             this.cbStatics.TabIndex = 20;
@@ -140,7 +126,7 @@
             // 
             this.cbOtherMoveables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbOtherMoveables.AutoSize = true;
-            this.cbOtherMoveables.Location = new System.Drawing.Point(226, 368);
+            this.cbOtherMoveables.Location = new System.Drawing.Point(235, 368);
             this.cbOtherMoveables.Name = "cbOtherMoveables";
             this.cbOtherMoveables.Size = new System.Drawing.Size(113, 17);
             this.cbOtherMoveables.TabIndex = 19;
@@ -151,7 +137,7 @@
             // 
             this.cbNPC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbNPC.AutoSize = true;
-            this.cbNPC.Location = new System.Drawing.Point(168, 368);
+            this.cbNPC.Location = new System.Drawing.Point(177, 368);
             this.cbNPC.Name = "cbNPC";
             this.cbNPC.Size = new System.Drawing.Size(52, 17);
             this.cbNPC.TabIndex = 18;
@@ -163,7 +149,7 @@
             this.darkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(3, 372);
+            this.darkLabel3.Location = new System.Drawing.Point(3, 369);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(104, 13);
             this.darkLabel3.TabIndex = 5;
@@ -215,6 +201,20 @@
             this.cmbEvent.Size = new System.Drawing.Size(667, 23);
             this.cmbEvent.TabIndex = 0;
             this.cmbEvent.SelectedIndexChanged += new System.EventHandler(this.cmbEvent_SelectedIndexChanged);
+            // 
+            // tbScript
+            // 
+            this.tbScript.AllowDrop = true;
+            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tbScript.Location = new System.Drawing.Point(6, 37);
+            this.tbScript.Name = "tbScript";
+            this.tbScript.Size = new System.Drawing.Size(708, 297);
+            this.tbScript.TabIndex = 22;
+            this.tbScript.DragDrop += new System.Windows.Forms.DragEventHandler(this.textEditor_DragDrop);
+            this.tbScript.DragEnter += new System.Windows.Forms.DragEventHandler(this.textEditor_DragEnter);
             // 
             // FormVolume
             // 
