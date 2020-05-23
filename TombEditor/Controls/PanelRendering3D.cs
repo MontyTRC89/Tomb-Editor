@@ -1854,8 +1854,6 @@ namespace TombEditor.Controls
                     // Draw room bounding box
                     DrawRoomBoundingBox(viewProjection, effect, _editor.SelectedRoom);
             }
-                effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                effect.CurrentTechnique.Passes[0].Apply();
         }
 
         private void DrawRoomBoundingBox(Matrix4x4 viewProjection, Effect solidEffect, Room room)
