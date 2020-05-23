@@ -90,7 +90,7 @@ namespace TombLib.Rendering.DirectX11
                                 lastSectorTexture |= 0x80;
 
                             // Assign overlay color which will be used in geometry mode if face has service texture (e.g. arrows)
-                            overlay = Dx11RenderingDevice.CompressColor(new Vector3(result.Overlay.X, result.Overlay.Y, result.Overlay.Z), (result.Hidden ? 0.5f : 1.0f), false);
+                            overlay = Dx11RenderingDevice.CompressColor(new Vector3(result.Overlay.X, result.Overlay.Y, result.Overlay.Z), (result.Hidden ? 0.4f : 1.0f), false);
                         }
                         editorUVAndSectorTexture[i * 3 + 0] |= lastSectorTexture;
                         editorUVAndSectorTexture[i * 3 + 1] |= lastSectorTexture;
