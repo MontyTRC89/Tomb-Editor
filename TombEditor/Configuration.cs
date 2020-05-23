@@ -158,12 +158,12 @@ namespace TombEditor
 
         public string[] UI_ToolbarButtons { get; set; } = new string[]
         {
-            "2D", "3D", "FaceEdit", "LightingMode", "|",
+            "2D", "3D", "FaceEdit", "LightingMode", "DrawWhiteLighting", "|",
             "Undo", "Redo", "|",
             "CenterCamera", "ToggleFlyMode", "|",
             "DrawPortals", "DrawAllRooms", "DrawHorizon", 
             "DrawRoomNames", "DrawCardinalDirections", 
-            "DrawExtraBlendingModes", "HideTransparentFaces", "DrawWhiteLighting", "DrawStaticTint", 
+            "DrawExtraBlendingModes", "HideTransparentFaces", "DrawStaticTint", 
             "DrawIllegalSlopes", "DrawSlideDirections", "DisableHiddenRoomPicking", "DisableGeometryPicking", "DrawObjects", "|",
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",

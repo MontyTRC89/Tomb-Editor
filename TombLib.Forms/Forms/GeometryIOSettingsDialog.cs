@@ -108,6 +108,8 @@ namespace TombLib.Forms
 
         private void UpdateControls(IOGeometrySettings settings)
         {
+            Text = (settings.Export ? "Export" : "Import") + " settings";
+
             cbInvertFaces.Enabled = !settings.ProcessAnimations;
             groupTextures.Enabled = settings.ProcessGeometry && !settings.Export;
             nmScale.Enabled = settings.ProcessGeometry;
