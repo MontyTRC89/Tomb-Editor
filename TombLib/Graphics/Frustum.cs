@@ -23,15 +23,10 @@ namespace TombLib.Graphics
             var pos = camera.GetPosition() / FRUSTUM_DIVISOR;
             var target = camera.Target / FRUSTUM_DIVISOR;
             var dir = System.Numerics.Vector3.Normalize(target - pos);
-            
-            // Keep last good direction for cases when NaN may happen, otherwise
-            // use last good direction
-            if (Math.Abs(dir.Y) == 1)
-                dir = _lastGoodDir;
-            else
-                _lastGoodDir = dir;
 
-            var up = System.Numerics.Vector3.Cross(System.Numerics.Vector3.Cross(dir, new System.Numerics.Vector3(0, 1, 0)), dir);
+            //Extract the up vector from the second column of the rotation matrix
+            System.Numerics.Matrix4x4 rotMatrix = camera.GetRotationMatrix();
+            System.Numerics.Vector3 up = new System.Numerics.Vector3(rotMatrix.M21, rotMatrix.M22, rotMatrix.M23); 
 
             var frustumParams = new FrustumCameraParams()
             {
