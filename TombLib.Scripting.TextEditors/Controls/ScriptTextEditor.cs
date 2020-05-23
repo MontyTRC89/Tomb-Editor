@@ -149,7 +149,35 @@ namespace TombLib.Scripting.TextEditors.Controls
 					HandleAutocompleteAfterUnderscore();
 				else if (Document.GetLineByOffset(CaretOffset).Length == 1)
 					HandleAutocompleteOnEmptyLine();
+				else
+				{
+					// TODO: Refactor
+					string firstLetterOfLastFlag = GetFirstLetterOfLastFlag();
+
+					if (!string.IsNullOrEmpty(firstLetterOfLastFlag)
+						&& e.Text.Equals(firstLetterOfLastFlag, StringComparison.OrdinalIgnoreCase)
+						&& CaretOffset > 1)
+						HandleAutocompleteForNextFlag();
+				}
 			}
+		}
+
+		private string GetFirstLetterOfLastFlag()
+		{
+			int currentArgumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(Document, CaretOffset);
+
+			if (currentArgumentIndex == -1 || currentArgumentIndex == 0)
+				return null;
+
+			string prevArgument = ArgumentHelper.GetArgumentFromIndex(Document, CaretOffset, currentArgumentIndex - 1).Trim();
+
+			if (!prevArgument.Contains("_"))
+				return null;
+
+			if (prevArgument.Contains("="))
+				prevArgument.Split('=').Last().Trim();
+
+			return prevArgument[0].ToString();
 		}
 
 		private void HandleAutocompleteAfterSpace()
@@ -159,7 +187,8 @@ namespace TombLib.Scripting.TextEditors.Controls
 				List<object> data = new List<object>
 				{
 					Text,
-					CaretOffset
+					CaretOffset,
+					-1
 				};
 
 				_autocompleteWorker.RunWorkerAsync(data);
@@ -197,14 +226,30 @@ namespace TombLib.Scripting.TextEditors.Controls
 			ShowCompletionWindow();
 		}
 
+		private void HandleAutocompleteForNextFlag() // TODO: Refactor
+		{
+			if (!_autocompleteWorker.IsBusy)
+			{
+				List<object> data = new List<object>
+				{
+					Text,
+					CaretOffset,
+					ArgumentHelper.GetArgumentIndexAtOffset(Document, CaretOffset) - 1
+				};
+
+				_autocompleteWorker.RunWorkerAsync(data);
+			}
+		}
+
 		private void AutocompleteWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
 			List<object> data = (List<object>)e.Argument;
 
 			TextDocument document = new TextDocument(data[0].ToString());
 			int caretOffset = (int)data[1];
+			int argumentIndex = (int)data[2];
 
-			e.Result = ScriptAutocomplete.GetCompletionData(document, caretOffset);
+			e.Result = ScriptAutocomplete.GetCompletionData(document, caretOffset, argumentIndex);
 		}
 
 		private void AutocompleteWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
