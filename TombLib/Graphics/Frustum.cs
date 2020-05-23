@@ -1,5 +1,4 @@
 ﻿using SharpDX;
-using System;
 using System.Drawing;
 
 namespace TombLib.Graphics
@@ -10,12 +9,7 @@ namespace TombLib.Graphics
         private const float FRUSTUM_DIVISOR = 1024.0f; 
 
         private BoundingFrustum _frustum;
-        private System.Numerics.Vector3 _lastGoodDir;
-
-        public Frustum()
-        {
-            _lastGoodDir = new System.Numerics.Vector3(float.MinValue);
-        }
+        private FrustumCameraParams? _frustumParams = null;
 
         public void Update(Camera camera, Size viewportSize)
         {
@@ -41,7 +35,15 @@ namespace TombLib.Graphics
                 FOV = camera.FieldOfView * 1.2f, 
             };
 
-            _frustum = BoundingFrustum.FromCamera(frustumParams);
+            if (!_frustumParams.HasValue ||
+                 _frustumParams.Value.Position != frustumParams.Position ||
+                 _frustumParams.Value.LookAtDir != frustumParams.LookAtDir ||
+                 _frustumParams.Value.UpDir != frustumParams.UpDir ||
+                 _frustumParams.Value.FOV != frustumParams.FOV)
+            {
+                _frustumParams = frustumParams;
+                _frustum = BoundingFrustum.FromCamera(frustumParams);
+            }
         }
 
         public bool Contains(BoundingBox box)

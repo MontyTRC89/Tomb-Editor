@@ -18,6 +18,7 @@ Tomb Editor:
  * Use two decimal places for flyby options.
  * An option to dither 16-bit textures.
  * Animate ghost blocks on selection.
+ * Rotate sector flags along with sector itself.
  * Don't deselect current object when cancelling object placement.
  * Fix sharp edges on imported room geometry by default and introduce an option to set it.
  * Fix lots of bugs with imported geometry handling.
