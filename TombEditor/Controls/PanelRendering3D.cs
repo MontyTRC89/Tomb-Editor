@@ -3302,7 +3302,12 @@ namespace TombEditor.Controls
             // Draw North, South, East and West
             if (ShowCardinalDirections)
             {
-                string[] messages = { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
+                string[] messages;
+                if (_editor.Configuration.Rendering3D_UseRoomEditorDirections)
+                    messages = new string[] { "+Z (East)", "-Z (West)", "+X (South)", "-X (North)" };
+                else
+                    messages = new string[] { "+Z (North)", "-Z (South)", "+X (East)", "-X (West)" };
+
                 Vector3[] positions = new Vector3[4]
                     {
                         new Vector3(0, 0, _editor.SelectedRoom.NumZSectors * 512.0f),
