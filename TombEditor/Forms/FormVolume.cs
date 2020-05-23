@@ -2,6 +2,8 @@
 using System;
 using System.Windows.Forms;
 using TombLib.LevelData;
+using TombLib.Scripting.TextEditors;
+using TombLib.Scripting.TextEditors.SyntaxHighlighting;
 
 namespace TombEditor.Forms
 {
@@ -15,12 +17,17 @@ namespace TombEditor.Forms
 
         private bool _flagsLocked;
 
+        private TextEditorConfigs _configs = TextEditorConfigs.Load();
+
         public FormVolume(VolumeInstance volume)
         {
             InitializeComponent();
             Editor.Instance.EditorEventRaised += EditorEventRaised;
 
             LoadVolume(volume);
+
+            tbScript.TextEditor.SyntaxHighlighting = new LuaSyntaxHighlighting(_configs.Lua.ColorScheme);
+            tbScript.TextEditor.UpdateSettings(_configs.Lua);
         }
 
         protected override void Dispose(bool disposing)
