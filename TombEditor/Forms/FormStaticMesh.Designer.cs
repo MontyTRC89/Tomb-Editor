@@ -92,9 +92,9 @@ namespace TombEditor.Forms
             this.cbIceTrasparency.AutoSize = true;
             this.cbIceTrasparency.Location = new System.Drawing.Point(10, 83);
             this.cbIceTrasparency.Name = "cbIceTrasparency";
-            this.cbIceTrasparency.Size = new System.Drawing.Size(102, 17);
+            this.cbIceTrasparency.Size = new System.Drawing.Size(109, 17);
             this.cbIceTrasparency.TabIndex = 2;
-            this.cbIceTrasparency.Text = "Ice trasparency";
+            this.cbIceTrasparency.Text = "Ice transparency";
             this.cbIceTrasparency.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
             // cbHeavyTriggerOnCollision
@@ -172,9 +172,9 @@ namespace TombEditor.Forms
             this.cbGlassTrasparency.AutoSize = true;
             this.cbGlassTrasparency.Location = new System.Drawing.Point(10, 60);
             this.cbGlassTrasparency.Name = "cbGlassTrasparency";
-            this.cbGlassTrasparency.Size = new System.Drawing.Size(115, 17);
+            this.cbGlassTrasparency.Size = new System.Drawing.Size(122, 17);
             this.cbGlassTrasparency.TabIndex = 1;
-            this.cbGlassTrasparency.Text = "Glass trasparency";
+            this.cbGlassTrasparency.Text = "Glass transparency";
             this.cbGlassTrasparency.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
             // cbScalable
