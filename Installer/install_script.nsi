@@ -116,6 +116,7 @@ Section "TombIDE" Section2
   TombIDE*.* 
   
   File /r "TIDE"
+  File /r "Configs"
   
 SectionEnd
 
