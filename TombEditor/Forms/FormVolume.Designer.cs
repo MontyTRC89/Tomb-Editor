@@ -72,6 +72,7 @@
             // 
             // cbLara
             // 
+            this.cbLara.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbLara.AutoSize = true;
             this.cbLara.Location = new System.Drawing.Point(115, 368);
             this.cbLara.Name = "cbLara";
@@ -102,6 +103,9 @@
             // tbScript
             // 
             this.tbScript.AllowDrop = true;
+            this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbScript.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tbScript.Location = new System.Drawing.Point(6, 37);
             this.tbScript.Name = "tbScript";
@@ -112,6 +116,7 @@
             // 
             // cbFlybys
             // 
+            this.cbFlybys.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbFlybys.AutoSize = true;
             this.cbFlybys.Location = new System.Drawing.Point(410, 368);
             this.cbFlybys.Name = "cbFlybys";
@@ -122,6 +127,7 @@
             // 
             // cbStatics
             // 
+            this.cbStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbStatics.AutoSize = true;
             this.cbStatics.Location = new System.Drawing.Point(345, 368);
             this.cbStatics.Name = "cbStatics";
@@ -132,6 +138,7 @@
             // 
             // cbOtherMoveables
             // 
+            this.cbOtherMoveables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbOtherMoveables.AutoSize = true;
             this.cbOtherMoveables.Location = new System.Drawing.Point(226, 368);
             this.cbOtherMoveables.Name = "cbOtherMoveables";
@@ -142,6 +149,7 @@
             // 
             // cbNPC
             // 
+            this.cbNPC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbNPC.AutoSize = true;
             this.cbNPC.Location = new System.Drawing.Point(168, 368);
             this.cbNPC.Name = "cbNPC";
@@ -219,6 +227,7 @@
             this.Controls.Add(this.panelControls);
             this.Controls.Add(this.panelButtons);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MinimumSize = new System.Drawing.Size(500, 300);
             this.Name = "FormVolume";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

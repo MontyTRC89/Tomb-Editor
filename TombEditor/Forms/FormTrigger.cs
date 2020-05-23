@@ -44,6 +44,11 @@ namespace TombEditor.Forms
             this.SetActualSize();
             this.LockHeight();
 
+            if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                Text = "Legacy trigger editor";
+            else
+                Text = "Trigger editor";
+
             // Set window property handlers
             Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
