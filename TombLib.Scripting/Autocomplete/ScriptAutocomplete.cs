@@ -31,7 +31,7 @@ namespace TombLib.Scripting.Autocomplete
 			return data;
 		}
 
-		public static List<ICompletionData> GetCompletionData(TextDocument document, int caretOffset)
+		public static List<ICompletionData> GetCompletionData(TextDocument document, int caretOffset, int argumentIndex = -1)
 		{
 			List<ICompletionData> completionData = new List<ICompletionData>();
 
@@ -46,12 +46,14 @@ namespace TombLib.Scripting.Autocomplete
 				return null;
 
 			string[] arguments = syntax.Split(',');
-			int currentArgumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(document, caretOffset);
 
-			if (arguments.Length <= currentArgumentIndex || currentArgumentIndex == -1)
+			if (argumentIndex == -1)
+				argumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(document, caretOffset);
+
+			if (arguments.Length <= argumentIndex || argumentIndex == -1)
 				return null;
 
-			string currentArgument = arguments[currentArgumentIndex];
+			string currentArgument = arguments[argumentIndex];
 
 			if (regex.IsMatch(currentArgument))
 			{
