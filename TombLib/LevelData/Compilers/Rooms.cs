@@ -110,20 +110,22 @@ namespace TombLib.LevelData.Compilers
         {
             Vector3 output = ambientColor;
 
-            foreach (var obj in room.Objects)
-                if (obj is LightInstance)
-                {
-                    var light = obj as LightInstance;
+            if (position.X >= 0 && position.Z >= 0 &&
+                position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
+                foreach (var obj in room.Objects)
+                    if (obj is LightInstance)
+                    {
+                        var light = obj as LightInstance;
 
-                    // Disable this light for imported geometry, if IsUsedForImportedGeometry flag is not set,
-                    // or for static meshes, if IsStaticallyUsed is not set
+                        // Disable this light for imported geometry, if IsUsedForImportedGeometry flag is not set,
+                        // or for static meshes, if IsStaticallyUsed is not set
 
-                    if ((!light.IsUsedForImportedGeometry && forImportedGeometry) ||
-                        (!light.IsStaticallyUsed && !forImportedGeometry))
-                        continue;
+                        if ((!light.IsUsedForImportedGeometry && forImportedGeometry) ||
+                            (!light.IsStaticallyUsed && !forImportedGeometry))
+                            continue;
 
-                    output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
-                }
+                        output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
+                    }
 
             return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
         }
@@ -481,9 +483,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 trVertex.Lighting2 = PackLightColor(vertex.Color, _level.Settings.GameVersion);
                             }
-                            else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom &&
-                                     position.X >= 0 && position.Z >= 0 &&
-                                     position.X < room.NumXSectors * 1024.0f && position.Z < room.NumZSectors * 1024.0f)
+                            else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
                                 trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
                             }
