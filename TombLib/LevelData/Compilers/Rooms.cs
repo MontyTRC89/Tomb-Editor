@@ -373,7 +373,7 @@ namespace TombLib.LevelData.Compilers
                             //Apply Shade factor
                             color *= shade;
                         }
-
+                        var vertexColor = PackLightColor(color, _level.Settings.GameVersion);
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -382,12 +382,10 @@ namespace TombLib.LevelData.Compilers
                                 Y = (short)-(position.Y + room.WorldPos.Y),
                                 Z = (short)position.Z
                             },
-                            Lighting1 = 0,
-                            Lighting2 = 0,
+                            Lighting1 = vertexColor,
+                            Lighting2 = vertexColor,
                             Attributes = (ushort)lightingEffect
                         };
-
-                        trVertex.Lighting2 = PackLightColor(color, _level.Settings.GameVersion);
                         roomVertices.Add(trVertex);
                     }
 
@@ -481,15 +479,21 @@ namespace TombLib.LevelData.Compilers
                             // Pack the light according to chosen lighting model
                             if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                             {
-                                trVertex.Lighting2 = PackLightColor(vertex.Color, _level.Settings.GameVersion);
+                                var color = PackLightColor(vertex.Color, _level.Settings.GameVersion);
+                                trVertex.Lighting1 = color;
+                                trVertex.Lighting2 = color;
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                trVertex.Lighting2 = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
+                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
+                                trVertex.Lighting1 = color;
+                                trVertex.Lighting2 = color;
                             }
                             else
                             {
-                                trVertex.Lighting2 = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
+                                var color = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
+                                trVertex.Lighting1 = color;
+                                trVertex.Lighting2 = color;
                             }
 
                             // HACK: Find a vertex with same coordinates and merge with it.
@@ -905,8 +909,12 @@ namespace TombLib.LevelData.Compilers
             // Ignore this for TRNG ad TR4
             if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 trVertex.Color = PackColorTo32Bit(Color);
-            else
-                trVertex.Lighting2 = PackLightColor(Color, room.Level.Settings.GameVersion);
+            else {
+                var color = PackLightColor(Color, room.Level.Settings.GameVersion);
+                trVertex.Lighting1 = color;
+                trVertex.Lighting2 = color;
+
+            }
 
             return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
         }
