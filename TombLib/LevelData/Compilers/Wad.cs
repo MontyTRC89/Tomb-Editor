@@ -526,7 +526,11 @@ namespace TombLib.LevelData.Compilers
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.Z))
                 };
 
-                newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
+                if (_level.Settings.GameVersion > TRVersion.Game.TR3)
+                    newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
+                else
+                    newStaticMesh.Flags = 2; // bit 0: no collision, bit 1: visibility
+
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
