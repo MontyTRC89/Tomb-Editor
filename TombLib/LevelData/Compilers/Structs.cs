@@ -831,7 +831,7 @@ namespace TombLib.LevelData.Compilers
             {
                 writer.WriteBlockArray(Normals);
             }
-            else
+            else if (NumNormals < 0)
             {
                 writer.WriteBlockArray(Lights);
             }
