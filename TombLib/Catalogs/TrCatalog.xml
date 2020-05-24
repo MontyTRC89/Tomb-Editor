@@ -7226,59 +7226,5 @@
 		<sound id="1814" name="TR4_FLAME_EMITTER" />
 		<sound id="1815" name="TR4_LARA_CLICK_SWITCH" />
     </sounds>
-    <animations>
-      <anim item="0" id="437" name="USE_KEYCARD" />
-      <anim item="0" id="443" name="ELEVATOR_SMASH" />
-      <anim item="0" id="445" name="DOZY" />
-      <anim item="0" id="446" name="TIGHTROPE_WALK" />
-      <anim item="0" id="447" name="TIGHTROPE_WALK_TO_STAND" />
-      <anim item="0" id="448" name="TIGHTROPE_STAND" />
-      <anim item="0" id="449" name="TIGHTROPE_WALK_TO_STAND_CAREFUL" />
-      <anim item="0" id="450" name="TIGHTROPE_STAND_TO_WALK" />
-      <anim item="0" id="451" name="TIGHTROPE_TURN" />
-      <anim item="0" id="452" name="TIGHTROPE_LOOSE_LEFT" />
-      <anim item="0" id="453" name="TIGHTROPE_RECOVER_LEFT" />
-      <anim item="0" id="454" name="TIGHTROPE_FALL_LEFT" />
-      <anim item="0" id="455" name="TIGHTROPE_LOOSE_RIGHT" />
-      <anim item="0" id="456" name="TIGHTROPE_RECOVER_RIGHT" />
-      <anim item="0" id="457" name="TIGHTROPE_FALL_RIGHT" />
-      <anim item="0" id="458" name="TIGHTROPE_START" />
-      <anim item="0" id="459" name="TIGHTROPE_FINISN" />
-      <anim item="0" id="460" name="DOVESWITCH_TURN" />
-      <anim item="0" id="461" name="BARS_GRAB" />
-      <anim item="0" id="462" name="BARS_SWING" />
-      <anim item="0" id="463" name="BARS_JUMP" />
-      <anim item="0" id="464" name="LOOT_CABINET" />
-      <anim item="0" id="465" name="LOOT_DRAWER" />
-      <anim item="0" id="466" name="LOOT_SHELF" />
-      <anim item="0" id="467" name="RADIO_START" />
-      <anim item="0" id="468" name="RADIO_IDLE" />
-      <anim item="0" id="469" name="RADIO_END" />
-      <anim item="0" id="470" name="VALVE_TURN" />
-      <anim item="0" id="471" name="CROWBAR_USE_ON_WALL" />
-      <anim item="0" id="472" name="LOOT_CHEST" />
-      <anim item="0" id="473" name="LADDER_TO_CROUCH" />
-    </animations>
-    <states>
-      <state item="0" id="119" name="TIGHTROPE_IDLE" />
-      <state item="0" id="120" name="TIGHTROPE_ROLL" />
-      <state item="0" id="121" name="TIGHTROPE_FORWARD" />
-      <state item="0" id="122" name="TIGHTROPE_BALANCING_LEFT" />
-      <state item="0" id="123" name="TIGHTROPE_BALANCING_RIGHT" />
-      <state item="0" id="124" name="TIGHTROPE_ENTER" />
-      <state item="0" id="125" name="TIGHTROPE_EXIT" />
-      <state item="0" id="126" name="DOVESWITCH" />
-      <state item="0" id="127" name="TIGHTROPE_RESTORE_BALANCE" />
-      <state item="0" id="128" name="BARS_SWING" />
-      <state item="0" id="129" name="BARS_JUMP" />
-      <state item="0" id="130" name="UNKNOWN2" />
-      <state item="0" id="131" name="RADIO_LISTENING" />
-      <state item="0" id="132" name="RADIO_OFF" />
-      <state item="0" id="133" name="UNKNOWN3" />
-      <state item="0" id="134" name="UNKNOWN4" />
-      <state item="0" id="135" name="UNKNOWN5" />
-      <state item="0" id="136" name="UNKNOWN6" />
-      <state item="0" id="137" name="PICKUP_FROM_CHEST" />
-    </states>
   </game>
 </xml>
