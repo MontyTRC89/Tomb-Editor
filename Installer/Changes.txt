@@ -43,12 +43,12 @@ TombIDE:
  * Added a warrning indicator when plugins are missing.
  * Other minor bug fixes and adjustments
 	ScriptEditor:
- * NEW: Added context-sensitive autocomplete.
- * NEW: Added live error underlining.
+ * NEW: Added context-sensitive autocomplete. (BETA)
+ * NEW: Added live error underlining. (BETA)
  * NEW: Added a new, improved #INCLUDE compiling method.
- * NEW: Added F1 functionality similar to NG Center.
- * NEW: Added many new features to the FileList, such as file creation etc.
- * NEW: Added a new Find & Replace dialog with tons of new features.
+ * NEW: Added F1 functionality similar to NG Center. (BETA)
+ * NEW: Added many new features to the FileList, such as file creation etc. (BETA)
+ * NEW: Added a new Find & Replace dialog with tons of new features. (BETA)
  * NEW: Added a DEBUG mode for finding errors inside NG_Center.
  * NEW: Added custom color schemes.
  * NEW: Added section separators for Classic Script.
