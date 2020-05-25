@@ -313,6 +313,7 @@ namespace TombEditor.Forms
             {
                 _levelSettings.Wads.Clear();
                 _levelSettings.Wads.AddRange(_objectFileDataGridViewDataSource.Select(o => o.Wad));
+                RefreshAutoStaticMeshMergesList();
             };
             objectFileDataGridView.DataSource = _objectFileDataGridViewDataSource;
             objectFileDataGridViewControls.DataGridView = objectFileDataGridView;
@@ -386,21 +387,7 @@ namespace TombEditor.Forms
             tabbedContainer.LinkedControl = optionsList;
 
             // Initialize Static Mesh merge list
-            foreach (var staticMesh in _levelSettings.WadGetAllStatics())
-            {
-                bool added = false;
-                foreach (var entry in _levelSettings.AutoStaticMeshMerges)
-                {
-                    if (entry.meshId.Equals(staticMesh.Value.Id.TypeId))
-                    {
-                        _staticMeshMergeGridViewDataSource.Add(entry);
-                        added = true;
-                    }
-                }
-                if (!added)
-                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false, false, false, _levelSettings));
-            }
-            staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
+            RefreshAutoStaticMeshMergesList();
 
             // Initialize controls
             UpdateDialog();
@@ -453,6 +440,28 @@ namespace TombEditor.Forms
             }
 
             _editor.UpdateLevelSettings(settings);
+        }
+
+        private void RefreshAutoStaticMeshMergesList()
+        {
+            _staticMeshMergeGridViewDataSource.Clear();
+
+            // Initialize Static Mesh merge list
+            foreach (var staticMesh in _levelSettings.WadGetAllStatics())
+            {
+                bool added = false;
+                foreach (var entry in _levelSettings.AutoStaticMeshMerges)
+                {
+                    if (entry.meshId.Equals(staticMesh.Value.Id.TypeId))
+                    {
+                        _staticMeshMergeGridViewDataSource.Add(entry);
+                        added = true;
+                    }
+                }
+                if (!added)
+                    _staticMeshMergeGridViewDataSource.Add(new AutoStaticMeshMergeEntry(staticMesh.Value.Id.TypeId, false, false, false, false, _levelSettings));
+            }
+            staticMeshMergeDataGridView.DataSource = _staticMeshMergeGridViewDataSource;
         }
 
         private void UpdateDialog()
