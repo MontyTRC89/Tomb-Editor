@@ -221,6 +221,15 @@ namespace TombLib.Wad
                 }
 
                 mesh.VerticesPositions.AddRange(tmpMesh.Positions);
+
+                // Copy normals as well, if they are consistent
+                if (tmpMesh.Normals.Count == tmpMesh.Positions.Count)
+                    mesh.VerticesNormals.AddRange(tmpMesh.Normals);
+
+                // FIXME: Why do we keep white intensity shades for wad2 meshes internally, and not vertex colors?
+                if (tmpMesh.Colors.Count == tmpMesh.Positions.Count)
+                    mesh.VerticesShades.AddRange(tmpMesh.Colors.Select(v => (short)(8191.0f - (v.To3().GetLuma() * 8191.0f))));
+
                 foreach (var tmpSubmesh in tmpMesh.Submeshes)
                     foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
                     {
@@ -272,7 +281,9 @@ namespace TombLib.Wad
                 {
                     mesh.BoundingBox = mesh.CalculateBoundingBox();
                     mesh.BoundingSphere = mesh.CalculateBoundingSphere();
-                    if (mesh.VerticesNormals.Count == 0 || calculateNormals) mesh.CalculateNormals(); //MQO files rarely have normals
+
+                    if (mesh.VerticesNormals.Count == 0 || calculateNormals)
+                        mesh.CalculateNormals(); //MQO files rarely have normals
 
                     lastBaseVertex = 0;
                     meshList.Add(mesh);

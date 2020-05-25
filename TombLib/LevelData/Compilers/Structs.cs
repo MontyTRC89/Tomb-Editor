@@ -30,6 +30,12 @@ namespace TombLib.LevelData.Compilers
         public byte Red;
         public byte Green;
         public byte Blue;
+
+        public void write(BinaryWriter writer) {
+            writer.Write(Red);
+            writer.Write(Green);
+            writer.Write(Blue);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -825,7 +831,7 @@ namespace TombLib.LevelData.Compilers
             {
                 writer.WriteBlockArray(Normals);
             }
-            else
+            else if (NumNormals < 0)
             {
                 writer.WriteBlockArray(Lights);
             }
