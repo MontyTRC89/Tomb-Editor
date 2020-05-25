@@ -704,7 +704,7 @@ namespace TombLib.LevelData.Compilers
                     if (_level.Settings.GameVersion.UsesMainSfx() && !soundInfo.Indexed)
                     {
                         _progressReporter.ReportWarn("Sound info #" + soundInfo.Id +
-                            " was selected but isn't set as indexed for TR2-3 MAIN.SFX. It was removed.");
+                            " was selected but was not set as included for TR2-3 MAIN.SFX in SoundTool. It was removed.");
                         _finalSelectedSoundsList.Remove(soundInfo.Id);
                     }
                     else
