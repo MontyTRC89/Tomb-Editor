@@ -792,7 +792,14 @@ namespace TombLib.LevelData.Compilers
 
             _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
             foreach (var sound in _finalSoundInfosList)
+            {
+                if (sound.Id >= _soundMapSize)
+                {
+                    _progressReporter.ReportWarn("Sound ID " + sound.Id + " wasn't included because max. ID for this game version is " + _soundMapSize + ".");
+                    continue;
+                }
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
+            }
 
             // Samples aren't needed for TR2-3, skip this step
             if (_level.Settings.GameVersion.UsesMainSfx())
@@ -848,8 +855,8 @@ namespace TombLib.LevelData.Compilers
                         {
                             var newSoundDetail = new tr_sound_details();
                             newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
-                            newSoundDetail.Chance = (byte)soundDetail.Chance;
+                            newSoundDetail.Volume = (ushort)Math.Round(soundDetail.Volume / 100.0f * 32767.0f);
+                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 32767.0f);
                             newSoundDetail.Characteristics = characteristics;
                             bw.WriteBlock(newSoundDetail);
                         }
