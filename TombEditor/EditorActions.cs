@@ -1268,8 +1268,11 @@ namespace TombEditor
                 default:
                     if (room.RoomGeometry != null)
                     {
-                        // get current face
-                        VertexRange vertexRange = room.RoomGeometry.VertexRangeLookup[new SectorInfo(pos.X, pos.Y, face)];
+                        // Get current face
+                        VertexRange vertexRange = new VertexRange(0, 0);
+                        if (!room.RoomGeometry.VertexRangeLookup.TryGetValue(new SectorInfo(pos.X, pos.Y, face), out vertexRange))
+                            return false;
+
                         if (vertexRange.Count == 6)
                         {
                             Vector3 p0 = room.RoomGeometry.VertexPositions[vertexRange.Start + 2];
@@ -1338,7 +1341,6 @@ namespace TombEditor
                                 processedTexture.TexCoord0 = processedTexture.TexCoord1;
                                 processedTexture.TexCoord1 = processedTexture.TexCoord2;
                                 processedTexture.TexCoord2 = processedTexture.TexCoord3;
-
                             }
                             else
                             {
@@ -4417,6 +4419,7 @@ namespace TombEditor
 
                     _editor.Level = newLevel;
                     newLevel = null;
+                    GC.Collect(); // Clean up memory
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
                     return true;
                 }
@@ -4491,7 +4494,8 @@ namespace TombEditor
                         r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
                     _editor.Level = newLevel;
-                    newLevel = null;
+                    newLevel = null; 
+                    GC.Collect(); // Clean up memory
                 }
             }
         }

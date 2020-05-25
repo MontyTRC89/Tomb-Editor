@@ -17,7 +17,21 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
 
                 // TODO: for now I write fake palette, they should be needed only for 8 bit textures
-                for (var i = 0; i < 768; i++) writer.Write((byte)0x00);
+                tr_color[] palette8 = new tr_color[256];
+                //Following colors have hardcoded meaning in TR2
+                // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
+                palette8[1] = new tr_color() { Red = 128, Green = 128, Blue = 128 };
+                palette8[2] = new tr_color() { Red = 255, Green = 255, Blue = 255 };
+                palette8[3] = new tr_color() { Red = 255, Green = 0, Blue = 0 };
+                palette8[4] = new tr_color() { Red = 255, Green = 165, Blue = 0 };
+                palette8[5] = new tr_color() { Red = 255, Green = 255, Blue = 0 };
+                palette8[12] = new tr_color() { Red = 0, Green = 128, Blue = 0 };
+                palette8[13] = new tr_color() { Red = 0, Green = 255, Blue = 0 };
+                palette8[14] = new tr_color() { Red = 0, Green = 255, Blue = 255 };
+                palette8[14] = new tr_color() { Red = 0, Green = 0, Blue = 255 };
+                palette8[15] = new tr_color() { Red = 255, Green = 0, Blue = 255 };
+                foreach (tr_color c in palette8)
+                    c.write(writer);
                 for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
 
                 // Write textures
