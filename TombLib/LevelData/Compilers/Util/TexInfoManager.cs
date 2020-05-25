@@ -1128,7 +1128,7 @@ namespace TombLib.LevelData.Compilers.Util
                             (!child.IsForTriangle && newObjectTexture.TexCoord[2] == newObjectTexture.TexCoord[3]) ||
                             (!child.IsForTriangle && (newObjectTexture.TexCoord[3].X < 0 || newObjectTexture.TexCoord[3].Y < 0)))
                         {
-                            _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken. Possible system issue, try to recompile level on another system.");
+                            _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken, coordinates are invalid.");
                         }
 
                         _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
