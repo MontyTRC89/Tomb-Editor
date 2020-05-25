@@ -3484,6 +3484,9 @@ namespace TombEditor
             if (level.Settings.SelectedSounds.Count == 0 && level.Settings.AutoAssignSoundsIfNoSelection)
                 AutodetectAndAssignSounds(level.Settings);
 
+            if (level.Settings.GameVersion.UsesMainSfx() && level.Settings.SoundsCatalogs.Count == 0)
+                AutoLoadSoundCatalog(level.Settings);
+
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
@@ -4817,6 +4820,37 @@ namespace TombEditor
             } ;
         }
 
+        public static void AutoLoadSoundCatalog(LevelSettings settings)
+        {
+            var catalogName = string.Empty;
+
+            switch (settings.GameVersion)
+            {
+                case TRVersion.Game.TR2:
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr2.xml";
+                    break;
+
+                case TRVersion.Game.TR3:
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr3.xml";
+                    break;
+
+                case TRVersion.Game.TR4:
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr4.xml";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(catalogName) && File.Exists(catalogName))
+            {
+                try
+                {
+                    settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(settings, catalogName));
+                }
+                catch (Exception ex)
+                {
+                    logger.Error("Unable to load default sound catalog! Exception: " + ex);
+                }
+            }
+        }
 
         public static void AutodetectAndAssignSounds(LevelSettings settings, IWin32Window owner = null) // No owner - no confirmation
         {
