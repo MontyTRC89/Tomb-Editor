@@ -6,7 +6,11 @@ Tomb Editor:
  * Fix lighting and GUI in TR2.
  * Restore accidentally deleted TRNG snow flag.
  * Optimize memory usage.
- 
+
+TombIDE:
+ * Added the ability to compile single levels.
+ * Many ScriptEditor bug fixes.
+
 WadTool:
  * Read normals and shades for imported meshes. 
 
