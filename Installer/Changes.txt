@@ -6,6 +6,9 @@ Tomb Editor:
  * Fix lighting and GUI in TR2.
  * Restore accidentally deleted TRNG snow flag.
  * Optimize memory usage.
+ 
+WadTool:
+ * Read normals and shades for imported meshes. 
 
 Version 1.3
 ===========
