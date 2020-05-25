@@ -3481,11 +3481,11 @@ namespace TombEditor
                 return false;
             }
 
-            if (level.Settings.SelectedSounds.Count == 0 && level.Settings.AutoAssignSoundsIfNoSelection)
-                AutodetectAndAssignSounds(level.Settings);
-
             if (level.Settings.GameVersion.UsesMainSfx() && level.Settings.SoundsCatalogs.Count == 0)
                 AutoLoadSoundCatalog(level.Settings);
+
+            if (level.Settings.SelectedSounds.Count == 0 && level.Settings.AutoAssignSoundsIfNoSelection)
+                AutodetectAndAssignSounds(level.Settings);
 
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
