@@ -4417,6 +4417,7 @@ namespace TombEditor
 
                     _editor.Level = newLevel;
                     newLevel = null;
+                    GC.Collect(); // Clean up memory
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
                     return true;
                 }
@@ -4491,7 +4492,8 @@ namespace TombEditor
                         r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
                     _editor.Level = newLevel;
-                    newLevel = null;
+                    newLevel = null; 
+                    GC.Collect(); // Clean up memory
                 }
             }
         }
