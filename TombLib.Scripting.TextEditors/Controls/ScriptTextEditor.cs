@@ -484,8 +484,13 @@ namespace TombLib.Scripting.TextEditors.Controls
 				DocumentLine processedLine = Document.GetLineByNumber(i);
 				string processedLineText = Document.GetText(processedLine.Offset, processedLine.Length);
 
+				string command = CommandHelper.GetCommandKey(Document, processedLine.Offset);
+
+				if (string.IsNullOrEmpty(command))
+					continue;
+
 				if (processedLineText.Contains("="))
-					if (CommandHelper.GetCommandKey(Document, processedLine.Offset).Equals(commandKey, StringComparison.OrdinalIgnoreCase))
+					if (command.Equals(commandKey, StringComparison.OrdinalIgnoreCase))
 					{
 						int takenIndex;
 

@@ -78,7 +78,7 @@ namespace TombLib.Scripting.ErrorDetection
 
 			if (!IsValidCommandKey(commandKey))
 			{
-				string errorSegmentText = Regex.Match(lineText, "^.*=").Value.TrimEnd();
+				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), "^.*=").Value.TrimEnd();
 
 				if (errorSegmentText.Length == 0 && commandKey != null)
 					return null;
@@ -96,8 +96,7 @@ namespace TombLib.Scripting.ErrorDetection
 
 			if (!IsArgumentCountValid(document, line.Offset))
 			{
-				string errorSegmentText = Regex.Match(lineText, @"=\s*?(\b.*)").Groups[1].Value;
-				errorSegmentText = LineHelper.RemoveComments(errorSegmentText);
+				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), @"=\s*?(\b.*)").Groups[1].Value;
 
 				if (errorSegmentText.Length == 0)
 					errorSegmentText = lineText.TrimEnd();
@@ -108,8 +107,7 @@ namespace TombLib.Scripting.ErrorDetection
 
 			if (ContainsEmptyArguments(document, line.Offset))
 			{
-				string errorSegmentText = Regex.Match(lineText, @"=\s*?(\b.*)").Groups[1].Value;
-				errorSegmentText = LineHelper.RemoveComments(errorSegmentText);
+				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), @"=\s*?(\b.*)").Groups[1].Value;
 
 				if (errorSegmentText.Length == 0)
 					errorSegmentText = lineText.TrimEnd();
@@ -199,12 +197,14 @@ namespace TombLib.Scripting.ErrorDetection
 			if (lineText.StartsWith("#"))
 				return true;
 
+			lineText = LineHelper.RemoveComments(lineText);
+
 			if (!lineText.Contains("="))
 				return false;
 
 			string command = CommandHelper.GetCommandKey(document, lineOffset);
 
-			if (command == null)
+			if (string.IsNullOrEmpty(command))
 				return false;
 
 			int argumentCount = LineHelper.RemoveComments(lineText).Split('=')[1].Split(',').Length;
@@ -233,7 +233,7 @@ namespace TombLib.Scripting.ErrorDetection
 			if (lineText == null)
 				return true;
 
-			string[] arguments = lineText.Split(',');
+			string[] arguments = LineHelper.RemoveComments(lineText).Split(',');
 
 			foreach (string argument in arguments)
 				if (string.IsNullOrWhiteSpace(argument))

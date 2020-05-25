@@ -81,7 +81,7 @@ namespace TombLib.Scripting.TextEditors.SyntaxHighlighting
 				/* Next line keys */
 				ruleSet.Rules.Add(new HighlightingRule
 				{
-					Regex = new Regex(ScriptPatterns.NextLineKey),
+					Regex = new Regex(">"),
 					Color = new HighlightingColor
 					{
 						Foreground = new SimpleHighlightingBrush((Color)ColorConverter.ConvertFromString(_scheme.NewCommands.HtmlColor)),

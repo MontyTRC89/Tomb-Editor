@@ -35,6 +35,7 @@
 			this.separator_01 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_02 = new System.Windows.Forms.ToolStripSeparator();
 			this.separator_03 = new System.Windows.Forms.ToolStripSeparator();
+			this.menuItem_Build = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenu.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
 			this.toolStrip.SuspendLayout();
@@ -163,9 +164,10 @@
 			this.contextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.contextMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItem_OpenLevel});
+            this.menuItem_OpenLevel,
+            this.menuItem_Build});
 			this.contextMenu.Name = "contextMenu";
-			this.contextMenu.Size = new System.Drawing.Size(218, 26);
+			this.contextMenu.Size = new System.Drawing.Size(218, 70);
 			// 
 			// menuItem_OpenLevel
 			// 
@@ -274,6 +276,15 @@
 			this.separator_03.Name = "separator_03";
 			this.separator_03.Size = new System.Drawing.Size(6, 30);
 			// 
+			// menuItem_Build
+			// 
+			this.menuItem_Build.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_Build.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_Build.Name = "menuItem_Build";
+			this.menuItem_Build.Size = new System.Drawing.Size(217, 22);
+			this.menuItem_Build.Text = "Build Level";
+			this.menuItem_Build.Click += new System.EventHandler(this.menuItem_Build_Click);
+			// 
 			// SectionLevelList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -310,5 +321,6 @@
 		private System.Windows.Forms.ToolStripSeparator separator_01;
 		private System.Windows.Forms.ToolStripSeparator separator_02;
 		private System.Windows.Forms.ToolStripSeparator separator_03;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_Build;
 	}
 }
