@@ -41,7 +41,7 @@ namespace TombLib.LevelData
             if (experimental)
                 return AllVersions.Where(item => item >= Game.TR2).ToList();
             else
-                return AllVersions.Where(item => item >= Game.TR3 && item.Native() <= Game.TR4).ToList();
+                return AllVersions.Where(item => item >= Game.TR2 && item.Native() <= Game.TR4).ToList();
         }
     }
 
