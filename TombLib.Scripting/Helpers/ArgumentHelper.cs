@@ -52,7 +52,7 @@ namespace TombLib.Scripting.Helpers
 		{
 			string cachedArgument = string.Empty;
 
-			string[] arguments = wholeLineText.Split(',');
+			string[] arguments = LineHelper.RemoveComments(wholeLineText).Split(',');
 
 			List<string> newArgumentList = new List<string>();
 

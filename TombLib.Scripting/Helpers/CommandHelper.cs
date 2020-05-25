@@ -38,6 +38,9 @@ namespace TombLib.Scripting.Helpers
 			{
 				string commandKey = GetCommandKey(document, offset);
 
+				if (string.IsNullOrEmpty(commandKey))
+					return null;
+
 				foreach (DictionaryEntry entry in GetCommandSyntaxResources())
 					if (commandKey.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
 						return entry.Value.ToString();
@@ -71,7 +74,7 @@ namespace TombLib.Scripting.Helpers
 		public static DocumentLine GetCommandStartLine(TextDocument document, int offset)
 		{
 			DocumentLine offsetLine = document.GetLineByOffset(offset);
-			string offsetLineText = document.GetText(offsetLine.Offset, offsetLine.Length);
+			string offsetLineText = LineHelper.RemoveComments(document.GetText(offsetLine.Offset, offsetLine.Length));
 
 			if (offsetLineText.Contains("=") || offsetLineText.Trim().StartsWith("#"))
 				return offsetLine;
@@ -177,6 +180,9 @@ namespace TombLib.Scripting.Helpers
 
 		private static string GetCorrectLevelCommandForSection(string sectionName)
 		{
+			if (string.IsNullOrEmpty(sectionName))
+				return "LevelLevel";
+
 			switch (sectionName.ToUpper())
 			{
 				case "PCEXTENSIONS":
@@ -192,6 +198,9 @@ namespace TombLib.Scripting.Helpers
 
 		private static string GetCorrectCutCommandForSection(string sectionName)
 		{
+			if (string.IsNullOrEmpty(sectionName))
+				return null;
+
 			switch (sectionName.ToUpper())
 			{
 				case "PCEXTENSIONS":
@@ -207,6 +216,9 @@ namespace TombLib.Scripting.Helpers
 
 		private static string GetCorrectFMVCommandForSection(string sectionName)
 		{
+			if (string.IsNullOrEmpty(sectionName))
+				return "FMVLevel";
+
 			switch (sectionName.ToUpper())
 			{
 				case "PCEXTENSIONS":
@@ -237,7 +249,7 @@ namespace TombLib.Scripting.Helpers
 					return null;
 
 				previousLine = document.GetLineByNumber(i);
-				previousLineText = document.GetText(previousLine.Offset, previousLine.Length);
+				previousLineText = LineHelper.RemoveComments(document.GetText(previousLine.Offset, previousLine.Length));
 
 				if (Regex.IsMatch(previousLineText, ScriptPatterns.NextLineKey) && previousLineText.Contains("="))
 					return previousLine;

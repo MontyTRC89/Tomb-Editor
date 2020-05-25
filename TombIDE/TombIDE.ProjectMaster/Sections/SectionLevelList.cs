@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombIDE.Shared.SharedForms;
+using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
 {
@@ -448,5 +449,30 @@ namespace TombIDE.ProjectMaster
 		}
 
 		#endregion Methods
+
+		private void menuItem_Build_Click(object sender, EventArgs e)
+		{
+			BatchCompileList batchList = new BatchCompileList();
+
+			string prj2Path;
+
+			if (_ide.SelectedLevel.SpecificFile == "$(LatestFile)")
+				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.GetLatestPrj2File());
+			else
+				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
+
+			batchList.Files.Add(prj2Path);
+
+			string batchListFilePath = Path.Combine(Path.GetTempPath(), "tide_batch.xml");
+			BatchCompileList.SaveToXml(batchListFilePath, batchList);
+
+			ProcessStartInfo startInfo = new ProcessStartInfo
+			{
+				FileName = Path.Combine(DefaultPaths.GetProgramDirectory(), "TombEditor.exe"),
+				Arguments = "\"" + batchListFilePath + "\""
+			};
+
+			Process.Start(startInfo);
+		}
 	}
 }
