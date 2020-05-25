@@ -3,7 +3,7 @@ Version 1.3.1
 Tomb Editor:
  * Fix exception with merged statics out of room bounds.
  * Fix drawing and merging issues with static meshes in TR2 and TR3.
- * Fix lighting and GUI in TR2.
+ * Fix sounds, lighting and GUI in TR2.
  * Restore accidentally deleted TRNG snow flag.
  * Optimize memory usage.
 
