@@ -29,9 +29,9 @@ namespace TombLib.Forms
         private void Prj2SoundsConversionDialog_Load(object sender, EventArgs e)
         {
             // Try to load default Sounds.xml
-            if (File.Exists("Catalogs\\Sounds.xml"))
+            if (File.Exists("Catalogs\\Sounds.tr4.xml"))
             {
-                string filename = Path.GetDirectoryName(Application.ExecutablePath) + "\\Catalogs\\Sounds.xml";
+                string filename = Path.GetDirectoryName(Application.ExecutablePath) + "\\Catalogs\\Sounds.tr4.xml";
                 var sounds = WadSounds.ReadFromFile(filename);
                 if (sounds != null)
                 {
