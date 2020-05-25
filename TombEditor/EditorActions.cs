@@ -4843,7 +4843,7 @@ namespace TombEditor
             {
                 try
                 {
-                    settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(settings, catalogName));
+                    settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(settings, settings.MakeRelative(catalogName, VariableType.EditorDirectory)));
                 }
                 catch (Exception ex)
                 {
