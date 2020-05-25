@@ -795,20 +795,26 @@ namespace TombLib.LevelData.Compilers
             {
                 if (sound.Id >= _soundMapSize)
                 {
-                    _progressReporter.ReportWarn("Sound ID " + sound.Id + " wasn't included because max. ID for this game version is " + _soundMapSize + ".");
+                    _progressReporter.ReportWarn("Sound info #" + sound.Id + " wasn't included because max. ID for this game version is " + _soundMapSize + ".");
                     continue;
                 }
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
             }
 
-            // Samples aren't needed for TR2-3, skip this step
+            // Samples aren't needed for TR2-3, skip next step
             if (_level.Settings.GameVersion.UsesMainSfx())
+            {
+                // Additionally warn user if he uses several sound catalogs which is incompatible with MAIN.SFX workflow.
+                if (_level.Settings.SoundsCatalogs.Count > 1)
+                    _progressReporter.ReportWarn("Multiple sound catalogs can't be used with TR2 and TR3. Results are unpredictable. Remove all sound catalogs but one.");
                 return;
+            }
 
             // Step 4: load samples
             bool samplesMissing;
             var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, out samplesMissing);
 
+            // Warn user if some samples weren't found
             if (samplesMissing)
                 _progressReporter.ReportWarn("Some samples weren't found. Make sure sample paths are specified correctly. Check level settings for details.");
 
