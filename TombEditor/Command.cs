@@ -658,6 +658,7 @@ namespace TombEditor
                     return;
 
                 args.Editor.Level = Level.CreateSimpleLevel(args.Editor.Configuration.Editor_DefaultProjectGameVersion);
+                GC.Collect(); // Clean up memory
             });
 
             AddCommand("OpenLevel", "Open existing level...", CommandType.File, delegate (CommandArgs args)
