@@ -1405,27 +1405,27 @@
       <moveable id="147" name="Lara and butler picture" t5m="INVENTORY_POLAROID" />
       <moveable id="158" name="Passport (closed)" />
       <moveable id="159" name="Bar with 'N' logo" />
-      <moveable id="160" name="Pistol (on ground)" />
-      <moveable id="161" name="Shotgun (on ground)" />
-      <moveable id="162" name="Desert Eagle (on ground)" />
-      <moveable id="163" name="Uzis (on ground)" />
-      <moveable id="164" name="Harpoon gun (on ground)" />
-      <moveable id="165" name="MP5 (on ground)" />
-      <moveable id="166" name="Rocket launcher (on ground)" />
-      <moveable id="167" name="Grenade launcher (on ground)" />
-      <moveable id="168" name="Pistol ammo(?) (on ground)" />
-      <moveable id="169" name="Shotgun ammo (on ground)" />
-      <moveable id="170" name="Desert Eagle ammo (on ground)" />
-      <moveable id="171" name="Uzi ammo (on ground)" />
-      <moveable id="172" name="Harpoons (on ground)" />
-      <moveable id="173" name="MP5 ammo (on ground)" />
-      <moveable id="174" name="Rockets (on ground)" />
-      <moveable id="175" name="Grenades (on ground)" />
-      <moveable id="176" name="Small medipack (on ground)" />
-      <moveable id="177" name="Large medipack (on ground)" />
-      <moveable id="178" name="Flares (on ground)" />
-      <moveable id="179" name="Flare (on ground)" />
-      <moveable id="180" name="Savegame crystal (on ground)" />
+      <moveable id="160" name="Pistols (pickup)" />
+      <moveable id="161" name="Shotgun (pickup)" />
+      <moveable id="162" name="Desert Eagle (pickup)" />
+      <moveable id="163" name="Uzis (pickup)" />
+      <moveable id="164" name="Harpoon gun (pickup)" />
+      <moveable id="165" name="MP5 (pickup)" />
+      <moveable id="166" name="Rocket launcher (pickup)" />
+      <moveable id="167" name="Grenade launcher (pickup)" />
+      <moveable id="168" name="Pistol ammo (pickup)" />
+      <moveable id="169" name="Shotgun ammo (pickup)" />
+      <moveable id="170" name="Desert Eagle ammo (pickup)" />
+      <moveable id="171" name="Uzi ammo (pickup)" />
+      <moveable id="172" name="Harpoons (pickup)" />
+      <moveable id="173" name="MP5 ammo (pickup)" />
+      <moveable id="174" name="Rockets (pickup)" />
+      <moveable id="175" name="Grenades (pickup)" />
+      <moveable id="176" name="Small medipack (pickup)" />
+      <moveable id="177" name="Large medipack (pickup)" />
+      <moveable id="178" name="Flares (pickup)" />
+      <moveable id="179" name="Flare (pickup)" />
+      <moveable id="180" name="Savegame crystal (pickup)" />
       <moveable id="181" name="Sunglasses" t5m="INVENTORY_SUNGLASSES" />
       <moveable id="182" name="Portable CD Player" t5m="INVENTORY_HEADPHONES" />
       <moveable id="183" name="Direction keys" t5m="INVENTORY_KEYS" />
@@ -1450,10 +1450,10 @@
       <moveable id="202" name="Large medipack" />
       <moveable id="203" name="Flares" />
       <moveable id="204" name="Savegame crystal" />
-      <moveable id="205" name="Puzzle 1 (on ground?)" />
-      <moveable id="206" name="Puzzle 2 (on ground?)" />
-      <moveable id="207" name="Puzzle 3 (on ground?)" />
-      <moveable id="208" name="Puzzle 4 (on ground?)" />
+      <moveable id="205" name="Puzzle 1 (pickup)" />
+      <moveable id="206" name="Puzzle 2 (pickup)" />
+      <moveable id="207" name="Puzzle 3 (pickup)" />
+      <moveable id="208" name="Puzzle 4 (pickup)" />
       <moveable id="209" name="Puzzle 1" />
       <moveable id="210" name="Puzzle 2" />
       <moveable id="211" name="Puzzle 3" />
@@ -1466,10 +1466,10 @@
       <moveable id="218" name="Slot 2 full" />
       <moveable id="219" name="Slot 3 full" />
       <moveable id="220" name="Slot 4 full" />
-      <moveable id="224" name="Key 1 (on ground?)" />
-      <moveable id="225" name="Key 2 (on ground?)" />
-      <moveable id="226" name="Key 3 (on ground?)" />
-      <moveable id="227" name="Key 4 (on ground?)" />
+      <moveable id="224" name="Key 1 (pickup)" />
+      <moveable id="225" name="Key 2 (pickup)" />
+      <moveable id="226" name="Key 3 (pickup)" />
+      <moveable id="227" name="Key 4 (pickup)" />
       <moveable id="228" name="Key 1" />
       <moveable id="229" name="Key 2" />
       <moveable id="230" name="Key 3" />
@@ -1478,14 +1478,14 @@
       <moveable id="233" name="Lock 2" />
       <moveable id="234" name="Lock 3" />
       <moveable id="235" name="Lock 4" />
-      <moveable id="236" name="Pickup 1 (on ground?)" />
-      <moveable id="237" name="Pickup 2 ? [unused] (on ground?)" />
+      <moveable id="236" name="Pickup 1 (pickup)" />
+      <moveable id="237" name="Pickup 2? [unused] (pickup)" />
       <moveable id="238" name="Pickup 1" />
-      <moveable id="239" name="Pickup 2 ? [unused]" />
-      <moveable id="240" name="Infada stone (on ground?)" />
-      <moveable id="241" name="Element 115 (on ground?)" />
-      <moveable id="242" name="Eye of Isis (on ground?)" />
-      <moveable id="243" name="Ora dagger (on ground?)" />
+      <moveable id="239" name="Pickup 2? [unused]" />
+      <moveable id="240" name="Infada stone (pickup)" />
+      <moveable id="241" name="Element 115 (pickup)" />
+      <moveable id="242" name="Eye of Isis (pickup)" />
+      <moveable id="243" name="Ora dagger (pickup)" />
       <moveable id="244" name="Infada stone" />
       <moveable id="245" name="Element 115" />
       <moveable id="246" name="Eye of Isis" />
