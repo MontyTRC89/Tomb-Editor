@@ -2,6 +2,7 @@ Version 1.3.1
 =============
 Tomb Editor:
  * Fix exception with merged statics out of room bounds.
+ * Fix exception when reloading wads with resource auto-reload turned off.
  * Fix endless exception loop when switching to merged statics settings after wad removal.
  * Fix drawing and merging issues with static meshes in TR2 and TR3.
  * Fix sounds, lighting and GUI in TR2.
