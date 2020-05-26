@@ -80,27 +80,36 @@ namespace TombEditor.ToolWindows
                 else if (e.Current.Value.IsStatic)
                     comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
                 else
-                {
                     comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
-                    var version = _editor.Level.Settings.GameVersion;
-
-                    if (e.Current.Value.MoveableId == WadMoveableId.Lara) // Show Lara's skin
-                    {
-                        var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, e.Current.Value.MoveableId.TypeId));
-                        var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
-                        if (moveableSkin != null)
-                            panelItem.CurrentObject = moveableSkin;
-                    }
-
-                    panelItem.Invalidate();
-                }
             }
+
+
+            if (obj is Editor.ChosenItemChangedEvent ||
+                obj is Editor.GameVersionChangedEvent)
+                FindLaraSkin();
 
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
+            }
+        }
+
+        private void FindLaraSkin()
+        {
+            if (comboItems.Items.Count == 0 || comboItems.SelectedIndex < 0 || !(comboItems.SelectedItem is WadMoveable))
+                return;
+
+            var item = comboItems.SelectedItem as WadMoveable;
+            if (item.Id == WadMoveableId.Lara) // Show Lara's skin
+            {
+                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, item.Id.TypeId));
+                var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
+                if (moveableSkin != null)
+                    panelItem.CurrentObject = moveableSkin;
+
+                panelItem.Invalidate();
             }
         }
 
