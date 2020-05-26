@@ -19,6 +19,7 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Controls
 {
@@ -2753,13 +2754,13 @@ namespace TombEditor.Controls
                     var model = _wadRenderer.GetMoveable(_editor?.Level?.Settings?.WadTryGetMoveable(currentInstance.WadObjectId));
                     var skin = model;
                     var version = _editor.Level.Settings.GameVersion;
+
                     if (currentInstance.WadObjectId == WadMoveableId.Lara) // Show Lara
                     {
-                        WadMoveableId laraSkinId = WadMoveableId.GetLaraSkin(version);
-                        WadMoveable moveableSkin = _editor.Level.Settings.WadTryGetMoveable(laraSkinId);
+                        var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, currentInstance.WadObjectId.TypeId));
+                        var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
                         if (moveableSkin != null)
                             skin = _wadRenderer.GetMoveable(moveableSkin);
-
                     }
 
                     skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
