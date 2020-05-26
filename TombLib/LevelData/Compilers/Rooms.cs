@@ -78,7 +78,7 @@ namespace TombLib.LevelData.Compilers
             var rooms = _tempRooms.Values.ToList();
             for (int flipped = 0; flipped <= 1; flipped++)
                 foreach (var room in rooms)
-                    MatchDoorShades(rooms, room, flipped == 1);
+                    MatchDoorShades(rooms, room, (_level.Settings.GameVersion < TRVersion.Game.TR3), flipped == 1);
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
@@ -1478,7 +1478,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void MatchDoorShades(List<tr_room> roomList, tr_room room, bool flipped)
+        private void MatchDoorShades(List<tr_room> roomList, tr_room room, bool grayscale, bool flipped)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
@@ -1594,9 +1594,12 @@ namespace TombLib.LevelData.Compilers
                                             }
                                             else
                                             {
-                                                newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
-                                                                    32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
-                                                                        32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
+                                                if (grayscale)
+                                                    newColor = (ushort)(8160 - (((8160 - v2.Lighting2) / 2) + ((8160 - refColor) / 2)));
+                                                else
+                                                    newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
+                                                                        32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
+                                                                            32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
                                             }
 
                                             if (!isPresentInLookup)
