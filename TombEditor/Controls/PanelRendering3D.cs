@@ -2881,20 +2881,11 @@ namespace TombEditor.Controls
                             foreach (var submesh in mesh.Submeshes)
                             {
                                 var texture = submesh.Value.Material.Texture;
-                                if (texture != null)
+                                if (texture != null && texture is ImportedGeometryTexture)
                                 {
                                     geometryEffect.Parameters["TextureEnabled"].SetValue(true);
-                                    if (texture is ImportedGeometryTexture)
-                                    {
-                                        geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
-                                        geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
-                                    }
-                                    else
-                                    {
-                                        int TODO_PORT_IMPORTED_GEOMETRY_RENDERING;
-                                        //geometryEffect.Parameters["Texture"].SetResource(_textureAtlas);
-                                        //geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / _textureAtlas.Width, 1.0f / _textureAtlas.Height));
-                                    }
+                                    geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
+                                    geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
                                     geometryEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
                                 }
                                 else
