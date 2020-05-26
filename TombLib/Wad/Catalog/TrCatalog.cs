@@ -451,7 +451,7 @@ namespace TombLib.Wad.Catalog
                         uint id = uint.Parse(soundNode.Attributes["id"].Value);
                         string name = soundNode.Attributes["name"]?.Value ?? "";
                         string description = soundNode.Attributes["description"]?.Value ?? "";
-                        bool fixedByDefault = bool.Parse(soundNode.Attributes["fixed_by_default"]?.Value ?? "false");
+                        bool fixedByDefault = bool.Parse(soundNode.Attributes["hardcoded"]?.Value ?? "false");
                         game.Sounds.Add(id, new ItemSound { Name = name, FixedByDefault = fixedByDefault, Description = description });
                     }
 
