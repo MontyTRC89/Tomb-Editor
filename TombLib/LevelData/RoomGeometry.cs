@@ -1512,8 +1512,12 @@ namespace TombLib.LevelData
 
         private static bool RayTraceCheckFloorCeiling(Room room, int x, int y, int z, int xLight, int zLight)
         {
-            int currentX = MathC.Clamp(x / 1024 - (x > xLight ? 1 : 0), 0, room.NumXSectors - 1);
-            int currentZ = MathC.Clamp(z / 1024 - (z > zLight ? 1 : 0), 0, room.NumZSectors - 1);
+            int currentX = x / 1024 - (x > xLight ? 1 : 0);
+            int currentZ = z / 1024 - (z > zLight ? 1 : 0);
+
+            if (currentX < 0 || currentX >= room.NumXSectors ||
+                currentZ < 0 || currentZ >= room.NumZSectors)
+                return false;
 
             Block block = room.Blocks[currentX, currentZ];
             int floorMin = block.Floor.Min;
