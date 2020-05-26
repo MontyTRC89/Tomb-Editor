@@ -1,5 +1,6 @@
 ﻿using DarkUI.Docking;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -12,6 +13,16 @@ namespace TombEditor.ToolWindows
 {
     public partial class TexturePanel : DarkToolWindow
     {
+        private static readonly List<string> _blendingModeDescriptions = new List<string>()
+        {
+            "Normal",
+            "Add",
+            "Subtract",
+            "Exclude",
+            "Screen",
+            "Lighten"
+        };
+
         private readonly Editor _editor;
 
         public TexturePanel()
@@ -128,6 +139,32 @@ namespace TombEditor.ToolWindows
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
                 (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
                  _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+
+            RepopulateBlendingModes();
+        }
+
+        private void RepopulateBlendingModes()
+        {
+            cmbBlending.Items.Clear();
+
+            // For TR4, TRNG and TR5Main we can add all types
+            if (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
+                _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            {
+                _blendingModeDescriptions.ForEach(item => cmbBlending.Items.Add(item));
+            }
+            else
+            {
+                // Type 0 exists everywhere
+                cmbBlending.Items.Add(_blendingModeDescriptions[0]);
+
+                // Additive blending is for TR3-5 only
+                if (_editor.Level.Settings.GameVersion >= TRVersion.Game.TR3)
+                    cmbBlending.Items.Add(_blendingModeDescriptions[1]);
+            }
+
+            // Restore current blending mode
+            UpdateTextureControls(_editor.SelectedTexture);
         }
 
         private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
@@ -197,28 +234,34 @@ namespace TombEditor.ToolWindows
         {
             butDoubleSide.Checked = texture.DoubleSided;
 
+            int newIndex = 0;
             switch (texture.BlendMode)
             {
                 case BlendMode.Normal:
                 default:
-                    cmbBlending.SelectedIndex = 0;
+                    newIndex = 0;
                     break;
                 case BlendMode.Additive:
-                    cmbBlending.SelectedIndex = 1;
+                    newIndex = 1;
                     break;
                 case BlendMode.Subtract:
-                    cmbBlending.SelectedIndex = 2;
+                    newIndex = 2;
                     break;
                 case BlendMode.Exclude:
-                    cmbBlending.SelectedIndex = 3;
+                    newIndex = 3;
                     break;
                 case BlendMode.Screen:
-                    cmbBlending.SelectedIndex = 4;
+                    newIndex = 4;
                     break;
                 case BlendMode.Lighten:
-                    cmbBlending.SelectedIndex = 5;
+                    newIndex = 5;
                     break;
             };
+
+            if (newIndex < cmbBlending.Items.Count)
+                cmbBlending.SelectedIndex = newIndex;
+            else
+                cmbBlending.SelectedIndex = -1;
         }
 
         private void butDeleteTexture_Click(object sender, EventArgs e)
