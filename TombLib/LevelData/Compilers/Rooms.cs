@@ -1692,13 +1692,14 @@ namespace TombLib.LevelData.Compilers
         // Used for TR1? and TR2 and TR3 for AmbientInensity
         private static ushort PackColorTo13BitGreyscale(Vector3 color)
         {
+            // Normalize
             float avg = MathC.Clamp((color / 2.0f).GetLuma(), 0.0f, 1.0f);
-            // invert
+            // Invert
             avg = 1.0f - avg;
-            // multiply by 128 to get 8 bits
+            // Multiply by 255 to get 8 bits
             avg *= 255.0f;
             ushort value = (ushort)avg;
-            //bitshift to left for whatever reason
+            // Bitshift to left for whatever reason
             value <<= 5;
             return value;
         }
