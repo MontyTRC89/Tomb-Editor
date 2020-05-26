@@ -5,6 +5,7 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.ToolWindows
 {
@@ -82,13 +83,15 @@ namespace TombEditor.ToolWindows
                 {
                     comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
                     var version = _editor.Level.Settings.GameVersion;
+
                     if (e.Current.Value.MoveableId == WadMoveableId.Lara) // Show Lara's skin
                     {
-                        WadMoveableId laraSkinId = WadMoveableId.GetLaraSkin(version); 
-                        WadMoveable moveableSkin = _editor.Level.Settings.WadTryGetMoveable(laraSkinId);
+                        var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, e.Current.Value.MoveableId.TypeId));
+                        var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
                         if (moveableSkin != null)
                             panelItem.CurrentObject = moveableSkin;
                     }
+
                     panelItem.Invalidate();
                 }
             }
