@@ -802,7 +802,7 @@ namespace TombLib.LevelData.Compilers
                         if (room.LightEffect == RoomLightEffect.Sunset)
                         {
                             if (allowMovement)
-                                flags = (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
+                                flags = (ushort)(17 + room.LightEffectStrength * 3.25f); // Closest to max. value of 30
                             else
                                 flags = (ushort)16;
                         }
@@ -810,7 +810,7 @@ namespace TombLib.LevelData.Compilers
                         {
                             // Remap TR3+ glow / movement to TR2 glow / flicker
                             if (glowMapped || moveMapped)
-                                flags = (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
+                                flags = (ushort)(15 - room.LightEffectStrength * 3.75f); // Closest to max. value of 15
                             else
                                 flags = (ushort)16;
                         }
