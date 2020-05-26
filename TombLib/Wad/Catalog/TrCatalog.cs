@@ -14,6 +14,7 @@ namespace TombLib.Wad.Catalog
             public List<string> Names { get; set; }
             public string Description { get; set; }
             public uint SkinId { get; set; }
+            public int SubstituteId { get; set; }
             public bool AIObject { get; set; }
             public bool Shatterable { get; set; }
             public string TR5MainSlot { get; set; }
@@ -139,6 +140,19 @@ namespace TombLib.Wad.Catalog
             if (!game.Moveables.TryGetValue(id, out entry))
                 return id;
             return game.Moveables[id].SkinId;
+        }
+
+        public static uint GetSubstituteID(TRVersion.Game version, uint id)
+        {
+            Game game;
+            if (!Games.TryGetValue(version.Native(), out game))
+                return id;
+            Item entry;
+            if (!game.Moveables.TryGetValue(id, out entry))
+                return id;
+            if (game.Moveables[id].SubstituteId == -1)
+                return id;
+            return (uint)game.Moveables[id].SubstituteId;
         }
 
         public static bool IsMoveableAI(TRVersion.Game version, uint id)
@@ -417,13 +431,18 @@ namespace TombLib.Wad.Catalog
                         if (moveableNode.Attributes["use_body_from"] != null)
                             skinId = uint.Parse(moveableNode.Attributes["use_body_from"].Value);
 
+                        var substituteId = -1;
+                        if (moveableNode.Attributes["id2"] != null)
+                            substituteId = int.Parse(moveableNode.Attributes["id2"].Value);
+
                         bool isAI = bool.Parse(moveableNode.Attributes["ai"]?.Value ?? "false");
 
                         var tr5MainSlot = "";
                         if (moveableNode.Attributes["t5m"] != null)
                             tr5MainSlot = moveableNode.Attributes["t5m"].Value;
 
-                        game.Moveables.Add(id, new Item { Names = new List<string>(names), SkinId = skinId, AIObject = isAI, TR5MainSlot = tr5MainSlot });
+                        game.Moveables.Add(id, new Item { Names = new List<string>(names), 
+                            SkinId = skinId, SubstituteId = substituteId, AIObject = isAI, TR5MainSlot = tr5MainSlot });
                     }
 
                 // Parse statics
