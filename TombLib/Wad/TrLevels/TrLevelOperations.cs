@@ -24,10 +24,6 @@ namespace TombLib.Wad.TrLevels
             TextureArea[] objectTextures = ConvertTrLevelTexturesToWadTexture(oldLevel);
             logger.Info("Texture conversion complete.");
 
-            // Convert sounds
-            ConvertTrLevelSounds(wad, oldLevel);
-            logger.Info("Sound conversion complete.");
-
             // Then convert moveables and static meshes
             // Meshes will be converted inside each model
             for (int i = 0; i < oldLevel.Moveables.Count; i++)
@@ -287,63 +283,6 @@ namespace TombLib.Wad.TrLevels
                 }
 
                 wad.SpriteSequences.Add(newSequence.Id, newSequence);
-            }
-        }
-
-        private static void ConvertTrLevelSounds(Wad2 wad, TrLevel oldLevel)
-        {
-            // Convert samples...
-            var samples = new WadSample[oldLevel.Samples.Count];
-            Parallel.For(0, oldLevel.Samples.Count, delegate (int i)
-            {
-                samples[i] = new WadSample(Path.GetFileNameWithoutExtension(wad.FileName) +
-                                           "_Sample_" +
-                                           i.ToString().PadLeft(4, '0') +
-                                           ".wav",
-                                           WadSample.ConvertSampleFormat(oldLevel.Samples[i].Data, oldLevel.Version != TRVersion.Game.TR4));
-            });
-
-            // Convert sound details
-            wad.Sounds.SoundInfos = new List<WadSoundInfo>();
-            for (int i = 0; i < oldLevel.SoundMap.Count; i++)
-            {
-                // Check if sound was used
-                if (oldLevel.SoundMap[i] == -1)
-                    continue;
-
-                tr_sound_details oldInfo = oldLevel.SoundDetails[oldLevel.SoundMap[i]];
-
-                // Fill the new sound info
-                var newInfo = new WadSoundInfo(i);
-                newInfo.Name = TrCatalog.GetOriginalSoundName(oldLevel.Version, (uint)i);
-                newInfo.Volume = (int)Math.Round(oldInfo.Volume / 100.0f * 255.0f);
-                newInfo.RangeInSectors = oldInfo.Range;
-                newInfo.Chance = (int)Math.Round(oldInfo.Chance / 100.0f * 255.0f);
-                newInfo.PitchFactor = (int)Math.Round((oldInfo.Pitch > 127 ? oldInfo.Pitch - 256 : oldInfo.Pitch) * 100.0f / 128.0f);
-                newInfo.RandomizePitch = ((oldInfo.Characteristics & 0x2000) != 0); // TODO: loop meaning changed between TR versions
-                newInfo.RandomizeVolume = ((oldInfo.Characteristics & 0x4000) != 0);
-                newInfo.DisablePanning = ((oldInfo.Characteristics & 0x1000) != 0);
-                newInfo.LoopBehaviour = (WadSoundLoopBehaviour)(oldInfo.Characteristics & 0x03);
-
-                // Read all samples linked to this sound info (for example footstep has 4 samples)
-                int numSamplesInGroup = (oldInfo.Characteristics & 0x00fc) >> 2;
-                for (int j = 0; j < numSamplesInGroup; j++)
-                {
-                    int soundIndexIndex = j + oldInfo.Sample;
-                    int sampleIndex;
-                    if (oldLevel.Version == TRVersion.Game.TR2 || oldLevel.Version == TRVersion.Game.TR3)
-                        sampleIndex = (int)oldLevel.SamplesIndices[soundIndexIndex];
-                    else
-                        sampleIndex = soundIndexIndex;
-                    if (sampleIndex >= oldLevel.Samples.Count)
-                    {
-                        logger.Warn("Sample index out of range.");
-                        continue;
-                    }
-                    newInfo.Samples.Add(samples[sampleIndex]);
-                }
-
-                wad.Sounds.SoundInfos.Add(newInfo);
             }
         }
 
