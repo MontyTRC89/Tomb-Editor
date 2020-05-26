@@ -317,7 +317,7 @@ namespace SoundTool
             }
         }
 
-        private void CompileMainSFX(bool onlyIndexed)
+        private void CompileMainSFX(TRVersion.Game version, bool onlyIndexed)
         {
             LevelSettings settings;
             var sounds = Sounds.SoundInfos;
@@ -328,7 +328,7 @@ namespace SoundTool
                 return;
             }
 
-            settings = new LevelSettings();
+            settings = new LevelSettings() { GameVersion = version };
             settings.WadSoundPaths.Clear();
             var samplePath = LevelFileDialog.BrowseFolder(this, null, _configuration.SoundTool_LastMainSFXSamplePath,
                 "Choose a path where all samples are stored", null);
@@ -385,8 +385,8 @@ namespace SoundTool
         private void unloadReferenceProjectToolStripMenuItem_Click(object sender, EventArgs e) => UnloadReferenceLevel();
         private void indexStripMenuItem3_Click(object sender, EventArgs e) => IndexAllSounds();
         private void unindexStripMenuItem3_Click(object sender, EventArgs e) => UnindexAllSounds();
-        private void buildMSFXStripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(true);
-        private void buildMSFXallStripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(false);
+        private void buildMSFX2StripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(TRVersion.Game.TR2, true);
+        private void buildMSFX3StripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(TRVersion.Game.TR3, true);
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         private void butAddNewSoundInfo_Click(object sender, EventArgs e) => AddSoundInfo();

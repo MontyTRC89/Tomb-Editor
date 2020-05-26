@@ -460,7 +460,14 @@ namespace TombLib.Wad
                             var buffer = new byte[stream.Length];
                             if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
                                 throw new EndOfStreamException();
-                            currentSample = new WadSample(samplePath, WadSample.ConvertSampleFormat(buffer, false));
+
+                            if (settings.GameVersion.UsesMainSfx())
+                            {
+                                var sampleRate = settings.GameVersion < TRVersion.Game.TR3 ? 11025 : 22050;
+                                currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, true, (uint)sampleRate));
+                            }
+                            else
+                                currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, false));
                         }
                     }
                     // ... otherwise output null sample
