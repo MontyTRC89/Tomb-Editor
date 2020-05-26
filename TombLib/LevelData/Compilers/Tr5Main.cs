@@ -352,6 +352,7 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
+                        /*
                         using (var extraDataChunk = chunkIO.WriteChunk(Tr5MainExtraData))
                         {
                             using (var volScriptListChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScriptList))
@@ -401,6 +402,7 @@ namespace TombLib.LevelData.Compilers
                                 }
                             }
                         }
+                        */
 
                         chunkIO.Raw.Flush();
 

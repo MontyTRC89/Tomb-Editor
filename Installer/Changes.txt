@@ -10,6 +10,8 @@ Tomb Editor:
  * An option to compile MAIN.SFX file for TR2 as well.
  * Restore accidentally deleted TRNG snow flag.
  * Optimize memory usage.
+ * Fix Lara rendering for TR5Main target.
+ * Bring back compatibility with legacy TR5Main file format.
 
 TombIDE:
  * Added the ability to compile single levels.
