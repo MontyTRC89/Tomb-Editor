@@ -1183,6 +1183,12 @@ namespace TombLib.LevelData.Compilers.Util
                 // Blend mode
                 ushort attribute = (ushort)texture.BlendMode;
 
+                // Clamp blend modes according to game version
+                if (level.Settings.GameVersion <= TRVersion.Game.TR2 && attribute > 1)
+                    attribute = 1;
+                if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5) && attribute > 2)
+                    attribute = 2;
+
                 // Now write the texture
                 writer.Write(attribute);
                 writer.Write(tile);
