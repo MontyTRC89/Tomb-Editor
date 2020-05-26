@@ -864,103 +864,103 @@
       <sprite_sequence id="291" name="Cellar artifact 3 (flattened statue)" />
     </sprite_sequences>
     <sounds max="370">
-      <sound id="0" name="SOUND_0" description="Lara footstep" />
-      <sound id="1" name="SOUND_1" description="Lara grunt" />
-      <sound id="2" name="SOUND_2" description="Lara no" />
-      <sound id="3" name="SOUND_3" description="Lara sliding" />
-      <sound id="4" name="SOUND_4" description="Lara landing on feet" />
-      <sound id="5" name="SOUND_5" description="Lara hut (stepping up)" />
-      <sound id="6" name="SOUND_6" description="Lara unholstering pistols/magnums/UZIs" />
-      <sound id="7" name="SOUND_7" description="Lara holstering pistols/magnums/UZIs" />
-      <sound id="8" name="SOUND_8" description="Lara firing pistols" />
-      <sound id="9" name="SOUND_9" description="Lara cocking shotgun/pistol" />
-      <sound id="10" name="SOUND_10" description="Bullet ricochet" />
-      <sound id="11" name="SOUND_11" description="Lara lighting flare" />
-      <sound id="12" name="SOUND_12" description="Flare burning" />
-      <sound id="15" name="SOUND_15" description="Harpoon firing" />
-      <sound id="16" name="SOUND_16" description="Harpoon reload" />
-      <sound id="17" name="SOUND_17" description="Lara footstep in shallow water" />
-      <sound id="18" name="SOUND_18" description="Lara wading in shallow water" />
-      <sound id="20" name="SOUND_20" description="Lara treading water" />
-      <sound id="21" name="SOUND_21" description="Lara firing magnums" />
-      <sound id="22" name="SOUND_22" description="Harpoon reload (underwater)" />
-      <sound id="23" name="SOUND_23" description="Harpoon firing (underwater)" />
-      <sound id="24" name="SOUND_24" description="Massive crash" />
-      <sound id="25" name="SOUND_25" description="Lara pressing button" />
-      <sound id="26" name="SOUND_26" description="Lara uhhh (pulling up)" />
-      <sound id="27" name="SOUND_27" description="Lara oof (hitting wall)" />
-      <sound id="28" name="SOUND_28" description="Lara shimmy" />
-      <sound id="29" name="SOUND_29" description="Lara hut (jumping)" />
-      <sound id="30" name="SOUND_30" description="Lara scream (falling)" />
-      <sound id="31" name="SOUND_31" description="Lara getting hurt" />
-      <sound id="32" name="SOUND_32" description="Lara roll" />
-      <sound id="33" name="SOUND_33" description="Splash (Lara into water)" />
-      <sound id="34" name="SOUND_34" description="Splash (Lara surfacing)" />
-      <sound id="35" name="SOUND_35" description="Swim (Lara underwater)" />
-      <sound id="36" name="SOUND_36" description="Lara catching breath" />
-      <sound id="37" name="SOUND_37" description="Underwater gurgle" />
-      <sound id="38" name="SOUND_38" description="Lara pulling metal lever" />
-      <sound id="39" name="SOUND_39" description="Lara inserting key/card" />
-      <sound id="40" name="SOUND_40" description="Lara inserting chip/pryr-whl/scroll/gem/etc." />
-      <sound id="41" name="SOUND_41" description="Lara dying 1" />
-      <sound id="42" name="SOUND_42" description="Lara dying 2" />
-      <sound id="43" name="SOUND_43" description="Lara firing Uzis" />
-      <sound id="44" name="SOUND_44" description="Gunshot echo?" />
-      <sound id="45" name="SOUND_45" description="Lara firing shotgun" />
-      <sound id="46" name="SOUND_46" description="Lara grunt (starting to push block)" />
-      <sound id="47" name="SOUND_47" description="Lara grunt (pushing block)" />
-      <sound id="48" name="SOUND_48" description="Click (?)" />
-      <sound id="49" name="SOUND_49" description="Something hitting Lara?" />
-      <sound id="50" name="SOUND_50" description="Bullet hitting Lara?" />
-      <sound id="51" name="SOUND_51" description="Lara heh! (pulling up)" />
-      <sound id="52" name="SOUND_52" description="Lara treading water" />
-      <sound id="53" name="SOUND_53" description="Lara's bones breaking (dying)" />
-      <sound id="54" name="SOUND_54" description="Ledge grab by Lara" />
-      <sound id="55" name="SOUND_55" description="Lara oomph! (hitting wall after grabbing ledge)" />
-      <sound id="56" name="SOUND_56" description="Footstep/ledge shimmy by Lara?" />
-      <sound id="57" name="SOUND_57" description="Metal-lever reset" />
-      <sound id="58" name="SOUND_58" description="Glass breaking" />
-      <sound id="59" name="SOUND_59" description="Waterfall and gurgle" />
-      <sound id="60" name="SOUND_60" description="Underwater ambience" />
-      <sound id="61" name="SOUND_61" description="Underwater lever pull" />
-      <sound id="62" name="SOUND_62" description="Lara aha! (picked up something)" />
-      <sound id="63" name="SOUND_63" description="Block sliding" />
-      <sound id="64" name="SOUND_64" description="Door opening" />
-      <sound id="65" name="SOUND_65" description="Something swinging" />
-      <sound id="66" name="SOUND_66" description="Brittle ground" />
-      <sound id="67" name="SOUND_67" description="Brittle ground breaking away/falling" />
-      <sound id="68" name="SOUND_68" description="Brittle ground hitting solid ground" />
-      <sound id="69" name="SOUND_69" description="Enemy footstep" />
-      <sound id="70" name="SOUND_70" description="Enemy hoo-uh" />
-      <sound id="71" name="SOUND_71" description="Enemy hitting Lara 1" />
-      <sound id="72" name="SOUND_72" description="Enemy hitting Lara 2" />
-      <sound id="73" name="SOUND_73" description="Enemy wuoh-uoh (dying)" />
-      <sound id="74" name="SOUND_74" description="Enemy hoo-eh (jumping up)" />
-      <sound id="75" name="SOUND_75" description="Enemy grunt (climbing up)" />
-      <sound id="76" name="SOUND_76" description="Enemy grunt (climbing down)" />
-      <sound id="77" name="SOUND_77" description="Weapon clatter?" />
-      <sound id="78" name="SOUND_78" description="Lara firing M-16" />
-      <sound id="79" name="SOUND_79" description="Waterfall" />
-      <sound id="80" name="SOUND_80" description="Sword statue (drop)" />
-      <sound id="81" name="SOUND_81" description="Sword statue (lift)" />
-      <sound id="82" name="SOUND_82" description="Metal gate open" />
-      <sound id="83" name="SOUND_83" description="Metal gate close" />
-      <sound id="84" name="SOUND_84" description="Dog footstep?" />
-      <sound id="85" name="SOUND_85" description="Enemy body hitting ground (dying)" />
-      <sound id="86" name="SOUND_86" description="Dog bark 1" />
-      <sound id="87" name="SOUND_87" description="Dog footstep" />
-      <sound id="88" name="SOUND_88" description="Dog bark 2" />
-      <sound id="89" name="SOUND_89" description="Dog yelp (dying)" />
-      <sound id="90" name="SOUND_90" description="Dog pant" />
-      <sound id="91" name="SOUND_91" description="Leopard/Tiger footstep" />
-      <sound id="92" name="SOUND_92" description="Leopard growl 1" />
-      <sound id="93" name="SOUND_93" description="Leopard snarl" />
-      <sound id="94" name="SOUND_94" description="Leopard growl 2" />
-      <sound id="95" name="SOUND_95" description="Leopard growl-twitch (dying)" />
-      <sound id="96" name="SOUND_96" description="Leopard growl 3" />
-      <sound id="97" name="SOUND_97" description="Rat squeak" />
-      <sound id="98" name="SOUND_98" description="Rat squeal (dying)" />
-      <sound id="99" name="SOUND_99" description="Tiger growl 1" />
+      <sound id="0" name="SOUND_000" description="Lara footstep" />
+      <sound id="1" name="SOUND_001" description="Lara grunt" />
+      <sound id="2" name="SOUND_002" description="Lara no" />
+      <sound id="3" name="SOUND_003" description="Lara sliding" />
+      <sound id="4" name="SOUND_004" description="Lara landing on feet" />
+      <sound id="5" name="SOUND_005" description="Lara hut (stepping up)" />
+      <sound id="6" name="SOUND_006" description="Lara unholstering pistols/magnums/UZIs" />
+      <sound id="7" name="SOUND_007" description="Lara holstering pistols/magnums/UZIs" />
+      <sound id="8" name="SOUND_008" description="Lara firing pistols" />
+      <sound id="9" name="SOUND_009" description="Lara cocking shotgun/pistol" />
+      <sound id="10" name="SOUND_010" description="Bullet ricochet" />
+      <sound id="11" name="SOUND_011" description="Lara lighting flare" />
+      <sound id="12" name="SOUND_012" description="Flare burning" />
+      <sound id="15" name="SOUND_015" description="Harpoon firing" />
+      <sound id="16" name="SOUND_016" description="Harpoon reload" />
+      <sound id="17" name="SOUND_017" description="Lara footstep in shallow water" />
+      <sound id="18" name="SOUND_018" description="Lara wading in shallow water" />
+      <sound id="20" name="SOUND_020" description="Lara treading water" />
+      <sound id="21" name="SOUND_021" description="Lara firing magnums" />
+      <sound id="22" name="SOUND_022" description="Harpoon reload (underwater)" />
+      <sound id="23" name="SOUND_023" description="Harpoon firing (underwater)" />
+      <sound id="24" name="SOUND_024" description="Massive crash" />
+      <sound id="25" name="SOUND_025" description="Lara pressing button" />
+      <sound id="26" name="SOUND_026" description="Lara uhhh (pulling up)" />
+      <sound id="27" name="SOUND_027" description="Lara oof (hitting wall)" />
+      <sound id="28" name="SOUND_028" description="Lara shimmy" />
+      <sound id="29" name="SOUND_029" description="Lara hut (jumping)" />
+      <sound id="30" name="SOUND_030" description="Lara scream (falling)" />
+      <sound id="31" name="SOUND_031" description="Lara getting hurt" />
+      <sound id="32" name="SOUND_032" description="Lara roll" />
+      <sound id="33" name="SOUND_033" description="Splash (Lara into water)" />
+      <sound id="34" name="SOUND_034" description="Splash (Lara surfacing)" />
+      <sound id="35" name="SOUND_035" description="Swim (Lara underwater)" />
+      <sound id="36" name="SOUND_036" description="Lara catching breath" />
+      <sound id="37" name="SOUND_037" description="Underwater gurgle" />
+      <sound id="38" name="SOUND_038" description="Lara pulling metal lever" />
+      <sound id="39" name="SOUND_039" description="Lara inserting key/card" />
+      <sound id="40" name="SOUND_040" description="Lara inserting chip/pryr-whl/scroll/gem/etc." />
+      <sound id="41" name="SOUND_041" description="Lara dying 1" />
+      <sound id="42" name="SOUND_042" description="Lara dying 2" />
+      <sound id="43" name="SOUND_043" description="Lara firing Uzis" />
+      <sound id="44" name="SOUND_044" description="Gunshot echo?" />
+      <sound id="45" name="SOUND_045" description="Lara firing shotgun" />
+      <sound id="46" name="SOUND_046" description="Lara grunt (starting to push block)" />
+      <sound id="47" name="SOUND_047" description="Lara grunt (pushing block)" />
+      <sound id="48" name="SOUND_048" description="Click (?)" />
+      <sound id="49" name="SOUND_049" description="Something hitting Lara?" />
+      <sound id="50" name="SOUND_050" description="Bullet hitting Lara?" />
+      <sound id="51" name="SOUND_051" description="Lara heh! (pulling up)" />
+      <sound id="52" name="SOUND_052" description="Lara treading water" />
+      <sound id="53" name="SOUND_053" description="Lara's bones breaking (dying)" />
+      <sound id="54" name="SOUND_054" description="Ledge grab by Lara" />
+      <sound id="55" name="SOUND_055" description="Lara oomph! (hitting wall after grabbing ledge)" />
+      <sound id="56" name="SOUND_056" description="Footstep/ledge shimmy by Lara?" />
+      <sound id="57" name="SOUND_057" description="Metal-lever reset" />
+      <sound id="58" name="SOUND_058" description="Glass breaking" />
+      <sound id="59" name="SOUND_059" description="Waterfall and gurgle" />
+      <sound id="60" name="SOUND_060" description="Underwater ambience" />
+      <sound id="61" name="SOUND_061" description="Underwater lever pull" />
+      <sound id="62" name="SOUND_062" description="Lara aha! (picked up something)" />
+      <sound id="63" name="SOUND_063" description="Block sliding" />
+      <sound id="64" name="SOUND_064" description="Door opening" />
+      <sound id="65" name="SOUND_065" description="Something swinging" />
+      <sound id="66" name="SOUND_066" description="Brittle ground" />
+      <sound id="67" name="SOUND_067" description="Brittle ground breaking away/falling" />
+      <sound id="68" name="SOUND_068" description="Brittle ground hitting solid ground" />
+      <sound id="69" name="SOUND_069" description="Enemy footstep" />
+      <sound id="70" name="SOUND_070" description="Enemy hoo-uh" />
+      <sound id="71" name="SOUND_071" description="Enemy hitting Lara 1" />
+      <sound id="72" name="SOUND_072" description="Enemy hitting Lara 2" />
+      <sound id="73" name="SOUND_073" description="Enemy wuoh-uoh (dying)" />
+      <sound id="74" name="SOUND_074" description="Enemy hoo-eh (jumping up)" />
+      <sound id="75" name="SOUND_075" description="Enemy grunt (climbing up)" />
+      <sound id="76" name="SOUND_076" description="Enemy grunt (climbing down)" />
+      <sound id="77" name="SOUND_077" description="Weapon clatter?" />
+      <sound id="78" name="SOUND_078" description="Lara firing M-16" />
+      <sound id="79" name="SOUND_079" description="Waterfall" />
+      <sound id="80" name="SOUND_080" description="Sword statue (drop)" />
+      <sound id="81" name="SOUND_081" description="Sword statue (lift)" />
+      <sound id="82" name="SOUND_082" description="Metal gate open" />
+      <sound id="83" name="SOUND_083" description="Metal gate close" />
+      <sound id="84" name="SOUND_084" description="Dog footstep?" />
+      <sound id="85" name="SOUND_085" description="Enemy body hitting ground (dying)" />
+      <sound id="86" name="SOUND_086" description="Dog bark 1" />
+      <sound id="87" name="SOUND_087" description="Dog footstep" />
+      <sound id="88" name="SOUND_088" description="Dog bark 2" />
+      <sound id="89" name="SOUND_089" description="Dog yelp (dying)" />
+      <sound id="90" name="SOUND_090" description="Dog pant" />
+      <sound id="91" name="SOUND_091" description="Leopard/Tiger footstep" />
+      <sound id="92" name="SOUND_092" description="Leopard growl 1" />
+      <sound id="93" name="SOUND_093" description="Leopard snarl" />
+      <sound id="94" name="SOUND_094" description="Leopard growl 2" />
+      <sound id="95" name="SOUND_095" description="Leopard growl-twitch (dying)" />
+      <sound id="96" name="SOUND_096" description="Leopard growl 3" />
+      <sound id="97" name="SOUND_097" description="Rat squeak" />
+      <sound id="98" name="SOUND_098" description="Rat squeal (dying)" />
+      <sound id="99" name="SOUND_099" description="Tiger growl 1" />
       <sound id="100" name="SOUND_100" description="Tiger growl 2" />
       <sound id="101" name="SOUND_101" description="Tiger growl 3" />
       <sound id="102" name="SOUND_102" description="Tiger dying" />
