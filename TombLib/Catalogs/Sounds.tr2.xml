@@ -83,7 +83,7 @@
           <FileName>sn003_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -102,7 +102,7 @@
           <FileName>sn004_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -121,7 +121,7 @@
           <FileName>sn005_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -178,7 +178,7 @@
           <FileName>sn008_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -197,7 +197,7 @@
           <FileName>sn009_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -219,7 +219,7 @@
           <FileName>sn010_s1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -276,7 +276,7 @@
           <FileName>sn015_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -295,7 +295,7 @@
           <FileName>sn016_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -323,7 +323,7 @@
           <FileName>sn017_s3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -345,7 +345,7 @@
           <FileName>sn018_s1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -364,7 +364,7 @@
           <FileName>sn020_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -383,7 +383,7 @@
           <FileName>sn021_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -402,7 +402,7 @@
           <FileName>sn022_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -421,7 +421,7 @@
           <FileName>sn023_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -620,7 +620,7 @@
           <FileName>sn033_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -715,7 +715,7 @@
           <FileName>sn038_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -829,7 +829,7 @@
           <FileName>sn044_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -848,7 +848,7 @@
           <FileName>sn045_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1196,7 +1196,7 @@
           <FileName>sn063_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1253,7 +1253,7 @@
           <FileName>sn066_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1272,7 +1272,7 @@
           <FileName>sn067_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2106,7 +2106,7 @@
           <FileName>sn109_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2182,7 +2182,7 @@
           <FileName>sn114_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2878,7 +2878,7 @@
           <FileName>sn152_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2954,7 +2954,7 @@
           <FileName>sn156_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3663,7 +3663,7 @@
           <FileName>sn196_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3701,7 +3701,7 @@
           <FileName>sn198_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3720,7 +3720,7 @@
           <FileName>sn199_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3739,7 +3739,7 @@
           <FileName>sn200_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3777,7 +3777,7 @@
           <FileName>sn202_s0.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
