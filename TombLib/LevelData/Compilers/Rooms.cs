@@ -810,7 +810,7 @@ namespace TombLib.LevelData.Compilers
                         {
                             // Remap TR3+ glow / movement to TR2 glow / flicker
                             if (glowMapped || moveMapped)
-                                flags = (ushort)(15 - room.LightEffectStrength * 3.75f); // Closest to max. value of 15
+                                flags = (ushort)(16 - room.LightEffectStrength * 3.0f); // Closest to max. value of 15
                             else
                                 flags = (ushort)16;
                         }
