@@ -1430,34 +1430,34 @@
       <moveable id="182" name="Portable CD Player" t5m="INVENTORY_HEADPHONES" />
       <moveable id="183" name="Direction keys" t5m="INVENTORY_KEYS" />
       <moveable id="184" name="Globe (for indicating destinations)" />
-      <moveable id="185" name="Pistol" />
-      <moveable id="186" name="Shotgun" />
-      <moveable id="187" name="Desert Eagle" />
-      <moveable id="188" name="Uzis" />
-      <moveable id="189" name="Harpoon gun" />
-      <moveable id="190" name="MP5" />
-      <moveable id="191" name="Rocket launcher" />
-      <moveable id="192" name="Grenade launcher" />
-      <moveable id="193" name="Pistol ammo(?)" />
-      <moveable id="194" name="Shotgun ammo" />
-      <moveable id="195" name="Desert Eagle ammo" />
-      <moveable id="196" name="Uzi ammo" />
-      <moveable id="197" name="Harpoons" />
-      <moveable id="198" name="MP5 ammo" />
-      <moveable id="199" name="Rockets" />
-      <moveable id="200" name="Grenades" />
-      <moveable id="201" name="Small medipack" />
-      <moveable id="202" name="Large medipack" />
-      <moveable id="203" name="Flares" />
+      <moveable id="185" name="Pistols (menu item)" />
+      <moveable id="186" name="Shotgun (menu item)" />
+      <moveable id="187" name="Desert Eagle (menu item)" />
+      <moveable id="188" name="Uzis (menu item)" />
+      <moveable id="189" name="Harpoon gun (menu item)" />
+      <moveable id="190" name="MP5 (menu item)" />
+      <moveable id="191" name="Rocket launcher (menu item)" />
+      <moveable id="192" name="Grenade launcher (menu item)" />
+      <moveable id="193" name="Pistol ammo (menu item)" />
+      <moveable id="194" name="Shotgun ammo (menu item)" />
+      <moveable id="195" name="Desert Eagle ammo (menu item)" />
+      <moveable id="196" name="Uzi ammo (menu item)" />
+      <moveable id="197" name="Harpoons (menu item)" />
+      <moveable id="198" name="MP5 ammo (menu item)" />
+      <moveable id="199" name="Rockets (menu item)" />
+      <moveable id="200" name="Grenades (menu item)" />
+      <moveable id="201" name="Small medipack (menu item)" />
+      <moveable id="202" name="Large medipack (menu item)" />
+      <moveable id="203" name="Flares (menu item)" />
       <moveable id="204" name="Savegame crystal" />
       <moveable id="205" name="Puzzle 1 (pickup)" />
       <moveable id="206" name="Puzzle 2 (pickup)" />
       <moveable id="207" name="Puzzle 3 (pickup)" />
       <moveable id="208" name="Puzzle 4 (pickup)" />
-      <moveable id="209" name="Puzzle 1" />
-      <moveable id="210" name="Puzzle 2" />
-      <moveable id="211" name="Puzzle 3" />
-      <moveable id="212" name="Puzzle 4" />
+      <moveable id="209" name="Puzzle 1 (menu item)" />
+      <moveable id="210" name="Puzzle 2 (menu item)" />
+      <moveable id="211" name="Puzzle 3 (menu item)" />
+      <moveable id="212" name="Puzzle 4 (menu item)" />
       <moveable id="213" name="Slot 1 empty" />
       <moveable id="214" name="Slot 2 empty" />
       <moveable id="215" name="Slot 3 empty" />
@@ -1470,26 +1470,26 @@
       <moveable id="225" name="Key 2 (pickup)" />
       <moveable id="226" name="Key 3 (pickup)" />
       <moveable id="227" name="Key 4 (pickup)" />
-      <moveable id="228" name="Key 1" />
-      <moveable id="229" name="Key 2" />
-      <moveable id="230" name="Key 3" />
-      <moveable id="231" name="Key 4" />
+      <moveable id="228" name="Key 1 (menu item)" />
+      <moveable id="229" name="Key 2 (menu item)" />
+      <moveable id="230" name="Key 3 (menu item)" />
+      <moveable id="231" name="Key 4 (menu item)" />
       <moveable id="232" name="Lock 1" />
       <moveable id="233" name="Lock 2" />
       <moveable id="234" name="Lock 3" />
       <moveable id="235" name="Lock 4" />
       <moveable id="236" name="Pickup 1 (pickup)" />
       <moveable id="237" name="Pickup 2? [unused] (pickup)" />
-      <moveable id="238" name="Pickup 1" />
-      <moveable id="239" name="Pickup 2? [unused]" />
+      <moveable id="238" name="Pickup 1 (menu item)" />
+      <moveable id="239" name="Pickup 2? [unused] (menu item)" />
       <moveable id="240" name="Infada stone (pickup)" />
       <moveable id="241" name="Element 115 (pickup)" />
       <moveable id="242" name="Eye of Isis (pickup)" />
       <moveable id="243" name="Ora dagger (pickup)" />
-      <moveable id="244" name="Infada stone" />
-      <moveable id="245" name="Element 115" />
-      <moveable id="246" name="Eye of Isis" />
-      <moveable id="247" name="Ora dagger" />
+      <moveable id="244" name="Infada stone (menu item)" />
+      <moveable id="245" name="Element 115 (menu item)" />
+      <moveable id="246" name="Eye of Isis (menu item)" />
+      <moveable id="247" name="Ora dagger (menu item)" />
       <moveable id="272" name="Keys (sprites)" />
       <moveable id="273" name="Keys (sprites)" />
       <moveable id="276" name="Infada stone" />
