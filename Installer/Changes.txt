@@ -6,6 +6,7 @@ Tomb Editor:
  * Fix drawing and merging issues with static meshes in TR2 and TR3.
  * Fix sounds, lighting and GUI in TR2.
  * Automatically load default sound catalog for TR2 and TR3 if there is no any.
+ * An option to compile MAIN.SFX file for TR2 as well.
  * Restore accidentally deleted TRNG snow flag.
  * Optimize memory usage.
 
