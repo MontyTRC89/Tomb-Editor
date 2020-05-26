@@ -59,7 +59,9 @@ namespace TombLib.NG
                 yield return TriggerTargetType.PlayAudio;
                 yield return TriggerTargetType.FlipEffect;
                 yield return TriggerTargetType.Secret;
-                yield return TriggerTargetType.FlyByCamera;
+
+                if (levelSettings.GameVersion >= TRVersion.Game.TR4)
+                    yield return TriggerTargetType.FlyByCamera;
                 if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                 {
                     yield return TriggerTargetType.ActionNg;
