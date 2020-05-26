@@ -958,7 +958,7 @@ namespace TombEditor
 
             // Update level settings watcher
             if (obj is IUpdateLevelSettingsFileWatcher && ((IUpdateLevelSettingsFileWatcher)obj).UpdateLevelSettingsFileWatcher)
-                _levelSettingsWatcher.WatchLevelSettings(_level.Settings);
+                _levelSettingsWatcher?.WatchLevelSettings(_level.Settings);
 
             // Update bookmarks
             if (obj is LevelChangedEvent ||
