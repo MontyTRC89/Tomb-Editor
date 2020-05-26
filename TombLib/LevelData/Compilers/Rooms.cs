@@ -791,24 +791,28 @@ namespace TombLib.LevelData.Compilers
 
                     if (isTR2)
                     {
-                        bool glowMapped = (flags & 0x4000) != 0;
-                        bool moveMapped = (flags & 0x2000) != 0;
+                        bool glowMapped = (flags & 0x4000) == 0x4000;
+                        bool moveMapped = (flags & 0x2000) == 0x2000;
 
                         // Clear existing flags
-                        flags = unchecked((ushort)((short)trVertex.Attributes & ~0x6000));
+                        flags = 0x0000;
 
                         // Force remap if sunset effect is used.
                         // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
                         if (room.LightEffect == RoomLightEffect.Sunset)
                         {
                             if (allowMovement)
-                                flags |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
+                                flags = (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31)
+                            else
+                                flags = (ushort)16;
                         }
-                        else
+                        else if (room.LightEffect != RoomLightEffect.None)
                         {
                             // Remap TR3+ glow / movement to TR2 glow / flicker
                             if (glowMapped || moveMapped)
-                                flags |= (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
+                                flags = (ushort)(room.LightEffectStrength * 7.5f); // Closest to max. value of 31
+                            else
+                                flags = (ushort)16;
                         }
                     }
 
