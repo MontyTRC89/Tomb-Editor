@@ -2874,7 +2874,7 @@ namespace TombEditor.Controls
                             if (!disableSelection && _editor.SelectedObject == geo)
                                 geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                             else if (DisablePickingForImportedGeometry)
-                                geometryEffect.Parameters["Color"].SetValue(new Vector4(0.1f, 0.1f, 1.0f, 1.0f));
+                                geometryEffect.Parameters["Color"].SetValue(new Vector4(0.4f, 0.4f, 1.0f, 1.0f));
                             else
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
 
