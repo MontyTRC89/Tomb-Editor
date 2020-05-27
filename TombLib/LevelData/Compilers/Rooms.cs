@@ -589,12 +589,15 @@ namespace TombLib.LevelData.Compilers
                                     continue;
                                 }
 
+                                var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
+                                var copyFace    = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+
                                 int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
                                 {
                                     ushort vertex0Index, vertex1Index, vertex2Index;
                                 
-                                    if(shape == BlockFaceShape.Quad)
+                                    if (shape == BlockFaceShape.Quad)
                                     {
                                         ushort vertex3Index;
 
@@ -616,7 +619,10 @@ namespace TombLib.LevelData.Compilers
                                     
                                         var result = _textureInfoManager.AddTexture(texture, true, false);
                                         roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-                                                        texture.DoubleSided, 0));
+                                                        doubleSided, 0));
+                                        if (copyFace)
+                                        roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+                                                        doubleSided, 0));
                                         i += 3;
                                     }
                                     else
@@ -630,7 +636,10 @@ namespace TombLib.LevelData.Compilers
                                     
                                         var result = _textureInfoManager.AddTexture(texture, true, true);
                                         roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        texture.DoubleSided, 0));
+                                                        doubleSided, 0));
+                                        if (copyFace)
+                                        roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
+                                                        doubleSided, 0));
                                     }
                                 }
                             }
@@ -886,6 +895,24 @@ namespace TombLib.LevelData.Compilers
             }
 
             ConvertLights(room, newRoom);
+
+            // Clear double-sided flag for versions prior to TR3, so at least surfaces remain visible
+            if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+            {
+                for (int i = 0; i < newRoom.Triangles.Count; i++)
+                {
+                    var tri = newRoom.Triangles[i];
+                    if ((tri.Texture & 0x8000) == 0x8000)
+                        tri.Texture = (ushort)(tri.Texture & 0x7FFF);
+                }
+
+                for (int i = 0; i < newRoom.Quads.Count; i++)
+                {
+                    var tri = newRoom.Quads[i];
+                    if ((tri.Texture & 0x8000) == 0x8000)
+                        tri.Texture = (ushort)(tri.Texture & 0x7FFF);
+                }
+            }
 
             return newRoom;
         }
