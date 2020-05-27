@@ -73,7 +73,13 @@ namespace TombEditor.ToolWindows
                 obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
+                bool isTR2 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR2;
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
+
+                butClimbNegativeX.Enabled = isTR2;
+                butClimbNegativeZ.Enabled = isTR2;
+                butClimbPositiveX.Enabled = isTR2;
+                butClimbPositiveZ.Enabled = isTR2;
                 butMonkey.Enabled = isTR345;
                 butFlagBeetle.Enabled = isTR345;
                 butFlagTriggerTriggerer.Enabled = isTR345;
