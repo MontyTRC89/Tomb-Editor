@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace TombLib.Scripting.Helpers
 {
@@ -52,6 +53,12 @@ namespace TombLib.Scripting.Helpers
 		{
 			string cachedArgument = string.Empty;
 
+			string comments = string.Empty;
+			Match commentsMatch = Regex.Match(wholeLineText, @"\s*(;.*)?$");
+
+			if (commentsMatch.Success)
+				comments = commentsMatch.Value;
+
 			string[] arguments = LineHelper.RemoveComments(wholeLineText).Split(',');
 
 			List<string> newArgumentList = new List<string>();
@@ -94,7 +101,7 @@ namespace TombLib.Scripting.Helpers
 				}
 			}
 
-			return string.Join(",", newArgumentList.ToArray());
+			return string.Join(",", newArgumentList.ToArray()) + comments;
 		}
 	}
 }
