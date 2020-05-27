@@ -260,6 +260,8 @@ namespace TombLib.LevelData
                                {
                                    if (tmpPoly.Shape == IOPolygonShape.Quad)
                                    {
+                                       var vertexList = new List<ImportedGeometryVertex>();
+
                                        for (var i = 0; i < 4; i++)
                                        {
                                            var vertex = new ImportedGeometryVertex();
@@ -267,18 +269,27 @@ namespace TombLib.LevelData
                                            vertex.Color = tmpPoly.Indices[i] < mesh.Colors.Count ? mesh.Colors[tmpPoly.Indices[i]].To3() : Vector3.One;
                                            vertex.UV = tmpPoly.Indices[i] < mesh.UV.Count ? mesh.UV[tmpPoly.Indices[i]] : Vector2.Zero;
                                            vertex.Normal = tmpPoly.Indices[i] < mesh.Normals.Count ? mesh.Normals[tmpPoly.Indices[i]] : Vector3.Zero;
-                                           modelMesh.Vertices.Add(vertex);
+                                           vertexList.Add(vertex);
                                        }
+
+                                       // HACK: Triangulate and disjoint quad faces for imported geometry, because otherwise another hack which joints
+                                       // disjointed vertices together will fail in Rooms.cs
 
                                        submesh.Indices.Add(currentIndex);
                                        submesh.Indices.Add(currentIndex + 1);
                                        submesh.Indices.Add(currentIndex + 2);
-
-                                       submesh.Indices.Add(currentIndex);
-                                       submesh.Indices.Add(currentIndex + 2);
                                        submesh.Indices.Add(currentIndex + 3);
+                                       submesh.Indices.Add(currentIndex + 4);
+                                       submesh.Indices.Add(currentIndex + 5);
 
-                                       currentIndex += 4;
+                                       modelMesh.Vertices.Add(vertexList[0]);
+                                       modelMesh.Vertices.Add(vertexList[1]);
+                                       modelMesh.Vertices.Add(vertexList[2]);
+                                       modelMesh.Vertices.Add(vertexList[0]);
+                                       modelMesh.Vertices.Add(vertexList[2]);
+                                       modelMesh.Vertices.Add(vertexList[3]);
+
+                                       currentIndex += 6;
                                    }
                                    else
                                    {
