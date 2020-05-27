@@ -9,6 +9,7 @@ using DarkUI.Controls;
 using DarkUI.Forms;
 using TombEditor.Forms;
 using TombLib;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -69,7 +70,7 @@ namespace TombEditor
 
         public static void AssignCommandsToControls(Editor editor, Control parent, ToolTip toolTip = null, bool onlyToolTips = false)
         {
-            var controls = WinFormsUtils.AllSubControls(parent).Where(c => c is DarkButton || c is DarkCheckBox).ToList();
+            var controls = WinFormsUtils.AllSubControls(parent).Where(c => c is DarkButton || c is DarkCheckBox || c is DarkPanel).ToList();
             foreach (var control in controls)
             {
                 if (!string.IsNullOrEmpty(control.Tag?.ToString()))
@@ -996,6 +997,42 @@ namespace TombEditor
             AddCommand("ImportRooms", "Import rooms...", CommandType.Rooms, delegate (CommandArgs args)
             {
                 EditorActions.ImportRooms(args.Window);
+            });
+
+
+            AddCommand("EditAmbientLight", "Edit ambient light...", CommandType.Rooms, delegate (CommandArgs args)
+            {
+                Room room = args.Editor.SelectedRoom;
+
+                using (var colorDialog = new RealtimeColorDialog(
+                    args.Editor.Configuration.ColorDialog_Position.X,
+                    args.Editor.Configuration.ColorDialog_Position.Y,
+                    c =>
+                    {
+                        room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                        args.Editor.SelectedRoom.BuildGeometry();
+                        args.Editor.RoomPropertiesChange(room);
+                    }, args.Editor.Configuration.UI_ColorScheme))
+                {
+                    colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
+                    var oldLightColor = colorDialog.Color;
+
+                    if (colorDialog.ShowDialog(args.Window) != DialogResult.OK)
+                        colorDialog.Color = oldLightColor;
+
+                    room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+
+                    if (args.Editor.Level.Settings.GameVersion < TRVersion.Game.TR4)
+                    {
+                        if (!colorDialog.Color.IsGrayscale())
+                            args.Editor.SendMessage("Moveables will use grayscale ambience in this game version.", PopupType.Info);
+                    }
+
+                    args.Editor.Configuration.ColorDialog_Position = colorDialog.Position;
+                }
+
+                args.Editor.SelectedRoom.BuildGeometry();
+                args.Editor.RoomPropertiesChange(room);
             });
 
             AddCommand("ApplyAmbientLightToAllRooms", "Apply current ambient light to all rooms", CommandType.Rooms, delegate (CommandArgs args)

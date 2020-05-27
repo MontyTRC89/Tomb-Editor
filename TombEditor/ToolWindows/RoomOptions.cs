@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Windows.Forms;
-using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -104,7 +102,6 @@ namespace TombEditor.ToolWindows
                 Room room = _editor.SelectedRoom;
                 if (obj is Editor.InitEvent || obj is Editor.SelectedRoomChangedEvent)
                     comboRoom.SelectedIndex = _editor.Level.Rooms.ReferenceIndexOf(room);
-
 
                 // Update the state of other controls
                 ReadRoomType();
@@ -336,42 +333,6 @@ namespace TombEditor.ToolWindows
         {
             _editor.SelectedRoom.LightEffectStrength = (byte)numLightEffectStrength.Value;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
-        }
-
-        private void panelRoomAmbientLight_Click(object sender, EventArgs e)
-        {
-            Room room = _editor.SelectedRoom;
-
-            using (var colorDialog = new RealtimeColorDialog(
-                _editor.Configuration.ColorDialog_Position.X,
-                _editor.Configuration.ColorDialog_Position.Y, 
-                c =>
-                {
-                    room.AmbientLight = c.ToFloat3Color() * 2.0f;
-                    _editor.SelectedRoom.BuildGeometry();
-                    _editor.RoomPropertiesChange(room);
-                }, _editor.Configuration.UI_ColorScheme))
-            {
-                colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
-                var oldLightColor = colorDialog.Color;
-
-                if (colorDialog.ShowDialog(this) != DialogResult.OK)
-                    colorDialog.Color = oldLightColor;
-
-                panelRoomAmbientLight.BackColor = colorDialog.Color;
-                room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
-
-                if (_editor.Level.Settings.GameVersion < TRVersion.Game.TR4)
-                {
-                    if (!colorDialog.Color.IsGrayscale())
-                        _editor.SendMessage("Moveables will use grayscale ambience in this game version.", PopupType.Info);
-                }
-
-                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
-            }
-
-            _editor.SelectedRoom.BuildGeometry();
-            _editor.RoomPropertiesChange(room);
         }
 
         private void butSearch_Click(object sender, EventArgs e)
