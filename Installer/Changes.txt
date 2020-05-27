@@ -1,3 +1,14 @@
+Version 1.3.2
+=============
+Tomb Editor:
+ * Various additional fixes for TR2 compatibility.
+ * Fix exceptions with Metasequoia imported geometry.
+ * Fix exceptions with script IDs after room copy-paste.
+ * Disable face/vertex limit overflow errors and replace with warnings.
+ 
+TombIDE:
+ * Fix additional exceptions.
+
 Version 1.3.1
 =============
 Tomb Editor:
