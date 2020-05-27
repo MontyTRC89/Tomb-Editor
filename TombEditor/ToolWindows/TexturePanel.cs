@@ -140,6 +140,8 @@ namespace TombEditor.ToolWindows
                 (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
                  _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
 
+            cmbBlending.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR2;
+
             RepopulateBlendingModes();
         }
 

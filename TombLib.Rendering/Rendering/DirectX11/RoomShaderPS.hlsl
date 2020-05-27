@@ -47,14 +47,14 @@ float4 main(PixelInputType input) : SV_TARGET
 			}
 		}
 
-        
-
 		float3 colorAdd = max(input.Color.xyz - 1.0f, 0.0f) * 0.37f;
 		float3 colorMul = min(input.Color.xyz, 1.0f);
 		result.xyz = result.xyz * colorMul + colorAdd;
         result.w *= input.Color.w;
 
 		result.xyz *= input.Color.w; // Turn into premultiplied alpha
+		result.xyz *= result.w;
+		
 		if (input.BlendMode >= 2) // Alpha-blended modes
 		{
 			if (ShowExtraBlendingModes && input.BlendMode != 2)
