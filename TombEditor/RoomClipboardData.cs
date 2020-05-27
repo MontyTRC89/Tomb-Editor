@@ -110,6 +110,9 @@ namespace TombEditor
             editor.Level.MergeFrom(level, true, newSettings => editor.UpdateLevelSettings(newSettings));
             editor.RoomListChange();
             editor.SelectRoomsAndResetCamera(newRooms);
+
+            // Refresh script IDs for all pasted objects
+            newRooms.ForEach(r => r.Objects.Where(ob => ob is PositionAndScriptBasedObjectInstance).ToList().ForEach(i => ((PositionAndScriptBasedObjectInstance)i).AllocateNewScriptId()));
         }
     }
 }
