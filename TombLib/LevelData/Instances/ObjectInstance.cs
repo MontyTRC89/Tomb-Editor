@@ -349,6 +349,7 @@ namespace TombLib.LevelData
 
         public void AllocateNewScriptId()
         {
+            _scriptTable = Room.Level.GlobalScriptingIdsTable; // HACK: Prevent exception on TRTombalized room copy-paste events
             _scriptId = _scriptTable?.UpdateWithNewId(this, _scriptId);
         }
 
