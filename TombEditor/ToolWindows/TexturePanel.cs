@@ -133,8 +133,10 @@ namespace TombEditor.ToolWindows
         {
             butDeleteTexture.Enabled =
             butBrowseTexture.Enabled =
-            butAnimationRanges.Enabled =
-            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null;
+            butAnimationRanges.Enabled = comboCurrentTexture.SelectedItem != null;
+
+            butTextureSounds.Enabled = comboCurrentTexture.SelectedItem != null && 
+                _editor.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR3;
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
                 (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
