@@ -97,6 +97,7 @@ namespace TombLib.LevelData.Compilers
 
                     if (_vertexColors.ContainsKey(sig))
                     {
+                        v.Lighting1 = _vertexColors[sig];
                         v.Lighting2 = _vertexColors[sig];
                         trRoom.Vertices[i] = v;
                     }
