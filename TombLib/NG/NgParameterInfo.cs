@@ -20,9 +20,15 @@ namespace TombLib.NG
             yield return TriggerType.Antipad;
             yield return TriggerType.Combat;
             yield return TriggerType.Dummy;
-            yield return TriggerType.Antitrigger;
-            yield return TriggerType.HeavySwitch;
-            yield return TriggerType.HeavyAntitrigger;
+
+            if (levelSettings.GameVersion >= TRVersion.Game.TR3)
+                yield return TriggerType.Antitrigger;
+
+            if (levelSettings.GameVersion >= TRVersion.Game.TR4)
+            {
+                yield return TriggerType.HeavySwitch;
+                yield return TriggerType.HeavyAntitrigger;
+            }
 
             if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                 yield return TriggerType.ConditionNg;
@@ -112,10 +118,12 @@ namespace TombLib.NG
                         case TriggerTargetType.FlipEffect:
                             if (levelSettings.GameVersion == TRVersion.Game.TRNG)
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList.DicSelect(e => (TriggerParameterUshort)e.Value));
-                            else
+                            else if (levelSettings.GameVersion == TRVersion.Game.TR4)
                                 return new NgParameterRange(NgCatalog.FlipEffectTrigger.MainList
                                     .DicWhere(entry => entry.Value.Name.Contains("OldFlip"))
                                     .DicSelect(e => (TriggerParameterUshort)e.Value));
+                            else
+                                return new NgParameterRange(NgParameterKind.AnyNumber);
 
                         case TriggerTargetType.ActionNg:
                             if (!(timer is TriggerParameterUshort))
