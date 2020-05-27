@@ -779,6 +779,49 @@ namespace TombEditor
                 }
             });
 
+            AddCommand("DeleteAllObjects", "Delete all objects", CommandType.Edit, delegate (CommandArgs args)
+            {
+
+                if (DarkMessageBox.Show(args.Window, "Do you want to delete all objects in level? This action can't be undone.",
+                                       "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    var deleteLights = (DarkMessageBox.Show(args.Window, "Delete lights as well?",
+                                         "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+
+                    foreach (var room in args.Editor.Level.Rooms.Where(r => r != null))
+                    {
+                        var objects = room.Objects.Where(ob => ob is PositionBasedObjectInstance && (!(ob is LightInstance) || deleteLights)).ToList();
+                        if (objects.Count > 0)
+                            for (int i = objects.Count - 1; i >= 0; i--)
+                            {
+                                var obj = objects[i];
+                                EditorActions.DeleteObjectWithoutUpdate(obj);
+                                objects.RemoveAt(i);
+                            }
+                    }
+                }
+            });
+
+            AddCommand("DeleteAllTriggers", "Delete all triggers", CommandType.Edit, delegate (CommandArgs args)
+            {
+
+                if (DarkMessageBox.Show(args.Window, "Do you want to delete all triggers in level? This action can't be undone.",
+                                       "Delete all triggers", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    foreach (var room in args.Editor.Level.Rooms.Where(r => r != null))
+                    {
+                        var triggers = room.Triggers.ToList();
+                        if (triggers.Count > 0)
+                            for (int i = triggers.Count - 1; i >= 0; i--)
+                            {
+                                var obj = triggers[i];
+                                EditorActions.DeleteObjectWithoutUpdate(obj);
+                                triggers.RemoveAt(i);
+                            }
+                    }
+                }
+            });
+
             AddCommand("SelectAll", "Select all", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Map2D)
