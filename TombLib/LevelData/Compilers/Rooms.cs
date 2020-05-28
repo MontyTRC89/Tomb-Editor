@@ -313,6 +313,98 @@ namespace TombLib.LevelData.Compilers
                 var roomTriangles = new List<tr_face3>();
                 var roomQuads = new List<tr_face4>();
 
+                // Add room's own geometry
+
+                if (!room.Hidden)
+                    for (int z = 0; z < room.NumZSectors; ++z)
+                        for (int x = 0; x < room.NumXSectors; ++x)
+                            for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                            {
+                                var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
+                                var shape = room.GetFaceShape(x, z, face);
+
+                                if (range.Count == 0)
+                                    continue;
+
+                                TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
+                                if(texture.TextureIsInvisible)
+                                    continue;
+
+                                if(texture.TextureIsUnavailable)
+                                {
+                                    _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
+                                    continue;
+                                }
+
+                                if((shape == BlockFaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == BlockFaceShape.Quad && texture.QuadCoordsOutOfBounds))
+                                {
+                                    _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
+                                    continue;
+                                }
+
+                                var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
+                                var copyFace    = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+
+                                int rangeEnd = range.Start + range.Count;
+                                for (int i = range.Start; i < rangeEnd; i += 3)
+                                {
+                                    ushort vertex0Index, vertex1Index, vertex2Index;
+                                
+                                    if (shape == BlockFaceShape.Quad)
+                                    {
+                                        ushort vertex3Index;
+
+                                        if (face == BlockFace.Ceiling)
+                                        {
+                                            texture.Mirror();
+                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5]);
+                                        }
+                                        else
+                                        {
+                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3]);
+                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                        }
+                                    
+                                        var result = _textureInfoManager.AddTexture(texture, true, false);
+                                        roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
+                                                        doubleSided, 0));
+                                        if (copyFace)
+                                        {
+                                            texture.Mirror();
+                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+                                                            doubleSided, 0));
+                                        }
+                                        i += 3;
+                                    }
+                                    else
+                                    {
+                                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
+                                            texture.Mirror(true);
+
+                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                    
+                                        var result = _textureInfoManager.AddTexture(texture, true, true);
+                                        roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
+                                                        doubleSided, 0));
+                                        if (copyFace)
+                                        {
+                                            texture.Mirror();
+                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
+                                                            doubleSided, 0));
+                                        }
+                                    }
+                                }
+                            }
+
                 // Merge static meshes
 
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
@@ -347,8 +439,8 @@ namespace TombLib.LevelData.Compilers
                             {
                                 lightingEffect = wadStatic.Mesh.VerticesShades[j];
 
-                                     if (lightingEffect > 4227) lightingEffect = 0x2000; // Movement
-                                else if (lightingEffect > 0   ) lightingEffect = 0x4000; // Glow
+                                if (lightingEffect > 4227) lightingEffect = 0x2000; // Movement
+                                else if (lightingEffect > 0) lightingEffect = 0x4000; // Glow
                             }
                         }
                         else
@@ -559,98 +651,6 @@ namespace TombLib.LevelData.Compilers
                         baseIndex += currentMeshIndexCount;
                     }
                 }
-
-                // Add room's own geometry
-
-                if (!room.Hidden)
-                    for (int z = 0; z < room.NumZSectors; ++z)
-                        for (int x = 0; x < room.NumXSectors; ++x)
-                            for (BlockFace face = 0; face < BlockFace.Count; ++face)
-                            {
-                                var range = room.RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
-                                var shape = room.GetFaceShape(x, z, face);
-
-                                if (range.Count == 0)
-                                    continue;
-
-                                TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                                if(texture.TextureIsInvisible)
-                                    continue;
-
-                                if(texture.TextureIsUnavailable)
-                                {
-                                    _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
-                                    continue;
-                                }
-
-                                if((shape == BlockFaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == BlockFaceShape.Quad && texture.QuadCoordsOutOfBounds))
-                                {
-                                    _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
-                                    continue;
-                                }
-
-                                var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
-                                var copyFace    = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
-
-                                int rangeEnd = range.Start + range.Count;
-                                for (int i = range.Start; i < rangeEnd; i += 3)
-                                {
-                                    ushort vertex0Index, vertex1Index, vertex2Index;
-                                
-                                    if (shape == BlockFaceShape.Quad)
-                                    {
-                                        ushort vertex3Index;
-
-                                        if (face == BlockFace.Ceiling)
-                                        {
-                                            texture.Mirror();
-                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
-                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
-                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5]);
-                                        }
-                                        else
-                                        {
-                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3]);
-                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
-                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
-                                        }
-                                    
-                                        var result = _textureInfoManager.AddTexture(texture, true, false);
-                                        roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-                                                        doubleSided, 0));
-                                        if (copyFace)
-                                        {
-                                            texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, true, false);
-                                            roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-                                                            doubleSided, 0));
-                                        }
-                                        i += 3;
-                                    }
-                                    else
-                                    {
-                                        if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
-                                            texture.Mirror(true);
-
-                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
-                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
-                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                    
-                                        var result = _textureInfoManager.AddTexture(texture, true, true);
-                                        roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        doubleSided, 0));
-                                        if (copyFace)
-                                        {
-                                            texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, true, false);
-                                            roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
-                                                            doubleSided, 0));
-                                        }
-                                    }
-                                }
-                            }
 
                 // Check for the limits reached
 
