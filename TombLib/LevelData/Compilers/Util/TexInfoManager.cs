@@ -229,65 +229,47 @@ namespace TombLib.LevelData.Compilers.Util
             // Compare raw bitmap data of given area with incoming texture
             public SimilarityResult TextureSimilar(TextureArea texture)
             {
-                var result = false;
+                var rr = texture.GetRect();
+                var pp0 = texture.Texture.Image.GetPixel((int)rr.X0, (int)rr.Y0);
+                var pp1 = texture.Texture.Image.GetPixel((int)rr.X1, (int)rr.Y0);
+                var pp2 = texture.Texture.Image.GetPixel((int)rr.X1, (int)rr.Y1);
+                var pp3 = texture.Texture.Image.GetPixel((int)rr.X0, (int)rr.Y1);
 
-                // See if texture is the same
-                TextureHashed incoming = texture.Texture as TextureHashed;
-                TextureHashed current = Texture as TextureHashed;
-
-                // First case here should never happen, unless we find a way to texture rooms
-                // with WAD textures or vice versa.
-                if ((incoming == null) != (current == null))
-                    result = false;
-                else if (incoming != null)
-                    result = incoming.Hash == current.Hash;
-                else
-                    result = texture.Texture.GetHashCode() == Texture.GetHashCode();
-
-                if (!result)
+                foreach (var child in Children)
                 {
-                    var rr = texture.GetRect();
-                    var pp0 = Texture.Image.GetPixel((int)rr.X0, (int)rr.Y0);
-                    var pp1 = Texture.Image.GetPixel((int)rr.X1, (int)rr.Y0);
-                    var pp2 = Texture.Image.GetPixel((int)rr.X1, (int)rr.Y1);
-                    var pp3 = Texture.Image.GetPixel((int)rr.X0, (int)rr.Y1);
+                    // Compare 4 corner pixels to quickly filter out wrong results
+                    var r = child.GetRect();
+                    var p0 = Texture.Image.GetPixel((int)r.X0, (int)r.Y0);
+                    var p1 = Texture.Image.GetPixel((int)r.X1, (int)r.Y0);
+                    var p2 = Texture.Image.GetPixel((int)r.X1, (int)r.Y1);
+                    var p3 = Texture.Image.GetPixel((int)r.X0, (int)r.Y1);
 
-                    foreach (var child in Children)
+                    if (p0 != pp0 || p1 != pp1 || p2 != pp2 || p3 != pp3)
+                        break;
+
+                    // 4 corner pixels match. Now compare raw data
+                    var hash1 = Hash.FromByteArray(texture.Texture.Image.ToByteArray(rr));
+                    var hash2 = Hash.FromByteArray(Texture.Image.ToByteArray(r));
+
+                    if (hash1 == hash2)
                     {
-                        // Compare 4 corner pixels to quickly filter out wrong results
-                        var r = child.GetRect();
-                        var p0 = texture.Texture.Image.GetPixel((int)r.X0, (int)r.Y0);
-                        var p1 = texture.Texture.Image.GetPixel((int)r.X1, (int)r.Y0);
-                        var p2 = texture.Texture.Image.GetPixel((int)r.X1, (int)r.Y1);
-                        var p3 = texture.Texture.Image.GetPixel((int)r.X0, (int)r.Y1);
+                        // Replace texture set with found one and substitute texture coordinates
+                        var newtex = texture;
+                        var shift = r.TopLeft - rr.TopLeft;
+                        newtex.Texture = Texture;
+                        newtex.TexCoord0 += shift;
+                        newtex.TexCoord1 += shift;
+                        newtex.TexCoord2 += shift;
+                        if (child.AbsCoord.Length > 3)
+                            newtex.TexCoord3 += shift;
+                        else
+                            newtex.TexCoord3 = newtex.TexCoord2;
 
-                        if (p0 != pp0 || p1 != pp1 || p2 != pp2 || p3 != pp3)
-                            break;
-
-                        // 4 corner pixels match. Now compare raw data
-                        var hash1 = Hash.FromByteArray(texture.Texture.Image.ToByteArray(rr));
-                        var hash2 = Hash.FromByteArray(Texture.Image.ToByteArray(r));
-
-                        if (hash1 == hash2)
-                        {
-                            // Replace texture set with found one and substitute texture coordinates
-                            var newtex = texture;
-                            var shift = r.TopLeft - rr.TopLeft;
-                            newtex.Texture = Texture;
-                            newtex.TexCoord0 -= shift;
-                            newtex.TexCoord1 -= shift;
-                            newtex.TexCoord2 -= shift;
-                            if (child.AbsCoord.Length > 3)
-                                newtex.TexCoord3 -= shift;
-                            else
-                                newtex.TexCoord3 = newtex.TexCoord2;
-
-                            return new SimilarityResult(true, newtex);
-                        }
+                        return new SimilarityResult(true, newtex);
                     }
                 }
 
-                return new SimilarityResult(result, texture);
+                return new SimilarityResult(false, texture);
             }
 
             // Check if bumpmapping could be assigned to parent.
@@ -634,7 +616,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f, bool checkHashed = false)
+        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f, bool lookInOtherTextureSets = false)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -642,19 +624,23 @@ namespace TombLib.LevelData.Compilers.Util
 
             foreach (var parent in parentList)
             {
-                // Parents with different attributes are quickly discarded
-                if (!parent.ParametersSimilar(areaToLook, isForRoom) && !checkHashed)
-                    continue;
-
-                if (checkHashed)
+                // At first, check basic attribs and set hashes
+                if (!parent.ParametersSimilar(areaToLook, isForRoom))
                 {
-                    var sr = parent.TextureSimilar(areaToLook);
-                    if (sr.Found && sr.Carrier.Texture != areaToLook.Texture)
+                    // Now try to identify if similar texture info from another texture set is present 
+                    // by checking hash of the image area. If match is found, substitute lookup coordinates with found ones.
+                    if (lookInOtherTextureSets)
                     {
-                        areaToLook = sr.Carrier;
-                        for (int i = 0; i < lookupCoordinates.Length; i++)
-                            lookupCoordinates[i] = areaToLook.GetTexCoord(i);
+                        var sr = parent.TextureSimilar(areaToLook);
+                        if (sr.Found)
+                        {
+                            if (sr.Carrier.Texture != areaToLook.Texture)
+                                for (int i = 0; i < lookupCoordinates.Length; i++)
+                                    lookupCoordinates[i] = sr.Carrier.GetTexCoord(i);
+                        }
+                        else continue;
                     }
+                    else continue;
                 }
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
