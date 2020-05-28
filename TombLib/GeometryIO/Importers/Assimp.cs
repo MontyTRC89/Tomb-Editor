@@ -73,7 +73,7 @@ namespace TombLib.GeometryIO.Importers
 
                     // Create the new material
                     material.Texture = textures[i];
-                    material.AdditiveBlending = mat.HasBlendMode && mat.BlendMode == global::Assimp.BlendMode.Additive;
+                    material.AdditiveBlending = (mat.HasBlendMode && mat.BlendMode == global::Assimp.BlendMode.Additive) || mat.Opacity < 1.0f;
                     material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
                     material.Shininess = mat.HasShininess ? (int)mat.Shininess : 0;
                     newModel.Materials.Add(material);
