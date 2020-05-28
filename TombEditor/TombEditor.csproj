@@ -603,9 +603,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Editor\Shaders\RoomGeometry.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\icons_toolbox\toolbox_GridPaint2x2-16.png" />
     <None Include="Resources\icons_toolbox\toolbox_GridPaint3x3-16.png" />
     <None Include="Resources\icons_toolbox\toolbox_GridPaint4x4-16.png" />
@@ -627,15 +624,6 @@
     <None Include="Resources\icons_actions\actions_AlphaTest-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
-    <None Include="Editor\Shaders\Model.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Shaders\Solid.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Editor\Shaders\StaticModel.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">

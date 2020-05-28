@@ -296,7 +296,7 @@ namespace TombEditor.Forms
 
         private void UpdateControls()
         {
-            showRealTintForMergedStaticsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForMergedStatics;
+            ShowRealTintForObjectsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForObjects;
             drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
         }
 
