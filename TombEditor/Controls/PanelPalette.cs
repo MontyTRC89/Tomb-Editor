@@ -93,7 +93,7 @@ namespace TombEditor.Controls
                 {
                     var light = _editor.SelectedObject as LightInstance;
                     light.Color = SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.SelectedRoom.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                    light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                     _editor.ObjectChange(light, ObjectChangeType.Change);
                 }
                 else if (_editor.SelectedObject is StaticInstance)
