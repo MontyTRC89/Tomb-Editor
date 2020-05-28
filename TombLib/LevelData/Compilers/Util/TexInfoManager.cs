@@ -84,6 +84,23 @@ namespace TombLib.LevelData.Compilers.Util
 
         private SortedDictionary<int, ObjectTexture> _objectTextures;
 
+        // Similarity result is a simple pair of texture struct and bool flag
+        // indicating that similarity was found. It is needed to identify and shuffle around
+        // completely similar textures from different texture sets (e.g. when re-imported mesh is used
+        // with same textures applied).
+
+        public struct SimilarityResult
+        {
+            public bool Found;
+            public TextureArea Carrier;
+
+            public SimilarityResult(bool found, TextureArea carrier)
+            {
+                Found = found;
+                Carrier = carrier;
+            }
+        }
+
         // ChildTextureArea is a simple enclosed relative texture area with stripped down parameters
         // which should be the same among all children of same parent.
         // Stripped down parameters include BumpLevel and IsForTriangle, because if these are
@@ -97,6 +114,14 @@ namespace TombLib.LevelData.Compilers.Util
 
             public BlendMode BlendMode;
             public bool IsForTriangle;
+
+            public Rectangle2 GetRect()
+            {
+                if (AbsCoord.Length == 3)
+                    return Rectangle2.FromCoordinates(AbsCoord[0], AbsCoord[1], AbsCoord[2]);
+                else
+                    return Rectangle2.FromCoordinates(AbsCoord[0], AbsCoord[1], AbsCoord[2], AbsCoord[3]);
+            }
         }
 
         // ParentTextureArea is a texture area which contains all other texture areas which are
@@ -113,6 +138,9 @@ namespace TombLib.LevelData.Compilers.Util
 
             public Texture Texture { get; private set; }
             public bool IsForRoom { get; set; }
+
+            // Additionally implement hash to filter out reimported textures
+            public Hash Hash { get; private set; }
 
             // Waterfall textures need to stay on top of texture page without
             // padding, because of extremely ugly Core Design waterfall UVRotate hack.
@@ -143,6 +171,9 @@ namespace TombLib.LevelData.Compilers.Util
                     }
 
                     _area = value;
+
+                    // Recalculate hash
+                    Hash = Hash.FromByteArray(Texture.Image.ToByteArray(value));
                 }
             }
             public List<ChildTextureArea> Children;
@@ -169,6 +200,10 @@ namespace TombLib.LevelData.Compilers.Util
                 Texture = texture;
                 IsForRoom = isForRoom;
                 SqueezeAndDuplicate = false;
+
+                // Recalculate hash
+                if (Texture.IsAvailable)
+                    Hash = Hash.FromByteArray(Texture.Image.ToByteArray(_area));
             }
 
             // Compare parent's properties with incoming texture properties.
@@ -177,8 +212,9 @@ namespace TombLib.LevelData.Compilers.Util
                 if (IsForRoom != isForRoom)
                     return false;
 
+                // See if texture is the same
                 TextureHashed incoming = incomingTexture.Texture as TextureHashed;
-                TextureHashed current  = Texture as TextureHashed;
+                TextureHashed current  = Texture as TextureHashed;   
 
                 // First case here should never happen, unless we find a way to texture rooms
                 // with WAD textures or vice versa.
@@ -188,6 +224,70 @@ namespace TombLib.LevelData.Compilers.Util
                     return incoming.Hash == current.Hash;
                 else
                     return incomingTexture.Texture.GetHashCode() == Texture.GetHashCode();
+            }
+
+            // Compare raw bitmap data of given area with incoming texture
+            public SimilarityResult TextureSimilar(TextureArea texture)
+            {
+                var result = false;
+
+                // See if texture is the same
+                TextureHashed incoming = texture.Texture as TextureHashed;
+                TextureHashed current = Texture as TextureHashed;
+
+                // First case here should never happen, unless we find a way to texture rooms
+                // with WAD textures or vice versa.
+                if ((incoming == null) != (current == null))
+                    result = false;
+                else if (incoming != null)
+                    result = incoming.Hash == current.Hash;
+                else
+                    result = texture.Texture.GetHashCode() == Texture.GetHashCode();
+
+                if (!result)
+                {
+                    var rr = texture.GetRect();
+                    var pp0 = Texture.Image.GetPixel((int)rr.X0, (int)rr.Y0);
+                    var pp1 = Texture.Image.GetPixel((int)rr.X1, (int)rr.Y0);
+                    var pp2 = Texture.Image.GetPixel((int)rr.X1, (int)rr.Y1);
+                    var pp3 = Texture.Image.GetPixel((int)rr.X0, (int)rr.Y1);
+
+                    foreach (var child in Children)
+                    {
+                        // Compare 4 corner pixels to quickly filter out wrong results
+                        var r = child.GetRect();
+                        var p0 = texture.Texture.Image.GetPixel((int)r.X0, (int)r.Y0);
+                        var p1 = texture.Texture.Image.GetPixel((int)r.X1, (int)r.Y0);
+                        var p2 = texture.Texture.Image.GetPixel((int)r.X1, (int)r.Y1);
+                        var p3 = texture.Texture.Image.GetPixel((int)r.X0, (int)r.Y1);
+
+                        if (p0 != pp0 || p1 != pp1 || p2 != pp2 || p3 != pp3)
+                            break;
+
+                        // 4 corner pixels match. Now compare raw data
+                        var hash1 = Hash.FromByteArray(texture.Texture.Image.ToByteArray(rr));
+                        var hash2 = Hash.FromByteArray(Texture.Image.ToByteArray(r));
+
+                        if (hash1 == hash2)
+                        {
+                            // Replace texture set with found one and substitute texture coordinates
+                            var newtex = texture;
+                            var shift = r.TopLeft - rr.TopLeft;
+                            newtex.Texture = Texture;
+                            newtex.TexCoord0 -= shift;
+                            newtex.TexCoord1 -= shift;
+                            newtex.TexCoord2 -= shift;
+                            if (child.AbsCoord.Length > 3)
+                                newtex.TexCoord3 -= shift;
+                            else
+                                newtex.TexCoord3 = newtex.TexCoord2;
+
+                            return new SimilarityResult(true, newtex);
+                        }
+                    }
+                }
+
+                return new SimilarityResult(result, texture);
             }
 
             // Check if bumpmapping could be assigned to parent.
@@ -202,7 +302,7 @@ namespace TombLib.LevelData.Compilers.Util
                     else
                     {
                         var bumpLevel = tex.GetBumpMappingLevelFromTexCoord(Area.GetMid());
-                        return bumpLevel.HasValue ? bumpLevel.Value : BumpMappingLevel.None; 
+                        return bumpLevel.HasValue ? bumpLevel.Value : BumpMappingLevel.None;
                     }
                 }
                 return BumpMappingLevel.None;
@@ -210,7 +310,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Checks if parameters are similar to another texture area, and if so,
             // also checks if texture area is enclosed in parent's area.
-            public bool IsPotentialParent(TextureArea texture, bool isForRoom, bool allowOverlaps = false, uint maxOverlappedSize = 256)
+            public bool IsPotentialParent(TextureArea texture, bool isForRoom, bool allowOverlaps, uint maxOverlappedSize)
             {
                 var rect = texture.GetRect();
 
@@ -395,7 +495,7 @@ namespace TombLib.LevelData.Compilers.Util
                         if (version >= TRVersion.Game.TR4)
                             coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
                     }
-                    
+
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
                     coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
@@ -424,7 +524,7 @@ namespace TombLib.LevelData.Compilers.Util
             Padding = (ushort)level.Settings.TexturePadding;
             _progressReporter = progressReporter;
 
-            if(level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            if (level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 MaxTileSize = 256; // Change later...
             else
                 MaxTileSize = 256;
@@ -534,7 +634,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f)
+        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f, bool checkHashed = false)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -543,8 +643,19 @@ namespace TombLib.LevelData.Compilers.Util
             foreach (var parent in parentList)
             {
                 // Parents with different attributes are quickly discarded
-                if (!parent.ParametersSimilar(areaToLook, isForRoom))
+                if (!parent.ParametersSimilar(areaToLook, isForRoom) && !checkHashed)
                     continue;
+
+                if (checkHashed)
+                {
+                    var sr = parent.TextureSimilar(areaToLook);
+                    if (sr.Found && sr.Carrier.Texture != areaToLook.Texture)
+                    {
+                        areaToLook = sr.Carrier;
+                        for (int i = 0; i < lookupCoordinates.Length; i++)
+                            lookupCoordinates[i] = areaToLook.GetTexCoord(i);
+                    }
+                }
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
                 foreach (var child in parent.Children)
@@ -615,13 +726,13 @@ namespace TombLib.LevelData.Compilers.Util
                 return new Result();
             }
 
-            if (isForRoom)
+            //if (isForRoom)
             {
                 // Try to compare incoming texture with existing anims and return animation frame
                 if (ActualAnimTextures.Count > 0)
                     foreach (var actualTex in ActualAnimTextures)
                     {
-                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, AnimTextureLookupMargin);
+                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, AnimTextureLookupMargin, true);
                         if (existing.HasValue)
                             return existing.Value;
                     }
@@ -631,7 +742,7 @@ namespace TombLib.LevelData.Compilers.Util
                     foreach (var refTex in ReferenceAnimTextures)
                     {
                         // If reference set found, generate actual one and immediately return fresh result
-                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, AnimTextureLookupMargin).HasValue)
+                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, AnimTextureLookupMargin, true).HasValue)
                         {
                             GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
                             return AddTexture(texture, isForRoom, isForTriangle);
@@ -665,8 +776,6 @@ namespace TombLib.LevelData.Compilers.Util
                 if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex))
                     AddParent(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex);
 
-                texture.GetCanonicalTexture(isForTriangle);
-
                 // Try again to get texinfo
                 if (animFrameIndex >= 0)
                     result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
@@ -674,7 +783,7 @@ namespace TombLib.LevelData.Compilers.Util
                     result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
             }
 
-            return result.Value;
+            return result.HasValue ? result.Value : new Result() { TexInfoIndex = DummyTexInfo, Rotation = 0 };
         }
 
         // Scan and set alpha-test blending mode for opaque textures.
@@ -836,7 +945,7 @@ namespace TombLib.LevelData.Compilers.Util
                         // Make frame, including repeat versions
                         for (int i = 0; i < frame.Repeat; i++)
                         {
-                            AddTexture(newFrame, refAnim.CompiledAnimation, true, (triangleVariation > 0), set.AnimationType== AnimatedTextureAnimationType.UVRotate, index, set.IsUvRotate);
+                            AddTexture(newFrame, refAnim.CompiledAnimation, true, (triangleVariation > 0), set.AnimationType == AnimatedTextureAnimationType.UVRotate, index, set.IsUvRotate);
                             index++;
                         }
                     }
@@ -871,7 +980,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // Sort and assign TexInfo indices for frames by the order they were created in reference animation
             var orderedFrameList = refCopy.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex);
-            foreach(var frame in orderedFrameList)
+            foreach (var frame in orderedFrameList)
                 frame.TexInfoIndex = GetNewTexInfoIndex();
 
             ActualAnimTextures.Add(refCopy);
@@ -1202,7 +1311,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (texture.IsForRoom) newFlags |= 0x8000;
 
-                    if      (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
+                    if (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
                     else if (texture.BumpLevel == BumpMappingLevel.Level2) newFlags |= (2 << 9);
                     else if (texture.BumpLevel == BumpMappingLevel.Level3) newFlags |= (3 << 9);
 
