@@ -293,7 +293,7 @@ namespace TombLib.GeometryIO
                                 mesh.Colors.Add(new Vector4(room.RoomGeometry.VertexColors[i + 2], 1.0f));
 
                                 var mat = model.GetMaterial(textureArea.Texture,
-                                                            textureArea.BlendMode == BlendMode.Additive,
+                                                            textureArea.BlendMode >= BlendMode.Additive,
                                                             textureAreaPage,
                                                             textureArea.DoubleSided,
                                                             0);
