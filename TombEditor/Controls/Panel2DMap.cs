@@ -391,8 +391,9 @@ namespace TombEditor.Controls
                     }
                     else if (_roomMouseClicked != null)
                     {
-                        // Move room around
-                        if (ModifierKeys.HasFlag(Keys.Control))
+                        bool copyMode = ModifierKeys.HasFlag(Keys.Control);
+
+                        if (copyMode &&((Vector3)_overallDelta).Length() >= 1 * ViewScale)
                         {
                             _roomsToMove = null;
                             DoDragDrop(new RoomClipboardData(_editor, FromVisualCoord(e.Location)), DragDropEffects.Copy);
@@ -402,8 +403,9 @@ namespace TombEditor.Controls
                         if (_roomsToMove == null)
                             _roomsToMove = _editor.Level.GetConnectedRooms(_editor.SelectedRooms.Concat(new[] { _roomMouseClicked }));
 
-                        if (_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked))
+                        if (_roomsToMove != null && UpdateRoomPosition(FromVisualCoord(e.Location) - _roomMouseOffset, _roomMouseClicked, !copyMode))
                         {
+                            // Move rooms around
                             foreach (Room room in _roomsToMove)
                                 _editor.RoomPropertiesChange(room);
                             _editor.ResetCamera();
@@ -817,7 +819,7 @@ namespace TombEditor.Controls
                 return baseBrush;
         }
 
-        private bool UpdateRoomPosition(Vector2 newRoomPos, Room roomReference)
+        private bool UpdateRoomPosition(Vector2 newRoomPos, Room roomReference, bool moveRooms)
         {
             VectorInt2 newRoomPosInt = VectorInt2.FromRounded(newRoomPos);
             VectorInt2 roomMovement = newRoomPosInt - roomReference.SectorPos;
@@ -833,8 +835,11 @@ namespace TombEditor.Controls
                     if (roomMovement.X != 0 || roomMovement.Y != 0)
                     {
                         _overallDelta += delta;
-                        EditorActions.MoveRooms(delta, _roomsToMove, true);
-                        return true;
+                        if (moveRooms)
+                        {
+                            EditorActions.MoveRooms(delta, _roomsToMove, true);
+                            return true;
+                        }
                     }
                 }
             }
