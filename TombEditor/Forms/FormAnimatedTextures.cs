@@ -272,6 +272,9 @@ namespace TombEditor.Forms
                 numericUpDownFPS.Enabled = false;
             }
 
+            // Legacy engine settings
+            comboEffect.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;               
+
             comboProcPresets.SelectedIndex = 0;
             numFrames.Value = _maxLegacyFrames;
         }
