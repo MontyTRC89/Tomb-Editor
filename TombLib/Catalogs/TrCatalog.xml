@@ -2508,9 +2508,9 @@
       <moveable id="478" name="PANEL_HALF_BORDER2" description="NG Panel Half Border2" t5m="PANEL_HALF_BORDER2" />
       <moveable id="479" name="PANEL_MIDDLE_CORNER" description="NG Panel Middle Corner" t5m="PANEL_MIDDLE_CORNER" />
       <moveable id="480" name="TIGHT_ROPE" description="NG Tight Rope" t5m="TIGHT_ROPE" />
-      <moveable id="481" name="LASER_HEAD" description="NG Laser Head" t5m="GUARDIAN" />
-      <moveable id="482" name="LASER_HEAD_BASE" description="NG Laser Head Base" t5m="GUARDIAN_BASE" />
-      <moveable id="483" name="LASER_HEAD_TENTACLE" description="NG Laser Head Tentacle" t5m="GUARDIAN_TENTACLE" />
+      <moveable id="481" name="LASER_HEAD" description="NG Laser Head" t5m="LASERHEAD" />
+      <moveable id="482" name="LASER_HEAD_BASE" description="NG Laser Head Base" t5m="LASERHEAD_BASE" />
+      <moveable id="483" name="LASER_HEAD_TENTACLE" description="NG Laser Head Tentacle" t5m="LASERHEAD_TENTACLE" />
       <moveable id="484" name="HYDRA" description="NG Hydra" t5m="HYDRA" />
       <moveable id="485" name="HYDRA_MISSILE" description="NG Hydra Missile" />
       <moveable id="486" name="ENEMY_SUB_MARINE" description="NG Enemy Sub Marine" t5m="ID_ATTACK_SUB" />
@@ -4715,7 +4715,7 @@
 		<moveable id="272" name="LARA_DOUBLE" />
 		<moveable id="273" name="COMPY" />
 		<moveable id="274" name="HYDRA" />
-		<moveable id="275" name="GUARDIAN" />
+		<moveable id="275" name="LASERHEAD" />
 		<moveable id="276" name="SCIENTIST" />
 		<moveable id="277" name="MERCENARY" />
 		<moveable id="278" name="WILLOWISP" />
@@ -5416,8 +5416,8 @@
 		<moveable id="1325" name="ANIMATING126" />
 		<moveable id="1326" name="ANIMATING127" />
 		<moveable id="1327" name="ANIMATING128" />
-		<moveable id="1328" name="GUARDIAN_BASE" />
-		<moveable id="1329" name="GUARDIAN_TENTACLE" />
+		<moveable id="1328" name="LASERHEAD_BASE" />
+		<moveable id="1329" name="LASERHEAD_TENTACLE" />
 		<moveable id="1340" name="BRIDGE_FLAT" />
 		<moveable id="1341" name="BRIDGE_TILT1" />
 		<moveable id="1342" name="BRIDGE_TILT2" />
