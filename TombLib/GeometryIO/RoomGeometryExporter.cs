@@ -248,7 +248,7 @@ namespace TombLib.GeometryIO
                                 }
 
                                 var mat = model.GetMaterial(textureArea1.Texture,
-                                                            textureArea1.BlendMode == BlendMode.Additive,
+                                                            textureArea1.BlendMode >= BlendMode.Additive,
                                                             textureAreaPage,
                                                             textureArea1.DoubleSided,
                                                             0);
