@@ -534,7 +534,7 @@ namespace TombLib.LevelData.Compilers
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
                                 texture.DoubleSided = false;
-                                texture.BlendMode = BlendMode.Normal;
+                                texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
                                 texture.Texture = submesh.Value.Material.Texture;
                                 texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
                                 texture.TexCoord1 = mesh.Vertices[submesh.Value.Indices[j + 1]].UV;
