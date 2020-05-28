@@ -61,7 +61,7 @@ namespace TombEditor.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowLightingWhiteTextureOnly { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool ShowRealTintForMergedStatics { get; set; }
+        public bool ShowRealTintForObjects { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HideTransparentFaces { get; set; }
 
@@ -2780,7 +2780,12 @@ namespace TombEditor.Controls
                             if (!disableSelection && _editor.SelectedObject == mov) // Selection
                                 skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                             else
-                                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Mode == EditorMode.Lighting ? mov.Color : new Vector3(1.0f));
+                            {
+                                if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                                    skinnedModelEffect.Parameters["Color"].SetValue(mov.Color * mov.Room.AmbientLight);
+                                else
+                                    skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
+                            }
 
                             Matrix4x4 world = model.AnimationTransforms[i] * mov.ObjectMatrix;
                             skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -2873,11 +2878,26 @@ namespace TombEditor.Controls
 
                             // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
                             if (!disableSelection && _editor.SelectedObject == geo)
+                            {
+                                geometryEffect.Parameters["UseVertexColors"].SetValue(true);
                                 geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                            }
                             else if (DisablePickingForImportedGeometry)
+                            {
+                                geometryEffect.Parameters["UseVertexColors"].SetValue(true);
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(0.4f, 0.4f, 1.0f, 1.0f));
+                            }
                             else
-                                geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                            {
+                                var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && geo.LightingModel == ImportedGeometryLightingModel.VertexColors;
+                                geometryEffect.Parameters["UseVertexColors"].SetValue(useVertexColors);
+
+                                if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
+                                    geo.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
+                                    geometryEffect.Parameters["Color"].SetValue(geo.Room.AmbientLight);
+                                else
+                                    geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                            }
 
                             foreach (var submesh in mesh.Submeshes)
                             {
@@ -2976,7 +2996,7 @@ namespace TombEditor.Controls
                                 {
                                     var entry = _editor.Level.Settings.GetStaticMergeEntry(st.WadObjectId);
 
-                                    if (!ShowRealTintForMergedStatics || entry == null || (entry.Merge && entry.TintAsAmbient))
+                                    if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
                                         staticMeshEffect.Parameters["Color"].SetValue(st.Color);
                                     else
                                         staticMeshEffect.Parameters["Color"].SetValue(st.Color * st.Room.AmbientLight);

@@ -54,7 +54,7 @@ namespace TombEditor.Forms
             this.toggleFlyModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.drawWhiteTextureLightingOnlyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showRealTintForMergedStaticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowRealTintForObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.roomsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newRoomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newRoomUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -557,7 +557,7 @@ namespace TombEditor.Forms
             this.toggleFlyModeToolStripMenuItem,
             this.toolStripSeparator8,
             this.drawWhiteTextureLightingOnlyToolStripMenuItem,
-            this.showRealTintForMergedStaticsToolStripMenuItem});
+            this.ShowRealTintForObjectsToolStripMenuItem});
             this.viewToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -610,15 +610,15 @@ namespace TombEditor.Forms
             this.drawWhiteTextureLightingOnlyToolStripMenuItem.Tag = "DrawWhiteTextureLightingOnly";
             this.drawWhiteTextureLightingOnlyToolStripMenuItem.Text = "DrawWhiteTextureLightingOnly";
             // 
-            // showRealTintForMergedStaticsToolStripMenuItem
+            // ShowRealTintForObjectsToolStripMenuItem
             // 
-            this.showRealTintForMergedStaticsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.showRealTintForMergedStaticsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.showRealTintForMergedStaticsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_StaticTint_16;
-            this.showRealTintForMergedStaticsToolStripMenuItem.Name = "showRealTintForMergedStaticsToolStripMenuItem";
-            this.showRealTintForMergedStaticsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
-            this.showRealTintForMergedStaticsToolStripMenuItem.Tag = "ShowRealTintForMergedStatics";
-            this.showRealTintForMergedStaticsToolStripMenuItem.Text = "ShowRealTintForMergedStatics";
+            this.ShowRealTintForObjectsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.ShowRealTintForObjectsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.ShowRealTintForObjectsToolStripMenuItem.Image = global::TombEditor.Properties.Resources.actions_StaticTint_16;
+            this.ShowRealTintForObjectsToolStripMenuItem.Name = "ShowRealTintForObjectsToolStripMenuItem";
+            this.ShowRealTintForObjectsToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
+            this.ShowRealTintForObjectsToolStripMenuItem.Tag = "ShowRealTintForObjects";
+            this.ShowRealTintForObjectsToolStripMenuItem.Text = "ShowRealTintForObjects";
             // 
             // roomsToolStripMenuItem
             // 
@@ -2401,7 +2401,7 @@ namespace TombEditor.Forms
         private ToolStripMenuItem assToolStripMenuItem;
         private ToolStripMenuItem drawWhiteTextureLightingOnlyToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator8;
-        private ToolStripMenuItem showRealTintForMergedStaticsToolStripMenuItem;
+        private ToolStripMenuItem ShowRealTintForObjectsToolStripMenuItem;
         private ToolStripMenuItem deleteAllObjectsToolStripMenuItem;
         private ToolStripMenuItem deleteAllTriggersToolStripMenuItem;
     }

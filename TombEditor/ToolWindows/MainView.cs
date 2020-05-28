@@ -247,7 +247,7 @@ namespace TombEditor.ToolWindows
             panel3D.DisablePickingForHiddenRooms = butDisableHiddenRoomPicking.Checked = settings.Rendering3D_DisablePickingForHiddenRooms;
             panel3D.ShowLightMeshes = butDrawLightRadius.Checked = settings.Rendering3D_ShowLightRadius;
             panel3D.ShowLightingWhiteTextureOnly = butDrawWhiteLighting.Checked = settings.Rendering3D_ShowLightingWhiteTextureOnly;
-            panel3D.ShowRealTintForMergedStatics = butDrawStaticTint.Checked = settings.Rendering3D_ShowRealTintForMergedStatics;
+            panel3D.ShowRealTintForObjects = butDrawStaticTint.Checked = settings.Rendering3D_ShowRealTintForObjects;
             panel3D.Invalidate();
         }
 

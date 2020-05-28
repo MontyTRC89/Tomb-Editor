@@ -28,7 +28,7 @@ namespace TombLib.Graphics
 
                 // Load legacy effects
                 string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);
-                IEnumerable<string> effectFiles = Directory.EnumerateFiles(dir + "\\Editor\\Shaders", "*.fx");
+                IEnumerable<string> effectFiles = Directory.EnumerateFiles(dir + "\\Rendering\\Legacy", "*.fx");
                 foreach (string fileName in effectFiles)
                 {
                     string effectName = Path.GetFileNameWithoutExtension(fileName);

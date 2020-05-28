@@ -219,4 +219,18 @@
     <EmbeddedResource Include="Rendering\SectorTextures\texture_coord_out_of_bounds.png" />
     <EmbeddedResource Include="Rendering\SectorTextures\texture_unavailable.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Rendering\Legacy\Model.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rendering\Legacy\RoomGeometry.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rendering\Legacy\Solid.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Rendering\Legacy\StaticModel.fx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

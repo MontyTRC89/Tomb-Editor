@@ -1605,9 +1605,9 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
-            AddCommand("ShowRealTintForMergedStatics", "Show real tint for merged statics", CommandType.View, delegate (CommandArgs args)
+            AddCommand("ShowRealTintForObjects", "Show real tint for objects", CommandType.View, delegate (CommandArgs args)
             {
-                args.Editor.Configuration.Rendering3D_ShowRealTintForMergedStatics = !args.Editor.Configuration.Rendering3D_ShowRealTintForMergedStatics;
+                args.Editor.Configuration.Rendering3D_ShowRealTintForObjects = !args.Editor.Configuration.Rendering3D_ShowRealTintForObjects;
                 args.Editor.ConfigurationChange();
             });
 

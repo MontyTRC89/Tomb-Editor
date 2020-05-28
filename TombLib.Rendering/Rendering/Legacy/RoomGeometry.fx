@@ -17,6 +17,7 @@ float4x4 ModelViewProjection;
 float4 Color;
 bool TextureEnabled;
 bool AlphaTest;
+bool UseVertexColors;
 
 Texture2D Texture;
 sampler TextureSampler;
@@ -27,8 +28,13 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
     output.UV = input.UV * ReciprocalTextureSize;
-    output.Color = float4(input.Color.xyz * Color.xyz, 1.0f);
-    return output;
+	
+	if (UseVertexColors)
+		output.Color = float4(input.Color.xyz * Color.xyz, 1.0f);
+	else
+		output.Color = float4(Color.xyz, 1.0f);
+    
+	return output;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

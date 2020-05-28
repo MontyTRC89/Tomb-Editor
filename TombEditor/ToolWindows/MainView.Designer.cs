@@ -145,7 +145,7 @@
             this.panel3D.Location = new System.Drawing.Point(3, 31);
             this.panel3D.Name = "panel3D";
             this.panel3D.ShowLightingWhiteTextureOnly = false;
-            this.panel3D.ShowRealTintForMergedStatics = false;
+            this.panel3D.ShowRealTintForObjects = false;
             this.panel3D.Size = new System.Drawing.Size(833, 255);
             this.panel3D.TabIndex = 13;
             // 
@@ -339,7 +339,7 @@
             this.butDrawStaticTint.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butDrawStaticTint.Name = "butDrawStaticTint";
             this.butDrawStaticTint.Size = new System.Drawing.Size(23, 25);
-            this.butDrawStaticTint.Tag = "ShowRealTintForMergedStatics";
+            this.butDrawStaticTint.Tag = "ShowRealTintForObjects";
             // 
             // butDrawIllegalSlopes
             // 
