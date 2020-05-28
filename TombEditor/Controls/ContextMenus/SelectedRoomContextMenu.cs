@@ -11,7 +11,7 @@ namespace TombEditor.Controls.ContextMenus
         public SelectedRoomContextMenu(Editor editor, IWin32Window owner, Vector2 position)
             : base(editor, owner)
         {
-            Items.Add(new ToolStripMenuItem("Export rooms", Properties.Resources.general_Export_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Export rooms...", Properties.Resources.general_Export_16, (o, e) =>
             {
                 EditorActions.ExportRooms(_editor.SelectedRooms, this);
             }));
