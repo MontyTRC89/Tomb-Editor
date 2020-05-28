@@ -1,6 +1,7 @@
 Version 1.3.2
 =============
 Tomb Editor:
+ * An option to show real tint for all objects (replaces "Show real tint for merged statics" option).
  * Add "Delete all objects" and "Delete all triggers" commands.
  * Various additional fixes for TR2 compatibility.
  * Fix exceptions with Metasequoia imported geometry.
