@@ -5437,10 +5437,12 @@
 		<moveable id="1407" name="PANEL_MIDDLE_CORNER" />
     </moveables>
     <sprite_sequences>
-		<sprite_sequence id="1353" name="SKY_GRAPHICS" />
-		<sprite_sequence id="1354" name="DEFAULT_SPRITES" />
-		<sprite_sequence id="1355" name="MISC_SPRITES" />
-		<sprite_sequence id="1356" name="CUSTOM_SPRITES" />
+		  <sprite_sequence id="1353" name="SKY_GRAPHICS" />
+		  <sprite_sequence id="1354" name="DEFAULT_SPRITES" />
+		  <sprite_sequence id="1355" name="MISC_SPRITES" />
+      <sprite_sequence id="1356" name="CUSTOM_SPRITES" />
+      <sprite_sequence id="1360" name="FIRE_SPRITES" />
+      <sprite_sequence id="1361" name="SMOKE_SPRITES" />
     </sprite_sequences>
     <sounds max="450">
       <sound id="0" name="LARA_FEET" description="Lara feet" />
