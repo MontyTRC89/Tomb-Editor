@@ -1020,13 +1020,14 @@ namespace TombEditor
                     if (colorDialog.ShowDialog(args.Window) != DialogResult.OK)
                         colorDialog.Color = oldLightColor;
 
-                    room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
-
-                    if (args.Editor.Level.Settings.GameVersion < TRVersion.Game.TR4)
+                    var newColor = colorDialog.Color.ToFloat3Color() * 2.0f;
+                    if (args.Editor.Level.Settings.GameVersion < TRVersion.Game.TR3)
                     {
                         if (!colorDialog.Color.IsGrayscale())
-                            args.Editor.SendMessage("Moveables will use grayscale ambience in this game version.", PopupType.Info);
+                            args.Editor.SendMessage("Only grayscale lighting is possible for this game version.", PopupType.Info);
+                        newColor = Vector3.Clamp(new Vector3(newColor.GetLuma()), Vector3.Zero, Vector3.One);
                     }
+                    room.AmbientLight = newColor;
 
                     args.Editor.Configuration.ColorDialog_Position = colorDialog.Position;
                 }
