@@ -621,8 +621,12 @@ namespace TombLib.LevelData.Compilers
                                         roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                         doubleSided, 0));
                                         if (copyFace)
-                                        roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-                                                        doubleSided, 0));
+                                        {
+                                            texture.Mirror();
+                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+                                                            doubleSided, 0));
+                                        }
                                         i += 3;
                                     }
                                     else
@@ -638,8 +642,12 @@ namespace TombLib.LevelData.Compilers
                                         roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
                                                         doubleSided, 0));
                                         if (copyFace)
-                                        roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
-                                                        doubleSided, 0));
+                                        {
+                                            texture.Mirror();
+                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
+                                                            doubleSided, 0));
+                                        }
                                     }
                                 }
                             }
