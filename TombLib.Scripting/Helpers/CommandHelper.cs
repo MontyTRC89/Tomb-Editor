@@ -74,7 +74,7 @@ namespace TombLib.Scripting.Helpers
 		public static DocumentLine GetCommandStartLine(TextDocument document, int offset)
 		{
 			DocumentLine offsetLine = document.GetLineByOffset(offset);
-			string offsetLineText = LineHelper.RemoveComments(document.GetText(offsetLine.Offset, offsetLine.Length));
+			string offsetLineText = LineHelper.EscapeComments(document.GetText(offsetLine.Offset, offsetLine.Length));
 
 			if (offsetLineText.Contains("=") || offsetLineText.Trim().StartsWith("#"))
 				return offsetLine;
@@ -147,6 +147,9 @@ namespace TombLib.Scripting.Helpers
 
 		private static string FindCustParamSyntaxByKey(ResourceSet resourceSet, string key)
 		{
+			if (string.IsNullOrWhiteSpace(key))
+				return null;
+
 			// Search in the given ResourceSet
 			foreach (DictionaryEntry entry in resourceSet)
 				if (entry.Key.ToString().Equals(key, StringComparison.OrdinalIgnoreCase))
@@ -249,7 +252,7 @@ namespace TombLib.Scripting.Helpers
 					return null;
 
 				previousLine = document.GetLineByNumber(i);
-				previousLineText = LineHelper.RemoveComments(document.GetText(previousLine.Offset, previousLine.Length));
+				previousLineText = LineHelper.EscapeComments(document.GetText(previousLine.Offset, previousLine.Length));
 
 				if (Regex.IsMatch(previousLineText, ScriptPatterns.NextLineKey) && previousLineText.Contains("="))
 					return previousLine;

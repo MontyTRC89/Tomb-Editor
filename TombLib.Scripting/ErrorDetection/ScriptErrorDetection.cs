@@ -96,10 +96,10 @@ namespace TombLib.Scripting.ErrorDetection
 
 			if (!IsArgumentCountValid(document, line.Offset))
 			{
-				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), @"=\s*?(\b.*)").Groups[1].Value;
+				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
 
 				if (errorSegmentText.Length == 0)
-					errorSegmentText = lineText.TrimEnd();
+					errorSegmentText = LineHelper.RemoveComments(lineText);
 
 				return new ErrorLine("Invalid argument count. Please check the command syntax.",
 					line.LineNumber, errorSegmentText);
@@ -107,10 +107,10 @@ namespace TombLib.Scripting.ErrorDetection
 
 			if (ContainsEmptyArguments(document, line.Offset))
 			{
-				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), @"=\s*?(\b.*)").Groups[1].Value;
+				string errorSegmentText = Regex.Match(LineHelper.RemoveComments(lineText), @"=\s*(\b.*)").Groups[1].Value;
 
 				if (errorSegmentText.Length == 0)
-					errorSegmentText = lineText.TrimEnd();
+					errorSegmentText = LineHelper.RemoveComments(lineText);
 
 				return new ErrorLine("Empty arguments were found.",
 					line.LineNumber, errorSegmentText);
@@ -135,7 +135,7 @@ namespace TombLib.Scripting.ErrorDetection
 		}
 
 		private static bool IsNGStringLineWellFormatted(string lineText)
-		{ return Regex.IsMatch(lineText, @"^\d*:.*?"); }
+		{ return Regex.IsMatch(lineText, @"^\d*:.*"); }
 
 		private static bool IsValidCommandKey(string commandKey)
 		{
@@ -197,7 +197,7 @@ namespace TombLib.Scripting.ErrorDetection
 			if (lineText.StartsWith("#"))
 				return true;
 
-			lineText = LineHelper.RemoveComments(lineText);
+			lineText = LineHelper.EscapeComments(lineText);
 
 			if (!lineText.Contains("="))
 				return false;
@@ -207,9 +207,9 @@ namespace TombLib.Scripting.ErrorDetection
 			if (string.IsNullOrEmpty(command))
 				return false;
 
-			int argumentCount = LineHelper.RemoveComments(lineText).Split('=')[1].Split(',').Length;
+			int argumentCount = LineHelper.EscapeComments(lineText).Split('=')[1].Split(',').Length;
 
-			if (argumentCount == 1 && string.IsNullOrEmpty(lineText.Split('=')[1].Trim()))
+			if (argumentCount == 1 && string.IsNullOrWhiteSpace(lineText.Split('=')[1]))
 				argumentCount = 0;
 
 			foreach (DictionaryEntry entry in CommandHelper.GetCommandSyntaxResources())
@@ -230,13 +230,13 @@ namespace TombLib.Scripting.ErrorDetection
 		{
 			string lineText = CommandHelper.GetWholeCommandLineText(document, lineOffset);
 
-			if (lineText == null)
+			if (string.IsNullOrEmpty(lineText))
 				return true;
 
-			string[] arguments = LineHelper.RemoveComments(lineText).Split(',');
+			string[] arguments = LineHelper.EscapeComments(lineText).Split(',');
 
 			foreach (string argument in arguments)
-				if (string.IsNullOrWhiteSpace(argument))
+				if (string.IsNullOrWhiteSpace(argument.Replace('>', ' ')))
 					return true;
 
 			return false;
