@@ -121,17 +121,8 @@ namespace TombEditor.ToolWindows
                 butStamp.Enabled = selectedObject is ISpatial;
             }
 
-            // Disable version-specific controls
-            if (obj is Editor.InitEvent ||
-                obj is Editor.GameVersionChangedEvent ||
-                obj is Editor.LevelChangedEvent)
-            {
-                butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
-                butAddBoxVolume.Enabled = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
-            }
-
-                // Update editor mode
-                if (obj is Editor.ModeChangedEvent)
+            // Update editor mode
+            if (obj is Editor.ModeChangedEvent)
             {
                 ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
@@ -168,6 +159,12 @@ namespace TombEditor.ToolWindows
                 butOpacityTraversableFaces.Checked = portal != null && portal.Opacity == PortalOpacity.TraversableFaces;
             }
 
+            // Dismiss any messages
+            if (obj is Editor.LevelChangedEvent)
+            {
+                popup.Hide();
+            }
+
             // Update version-specific controls
             if (obj is Editor.InitEvent ||
                 obj is Editor.LevelChangedEvent ||
@@ -179,8 +176,9 @@ namespace TombEditor.ToolWindows
                 butAddSphereVolume.Enabled = isT5M;
                 butAddPrismVolume.Enabled = isT5M;
                 butDrawVolumes.Enabled = isT5M;
-            }
 
+                butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
+            }
 
             if (obj is Editor.MessageEvent)
             {
