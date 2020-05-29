@@ -16,7 +16,6 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.GeometryIO;
-using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
 using TombLib.LevelData.IO;
@@ -35,7 +34,7 @@ namespace TombEditor
 
         public static bool ContinueOnFileDrop(IWin32Window owner, string description)
         {
-            if (!_editor.HasUnsavedChanges)
+            if (!_editor.HasUnsavedChanges || _editor.Level.Settings.HasUnknownData)
                 return true;
 
             switch (DarkMessageBox.Show(owner,
