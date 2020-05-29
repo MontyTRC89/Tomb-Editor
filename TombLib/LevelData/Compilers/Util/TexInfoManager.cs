@@ -205,7 +205,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // See if texture is the same
                 TextureHashed incoming = incomingTexture.Texture as TextureHashed;
-                TextureHashed current  = Texture as TextureHashed;   
+                TextureHashed current  = Texture as TextureHashed;
 
                 // First case here should never happen, unless we find a way to texture rooms
                 // with WAD textures or vice versa.
@@ -220,9 +220,13 @@ namespace TombLib.LevelData.Compilers.Util
             // Compare raw bitmap data of given area with incoming texture
             public SimilarityResult TextureSimilar(TextureArea texture)
             {
-                if (Texture != texture.Texture &&
-                    (texture.Texture is ImportedGeometryTexture ||
-                     texture.Texture is WadTexture))
+                // Only scan if:
+                //  - Parent's texture isn't the same as incoming texture
+                //  - Parent has room texture
+                //  - Incoming texture is either from imported geometry or wad
+
+                if (Texture != texture.Texture && Texture is LevelTexture &&
+                   (texture.Texture is ImportedGeometryTexture || texture.Texture is WadTexture))
                 {
                     var rr = texture.GetRect();
                     var pp0 = texture.Texture.Image.GetPixel((int)rr.X0, (int)rr.Y0);
@@ -535,7 +539,7 @@ namespace TombLib.LevelData.Compilers.Util
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
             {
-                if (!parent.IsPotentialParent(texture, isForRoom, animFrameIndex >= 0, MaxTileSize)) 
+                if (!parent.IsPotentialParent(texture, isForRoom, animFrameIndex >= 0, MaxTileSize))
                     continue;
 
                 parent.AddChild(texture, animFrameIndex >= 0 ? animFrameIndex : GetNewTexInfoIndex(), isForTriangle, topmostAndUnpadded);
@@ -615,7 +619,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f, bool lookInOtherTextureSets = false)
+        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f, bool scanOtherSets = false)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -623,20 +627,19 @@ namespace TombLib.LevelData.Compilers.Util
 
             foreach (var parent in parentList)
             {
-                // At first, check basic attribs and set hashes
+                // Parents with different attributes are quickly discarded
                 if (!parent.ParametersSimilar(areaToLook, isForRoom))
                 {
-                    if (lookInOtherTextureSets)
-                    {
-                        // Try to identify if similar texture info from another texture set is present 
-                        // by checking hash of the image area. If match is found, substitute lookup coordinates.
-                        var sr = parent.TextureSimilar(areaToLook);
-                        if (sr.Found)
-                            for (int i = 0; i < lookupCoordinates.Length; i++)
-                                lookupCoordinates[i] = sr.Carrier.GetTexCoord(i);
-                        else continue;
-                    }
-                    else continue;
+                    // Try to identify if similar texture info from another texture set is present 
+                    // by checking hash of the image area. If match is found, substitute lookup coordinates.
+
+                    if (!scanOtherSets) continue;
+
+                    var sr = parent.TextureSimilar(areaToLook);
+                    if (!sr.Found) continue;
+
+                    for (int i = 0; i < lookupCoordinates.Length; i++)
+                        lookupCoordinates[i] = sr.Carrier.GetTexCoord(i);
                 }
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
@@ -745,7 +748,7 @@ namespace TombLib.LevelData.Compilers.Util
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
-            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, true, 0);
+            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
 
             if (!result.HasValue)
             {
@@ -762,10 +765,10 @@ namespace TombLib.LevelData.Compilers.Util
                 if (animFrameIndex >= 0)
                     result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
                 else
-                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, true);
+                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
             }
 
-            return result.HasValue ? result.Value : new Result() { TexInfoIndex = DummyTexInfo, Rotation = 0 };
+            return result.Value;
         }
 
         // Scan and set alpha-test blending mode for opaque textures.
@@ -1293,7 +1296,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (texture.IsForRoom) newFlags |= 0x8000;
 
-                    if (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
+                    if      (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
                     else if (texture.BumpLevel == BumpMappingLevel.Level2) newFlags |= (2 << 9);
                     else if (texture.BumpLevel == BumpMappingLevel.Level3) newFlags |= (3 << 9);
 
