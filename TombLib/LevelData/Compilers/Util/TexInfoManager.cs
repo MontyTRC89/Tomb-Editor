@@ -139,6 +139,9 @@ namespace TombLib.LevelData.Compilers.Util
             public Texture Texture { get; private set; }
             public bool IsForRoom { get; set; }
 
+            // Keep reference to first found room texture if texture isn't room texture itself
+            public Texture RoomTextureReference { get; set; }
+
             // Additionally implement hash to filter out reimported textures
             public Hash Hash { get; private set; }
 
@@ -276,9 +279,15 @@ namespace TombLib.LevelData.Compilers.Util
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
             public BumpMappingLevel BumpLevel(TRVersion.Game version)
             {
-                if (Texture is LevelTexture && version > TRVersion.Game.TR3)
+                LevelTexture tex = null;
+
+                if (Texture is LevelTexture)
+                    tex = (LevelTexture)Texture;
+                else if (RoomTextureReference != null && RoomTextureReference is LevelTexture)
+                    tex = (LevelTexture)RoomTextureReference;
+
+                if (tex != null && version > TRVersion.Game.TR3)
                 {
-                    var tex = Texture as LevelTexture;
                     if (!String.IsNullOrEmpty(tex.BumpPath))
                         return BumpMappingLevel.Level1; // tomb4 doesn't care about specific flag value
                     else
@@ -634,6 +643,10 @@ namespace TombLib.LevelData.Compilers.Util
                         var sr = parent.TextureSimilar(areaToLook);
                         if (sr.Found)
                         {
+                            // Keep reference to incoming room texture to apply room-texture-specific attributes properly
+                            if (!(parent.Texture is LevelTexture) && areaToLook.Texture is LevelTexture)
+                                parent.RoomTextureReference = areaToLook.Texture;
+
                             if (sr.Carrier.Texture != areaToLook.Texture)
                                 for (int i = 0; i < lookupCoordinates.Length; i++)
                                     lookupCoordinates[i] = sr.Carrier.GetTexCoord(i);
@@ -749,7 +762,7 @@ namespace TombLib.LevelData.Compilers.Util
         {
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
-            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
+            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, true);
 
             if (!result.HasValue)
             {
@@ -766,7 +779,7 @@ namespace TombLib.LevelData.Compilers.Util
                 if (animFrameIndex >= 0)
                     result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
                 else
-                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
+                    result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, true);
             }
 
             return result.HasValue ? result.Value : new Result() { TexInfoIndex = DummyTexInfo, Rotation = 0 };
