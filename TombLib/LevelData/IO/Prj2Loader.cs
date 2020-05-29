@@ -225,6 +225,8 @@ namespace TombLib.LevelData.IO
                     settings.TexturePadding = chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.Dither16BitTextures)
                     settings.Dither16BitTextures = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.SimilarityLookupMethod)
+                    settings.TextureLookupMethod = (TextureSimilarityLookupMethod)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveFloordataPacking)
