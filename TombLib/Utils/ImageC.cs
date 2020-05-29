@@ -25,6 +25,9 @@ namespace TombLib.Utils
             A = a;
         }
 
+        public static bool operator ==(ColorC first, ColorC second) => first.R == second.R && first.G == second.G && first.B == second.B && first.A == second.A;
+        public static bool operator !=(ColorC first, ColorC second) => first.R != second.R || first.G != second.G || first.B != second.B || first.A != second.A;
+
         public static implicit operator System.Drawing.Color(ColorC this_)
         {
             return System.Drawing.Color.FromArgb(255, this_.R, this_.G, this_.B);
@@ -195,7 +198,7 @@ namespace TombLib.Utils
                 }
         }
 
-        public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int [,] kernel)
+        public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int[,] kernel)
         {
             ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);
             oldImage.CopyFrom(0, 0, this, xStart, yStart, width, height);
@@ -554,7 +557,6 @@ namespace TombLib.Utils
             }
         }
 
-
         /// <summary>
         /// uint's are platform dependet representation of the color.
         /// They should stay private inside ImageC to prevent abuse.
@@ -643,6 +645,42 @@ namespace TombLib.Utils
         public byte[] ToByteArray()
         {
             return _data;
+        }
+
+        public unsafe byte[] ToByteArray(Rectangle2 rect) =>
+            ToByteArray((int)rect.X0, (int)rect.Y0, (int)rect.Width, (int)rect.Height);
+
+        public unsafe byte[] ToByteArray(int fromX, int fromY, int width, int height)
+        {
+            // Check coordinates
+            if (fromX < 0 || fromY < 0 || width < 0 || height < 0 ||
+                fromX + width > Width || fromY + height > Height)
+                return new byte[] { 0 };
+
+            var size = width * height * 4;
+            var result = new byte[size];
+
+            // Copy data quickly
+            fixed (void* toPtr = result)
+            {
+                fixed (void* fromPtr = _data)
+                {
+                    // Adjust starting position to account for image positions
+                    uint* toPtrOffseted = (uint*)toPtr;
+                    uint* fromPtrOffseted = (uint*)fromPtr + fromY * Width + fromX;
+
+                    // Copy image data line by line
+                    for (int y = 0; y < height; ++y)
+                    {
+                        uint* toLinePtr = toPtrOffseted + y * width;
+                        uint* fromLinePtr = fromPtrOffseted + y * Width;
+                        for (int x = 0; x < width; ++x)
+                            toLinePtr[x] = fromLinePtr[x];
+                    }
+                }
+            }
+
+            return result;
         }
 
         public Stream ToRawStream(int yStart, int Height)

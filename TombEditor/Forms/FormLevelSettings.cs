@@ -616,6 +616,7 @@ namespace TombEditor.Forms
             cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
+            cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
 
             // Update sound autodetection option
             cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
@@ -1271,6 +1272,12 @@ namespace TombEditor.Forms
         private void cbAgressiveFloordataPacking_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AgressiveFloordataPacking = cbAgressiveFloordataPacking.Checked;
+            UpdateDialog();
+        }
+
+        private void cbRemapAnimTextures_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.RemapAnimatedTextures = cbRemapAnimTextures.Checked;
             UpdateDialog();
         }
 
