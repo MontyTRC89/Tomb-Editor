@@ -92,7 +92,7 @@ namespace TombEditor
         public int Rendering3D_FlyModeMoveSpeed { get; set; } = 5;
         public bool Rendering3D_ShowLightRadius { get; set; } = true;
         public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
-        public bool Rendering3D_ShowRealTintForObjects { get; set; } = false;
+        public bool Rendering3D_ShowRealTintForObjects { get; set; } = true;
 
         // 2D Map options 
 

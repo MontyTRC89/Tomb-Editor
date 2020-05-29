@@ -222,8 +222,11 @@ namespace TombLib.Controls
             }
             else if (CurrentObject is WadSpriteSequence)
             {
-                WadSprite sprite = (CurrentObject as WadSpriteSequence).Sprites[_currentFrame];
+                var seq = (WadSpriteSequence)CurrentObject;
+                if (seq.Sprites.Count <= _currentFrame)
+                    return;
 
+                WadSprite sprite = seq.Sprites[_currentFrame];
                 float aspectRatioViewport = (float)ClientSize.Width / ClientSize.Height;
                 float aspectRatioImage = (float)sprite.Texture.Image.Width / sprite.Texture.Image.Height;
                 float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
