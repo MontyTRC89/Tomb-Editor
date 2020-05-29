@@ -143,22 +143,64 @@ namespace TombLib.Scripting.TextEditors.Controls
 		{
 			if (CompletionWindow == null) // Prevents window duplicates
 			{
-				if (e.Text == " " && CaretOffset > 1)
-					HandleAutocompleteAfterSpace();
-				else if (e.Text == "_" && CaretOffset > 1)
-					HandleAutocompleteAfterUnderscore();
+				if (e.Text == " " && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+					HandleAutocompleteAfterSpaceCtrl();
 				else if (Document.GetLineByOffset(CaretOffset).Length == 1)
 					HandleAutocompleteOnEmptyLine();
-				else
+				else if (e.Text != "_" && CaretOffset > 1)
 				{
-					// TODO: Refactor
 					string firstLetterOfLastFlag = GetFirstLetterOfLastFlag();
+					string firstLetterOfCurrentFlag = GetFirstLetterOfCurrentArgument();
 
 					if (!string.IsNullOrEmpty(firstLetterOfLastFlag)
 						&& e.Text.Equals(firstLetterOfLastFlag, StringComparison.OrdinalIgnoreCase)
 						&& CaretOffset > 1)
-						HandleAutocompleteForNextFlag();
+					{
+						if (!string.IsNullOrEmpty(firstLetterOfCurrentFlag)
+							&& firstLetterOfCurrentFlag.Equals(firstLetterOfLastFlag, StringComparison.OrdinalIgnoreCase))
+							HandleAutocompleteAfterSpace();
+						else
+							HandleAutocompleteForNextFlag();
+					}
+					else
+						HandleAutocompleteAfterSpace();
 				}
+				else if (e.Text == "_" && CaretOffset > 1)
+					HandleAutocompleteAfterUnderscore();
+			}
+		}
+
+		private string GetFirstLetterOfCurrentArgument()
+		{
+			try // TODO: Possibly get rid of this try / catch
+			{
+				int currentArgumentIndex = ArgumentHelper.GetArgumentIndexAtOffset(Document, CaretOffset);
+
+				if (currentArgumentIndex == -1)
+					return null;
+
+				string syntax = CommandHelper.GetCommandSyntax(Document, CaretOffset);
+
+				if (string.IsNullOrEmpty(syntax))
+					return null;
+
+				string[] syntaxArguments = syntax.Split(',');
+
+				if (syntaxArguments.Length < currentArgumentIndex)
+					return null;
+
+				string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
+
+				if (!currentSyntaxArgument.Contains("_..."))
+					return null;
+
+				string flagPrefix = currentSyntaxArgument.Split('_')[0].Split('(')[1];
+
+				return flagPrefix[0].ToString();
+			}
+			catch
+			{
+				return null;
 			}
 		}
 
@@ -180,9 +222,31 @@ namespace TombLib.Scripting.TextEditors.Controls
 			return prevArgument[0].ToString();
 		}
 
+		private void HandleAutocompleteAfterSpaceCtrl()
+		{
+			Select(CaretOffset - 1, 1);
+			SelectedText = string.Empty;
+
+			string wholeLineText = CommandHelper.GetWholeCommandLineText(Document, CaretOffset);
+
+			if (string.IsNullOrEmpty(wholeLineText))
+				HandleAutocompleteOnEmptyLine();
+			else if (!_autocompleteWorker.IsBusy)
+			{
+				List<object> data = new List<object>
+				{
+					Text,
+					CaretOffset,
+					-1
+				};
+
+				_autocompleteWorker.RunWorkerAsync(data);
+			}
+		}
+
 		private void HandleAutocompleteAfterSpace()
 		{
-			if (Document.GetCharAt(CaretOffset - 2) == '=' || Document.GetCharAt(CaretOffset - 2) == ',' && !_autocompleteWorker.IsBusy)
+			if ((Document.GetCharAt(CaretOffset - 2) == '=' || Document.GetCharAt(CaretOffset - 2) == ',') && !_autocompleteWorker.IsBusy)
 			{
 				List<object> data = new List<object>
 				{
@@ -197,7 +261,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void HandleAutocompleteAfterUnderscore()
 		{
-			if (Document.GetCharAt(CaretOffset - 2) == '_')
+			if (Document.GetCharAt(CaretOffset - 1) == '_')
 			{
 				int wordStartOffset =
 					TextUtilities.GetNextCaretPosition(Document, CaretOffset - 1, LogicalDirection.Backward, CaretPositioningMode.WordStart);
@@ -218,7 +282,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 		private void HandleAutocompleteOnEmptyLine()
 		{
 			InitializeCompletionWindow();
-			CompletionWindow.StartOffset--;
+			CompletionWindow.StartOffset = Document.GetLineByOffset(CaretOffset).Offset;
 
 			foreach (ICompletionData item in ScriptAutocomplete.GetNewLineAutocompleteList())
 				CompletionWindow.CompletionList.CompletionData.Add(item);

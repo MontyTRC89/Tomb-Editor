@@ -12,22 +12,30 @@ namespace TombLib.Scripting.Helpers
 		{
 			string wholeLineText = CommandHelper.GetWholeCommandLineText(document, offset);
 
-			if (wholeLineText == null)
+			if (string.IsNullOrEmpty(wholeLineText))
+				return -1;
+
+			wholeLineText = LineHelper.EscapeComments(wholeLineText);
+
+			if (string.IsNullOrWhiteSpace(wholeLineText))
 				return -1;
 
 			wholeLineText = MergeMultipleFlags(wholeLineText);
 
-			if (wholeLineText == null)
+			if (string.IsNullOrEmpty(wholeLineText))
 				return -1;
+
+			int totalArgumentCount = wholeLineText.Split(',').Length;
 
 			DocumentLine commandStartLine = CommandHelper.GetCommandStartLine(document, offset);
 			int wholeLineSubstringOffset = offset - commandStartLine.Offset;
 
+			if (wholeLineSubstringOffset > wholeLineText.Length) // Useless?
+				return totalArgumentCount - 1;
+
 			string textAfterOffset = wholeLineText.Remove(0, wholeLineSubstringOffset);
 
 			int argumentCountAfterOffset = textAfterOffset.Split(',').Length;
-
-			int totalArgumentCount = wholeLineText.Split(',').Length;
 
 			return totalArgumentCount - argumentCountAfterOffset;
 		}
@@ -59,7 +67,7 @@ namespace TombLib.Scripting.Helpers
 			if (commentsMatch.Success)
 				comments = commentsMatch.Value;
 
-			string[] arguments = LineHelper.RemoveComments(wholeLineText).Split(',');
+			string[] arguments = LineHelper.EscapeComments(wholeLineText).Split(',');
 
 			List<string> newArgumentList = new List<string>();
 
