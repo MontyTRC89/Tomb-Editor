@@ -240,15 +240,18 @@ namespace TombLib.LevelData.Compilers.Util
 
                 foreach (var child in Children)
                 {
-                    // Compare 4 corner pixels to quickly filter out wrong results
+                    // Compare size. If no match, it's not similar texture
                     var r = child.GetRect();
+                    if (r.Width != rr.Width || r.Height != rr.Height)
+                        continue;
+
+                    // Compare 4 corner pixels to quickly filter out wrong results
                     var p0 = Texture.Image.GetPixel((int)r.X0, (int)r.Y0);
                     var p1 = Texture.Image.GetPixel((int)r.X1, (int)r.Y0);
                     var p2 = Texture.Image.GetPixel((int)r.X1, (int)r.Y1);
                     var p3 = Texture.Image.GetPixel((int)r.X0, (int)r.Y1);
-
                     if (p0 != pp0 || p1 != pp1 || p2 != pp2 || p3 != pp3)
-                        break;
+                        continue;
 
                     // 4 corner pixels match. Now compare raw data
                     var hash1 = Hash.FromByteArray(texture.Texture.Image.ToByteArray(rr));
@@ -267,6 +270,10 @@ namespace TombLib.LevelData.Compilers.Util
                             newtex.TexCoord3 += shift;
                         else
                             newtex.TexCoord3 = newtex.TexCoord2;
+
+                        // Store reference to incoming room texture to apply room-texture-specific attributes properly
+                        if (!(Texture is LevelTexture) && texture.Texture is LevelTexture)
+                            RoomTextureReference = texture.Texture;
 
                         return new SimilarityResult(true, newtex);
                     }
@@ -540,13 +547,22 @@ namespace TombLib.LevelData.Compilers.Util
         // Try to add texture to existing parent(s) either as a child of one, or as a parent, merging
         // enclosed parents.
 
-        private bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1)
+        private bool TryToAddToExisting(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool lookInOtherTextureSets = false)
         {
             // Try to find potential parent (larger texture) and add itself to children
             foreach (var parent in parentList)
             {
                 if (!parent.IsPotentialParent(texture, isForRoom, animFrameIndex >= 0, MaxTileSize))
-                    continue;
+                {
+                    // Try to find similar texture set and substitute carrier from there
+                    if (lookInOtherTextureSets)
+                    {
+                        var sr = parent.TextureSimilar(texture);
+                        if (sr.Found) texture = sr.Carrier;
+                        else continue;
+                    }
+                    else continue;
+                }
 
                 parent.AddChild(texture, animFrameIndex >= 0 ? animFrameIndex : GetNewTexInfoIndex(), isForTriangle, topmostAndUnpadded);
                 return true;
@@ -643,10 +659,6 @@ namespace TombLib.LevelData.Compilers.Util
                         var sr = parent.TextureSimilar(areaToLook);
                         if (sr.Found)
                         {
-                            // Keep reference to incoming room texture to apply room-texture-specific attributes properly
-                            if (!(parent.Texture is LevelTexture) && areaToLook.Texture is LevelTexture)
-                                parent.RoomTextureReference = areaToLook.Texture;
-
                             if (sr.Carrier.Texture != areaToLook.Texture)
                                 for (int i = 0; i < lookupCoordinates.Length; i++)
                                     lookupCoordinates[i] = sr.Carrier.GetTexCoord(i);
@@ -725,13 +737,16 @@ namespace TombLib.LevelData.Compilers.Util
                 return new Result();
             }
 
-            //if (isForRoom)
+            if (isForRoom)
             {
+                // Define if we should look into other texture sets to find matching textures
+                bool lookupInOtherSets = _level.Settings.TextureLookupMethod != TextureSimilarityLookupMethod.Normal;
+
                 // Try to compare incoming texture with existing anims and return animation frame
                 if (ActualAnimTextures.Count > 0)
                     foreach (var actualTex in ActualAnimTextures)
                     {
-                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, AnimTextureLookupMargin, true);
+                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, AnimTextureLookupMargin, lookupInOtherSets);
                         if (existing.HasValue)
                             return existing.Value;
                     }
@@ -741,7 +756,7 @@ namespace TombLib.LevelData.Compilers.Util
                     foreach (var refTex in ReferenceAnimTextures)
                     {
                         // If reference set found, generate actual one and immediately return fresh result
-                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, AnimTextureLookupMargin, true).HasValue)
+                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, AnimTextureLookupMargin, lookupInOtherSets).HasValue)
                         {
                             GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
                             return AddTexture(texture, isForRoom, isForTriangle);
@@ -760,9 +775,14 @@ namespace TombLib.LevelData.Compilers.Util
 
         private Result AddTexture(TextureArea texture, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false, int animFrameIndex = -1, bool makeCanonical = true)
         {
+            // Define if we should look into other texture sets to find matching tile.
+            // If animation generation is in process, we don't do that as we're not interested in similarity for
+            // reference animation texture sets. Similarity for real animation textures is checked in public variation of AddTexture.
+            bool lookupInOtherSets = (animFrameIndex == -1) && _level.Settings.TextureLookupMethod == TextureSimilarityLookupMethod.All;
+            
             // In case AddTexture is used with animated seq packing, we don't check frames for full similarity, because
             // frames can be duplicated with Repeat function or simply because of complex animator functions applied.
-            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, true);
+            var result = animFrameIndex >= 0 ? null : GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, true, 0, lookupInOtherSets);
 
             if (!result.HasValue)
             {
@@ -772,7 +792,7 @@ namespace TombLib.LevelData.Compilers.Util
                 var canonicalTexture = makeCanonical ? texture.GetCanonicalTexture(isForTriangle) : texture;
 
                 // If no any potential parents or children, create as new parent
-                if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex))
+                if (!TryToAddToExisting(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex, lookupInOtherSets))
                     AddParent(canonicalTexture, parentList, isForRoom, isForTriangle, topmostAndUnpadded, animFrameIndex);
 
                 // Try again to get texinfo

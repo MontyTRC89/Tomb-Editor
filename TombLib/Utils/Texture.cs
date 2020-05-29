@@ -76,6 +76,13 @@ namespace TombLib.Utils
         XpYpCounterclockwise = 7
     }
 
+    public enum TextureSimilarityLookupMethod
+    {
+        Normal,
+        AnimationsOnly,
+        All
+    }
+
     public static class TextureExtensions
     {
         // Mapping correction compensation coordinate sets.

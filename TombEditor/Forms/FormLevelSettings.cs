@@ -616,6 +616,7 @@ namespace TombEditor.Forms
             cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
+            cmbJoinSimilarTextures.SelectedIndex = (int)_levelSettings.TextureLookupMethod;
 
             // Update sound autodetection option
             cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
@@ -1289,6 +1290,12 @@ namespace TombEditor.Forms
         private void cmbDefaultLightQuality_SelectedIndexChanged(object sender, EventArgs e)
         {
             _levelSettings.DefaultLightQuality = (LightQuality)(cmbDefaultLightQuality.SelectedIndex + 1);
+            UpdateDialog();
+        }
+
+        private void cmbJoinSimilarTextures_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _levelSettings.TextureLookupMethod = (TextureSimilarityLookupMethod)cmbJoinSimilarTextures.SelectedIndex;
             UpdateDialog();
         }
 
