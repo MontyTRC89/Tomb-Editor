@@ -49,6 +49,11 @@ namespace TombLib
         public float Width => End.X - Start.X;
         public float Height => End.Y - Start.Y;
 
+        public Vector2 TopLeft => new Vector2(X0, Y0);
+        public Vector2 TopRight => new Vector2(X1, Y0);
+        public Vector2 BottomLeft => new Vector2(X0, Y1);
+        public Vector2 BottomRight => new Vector2(X1, Y1);
+
         public bool IsZero => MathC.IsZero(Size.X) || MathC.IsZero(Size.Y);
 
         public Rectangle2 Intersect(Rectangle2 other) =>

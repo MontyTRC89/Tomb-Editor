@@ -193,8 +193,9 @@ namespace TombLib.LevelData
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
         public bool Dither16BitTextures { get; set; } = true;
+        public bool RemapAnimatedTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
-        
+
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
         public Tr5WeatherType Tr5WeatherType { get; set; } = Tr5WeatherType.Normal;
