@@ -767,8 +767,14 @@ namespace TombLib.LevelData.Compilers.Util
                 else
                     result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
             }
-
-            return result.Value;
+            
+            if (!result.HasValue)
+            {
+                logger.Error("Texture info manager couldn't fit texture into parent list. Please send your project to developers.");
+                return new Result() { TexInfoIndex = DummyTexInfo, Rotation = 0 };
+            }
+            else
+                return result.Value;
         }
 
         // Scan and set alpha-test blending mode for opaque textures.
