@@ -1840,7 +1840,7 @@ namespace TombEditor.Controls
                 _legacyDevice.Draw(PrimitiveType.LineList, 2);
             }
 
-            if (drawRoomBounds)
+            if (!_flyModeTimer.Enabled && drawRoomBounds)
             {
                 if (_editor.SelectedRooms.Count > 0)
                     foreach (Room room in _editor.SelectedRooms)
