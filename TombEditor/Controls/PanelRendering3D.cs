@@ -1819,8 +1819,7 @@ namespace TombEditor.Controls
 
         private void DrawDebugLines(Matrix4x4 viewProjection, Effect effect)
         {
-            var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds ||
-                ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && (ShowPortals || ShowAllRooms));
+            var drawRoomBounds = _editor.Configuration.Rendering3D_AlwaysShowCurrentRoomBounds;
 
             if (!_drawHeightLine && !drawRoomBounds)
                 return;
