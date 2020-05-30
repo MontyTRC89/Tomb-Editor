@@ -18,7 +18,7 @@ namespace TombLib.Scripting.Helpers
 			if (string.IsNullOrWhiteSpace(wholeLineText))
 				return -1;
 
-			wholeLineText = MergeMultipleFlags(wholeLineText);
+			wholeLineText = MergeMultipleFlags(wholeLineText, document, offset);
 
 			if (string.IsNullOrEmpty(wholeLineText))
 				return -1;
@@ -47,7 +47,7 @@ namespace TombLib.Scripting.Helpers
 			if (wholeLineText == null)
 				return null;
 
-			wholeLineText = MergeMultipleFlags(wholeLineText);
+			wholeLineText = MergeMultipleFlags(wholeLineText, document, offset);
 
 			if (wholeLineText == null)
 				return null;
@@ -55,9 +55,11 @@ namespace TombLib.Scripting.Helpers
 			return wholeLineText.Split(',')[index];
 		}
 
-		private static string MergeMultipleFlags(string wholeLineText)
+		private static string MergeMultipleFlags(string wholeLineText, TextDocument document, int offset)
 		{
 			string cachedArgument = string.Empty;
+
+			string commandSyntax = CommandHelper.GetCommandSyntax(document, offset);
 
 			string command = wholeLineText.Split('=')[0];
 			string[] arguments = LineHelper.EscapeComments(wholeLineText).Split('=')[1]
@@ -68,6 +70,10 @@ namespace TombLib.Scripting.Helpers
 			for (int i = 0; i < arguments.Length; i++)
 			{
 				string argument = arguments[i];
+				string argumentSyntax = string.Empty;
+
+				if (i < commandSyntax.Split(',').Length)
+					argumentSyntax = commandSyntax.Split(',')[i];
 
 				if (!argument.Contains("_"))
 				{
@@ -80,6 +86,13 @@ namespace TombLib.Scripting.Helpers
 
 				if (flagPrefix.Equals(cachedArgument.Split('_')[0].Trim(), StringComparison.OrdinalIgnoreCase))
 				{
+					if (argumentSyntax.Contains(flagPrefix + "_"))
+					{
+						newArgumentList.Add(argument);
+						cachedArgument = argument;
+						continue;
+					}
+
 					if (newArgumentList.Count > 0)
 						newArgumentList.RemoveAt(newArgumentList.Count - 1);
 
