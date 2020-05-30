@@ -12,7 +12,8 @@ Tomb Editor:
  * Disable face/vertex limit overflow errors and replace with warnings.
  
 TombIDE:
- * Fix additional exceptions.
+ * Fixed critical exceptions and crashes.
+ * Improved autocomplete.
  
 WadTool:
  * Fix exception when selecting empty sprite sequence.
