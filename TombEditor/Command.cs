@@ -1701,7 +1701,12 @@ namespace TombEditor
             {
                 if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Fog bulb"))
                     return;
-                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb) { Color = (Vector3)args.Editor.LastUsedPaletteColour * 2.0f });
+
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new LightInstance(LightType.FogBulb)
+                {
+                    Color = args.Editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 ?
+                    Vector3.One : (Vector3)args.Editor.LastUsedPaletteColour * 2.0f
+                });
             });
 
             AddCommand("EditRoomName", "Edit room name", CommandType.Rooms, delegate (CommandArgs args)

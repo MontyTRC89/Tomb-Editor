@@ -10,16 +10,17 @@ Tomb Editor:
  * Fix exceptions with Metasequoia imported geometry.
  * Fix exceptions with script IDs after room copy-paste.
  * Disable face/vertex limit overflow errors and replace with warnings.
+ * Remap fog bulb intensity setting from red color to actual intensity field.
  
 TombIDE:
  * Fixed critical exceptions and crashes.
  * Improved autocomplete.
  
+SoundTool:
+ * Fix deleting multiple sound samples.
+ 
 WadTool:
  * Fix exception when selecting empty sprite sequence.
-
-SoundTool:
- * Fix deleting multiple sound samples
 
 Version 1.3.1
 =============
