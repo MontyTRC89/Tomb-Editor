@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -124,7 +125,14 @@ namespace TombIDE.ScriptEditor.Controls
 			else
 				token = currentArgument.Trim();
 
-			Select(Text.IndexOf(token), token.Length);
+			List<string> prevArgs = new List<string>();
+
+			for (int i = 0; i < CurrentArgumentIndex; i++)
+				prevArgs.Add(arguments[i]);
+
+			int startIndex = string.Join(",", prevArgs.ToArray()).Length;
+
+			Select(Text.IndexOf(token, startIndex), token.Length);
 			SelectionFont = new Font(SelectionFont.FontFamily, SelectionFont.Size, FontStyle.Underline | FontStyle.Bold);
 
 			return true;

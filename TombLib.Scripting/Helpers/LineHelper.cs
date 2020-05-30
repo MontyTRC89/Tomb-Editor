@@ -6,19 +6,22 @@ namespace TombLib.Scripting.Helpers
 {
 	public static class LineHelper
 	{
-		public static string GetComments(string lineText)
+		public static MatchCollection GetComments(string lineText)
 		{
-			Match match = Regex.Match(lineText, @"\s*;.*$*");
-			return match.Success ? match.Value : string.Empty;
+			return Regex.Matches(lineText, @"\s*;.*$", RegexOptions.Multiline);
 		}
 
 		public static string RemoveComments(string lineText) =>
-			Regex.Replace(lineText, @"\s*;.*$*", string.Empty);
+			Regex.Replace(lineText, @"\s*;.*$", string.Empty, RegexOptions.Multiline);
 
 		public static string EscapeComments(string lineText)
 		{
-			string comments = GetComments(lineText);
-			return Regex.Replace(lineText, @"\s*;.*$*", new string(' ', comments.Length));
+			MatchCollection comments = GetComments(lineText);
+
+			foreach (Match match in comments)
+				lineText = Regex.Replace(lineText, Regex.Escape(match.Value), new string(' ', match.Length));
+
+			return lineText;
 		}
 
 		public static bool IsEmptyLine(string lineText) =>
