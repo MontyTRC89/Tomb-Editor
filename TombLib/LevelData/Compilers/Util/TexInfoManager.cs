@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -1094,8 +1095,14 @@ namespace TombLib.LevelData.Compilers.Util
                     using (var graphics = System.Drawing.Graphics.FromImage(destBitmap))
                     {
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
                         destBitmap.MakeTransparent();
+
+                        using (var ia = new ImageAttributes())
+                        {
+                            ia.SetWrapMode(WrapMode.TileFlipXY);
+                            var rect = new Rectangle(0, 0, destBitmap.Width, destBitmap.Height);
+                            graphics.DrawImage(originalImage.ToBitmap(), rect, 0, 0, originalImage.Width, originalImage.Height, GraphicsUnit.Pixel, ia);
+                        }
                     }
 
                     // Twice copy squeezed image to original image
