@@ -246,7 +246,10 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 		private void HandleAutocompleteAfterSpace()
 		{
-			if ((Document.GetCharAt(CaretOffset - 2) == '=' || Document.GetCharAt(CaretOffset - 2) == ',') && !_autocompleteWorker.IsBusy)
+			if ((Document.GetCharAt(CaretOffset - 2) == '='
+				|| Document.GetCharAt(CaretOffset - 2) == ','
+				|| Document.GetCharAt(CaretOffset - 2) == '_')
+				&& !_autocompleteWorker.IsBusy)
 			{
 				List<object> data = new List<object>
 				{
