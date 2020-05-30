@@ -6,11 +6,14 @@ Tomb Editor:
  * Increased texture page packing ratio for visually similar textures.
  * Support faces with additive blending on model import/export by setting their opacity to anything less than 1.
  * Add "Delete all objects" and "Delete all triggers" commands.
+ * Remap fog bulb intensity setting from red color to actual intensity field.
+ * Disable face/vertex limit overflow errors and replace with warnings.
  * Various additional fixes for TR2 compatibility.
  * Fix exceptions with Metasequoia imported geometry.
  * Fix exceptions with script IDs after room copy-paste.
- * Disable face/vertex limit overflow errors and replace with warnings.
- * Remap fog bulb intensity setting from red color to actual intensity field.
+ * Fix possible transparency issues with UVRotate textures in 16-bit mode.
+ 
+
  
 TombIDE:
  * Fixed critical exceptions and crashes.
