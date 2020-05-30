@@ -382,7 +382,8 @@ namespace TombLib.LevelData.Compilers.Util
             public void MoveChild(ChildTextureArea child, ParentTextureArea newParent)
             {
                 if (Texture != newParent.Texture)
-                    throw new Exception("Attempt to move ChildTextureArea to a parent with another texture assigned. You may want to use MoveChildWithoutRepositioning instead.");
+                    logger.Info("Attempt to move texture area from texture " + Texture.Image.FileName + 
+                        " to texture " + newParent.Texture.Image.FileName + ". Duplicated texture set?");
 
                 var newRelCoord = new Vector2[child.AbsCoord.Length];
                 for (int i = 0; i < newRelCoord.Length; i++)
