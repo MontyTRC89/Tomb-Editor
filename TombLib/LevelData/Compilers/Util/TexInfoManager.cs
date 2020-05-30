@@ -1244,6 +1244,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void LayOutAllData(TRVersion.Game version)
         {
+            if (_dataHasBeenLaidOut) return;
             _dataHasBeenLaidOut = true;
 
             // Before any other action, lay out animated textures
