@@ -30,9 +30,9 @@ namespace TombLib.Scripting.Helpers
 			if (string.IsNullOrEmpty(wholeCommandLineText))
 				return null;
 
-			if (Regex.IsMatch(wholeCommandLineText, @"Customize\s*?=.*?,", RegexOptions.IgnoreCase)) // "Customize  =  CUST_CMD,"
+			if (Regex.IsMatch(wholeCommandLineText, @"Customize\s*=\s*\b.*\b\s*,", RegexOptions.IgnoreCase)) // "Customize  =  CUST_CMD,"
 				return GetSubcommandSyntax(wholeCommandLineText, SubcommandType.Cust);
-			else if (Regex.IsMatch(wholeCommandLineText, @"Parameters\s*?=.*?,", RegexOptions.IgnoreCase)) // "Parameters  =  PARAM_CMD,"
+			else if (Regex.IsMatch(wholeCommandLineText, @"Parameters\s*=\s*\b.*\b\s*,", RegexOptions.IgnoreCase)) // "Parameters  =  PARAM_CMD,"
 				return GetSubcommandSyntax(wholeCommandLineText, SubcommandType.Param);
 			else
 			{
@@ -142,7 +142,28 @@ namespace TombLib.Scripting.Helpers
 
 			string key = wholeCommandLineText.Split('=')[1].Split(',')[0].Trim();
 
-			return FindCustParamSyntaxByKey(resourceSet, key);
+			string custParamSyntax = FindCustParamSyntaxByKey(resourceSet, key);
+
+			if (string.IsNullOrEmpty(custParamSyntax))
+			{
+				foreach (DictionaryEntry entry in GetCommandSyntaxResources())
+				{
+					switch (subcommandType)
+					{
+						case SubcommandType.Cust:
+							if (entry.Key.ToString().Equals("Customize", StringComparison.OrdinalIgnoreCase))
+								return entry.Value.ToString();
+							break;
+
+						case SubcommandType.Param:
+							if (entry.Key.ToString().Equals("Parameters", StringComparison.OrdinalIgnoreCase))
+								return entry.Value.ToString();
+							break;
+					}
+				}
+			}
+
+			return custParamSyntax;
 		}
 
 		private static string FindCustParamSyntaxByKey(ResourceSet resourceSet, string key)
