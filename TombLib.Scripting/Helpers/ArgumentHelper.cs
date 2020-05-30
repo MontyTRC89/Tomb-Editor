@@ -1,8 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace TombLib.Scripting.Helpers
 {
@@ -61,13 +59,9 @@ namespace TombLib.Scripting.Helpers
 		{
 			string cachedArgument = string.Empty;
 
-			string comments = string.Empty;
-			Match commentsMatch = Regex.Match(wholeLineText, @"\s*(;.*)?$");
-
-			if (commentsMatch.Success)
-				comments = commentsMatch.Value;
-
-			string[] arguments = LineHelper.RemoveComments(wholeLineText).Split(',');
+			string command = wholeLineText.Split('=')[0];
+			string[] arguments = LineHelper.EscapeComments(wholeLineText).Split('=')[1]
+				.Replace('>', ' ').Replace('\t', ' ').Replace('\n', ' ').Replace('\r', ' ').Split(',');
 
 			List<string> newArgumentList = new List<string>();
 
@@ -82,24 +76,14 @@ namespace TombLib.Scripting.Helpers
 					continue;
 				}
 
-				string flagPrefix;
-
-				if (i == 0)
-				{
-					if (!argument.Contains("="))
-						return null;
-
-					flagPrefix = argument.Split('=').Last().Split('_')[0].Trim();
-				}
-				else
-					flagPrefix = argument.Split('_')[0].Trim();
+				string flagPrefix = argument.Split('_')[0].Trim();
 
 				if (flagPrefix.Equals(cachedArgument.Split('_')[0].Trim(), StringComparison.OrdinalIgnoreCase))
 				{
 					if (newArgumentList.Count > 0)
 						newArgumentList.RemoveAt(newArgumentList.Count - 1);
 
-					cachedArgument = cachedArgument + "_" + argument;
+					cachedArgument = cachedArgument + "." + argument;
 
 					newArgumentList.Add(cachedArgument);
 				}
@@ -110,7 +94,7 @@ namespace TombLib.Scripting.Helpers
 				}
 			}
 
-			return string.Join(",", newArgumentList.ToArray()) + comments;
+			return command + "=" + string.Join(",", newArgumentList.ToArray());
 		}
 	}
 }
