@@ -46,12 +46,11 @@ namespace TombLib.LevelData.Compilers
         {
             _remappedTiles = new Dictionary<ushort, ushort>();
 
-            foreach (var set in _textureInfoManager.ActualAnimTextures)
+            foreach (var set in _textureInfoManager.AnimatedTextures)
             {
-                var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
-                foreach (var frame in orderedFrameList)
-                    if (!_remappedTiles.ContainsKey((ushort)frame.TexInfoIndex))
-                        _remappedTiles.Add((ushort)frame.TexInfoIndex, (ushort)_level.Settings.AnimatedTextureSets.IndexOf(set.Origin));
+                foreach (var frame in set.Value)
+                    if (!_remappedTiles.ContainsKey(frame))
+                        _remappedTiles.Add(frame, (ushort)_level.Settings.AnimatedTextureSets.IndexOf(set.Key));
             }
         }
 
@@ -65,17 +64,17 @@ namespace TombLib.LevelData.Compilers
             // Count number of textures with UVRotate
             writer.Write((byte)0x01);
             writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
-            writer.Write((short)_textureInfoManager.ActualAnimTextures.Count);
+            writer.Write((short)_textureInfoManager.AnimatedTextures.Count);
 
             // Array VetInfoRangeAnim
             for (var i = 0; i < 40; i++)
             {
-                if (i >= _textureInfoManager.ActualAnimTextures.Count)
+                if (i >= _textureInfoManager.AnimatedTextures.Count)
                     writer.Write((short)0);
                 else
                 {
                     var param = (ushort)0;
-                    var set = _textureInfoManager.ActualAnimTextures[i].Origin;
+                    var set = _textureInfoManager.AnimatedTextures[i].Key;
 
                     switch (set.AnimationType)
                     {
@@ -111,26 +110,24 @@ namespace TombLib.LevelData.Compilers
             // Array VetFromTex
             for (var i = 0; i < 40; i++)
             {
-                if (i >= _textureInfoManager.ActualAnimTextures.Count)
+                if (i >= _textureInfoManager.AnimatedTextures.Count)
                     writer.Write((short)0);
                 else
                 {
-                    var set = _textureInfoManager.ActualAnimTextures[i];
-                    var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
-                    writer.Write(_remappedTiles[(ushort)orderedFrameList[0].TexInfoIndex]);
+                    var set = _textureInfoManager.AnimatedTextures[i];
+                    writer.Write(_remappedTiles[set.Value.First()]);
                 }
             }
 
             // Array VetToTex
             for (var i = 0; i < 40; i++)
             {
-                if (i >= _textureInfoManager.ActualAnimTextures.Count)
+                if (i >= _textureInfoManager.AnimatedTextures.Count)
                     writer.Write((short)0);
                 else
                 {
-                    var set = _textureInfoManager.ActualAnimTextures[i];
-                    var orderedFrameList = set.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
-                    writer.Write(_remappedTiles[(ushort)orderedFrameList[orderedFrameList.Count - 1].TexInfoIndex]);
+                    var set = _textureInfoManager.AnimatedTextures[i];
+                    writer.Write(_remappedTiles[set.Value.Last()]);
                 }
             }
 
@@ -201,7 +198,7 @@ namespace TombLib.LevelData.Compilers
         private void WriteNgChunkRemappedTails(BinaryWriter writer)
         {
             // Do not write remapped tails chunk if there's no anim textures
-            if (_textureInfoManager.ActualAnimTextures.Count < 1)
+            if (_textureInfoManager.AnimatedTextures.Count < 1)
                 return;
 
             // In theory we should remap tiles from TGA but it's impossible with TE

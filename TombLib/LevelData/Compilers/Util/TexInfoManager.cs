@@ -51,9 +51,6 @@ namespace TombLib.LevelData.Compilers.Util
         private List<ParentAnimatedTexture> _referenceAnimTextures = new List<ParentAnimatedTexture>();
         private List<ParentAnimatedTexture> _actualAnimTextures = new List<ParentAnimatedTexture>();
 
-        // Expose the latter publicly, because TRNG compiler needs it
-        public ReadOnlyCollection<ParentAnimatedTexture> ActualAnimTextures { get { return _actualAnimTextures.AsReadOnly(); } }
-
         // UVRotate count should be placed after anim texture data to identify how many first anim seqs
         // should be processed using UVRotate engine function
 
@@ -98,7 +95,20 @@ namespace TombLib.LevelData.Compilers.Util
         // Precompiled anim texture indices are kept separately to avoid
         // messing up after texture page cleanup.
 
-        private List<List<int>> _animTextureIndices;
+        private List<List<ushort>> _animTextureIndices;
+
+        // Expose the latter publicly, because TRNG compiler needs it
+        public ReadOnlyCollection<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>> AnimatedTextures
+        {
+            get
+            {
+                var result = new List<KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>>();
+                for (int i = 0; i < _animTextureIndices.Count; i++)
+                    result.Add(new KeyValuePair<AnimatedTextureSet, ReadOnlyCollection<ushort>>
+                        (_actualAnimTextures[i].Origin, _animTextureIndices[i].AsReadOnly()));
+                return result.AsReadOnly();
+            }
+        }
 
         // Similarity result is a simple pair of texture struct and bool flag
         // indicating that similarity was found. It is needed to identify and shuffle around
@@ -1351,13 +1361,13 @@ namespace TombLib.LevelData.Compilers.Util
             _actualAnimTextures = _actualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
 
             // Build index table
-            _animTextureIndices = new List<List<int>>();
+            _animTextureIndices = new List<List<ushort>>();
             foreach (var compiledAnimatedTexture in _actualAnimTextures)
             {
-                var list = new List<int>();
+                var list = new List<ushort>();
                 var orderedFrameList = compiledAnimatedTexture.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
                 foreach (var frame in orderedFrameList)
-                    list.Add(frame.TexInfoIndex);
+                    list.Add((ushort)frame.TexInfoIndex);
 
                 _animTextureIndices.Add(list);
             }
