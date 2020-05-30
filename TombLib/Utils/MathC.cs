@@ -157,6 +157,19 @@ namespace TombLib
         }
 
         /// <summary>
+        /// Determines if value is power of two or not.
+        /// </summary>
+        /// <param name="x">The value.</param>
+        /// <returns><c>true</c> if the specified value is power of 2, otherwise, <c>false</c>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOf2(float x)
+        {
+            var intX = (int)x;
+            if (x != intX) return false;
+            return (intX != 0) && ((intX & (intX - 1)) == 0);
+        }
+
+        /// <summary>
         /// Checks if a - b are almost equals within a float epsilon.
         /// </summary>
         /// <param name="a">The left value to compare.</param>

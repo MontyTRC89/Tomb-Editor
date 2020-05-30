@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -16,10 +17,11 @@ namespace TombLib.LevelData.Compilers.Util
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private const int NoTexInfo = -1;
-        private const int DummyTexInfo = -2;
-        private const int MinimumPadding = 1;
-        private const float AnimTextureLookupMargin = 5.0f;
+        private const int   _noTexInfo = -1;
+        private const int   _dummyTexInfo = -2;
+        private const int   _minimumPadding = 1;
+        private const int   _minimumTileSize = 256;
+        private const float _animTextureLookupMargin = 5.0f;
 
         // We need to keep level reference for padding and bumpmap references.
 
@@ -29,7 +31,12 @@ namespace TombLib.LevelData.Compilers.Util
         // Defines if texinfo manager should actually start generating texinfo indexes.
         // Needed for anim lookup table generation.
 
-        private bool GenerateTexInfos = false;
+        private bool _generateTexInfos = false;
+
+        // Defines if all data has been laid out and texture manager is in finalized state.
+        // If user tries to add textures after that, texture manager will throw an exception.
+
+        private bool _dataHasBeenLaidOut = false;
 
         // Two lists of animated textures contain reference animation versions for each sequence
         // and actual found animated texture sequences in rooms. When compiler encounters a tile
@@ -41,28 +48,31 @@ namespace TombLib.LevelData.Compilers.Util
         // versions existing in level file are added to texinfo list. Rest from reference list
         // is ignored.
 
-        private List<ParentAnimatedTexture> ReferenceAnimTextures = new List<ParentAnimatedTexture>();
-        public List<ParentAnimatedTexture> ActualAnimTextures { get; private set; } = new List<ParentAnimatedTexture>();
+        private List<ParentAnimatedTexture> _referenceAnimTextures = new List<ParentAnimatedTexture>();
+        private List<ParentAnimatedTexture> _actualAnimTextures = new List<ParentAnimatedTexture>();
+
+        // Expose the latter publicly, because TRNG compiler needs it
+        public ReadOnlyCollection<ParentAnimatedTexture> ActualAnimTextures { get { return _actualAnimTextures.AsReadOnly(); } }
 
         // UVRotate count should be placed after anim texture data to identify how many first anim seqs
         // should be processed using UVRotate engine function
 
-        public int UvRotateCount => ActualAnimTextures.Count(seq => seq.Origin.IsUvRotate);
+        public int UvRotateCount => _actualAnimTextures.Count(seq => seq.Origin.IsUvRotate);
 
         // List of parent textures should contain all "ancestor" texture areas in which all variations
         // are placed, including mirrored and rotated ones.
 
-        private List<ParentTextureArea> ParentTextures = new List<ParentTextureArea>();
+        private List<ParentTextureArea> _parentTextures = new List<ParentTextureArea>();
 
         // MaxTileSize defines maximum size to which parent can be inflated by incoming child, if
         // inflation is allowed.
 
-        private ushort MaxTileSize = 256;
+        private ushort MaxTileSize = _minimumTileSize;
 
         // If padding value is 0, 1 px padding will be forced on object textures anyway,
         // because yet we don't have a mechanism to specify UV adjustment in converted WADs.
 
-        private ushort Padding = 8;
+        private ushort _padding = 8;
 
         // TexInfoCount is internally a "reference counter" which is also used to get new TexInfo IDs.
         // Since generation of TexInfos is an one-off serialized process, we can safely use it in
@@ -83,12 +93,12 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Precompiled object textures are kept in this dictionary.
 
-        private SortedDictionary<int, ObjectTexture> ObjectTextures;
+        private SortedDictionary<int, ObjectTexture> _objectTextures;
 
         // Precompiled anim texture indices are kept separately to avoid
         // messing up after texture page cleanup.
 
-        private List<List<int>> AnimTextureIndices;
+        private List<List<int>> _animTextureIndices;
 
         // Similarity result is a simple pair of texture struct and bool flag
         // indicating that similarity was found. It is needed to identify and shuffle around
@@ -531,32 +541,37 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        public TexInfoManager(Level level, IProgressReporter progressReporter)
+        public TexInfoManager(Level level, IProgressReporter progressReporter, int maxTileSize = -1)
         {
             _level = level;
-            Padding = (ushort)level.Settings.TexturePadding;
+            _padding = (ushort)level.Settings.TexturePadding;
             _progressReporter = progressReporter;
 
-            if (level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                MaxTileSize = 256; // Change later...
+            if (maxTileSize > 0 && MathC.IsPowerOf2(maxTileSize))
+                MaxTileSize = (ushort)maxTileSize;
             else
-                MaxTileSize = 256;
+            {
+                if (level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                    MaxTileSize = 256; // FIXME: change later...
+                else
+                    MaxTileSize = _minimumTileSize;
+            }
 
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
-            GenerateTexInfos = true;    // Set manager ready state 
+            _generateTexInfos = true;    // Set manager ready state 
         }
 
         // Gets free TexInfo index
         private int GetNewTexInfoIndex()
         {
-            if (GenerateTexInfos)
+            if (_generateTexInfos)
             {
                 int result = TexInfoCount;
                 TexInfoCount++;
                 return result;
             }
             else
-                return DummyTexInfo;
+                return _dummyTexInfo;
         }
 
         // Try to add texture to existing parent(s) either as a child of one, or as a parent, merging
@@ -679,7 +694,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // Test if coordinates are mutually equal and return resulting rotation if they are
                     var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
-                    if (result != NoTexInfo)
+                    if (result != _noTexInfo)
                     {
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
                         parent.TopmostAndUnpadded = topmostAndUnpadded;
@@ -717,7 +732,7 @@ namespace TombLib.LevelData.Compilers.Util
                             return i == 0 ? 0 : second.Length - i;
                     }
             }
-            return NoTexInfo;
+            return _noTexInfo;
         }
 
         // Generate new parent with incoming texture and immediately add incoming texture as a child
@@ -733,6 +748,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         public Result AddTexture(TextureArea texture, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded = false)
         {
+            if (_dataHasBeenLaidOut)
+                throw new InvalidOperationException("Data has been already laid out for this TexInfoManager. Reinitialize it if you want to restart texture collection.");
+
             if (isForTriangle && texture.TriangleCoordsOutOfBounds || !isForTriangle && texture.QuadCoordsOutOfBounds)
             {
                 _progressReporter.ReportWarn("Texture (" + texture.TexCoord0 + ", " + texture.TexCoord1 + ", " + texture.TexCoord2 + ", " + texture.TexCoord3 + ") is out of bounds and will be ignored.");
@@ -742,20 +760,20 @@ namespace TombLib.LevelData.Compilers.Util
             if (isForRoom)
             {
                 // Try to compare incoming texture with existing anims and return animation frame
-                if (ActualAnimTextures.Count > 0)
-                    foreach (var actualTex in ActualAnimTextures)
+                if (_actualAnimTextures.Count > 0)
+                    foreach (var actualTex in _actualAnimTextures)
                     {
-                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, AnimTextureLookupMargin, _level.Settings.RemapAnimatedTextures);
+                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures);
                         if (existing.HasValue)
                             return existing.Value;
                     }
 
                 // Now try to compare incoming texture with lookup anim seq table
-                if (ReferenceAnimTextures.Count > 0)
-                    foreach (var refTex in ReferenceAnimTextures)
+                if (_referenceAnimTextures.Count > 0)
+                    foreach (var refTex in _referenceAnimTextures)
                     {
                         // If reference set found, generate actual one and immediately return fresh result
-                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, AnimTextureLookupMargin, _level.Settings.RemapAnimatedTextures).HasValue)
+                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures).HasValue)
                         {
                             GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
                             return AddTexture(texture, isForRoom, isForTriangle);
@@ -763,7 +781,7 @@ namespace TombLib.LevelData.Compilers.Util
                     }
             }
 
-            return AddTexture(texture, ParentTextures, isForRoom, isForTriangle, topmostAndUnpadded);
+            return AddTexture(texture, _parentTextures, isForRoom, isForTriangle, topmostAndUnpadded);
         }
 
         // Internal AddTexture variation which is capable of adding texture to various ParentTextureArea lists
@@ -791,7 +809,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Try again to get texinfo
                 if (animFrameIndex >= 0)
-                    result = new Result { TexInfoIndex = DummyTexInfo, Rotation = 0 };
+                    result = new Result { TexInfoIndex = _dummyTexInfo, Rotation = 0 };
                 else
                     result = GetTexInfo(texture, parentList, isForRoom, isForTriangle, topmostAndUnpadded);
             }
@@ -799,7 +817,7 @@ namespace TombLib.LevelData.Compilers.Util
             if (!result.HasValue)
             {
                 logger.Error("Texture info manager couldn't fit texture into parent list. Please send your project to developers.");
-                return new Result() { TexInfoIndex = DummyTexInfo, Rotation = 0 };
+                return new Result() { TexInfoIndex = _dummyTexInfo, Rotation = 0 };
             }
             else
                 return result.Value;
@@ -900,7 +918,7 @@ namespace TombLib.LevelData.Compilers.Util
                         }
                     }
 
-                    ReferenceAnimTextures.Add(refAnim);
+                    _referenceAnimTextures.Add(refAnim);
 
                     triangleVariation++;
                     if (triangleVariation > 4)
@@ -935,7 +953,7 @@ namespace TombLib.LevelData.Compilers.Util
             foreach (var frame in orderedFrameList)
                 frame.TexInfoIndex = GetNewTexInfoIndex();
 
-            ActualAnimTextures.Add(refCopy);
+            _actualAnimTextures.Add(refCopy);
         }
 
         // Finds visually similar image areas across all parents and unifies them. This step drastically
@@ -979,7 +997,7 @@ namespace TombLib.LevelData.Compilers.Util
                 int h = (int)(textures[i].Area.Height);
 
                 // Calculate adaptive padding at all sides
-                int padding = (Padding == 0 && forceMinimumPadding) ? MinimumPadding : Padding;
+                int padding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
 
                 int tP = textures[i].TopmostAndUnpadded ? 0 : padding; // Ugly, but needed for tomb4 UVRotate
                 int bP = padding;
@@ -1042,7 +1060,7 @@ namespace TombLib.LevelData.Compilers.Util
             var customBumpmaps = new Dictionary<string, ImageC>();
             var image = ImageC.CreateNew(256, numPages * 256 * (bump ? 2 : 1));
 
-            var actualPadding = (Padding == 0 && forceMinimumPadding) ? MinimumPadding : Padding;
+            var actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
 
             for (int i = 0; i < textures.Count; i++)
             {
@@ -1214,8 +1232,10 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Groups all textures by their attributes, cleans them up and builds actual texture data.
 
-        public void PrepareAllData(TRVersion.Game version)
+        public void LayOutAllData(TRVersion.Game version)
         {
+            _dataHasBeenLaidOut = true;
+
             // Before any other action, lay out animated textures
             PrepareAnimatedTextures();
 
@@ -1224,22 +1244,22 @@ namespace TombLib.LevelData.Compilers.Util
             var objectsTextures = new List<ParentTextureArea>();
             var bumpedTextures = new List<ParentTextureArea>();
 
-            for (int i = 0; i < ParentTextures.Count; i++)
+            for (int i = 0; i < _parentTextures.Count; i++)
             {
-                if (ParentTextures[i].IsForRoom)
+                if (_parentTextures[i].IsForRoom)
                 {
-                    if (ParentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
-                        bumpedTextures.Add(ParentTextures[i]);
+                    if (_parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
+                        bumpedTextures.Add(_parentTextures[i]);
                     else
-                        roomTextures.Add(ParentTextures[i]);
+                        roomTextures.Add(_parentTextures[i]);
                 }
                 else
-                    objectsTextures.Add(ParentTextures[i]);
+                    objectsTextures.Add(_parentTextures[i]);
             }
 
-            for (int n = 0; n < ActualAnimTextures.Count; n++)
+            for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
-                var parentTextures = ActualAnimTextures[n].CompiledAnimation;
+                var parentTextures = _actualAnimTextures[n].CompiledAnimation;
                 for (int i = 0; i < parentTextures.Count; i++)
                 {
                     if (parentTextures[i].IsForRoom)
@@ -1285,12 +1305,12 @@ namespace TombLib.LevelData.Compilers.Util
         {
             float maxSize = (float)MaxTileSize - (1.0f / 255.0f);
 
-            ObjectTextures = new SortedDictionary<int, ObjectTexture>();
+            _objectTextures = new SortedDictionary<int, ObjectTexture>();
 
-            SortOutAlpha(ParentTextures);
-            foreach (var parent in ParentTextures)
+            SortOutAlpha(_parentTextures);
+            foreach (var parent in _parentTextures)
                 foreach (var child in parent.Children)
-                    if (!ObjectTextures.ContainsKey(child.TexInfoIndex))
+                    if (!_objectTextures.ContainsKey(child.TexInfoIndex))
                     {
                         var newObjectTexture = new ObjectTexture(parent, child, version, maxSize);
 
@@ -1308,16 +1328,16 @@ namespace TombLib.LevelData.Compilers.Util
                             _progressReporter.ReportWarn("Compiled TexInfo " + child.TexInfoIndex + " is broken, coordinates are invalid.");
                         }
 
-                        ObjectTextures.Add(child.TexInfoIndex, newObjectTexture);
+                        _objectTextures.Add(child.TexInfoIndex, newObjectTexture);
                     }
 
-            foreach (var animTexture in ActualAnimTextures)
+            foreach (var animTexture in _actualAnimTextures)
             {
                 SortOutAlpha(animTexture.CompiledAnimation);
                 foreach (var parent in animTexture.CompiledAnimation)
                     foreach (var child in parent.Children)
-                        if (!ObjectTextures.ContainsKey(child.TexInfoIndex))
-                            ObjectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version, maxSize));
+                        if (!_objectTextures.ContainsKey(child.TexInfoIndex))
+                            _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version, maxSize));
             }
         }
 
@@ -1328,30 +1348,30 @@ namespace TombLib.LevelData.Compilers.Util
         private void PrepareAnimatedTextures()
         {
             // Put UVRotate sequences first
-            ActualAnimTextures = ActualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
+            _actualAnimTextures = _actualAnimTextures.OrderBy(item => !item.Origin.IsUvRotate).ToList();
 
             // Build index table
-            AnimTextureIndices = new List<List<int>>();
-            foreach (var compiledAnimatedTexture in ActualAnimTextures)
+            _animTextureIndices = new List<List<int>>();
+            foreach (var compiledAnimatedTexture in _actualAnimTextures)
             {
                 var list = new List<int>();
                 var orderedFrameList = compiledAnimatedTexture.CompiledAnimation.SelectMany(x => x.Children).OrderBy(c => c.TexInfoIndex).ToList();
                 foreach (var frame in orderedFrameList)
                     list.Add(frame.TexInfoIndex);
 
-                AnimTextureIndices.Add(list);
+                _animTextureIndices.Add(list);
             }
         }
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
             int numAnimatedTextures = 1;
-            foreach (var list in AnimTextureIndices)
+            foreach (var list in _animTextureIndices)
                 numAnimatedTextures += list.Count + 1;
             writer.Write((uint)numAnimatedTextures);
 
-            writer.Write((ushort)AnimTextureIndices.Count);
-            foreach (var list in AnimTextureIndices)
+            writer.Write((ushort)_animTextureIndices.Count);
+            foreach (var list in _animTextureIndices)
             {
                 writer.Write((ushort)(list.Count - 1));
                 foreach (var frame in list)
@@ -1361,10 +1381,10 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void WriteTextureInfos(BinaryWriterEx writer, Level level)
         {
-            writer.Write((int)ObjectTextures.Count);
-            for (int i = 0; i < ObjectTextures.Count; i++)
+            writer.Write((int)_objectTextures.Count);
+            for (int i = 0; i < _objectTextures.Count; i++)
             {
-                var texture = ObjectTextures.ElementAt(i).Value;
+                var texture = _objectTextures.ElementAt(i).Value;
 
                 // Tile and flags
                 ushort tile = (ushort)texture.Tile;
@@ -1429,9 +1449,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         public void UpdateTiles(int numSpritesPages)
         {
-            Parallel.For(0, ObjectTextures.Count, i =>
+            Parallel.For(0, _objectTextures.Count, i =>
             {
-                var texture = ObjectTextures.ElementAt(i).Value;
+                var texture = _objectTextures.ElementAt(i).Value;
                 if (texture.IsForRoom && texture.BumpLevel == BumpMappingLevel.None)
                 {
                     // Tile is OK
