@@ -1071,7 +1071,8 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectLight3)
+                else if (id3 == Prj2Chunks.ObjectLight3 ||
+                         id3 == Prj2Chunks.ObjectLight4)
                 {
                     var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -1089,10 +1090,19 @@ namespace TombLib.LevelData.IO
                     instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
                     instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
                     instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
+
+                    // Remap fog bulb intensity from red color
+                    if (id3 == Prj2Chunks.ObjectLight3 && instance.Type == LightType.FogBulb)
+                    {
+                        instance.Intensity = instance.Color.X;
+                        instance.Color = Vector3.One;
+                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectLight2) {
+                else if (id3 == Prj2Chunks.ObjectLight2)
+                {
                     var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
@@ -1108,10 +1118,19 @@ namespace TombLib.LevelData.IO
                     instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
                     instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
                     instance.Quality = LightQuality.Default;
+
+                    // Remap fog bulb intensity from red color
+                    if (instance.Type == LightType.FogBulb)
+                    {
+                        instance.Intensity = instance.Color.X;
+                        instance.Color = Vector3.One;
+                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectLight) {
+                else if (id3 == Prj2Chunks.ObjectLight)
+                {
                     var instance = new LightInstance((LightType)LEB128.ReadLong(chunkIO.Raw));
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
@@ -1127,6 +1146,14 @@ namespace TombLib.LevelData.IO
                     instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
                     instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
                     instance.Quality = LightQuality.Default;
+
+                    // Remap fog bulb intensity from red color
+                    if (instance.Type == LightType.FogBulb)
+                    {
+                        instance.Intensity = instance.Color.X;
+                        instance.Color = Vector3.One;
+                    }
+
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

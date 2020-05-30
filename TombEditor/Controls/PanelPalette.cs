@@ -92,9 +92,12 @@ namespace TombEditor.Controls
                 if (_editor.SelectedObject is LightInstance)
                 {
                     var light = _editor.SelectedObject as LightInstance;
-                    light.Color = SelectedColor.ToFloat3Color() * 2.0f;
-                    light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                    _editor.ObjectChange(light, ObjectChangeType.Change);
+                    if (!(_editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb))
+                    {
+                        light.Color = SelectedColor.ToFloat3Color() * 2.0f;
+                        light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                        _editor.ObjectChange(light, ObjectChangeType.Change);
+                    }
                 }
                 else if (_editor.SelectedObject is StaticInstance)
                 {
