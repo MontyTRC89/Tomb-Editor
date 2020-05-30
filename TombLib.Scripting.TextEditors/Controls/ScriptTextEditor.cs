@@ -191,7 +191,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 				string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
 
-				if (!currentSyntaxArgument.Contains("_..."))
+				if (!currentSyntaxArgument.Contains("_"))
 					return null;
 
 				string flagPrefix = currentSyntaxArgument.Split('_')[0].Split('(')[1];
@@ -293,7 +293,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 			ShowCompletionWindow();
 		}
 
-		private void HandleAutocompleteForNextFlag() // TODO: Refactor
+		private void HandleAutocompleteForNextFlag()
 		{
 			if (!_autocompleteWorker.IsBusy)
 			{
