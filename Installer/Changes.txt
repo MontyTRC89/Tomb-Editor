@@ -3,8 +3,8 @@ Version 1.3.2
 Tomb Editor:
  * An option to show real tint for all objects (replaces "Show real tint for merged statics" option).
  * Level settings option to map animated textures to imported geometry, objects and statics.
- * Support faces with additive blending on model import/export by setting opacity to anything less than 1.
- * Increased texture page packing ratio for reimported room geometry with same textures.
+ * Increased texture page packing ratio for reimported room geometry meshes with same textures.
+ * Support faces with additive blending on model import/export by setting their opacity to anything less than 1.
  * Add "Delete all objects" and "Delete all triggers" commands.
  * Various additional fixes for TR2 compatibility.
  * Fix exceptions with Metasequoia imported geometry.
