@@ -1,6 +1,5 @@
 ﻿using NLog;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -367,7 +366,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 var newRelCoord = new Vector2[child.AbsCoord.Length];
                 for (int i = 0; i < newRelCoord.Length; i++)
-                    newRelCoord[i] = child.RelCoord[i] - newParent.Area.Start;
+                    newRelCoord[i] = child.AbsCoord[i] - newParent.Area.Start;
 
                 newParent.Children.Add(new ChildTextureArea()
                 {
