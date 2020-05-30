@@ -5443,6 +5443,9 @@
       <sprite_sequence id="1356" name="CUSTOM_SPRITES" />
       <sprite_sequence id="1360" name="FIRE_SPRITES" />
       <sprite_sequence id="1361" name="SMOKE_SPRITES" />
+      <sprite_sequence id="1362" name="SPARK_SPRITE" />
+      <sprite_sequence id="1363" name="DRIP_SPRITE" />
+      <sprite_sequence id="1364" name="EXPLOSION_SPRITES" />
     </sprite_sequences>
     <sounds max="450">
       <sound id="0" name="LARA_FEET" description="Lara feet" />
