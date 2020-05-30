@@ -3418,6 +3418,13 @@ namespace TombEditor
             UpdateLight<Vector3>((light, value) => light.Color == value, (light, value) => light.Color = value,
                 light =>
                 {
+                    // Prompt user that real intensity is now used to define fog bulb intensity
+                    if (_editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
+                    {
+                        _editor.SendMessage("To edit fog bulb intensity, use 'Intensity' field.", PopupType.Info);
+                        return light.Color;
+                    }
+
                     _editor.UndoManager.PushObjectPropertyChanged(light);
 
                     using (var colorDialog = new RealtimeColorDialog(
