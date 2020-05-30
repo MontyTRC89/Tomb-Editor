@@ -267,7 +267,7 @@ namespace TombLib.Controls
             if (dgvSamples.SelectedRows.Count == 0)
                 return;
             foreach (DataGridViewRow row in dgvSamples.SelectedRows)
-                dgvSamples.Rows.Remove(row);
+                dgvSamples.Rows.RemoveAt(dgvSamples.SelectedRows[0].Index);
         }
 
         private void butBrowse_Click(object sender, EventArgs e)
