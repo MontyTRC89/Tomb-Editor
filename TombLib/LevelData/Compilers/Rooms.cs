@@ -993,8 +993,21 @@ namespace TombLib.LevelData.Compilers
                 if (!light.Enabled || !light.IsDynamicallyUsed)
                     continue;
 
-                tr_color color = PackColorTo24Bit(light.Color);
-                ushort intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8192.0f));
+                tr_color color;
+                ushort intensity;
+
+                // HACK: remap TR4 fog bulb intensity to color (native TR4 hack)
+                if (_level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
+                {
+                    var remappedColor = new Vector3(MathC.Clamp(light.Intensity, 0.0f, 2.0f));
+                    color = PackColorTo24Bit(remappedColor);
+                    intensity = (ushort)8191;
+                }
+                else
+                {
+                    color = PackColorTo24Bit(light.Color);
+                    intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8191.0f));
+                }
 
                 if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
                     continue;

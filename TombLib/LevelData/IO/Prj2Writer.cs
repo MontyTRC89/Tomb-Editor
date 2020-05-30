@@ -492,7 +492,7 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, -1);
                         }
                     else if (o is LightInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight3, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight4, LEB128.MaximumSize2Byte))
                         {
                             var instance = (LightInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
