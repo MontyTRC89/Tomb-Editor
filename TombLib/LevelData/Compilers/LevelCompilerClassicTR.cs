@@ -98,13 +98,10 @@ namespace TombLib.LevelData.Compilers
 
             // Compile textures
             ReportProgress(30, "Packing textures");
+            _textureInfoManager.PrepareAllData(_level.Settings.GameVersion);
 
-            _textureInfoManager.SortAnimatedTextures();
-            _textureInfoManager.PackTextures();
-            _textureInfoManager.BuildTextureInfos(_level.Settings.GameVersion);
-
-            ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
+            ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.ActualAnimTextures.Count);
             if (_textureInfoManager.TexInfoCount > 32767)
                 _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
             
