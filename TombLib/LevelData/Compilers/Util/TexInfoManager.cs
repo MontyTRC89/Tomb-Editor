@@ -1095,6 +1095,7 @@ namespace TombLib.LevelData.Compilers.Util
                     {
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                         graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
+                        destBitmap.MakeTransparent();
                     }
 
                     // Twice copy squeezed image to original image
