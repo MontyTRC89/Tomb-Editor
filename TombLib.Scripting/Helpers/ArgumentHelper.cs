@@ -67,7 +67,7 @@ namespace TombLib.Scripting.Helpers
 			if (commentsMatch.Success)
 				comments = commentsMatch.Value;
 
-			string[] arguments = LineHelper.EscapeComments(wholeLineText).Split(',');
+			string[] arguments = LineHelper.RemoveComments(wholeLineText).Split(',');
 
 			List<string> newArgumentList = new List<string>();
 
@@ -78,6 +78,7 @@ namespace TombLib.Scripting.Helpers
 				if (!argument.Contains("_"))
 				{
 					newArgumentList.Add(argument);
+					cachedArgument = argument;
 					continue;
 				}
 
