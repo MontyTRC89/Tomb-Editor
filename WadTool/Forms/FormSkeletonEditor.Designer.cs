@@ -250,15 +250,15 @@
             this.moveDownToolStripMenuItem,
             this.toolStripMenuItem2,
             this.addChildBoneFromFileToolStripMenuItem,
-            this.addChildBoneToolStripMenuItem,
-            this.toolStripMenuItem4,
             this.replaceToolStripMenuItem,
+            this.toolStripMenuItem4,
+            this.addChildBoneToolStripMenuItem,
             this.replaceFromWad2ToolStripMenuItem,
             this.toolStripMenuItem3,
             this.deleteToolStripMenuItem,
             this.renameToolStripMenuItem});
             this.cmBone.Name = "cmBone";
-            this.cmBone.Size = new System.Drawing.Size(191, 252);
+            this.cmBone.Size = new System.Drawing.Size(191, 274);
             // 
             // popToolStripMenuItem
             // 
@@ -322,7 +322,7 @@
             // 
             this.addChildBoneFromFileToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addChildBoneFromFileToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addChildBoneFromFileToolStripMenuItem.Image = global::WadTool.Properties.Resources.opened_folder_16;
+            this.addChildBoneFromFileToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_plus_math_16;
             this.addChildBoneFromFileToolStripMenuItem.Name = "addChildBoneFromFileToolStripMenuItem";
             this.addChildBoneFromFileToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addChildBoneFromFileToolStripMenuItem.Text = "Add child bone from file";
@@ -332,7 +332,7 @@
             // 
             this.addChildBoneToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.addChildBoneToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addChildBoneToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.addChildBoneToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_search_16;
             this.addChildBoneToolStripMenuItem.Name = "addChildBoneToolStripMenuItem";
             this.addChildBoneToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.addChildBoneToolStripMenuItem.Text = "Add child bone from Wad2";
@@ -350,7 +350,7 @@
             // 
             this.replaceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.replaceToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.replaceToolStripMenuItem.Image = global::WadTool.Properties.Resources.opened_folder_16;
+            this.replaceToolStripMenuItem.Image = global::WadTool.Properties.Resources.actions_refresh_16;
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
             this.replaceToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.replaceToolStripMenuItem.Text = "Replace from file";
@@ -360,7 +360,7 @@
             // 
             this.replaceFromWad2ToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.replaceFromWad2ToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.replaceFromWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.replace_16;
+            this.replaceFromWad2ToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_search_16;
             this.replaceFromWad2ToolStripMenuItem.Name = "replaceFromWad2ToolStripMenuItem";
             this.replaceFromWad2ToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.replaceFromWad2ToolStripMenuItem.Text = "Replace from Wad2";
@@ -396,6 +396,7 @@
             // 
             // panelRendering
             // 
+            this.panelRendering.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRendering.Location = new System.Drawing.Point(0, 0);
             this.panelRendering.Name = "panelRendering";
