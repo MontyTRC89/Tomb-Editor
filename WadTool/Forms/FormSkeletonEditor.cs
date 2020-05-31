@@ -667,6 +667,7 @@ namespace WadTool
 
         private void nudTransX_ValueChanged(object sender, EventArgs e)
         {
+            if (panelRendering.SelectedNode == null) return;
             var trans = panelRendering.SelectedNode.Bone.Translation;
             panelRendering.SelectedNode.Bone.Translation = new Vector3((float)nudTransX.Value, trans.Y, trans.Z);
             _tool.BoneOffsetMoved();
@@ -674,6 +675,7 @@ namespace WadTool
 
         private void nudTransY_ValueChanged(object sender, EventArgs e)
         {
+            if (panelRendering.SelectedNode == null) return;
             var trans = panelRendering.SelectedNode.Bone.Translation;
             panelRendering.SelectedNode.Bone.Translation = new Vector3(trans.X, (float)nudTransY.Value, trans.Z);
             _tool.BoneOffsetMoved();
@@ -681,6 +683,7 @@ namespace WadTool
 
         private void nudTransZ_ValueChanged(object sender, EventArgs e)
         {
+            if (panelRendering.SelectedNode == null) return;
             var trans = panelRendering.SelectedNode.Bone.Translation;
             panelRendering.SelectedNode.Bone.Translation = new Vector3(trans.X, trans.Y, (float)nudTransZ.Value);
             _tool.BoneOffsetMoved();
