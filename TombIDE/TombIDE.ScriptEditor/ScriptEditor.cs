@@ -35,6 +35,7 @@ namespace TombIDE.ScriptEditor
 		private TextEditorConfigs _editorConfigs = TextEditorConfigs.Load();
 
 		private FormFindReplace _formFindReplace;
+		private FormMnemonicInfo _formMnemonicInfo;
 		private FormNGCompilingStatus _formCompiling;
 
 		/// <summary>
@@ -63,6 +64,7 @@ namespace TombIDE.ScriptEditor
 			// Initialize forms
 			_formFindReplace = new FormFindReplace(ref tabControl_Editor, ref tabControl_Info);
 			_formCompiling = new FormNGCompilingStatus();
+			_formMnemonicInfo = new FormMnemonicInfo(_ide);
 
 			// Initialize side controls
 			objectBrowser.Initialize(_ide);
@@ -131,6 +133,7 @@ namespace TombIDE.ScriptEditor
 		{
 			IDEEvent_HandleFileOpening(obj);
 			IDEEvent_HandleObjectSelection(obj);
+			IDEEvent_HandleReferenceDescriptionOpening(obj);
 			IDEEvent_HandleSilentActions(obj);
 			IDEEvent_HandleProgramClosing(obj);
 		}
@@ -155,6 +158,15 @@ namespace TombIDE.ScriptEditor
 			{
 				var e = (IDE.ScriptEditor_SelectObjectEvent)obj;
 				SelectObject(e.ObjectName, e.ObjectType);
+			}
+		}
+
+		private void IDEEvent_HandleReferenceDescriptionOpening(IIDEEvent obj)
+		{
+			if (obj is IDE.ScriptEditor_OpenReferenceDescriptionEvent)
+			{
+				var e = obj as IDE.ScriptEditor_OpenReferenceDescriptionEvent;
+				OpenReferenceDescription(e.ReferenceName, e.ReferenceType);
 			}
 		}
 
@@ -231,6 +243,9 @@ namespace TombIDE.ScriptEditor
 		#endregion IDE Events
 
 		#region IDE Event Methods
+
+		private void OpenReferenceDescription(string referenceName, ReferenceType type) =>
+			_formMnemonicInfo.Show(referenceName, type);
 
 		private void SelectObject(string objectName, ObjectType type)
 		{

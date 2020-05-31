@@ -15,14 +15,6 @@ namespace TombIDE.ScriptEditor.Forms
 {
 	// TODO: Refactor !!!
 
-	internal enum ReferenceType
-	{
-		OCBs,
-		OLDCommands,
-		NEWCommands,
-		Mnemonics
-	}
-
 	internal partial class FormMnemonicInfo : DarkForm
 	{
 		private IDE _ide;
