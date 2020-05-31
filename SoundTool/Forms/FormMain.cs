@@ -228,7 +228,7 @@ namespace SoundTool
             soundInfoEditor.SoundInfo = soundInfo;
         }
 
-        private void UpdateUI()
+        private void UpdateUI(bool reloadSoundInfo = true)
         {
             var refLoaded = ReferenceLevel != null;
 
@@ -245,7 +245,7 @@ namespace SoundTool
             unloadReferenceProjectToolStripMenuItem.Enabled = refLoaded;
             saveToolStripMenuItem.Enabled = _currentArchive == null || !Saved;
 
-            if (dgvSoundInfos.Rows.Count > 0)
+            if (reloadSoundInfo && dgvSoundInfos.Rows.Count > 0)
                 SelectSoundInfo(dgvSoundInfos.SelectedRows[0].Index);
         }
 
@@ -387,6 +387,8 @@ namespace SoundTool
         private void unindexStripMenuItem3_Click(object sender, EventArgs e) => UnindexAllSounds();
         private void buildMSFX2StripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(TRVersion.Game.TR2, true);
         private void buildMSFX3StripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(TRVersion.Game.TR3, true);
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e) => soundInfoEditor.Copy();
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e) => soundInfoEditor.Paste();
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
         private void butAddNewSoundInfo_Click(object sender, EventArgs e) => AddSoundInfo();
@@ -421,7 +423,8 @@ namespace SoundTool
                     row.Cells[1].Value = newInfo.Name;
                     dgvSoundInfos.InvalidateRow(row.Index);
 
-                    Saved = false;
+                    _saved = false;
+                    UpdateUI(false);
                     return;
                 }
             }

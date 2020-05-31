@@ -13,14 +13,13 @@ Tomb Editor:
  * Fix exceptions with script IDs after room copy-paste.
  * Fix possible transparency issues with UVRotate textures in 16-bit mode.
  
-
- 
 TombIDE:
  * Fixed critical exceptions and crashes.
  * Improved autocomplete.
  
 SoundTool:
  * Fix deleting multiple sound samples.
+ * Add ability to copy-paste sound infos between different instances.
  
 WadTool:
  * Fix exception when selecting empty sprite sequence.
