@@ -212,7 +212,7 @@ namespace TombLib.Controls
             return !notFound;
         }
 
-        private void butClipboardCopy_Click(object sender, EventArgs e)
+        public void Copy()
         {
             using (MemoryStream stream = new MemoryStream())
             {
@@ -222,27 +222,26 @@ namespace TombLib.Controls
             }
         }
 
-        private void butClipboardPaste_Click(object sender, EventArgs e)
+        public void Paste(bool onlyParams = false)
         {
             var data = Clipboard.GetData("SoundInfo") as byte[];
             if (data == null)
-            {
-                DarkMessageBox.Show(this, "Windows clipboard does not currently not contain a sound info.", "Clipboard empty", MessageBoxIcon.Information);
                 return;
-            }
 
             // Load sound info
             using (MemoryStream stream = new MemoryStream(data, false))
             {
                 var serializer = new XmlSerializer(typeof(WadSoundInfo));
                 var pastedInfo = new WadSoundInfo((WadSoundInfo)serializer.Deserialize(stream));
+                pastedInfo.Id = SoundInfo.Id; // ID is unchangeable from UI
 
-                UpdateUI(pastedInfo, true);
+                UpdateUI(pastedInfo, onlyParams);
 
                 if (!_soundInfoCurrentlyChanging)
-                    SoundInfoChanged?.Invoke(this, e);
+                    SoundInfoChanged?.Invoke(this, new EventArgs());
             }
         }
+
         private void butResetToDefaults_Click(object sender, EventArgs e)
         {
             UpdateUI(new WadSoundInfo(SoundInfo.Id), true);
@@ -302,5 +301,7 @@ namespace TombLib.Controls
         private void dgvSamples_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e) => OnSoundInfoChanged(null, null);
         private void dgvSamples_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e) => OnSoundInfoChanged(null, null);
         private void butPlayPreview_Click(object sender, EventArgs e) => PlayCurrentSoundInfo();
+        private void butClipboardCopy_Click(object sender, EventArgs e) => Copy();
+        private void butClipboardPaste_Click(object sender, EventArgs e) => Paste();
     }
 }
