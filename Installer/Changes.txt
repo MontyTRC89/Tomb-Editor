@@ -29,6 +29,9 @@ WadTool:
  * Allow editing bounding fox for all selected frames at once.
  * Fix bounding box controls being unresponsive to keypresses.
  * Fix exception when selecting empty sprite sequence.
+ 
+General:
+ * "Vertex color light" import setting now really affects import result.
 
 Version 1.3.1
 =============
