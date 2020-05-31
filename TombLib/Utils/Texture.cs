@@ -431,7 +431,7 @@ namespace TombLib.Utils
 
         public void Mirror(bool isTriangle = false)
         {
-            if(!isTriangle)
+            if (!isTriangle)
             {
                 Swap.Do(ref TexCoord0, ref TexCoord3);
                 Swap.Do(ref TexCoord1, ref TexCoord2);
