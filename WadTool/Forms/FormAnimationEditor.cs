@@ -928,7 +928,7 @@ namespace WadTool
             OnKeyframesListChanged();
 
             int insertEnd = startIndex + _editor.ClipboardKeyFrames.Count - 1;
-            if (cursorPos != -1)
+            if (cursorPos != -1 && cursorPos <= timeline.Maximum)
             {
                 if (cursorPos < startIndex)
                     timeline.Value = cursorPos;
@@ -938,6 +938,7 @@ namespace WadTool
             else
                 timeline.Value = insertEnd;
 
+            timeline.ResetSelection();
             timeline.Highlight(startIndex, insertEnd);
             panelRendering.Invalidate();
             Saved = false;
