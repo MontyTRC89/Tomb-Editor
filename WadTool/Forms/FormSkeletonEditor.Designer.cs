@@ -49,9 +49,9 @@
             this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.addChildBoneFromFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addChildBoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.addChildBoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceFromWad2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -258,7 +258,7 @@
             this.deleteToolStripMenuItem,
             this.renameToolStripMenuItem});
             this.cmBone.Name = "cmBone";
-            this.cmBone.Size = new System.Drawing.Size(191, 274);
+            this.cmBone.Size = new System.Drawing.Size(191, 252);
             // 
             // popToolStripMenuItem
             // 
@@ -328,24 +328,6 @@
             this.addChildBoneFromFileToolStripMenuItem.Text = "Add child bone from file";
             this.addChildBoneFromFileToolStripMenuItem.Click += new System.EventHandler(this.AddChildBoneFromFileToolStripMenuItem_Click);
             // 
-            // addChildBoneToolStripMenuItem
-            // 
-            this.addChildBoneToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.addChildBoneToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addChildBoneToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.addChildBoneToolStripMenuItem.Name = "addChildBoneToolStripMenuItem";
-            this.addChildBoneToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.addChildBoneToolStripMenuItem.Text = "Add child bone from Wad2";
-            this.addChildBoneToolStripMenuItem.Click += new System.EventHandler(this.AddChildBoneToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(187, 6);
-            // 
             // replaceToolStripMenuItem
             // 
             this.replaceToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -355,6 +337,24 @@
             this.replaceToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.replaceToolStripMenuItem.Text = "Replace from file";
             this.replaceToolStripMenuItem.Click += new System.EventHandler(this.ReplaceToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripMenuItem4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripMenuItem4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(187, 6);
+            // 
+            // addChildBoneToolStripMenuItem
+            // 
+            this.addChildBoneToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.addChildBoneToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.addChildBoneToolStripMenuItem.Image = global::WadTool.Properties.Resources.general_search_16;
+            this.addChildBoneToolStripMenuItem.Name = "addChildBoneToolStripMenuItem";
+            this.addChildBoneToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.addChildBoneToolStripMenuItem.Text = "Add child bone from Wad2";
+            this.addChildBoneToolStripMenuItem.Click += new System.EventHandler(this.AddChildBoneToolStripMenuItem_Click);
             // 
             // replaceFromWad2ToolStripMenuItem
             // 
@@ -417,7 +417,7 @@
             this.sectionCurrentBone.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.sectionCurrentBone.Location = new System.Drawing.Point(0, 501);
             this.sectionCurrentBone.Name = "sectionCurrentBone";
-            this.sectionCurrentBone.SectionHeader = "Current bone";
+            this.sectionCurrentBone.SectionHeader = "Transform";
             this.sectionCurrentBone.Size = new System.Drawing.Size(316, 53);
             this.sectionCurrentBone.TabIndex = 107;
             // 
@@ -445,6 +445,7 @@
             this.nudTransZ.Name = "nudTransZ";
             this.nudTransZ.Size = new System.Drawing.Size(65, 22);
             this.nudTransZ.TabIndex = 104;
+            this.nudTransZ.ValueChanged += new System.EventHandler(this.nudTransZ_ValueChanged);
             // 
             // nudTransY
             // 
@@ -470,6 +471,7 @@
             this.nudTransY.Name = "nudTransY";
             this.nudTransY.Size = new System.Drawing.Size(64, 22);
             this.nudTransY.TabIndex = 103;
+            this.nudTransY.ValueChanged += new System.EventHandler(this.nudTransY_ValueChanged);
             // 
             // darkLabel29
             // 
@@ -517,6 +519,7 @@
             this.nudTransX.Name = "nudTransX";
             this.nudTransX.Size = new System.Drawing.Size(64, 22);
             this.nudTransX.TabIndex = 102;
+            this.nudTransX.ValueChanged += new System.EventHandler(this.nudTransX_ValueChanged);
             // 
             // darkLabel26
             // 
