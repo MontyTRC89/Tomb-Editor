@@ -133,11 +133,11 @@ namespace WadTool.Controls
             var vertices = new[]
             {
                 p4, p5, p5, p1, p1, p0, p0, p4,
-                    p5, p6, p6, p2, p2, p1, p1, p5,
-                    p2, p6, p6, p7, p7, p3, p3, p2,
-                    p7, p4, p4, p0, p0, p3, p3, p7,
-                    p7, p6, p6, p5, p5, p4, p4, p7,
-                    p0, p1, p1, p2, p2, p3, p3, p0
+                p5, p6, p6, p2, p2, p1, p1, p5,
+                p2, p6, p6, p7, p7, p3, p3, p2,
+                p7, p4, p4, p0, p0, p3, p3, p7,
+                p7, p6, p6, p5, p5, p4, p4, p7,
+                p0, p1, p1, p2, p2, p3, p3, p0
             };
 
             return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);

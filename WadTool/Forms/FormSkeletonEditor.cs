@@ -11,6 +11,7 @@ using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -40,11 +41,18 @@ namespace WadTool
 
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
+            WadMoveable skin;
+            var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_tool.DestinationWad.GameVersion, _moveable.Id.TypeId));
+            if (_tool.DestinationWad.Moveables.ContainsKey(skinId))
+                skin = _tool.DestinationWad.Moveables[skinId];
+            else
+                skin = _tool.DestinationWad.Moveables[_moveable.Id];
+
             // Clone the skeleton and load it
             _bones = new List<WadMeshBoneNode>();
             for (int i = 0; i < _moveable.Bones.Count; i++)
             {
-                var boneNode = new WadMeshBoneNode(null, _moveable.Bones[i].Mesh, _moveable.Bones[i]);
+                var boneNode = new WadMeshBoneNode(null, skin.Bones[i].Mesh, _moveable.Bones[i]);
                 boneNode.Bone.Translation = _moveable.Bones[i].Translation;
                 boneNode.GlobalTransform = Matrix4x4.Identity;
                 _bones.Add(boneNode);
@@ -74,7 +82,10 @@ namespace WadTool
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
             if (obj is WadToolClass.BoneOffsetMovedEvent)
+            {
+                UpdateUI();
                 UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
+            }
         }
 
         private List<DarkTreeNode> LoadSkeleton()
@@ -180,13 +191,24 @@ namespace WadTool
                 UpdateSkeletonMatrices(childNode, node.GlobalTransform);
         }
 
+        public void UpdateUI()
+        {
+            if (panelRendering.SelectedNode == null)
+                return;
+
+            nudTransX.Value = (decimal)panelRendering.SelectedNode.Bone.Translation.X;
+            nudTransY.Value = (decimal)panelRendering.SelectedNode.Bone.Translation.Y;
+            nudTransZ.Value = (decimal)panelRendering.SelectedNode.Bone.Translation.Z;
+            panelRendering.Invalidate();
+        }
+
         private void treeSkeleton_Click(object sender, EventArgs e)
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
                 return;
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
             panelRendering.SelectedNode = theNode;
-            panelRendering.Invalidate();
+            UpdateUI();
         }
 
         private void cbDrawGizmo_CheckedChanged(object sender, EventArgs e)
@@ -735,11 +757,33 @@ namespace WadTool
             }
 
             _startPoint = new Point(0, 0);
+            UpdateUI();
         } 
 
         private void PanelRendering_MouseDown(object sender, MouseEventArgs e)
         {
             _startPoint = e.Location;
+        }
+
+        private void nudTransX_ValueChanged(object sender, EventArgs e)
+        {
+            var trans = panelRendering.SelectedNode.Bone.Translation;
+            panelRendering.SelectedNode.Bone.Translation = new Vector3((float)nudTransX.Value, trans.Y, trans.Z);
+            _tool.BoneOffsetMoved();
+        }
+
+        private void nudTransY_ValueChanged(object sender, EventArgs e)
+        {
+            var trans = panelRendering.SelectedNode.Bone.Translation;
+            panelRendering.SelectedNode.Bone.Translation = new Vector3(trans.X, (float)nudTransY.Value, trans.Z);
+            _tool.BoneOffsetMoved();
+        }
+
+        private void nudTransZ_ValueChanged(object sender, EventArgs e)
+        {
+            var trans = panelRendering.SelectedNode.Bone.Translation;
+            panelRendering.SelectedNode.Bone.Translation = new Vector3(trans.X, trans.Y, (float)nudTransZ.Value);
+            _tool.BoneOffsetMoved();
         }
     }
 }

@@ -1256,30 +1256,52 @@ namespace WadTool
                     _editor.CurrentAnim.WadAnimation.EndLateralVelocity = result;
                     break;
                 case "nudBBoxMinX":
-                    bb.Minimum = new Vector3(result, bb.Minimum.Y, bb.Minimum.Z);
+                    EditBoundingBox(new Vector3(result, bb.Minimum.Y, bb.Minimum.Z), bb.Maximum);
                     break;
                 case "nudBBoxMinY":
-                    bb.Minimum = new Vector3(bb.Minimum.X, result, bb.Minimum.Z);
+                    EditBoundingBox(new Vector3(bb.Minimum.X, result, bb.Minimum.Z), bb.Maximum);
                     break;
                 case "nudBBoxMinZ":
-                    bb.Minimum = new Vector3(bb.Minimum.X, bb.Minimum.Y, result);
+                    EditBoundingBox(new Vector3(bb.Minimum.X, bb.Minimum.Y, result), bb.Maximum);
                     break;
                 case "nudBBoxMaxX":
-                    bb.Maximum = new Vector3(result, bb.Maximum.Y, bb.Maximum.Z);
+                    EditBoundingBox(bb.Minimum, new Vector3(result, bb.Maximum.Y, bb.Maximum.Z));
                     break;
                 case "nudBBoxMaxY":
-                    bb.Maximum = new Vector3(bb.Maximum.X, result, bb.Maximum.Z);
+                    EditBoundingBox(bb.Minimum, new Vector3(bb.Maximum.X, result, bb.Maximum.Z));
                     break;
                 case "nudBBoxMaxZ":
-                    bb.Maximum = new Vector3(bb.Maximum.X, bb.Maximum.Y, result);
+                    EditBoundingBox(bb.Minimum, new Vector3(bb.Maximum.X, bb.Maximum.Y, result));
                     break;
             }
-
-            _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox = bb;
 
             Saved = false;
             timeline.Invalidate();
             panelRendering.Invalidate();
+        }
+
+        private void EditBoundingBox(Vector3 newMinimum, Vector3 newMaximum)
+        {
+            var bb = _editor.CurrentAnim.DirectXAnimation.KeyFrames[timeline.Value].BoundingBox;
+            var deltaMin = newMinimum - bb.Minimum;
+            var deltaMax = newMaximum - bb.Maximum;
+
+            int start = timeline.Value;
+            int end = timeline.Value;
+
+            if (!_editor.SelectionIsEmpty)
+            {
+                start = _editor.Selection.X;
+                end = _editor.Selection.Y;
+            }
+
+            for (int i = start; i <= end; i++)
+            {
+                var bb2 = _editor.CurrentAnim.DirectXAnimation.KeyFrames[i].BoundingBox;
+                bb2.Minimum += deltaMin;
+                bb2.Maximum += deltaMax;
+                _editor.CurrentAnim.DirectXAnimation.KeyFrames[i].BoundingBox = bb2;
+            }
         }
 
         private void InterpolateFrames(int frameIndex1, int frameIndex2, int numFrames, bool updateGUI = true)
