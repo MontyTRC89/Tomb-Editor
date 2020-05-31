@@ -101,7 +101,10 @@ namespace TombLib.GeometryIO
 
         protected Vector4 ApplyColorTransform(Vector4 color)
         {
-            return new Vector4(color.X * 2.0f, color.Y * 2.0f, color.Z * 2.0f, color.W);
+            if (_settings.UseVertexColor)
+                return new Vector4(color.X * 2.0f, color.Y * 2.0f, color.Z * 2.0f, color.W);
+            else
+                return Vector4.One;
         }
 
         public static IReadOnlyList<FileFormat> AnimationFileExtensions { get; } = new List<FileFormat>()

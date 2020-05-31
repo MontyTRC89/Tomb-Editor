@@ -113,7 +113,7 @@ namespace TombLib.GeometryIO.Importers
                     var newSubmesh = new IOSubmesh(material);
                     newMesh.Submeshes.Add(material, newSubmesh);
 
-                    bool hasColors  = mesh.VertexColorChannelCount > 0 && mesh.HasVertexColors(0);
+                    bool hasColors  = _settings.UseVertexColor && mesh.VertexColorChannelCount > 0 && mesh.HasVertexColors(0);
                     bool hasNormals = mesh.HasNormals;
 
                     // Additional integrity checks

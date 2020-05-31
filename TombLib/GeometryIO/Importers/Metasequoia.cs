@@ -182,7 +182,7 @@ namespace TombLib.GeometryIO.Importers
                                     {
                                         for (var k = 0; k < numVerticesInFace; k++)
                                         {
-                                            var color = ApplyColorTransform(new Vector4(1.0f) );
+                                            var color = ApplyColorTransform(Vector4.One);
                                             mesh.Colors.Add(color);
                                         }
                                     }
