@@ -258,7 +258,7 @@
             this.deleteToolStripMenuItem,
             this.renameToolStripMenuItem});
             this.cmBone.Name = "cmBone";
-            this.cmBone.Size = new System.Drawing.Size(191, 252);
+            this.cmBone.Size = new System.Drawing.Size(191, 274);
             // 
             // popToolStripMenuItem
             // 
@@ -277,7 +277,7 @@
             this.pushToolStripMenuItem.CheckOnClick = true;
             this.pushToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pushToolStripMenuItem.Name = "pushToolStripMenuItem";
-            this.pushToolStripMenuItem.ShortcutKeyDisplayString = "CTRL+P";
+            this.pushToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+P";
             this.pushToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.pushToolStripMenuItem.Text = "Push";
             this.pushToolStripMenuItem.Click += new System.EventHandler(this.PushToolStripMenuItem_Click);

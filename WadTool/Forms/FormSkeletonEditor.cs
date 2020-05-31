@@ -361,7 +361,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-
         private void ReplaceBoneFromFile()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
