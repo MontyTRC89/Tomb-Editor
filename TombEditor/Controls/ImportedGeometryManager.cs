@@ -238,6 +238,7 @@ namespace TombEditor.Controls
                     {
                         dataGridView.ClearSelection();
                         dataGridView.Rows[i].Selected = true;
+                        dataGridView.FirstDisplayedScrollingRowIndex = i;
                         return;
                     }
             }
