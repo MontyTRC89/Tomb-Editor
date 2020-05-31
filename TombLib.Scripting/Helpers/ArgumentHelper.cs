@@ -15,7 +15,7 @@ namespace TombLib.Scripting.Helpers
 
 			wholeLineText = LineHelper.EscapeComments(wholeLineText);
 
-			if (string.IsNullOrWhiteSpace(wholeLineText))
+			if (string.IsNullOrWhiteSpace(wholeLineText) || !wholeLineText.Contains("="))
 				return -1;
 
 			wholeLineText = MergeMultipleFlags(wholeLineText, document, offset);
