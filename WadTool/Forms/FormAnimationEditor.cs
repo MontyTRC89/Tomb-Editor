@@ -131,8 +131,7 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is WadToolClass.UndoStackChangedEvent ||
-                obj is WadToolClass.AnimationEditorMeshSelectedEvent ||
+            if (obj is WadToolClass.AnimationEditorMeshSelectedEvent ||
                 obj is WadToolClass.AnimationEditorGizmoPickedEvent ||
                 obj is WadToolClass.AnimationEditorAnimationChangedEvent ||
                 obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
