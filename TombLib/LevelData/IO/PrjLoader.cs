@@ -587,6 +587,14 @@ namespace TombLib.LevelData.IO
                                     light.OuterAngle = lightOut;
                                     light.InnerAngle = lightIn;
                                 }
+
+                                // Fog bulbs have intensity in their RED field
+                                if (lightType == LightType.FogBulb)
+                                {
+                                    light.Intensity = light.Color.X;
+                                    light.Color = Vector3.One;
+                                }
+
                                 room.AddObject(level, light);
                                 break;
                             case 0x4c00:
