@@ -97,7 +97,7 @@
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Text = "darkTreeView1";
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
-            this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeSkeleton_MouseDown);
+            this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDown);
             // 
             // cbDrawGizmo
             // 
@@ -399,10 +399,10 @@
             this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRendering.Location = new System.Drawing.Point(0, 0);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(450, 554);
+            this.panelRendering.Size = new System.Drawing.Size(452, 554);
             this.panelRendering.TabIndex = 91;
-            this.panelRendering.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelRendering_MouseDown);
-            this.panelRendering.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PanelRendering_MouseUp);
+            this.panelRendering.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDown);
+            this.panelRendering.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseUp);
             // 
             // sectionCurrentBone
             // 
@@ -561,7 +561,7 @@
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panelMain.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.panelMain.Size = new System.Drawing.Size(454, 554);
             this.panelMain.TabIndex = 0;
             // 
@@ -602,6 +602,7 @@
             this.butCancel.TabIndex = 112;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
             // FormSkeletonEditor
             // 
@@ -624,8 +625,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Skeleton editor";
-            this.Load += new System.EventHandler(this.FormSkeletonEditor_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormSkeletonEditor_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.formSkeletonEditor_KeyDown);
             this.cmBone.ResumeLayout(false);
             this.sectionCurrentBone.ResumeLayout(false);
             this.sectionCurrentBone.PerformLayout();

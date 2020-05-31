@@ -202,71 +202,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void treeSkeleton_Click(object sender, EventArgs e)
-        {
-            if (treeSkeleton.SelectedNodes.Count == 0)
-                return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-            panelRendering.SelectedNode = theNode;
-            UpdateUI();
-        }
-
-        private void cbDrawGizmo_CheckedChanged(object sender, EventArgs e)
-        {
-            panelRendering.DrawGizmo = cbDrawGizmo.Checked;
-            panelRendering.Invalidate();
-        }
-
-        private void cbDrawGrid_CheckedChanged(object sender, EventArgs e)
-        {
-            panelRendering.DrawGrid = cbDrawGrid.Checked;
-            panelRendering.Invalidate();
-        }
-
-        private void butSaveChanges_Click(object sender, EventArgs e)
-        {
-            // First check if skeleton is valid
-            int numPop = 0;
-            int numPush = 0;
-            foreach (var bone in _bones)
-            {
-                if (bone.Bone.OpCode == WadLinkOpcode.Pop) numPop++;
-                if (bone.Bone.OpCode == WadLinkOpcode.Push) numPush++;
-            }
-
-            // We can have more PUSH than POP, but the opposite case (POP more than PUSH) will result in a leak 
-            // inside the previous moveables in the list
-            if (numPop > numPush)
-            {
-                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you have added more POP than PUSH.",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (treeSkeleton.Nodes.Count > 1)
-            {
-                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you must have a single bone as root.",
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Insert new bones in moveable
-            _moveable.Bones.Clear();
-            foreach (var bone in _bones)
-                _moveable.Bones.Add(bone.Bone);
-
-            // Replace the moveable
-            _wad.Moveables[_moveable.Id] = _moveable;
-
-            // Now cause the moveable to reload
-            _moveable.Version = DataVersion.GetNext();
-
-            _tool.ToggleUnsavedChanges();
-
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-
         private WadBone SaveSkeleton(WadBone parentBone, DarkTreeNode currentNode)
         {
             var currentBone = (WadMeshBoneNode)currentNode.Tag;
@@ -282,12 +217,6 @@ namespace WadTool
 
             return bone;
         }
-
-        private void butDeleteBone_Click(object sender, EventArgs e) => DeleteBone();
-
-        private void butRenameBone_Click(object sender, EventArgs e) => RenameBone();
-
-        private void butLoadModel_Click(object sender, EventArgs e) => ReplaceAllBonesFromFile();
 
         private void InsertNewBone(WadMesh mesh, WadMeshBoneNode parentNode)
         {
@@ -332,51 +261,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void butSelectMesh_Click(object sender, EventArgs e)
-        {
-            AddChildBoneFromWad2();
-        }
-
-        private void FormSkeletonEditor_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void butReplaceFromWad2_Click(object sender, EventArgs e)
-        {
-            ReplaceBoneFromWad2();
-        }
-
-        private void butAddFromFile_Click(object sender, EventArgs e)
-        {
-            AddChildBoneFromFile();
-        }
-
-        private void butReplaceFromFile_Click(object sender, EventArgs e)
-        {
-            ReplaceBoneFromFile();
-        }
-
-        private void TreeSkeleton_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                if (treeSkeleton.SelectedNodes.Count == 0)
-                    return;
-                var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
-
-                pushToolStripMenuItem.Checked = (theNode.Bone.OpCode == WadLinkOpcode.Push || theNode.Bone.OpCode == WadLinkOpcode.Read);
-                popToolStripMenuItem.Checked = (theNode.Bone.OpCode == WadLinkOpcode.Pop || theNode.Bone.OpCode == WadLinkOpcode.Read);
-
-                cmBone.Show(treeSkeleton.PointToScreen(new Point(e.X, e.Y)));
-            }
-        }
-
-        private void PopToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToggleBonePop();
-        }
-
         private void ToggleBonePop()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
@@ -395,11 +279,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void PushToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ToggleBonePush();
-        }
-
         private void ToggleBonePush()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
@@ -416,11 +295,6 @@ namespace WadTool
 
             panelRendering.Skeleton = _bones;
             panelRendering.Invalidate();
-        }
-
-        private void MoveUpToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoveBoneUp();
         }
 
         private void MoveBoneUp()
@@ -455,11 +329,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void MoveDownToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MoveBoneDown();
-        }
-
         private void MoveBoneDown()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
@@ -492,30 +361,6 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void FormSkeletonEditor_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Up && e.Control)
-            {
-                MoveBoneUp();
-            }
-
-            if (e.KeyCode == Keys.Down && e.Control)
-            {
-                MoveBoneDown();
-            }
-
-            if (e.KeyCode == Keys.O && e.Control)
-            {
-                ToggleBonePop();
-            }
-
-            if (e.KeyCode == Keys.P && e.Control)
-            {
-                ToggleBonePush();
-            }
-
-            e.Handled = true;
-        }
 
         private void ReplaceBoneFromFile()
         {
@@ -660,36 +505,6 @@ namespace WadTool
             }
         }
 
-        private void RenameToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            RenameBone();
-        }
-
-        private void ReplaceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ReplaceBoneFromFile();
-        }
-
-        private void ReplaceFromWad2ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ReplaceBoneFromWad2();
-        }
-
-        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DeleteBone();
-        }
-
-        private void AddChildBoneFromFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddChildBoneFromFile();
-        }
-
-        private void AddChildBoneToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddChildBoneFromWad2();
-        }
-
         private void AddChildBoneFromWad2()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
@@ -744,7 +559,93 @@ namespace WadTool
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void PanelRendering_MouseUp(object sender, MouseEventArgs e)
+        private void SaveChanges()
+        {
+            // First check if skeleton is valid
+            int numPop = 0;
+            int numPush = 0;
+            foreach (var bone in _bones)
+            {
+                if (bone.Bone.OpCode == WadLinkOpcode.Pop) numPop++;
+                if (bone.Bone.OpCode == WadLinkOpcode.Push) numPush++;
+            }
+
+            // We can have more PUSH than POP, but the opposite case (POP more than PUSH) will result in a leak 
+            // inside the previous moveables in the list
+            if (numPop > numPush)
+            {
+                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you have added more POP than PUSH.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (treeSkeleton.Nodes.Count > 1)
+            {
+                DarkMessageBox.Show(this, "Your mesh tree is unbalanced, you must have a single bone as root.",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Insert new bones in moveable
+            _moveable.Bones.Clear();
+            foreach (var bone in _bones)
+                _moveable.Bones.Add(bone.Bone);
+
+            // Replace the moveable
+            _wad.Moveables[_moveable.Id] = _moveable;
+
+            // Now cause the moveable to reload
+            _moveable.Version = DataVersion.GetNext();
+
+            _tool.ToggleUnsavedChanges();
+        }
+
+        private void treeSkeleton_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (treeSkeleton.SelectedNodes.Count == 0)
+                    return;
+                var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+                pushToolStripMenuItem.Checked = (theNode.Bone.OpCode == WadLinkOpcode.Push || theNode.Bone.OpCode == WadLinkOpcode.Read);
+                popToolStripMenuItem.Checked = (theNode.Bone.OpCode == WadLinkOpcode.Pop || theNode.Bone.OpCode == WadLinkOpcode.Read);
+
+                cmBone.Show(treeSkeleton.PointToScreen(new Point(e.X, e.Y)));
+            }
+        }
+
+        private void treeSkeleton_Click(object sender, EventArgs e)
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+            panelRendering.SelectedNode = theNode;
+            UpdateUI();
+        }
+
+        private void cbDrawGizmo_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawGizmo = cbDrawGizmo.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void cbDrawGrid_CheckedChanged(object sender, EventArgs e)
+        {
+            panelRendering.DrawGrid = cbDrawGrid.Checked;
+            panelRendering.Invalidate();
+        }
+
+        private void formSkeletonEditor_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.Up)   MoveBoneUp();
+            if (e.Control && e.KeyCode == Keys.Down) MoveBoneDown();
+            if (e.Control && e.KeyCode == Keys.O)    ToggleBonePop();
+            if (e.Control && e.KeyCode == Keys.P)    ToggleBonePush();
+            e.Handled = true;
+        }
+
+        private void panelRendering_MouseUp(object sender, MouseEventArgs e)
         {
             if (panelRendering.SelectedNode != null)
             {
@@ -760,7 +661,7 @@ namespace WadTool
             UpdateUI();
         } 
 
-        private void PanelRendering_MouseDown(object sender, MouseEventArgs e)
+        private void panelRendering_MouseDown(object sender, MouseEventArgs e)
         {
             _startPoint = e.Location;
         }
@@ -785,5 +686,32 @@ namespace WadTool
             panelRendering.SelectedNode.Bone.Translation = new Vector3(trans.X, trans.Y, (float)nudTransZ.Value);
             _tool.BoneOffsetMoved();
         }
+
+        private void butSaveChanges_Click(object sender, EventArgs e)
+        {
+            SaveChanges();
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void butDeleteBone_Click(object sender, EventArgs e) => DeleteBone();
+        private void butRenameBone_Click(object sender, EventArgs e) => RenameBone();
+        private void butLoadModel_Click(object sender, EventArgs e) => ReplaceAllBonesFromFile();
+        private void butCancel_Click(object sender, EventArgs e) => Close();
+        private void butReplaceFromWad2_Click(object sender, EventArgs e) => ReplaceBoneFromWad2();
+        private void butAddFromFile_Click(object sender, EventArgs e) => AddChildBoneFromFile();
+        private void butReplaceFromFile_Click(object sender, EventArgs e) => ReplaceBoneFromFile();
+        private void butSelectMesh_Click(object sender, EventArgs e) => AddChildBoneFromWad2();
+
+        private void PopToolStripMenuItem_Click(object sender, EventArgs e) => ToggleBonePop();
+        private void PushToolStripMenuItem_Click(object sender, EventArgs e) => ToggleBonePush();
+        private void MoveUpToolStripMenuItem_Click(object sender, EventArgs e) => MoveBoneUp();
+        private void MoveDownToolStripMenuItem_Click(object sender, EventArgs e) => MoveBoneDown();
+        private void RenameToolStripMenuItem_Click(object sender, EventArgs e) => RenameBone();
+        private void ReplaceToolStripMenuItem_Click(object sender, EventArgs e) => ReplaceBoneFromFile();
+        private void ReplaceFromWad2ToolStripMenuItem_Click(object sender, EventArgs e) => ReplaceBoneFromWad2();
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e) => DeleteBone();
+        private void AddChildBoneFromFileToolStripMenuItem_Click(object sender, EventArgs e) => AddChildBoneFromFile();
+        private void AddChildBoneToolStripMenuItem_Click(object sender, EventArgs e) => AddChildBoneFromWad2();
     }
 }
