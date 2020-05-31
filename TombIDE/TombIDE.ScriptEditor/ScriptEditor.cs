@@ -196,7 +196,7 @@ namespace TombIDE.ScriptEditor
 				}
 				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent)
 				{
-					bool isChanged = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).NGString);
+					bool isChanged = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).PluginName);
 					EndSilentScriptAction(cachedTab, isChanged, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
