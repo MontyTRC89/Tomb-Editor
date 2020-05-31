@@ -25,6 +25,7 @@ SoundTool:
  
 WadTool:
  * Fix exception when selecting empty sprite sequence.
+ * Fix bounding box controls being unresponsive to keypresses.
 
 Version 1.3.1
 =============
