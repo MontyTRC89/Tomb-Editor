@@ -2878,12 +2878,12 @@ namespace TombEditor.Controls
                             // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
                             if (!disableSelection && _editor.SelectedObject == geo)
                             {
-                                geometryEffect.Parameters["UseVertexColors"].SetValue(true);
+                                geometryEffect.Parameters["UseVertexColors"].SetValue(false);
                                 geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                             }
                             else if (DisablePickingForImportedGeometry)
                             {
-                                geometryEffect.Parameters["UseVertexColors"].SetValue(true);
+                                geometryEffect.Parameters["UseVertexColors"].SetValue(false);
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(0.4f, 0.4f, 1.0f, 1.0f));
                             }
                             else
