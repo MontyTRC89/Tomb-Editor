@@ -27,8 +27,8 @@ WadTool:
  * Draw actual skin in skeleton editor.
  * Allow precise editing of bone pivots in skeleton editor.
  * Allow editing bounding fox for all selected frames at once.
- * Fix exception when selecting empty sprite sequence.
  * Fix bounding box controls being unresponsive to keypresses.
+ * Fix exception when selecting empty sprite sequence.
 
 Version 1.3.1
 =============
