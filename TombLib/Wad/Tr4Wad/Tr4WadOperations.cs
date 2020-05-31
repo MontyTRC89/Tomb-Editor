@@ -25,14 +25,6 @@ namespace TombLib.Wad.Tr4Wad
             Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);
             logger.Info("Textures read.");
 
-            // Convert sounds
-            var sfxPath = Path.GetDirectoryName(oldWad.FileName) + "\\" + Path.GetFileNameWithoutExtension(oldWad.FileName) + ".sfx";
-            if (File.Exists(sfxPath))
-            {
-                wad.Sounds = WadSounds.ReadFromFile(sfxPath);
-                logger.Info("Sounds read.");
-            }
-
             // Convert moveables
             for (int i = 0; i < oldWad.Moveables.Count; i++)
                 ConvertTr4MoveableToWadMoveable(wad, oldWad, i, textures);
