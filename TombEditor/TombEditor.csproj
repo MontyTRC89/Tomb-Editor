@@ -409,8 +409,6 @@
     <Compile Include="ToolWindows\TriggerList.Designer.cs">
       <DependentUpon>TriggerList.cs</DependentUpon>
     </Compile>
-    <Compile Include="RowAnimatedTexture.cs" />
-    <Compile Include="TestLevel3.cs" />
     <Compile Include="TestLevel.cs" />
     <Compile Include="TombLauncher.cs" />
     <Compile Include="ToolWindows\RoomOptions.cs">
@@ -451,7 +449,6 @@
     <Compile Include="Forms\FormTrigger.Designer.cs">
       <DependentUpon>FormTrigger.cs</DependentUpon>
     </Compile>
-    <Compile Include="TexturePackerTest.cs" />
     <Compile Include="Undo.cs" />
     <EmbeddedResource Include="Controls\ImportedGeometryManager.resx">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
