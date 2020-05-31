@@ -246,14 +246,14 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Compare raw bitmap data of given area with incoming texture
-            public SimilarityResult TextureSimilar(TextureArea texture, bool isForRoom)
+            public SimilarityResult TextureSimilar(TextureArea texture)
             {
                 // Only scan if:
                 //  - Parent's texture isn't the same as incoming texture
                 //  - Parent has room texture
                 //  - Incoming texture is either from imported geometry or wad
 
-                if (Texture != texture.Texture && Texture is LevelTexture && isForRoom == IsForRoom &&
+                if (Texture != texture.Texture && Texture is LevelTexture &&
                    (texture.Texture is ImportedGeometryTexture || texture.Texture is WadTexture))
                 {
                     var rr = texture.GetRect();
@@ -688,7 +688,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (!scanOtherSets) continue;
 
-                    var sr = parent.TextureSimilar(areaToLook, isForRoom);
+                    var sr = parent.TextureSimilar(areaToLook);
                     if (!sr.Found) continue;
 
                     for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -767,30 +767,28 @@ namespace TombLib.LevelData.Compilers.Util
                 return new Result();
             }
 
-            if (isForRoom)
-            {
-                // Try to compare incoming texture with existing anims and return animation frame
-                if (_actualAnimTextures.Count > 0)
-                    foreach (var actualTex in _actualAnimTextures)
-                    {
-                        var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures);
-                        if (existing.HasValue)
-                            return existing.Value;
-                    }
+            // Try to compare incoming texture with existing anims and return animation frame
+            if (_actualAnimTextures.Count > 0)
+                foreach (var actualTex in _actualAnimTextures)
+                {
+                    var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures);
+                    if (existing.HasValue)
+                        return existing.Value;
+                }
 
-                // Now try to compare incoming texture with lookup anim seq table
-                if (_referenceAnimTextures.Count > 0)
-                    foreach (var refTex in _referenceAnimTextures)
+            // Now try to compare incoming texture with lookup anim seq table
+            if (_referenceAnimTextures.Count > 0)
+                foreach (var refTex in _referenceAnimTextures)
+                {
+                    // If reference set found, generate actual one and immediately return fresh result
+                    if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures).HasValue)
                     {
-                        // If reference set found, generate actual one and immediately return fresh result
-                        if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures).HasValue)
-                        {
-                            GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
-                            return AddTexture(texture, isForRoom, isForTriangle);
-                        }
+                        GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
+                        return AddTexture(texture, isForRoom, isForTriangle);
                     }
-            }
+                }
 
+            // No animated textures identified, add texture as ordinary one
             return AddTexture(texture, _parentTextures, isForRoom, isForTriangle, topmostAndUnpadded);
         }
 
