@@ -206,7 +206,7 @@
     <Compile Include="LevelData\Compilers\Tr5.cs" />
     <Compile Include="LevelData\Compilers\Tr5Main.cs" />
     <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
-    <Compile Include="LevelData\Compilers\Util\LegacyTextureAllocator.cs" />
+    <Compile Include="LevelData\Compilers\Util\SpriteAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />
     <Compile Include="LevelData\Instances\FlybyCameraInstance.cs" />
     <Compile Include="LevelData\ImportedGeometry.cs" />
