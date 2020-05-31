@@ -72,7 +72,7 @@ namespace TombLib.Scripting.Helpers
 				string argument = arguments[i];
 				string argumentSyntax = string.Empty;
 
-				if (i < commandSyntax.Split(',').Length)
+				if (!string.IsNullOrEmpty(commandSyntax) && i < commandSyntax.Split(',').Length)
 					argumentSyntax = commandSyntax.Split(',')[i];
 
 				if (!argument.Contains("_"))
