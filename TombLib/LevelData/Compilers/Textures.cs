@@ -131,49 +131,56 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(59, "Building sprites");
             var spriteSequences = _level.Settings.WadGetAllSpriteSequences();
-            //ReportProgress(9, "Reading " + _level.Wad.OriginalWad.BaseName + ".swd");
 
             // Add all sprites to the texture packer
-            var textureAllocator = new Util.LegacyTextureAllocator();
+            var spriteAllocator = new Util.SpriteAllocator();
             var spriteTextureIDs = new Dictionary<Hash, int>();
             foreach (var sprite in spriteSequences.Values.SelectMany(sequence => sequence.Sprites))
                 if (!spriteTextureIDs.ContainsKey(sprite.Texture.Hash))
-                    spriteTextureIDs.Add(sprite.Texture.Hash, textureAllocator.GetOrAllocateTextureID(sprite.Texture));
+                    spriteTextureIDs.Add(sprite.Texture.Hash, spriteAllocator.GetOrAllocateTextureID(sprite.Texture));
 
             // Pack textures
-            List<ImageC> texturePages = textureAllocator.PackTextures();
+            List<ImageC> texturePages = spriteAllocator.PackTextures();
 
             // Now build data structures
             var tempSequences = new List<tr_sprite_sequence>();
             var tempSprites = new List<tr_sprite_texture>();
             var lastOffset = 0;
 
-            foreach (var oldSequence in spriteSequences.Values)
+            foreach (var sequence in spriteSequences.Values)
             {
                 var newSequence = new tr_sprite_sequence();
-                newSequence.NegativeLength = (short)-oldSequence.Sprites.Count;
-                newSequence.ObjectID = (int)oldSequence.Id.TypeId;
+                newSequence.NegativeLength = (short)-sequence.Sprites.Count;
+                newSequence.ObjectID = (int)sequence.Id.TypeId;
                 newSequence.Offset = (short)lastOffset;
 
-                foreach (var oldTexture in oldSequence.Sprites)
+                foreach (var sprite in sequence.Sprites)
                 {
-                    var packInfo = textureAllocator.GetPackInfo(spriteTextureIDs[oldTexture.Texture.Hash]);
+                    var id = spriteTextureIDs[sprite.Texture.Hash];
+                    if (id == -1)
+                    {
+                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) + 
+                            " in sequence #" + sequence.Id.TypeId + " wasn't added: size is too big or coordinates are invalid.");
+                        continue;
+                    }
+
+                    var packInfo = spriteAllocator.GetPackInfo(id);
                     var newTexture = new tr_sprite_texture();
 
                     if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
                     {
-                        ushort texW = (ushort)oldTexture.Texture.Image.Width;
-                        ushort texH = (ushort)oldTexture.Texture.Image.Height;
+                        ushort texW = (ushort)sprite.Texture.Image.Width;
+                        ushort texH = (ushort)sprite.Texture.Image.Height;
                         ushort SpriteW = (ushort)((texW - 1) * 256 + 255);
                         ushort SpriteH = (ushort)((texH - 1) * 256 + 255);
                         newTexture.X = (byte)packInfo.Pos.X;
                         newTexture.Y = (byte)packInfo.Pos.Y;
                         newTexture.Width = SpriteW;
                         newTexture.Height = SpriteH;
-                        newTexture.TopSide = (short)oldTexture.Alignment.Y0;
-                        newTexture.LeftSide = (short)oldTexture.Alignment.X0;
-                        newTexture.RightSide = (short)oldTexture.Alignment.X1;
-                        newTexture.BottomSide = (short)oldTexture.Alignment.Y1;
+                        newTexture.TopSide = (short)sprite.Alignment.Y0;
+                        newTexture.LeftSide = (short)sprite.Alignment.X0;
+                        newTexture.RightSide = (short)sprite.Alignment.X1;
+                        newTexture.BottomSide = (short)sprite.Alignment.Y1;
                     }
                     else
                     {
@@ -181,10 +188,10 @@ namespace TombLib.LevelData.Compilers
                         newTexture.LeftSide = (short)packInfo.Pos.X;
                         newTexture.X = (byte)newTexture.LeftSide;
                         newTexture.Y = (byte)newTexture.TopSide;
-                        newTexture.Width = (ushort)((oldTexture.Texture.Image.Width - 1) * 256);
-                        newTexture.Height = (ushort)((oldTexture.Texture.Image.Height - 1) * 256);
-                        newTexture.RightSide = (short)(newTexture.LeftSide + oldTexture.Texture.Image.Width);
-                        newTexture.BottomSide = (short)(newTexture.TopSide + oldTexture.Texture.Image.Height);
+                        newTexture.Width = (ushort)((sprite.Texture.Image.Width - 1) * 256);
+                        newTexture.Height = (ushort)((sprite.Texture.Image.Height - 1) * 256);
+                        newTexture.RightSide = (short)(newTexture.LeftSide + sprite.Texture.Image.Width);
+                        newTexture.BottomSide = (short)(newTexture.TopSide + sprite.Texture.Image.Height);
                     }
                     newTexture.Tile = (ushort)(pagesBeforeSprites + packInfo.OutputTextureID);
 
@@ -192,7 +199,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 tempSequences.Add(newSequence);
-                lastOffset += oldSequence.Sprites.Count;
+                lastOffset += sequence.Sprites.Count;
             }
 
             _spriteSequences = tempSequences;
