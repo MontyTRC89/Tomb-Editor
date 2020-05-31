@@ -57,7 +57,17 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
+            this.darkLabel29 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel21 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel26 = new DarkUI.Controls.DarkLabel();
+            this.nudTransX = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkLabel27 = new DarkUI.Controls.DarkLabel();
+            this.nudTransY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudTransZ = new DarkUI.Controls.DarkNumericUpDown();
             this.cmBone.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTransY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTransZ)).BeginInit();
             this.SuspendLayout();
             // 
             // treeSkeleton
@@ -65,10 +75,14 @@
             this.treeSkeleton.AllowMoveNodes = true;
             this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeSkeleton.Location = new System.Drawing.Point(500, 5);
+            this.treeSkeleton.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.treeSkeleton.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
+            this.treeSkeleton.Location = new System.Drawing.Point(467, 5);
             this.treeSkeleton.MaxDragChange = 20;
             this.treeSkeleton.Name = "treeSkeleton";
-            this.treeSkeleton.Size = new System.Drawing.Size(280, 266);
+            this.treeSkeleton.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+            this.treeSkeleton.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
+            this.treeSkeleton.Size = new System.Drawing.Size(310, 280);
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Text = "darkTreeView1";
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
@@ -80,7 +94,7 @@
             this.cbDrawGizmo.AutoSize = true;
             this.cbDrawGizmo.Checked = true;
             this.cbDrawGizmo.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGizmo.Location = new System.Drawing.Point(500, 395);
+            this.cbDrawGizmo.Location = new System.Drawing.Point(546, 415);
             this.cbDrawGizmo.Name = "cbDrawGizmo";
             this.cbDrawGizmo.Size = new System.Drawing.Size(87, 17);
             this.cbDrawGizmo.TabIndex = 82;
@@ -93,7 +107,7 @@
             this.cbDrawGrid.AutoSize = true;
             this.cbDrawGrid.Checked = true;
             this.cbDrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbDrawGrid.Location = new System.Drawing.Point(500, 415);
+            this.cbDrawGrid.Location = new System.Drawing.Point(467, 415);
             this.cbDrawGrid.Name = "cbDrawGrid";
             this.cbDrawGrid.Size = new System.Drawing.Size(77, 17);
             this.cbDrawGrid.TabIndex = 81;
@@ -105,7 +119,7 @@
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Checked = false;
             this.butSaveChanges.Image = global::WadTool.Properties.Resources.save_16;
-            this.butSaveChanges.Location = new System.Drawing.Point(643, 411);
+            this.butSaveChanges.Location = new System.Drawing.Point(640, 411);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(137, 23);
             this.butSaveChanges.TabIndex = 80;
@@ -118,11 +132,11 @@
             this.butRenameBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRenameBone.Checked = false;
             this.butRenameBone.Image = global::WadTool.Properties.Resources.edit_16;
-            this.butRenameBone.Location = new System.Drawing.Point(500, 277);
+            this.butRenameBone.Location = new System.Drawing.Point(625, 319);
             this.butRenameBone.Name = "butRenameBone";
-            this.butRenameBone.Size = new System.Drawing.Size(137, 23);
+            this.butRenameBone.Size = new System.Drawing.Size(73, 23);
             this.butRenameBone.TabIndex = 84;
-            this.butRenameBone.Text = "Rename bone";
+            this.butRenameBone.Text = "Rename";
             this.butRenameBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butRenameBone.Click += new System.EventHandler(this.butRenameBone_Click);
             // 
@@ -131,11 +145,11 @@
             this.butDeleteBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteBone.Checked = false;
             this.butDeleteBone.Image = global::WadTool.Properties.Resources.trash_161;
-            this.butDeleteBone.Location = new System.Drawing.Point(643, 277);
+            this.butDeleteBone.Location = new System.Drawing.Point(704, 319);
             this.butDeleteBone.Name = "butDeleteBone";
-            this.butDeleteBone.Size = new System.Drawing.Size(137, 23);
+            this.butDeleteBone.Size = new System.Drawing.Size(73, 23);
             this.butDeleteBone.TabIndex = 83;
-            this.butDeleteBone.Text = "Delete bone";
+            this.butDeleteBone.Text = "Delete";
             this.butDeleteBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butDeleteBone.Click += new System.EventHandler(this.butDeleteBone_Click);
             // 
@@ -143,9 +157,9 @@
             // 
             this.butLoadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butLoadModel.Checked = false;
-            this.butLoadModel.Location = new System.Drawing.Point(500, 364);
+            this.butLoadModel.Location = new System.Drawing.Point(467, 377);
             this.butLoadModel.Name = "butLoadModel";
-            this.butLoadModel.Size = new System.Drawing.Size(280, 23);
+            this.butLoadModel.Size = new System.Drawing.Size(310, 23);
             this.butLoadModel.TabIndex = 80;
             this.butLoadModel.Text = "Replace model";
             this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -167,11 +181,11 @@
             this.butAddFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromWad2.Checked = false;
             this.butAddFromWad2.Image = global::WadTool.Properties.Resources.search_16;
-            this.butAddFromWad2.Location = new System.Drawing.Point(643, 335);
+            this.butAddFromWad2.Location = new System.Drawing.Point(625, 348);
             this.butAddFromWad2.Name = "butAddFromWad2";
-            this.butAddFromWad2.Size = new System.Drawing.Size(137, 23);
+            this.butAddFromWad2.Size = new System.Drawing.Size(152, 23);
             this.butAddFromWad2.TabIndex = 87;
-            this.butAddFromWad2.Text = "Add from Wad2";
+            this.butAddFromWad2.Text = "Add from wad...";
             this.butAddFromWad2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddFromWad2.Click += new System.EventHandler(this.butSelectMesh_Click);
             // 
@@ -179,12 +193,12 @@
             // 
             this.butAddFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromFile.Checked = false;
-            this.butAddFromFile.Image = global::WadTool.Properties.Resources.opened_folder_16;
-            this.butAddFromFile.Location = new System.Drawing.Point(643, 306);
+            this.butAddFromFile.Image = global::WadTool.Properties.Resources.general_plus_math_16;
+            this.butAddFromFile.Location = new System.Drawing.Point(467, 319);
             this.butAddFromFile.Name = "butAddFromFile";
-            this.butAddFromFile.Size = new System.Drawing.Size(137, 23);
+            this.butAddFromFile.Size = new System.Drawing.Size(73, 23);
             this.butAddFromFile.TabIndex = 86;
-            this.butAddFromFile.Text = "Add bone";
+            this.butAddFromFile.Text = "Add";
             this.butAddFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butAddFromFile.Click += new System.EventHandler(this.butAddFromFile_Click);
             // 
@@ -193,11 +207,11 @@
             this.butReplaceFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromWad2.Checked = false;
             this.butReplaceFromWad2.Image = global::WadTool.Properties.Resources.search_16;
-            this.butReplaceFromWad2.Location = new System.Drawing.Point(500, 335);
+            this.butReplaceFromWad2.Location = new System.Drawing.Point(467, 348);
             this.butReplaceFromWad2.Name = "butReplaceFromWad2";
-            this.butReplaceFromWad2.Size = new System.Drawing.Size(137, 23);
+            this.butReplaceFromWad2.Size = new System.Drawing.Size(152, 23);
             this.butReplaceFromWad2.TabIndex = 90;
-            this.butReplaceFromWad2.Text = "Replace from Wad2";
+            this.butReplaceFromWad2.Text = "Replace from wad...";
             this.butReplaceFromWad2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butReplaceFromWad2.Click += new System.EventHandler(this.butReplaceFromWad2_Click);
             // 
@@ -205,12 +219,12 @@
             // 
             this.butReplaceFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromFile.Checked = false;
-            this.butReplaceFromFile.Image = global::WadTool.Properties.Resources.opened_folder_16;
-            this.butReplaceFromFile.Location = new System.Drawing.Point(500, 306);
+            this.butReplaceFromFile.Image = global::WadTool.Properties.Resources.replace_16;
+            this.butReplaceFromFile.Location = new System.Drawing.Point(546, 319);
             this.butReplaceFromFile.Name = "butReplaceFromFile";
-            this.butReplaceFromFile.Size = new System.Drawing.Size(137, 23);
+            this.butReplaceFromFile.Size = new System.Drawing.Size(73, 23);
             this.butReplaceFromFile.TabIndex = 89;
-            this.butReplaceFromFile.Text = "Replace bone";
+            this.butReplaceFromFile.Text = "Replace";
             this.butReplaceFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butReplaceFromFile.Click += new System.EventHandler(this.butReplaceFromFile_Click);
             // 
@@ -377,16 +391,145 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelRendering.Location = new System.Drawing.Point(5, 5);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(491, 429);
+            this.panelRendering.Size = new System.Drawing.Size(453, 429);
             this.panelRendering.TabIndex = 91;
             this.panelRendering.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelRendering_MouseDown);
             this.panelRendering.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PanelRendering_MouseUp);
+            // 
+            // darkLabel29
+            // 
+            this.darkLabel29.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel29.Location = new System.Drawing.Point(464, 293);
+            this.darkLabel29.Name = "darkLabel29";
+            this.darkLabel29.Size = new System.Drawing.Size(60, 13);
+            this.darkLabel29.TabIndex = 105;
+            this.darkLabel29.Text = "Pivot pos:";
+            // 
+            // darkLabel21
+            // 
+            this.darkLabel21.AutoSize = true;
+            this.darkLabel21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkLabel21.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            this.darkLabel21.Location = new System.Drawing.Point(697, 293);
+            this.darkLabel21.Name = "darkLabel21";
+            this.darkLabel21.Size = new System.Drawing.Size(14, 13);
+            this.darkLabel21.TabIndex = 101;
+            this.darkLabel21.Text = "Z";
+            // 
+            // darkLabel26
+            // 
+            this.darkLabel26.AutoSize = true;
+            this.darkLabel26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkLabel26.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel26.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            this.darkLabel26.Location = new System.Drawing.Point(614, 293);
+            this.darkLabel26.Name = "darkLabel26";
+            this.darkLabel26.Size = new System.Drawing.Size(14, 13);
+            this.darkLabel26.TabIndex = 100;
+            this.darkLabel26.Text = "Y";
+            // 
+            // nudTransX
+            // 
+            this.nudTransX.DecimalPlaces = 4;
+            this.nudTransX.IncrementAlternate = new decimal(new int[] {
+            160,
+            0,
+            0,
+            65536});
+            this.nudTransX.Location = new System.Drawing.Point(546, 291);
+            this.nudTransX.LoopValues = false;
+            this.nudTransX.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudTransX.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudTransX.Name = "nudTransX";
+            this.nudTransX.Size = new System.Drawing.Size(64, 22);
+            this.nudTransX.TabIndex = 102;
+            this.nudTransX.ValueChanged += new System.EventHandler(this.nudTransX_ValueChanged);
+            // 
+            // darkLabel27
+            // 
+            this.darkLabel27.AutoSize = true;
+            this.darkLabel27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.darkLabel27.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.darkLabel27.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            this.darkLabel27.Location = new System.Drawing.Point(530, 293);
+            this.darkLabel27.Name = "darkLabel27";
+            this.darkLabel27.Size = new System.Drawing.Size(14, 13);
+            this.darkLabel27.TabIndex = 99;
+            this.darkLabel27.Text = "X";
+            // 
+            // nudTransY
+            // 
+            this.nudTransY.DecimalPlaces = 4;
+            this.nudTransY.IncrementAlternate = new decimal(new int[] {
+            160,
+            0,
+            0,
+            65536});
+            this.nudTransY.Location = new System.Drawing.Point(629, 291);
+            this.nudTransY.LoopValues = false;
+            this.nudTransY.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudTransY.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudTransY.Name = "nudTransY";
+            this.nudTransY.Size = new System.Drawing.Size(64, 22);
+            this.nudTransY.TabIndex = 103;
+            this.nudTransY.ValueChanged += new System.EventHandler(this.nudTransY_ValueChanged);
+            // 
+            // nudTransZ
+            // 
+            this.nudTransZ.DecimalPlaces = 4;
+            this.nudTransZ.IncrementAlternate = new decimal(new int[] {
+            160,
+            0,
+            0,
+            65536});
+            this.nudTransZ.Location = new System.Drawing.Point(712, 291);
+            this.nudTransZ.LoopValues = false;
+            this.nudTransZ.Maximum = new decimal(new int[] {
+            32767,
+            0,
+            0,
+            0});
+            this.nudTransZ.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
+            this.nudTransZ.Name = "nudTransZ";
+            this.nudTransZ.Size = new System.Drawing.Size(65, 22);
+            this.nudTransZ.TabIndex = 104;
+            this.nudTransZ.ValueChanged += new System.EventHandler(this.nudTransZ_ValueChanged);
             // 
             // FormSkeletonEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 462);
+            this.Controls.Add(this.cbDrawGrid);
+            this.Controls.Add(this.cbDrawGizmo);
+            this.Controls.Add(this.darkLabel29);
+            this.Controls.Add(this.darkLabel21);
+            this.Controls.Add(this.darkLabel26);
+            this.Controls.Add(this.nudTransX);
+            this.Controls.Add(this.darkLabel27);
+            this.Controls.Add(this.nudTransY);
+            this.Controls.Add(this.nudTransZ);
             this.Controls.Add(this.panelRendering);
             this.Controls.Add(this.butReplaceFromWad2);
             this.Controls.Add(this.butReplaceFromFile);
@@ -395,8 +538,6 @@
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.butRenameBone);
             this.Controls.Add(this.butDeleteBone);
-            this.Controls.Add(this.cbDrawGizmo);
-            this.Controls.Add(this.cbDrawGrid);
             this.Controls.Add(this.butLoadModel);
             this.Controls.Add(this.butSaveChanges);
             this.Controls.Add(this.treeSkeleton);
@@ -413,6 +554,9 @@
             this.Load += new System.EventHandler(this.FormSkeletonEditor_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormSkeletonEditor_KeyDown);
             this.cmBone.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nudTransX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTransY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTransZ)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -448,5 +592,12 @@
         private System.Windows.Forms.ToolStripMenuItem addChildBoneToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private DarkUI.Controls.DarkLabel darkLabel29;
+        private DarkUI.Controls.DarkLabel darkLabel21;
+        private DarkUI.Controls.DarkLabel darkLabel26;
+        private DarkUI.Controls.DarkNumericUpDown nudTransX;
+        private DarkUI.Controls.DarkLabel darkLabel27;
+        private DarkUI.Controls.DarkNumericUpDown nudTransY;
+        private DarkUI.Controls.DarkNumericUpDown nudTransZ;
     }
 }

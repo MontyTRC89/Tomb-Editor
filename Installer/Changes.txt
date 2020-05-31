@@ -24,6 +24,9 @@ SoundTool:
  * Add ability to copy-paste sound infos between different instances.
  
 WadTool:
+ * Draw actual skin in skeleton editor.
+ * Allow precise editing of bone pivots in skeleton editor.
+ * Allow editing bounding fox for all selected frames at once.
  * Fix exception when selecting empty sprite sequence.
  * Fix bounding box controls being unresponsive to keypresses.
 
