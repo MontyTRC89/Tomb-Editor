@@ -5,7 +5,6 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using TombIDE.ScriptEditor.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Objects;
@@ -17,7 +16,7 @@ namespace TombIDE.ScriptEditor.Controls
 	{
 		// TODO: Refactor !!!
 
-		private FormMnemonicInfo _mnemonicInfoForm;
+		private IDE _ide;
 
 		public ReferenceBrowser()
 		{
@@ -28,7 +27,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		public void Initialize(IDE ide)
 		{
-			_mnemonicInfoForm = new FormMnemonicInfo(ide);
+			_ide = ide;
 		}
 
 		private void comboBox_References_SelectedIndexChanged(object sender, EventArgs e) => UpdateDataGrid();
@@ -190,19 +189,19 @@ namespace TombIDE.ScriptEditor.Controls
 				switch (comboBoxItem)
 				{
 					case "Mnemonic Constants":
-						_mnemonicInfoForm.Show(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.Mnemonics);
+						_ide.ScriptEditor_OpenReferenceDescription(dataGrid[2, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.Mnemonics);
 						break;
 
 					case "OLD Commands List":
-						_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OLDCommands);
+						_ide.ScriptEditor_OpenReferenceDescription(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OLDCommands);
 						break;
 
 					case "NEW Commands List":
-						_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.NEWCommands);
+						_ide.ScriptEditor_OpenReferenceDescription(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.NEWCommands);
 						break;
 
 					case "OCB List":
-						_mnemonicInfoForm.Show(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OCBs);
+						_ide.ScriptEditor_OpenReferenceDescription(dataGrid[0, dataGrid.SelectedCells[0].RowIndex].Value.ToString(), ReferenceType.OCBs);
 						break;
 				}
 			}

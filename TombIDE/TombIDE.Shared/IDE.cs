@@ -35,7 +35,7 @@ namespace TombIDE.Shared
 			public IDETab Current { get; internal set; }
 		}
 
-		public IDETab SelectedIDETab { get; internal set; }
+		public IDETab SelectedIDETab { get; private set; }
 
 		public void SelectIDETab(IDETab tab)
 		{
@@ -309,6 +309,19 @@ namespace TombIDE.Shared
 			RaiseEvent(new ScriptEditor_RenameLevelEvent { OldName = targetLevelName, NewName = newName });
 
 		#endregion ScriptEditor_RenameLevel
+
+		#region ScriptEditor_OpenReferenceDescription
+
+		public class ScriptEditor_OpenReferenceDescriptionEvent : IIDEEvent
+		{
+			public string ReferenceName { get; internal set; }
+			public ReferenceType ReferenceType { get; internal set; }
+		}
+
+		public void ScriptEditor_OpenReferenceDescription(string referenceName, ReferenceType type) =>
+			RaiseEvent(new ScriptEditor_OpenReferenceDescriptionEvent { ReferenceName = referenceName, ReferenceType = type });
+
+		#endregion ScriptEditor_OpenReferenceDescription
 
 		// Construction and destruction
 		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects, List<Plugin> availablePlugins)

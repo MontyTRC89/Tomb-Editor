@@ -28,6 +28,14 @@
 		Define
 	}
 
+	public enum ReferenceType
+	{
+		OCBs,
+		OLDCommands,
+		NEWCommands,
+		Mnemonics
+	}
+
 	public enum FileCreationMode
 	{
 		New,
