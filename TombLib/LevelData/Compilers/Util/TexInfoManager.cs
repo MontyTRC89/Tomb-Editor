@@ -111,23 +111,6 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        // Similarity result is a simple pair of texture struct and bool flag
-        // indicating that similarity was found. It is needed to identify and shuffle around
-        // completely similar textures from different texture sets (e.g. when re-imported mesh is used
-        // with same textures applied).
-
-        public struct SimilarityResult
-        {
-            public bool Found;
-            public TextureArea Carrier;
-
-            public SimilarityResult(bool found, TextureArea carrier)
-            {
-                Found = found;
-                Carrier = carrier;
-            }
-        }
-
         // ChildTextureArea is a simple enclosed relative texture area with stripped down parameters
         // which should be the same among all children of same parent.
         // Stripped down parameters include BumpLevel and IsForTriangle, because if these are
@@ -246,11 +229,11 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Compare raw bitmap data of given area with incoming texture
-            public SimilarityResult TextureSimilar(TextureArea texture)
+            public TextureArea? TextureSimilar(TextureArea texture)
             {
                 // Only scan if:
+                //  - Parent is room texture
                 //  - Parent's texture isn't the same as incoming texture
-                //  - Parent has room texture
                 //  - Incoming texture is either from imported geometry or wad
 
                 if (Texture != texture.Texture && Texture is LevelTexture &&
@@ -297,12 +280,12 @@ namespace TombLib.LevelData.Compilers.Util
                             else
                                 newtex.TexCoord3 = newtex.TexCoord2;
 
-                            return new SimilarityResult(true, newtex);
+                            return newtex;
                         }
                     }
                 }
 
-                return new SimilarityResult(false, texture);
+                return null;
             }
 
             // Check if bumpmapping could be assigned to parent.
@@ -689,10 +672,10 @@ namespace TombLib.LevelData.Compilers.Util
                     if (!scanOtherSets) continue;
 
                     var sr = parent.TextureSimilar(areaToLook);
-                    if (!sr.Found) continue;
+                    if (!sr.HasValue) continue;
 
                     for (int i = 0; i < lookupCoordinates.Length; i++)
-                        lookupCoordinates[i] = sr.Carrier.GetTexCoord(i);
+                        lookupCoordinates[i] = sr.Value.GetTexCoord(i);
                 }
 
                 // Extract each children's absolute coordinates and compare them to incoming texture coordinates.
