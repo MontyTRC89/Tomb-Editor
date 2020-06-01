@@ -695,7 +695,11 @@ namespace TombLib.LevelData.Compilers
             // Step 1: create the real list of sounds and indices to compile
 
             _finalSoundInfosList = new List<WadSoundInfo>();
-            _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedAndAvailableSounds);
+
+            if (_level.Settings.GameVersion.UsesMainSfx())
+                _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
+            else
+                _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedAndAvailableSounds);
 
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
                 if (_finalSelectedSoundsList.Contains(soundInfo.Id))
