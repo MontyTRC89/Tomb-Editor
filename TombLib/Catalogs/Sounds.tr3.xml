@@ -26,7 +26,7 @@
           <FileName>foot04.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -45,7 +45,7 @@
           <FileName>clim_up2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -83,7 +83,7 @@
           <FileName>slipping.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -102,7 +102,7 @@
           <FileName>landing.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -121,7 +121,7 @@
           <FileName>clim_up1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -178,7 +178,7 @@
           <FileName>magnum.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -197,7 +197,7 @@
           <FileName>reload.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -276,7 +276,7 @@
           <FileName>flre_igw.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -295,7 +295,7 @@
           <FileName>flre_buw.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -314,7 +314,7 @@
           <FileName>harp_fr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -333,7 +333,7 @@
           <FileName>harp_lo.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -361,7 +361,7 @@
           <FileName>fsw4.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -380,7 +380,7 @@
           <FileName>wade.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -456,7 +456,7 @@
           <FileName>harp_luw.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -516,7 +516,7 @@
           <FileName>push_swt.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -535,7 +535,7 @@
           <FileName>clim_up3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -598,7 +598,7 @@
           <FileName>lar_jmp.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -658,7 +658,7 @@
           <FileName>rolling.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -715,7 +715,7 @@
           <FileName>swim.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -753,7 +753,7 @@
           <FileName>bubbles.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -772,7 +772,7 @@
           <FileName>sml_swt.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -791,7 +791,7 @@
           <FileName>usekey.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -848,7 +848,7 @@
           <FileName>lar_die1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -867,7 +867,7 @@
           <FileName>uzi_fr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -905,7 +905,7 @@
           <FileName>shot_gun.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -924,7 +924,7 @@
           <FileName>p&amp;p02.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -946,7 +946,7 @@
           <FileName>p&amp;p03.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -965,7 +965,7 @@
           <FileName>emp_gun.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1003,7 +1003,7 @@
           <FileName>bul_flsh.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1025,7 +1025,7 @@
           <FileName>p&amp;p05.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1044,7 +1044,7 @@
           <FileName>floatswm.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1082,7 +1082,7 @@
           <FileName>back_jm1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1101,7 +1101,7 @@
           <FileName>back_jm3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1253,7 +1253,7 @@
           <FileName>push_blk.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1367,7 +1367,7 @@
           <FileName>staleg.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1408,7 +1408,7 @@
           <FileName>swoosh1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1503,7 +1503,7 @@
           <FileName>warp.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1560,7 +1560,7 @@
           <FileName>l_wfall.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -1819,7 +1819,7 @@
           <FileName>asmg_ft3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2028,7 +2028,7 @@
           <FileName>kochstop.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2085,7 +2085,7 @@
           <FileName>l_quake.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2123,7 +2123,7 @@
           <FileName>choose.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2199,7 +2199,7 @@
           <FileName>choose.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2218,7 +2218,7 @@
           <FileName>m_gurel.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2275,7 +2275,7 @@
           <FileName>back_jm2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2316,7 +2316,7 @@
           <FileName>targ2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2335,7 +2335,7 @@
           <FileName>targ3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2354,7 +2354,7 @@
           <FileName>d_eagle.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2373,7 +2373,7 @@
           <FileName>mini_lo.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2392,7 +2392,7 @@
           <FileName>mini_lck.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2411,7 +2411,7 @@
           <FileName>mini_fr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2449,7 +2449,7 @@
           <FileName>l_larel.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2474,7 +2474,7 @@
           <FileName>lar_el4.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2537,7 +2537,7 @@
           <FileName>cln_fuse.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2651,7 +2651,7 @@
           <FileName>silencer.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2765,7 +2765,7 @@
           <FileName>gbod_slm.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2803,7 +2803,7 @@
           <FileName>lar_spks.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2841,7 +2841,7 @@
           <FileName>l_rumb.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2860,7 +2860,7 @@
           <FileName>tube.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2879,7 +2879,7 @@
           <FileName>nextdoor.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2955,7 +2955,7 @@
           <FileName>quad_idl.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -2993,7 +2993,7 @@
           <FileName>quad_mve.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3166,7 +3166,7 @@
           <FileName>flush.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3691,7 +3691,7 @@
           <FileName>lmrc_d2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3710,7 +3710,7 @@
           <FileName>l_clnr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3786,7 +3786,7 @@
           <FileName>boat_idl.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3919,7 +3919,7 @@
           <FileName>quad_fi.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3957,7 +3957,7 @@
           <FileName>l_flm.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -3995,7 +3995,7 @@
           <FileName>drillbit.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4014,7 +4014,7 @@
           <FileName>vs_wnch.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4033,7 +4033,7 @@
           <FileName>alarm.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4052,7 +4052,7 @@
           <FileName>l_mncr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4090,7 +4090,7 @@
           <FileName>mncrt_k.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4109,7 +4109,7 @@
           <FileName>save.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4147,7 +4147,7 @@
           <FileName>shut_sms.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4166,7 +4166,7 @@
           <FileName>uw_fan.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4185,7 +4185,7 @@
           <FileName>uw_fanst.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4204,7 +4204,7 @@
           <FileName>sfan_on.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4242,7 +4242,7 @@
           <FileName>mine_b.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4261,7 +4261,7 @@
           <FileName>spanner.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4957,7 +4957,7 @@
           <FileName>l_roket.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4976,7 +4976,7 @@
           <FileName>shiv_s1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -4995,7 +4995,7 @@
           <FileName>shiv_s2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5194,7 +5194,7 @@
           <FileName>sml_swt.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5415,7 +5415,7 @@
           <FileName>cable_go.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5434,7 +5434,7 @@
           <FileName>cable_st.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5768,7 +5768,7 @@
           <FileName>sml_dc.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5812,7 +5812,7 @@
           <FileName>eng_hoy3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5834,7 +5834,7 @@
           <FileName>ynk_hoy2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -5932,7 +5932,7 @@
           <FileName>lsg_fr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6171,7 +6171,7 @@
           <FileName>wbld.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6209,7 +6209,7 @@
           <FileName>rolling.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6433,7 +6433,7 @@
           <FileName>wtdrip3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6452,7 +6452,7 @@
           <FileName>tonk.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6471,7 +6471,7 @@
           <FileName>bmt_gas.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6528,7 +6528,7 @@
           <FileName>doorbell.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6547,7 +6547,7 @@
           <FileName>alarm_fr.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6585,7 +6585,7 @@
           <FileName>tick.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
+      <Global>false</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6604,7 +6604,7 @@
           <FileName>wb_ft.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6736,7 +6736,7 @@
           <FileName>wb_od2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6755,7 +6755,7 @@
           <FileName>wb_stb.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6774,7 +6774,7 @@
           <FileName>sub_loop.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6793,7 +6793,7 @@
           <FileName>sub_st.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6812,7 +6812,7 @@
           <FileName>sub_stp.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6907,7 +6907,7 @@
           <FileName>lwb_th1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -6945,7 +6945,7 @@
           <FileName>lwb_chn.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
@@ -7065,7 +7065,7 @@
           <FileName>tri_th2.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
