@@ -2266,6 +2266,7 @@ namespace TombEditor
                         continue;
                     room.Blocks[x, z].Type = BlockType.Wall;
                     room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
+                    room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
                 }
 
             SmartBuildGeometry(room, area);
