@@ -25,6 +25,7 @@
             this.butItemUp = new DarkUI.Controls.DarkButton();
             this.panelRight = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butAddItem = new DarkUI.Controls.DarkButton();
             this.panelHeader.SuspendLayout();
             this.panelRightBottom.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -44,6 +45,7 @@
             // 
             // panelHeader
             // 
+            this.panelHeader.Controls.Add(this.butAddItem);
             this.panelHeader.Controls.Add(this.butSearch);
             this.panelHeader.Controls.Add(this.comboItems);
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -58,7 +60,7 @@
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Checked = false;
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(258, 2);
+            this.butSearch.Location = new System.Drawing.Point(228, 2);
             this.butSearch.Name = "butSearch";
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 24);
@@ -75,7 +77,7 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(3, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(256, 24);
+            this.comboItems.Size = new System.Drawing.Size(226, 24);
             this.comboItems.TabIndex = 1;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             this.comboItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.comboItems_Format);
@@ -132,6 +134,17 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
+            // butAddItem
+            // 
+            this.butAddItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddItem.Checked = false;
+            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butAddItem.Location = new System.Drawing.Point(258, 2);
+            this.butAddItem.Name = "butAddItem";
+            this.butAddItem.Size = new System.Drawing.Size(24, 24);
+            this.butAddItem.TabIndex = 4;
+            this.butAddItem.Tag = "AddImportedGeometry";
+            // 
             // ImportedGeometryBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -163,5 +176,6 @@
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkButton butItemDown;
         private DarkUI.Controls.DarkButton butItemUp;
+        private DarkUI.Controls.DarkButton butAddItem;
     }
 }

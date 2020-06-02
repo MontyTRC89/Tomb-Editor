@@ -62,8 +62,8 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ChosenImportedGeometryChangedEvent)
             {
                 var e = (Editor.ChosenImportedGeometryChangedEvent)obj;
-                if (e.Model != null)
-                    comboItems.SelectedItem = panelItem.CurrentObject = e.Model;
+                if (e.Current != null)
+                    comboItems.SelectedItem = panelItem.CurrentObject = e.Current;
             }
 
             // Update tooltip texts
@@ -83,7 +83,7 @@ namespace TombEditor.ToolWindows
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboItems.SelectedItem is ImportedGeometry)
-                _editor.ChosenImportedGeometryChange((ImportedGeometry)comboItems.SelectedItem);
+                _editor.ChosenImportedGeometry = (ImportedGeometry)comboItems.SelectedItem;
         }
 
         private void comboItems_Format(object sender, ListControlConvertEventArgs e)

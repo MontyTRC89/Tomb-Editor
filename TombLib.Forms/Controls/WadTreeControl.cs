@@ -316,7 +316,7 @@ namespace TombLib.Controls
                 using (var b = new SolidBrush(BackColor))
                     e.Graphics.FillRectangle(b, ClientRectangle);
 
-                string notifyMessage = "Click here to load a new wad file.";
+                string notifyMessage = "Click here to load new wad file.";
 
                 using (var b = new SolidBrush(Colors.DisabledText))
                     e.Graphics.DrawString(notifyMessage, Font, b, ClientRectangle,
