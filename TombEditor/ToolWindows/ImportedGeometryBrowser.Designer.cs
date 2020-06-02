@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.ToolWindows
 {
-    partial class ItemBrowser
+    partial class ImportedGeometryBrowser
     {
         /// <summary>
         /// Required designer variable.
@@ -16,15 +16,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.panelItem = new TombEditor.Controls.PanelRenderingItem();
+            this.panelItem = new TombEditor.Controls.PanelRenderingImportedGeometry();
             this.panelHeader = new System.Windows.Forms.Panel();
-            this.butAddItem = new DarkUI.Controls.DarkButton();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.panelRightBottom = new System.Windows.Forms.Panel();
             this.butItemDown = new DarkUI.Controls.DarkButton();
             this.butItemUp = new DarkUI.Controls.DarkButton();
-            this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelRight = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelHeader.SuspendLayout();
@@ -46,7 +44,6 @@
             // 
             // panelHeader
             // 
-            this.panelHeader.Controls.Add(this.butAddItem);
             this.panelHeader.Controls.Add(this.butSearch);
             this.panelHeader.Controls.Add(this.comboItems);
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -56,23 +53,12 @@
             this.panelHeader.Size = new System.Drawing.Size(284, 27);
             this.panelHeader.TabIndex = 72;
             // 
-            // butAddItem
-            // 
-            this.butAddItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddItem.Checked = false;
-            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
-            this.butAddItem.Location = new System.Drawing.Point(258, 2);
-            this.butAddItem.Name = "butAddItem";
-            this.butAddItem.Size = new System.Drawing.Size(24, 24);
-            this.butAddItem.TabIndex = 3;
-            this.butAddItem.Tag = "AddItem";
-            // 
             // butSearch
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearch.Checked = false;
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(228, 2);
+            this.butSearch.Location = new System.Drawing.Point(258, 2);
             this.butSearch.Name = "butSearch";
             this.butSearch.Selectable = false;
             this.butSearch.Size = new System.Drawing.Size(24, 24);
@@ -89,7 +75,7 @@
             this.comboItems.ItemHeight = 18;
             this.comboItems.Location = new System.Drawing.Point(3, 2);
             this.comboItems.Name = "comboItems";
-            this.comboItems.Size = new System.Drawing.Size(226, 24);
+            this.comboItems.Size = new System.Drawing.Size(256, 24);
             this.comboItems.TabIndex = 1;
             this.comboItems.SelectedIndexChanged += new System.EventHandler(this.comboItems_SelectedIndexChanged);
             this.comboItems.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.comboItems_Format);
@@ -98,7 +84,6 @@
             // 
             this.panelRightBottom.Controls.Add(this.butItemDown);
             this.panelRightBottom.Controls.Add(this.butItemUp);
-            this.panelRightBottom.Controls.Add(this.butFindItem);
             this.panelRightBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelRightBottom.Location = new System.Drawing.Point(0, 167);
             this.panelRightBottom.Name = "panelRightBottom";
@@ -131,20 +116,6 @@
             this.toolTip.SetToolTip(this.butItemUp, "Previous item");
             this.butItemUp.Click += new System.EventHandler(this.butItemUp_Click);
             // 
-            // butFindItem
-            // 
-            this.butFindItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butFindItem.Checked = false;
-            this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.butFindItem.Image = global::TombEditor.Properties.Resources.general_target_16;
-            this.butFindItem.Location = new System.Drawing.Point(137, 6);
-            this.butFindItem.Name = "butFindItem";
-            this.butFindItem.Size = new System.Drawing.Size(92, 23);
-            this.butFindItem.TabIndex = 7;
-            this.butFindItem.Tag = "LocateItem";
-            this.butFindItem.Text = "Locate item";
-            this.butFindItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            // 
             // panelRight
             // 
             this.panelRight.Controls.Add(this.panelRightBottom);
@@ -161,18 +132,18 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
-            // ItemBrowser
+            // ImportedGeometryBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.Controls.Add(this.panelRight);
             this.Controls.Add(this.panelHeader);
-            this.DockText = "Items";
+            this.DockText = "Imported Geometry";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(237, 168);
-            this.Name = "ItemBrowser";
-            this.SerializationKey = "ItemBrowser";
+            this.Name = "ImportedGeometryBrowser";
+            this.SerializationKey = "ImportedGeometryBrowser";
             this.Size = new System.Drawing.Size(284, 252);
             this.panelHeader.ResumeLayout(false);
             this.panelRightBottom.ResumeLayout(false);
@@ -183,10 +154,8 @@
         }
 
         #endregion
-        private DarkUI.Controls.DarkButton butFindItem;
-        private Controls.PanelRenderingItem panelItem;
+        private Controls.PanelRenderingImportedGeometry panelItem;
         private System.Windows.Forms.Panel panelHeader;
-        private DarkUI.Controls.DarkButton butAddItem;
         private DarkUI.Controls.DarkComboBox comboItems;
         private DarkUI.Controls.DarkButton butSearch;
         private System.Windows.Forms.Panel panelRightBottom;

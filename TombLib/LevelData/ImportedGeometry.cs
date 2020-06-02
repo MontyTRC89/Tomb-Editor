@@ -7,9 +7,9 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using TombLib.GeometryIO;
-//using TombLib.GeometryIO.Importers;
 using TombLib.Graphics;
 using TombLib.Utils;
+using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 using Texture = TombLib.Utils.Texture;
 
@@ -136,7 +136,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public class ImportedGeometry : ICloneable, IEquatable<ImportedGeometry>
+    public class ImportedGeometry : IWadObject, ICloneable, IEquatable<ImportedGeometry>
     {
         // HACK
         // HACK
@@ -189,6 +189,9 @@ namespace TombLib.LevelData
         public ImportedGeometryInfo Info { get; private set; } = ImportedGeometryInfo.Default;
         public Model DirectXModel { get; private set; }
         public List<ImportedGeometryTexture> Textures { get; private set; } = new List<ImportedGeometryTexture>();
+
+        public IWadObjectId Id => null;
+        public string ToString(TRVersion.Game gameVersion) => Info.Name;
 
         public void Update(LevelSettings settings, Dictionary<string, Texture> absolutePathTextureLookup, ImportedGeometryInfo info)
         {

@@ -155,6 +155,15 @@ namespace TombEditor
             }
         }
 
+        public class ChosenImportedGeometryChangedEvent : IEditorPropertyChangedEvent
+        {
+            public ImportedGeometry Model { get; internal set; }
+        }
+        public void ChosenImportedGeometryChange(ImportedGeometry model)
+        {
+            RaiseEvent(new ChosenImportedGeometryChangedEvent() { Model = model });
+        }
+
         public class ModeChangedEvent : IEditorPropertyChangedEvent
         {
             public EditorMode Previous { get; internal set; }
