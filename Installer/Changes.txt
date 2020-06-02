@@ -1,3 +1,9 @@
+Version 1.3.3
+=============
+Tomb Editor:
+ * Fix persistent issues with auto-reloading resources.
+ * Remove stray triangle on ceiling after converting diagonal wall to full wall.
+
 Version 1.3.2
 =============
 Tomb Editor:
