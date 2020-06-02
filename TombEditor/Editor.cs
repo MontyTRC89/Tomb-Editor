@@ -88,6 +88,7 @@ namespace TombEditor
                 _levelSettingsWatcher?.StopReloading();
                 SelectedObject = null;
                 ChosenItem = null;
+                ChosenImportedGeometry = null;
                 SelectedSectors = SectorSelection.None;
                 Action = null;
                 SelectedTexture = TextureArea.None;
@@ -157,11 +158,21 @@ namespace TombEditor
 
         public class ChosenImportedGeometryChangedEvent : IEditorPropertyChangedEvent
         {
-            public ImportedGeometry Model { get; internal set; }
+            public ImportedGeometry Previous { get; internal set; }
+            public ImportedGeometry Current { get; internal set; }
         }
-        public void ChosenImportedGeometryChange(ImportedGeometry model)
+        private ImportedGeometry _chosenImportedGeometry = null;
+        public ImportedGeometry ChosenImportedGeometry
         {
-            RaiseEvent(new ChosenImportedGeometryChangedEvent() { Model = model });
+            get { return _chosenImportedGeometry; }
+            set
+            {
+                if (value == _chosenImportedGeometry)
+                    return;
+                var previous = _chosenImportedGeometry;
+                _chosenImportedGeometry = value;
+                RaiseEvent(new ChosenImportedGeometryChangedEvent { Previous = previous, Current = value });
+            }
         }
 
         public class ModeChangedEvent : IEditorPropertyChangedEvent

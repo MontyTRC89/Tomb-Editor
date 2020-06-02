@@ -65,7 +65,7 @@ namespace TombEditor.Controls
                 ReferencedWad errorWad = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
                 string notifyMessage;
                 if (errorWad == null)
-                    notifyMessage = "Click here to load a new WAD file.";
+                    notifyMessage = "Click here to load new WAD file.";
                 else
                 {
                     string filePath = settings.MakeAbsolute(errorWad.Path);

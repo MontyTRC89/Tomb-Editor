@@ -786,7 +786,7 @@ namespace TombEditor.Controls
                         if (obj is ItemInstance)
                             _editor.ChosenItem = ((ItemInstance)obj).ItemType;
                         else if (obj is ImportedGeometryInstance)
-                            _editor.ChosenImportedGeometryChange(((ImportedGeometryInstance)obj).Model);
+                            _editor.ChosenImportedGeometry = ((ImportedGeometryInstance)obj).Model;
                     }
                     else if (_editor.SelectedObject != obj)
                     {

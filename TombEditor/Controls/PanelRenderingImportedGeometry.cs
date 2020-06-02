@@ -44,7 +44,7 @@ namespace TombEditor.Controls
             if (obj is Editor.ChosenImportedGeometryChangedEvent)
             {
                 Editor.ChosenImportedGeometryChangedEvent e = (Editor.ChosenImportedGeometryChangedEvent)obj;
-                if (e.Model != null)
+                if (e.Current != null)
                     ResetCamera();
                 Invalidate();
                 Update(); // Magic fix for room view leaking into item view
