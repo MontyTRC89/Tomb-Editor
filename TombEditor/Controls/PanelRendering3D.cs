@@ -1365,7 +1365,7 @@ namespace TombEditor.Controls
         {
             base.OnDragEnter(e);
 
-            if ((IWadObject)e.Data.GetData(e.Data.GetFormats()[0]) != null)
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject) != null)
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
             {
@@ -1399,7 +1399,7 @@ namespace TombEditor.Controls
                 if (newBlockPicking.Room != _editor.SelectedRoom)
                     _editor.SelectedRoom = newBlockPicking.Room;
 
-                var obj = (IWadObject)e.Data.GetData(e.Data.GetFormats()[0]);
+                var obj = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject;
                 if (obj != null)
                 {
                     PositionBasedObjectInstance instance = null;
