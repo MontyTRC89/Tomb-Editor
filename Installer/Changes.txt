@@ -2,6 +2,8 @@ Version 1.3.3
 =============
 Tomb Editor:
  * Fix persistent issues with auto-reloading resources.
+ * Update list of hardcoded sounds for TR3.
+ * Don't draw transparency in item browser preview.
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
  
 Sound Tool:
