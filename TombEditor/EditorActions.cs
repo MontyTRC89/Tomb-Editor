@@ -4091,7 +4091,7 @@ namespace TombEditor
 
             // Is there a prj2 file to open?
             string prj2File = files.FirstOrDefault(file => file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase));
-            if (!string.IsNullOrEmpty(prjFile))
+            if (!string.IsNullOrEmpty(prj2File))
             {
                 OpenLevel(owner, prj2File);
                 return files.Length - 1;
