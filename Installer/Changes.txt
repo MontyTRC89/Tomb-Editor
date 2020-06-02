@@ -6,6 +6,7 @@ Tomb Editor:
  * Update list of hardcoded sounds for TR3.
  * Don't draw transparency in item browser preview.
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
+ * Fix prj2 drag-n-drop into main window.
  
 Sound Tool:
  * Fix exception when last sound was deleted.
