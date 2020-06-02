@@ -1,5 +1,4 @@
 ﻿using DarkUI.Config;
-using SharpDX.Toolkit.Graphics;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,10 +6,8 @@ using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Controls;
-using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad;
 
 namespace TombEditor.Controls
 {
