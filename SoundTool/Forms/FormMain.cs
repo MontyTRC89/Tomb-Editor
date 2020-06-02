@@ -245,7 +245,7 @@ namespace SoundTool
             unloadReferenceProjectToolStripMenuItem.Enabled = refLoaded;
             saveToolStripMenuItem.Enabled = _currentArchive == null || !Saved;
 
-            if (reloadSoundInfo && dgvSoundInfos.Rows.Count > 0)
+            if (reloadSoundInfo && dgvSoundInfos.SelectedRows.Count > 0 && dgvSoundInfos.Rows.Count > 0)
                 SelectSoundInfo(dgvSoundInfos.SelectedRows[0].Index);
         }
 
