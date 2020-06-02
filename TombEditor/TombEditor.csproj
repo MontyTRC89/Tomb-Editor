@@ -137,6 +137,9 @@
     <Compile Include="Controls\ContextMenus\Space2DMapContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PanelRenderingImportedGeometry.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ToolBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -361,6 +364,12 @@
     <Compile Include="ObjectClipboardData.cs" />
     <Compile Include="RoomClipboardData.cs" />
     <Compile Include="SectorsClipboardData.cs" />
+    <Compile Include="ToolWindows\ImportedGeometryBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ImportedGeometryBrowser.Designer.cs">
+      <DependentUpon>ImportedGeometryBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolWindows\Lighting.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -497,6 +506,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormVolume.resx">
       <DependentUpon>FormVolume.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\ImportedGeometryBrowser.resx">
+      <DependentUpon>ImportedGeometryBrowser.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ToolPaletteFloating.resx">
       <DependentUpon>ToolPaletteFloating.cs</DependentUpon>

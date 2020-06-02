@@ -258,7 +258,7 @@ namespace TombEditor
                         },
                         new DockGroupState
                         {
-                            Contents = new List<string> { "ItemBrowser" },
+                            Contents = new List<string> { "ItemBrowser", "ImportedGeometryBrowser" },
                             VisibleContent = "ItemBrowser",
                             Order = 2,
                             Size = new Size(284,259)

@@ -11,11 +11,11 @@ using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
-    public class PanelRenderingItem : PanelItemPreview
+    public class PanelRenderingImportedGeometry : PanelItemPreview
     {
         private readonly Editor _editor;
 
-        public PanelRenderingItem()
+        public PanelRenderingImportedGeometry()
         {
             if (LicenseManager.UsageMode == LicenseUsageMode.Runtime)
             {
@@ -41,16 +41,16 @@ namespace TombEditor.Controls
             }
 
             // Update currently viewed item
-            if (obj is Editor.ChosenItemChangedEvent)
+            if (obj is Editor.ChosenImportedGeometryChangedEvent)
             {
-                Editor.ChosenItemChangedEvent e = (Editor.ChosenItemChangedEvent)obj;
-                if (e.Current != null)
+                Editor.ChosenImportedGeometryChangedEvent e = (Editor.ChosenImportedGeometryChangedEvent)obj;
+                if (e.Model != null)
                     ResetCamera();
                 Invalidate();
                 Update(); // Magic fix for room view leaking into item view
             }
 
-            if (obj is Editor.LoadedWadsChangedEvent ||
+            if (obj is Editor.LoadedImportedGeometriesChangedEvent ||
                 obj is Editor.EditorFocusedEvent)
                 Invalidate();
         }
@@ -60,20 +60,20 @@ namespace TombEditor.Controls
             LevelSettings settings = _editor?.Level?.Settings;
             if (settings == null)
                 return;
-            if (settings.Wads.All(wad => wad.LoadException != null))
+            if (settings.ImportedGeometries.All(geo => geo.LoadException != null))
             {
-                ReferencedWad errorWad = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
+                ImportedGeometry errorGeo = settings.ImportedGeometries.FirstOrDefault(geo => geo.LoadException != null);
                 string notifyMessage;
-                if (errorWad == null)
-                    notifyMessage = "Click here to load a new WAD file.";
+                if (errorGeo == null)
+                    notifyMessage = "Click here to load new imported geometry.";
                 else
                 {
-                    string filePath = settings.MakeAbsolute(errorWad.Path);
+                    string filePath = settings.MakeAbsolute(errorGeo.Info.Path);
                     string fileName = PathC.GetFileNameWithoutExtensionTry(filePath) ?? "";
-                    if (PathC.IsFileNotFoundException(errorWad.LoadException))
-                        notifyMessage = "Wad file '" + fileName + "' was not found!\n";
+                    if (PathC.IsFileNotFoundException(errorGeo.LoadException))
+                        notifyMessage = "Geometry file '" + fileName + "' was not found!\n";
                     else
-                        notifyMessage = "Unable to load wad from file '" + fileName + "'.\n";
+                        notifyMessage = "Unable to load geometry from file '" + fileName + "'.\n";
                     notifyMessage += "Click here to choose a replacement.\n\n";
                     notifyMessage += "Path: " + (filePath ?? "");
                 }
@@ -97,13 +97,13 @@ namespace TombEditor.Controls
             {
                 case MouseButtons.Left:
                     LevelSettings settings = _editor?.Level?.Settings;
-                    if (settings != null && settings.Wads.All(wad => wad.LoadException != null))
+                    if (settings != null && settings.ImportedGeometries.All(geo => geo.LoadException != null))
                     {
-                        ReferencedWad wadToUpdate = settings.Wads.FirstOrDefault(wad => wad.LoadException != null);
-                        if (wadToUpdate != null)
-                            EditorActions.UpdateWadFilepath(Parent, wadToUpdate);
+                        ImportedGeometry geoToUpdate = settings.ImportedGeometries.FirstOrDefault(geo => geo.LoadException != null);
+                        if (geoToUpdate != null)
+                            EditorActions.UpdateImportedGeometryFilePath(Parent, settings, geoToUpdate);
                         else
-                            EditorActions.AddWad(Parent);
+                            EditorActions.AddImportedGeometry(Parent);
                     }
                     else if (CurrentObject != null)
                         DoDragDrop(CurrentObject, DragDropEffects.Copy);

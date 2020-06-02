@@ -3591,27 +3591,40 @@ namespace TombEditor
                 item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
 
             if (geometryToPlace == null)
-            {
-                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    settingsDialog.SelectPreset("Normal scale to TR scale");
-
-                    if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
-                        return false;
-
-                    geometryToPlace = new ImportedGeometry();
-                    var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory), settingsDialog.Settings);
-                    _editor.Level.Settings.ImportedGeometryUpdate(geometryToPlace, info);
-                    _editor.Level.Settings.ImportedGeometries.Add(geometryToPlace);
-                    _editor.LoadedImportedGeometriesChange();
-                }
-            }
+                geometryToPlace = AddImportedGeometry(owner, file);
 
             PlaceObject(_editor.SelectedRoom, position,
                 new ImportedGeometryInstance { Model = geometryToPlace });
 
             return true;
+        }
+
+        public static ImportedGeometry AddImportedGeometry(IWin32Window owner, string predefinedPath = null)
+        {
+            string path = (predefinedPath ?? LevelFileDialog.BrowseFile(owner, _editor.Level.Settings,
+                PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
+                "Load imported geometry", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false));
+
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                return null;
+
+            var geometry = new ImportedGeometry();
+
+            using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+            {
+                settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
+                settingsDialog.SelectPreset("Normal scale to TR scale");
+
+                if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
+                    return null;
+
+                var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
+                _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
+                _editor.Level.Settings.ImportedGeometries.Add(geometry);
+                _editor.LoadedImportedGeometriesChange();
+            }
+
+            return geometry;
         }
 
         public static IEnumerable<LevelTexture> AddTexture(IWin32Window owner, IEnumerable<string> predefinedPaths = null)

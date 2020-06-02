@@ -26,6 +26,7 @@ namespace TombEditor.Forms
         private readonly ToolWindows.TriggerList TriggerList = new ToolWindows.TriggerList();
         private readonly ToolWindows.RoomOptions RoomOptions = new ToolWindows.RoomOptions();
         private readonly ToolWindows.ItemBrowser ItemBrowser = new ToolWindows.ItemBrowser();
+        private readonly ToolWindows.ImportedGeometryBrowser ImportedGeometryBrowser = new ToolWindows.ImportedGeometryBrowser();
         private readonly ToolWindows.SectorOptions SectorOptions = new ToolWindows.SectorOptions();
         private readonly ToolWindows.Lighting Lighting = new ToolWindows.Lighting();
         private readonly ToolWindows.Palette Palette = new ToolWindows.Palette();
@@ -60,6 +61,7 @@ namespace TombEditor.Forms
             // Initialize panels
             MainView.InitializeRendering(_editor.RenderingDevice);
             ItemBrowser.InitializeRendering(_editor.RenderingDevice);
+            ImportedGeometryBrowser.InitializeRendering(_editor.RenderingDevice);
 
             // Restore window settings and prepare UI
             Configuration.LoadWindowProperties(this, _editor.Configuration);
@@ -372,6 +374,8 @@ namespace TombEditor.Forms
                 case "ItemBrowser":
                 case "ObjectBrowser": // Deprecated name
                     return ItemBrowser;
+                case "ImportedGeometryBrowser":
+                    return ImportedGeometryBrowser;
                 case "RoomOptions":
                     return RoomOptions;
                 case "SectorOptions":
@@ -520,6 +524,11 @@ namespace TombEditor.Forms
             ToolWindow_Toggle(ItemBrowser);
         }
 
+        private void importedGeometryBrowserToolstripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolWindow_Toggle(ImportedGeometryBrowser);
+        }
+
         private void triggerListToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ToolWindow_Toggle(TriggerList);
@@ -558,6 +567,7 @@ namespace TombEditor.Forms
             sectorOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(SectorOptions);
             roomOptionsToolStripMenuItem.Checked = dockArea.ContainsContent(RoomOptions);
             itemBrowserToolStripMenuItem.Checked = dockArea.ContainsContent(ItemBrowser);
+            importedGeometryBrowserToolstripMenuItem.Checked = dockArea.ContainsContent(ImportedGeometryBrowser);
             triggerListToolStripMenuItem.Checked = dockArea.ContainsContent(TriggerList);
             objectListToolStripMenuItem.Checked = dockArea.ContainsContent(ObjectList);
             lightingToolStripMenuItem.Checked = dockArea.ContainsContent(Lighting);
