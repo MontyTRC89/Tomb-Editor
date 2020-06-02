@@ -211,6 +211,9 @@ namespace SoundTool
                     dgvSoundInfos.Rows.Remove(row);
             }
 
+            if (dgvSoundInfos.Rows.Count == 0)
+                soundInfoEditor.SoundInfo = null;
+
             Saved = false;
         }
 
