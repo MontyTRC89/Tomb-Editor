@@ -63,7 +63,10 @@ namespace TombEditor.ToolWindows
             {
                 var e = (Editor.ChosenImportedGeometryChangedEvent)obj;
                 if (e.Current != null)
+                {
                     comboItems.SelectedItem = panelItem.CurrentObject = e.Current;
+                    MakeActive();
+                }
             }
 
             // Update tooltip texts
