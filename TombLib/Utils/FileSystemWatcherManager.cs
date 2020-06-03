@@ -211,6 +211,7 @@ namespace TombLib.Utils
             if (oldArray == null)
                 return new T[] { newEntry };
             T[] newArray = new T[oldArray.Length + 1];
+            Array.Copy(oldArray, newArray, oldArray.Length);
             newArray[oldArray.Length] = newEntry;
             return newArray;
         }

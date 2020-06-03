@@ -487,7 +487,7 @@ namespace TombEditor.Controls
                 string notifyMessage;
 
                 if (string.IsNullOrEmpty(VisibleTexture?.Path))
-                    notifyMessage = "Click here to load a new texture file.";
+                    notifyMessage = "Click here to load new texture file.";
                 else
                 {
                     string fileName = PathC.GetFileNameWithoutExtensionTry(VisibleTexture?.Path) ?? "";

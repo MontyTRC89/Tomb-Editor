@@ -92,6 +92,7 @@ namespace TombEditor.ToolWindows
                 {
                     UpdateTextureControls(newTexture);
                     panelTextureMap.ShowTexture(newTexture);
+                    MakeActive();
                 }
             }
 

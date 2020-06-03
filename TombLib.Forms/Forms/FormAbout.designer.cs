@@ -90,7 +90,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(649, 32);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(626, 32);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // butOk
@@ -98,7 +98,7 @@
             this.butOk.Checked = false;
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.butOk.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.butOk.Location = new System.Drawing.Point(543, 3);
+            this.butOk.Location = new System.Drawing.Point(520, 3);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(103, 26);
             this.butOk.TabIndex = 3;
@@ -113,7 +113,7 @@
             this.darkLabel1.Location = new System.Drawing.Point(3, 0);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Padding = new System.Windows.Forms.Padding(5, 8, 8, 8);
-            this.darkLabel1.Size = new System.Drawing.Size(191, 28);
+            this.darkLabel1.Size = new System.Drawing.Size(192, 28);
             this.darkLabel1.TabIndex = 29;
             this.darkLabel1.Text = "This tool is part of the Tomb Editor toolchain.";
             // 
@@ -123,7 +123,7 @@
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Top;
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(649, 64);
+            this.pictureBox.Size = new System.Drawing.Size(626, 64);
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox.TabIndex = 7;
             this.pictureBox.TabStop = false;
@@ -170,7 +170,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 64);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(649, 357);
+            this.panel1.Size = new System.Drawing.Size(626, 357);
             this.panel1.TabIndex = 8;
             // 
             // darkLabel22
@@ -517,7 +517,7 @@
             this.darkLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel16.Location = new System.Drawing.Point(8, 327);
             this.darkLabel16.Name = "darkLabel16";
-            this.darkLabel16.Size = new System.Drawing.Size(360, 24);
+            this.darkLabel16.Size = new System.Drawing.Size(362, 24);
             this.darkLabel16.TabIndex = 28;
             this.darkLabel16.Text = "Tomb Raider, Tomb Raider Level Editor, Lara Croft are © and trademarks of Square " +
     "Enix Ltd.\r\nThis software is a freeware and intended only for personal and non-co" +
@@ -529,7 +529,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.darkSeparator2.Location = new System.Drawing.Point(10, 100);
             this.darkSeparator2.Name = "darkSeparator2";
-            this.darkSeparator2.Size = new System.Drawing.Size(630, 2);
+            this.darkSeparator2.Size = new System.Drawing.Size(607, 2);
             this.darkSeparator2.TabIndex = 24;
             this.darkSeparator2.Text = "darkSeparator2";
             // 
@@ -602,14 +602,14 @@
             this.darkLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel4.Location = new System.Drawing.Point(6, 106);
             this.darkLabel4.Name = "darkLabel4";
-            this.darkLabel4.Size = new System.Drawing.Size(124, 15);
+            this.darkLabel4.Size = new System.Drawing.Size(123, 15);
             this.darkLabel4.TabIndex = 2;
             this.darkLabel4.Text = "Licensing Information";
             // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 140F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 113F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Controls.Add(this.darkLabel3, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.darkLabel2, 0, 0);
@@ -619,7 +619,7 @@
             this.tableLayoutPanel2.Padding = new System.Windows.Forms.Padding(2, 5, 2, 0);
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(649, 69);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(626, 69);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // darkLabel3
@@ -627,25 +627,24 @@
             this.darkLabel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkLabel3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(145, 5);
+            this.darkLabel3.Location = new System.Drawing.Point(118, 5);
             this.darkLabel3.Name = "darkLabel3";
-            this.darkLabel3.Size = new System.Drawing.Size(499, 60);
+            this.darkLabel3.Size = new System.Drawing.Size(503, 60);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte, Nickelony, Raild" +
     "ex, ChocolateFan\r\nteme9, Lwmte, Nickelony\r\nDustie, Titak, Gemini, Caesum, Lore, " +
-    "JMN, Joey79100";
+    "JMN, Joey79100, 1mustard";
             // 
             // darkLabel2
             // 
-            this.darkLabel2.AutoSize = true;
             this.darkLabel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkLabel2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(5, 5);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(134, 60);
+            this.darkLabel2.Size = new System.Drawing.Size(107, 60);
             this.darkLabel2.TabIndex = 1;
-            this.darkLabel2.Text = "Original idea and code:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:";
+            this.darkLabel2.Text = "Original idea:\r\nProgramming:\r\nAdditional design:\r\nBeta testing:";
             // 
             // FormAbout
             // 
@@ -653,7 +652,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
-            this.ClientSize = new System.Drawing.Size(649, 453);
+            this.ClientSize = new System.Drawing.Size(626, 453);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBox);
             this.Controls.Add(this.tableLayoutPanel1);
@@ -672,7 +671,6 @@
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -695,7 +695,11 @@ namespace TombLib.LevelData.Compilers
             // Step 1: create the real list of sounds and indices to compile
 
             _finalSoundInfosList = new List<WadSoundInfo>();
-            _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
+
+            if (_level.Settings.GameVersion.UsesMainSfx())
+                _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedSounds);
+            else
+                _finalSelectedSoundsList = new List<int>(_level.Settings.SelectedAndAvailableSounds);
 
             foreach (var soundInfo in _level.Settings.GlobalSoundMap)
                 if (_finalSelectedSoundsList.Contains(soundInfo.Id))
@@ -811,13 +815,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Step 4: load samples
-            bool samplesMissing;
-            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, out samplesMissing);
-
-            // Warn user if some samples weren't found
-            if (samplesMissing)
-                _progressReporter.ReportWarn("Some samples weren't found. Make sure sample paths are specified correctly. Check level settings for details.");
-
+            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, null);
             _finalSamplesList = loadedSamples.Values.ToList();
         }
 

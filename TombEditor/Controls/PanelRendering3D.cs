@@ -781,7 +781,14 @@ namespace TombEditor.Controls
                     if (_editor.Configuration.Rendering3D_AutoBookmarkSelectedObject && !(obj is ImportedGeometryInstance) && !ModifierKeys.HasFlag(Keys.Alt))
                         EditorActions.BookmarkObject(obj);
 
-                    if (_editor.SelectedObject != obj)
+                    if (ModifierKeys.HasFlag(Keys.Alt)) // Pick item or imported geo without selection
+                    {
+                        if (obj is ItemInstance)
+                            _editor.ChosenItem = ((ItemInstance)obj).ItemType;
+                        else if (obj is ImportedGeometryInstance)
+                            _editor.ChosenImportedGeometry = ((ImportedGeometryInstance)obj).Model;
+                    }
+                    else if (_editor.SelectedObject != obj)
                     {
                         // Animate objects about to be selected
                         if (obj is GhostBlockInstance && _editor.Configuration.Rendering3D_AnimateGhostBlockUnfolding)
@@ -789,16 +796,9 @@ namespace TombEditor.Controls
 
                         // Select object
                         _editor.SelectedObject = obj;
-                    }
 
-                    if (obj is ItemInstance)
-                    {
-                        if (ModifierKeys.HasFlag(Keys.Alt))
-                            // Pick item in browser
-                            _editor.ChosenItem = ((ItemInstance)obj).ItemType;
-                        else
-                            // Prepare for drag-n-drop
-                            _dragObjectPicked = true;
+                        if (obj is ItemInstance)
+                            _dragObjectPicked = true; // Prepare for drag-n-drop
                     }
                 }
                 else if (newPicking == null)
@@ -1365,7 +1365,7 @@ namespace TombEditor.Controls
         {
             base.OnDragEnter(e);
 
-            if (e.Data.GetDataPresent(typeof(ItemType)))
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject) != null)
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
             {
@@ -1399,12 +1399,21 @@ namespace TombEditor.Controls
                 if (newBlockPicking.Room != _editor.SelectedRoom)
                     _editor.SelectedRoom = newBlockPicking.Room;
 
-                if (e.Data.GetDataPresent(typeof(ItemType)))
+                var obj = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject;
+                if (obj != null)
                 {
+                    PositionBasedObjectInstance instance = null;
+
+                    if (obj is ImportedGeometry)
+                        instance = new ImportedGeometryInstance { Model = (ImportedGeometry)obj };
+                    else if (obj is WadMoveable)
+                        instance = ItemInstance.FromItemType(new ItemType(((WadMoveable)obj).Id, _editor?.Level?.Settings));
+                    else if (obj is WadStatic)
+                        instance = ItemInstance.FromItemType(new ItemType(((WadStatic)obj).Id, _editor?.Level?.Settings));
+
                     // Put item from object browser
-                    EditorActions.PlaceObject(_editor.SelectedRoom,
-                        newBlockPicking.Pos,
-                        ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType))));
+                    if (instance != null)
+                        EditorActions.PlaceObject(_editor.SelectedRoom, newBlockPicking.Pos, instance);
                 }
                 else if (filesToProcess != -1)
                 {
@@ -2829,7 +2838,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawRoomImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw, bool disableSelection = false)
+        private void DrawImportedGeometry(Matrix4x4 viewProjection, List<ImportedGeometryInstance> importedGeometryToDraw, List<Text> textToDraw, bool disableSelection = false)
         {
             if (importedGeometryToDraw.Count == 0)
                 return;
@@ -3365,7 +3374,7 @@ namespace TombEditor.Controls
 
             // Draw room imported geometry
             if (importedGeometryToDraw.Count != 0 && ShowImportedGeometry)
-                DrawRoomImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
+                DrawImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
 
             // Get common effect for service objects
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];

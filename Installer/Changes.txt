@@ -1,3 +1,20 @@
+Version 1.3.3
+=============
+Tomb Editor:
+ * Added imported geometry browser (toggle it in "Window" menu).
+ * Autosave window layout on closing editor.
+ * Update list of hardcoded sounds for TR3.
+ * Don't draw transparency in item browser preview.
+ * Focus on tool window while picking texture or object.
+ * Warn user about oversized samples.
+ * Remove stray triangle on ceiling after converting diagonal wall to full wall.
+ * Fix ExtraNG string index in trigger window.
+ * Fix persistent issues with auto-reloading resources.
+ * Fix prj2 drag-n-drop into main window.
+ 
+Sound Tool:
+ * Fix exception when last sound was deleted.
+
 Version 1.3.2
 =============
 Tomb Editor:
@@ -26,8 +43,9 @@ SoundTool:
 WadTool:
  * Draw actual skin in skeleton editor.
  * Allow precise editing of bone pivots in skeleton editor.
- * Allow editing bounding fox for all selected frames at once.
+ * Allow editing bounding box for all selected frames at once.
  * Fix bounding box controls being unresponsive to keypresses.
+ * Fix exception after pasting shorter animation into longer.
  * Fix exception when selecting empty sprite sequence.
  
 General:

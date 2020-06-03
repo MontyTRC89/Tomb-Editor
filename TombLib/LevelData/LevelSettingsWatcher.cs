@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using TombLib.LevelData;
@@ -87,8 +88,8 @@ namespace TombEditor
         {
             public LevelSettingsWatcher Parent;
             public ReferencedWad Wad;
-            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(Wad.Path) };
-            public override IEnumerable<string> Directories => Parent.Settings?.WadSoundPaths?.Select(path => Parent.Settings?.MakeAbsolute(path.Path));
+            public override IEnumerable<string> Files => GetAllAssociatedFiles();
+            public override IEnumerable<string> Directories => null;
             public override string Name => PathC.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(Wad.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => Wad.Equals((other as WatchedWad)?.Wad);
             public override void TryReload(FileSystemWatcherManager sender, FileSystemWatcherManager.ReloadArgs e)
@@ -104,6 +105,20 @@ namespace TombEditor
                     Wad.Assign(newWad);
                     Parent?.WadChanged(null, new ChangedEventArgs<ReferencedWad> { Object = newWad });
                 }, null);
+            }
+
+            private List<string> GetAllAssociatedFiles()
+            {
+                var result = new List<string>() { Parent.Settings?.MakeAbsolute(Wad.Path) };
+
+                if (result[0].EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var wasPath = Path.ChangeExtension(result[0], ".was");
+                    var swdPath = Path.ChangeExtension(result[0], ".swd");
+                    if (File.Exists(wasPath)) result.Add(wasPath);
+                    if (File.Exists(swdPath)) result.Add(swdPath);
+                }
+                return result;
             }
         }
 

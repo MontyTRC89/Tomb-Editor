@@ -61,6 +61,8 @@ namespace TombIDE
 		{
 			ApplySavedSettings();
 
+			button_LaunchGame.Image = Icon.ExtractAssociatedIcon(_ide.Project.LaunchFilePath).ToBitmap();
+
 			InitializeFLEP();
 
 			AddPinnedPrograms();
@@ -153,10 +155,6 @@ namespace TombIDE
 			{
 				// Dispose the "Special button" and move all controls, which were underneath the button, 46 units higher
 				button_Special.Dispose();
-
-				button_OpenFolder.Location = new Point(button_OpenFolder.Location.X, button_OpenFolder.Location.Y - 46);
-				button_LaunchGame.Location = new Point(button_LaunchGame.Location.X, button_LaunchGame.Location.Y - 46);
-				label_Separator_03.Location = new Point(label_Separator_03.Location.X, label_Separator_03.Location.Y - 46);
 				button_AddProgram.Location = new Point(button_AddProgram.Location.X, button_AddProgram.Location.Y - 46);
 			}
 		}
@@ -480,7 +478,6 @@ namespace TombIDE
 
 		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ProjectMaster);
 		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptEditor);
-		private void panelButton_Tools_Click(object sender, EventArgs e) => SelectIDETab(IDETab.Tools);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
 		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
@@ -572,7 +569,6 @@ namespace TombIDE
 				{
 					panelButton_ProjectMaster.BackColor = Color.FromArgb(135, 135, 135);
 					panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
-					panelButton_Tools.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(0);
 					break;
@@ -584,18 +580,8 @@ namespace TombIDE
 
 					panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
 					panelButton_ScriptEditor.BackColor = Color.FromArgb(135, 135, 135);
-					panelButton_Tools.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(1);
-					break;
-				}
-				case IDETab.Tools:
-				{
-					panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
-					panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
-					panelButton_Tools.BackColor = Color.FromArgb(135, 135, 135);
-
-					tablessTabControl.SelectTab(2);
 					break;
 				}
 			}

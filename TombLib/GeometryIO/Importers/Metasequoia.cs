@@ -152,6 +152,9 @@ namespace TombLib.GeometryIO.Importers
                                         lastVertex++;
                                     }
 
+                                    // Change vertex winding
+                                    if (_settings.InvertFaces) poly.Indices.Reverse();
+
                                     // UV
                                     var stringUV = GetSubBlock(line, "UV");
                                     if (stringUV != "")

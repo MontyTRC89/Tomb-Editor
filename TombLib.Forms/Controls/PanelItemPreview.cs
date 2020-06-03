@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib.Graphics;
+using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Wad;
 
@@ -37,6 +38,8 @@ namespace TombLib.Controls
         public int AnimationIndex { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int KeyFrameIndex { get; set; }
+
+        public bool DrawTransparency { get; set; } = false;
 
         // Preview animation state
         private Timer _animTimer = new Timer() { Interval = 333 };
@@ -136,8 +139,13 @@ namespace TombLib.Controls
         protected override void OnDraw()
         {
             // To make sure things are in a defined state for legacy rendering...
-            ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
-            ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+            ((Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
+            ((Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
+
+            if (DrawTransparency)
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            else
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (CurrentObject is WadMoveable)
@@ -154,6 +162,7 @@ namespace TombLib.Controls
 
                 var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
 
+                effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
@@ -201,6 +210,7 @@ namespace TombLib.Controls
                 var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
 
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
@@ -238,6 +248,50 @@ namespace TombLib.Controls
                     PosStart = -0.9f * factor,
                     PosEnd = 0.9f * factor
                 });
+            }
+            else if (CurrentObject is ImportedGeometry)
+            {
+                var geo = (ImportedGeometry)CurrentObject;
+                var model = geo.DirectXModel;
+
+                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
+
+                effect.Parameters["UseVertexColors"].SetValue(true);
+                effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
+                effect.Parameters["Color"].SetValue(Vector4.One);
+
+                for (int i = 0; i < model.Meshes.Count; i++)
+                {
+                    var mesh = model.Meshes[i];
+
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                    effect.Techniques[0].Passes[0].Apply();
+
+
+                    foreach (var submesh in mesh.Submeshes)
+                    {
+                        var texture = submesh.Value.Material.Texture;
+                        if (texture != null && texture is ImportedGeometryTexture)
+                        {
+                            effect.Parameters["TextureEnabled"].SetValue(true);
+                            effect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
+                            effect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
+                            effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
+                        }
+                        else
+                            effect.Parameters["TextureEnabled"].SetValue(false);
+
+                        effect.Techniques[0].Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    }
+
+                    foreach (var submesh in mesh.Submeshes)
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                }
             }
         }
 

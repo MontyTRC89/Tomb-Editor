@@ -548,5 +548,12 @@ namespace TombLib.LevelData
 
         public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) => AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any();
         public AutoStaticMeshMergeEntry GetStaticMergeEntry(WadStaticId staticMeshId) => AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
+
+        public List<int> SelectedAndAvailableSounds
+        { get { return SelectedSounds.Where(item => GlobalSoundMap
+                .Any(entry => entry.Id == item && entry.Samples.Count > 0 && entry.SampleCount(this) > 0)).ToList(); } }
+
+        public List<int> SelectedAndMissingSounds
+        { get { return SelectedSounds.Where(item => !GlobalSoundMap.Any(entry => entry.Id == item)).ToList(); } }
     }
 }

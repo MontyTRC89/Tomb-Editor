@@ -2266,6 +2266,7 @@ namespace TombEditor
                         continue;
                     room.Blocks[x, z].Type = BlockType.Wall;
                     room.Blocks[x, z].Floor.DiagonalSplit = DiagonalSplit.None;
+                    room.Blocks[x, z].Ceiling.DiagonalSplit = DiagonalSplit.None;
                 }
 
             SmartBuildGeometry(room, area);
@@ -3590,27 +3591,40 @@ namespace TombEditor
                 item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
 
             if (geometryToPlace == null)
-            {
-                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    settingsDialog.SelectPreset("Normal scale to TR scale");
-
-                    if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
-                        return false;
-
-                    geometryToPlace = new ImportedGeometry();
-                    var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory), settingsDialog.Settings);
-                    _editor.Level.Settings.ImportedGeometryUpdate(geometryToPlace, info);
-                    _editor.Level.Settings.ImportedGeometries.Add(geometryToPlace);
-                    _editor.LoadedImportedGeometriesChange();
-                }
-            }
+                geometryToPlace = AddImportedGeometry(owner, file);
 
             PlaceObject(_editor.SelectedRoom, position,
                 new ImportedGeometryInstance { Model = geometryToPlace });
 
             return true;
+        }
+
+        public static ImportedGeometry AddImportedGeometry(IWin32Window owner, string predefinedPath = null)
+        {
+            string path = (predefinedPath ?? LevelFileDialog.BrowseFile(owner, _editor.Level.Settings,
+                PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
+                "Load imported geometry", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false));
+
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+                return null;
+
+            var geometry = new ImportedGeometry();
+
+            using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+            {
+                settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
+                settingsDialog.SelectPreset("Normal scale to TR scale");
+
+                if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
+                    return null;
+
+                var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
+                _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
+                _editor.Level.Settings.ImportedGeometries.Add(geometry);
+                _editor.LoadedImportedGeometriesChange();
+            }
+
+            return geometry;
         }
 
         public static IEnumerable<LevelTexture> AddTexture(IWin32Window owner, IEnumerable<string> predefinedPaths = null)
@@ -4077,7 +4091,7 @@ namespace TombEditor
 
             // Is there a prj2 file to open?
             string prj2File = files.FirstOrDefault(file => file.EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase));
-            if (!string.IsNullOrEmpty(prjFile))
+            if (!string.IsNullOrEmpty(prj2File))
             {
                 OpenLevel(owner, prj2File);
                 return files.Length - 1;
@@ -4474,7 +4488,7 @@ namespace TombEditor
 
             using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport))
             {
-                if (formImport.ShowDialog() != DialogResult.OK)
+                if (formImport.ShowDialog(owner) != DialogResult.OK)
                     return;
 
                 Level newLevel = null;

@@ -1320,7 +1320,7 @@ namespace TombEditor.Forms
                 selectedSoundsDataGridView_HighlightRow(selectedSoundsDataGridView.Rows[selectedSoundsDataGridView.Rows.Count - 1], sampleCount == 0);
             }
 
-            var missingList = GetListOfMissingSounds();
+            var missingList = _levelSettings.SelectedAndMissingSounds;
             butRemoveMissing.Enabled = (missingList.Count > 0);
 
             for (int i = 0; i < missingList.Count; i++)
@@ -1340,8 +1340,6 @@ namespace TombEditor.Forms
             selectedSoundsDataGridView.Sort(selectedSoundsDataGridView.Columns[1], ListSortDirection.Ascending);
             UpdateSoundStatistics();
         }
-
-        private List<int> GetListOfMissingSounds() => _levelSettings.SelectedSounds.Where(item => !_levelSettings.GlobalSoundMap.Any(entry => entry.Id == item)).ToList();
 
         private string GetNGDescriptionAndOriginalID(int id, out int originalId)
         {
@@ -1429,7 +1427,7 @@ namespace TombEditor.Forms
         // Updates statistics in the bottom of the page.
         private void UpdateSoundStatistics()
         {
-            var missingSoundsCount = GetListOfMissingSounds().Count;
+            var missingSoundsCount = _levelSettings.SelectedAndMissingSounds.Count;
             labelSoundsCatalogsStatistics.Text = "Total sounds: " + _levelSettings.GlobalSoundMap.Count + 
                                                  " | Selected sounds: " + _levelSettings.SelectedSounds.Count +
                                                  (missingSoundsCount == 0 ? "" : " | Missing sounds: " + missingSoundsCount);
@@ -1598,7 +1596,7 @@ namespace TombEditor.Forms
 
         private void butRemoveMissing_Click(object sender, EventArgs e)
         {
-            _levelSettings.SelectedSounds = _levelSettings.SelectedSounds.Except(GetListOfMissingSounds()).ToList();
+            _levelSettings.SelectedSounds = _levelSettings.SelectedSounds.Except(_levelSettings.SelectedAndMissingSounds).ToList();
             PopulateSoundInfoList();
         }
 
