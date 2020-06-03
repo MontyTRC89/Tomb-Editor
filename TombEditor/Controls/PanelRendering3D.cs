@@ -1373,7 +1373,7 @@ namespace TombEditor.Controls
                 Parent.Cursor = Cursors.Arrow;
             }
             else if (EditorActions.DragDropFileSupported(e, true))
-                e.Effect = DragDropEffects.Move;
+                e.Effect = DragDropEffects.Copy;
             else
                 e.Effect = DragDropEffects.None;
         }
