@@ -6,6 +6,7 @@ Tomb Editor:
  * Update list of hardcoded sounds for TR3.
  * Don't draw transparency in item browser preview.
  * Focus on tool window while picking texture or object.
+ * Warn user about oversized samples.
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
  * Fix persistent issues with auto-reloading resources.
  * Fix prj2 drag-n-drop into main window.
