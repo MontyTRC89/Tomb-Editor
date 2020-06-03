@@ -180,14 +180,12 @@ namespace TombEditor.Forms
             this.debugAction5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.debugScriptToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.windowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveCurrentLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reloadLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.restoreDefaultLayoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuSeparator14 = new System.Windows.Forms.ToolStripSeparator();
             this.sectorOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.roomOptionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importedGeometryBrowserToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemBrowserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importedGeometryBrowserToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.triggerListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lightingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1901,8 +1899,6 @@ namespace TombEditor.Forms
             // 
             this.windowToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.windowToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveCurrentLayoutToolStripMenuItem,
-            this.reloadLayoutToolStripMenuItem,
             this.restoreDefaultLayoutToolStripMenuItem,
             this.toolStripMenuSeparator14,
             this.sectorOptionsToolStripMenuItem,
@@ -1919,24 +1915,6 @@ namespace TombEditor.Forms
             this.windowToolStripMenuItem.Name = "windowToolStripMenuItem";
             this.windowToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
             this.windowToolStripMenuItem.Text = "Window";
-            // 
-            // saveCurrentLayoutToolStripMenuItem
-            // 
-            this.saveCurrentLayoutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.saveCurrentLayoutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.saveCurrentLayoutToolStripMenuItem.Name = "saveCurrentLayoutToolStripMenuItem";
-            this.saveCurrentLayoutToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.saveCurrentLayoutToolStripMenuItem.Text = "Save current layout";
-            this.saveCurrentLayoutToolStripMenuItem.Click += new System.EventHandler(this.saveCurrentLayoutToolStripMenuItem_Click);
-            // 
-            // reloadLayoutToolStripMenuItem
-            // 
-            this.reloadLayoutToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.reloadLayoutToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.reloadLayoutToolStripMenuItem.Name = "reloadLayoutToolStripMenuItem";
-            this.reloadLayoutToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.reloadLayoutToolStripMenuItem.Text = "Reload current layout";
-            this.reloadLayoutToolStripMenuItem.Click += new System.EventHandler(this.reloadLayoutToolStripMenuItem_Click);
             // 
             // restoreDefaultLayoutToolStripMenuItem
             // 
@@ -1973,15 +1951,6 @@ namespace TombEditor.Forms
             this.roomOptionsToolStripMenuItem.Text = "Room Options";
             this.roomOptionsToolStripMenuItem.Click += new System.EventHandler(this.roomOptionsToolStripMenuItem_Click);
             // 
-            // importedGeometryBrowserToolstripMenuItem
-            // 
-            this.importedGeometryBrowserToolstripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.importedGeometryBrowserToolstripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.importedGeometryBrowserToolstripMenuItem.Name = "importedGeometryBrowserToolstripMenuItem";
-            this.importedGeometryBrowserToolstripMenuItem.Size = new System.Drawing.Size(194, 22);
-            this.importedGeometryBrowserToolstripMenuItem.Text = "Imported Geometry Browser";
-            this.importedGeometryBrowserToolstripMenuItem.Click += new System.EventHandler(this.importedGeometryBrowserToolstripMenuItem_Click);
-            // 
             // itemBrowserToolStripMenuItem
             // 
             this.itemBrowserToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1990,6 +1959,15 @@ namespace TombEditor.Forms
             this.itemBrowserToolStripMenuItem.Size = new System.Drawing.Size(194, 22);
             this.itemBrowserToolStripMenuItem.Text = "Item Browser";
             this.itemBrowserToolStripMenuItem.Click += new System.EventHandler(this.itemBrowserToolStripMenuItem_Click);
+            // 
+            // importedGeometryBrowserToolstripMenuItem
+            // 
+            this.importedGeometryBrowserToolstripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.importedGeometryBrowserToolstripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.importedGeometryBrowserToolstripMenuItem.Name = "importedGeometryBrowserToolstripMenuItem";
+            this.importedGeometryBrowserToolstripMenuItem.Size = new System.Drawing.Size(194, 22);
+            this.importedGeometryBrowserToolstripMenuItem.Text = "Imported Geometry Browser";
+            this.importedGeometryBrowserToolstripMenuItem.Click += new System.EventHandler(this.importedGeometryBrowserToolstripMenuItem_Click);
             // 
             // triggerListToolStripMenuItem
             // 
@@ -2296,8 +2274,6 @@ namespace TombEditor.Forms
         private DarkUI.Docking.DarkDockPanel dockArea;
         private System.Windows.Forms.Panel panelDockArea;
         private System.Windows.Forms.ToolStripMenuItem windowToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveCurrentLayoutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reloadLayoutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restoreDefaultLayoutToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator14;
         private System.Windows.Forms.ToolStripMenuItem sectorOptionsToolStripMenuItem;

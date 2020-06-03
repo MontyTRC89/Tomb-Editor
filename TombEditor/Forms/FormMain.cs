@@ -415,6 +415,7 @@ namespace TombEditor.Forms
             if(!e.Cancel)
             {
                 // Always save window properties on exit and resave config!
+                SaveWindowLayout(_editor.Configuration);
                 Configuration.SaveWindowProperties(this, _editor.Configuration);
                 _editor.ConfigurationChange(false, false, false, true);
             }
@@ -494,19 +495,9 @@ namespace TombEditor.Forms
                 _editor.Action = null;
         }
 
-        private void saveCurrentLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveWindowLayout(_editor.Configuration);
-        }
-
         private void restoreDefaultLayoutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadWindowLayout(new Configuration());
-        }
-
-        private void reloadLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            LoadWindowLayout(_editor.Configuration);
         }
 
         private void sectorOptionsToolStripMenuItem_Click(object sender, EventArgs e)
