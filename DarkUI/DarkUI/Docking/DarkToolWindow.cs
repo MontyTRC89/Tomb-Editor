@@ -64,6 +64,14 @@ namespace DarkUI.Docking
             return DockPanel.ActiveContent == this;
         }
 
+        public void MakeActive()
+        {
+            if (DockPanel == null)
+                return;
+
+            DockPanel.ActiveContent = this;
+        }
+
         private void UpdateCloseButton()
         {
             _headerRect = new Rectangle
