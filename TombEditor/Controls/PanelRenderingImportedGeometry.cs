@@ -101,7 +101,10 @@ namespace TombEditor.Controls
                     {
                         ImportedGeometry geoToUpdate = settings.ImportedGeometries.FirstOrDefault(geo => geo.LoadException != null);
                         if (geoToUpdate != null)
+                        {
                             EditorActions.UpdateImportedGeometryFilePath(Parent, settings, geoToUpdate);
+                            _editor.LoadedImportedGeometriesChange();
+                        }
                         else
                             EditorActions.AddImportedGeometry(Parent);
                     }
