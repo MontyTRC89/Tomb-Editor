@@ -302,10 +302,10 @@ namespace TombLib.NG
                     return LoadStringsFromTxt(level, "PSXStrings");
 
                 case NgParameterKind.NgStringsList255:
-                    return LoadStringsFromTxt(level, "ExtraNG", 256);
+                    return LoadStringsFromTxt(level, "ExtraNG", 256, 1);
 
                 case NgParameterKind.NgStringsAll:
-                    return LoadStringsFromTxt(level, "ExtraNG");
+                    return LoadStringsFromTxt(level, "ExtraNG", 1);
 
                 case NgParameterKind.StringsList255:
                     return LoadStringsFromTxt(level, "Strings", 256);
@@ -337,7 +337,7 @@ namespace TombLib.NG
             }
         }
 
-        private static IEnumerable<TriggerParameterUshort> LoadStringsFromTxt(Level level, string block, int max = 1024)
+        private static IEnumerable<TriggerParameterUshort> LoadStringsFromTxt(Level level, string block, int max = 1024, int offset = 0)
         {
             var path = Path.Combine(level.Settings.MakeAbsolute(level.Settings.ScriptDirectory), "english.txt");
             try
@@ -369,7 +369,7 @@ namespace TombLib.NG
                         var line = reader.ReadLine().Trim();
                         if (line.StartsWith("["))
                             break;
-                        result.Add(result.Count, new TriggerParameterUshort(checked((ushort)result.Count), line));
+                        result.Add(result.Count, new TriggerParameterUshort(checked((ushort)(result.Count + offset)), line));
                     }
                     return result.Values;
                 }
