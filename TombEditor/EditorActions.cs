@@ -3871,7 +3871,7 @@ namespace TombEditor
             _editor.LoadedWadsChange();
         }
 
-        public static void UpdateImportedGeometryFilePath(IWin32Window owner, LevelSettings settings, ImportedGeometry toReplace, bool searchForOthers = true)
+        public static void UpdateImportedGeometryFilePath(IWin32Window owner, LevelSettings settings, ImportedGeometry toReplace, bool sendEvent = false, bool searchForOthers = true)
         {
             string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Info.Path,
                 "Select 3D file that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false);
@@ -3905,6 +3905,9 @@ namespace TombEditor
                 newInfo.Path = item.Value;
                 settings.ImportedGeometryUpdate(item.Key, newInfo);
             }
+
+            if (sendEvent)
+                _editor.LoadedImportedGeometriesChange();
         }
 
         public static void ReloadSounds(IWin32Window owner)
