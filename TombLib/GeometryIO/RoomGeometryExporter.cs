@@ -259,7 +259,7 @@ namespace TombLib.GeometryIO
                                 mesh.Submeshes[mat].Polygons.Add(poly);
                                 lastIndex += 4;
                             }
-                            else
+                            else if (shape == BlockFaceShape.Triangle)
                             {
                                 int i = range.Start;
 
