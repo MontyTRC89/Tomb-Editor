@@ -431,7 +431,7 @@ namespace TombLib.Wad
             }
         }
 
-        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, out bool missingSamplesFound)
+        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, IProgressReporter reporter)
         {
             var samples = new List<WadSample>();
             foreach (var soundInfo in soundMap)
@@ -443,6 +443,26 @@ namespace TombLib.Wad
             }
 
             var loadedSamples = new SortedDictionary<int, WadSample>();
+
+            // Set up maximum buffer sizes
+            int maxBufferLength;
+            int warnBufferLength;
+            switch (settings.GameVersion)
+            {
+                case TRVersion.Game.TR5Main:
+                    maxBufferLength = int.MaxValue;
+                    warnBufferLength = int.MaxValue;
+                    break;
+                case TRVersion.Game.TR4:
+                case TRVersion.Game.TRNG:
+                    maxBufferLength = 1024 * 256;
+                    warnBufferLength = 1024 * 1024; // TREP limit
+                    break;
+                default:
+                    maxBufferLength = 1024 * 256;
+                    warnBufferLength = 1024 * 256;
+                    break;
+            }
 
             var missing = false;
             Parallel.For(0, samples.Count, i =>
@@ -468,6 +488,11 @@ namespace TombLib.Wad
                             }
                             else
                                 currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, false));
+
+                            if (buffer.Length > maxBufferLength)
+                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It is too big for this game version, crashes may occur." );
+                            else if (buffer.Length > warnBufferLength)
+                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + warnBufferLength / 1024 + " kbytes long. It may cause problems without additional measures, such as patching.");
                         }
                     }
                     // ... otherwise output null sample
@@ -487,7 +512,9 @@ namespace TombLib.Wad
                     loadedSamples.Add(i, currentSample);
             });
 
-            missingSamplesFound = missing;
+            if (missing)
+                reporter?.ReportWarn("Some samples are missing. Make sure sample paths are specified correctly. Check level settings for details.");
+
             return loadedSamples;
         }
 
