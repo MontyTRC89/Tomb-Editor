@@ -3592,11 +3592,14 @@ namespace TombEditor
 
             if (geometryToPlace == null)
                 geometryToPlace = AddImportedGeometry(owner, file);
+            
+            if (geometryToPlace != null)
+            {
+                PlaceObject(_editor.SelectedRoom, position, new ImportedGeometryInstance { Model = geometryToPlace });
+                return true;
+            }
 
-            PlaceObject(_editor.SelectedRoom, position,
-                new ImportedGeometryInstance { Model = geometryToPlace });
-
-            return true;
+            return false;
         }
 
         public static ImportedGeometry AddImportedGeometry(IWin32Window owner, string predefinedPath = null)
