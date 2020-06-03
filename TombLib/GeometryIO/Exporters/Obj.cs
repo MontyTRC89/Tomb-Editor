@@ -19,30 +19,6 @@ namespace TombLib.GeometryIO.Exporters
         {
             var path = Path.GetDirectoryName(filename);
             var materialPath = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
-            var materials = new List<IOMaterial>();
-
-            foreach (var mesh in model.Meshes)
-            {
-                if (mesh.Positions.Count == 0)
-                    continue;
-
-                foreach (var pair in mesh.Submeshes)
-                {
-                    var material = pair.Key;
-                    var submesh = pair.Value;
-
-                    // Avoid duplicating materials
-                    if (materials.Any(m => m.Name == material.Name))
-                        continue;
-
-                    // If no polygons, then no need to consider this material
-                    if (submesh.Polygons.Count == 0)
-                        continue;
-
-                    material.Path = path + "\\" + Path.GetFileNameWithoutExtension(filename) + ".mtl";
-                    materials.Add(material);
-                }
-            }
 
             using (var writer = new StreamWriter(filename, false))
             {
@@ -275,7 +251,7 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("# Exported by Tomb Editor " +
                     Assembly.GetExecutingAssembly().GetName().Version.ToString() + "\n");
 
-                foreach (var material in materials)
+                foreach (var material in model.UsedMaterials)
                 {
                     writer.WriteLine("newmtl " + material.Name);
                     writer.WriteLine("    Ka 1.000000 1.000000 1.000000");
