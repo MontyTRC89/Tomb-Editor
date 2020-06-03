@@ -4500,7 +4500,7 @@ namespace TombEditor
 
             using (var formImport = new FormImportPrj(fileName, _editor.Configuration.Editor_RespectFlybyPatchOnPrjImport, _editor.Configuration.Editor_UseHalfPixelCorrectionOnPrjImport))
             {
-                if (formImport.ShowDialog() != DialogResult.OK)
+                if (formImport.ShowDialog(owner) != DialogResult.OK)
                     return;
 
                 Level newLevel = null;
