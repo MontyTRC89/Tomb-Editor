@@ -235,5 +235,12 @@ namespace DarkUI.Controls
                 Refresh(); // We need to invalidate all controls behind
             }
         }
+
+        protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
+        {
+            base.OnGiveFeedback(e);
+            e.UseDefaultCursors = false;
+            Cursor.Current = Cursors.Arrow;
+        }
     }
 }

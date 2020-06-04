@@ -1368,10 +1368,7 @@ namespace TombEditor.Controls
             if ((e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject) != null)
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
-            {
                 e.Effect = DragDropEffects.Move;
-                Parent.Cursor = Cursors.Arrow;
-            }
             else if (EditorActions.DragDropFileSupported(e, true))
                 e.Effect = DragDropEffects.Copy;
             else
