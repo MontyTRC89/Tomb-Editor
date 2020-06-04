@@ -7,12 +7,14 @@ Tomb Editor:
  * Don't draw transparency in item browser preview.
  * Focus on tool window while picking texture or object.
  * Warn user about oversized samples.
+ * Ask for confirmation before deleting multiple triggers.
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
  * Fix ExtraNG string index in trigger window.
  * Fix persistent issues with auto-reloading resources.
  * Fix Metasequoia room exporter.
  * Fix corrupted faces in the corner of the exported room mesh.
  * Fix prj2 drag-n-drop into main window.
+ * Fix drag-n-drop from recent files in Windows 10.
  
 Sound Tool:
  * Fix exception when last sound was deleted.
