@@ -974,22 +974,45 @@ namespace TombEditor
             }
         }
 
-        public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
+        public static void DeleteObjects(IEnumerable<ObjectInstance> objects, IWin32Window owner = null)
         {
-            bool silent  = !_editor.Configuration.UI_WarnBeforeDeletingObjects;
-                 silent &= !(instance is TriggerInstance || instance is PortalInstance);
-                 silent |= owner == null;
-
-            if (!silent && DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
-                "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (objects.Count() == 0)
                 return;
 
-            if (instance is PositionBasedObjectInstance)
-                _editor.UndoManager.PushObjectDeleted((PositionBasedObjectInstance)instance);
-            else if (instance is GhostBlockInstance)
-                _editor.UndoManager.PushGhostBlockDeleted((GhostBlockInstance)instance);
+            bool silent = !_editor.Configuration.UI_WarnBeforeDeletingObjects;
+            silent &= (!objects.Any(obj => obj is TriggerInstance) && !objects.Any(obj => obj is PortalInstance));
+            silent |= owner == null;
 
-            DeleteObjectWithoutUpdate(instance);
+            if (!silent)
+            {
+                string prompt = "Do you really want to delete ";
+                prompt += (objects.Count() == 1) ? (objects.First() + "?") : "specified objects?";
+
+                if (DarkMessageBox.Show(owner, prompt, "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+            }
+
+            // Prepare undo
+            var undoList = new List<UndoRedoInstance>();
+            foreach (var instance in objects)
+            {
+                if (instance is PositionBasedObjectInstance)
+                    undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
+                else if (instance is GhostBlockInstance)
+                    undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
+            }
+
+            // Push undo
+            _editor.UndoManager.Push(undoList);
+
+            // Delete objects
+            foreach (var instance in objects)
+                DeleteObjectWithoutUpdate(instance);
+        }
+
+        public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
+        {
+            DeleteObjects(new List<ObjectInstance>() { instance }, owner);
         }
 
         public static void DeleteObjectWithoutUpdate(ObjectInstance instance)
