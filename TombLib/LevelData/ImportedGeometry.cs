@@ -29,7 +29,7 @@ namespace TombLib.LevelData
             Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
             SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
-                DirectXTexture = TextureLoad.Load(ImportedGeometry.TemporaryDevice, Image), null);
+                DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image), null);
         }
 
         private ImportedGeometryTexture(ImportedGeometryTexture other)
@@ -136,16 +136,12 @@ namespace TombLib.LevelData
         }
     }
 
+    // ImportedGeometry is not actually IWadObject. This interface here is a hack against TRTombalization
+    // unless whole item selection workflow is fully rewritten.
+
     public class ImportedGeometry : IWadObject, ICloneable, IEquatable<ImportedGeometry>
     {
-        // HACK
-        // HACK
-        // HACK
-        // HACK   Until we can update imported geometry we need this global here now. Ugh.
-        // HACK
-        // HACK
-        // HACK
-        public static GraphicsDevice TemporaryDevice;
+        public static GraphicsDevice Device;
 
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -228,11 +224,11 @@ namespace TombLib.LevelData
 
                 SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
                    {
-                       if (TemporaryDevice == null)
+                       if (Device == null)
                            return;
 
                        // Create a new static model
-                       DirectXModel = new Model(TemporaryDevice, info.Scale);
+                       DirectXModel = new Model(Device, info.Scale);
                        DirectXModel.BoundingBox = tmpModel.BoundingBox;
 
                        // Create materials
@@ -248,7 +244,7 @@ namespace TombLib.LevelData
                        // Loop for each mesh loaded in scene
                        foreach (var mesh in tmpModel.Meshes)
                        {
-                           var modelMesh = new ImportedGeometryMesh(TemporaryDevice, mesh.Name);
+                           var modelMesh = new ImportedGeometryMesh(Device, mesh.Name);
 
                            modelMesh.HasVertexColors = (mesh.Colors.Count != 0);
 
