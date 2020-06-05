@@ -346,8 +346,7 @@ namespace SoundTool
             if (string.IsNullOrEmpty(mainSFXPath))
                 return; // User cancelled saving
 
-            bool missing;
-            var samples = WadSample.CompileSamples(sounds, settings, onlyIndexed, out missing);
+            var samples = WadSample.CompileSamples(sounds, settings, onlyIndexed);
 
             try
             {
