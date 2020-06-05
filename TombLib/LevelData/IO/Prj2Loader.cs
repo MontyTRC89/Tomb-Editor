@@ -227,8 +227,6 @@ namespace TombLib.LevelData.IO
                     settings.Dither16BitTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.RemapAnimatedTextures)
                     settings.RemapAnimatedTextures = chunkIO.ReadChunkBool(chunkSize);
-                else if (id == Prj2Chunks.FastMode)
-                    settings.FastMode = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveFloordataPacking)
