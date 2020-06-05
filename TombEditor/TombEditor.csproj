@@ -631,6 +631,7 @@
     <None Include="Resources\icons_actions\actions_StaticTint-16.png" />
     <None Include="Resources\icons_actions\actions_HideHiddenRooms-16.png" />
     <None Include="Resources\icons_actions\actions_AlphaTest-16.png" />
+    <None Include="Resources\icons_actions\actions_play_fast-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
   </ItemGroup>
