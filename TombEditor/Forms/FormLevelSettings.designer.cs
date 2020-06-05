@@ -1859,6 +1859,8 @@
             this.cbRemapAnimTextures.TabIndex = 110;
             this.cbRemapAnimTextures.Tag = "";
             this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
+            this.pathToolTip.SetToolTip(this.cbRemapAnimTextures, "Scan all objects for textures which are similar to any animated frame and apply a" +
+        "nimations to them");
             this.cbRemapAnimTextures.CheckedChanged += new System.EventHandler(this.cbRemapAnimTextures_CheckedChanged);
             // 
             // cbDither16BitTextures
@@ -1870,6 +1872,7 @@
             this.cbDither16BitTextures.TabIndex = 109;
             this.cbDither16BitTextures.Tag = "";
             this.cbDither16BitTextures.Text = "Dither 16-bit textures";
+            this.pathToolTip.SetToolTip(this.cbDither16BitTextures, "Apply dithering and premultiply alpha channel to brightness for 16-bit textures");
             this.cbDither16BitTextures.CheckedChanged += new System.EventHandler(this.cbDither16BitTextures_CheckedChanged);
             // 
             // cbOverrideAllLightQuality
@@ -1881,6 +1884,7 @@
             this.cbOverrideAllLightQuality.TabIndex = 108;
             this.cbOverrideAllLightQuality.Tag = "";
             this.cbOverrideAllLightQuality.Text = "Override individual settings";
+            this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
             this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
             // 
             // cmbDefaultLightQuality
@@ -1894,6 +1898,7 @@
             this.cmbDefaultLightQuality.Name = "cmbDefaultLightQuality";
             this.cmbDefaultLightQuality.Size = new System.Drawing.Size(81, 23);
             this.cmbDefaultLightQuality.TabIndex = 107;
+            this.pathToolTip.SetToolTip(this.cmbDefaultLightQuality, "Raytracing quality for all lights with \'Default\' light quality setting");
             this.cmbDefaultLightQuality.SelectedIndexChanged += new System.EventHandler(this.cmbDefaultLightQuality_SelectedIndexChanged);
             // 
             // darkLabel22
@@ -1916,6 +1921,7 @@
             this.cbAgressiveFloordataPacking.TabIndex = 105;
             this.cbAgressiveFloordataPacking.Tag = "";
             this.cbAgressiveFloordataPacking.Text = "Aggressive floordata packing";
+            this.pathToolTip.SetToolTip(this.cbAgressiveFloordataPacking, "Scan and merge similar floordata sequences");
             this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
             // 
             // cbAgressiveTexturePacking
@@ -1927,6 +1933,8 @@
             this.cbAgressiveTexturePacking.TabIndex = 104;
             this.cbAgressiveTexturePacking.Tag = "";
             this.cbAgressiveTexturePacking.Text = "Aggressive texture packing (merge object and room textures)";
+            this.pathToolTip.SetToolTip(this.cbAgressiveTexturePacking, "Pack both object and room textures in same texture pages.\r\nRecommended mode for T" +
+        "R2/3 targets.");
             this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // darkLabel13
@@ -1961,6 +1969,8 @@
             this.numPadding.Name = "numPadding";
             this.numPadding.Size = new System.Drawing.Size(81, 22);
             this.numPadding.TabIndex = 102;
+            this.pathToolTip.SetToolTip(this.numPadding, "Edge pixel padding to prevent texture border bleeding.\r\nIf set to 0, seams betwee" +
+        "n textures may become visible.");
             this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
             // 
             // panelRoomAmbientLight
