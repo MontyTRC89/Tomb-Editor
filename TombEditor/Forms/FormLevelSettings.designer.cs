@@ -460,12 +460,14 @@
             // 
             // lblGameEnableQuickStartFeature2
             // 
+            this.lblGameEnableQuickStartFeature2.AutoSize = true;
             this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 137);
             this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
-            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(738, 31);
+            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(698, 13);
             this.lblGameEnableQuickStartFeature2.TabIndex = 5;
-            this.lblGameEnableQuickStartFeature2.Text = resources.GetString("lblGameEnableQuickStartFeature2.Text");
+            this.lblGameEnableQuickStartFeature2.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
+    " to enable \'soft fullscreen\' mode in the TRNG settings.";
             // 
             // lblGameEnableQuickStartFeature1
             // 
