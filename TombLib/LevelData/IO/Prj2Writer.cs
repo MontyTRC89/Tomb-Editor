@@ -140,7 +140,6 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);
                 chunkIO.WriteChunkInt(Prj2Chunks.TexturePadding, (long)settings.TexturePadding);
                 chunkIO.WriteChunkBool(Prj2Chunks.RemapAnimatedTextures, settings.RemapAnimatedTextures);
-                chunkIO.WriteChunkBool(Prj2Chunks.FastMode, settings.FastMode);
                 chunkIO.WriteChunkBool(Prj2Chunks.Dither16BitTextures, settings.Dither16BitTextures);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveTexturePacking, settings.AgressiveTexturePacking);
                 chunkIO.WriteChunkBool(Prj2Chunks.AgressiveFloordataPacking, settings.AgressiveFloordataPacking);
