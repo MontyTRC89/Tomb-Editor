@@ -104,12 +104,12 @@ namespace DarkUI.Controls
 
                 if (X > Parent.Width - Size.Width)
                     X = Parent.Width - Size.Width;
-                else if (X < 0)
+                if (X < 0)
                     X = 0;
 
                 if (Y > Parent.Height - Size.Height)
                     Y = Parent.Height - Size.Height;
-                else if (Y < 0)
+                if (Y < 0)
                     Y = 0;
 
                 if (!positionClamped && (Location.X != X || Location.Y != Y))
