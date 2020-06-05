@@ -431,7 +431,7 @@ namespace TombLib.Wad
             }
         }
 
-        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, IProgressReporter reporter)
+        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, IProgressReporter reporter = null)
         {
             var samples = new List<WadSample>();
             foreach (var soundInfo in soundMap)
