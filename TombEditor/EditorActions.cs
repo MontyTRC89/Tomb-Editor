@@ -4470,15 +4470,16 @@ namespace TombEditor
                         foreach (Room r in newLevel.Rooms.Where(room => room != null))
                             r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         AddProjectToRecent(fileName);
-
-                        if (newLevel.Settings.HasUnknownData)
-                            _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
                     }
 
                     _editor.Level = newLevel;
                     newLevel = null;
                     GC.Collect(); // Clean up memory
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
+
+                    if (!silent && newLevel.Settings.HasUnknownData)
+                        _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
+
                     return true;
                 }
             }
