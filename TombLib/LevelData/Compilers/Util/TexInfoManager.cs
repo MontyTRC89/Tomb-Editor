@@ -744,11 +744,14 @@ namespace TombLib.LevelData.Compilers.Util
                 return new Result();
             }
 
+            // Only try to remap animated textures if fast mode is disabled
+            bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
+
             // Try to compare incoming texture with existing anims and return animation frame
             if (_actualAnimTextures.Count > 0)
                 foreach (var actualTex in _actualAnimTextures)
                 {
-                    var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures);
+                    var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, _animTextureLookupMargin, remapAnimatedTextures);
                     if (existing.HasValue)
                         return existing.Value;
                 }
@@ -758,7 +761,7 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var refTex in _referenceAnimTextures)
                 {
                     // If reference set found, generate actual one and immediately return fresh result
-                    if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, _animTextureLookupMargin, _level.Settings.RemapAnimatedTextures).HasValue)
+                    if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
                     {
                         GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
                         return AddTexture(texture, isForRoom, isForTriangle);
@@ -1268,9 +1271,12 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             // Cleanup duplicated parent areas.
-            CleanUp(ref roomTextures);
-            CleanUp(ref objectsTextures);
-            CleanUp(ref bumpedTextures);
+            if (!_level.Settings.FastMode)
+            {
+                CleanUp(ref roomTextures);
+                CleanUp(ref objectsTextures);
+                CleanUp(ref bumpedTextures);
+            }
 
             // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
             if (_level.Settings.AgressiveTexturePacking)

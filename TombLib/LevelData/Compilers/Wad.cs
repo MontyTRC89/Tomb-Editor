@@ -534,7 +534,7 @@ namespace TombLib.LevelData.Compilers
                 newStaticMesh.Mesh = (ushort)_meshPointers.Count;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
-                if (!_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
+                if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
                     ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
                 }
