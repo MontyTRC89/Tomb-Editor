@@ -624,6 +624,7 @@ namespace TombEditor.Forms
 
             // Lock settings dependent on preview mode
             cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
+            cbDither16BitTextures.Enabled = !_levelSettings.FastMode;
 
             // Hide version-specific controls
             // TRNG only

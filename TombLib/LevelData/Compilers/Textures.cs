@@ -208,9 +208,9 @@ namespace TombLib.LevelData.Compilers
             return texturePages;
         }
 
-        private static byte[] PackTextureMap32To16Bit(byte [] textureData, bool dither)
+        private static byte[] PackTextureMap32To16Bit(byte [] textureData, LevelSettings settings)
         {
-            if (dither)
+            if (settings.Dither16BitTextures && !settings.FastMode)
                 return PackTextureMap32To16BitDithered(textureData, 256);
             else
                 return PackTextureMap32To16Bit(textureData);
