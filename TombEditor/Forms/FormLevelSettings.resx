@@ -126,6 +126,10 @@
   <metadata name="colorDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>407, 20</value>
   </metadata>
+  <data name="lblGameEnableQuickStartFeature2.Text" xml:space="preserve">
+    <value>If you are using TRNG, to speed up level load and exit further, it is recommended to enable 'soft fullscreen' mode in the TRNG settings.
+This option may not work with certain TRNG settings or FLEP patches combination.</value>
+  </data>
   <metadata name="textureFileDataGridViewPreviewColumn.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

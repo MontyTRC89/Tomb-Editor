@@ -3547,12 +3547,18 @@ namespace TombEditor
             }
         }
 
-        public static void BuildLevelAndPlay(IWin32Window owner)
+        public static void BuildLevelAndPlay(IWin32Window owner, bool fastMode = false)
         {
             if (IsLaraInLevel())
             {
+                // Temporarily enable fast mode if specified
+                _editor.Level.Settings.FastMode = fastMode;
+
                 if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
+
+                // Set fast mode back off
+                _editor.Level.Settings.FastMode = false;
             }
             else
                 _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
