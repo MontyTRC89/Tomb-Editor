@@ -4477,7 +4477,7 @@ namespace TombEditor
                     GC.Collect(); // Clean up memory
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
 
-                    if (!silent && newLevel.Settings.HasUnknownData)
+                    if (!silent && _editor.Level.Settings.HasUnknownData)
                         _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
 
                     return true;
