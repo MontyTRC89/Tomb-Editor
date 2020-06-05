@@ -357,7 +357,6 @@ namespace SoundTool
                 }
 
                 var message = "MAIN.SFX compiled successfully!";
-                if (missing) message += "\n" + "Some samples weren't found and won't play in game.";
                 popup.ShowInfo(soundInfoEditor, message);
                 _configuration.SoundTool_LastMainSFXPath = mainSFXPath;
             }
