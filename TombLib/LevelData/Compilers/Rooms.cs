@@ -21,8 +21,9 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(5, "Lighting Rooms");
             Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
-                room.RebuildLighting(true);
+                room.RebuildLighting(!_level.Settings.FastMode);
             });
+
             ReportProgress(15, "Building rooms");
 
             foreach (var room in _level.Rooms.Where(r => r != null))
