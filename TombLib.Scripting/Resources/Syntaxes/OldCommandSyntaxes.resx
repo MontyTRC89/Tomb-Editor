@@ -165,6 +165,9 @@
   <data name="Layer1" xml:space="preserve">
     <value>[Level] Layer1= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}</value>
   </data>
+  <data name="Layer2" xml:space="preserve">
+    <value>[Level] Layer2= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}</value>
+  </data>
   <data name="Legend" xml:space="preserve">
     <value>[Level] Legend= {MESSAGE_STRING}</value>
   </data>
@@ -218,6 +221,9 @@
   </data>
   <data name="ResidentCut" xml:space="preserve">
     <value>[Level] ResidentCut= {TRIGGER_ID}, {CUTSCENE_ID}</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>[Options] Security= ??? ; Not used?</value>
   </data>
   <data name="Timer" xml:space="preserve">
     <value>[Level] Timer= ENABLED / DISABLED</value>

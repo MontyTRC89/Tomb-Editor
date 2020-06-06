@@ -208,8 +208,10 @@ namespace TombIDE.ScriptEditor
 				}
 				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent)
 				{
-					bool isChanged = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).PluginName);
-					EndSilentScriptAction(cachedTab, isChanged, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+					bool isChanged1 = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).PluginName);
+					bool isChanged2 = AddNewNGString(Path.GetFileNameWithoutExtension(((IDE.ScriptEditor_AddNewNGStringEvent)obj).InternalDllPath));
+					bool isChanged3 = AddNewNGString(Path.GetFileName(((IDE.ScriptEditor_AddNewNGStringEvent)obj).InternalDllPath));
+					EndSilentScriptAction(cachedTab, isChanged1 || isChanged2 || isChanged3, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
 				{
@@ -361,7 +363,7 @@ namespace TombIDE.ScriptEditor
 						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
 						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
 
-						if (Regex.IsMatch(jlineText, @"\A\d*:\s*?" + ngString + @"(;.*)?"))
+						if (Regex.IsMatch(jlineText, @"^\d+:\s*\b" + Regex.Escape(ngString) + @"\b\s*(;.*)?"))
 							return false;
 					}
 
@@ -371,12 +373,12 @@ namespace TombIDE.ScriptEditor
 						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
 						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
 
-						if (Regex.IsMatch(jlineText, @"\A\d*:.*"))
+						if (Regex.IsMatch(jlineText, @"^\d+:.*"))
 						{
 							_textEditor.CaretOffset = jline.EndOffset;
 							_textEditor.TextArea.PerformTextInput(Environment.NewLine);
 
-							int prevNumber = int.Parse(Regex.Replace(jlineText, @"\A(\d*):.*", "$1"));
+							int prevNumber = int.Parse(Regex.Replace(jlineText, @"^(\d+):.*", "$1"));
 
 							_textEditor.SelectedText = prevNumber + 1 + ": " + ngString;
 

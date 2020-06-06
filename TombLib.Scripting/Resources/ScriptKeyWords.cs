@@ -188,7 +188,10 @@ namespace TombLib.Scripting.Resources
 					// Dunno where these belong :P
 					"Cut",
 					"File",
-					"FMV"
+					"FMV",
+
+					"Layer2",
+					"Security"
 				};
 			}
 		}
@@ -202,7 +205,6 @@ namespace TombLib.Scripting.Resources
 					"Layer2",
 					"NoLevel",
 					"Pulse",
-					"Security",
 					"StarField"
 				};
 			}

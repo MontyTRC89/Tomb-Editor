@@ -156,6 +156,9 @@ namespace TombLib.Scripting.ErrorDetection
 			foreach (DictionaryEntry entry in CommandHelper.GetCommandSyntaxResources())
 				if (command.Equals(entry.Key.ToString(), StringComparison.OrdinalIgnoreCase))
 				{
+					if (!entry.Value.ToString().Contains("["))
+						continue;
+
 					correctSection = entry.Value.ToString().Split('[')[1].Split(']')[0].Trim();
 					break;
 				}
