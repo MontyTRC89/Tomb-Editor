@@ -16,6 +16,7 @@ Tomb Editor:
  * Fix corrupted faces in the corner of the exported room mesh.
  * Fix prj2 drag-n-drop into main window.
  * Fix drag-n-drop from recent files in Windows 10.
+ * Fix floating toolbox getting out of reach on low-res mode switch.
  
 Sound Tool:
  * Fix exception when last sound was deleted.
