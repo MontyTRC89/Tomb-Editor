@@ -12,6 +12,7 @@ Tomb Editor:
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
  * Fix ExtraNG string index in trigger window.
  * Fix persistent issues with auto-reloading resources.
+ * Fix incorrect texel alignment in TR4-5 levels with padding set to 0.
  * Fix Metasequoia room exporter.
  * Fix corrupted faces in the corner of the exported room mesh.
  * Fix prj2 drag-n-drop into main window.
