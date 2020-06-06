@@ -285,12 +285,16 @@ namespace WadTool
                         return;
                     }
                     _workingStatic.Mesh = mesh;
-                    _workingStatic.VisibilityBox = _workingStatic.Mesh.BoundingBox;
-                    _workingStatic.CollisionBox = _workingStatic.Mesh.BoundingBox;
+                    _workingStatic.VisibilityBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+                    _workingStatic.CollisionBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
                     _workingStatic.Version = DataVersion.GetNext();
                     _workingStatic.Mesh.CalculateNormals();
+
                     panelRendering.Invalidate();
                     UpdatePositionUI();
+                    UpdateCollisionBoxUI();
+                    UpdateVisibilityBoxUI();
+                    UpdateLightUI();
                 }
             }
         }
