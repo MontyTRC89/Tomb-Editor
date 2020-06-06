@@ -25,9 +25,13 @@ namespace TombLib.Wad
         [XmlIgnore]
         public const uint GameSupportedSampleRate = 22050;
         [XmlIgnore]
+        private const int ChannelCountOffset = 22;
+        [XmlIgnore]
         private const int SampleRateOffset = 24;
         [XmlIgnore]
         private const int SampleBytesPerSecondOffset = 28;
+        [XmlIgnore]
+        private const int BitsPerSampleOffset = 34;
 
         // RAW sample data, with hash
         [XmlIgnore]
@@ -78,11 +82,11 @@ namespace TombLib.Wad
                 uint fmt_Signature = BitConverter.ToUInt32(data, 12);
                 uint fmtLength = BitConverter.ToUInt32(data, 16);
                 ushort formatTag = BitConverter.ToUInt16(data, 20);
-                ushort channelCount = BitConverter.ToUInt16(data, 22);
+                ushort channelCount = BitConverter.ToUInt16(data, ChannelCountOffset);
                 uint sampleRate = BitConverter.ToUInt32(data, SampleRateOffset);
                 uint bytesPerSecond = BitConverter.ToUInt32(data, SampleBytesPerSecondOffset);
                 ushort blockAlign = BitConverter.ToUInt16(data, 32);
-                ushort bitsPerSample = BitConverter.ToUInt16(data, 34);
+                ushort bitsPerSample = BitConverter.ToUInt16(data, BitsPerSampleOffset);
                 if (fmt_Signature != 0x20746D66)
                     return -1;
                 if (fmtLength != 16) // File generated with NAudio have a 18 bit header. Tomb Raider does not support this!
@@ -127,6 +131,10 @@ namespace TombLib.Wad
 
         [XmlIgnore]
         public uint SampleRate => BitConverter.ToUInt32(Data, SampleRateOffset);
+        [XmlIgnore]
+        public uint ChannelCount => BitConverter.ToUInt16(Data, ChannelCountOffset);
+        [XmlIgnore]
+        public uint BitsPerSample => BitConverter.ToUInt16(Data, BitsPerSampleOffset);
 
         public struct ResampleInfo
         {
@@ -459,6 +467,7 @@ namespace TombLib.Wad
             int maxBufferLength = 1024 * 256;
             int warnBufferLength = 1024 * 256;
             uint supportedSampleRate = 22050;
+            uint supportedBitness = 16;
 
             switch (settings.GameVersion)
             {
@@ -473,6 +482,7 @@ namespace TombLib.Wad
                 case TRVersion.Game.TR1:
                 case TRVersion.Game.TR2:
                     supportedSampleRate = 11025;
+                    supportedBitness = 8;
                     break;
             }
 
@@ -503,6 +513,12 @@ namespace TombLib.Wad
 
                             if (currentSample.SampleRate != supportedSampleRate)
                                 reporter?.ReportWarn("Sample " + samplePath + " has a sample rate of " + currentSample.SampleRate + " which is unsupported for this engine version.");
+
+                            if (currentSample.ChannelCount > 1)
+                                reporter?.ReportWarn("Sample " + samplePath + " isn't mono. Only mono samples are supported. Crashes may occur.");
+
+                            if (currentSample.BitsPerSample != supportedBitness)
+                                reporter?.ReportWarn("Sample " + samplePath + " is not " + supportedBitness + "-bit sample and is not supported in this game version. Crashes may occur.");
 
                             if (buffer.Length > maxBufferLength)
                                 reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It is too big for this game version, crashes may occur.");
