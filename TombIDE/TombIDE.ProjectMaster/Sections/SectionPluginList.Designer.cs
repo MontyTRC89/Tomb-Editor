@@ -36,6 +36,8 @@
 			this.richTextBox_Description = new System.Windows.Forms.RichTextBox();
 			this.sectionPanel = new DarkUI.Controls.DarkSectionPanel();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+			this.contextMenu = new DarkUI.Controls.DarkContextMenu();
+			this.menuItem_Uninstall = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel_List.SuspendLayout();
 			this.panel_Logo.SuspendLayout();
 			this.panel_Properties.SuspendLayout();
@@ -43,6 +45,7 @@
 			this.tabPage_Overview.SuspendLayout();
 			this.tabPage_Description.SuspendLayout();
 			this.sectionPanel.SuspendLayout();
+			this.contextMenu.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// button_ManagePlugins
@@ -142,6 +145,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.treeView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.treeView.ContextMenuStrip = this.contextMenu;
 			this.treeView.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
 			this.treeView.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
 			this.treeView.Indent = 0;
@@ -293,6 +297,26 @@
 			this.sectionPanel.Size = new System.Drawing.Size(662, 320);
 			this.sectionPanel.TabIndex = 0;
 			// 
+			// contextMenu
+			// 
+			this.contextMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.contextMenu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItem_Uninstall});
+			this.contextMenu.Name = "contextMenu";
+			this.contextMenu.Size = new System.Drawing.Size(190, 48);
+			this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
+			// 
+			// menuItem_Uninstall
+			// 
+			this.menuItem_Uninstall.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.menuItem_Uninstall.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.menuItem_Uninstall.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
+			this.menuItem_Uninstall.Name = "menuItem_Uninstall";
+			this.menuItem_Uninstall.Size = new System.Drawing.Size(189, 22);
+			this.menuItem_Uninstall.Text = "Uninstall from Project";
+			this.menuItem_Uninstall.Click += new System.EventHandler(this.menuItem_Uninstall_Click);
+			// 
 			// SectionPluginList
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -309,6 +333,7 @@
 			this.tabPage_Overview.PerformLayout();
 			this.tabPage_Description.ResumeLayout(false);
 			this.sectionPanel.ResumeLayout(false);
+			this.contextMenu.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -333,5 +358,7 @@
 		private System.Windows.Forms.TextBox textBox_DLLName;
 		private System.Windows.Forms.TextBox textBox_Title;
 		private System.Windows.Forms.ToolTip toolTip;
+		private DarkUI.Controls.DarkContextMenu contextMenu;
+		private System.Windows.Forms.ToolStripMenuItem menuItem_Uninstall;
 	}
 }
