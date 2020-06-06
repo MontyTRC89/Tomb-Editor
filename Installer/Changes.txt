@@ -19,6 +19,10 @@ Tomb Editor:
  * Fix drag-n-drop from recent files in Windows 10.
  * Fix floating toolbox getting out of reach on low-res mode switch.
  
+TombIDE:
+ * Added direct plugin uninstalling.
+ * Fixed several plugin issues.
+ 
 WadTool: 
  * Fix static mesh properties not updated after mesh import.
  * Fix exception after deleting root bone in skeleton editor.
