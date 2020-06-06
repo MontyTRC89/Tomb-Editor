@@ -1,5 +1,6 @@
 ﻿using DarkUI.Controls;
 using DarkUI.Forms;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -196,5 +197,52 @@ namespace TombIDE.ProjectMaster
 		}
 
 		#endregion Methods
+
+		private void menuItem_Uninstall_Click(object sender, EventArgs e) // TODO: REFACTOR !!!
+		{
+			DarkTreeNode node = treeView.SelectedNodes[0];
+
+			try
+			{
+				// Remove the plugin DLL file from the current project folder
+
+				string dllFilePath = ((Plugin)node.Tag).InternalDllPath;
+
+				if (string.IsNullOrEmpty(dllFilePath))
+				{
+					if (ModifierKeys.HasFlag(Keys.Shift))
+						FileSystem.DeleteFile(Path.Combine(_ide.Project.EnginePath, ((Plugin)node.Tag).Name), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+					else
+					{
+						DialogResult result = DarkMessageBox.Show(this,
+							"The \"" + ((Plugin)node.Tag).Name + "\" plugin is not installed in TombIDE.\n" +
+							"Would you like to move the DLL file into the recycle bin instead?", "Are you sure?",
+							MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+						if (result == DialogResult.Yes)
+							FileSystem.DeleteFile(Path.Combine(_ide.Project.EnginePath, ((Plugin)node.Tag).Name), UIOption.AllDialogs, RecycleOption.SendToRecycleBin);
+					}
+				}
+				else
+				{
+					string dllProjectPath = Path.Combine(_ide.Project.EnginePath, Path.GetFileName(dllFilePath));
+
+					if (File.Exists(dllProjectPath))
+						File.Delete(dllProjectPath);
+				}
+
+				// The lists will refresh themself, because ProjectMaster.cs is watching the plugin folders
+			}
+			catch (Exception ex)
+			{
+				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void contextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			if (treeView.SelectedNodes.Count == 0)
+				menuItem_Uninstall.Enabled = false;
+		}
 	}
 }
