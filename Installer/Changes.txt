@@ -21,6 +21,8 @@ Tomb Editor:
  
 WadTool: 
  * Fix static mesh properties not updated after mesh import.
+ * Fix exception after deleting root bone in skeleton editor.
+ * Fix potential issues with meshes with inconsistent vertex color count.
  
 SoundTool:
  * Fix exception when last sound was deleted.
