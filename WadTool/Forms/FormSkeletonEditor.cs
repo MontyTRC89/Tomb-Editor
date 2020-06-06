@@ -96,6 +96,9 @@ namespace WadTool
             var stack = new Stack<DarkTreeNode>();
             _nodesDictionary = new Dictionary<WadMeshBoneNode, DarkTreeNode>();
 
+            if (_bones.Count == 0)
+                return nodes;
+
             var rootNode = new DarkTreeNode("0: " + _bones[0].Bone.Name);
             rootNode.Tag = _bones[0];
             rootNode.Expanded = true;
@@ -232,6 +235,9 @@ namespace WadTool
             // Insert the bone
             int index = _bones.IndexOf(parentNode);
             _bones.Insert(index + 1, node);
+
+            // Special case: we're inserting root node
+            if (_bones.Count == 1 && index == -1) index = 0;
 
             // Add angles to animations
             foreach (var animation in _moveable.Animations)

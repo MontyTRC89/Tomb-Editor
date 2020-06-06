@@ -99,7 +99,8 @@ namespace TombLib.Graphics
             mesh.BoundingBox = msh.BoundingBox;
             mesh.BoundingSphere = msh.BoundingSphere;
 
-            var hasShades = msh.VerticesShades.Count != 0;
+            // For some reason, wad meshes sometimes may have position count desynced from color count, so we check that too.
+            var hasShades = msh.VerticesShades.Count != 0 && msh.VerticesPositions.Count == msh.VerticesShades.Count;
 
             for (int j = 0; j < msh.Polys.Count; j++)
             {

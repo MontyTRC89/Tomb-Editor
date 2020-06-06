@@ -229,6 +229,8 @@ namespace TombLib.Wad
                 // FIXME: Why do we keep white intensity shades for wad2 meshes internally, and not vertex colors?
                 if (tmpMesh.Colors.Count == tmpMesh.Positions.Count)
                     mesh.VerticesShades.AddRange(tmpMesh.Colors.Select(v => (short)(8191.0f - (v.To3().GetLuma() * 8191.0f))));
+                else
+                    mesh.VerticesShades.Clear(); // Paranoid
 
                 foreach (var tmpSubmesh in tmpMesh.Submeshes)
                     foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
