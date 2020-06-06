@@ -31,28 +31,16 @@
             this.darkStatusStrip1 = new DarkUI.Controls.DarkStatusStrip();
             this.cbVisibilityBox = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
-            this.tbVisibilityBoxMinX = new DarkUI.Controls.DarkTextBox();
-            this.tbVisibilityBoxMinY = new DarkUI.Controls.DarkTextBox();
             this.darkLabel3 = new DarkUI.Controls.DarkLabel();
-            this.tbVisibilityBoxMinZ = new DarkUI.Controls.DarkTextBox();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
-            this.tbVisibilityBoxMaxZ = new DarkUI.Controls.DarkTextBox();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
-            this.tbVisibilityBoxMaxY = new DarkUI.Controls.DarkTextBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
-            this.tbVisibilityBoxMaxX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel7 = new DarkUI.Controls.DarkLabel();
-            this.tbCollisionBoxMaxZ = new DarkUI.Controls.DarkTextBox();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-            this.tbCollisionBoxMaxY = new DarkUI.Controls.DarkTextBox();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
-            this.tbCollisionBoxMaxX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.tbCollisionBoxMinZ = new DarkUI.Controls.DarkTextBox();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
-            this.tbCollisionBoxMinY = new DarkUI.Controls.DarkTextBox();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
-            this.tbCollisionBoxMinX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.cbCollisionBox = new DarkUI.Controls.DarkCheckBox();
             this.cbDrawGrid = new DarkUI.Controls.DarkCheckBox();
@@ -77,19 +65,31 @@
             this.cbDrawNormals = new DarkUI.Controls.DarkCheckBox();
             this.butRecalcNormals = new DarkUI.Controls.DarkButton();
             this.comboLightType = new DarkUI.Controls.DarkComboBox();
-            this.tbPositionZ = new DarkUI.Controls.DarkTextBox();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
-            this.tbPositionY = new DarkUI.Controls.DarkTextBox();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
-            this.tbPositionX = new DarkUI.Controls.DarkTextBox();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
+            this.nudColBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudColBoxMaxY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudColBoxMaxX = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudColBoxMinZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudColBoxMinY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudColBoxMinX = new DarkUI.Controls.DarkNumericUpDown();
             this.butClearCollisionBox = new DarkUI.Controls.DarkButton();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.nudVisBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudVisBoxMaxY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudVisBoxMaxX = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudVisBoxMinZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudVisBoxMinY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudVisBoxMinX = new DarkUI.Controls.DarkNumericUpDown();
             this.butClearVisibilityBox = new DarkUI.Controls.DarkButton();
             this.darkGroupBox2 = new DarkUI.Controls.DarkGroupBox();
+            this.nudPosZ = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudPosY = new DarkUI.Controls.DarkNumericUpDown();
+            this.nudPosX = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.darkGroupBox5 = new DarkUI.Controls.DarkGroupBox();
@@ -101,8 +101,23 @@
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
             this.darkGroupBox4.SuspendLayout();
             this.darkGroupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMaxZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMaxY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMaxX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMinZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMinY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMinX)).BeginInit();
             this.darkGroupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMaxZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMaxY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMaxX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMinZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMinY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMinX)).BeginInit();
             this.darkGroupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPosZ)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPosY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPosX)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.darkGroupBox5.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
@@ -139,22 +154,6 @@
             this.darkLabel2.TabIndex = 51;
             this.darkLabel2.Text = "X min:";
             // 
-            // tbVisibilityBoxMinX
-            // 
-            this.tbVisibilityBoxMinX.Location = new System.Drawing.Point(6, 56);
-            this.tbVisibilityBoxMinX.Name = "tbVisibilityBoxMinX";
-            this.tbVisibilityBoxMinX.Size = new System.Drawing.Size(73, 22);
-            this.tbVisibilityBoxMinX.TabIndex = 52;
-            this.tbVisibilityBoxMinX.Validated += new System.EventHandler(this.tbVisibilityBoxMinX_Validated);
-            // 
-            // tbVisibilityBoxMinY
-            // 
-            this.tbVisibilityBoxMinY.Location = new System.Drawing.Point(85, 56);
-            this.tbVisibilityBoxMinY.Name = "tbVisibilityBoxMinY";
-            this.tbVisibilityBoxMinY.Size = new System.Drawing.Size(73, 22);
-            this.tbVisibilityBoxMinY.TabIndex = 54;
-            this.tbVisibilityBoxMinY.Validated += new System.EventHandler(this.tbVisibilityBoxMinY_Validated);
-            // 
             // darkLabel3
             // 
             this.darkLabel3.AutoSize = true;
@@ -164,14 +163,6 @@
             this.darkLabel3.Size = new System.Drawing.Size(37, 13);
             this.darkLabel3.TabIndex = 53;
             this.darkLabel3.Text = "Y min:";
-            // 
-            // tbVisibilityBoxMinZ
-            // 
-            this.tbVisibilityBoxMinZ.Location = new System.Drawing.Point(164, 56);
-            this.tbVisibilityBoxMinZ.Name = "tbVisibilityBoxMinZ";
-            this.tbVisibilityBoxMinZ.Size = new System.Drawing.Size(72, 22);
-            this.tbVisibilityBoxMinZ.TabIndex = 56;
-            this.tbVisibilityBoxMinZ.Validated += new System.EventHandler(this.tbVisibilityBoxMinZ_Validated);
             // 
             // darkLabel4
             // 
@@ -183,14 +174,6 @@
             this.darkLabel4.TabIndex = 55;
             this.darkLabel4.Text = "Z min:";
             // 
-            // tbVisibilityBoxMaxZ
-            // 
-            this.tbVisibilityBoxMaxZ.Location = new System.Drawing.Point(164, 98);
-            this.tbVisibilityBoxMaxZ.Name = "tbVisibilityBoxMaxZ";
-            this.tbVisibilityBoxMaxZ.Size = new System.Drawing.Size(72, 22);
-            this.tbVisibilityBoxMaxZ.TabIndex = 62;
-            this.tbVisibilityBoxMaxZ.Validated += new System.EventHandler(this.tbVisibilityBoxMaxZ_Validated);
-            // 
             // darkLabel5
             // 
             this.darkLabel5.AutoSize = true;
@@ -200,14 +183,6 @@
             this.darkLabel5.Size = new System.Drawing.Size(39, 13);
             this.darkLabel5.TabIndex = 61;
             this.darkLabel5.Text = "Z max:";
-            // 
-            // tbVisibilityBoxMaxY
-            // 
-            this.tbVisibilityBoxMaxY.Location = new System.Drawing.Point(85, 98);
-            this.tbVisibilityBoxMaxY.Name = "tbVisibilityBoxMaxY";
-            this.tbVisibilityBoxMaxY.Size = new System.Drawing.Size(73, 22);
-            this.tbVisibilityBoxMaxY.TabIndex = 60;
-            this.tbVisibilityBoxMaxY.Validated += new System.EventHandler(this.tbVisibilityBoxMaxY_Validated);
             // 
             // darkLabel6
             // 
@@ -219,14 +194,6 @@
             this.darkLabel6.TabIndex = 59;
             this.darkLabel6.Text = "Y max:";
             // 
-            // tbVisibilityBoxMaxX
-            // 
-            this.tbVisibilityBoxMaxX.Location = new System.Drawing.Point(6, 98);
-            this.tbVisibilityBoxMaxX.Name = "tbVisibilityBoxMaxX";
-            this.tbVisibilityBoxMaxX.Size = new System.Drawing.Size(73, 22);
-            this.tbVisibilityBoxMaxX.TabIndex = 58;
-            this.tbVisibilityBoxMaxX.Validated += new System.EventHandler(this.tbVisibilityBoxMaxX_Validated);
-            // 
             // darkLabel7
             // 
             this.darkLabel7.AutoSize = true;
@@ -236,14 +203,6 @@
             this.darkLabel7.Size = new System.Drawing.Size(39, 13);
             this.darkLabel7.TabIndex = 57;
             this.darkLabel7.Text = "X max:";
-            // 
-            // tbCollisionBoxMaxZ
-            // 
-            this.tbCollisionBoxMaxZ.Location = new System.Drawing.Point(164, 98);
-            this.tbCollisionBoxMaxZ.Name = "tbCollisionBoxMaxZ";
-            this.tbCollisionBoxMaxZ.Size = new System.Drawing.Size(72, 22);
-            this.tbCollisionBoxMaxZ.TabIndex = 76;
-            this.tbCollisionBoxMaxZ.Validated += new System.EventHandler(this.tbCollisionBoxMaxZ_Validated);
             // 
             // darkLabel8
             // 
@@ -255,14 +214,6 @@
             this.darkLabel8.TabIndex = 75;
             this.darkLabel8.Text = "Z max:";
             // 
-            // tbCollisionBoxMaxY
-            // 
-            this.tbCollisionBoxMaxY.Location = new System.Drawing.Point(85, 98);
-            this.tbCollisionBoxMaxY.Name = "tbCollisionBoxMaxY";
-            this.tbCollisionBoxMaxY.Size = new System.Drawing.Size(73, 22);
-            this.tbCollisionBoxMaxY.TabIndex = 74;
-            this.tbCollisionBoxMaxY.TextChanged += new System.EventHandler(this.tbCollisionBoxMaxY_TextChanged);
-            // 
             // darkLabel9
             // 
             this.darkLabel9.AutoSize = true;
@@ -272,14 +223,6 @@
             this.darkLabel9.Size = new System.Drawing.Size(38, 13);
             this.darkLabel9.TabIndex = 73;
             this.darkLabel9.Text = "Y max:";
-            // 
-            // tbCollisionBoxMaxX
-            // 
-            this.tbCollisionBoxMaxX.Location = new System.Drawing.Point(6, 98);
-            this.tbCollisionBoxMaxX.Name = "tbCollisionBoxMaxX";
-            this.tbCollisionBoxMaxX.Size = new System.Drawing.Size(73, 22);
-            this.tbCollisionBoxMaxX.TabIndex = 72;
-            this.tbCollisionBoxMaxX.Validated += new System.EventHandler(this.tbCollisionBoxMaxX_Validated);
             // 
             // darkLabel10
             // 
@@ -291,14 +234,6 @@
             this.darkLabel10.TabIndex = 71;
             this.darkLabel10.Text = "X max:";
             // 
-            // tbCollisionBoxMinZ
-            // 
-            this.tbCollisionBoxMinZ.Location = new System.Drawing.Point(164, 56);
-            this.tbCollisionBoxMinZ.Name = "tbCollisionBoxMinZ";
-            this.tbCollisionBoxMinZ.Size = new System.Drawing.Size(72, 22);
-            this.tbCollisionBoxMinZ.TabIndex = 70;
-            this.tbCollisionBoxMinZ.Validated += new System.EventHandler(this.tbCollisionBoxMinZ_Validated);
-            // 
             // darkLabel11
             // 
             this.darkLabel11.AutoSize = true;
@@ -309,14 +244,6 @@
             this.darkLabel11.TabIndex = 69;
             this.darkLabel11.Text = "Z min:";
             // 
-            // tbCollisionBoxMinY
-            // 
-            this.tbCollisionBoxMinY.Location = new System.Drawing.Point(85, 56);
-            this.tbCollisionBoxMinY.Name = "tbCollisionBoxMinY";
-            this.tbCollisionBoxMinY.Size = new System.Drawing.Size(73, 22);
-            this.tbCollisionBoxMinY.TabIndex = 68;
-            this.tbCollisionBoxMinY.Validated += new System.EventHandler(this.tbCollisionBoxMinY_Validated);
-            // 
             // darkLabel12
             // 
             this.darkLabel12.AutoSize = true;
@@ -326,14 +253,6 @@
             this.darkLabel12.Size = new System.Drawing.Size(37, 13);
             this.darkLabel12.TabIndex = 67;
             this.darkLabel12.Text = "Y min:";
-            // 
-            // tbCollisionBoxMinX
-            // 
-            this.tbCollisionBoxMinX.Location = new System.Drawing.Point(6, 56);
-            this.tbCollisionBoxMinX.Name = "tbCollisionBoxMinX";
-            this.tbCollisionBoxMinX.Size = new System.Drawing.Size(73, 22);
-            this.tbCollisionBoxMinX.TabIndex = 66;
-            this.tbCollisionBoxMinX.Validated += new System.EventHandler(this.tbCollisionBoxMinX_Validated);
             // 
             // darkLabel13
             // 
@@ -381,6 +300,7 @@
             // 
             // butCalculateCollisionBox
             // 
+            this.butCalculateCollisionBox.Checked = false;
             this.butCalculateCollisionBox.Location = new System.Drawing.Point(163, 7);
             this.butCalculateCollisionBox.Name = "butCalculateCollisionBox";
             this.butCalculateCollisionBox.Size = new System.Drawing.Size(73, 23);
@@ -391,6 +311,7 @@
             // 
             // butCalculateVisibilityBox
             // 
+            this.butCalculateVisibilityBox.Checked = false;
             this.butCalculateVisibilityBox.Location = new System.Drawing.Point(163, 7);
             this.butCalculateVisibilityBox.Name = "butCalculateVisibilityBox";
             this.butCalculateVisibilityBox.Size = new System.Drawing.Size(73, 23);
@@ -402,6 +323,7 @@
             // butSaveChanges
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSaveChanges.Checked = false;
             this.butSaveChanges.Location = new System.Drawing.Point(896, 583);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(80, 23);
@@ -412,6 +334,7 @@
             // 
             // butResetTranslation
             // 
+            this.butResetTranslation.Checked = false;
             this.butResetTranslation.Location = new System.Drawing.Point(6, 64);
             this.butResetTranslation.Name = "butResetTranslation";
             this.butResetTranslation.Size = new System.Drawing.Size(73, 23);
@@ -422,6 +345,7 @@
             // 
             // butResetRotation
             // 
+            this.butResetRotation.Checked = false;
             this.butResetRotation.Location = new System.Drawing.Point(85, 64);
             this.butResetRotation.Name = "butResetRotation";
             this.butResetRotation.Size = new System.Drawing.Size(73, 23);
@@ -432,6 +356,7 @@
             // 
             // butResetScale
             // 
+            this.butResetScale.Checked = false;
             this.butResetScale.Location = new System.Drawing.Point(164, 64);
             this.butResetScale.Name = "butResetScale";
             this.butResetScale.Size = new System.Drawing.Size(72, 23);
@@ -442,6 +367,7 @@
             // 
             // butAddLight
             // 
+            this.butAddLight.Checked = false;
             this.butAddLight.Image = global::WadTool.Properties.Resources.general_plus_math_16;
             this.butAddLight.Location = new System.Drawing.Point(182, 7);
             this.butAddLight.Name = "butAddLight";
@@ -451,6 +377,7 @@
             // 
             // butDeleteLight
             // 
+            this.butDeleteLight.Checked = false;
             this.butDeleteLight.Image = global::WadTool.Properties.Resources.trash_16;
             this.butDeleteLight.Location = new System.Drawing.Point(212, 7);
             this.butDeleteLight.Name = "butDeleteLight";
@@ -460,10 +387,8 @@
             // 
             // numRadius
             // 
-            this.numRadius.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numRadius.DecimalPlaces = 2;
             this.numRadius.Enabled = false;
-            this.numRadius.ForeColor = System.Drawing.Color.Gainsboro;
             this.numRadius.Increment = new decimal(new int[] {
             3,
             0,
@@ -475,12 +400,12 @@
             0,
             0});
             this.numRadius.Location = new System.Drawing.Point(163, 64);
+            this.numRadius.LoopValues = false;
             this.numRadius.Maximum = new decimal(new int[] {
             256,
             0,
             0,
             0});
-            this.numRadius.LoopValues = false;
             this.numRadius.Name = "numRadius";
             this.numRadius.Size = new System.Drawing.Size(73, 22);
             this.numRadius.TabIndex = 90;
@@ -489,10 +414,8 @@
             // 
             // numIntensity
             // 
-            this.numIntensity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numIntensity.DecimalPlaces = 2;
             this.numIntensity.Enabled = false;
-            this.numIntensity.ForeColor = System.Drawing.Color.Gainsboro;
             this.numIntensity.Increment = new decimal(new int[] {
             3,
             0,
@@ -504,6 +427,7 @@
             0,
             131072});
             this.numIntensity.Location = new System.Drawing.Point(163, 36);
+            this.numIntensity.LoopValues = false;
             this.numIntensity.Maximum = new decimal(new int[] {
             128,
             0,
@@ -514,7 +438,6 @@
             0,
             0,
             -2147483648});
-            this.numIntensity.LoopValues = false;
             this.numIntensity.Name = "numIntensity";
             this.numIntensity.Size = new System.Drawing.Size(73, 22);
             this.numIntensity.TabIndex = 89;
@@ -545,20 +468,18 @@
             // 
             // numAmbient
             // 
-            this.numAmbient.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
-            this.numAmbient.ForeColor = System.Drawing.Color.Gainsboro;
             this.numAmbient.IncrementAlternate = new decimal(new int[] {
             8,
             0,
             0,
             0});
             this.numAmbient.Location = new System.Drawing.Point(163, 92);
+            this.numAmbient.LoopValues = false;
             this.numAmbient.Maximum = new decimal(new int[] {
             255,
             0,
             0,
             0});
-            this.numAmbient.LoopValues = false;
             this.numAmbient.Name = "numAmbient";
             this.numAmbient.Size = new System.Drawing.Size(73, 22);
             this.numAmbient.TabIndex = 94;
@@ -590,9 +511,13 @@
             // 
             // lstLights
             // 
+            this.lstLights.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.lstLights.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.lstLights.Location = new System.Drawing.Point(6, 36);
             this.lstLights.MaxDragChange = 20;
             this.lstLights.Name = "lstLights";
+            this.lstLights.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+            this.lstLights.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.lstLights.Size = new System.Drawing.Size(87, 107);
             this.lstLights.TabIndex = 97;
             this.lstLights.Text = "darkTreeView1";
@@ -601,6 +526,7 @@
             // butImportMeshFromFile
             // 
             this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butImportMeshFromFile.Checked = false;
             this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 583);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
             this.butImportMeshFromFile.Size = new System.Drawing.Size(81, 23);
@@ -621,6 +547,7 @@
             // 
             // butRecalcNormals
             // 
+            this.butRecalcNormals.Checked = false;
             this.butRecalcNormals.Location = new System.Drawing.Point(99, 120);
             this.butRecalcNormals.Name = "butRecalcNormals";
             this.butRecalcNormals.Size = new System.Drawing.Size(137, 23);
@@ -641,14 +568,6 @@
             this.comboLightType.TabIndex = 102;
             this.comboLightType.SelectedIndexChanged += new System.EventHandler(this.comboLightType_SelectedIndexChanged);
             // 
-            // tbPositionZ
-            // 
-            this.tbPositionZ.Location = new System.Drawing.Point(164, 21);
-            this.tbPositionZ.Name = "tbPositionZ";
-            this.tbPositionZ.Size = new System.Drawing.Size(72, 22);
-            this.tbPositionZ.TabIndex = 108;
-            this.tbPositionZ.Validated += new System.EventHandler(this.tbPositionZ_Validated);
-            // 
             // darkLabel18
             // 
             this.darkLabel18.AutoSize = true;
@@ -659,14 +578,6 @@
             this.darkLabel18.TabIndex = 107;
             this.darkLabel18.Text = "Pos Z:";
             // 
-            // tbPositionY
-            // 
-            this.tbPositionY.Location = new System.Drawing.Point(85, 21);
-            this.tbPositionY.Name = "tbPositionY";
-            this.tbPositionY.Size = new System.Drawing.Size(73, 22);
-            this.tbPositionY.TabIndex = 106;
-            this.tbPositionY.Validated += new System.EventHandler(this.tbPositionY_Validated);
-            // 
             // darkLabel19
             // 
             this.darkLabel19.AutoSize = true;
@@ -676,14 +587,6 @@
             this.darkLabel19.Size = new System.Drawing.Size(36, 13);
             this.darkLabel19.TabIndex = 105;
             this.darkLabel19.Text = "Pos Y:";
-            // 
-            // tbPositionX
-            // 
-            this.tbPositionX.Location = new System.Drawing.Point(6, 21);
-            this.tbPositionX.Name = "tbPositionX";
-            this.tbPositionX.Size = new System.Drawing.Size(73, 22);
-            this.tbPositionX.TabIndex = 104;
-            this.tbPositionX.Validated += new System.EventHandler(this.tbPositionX_Validated);
             // 
             // darkLabel20
             // 
@@ -724,20 +627,20 @@
             // 
             // darkGroupBox3
             // 
+            this.darkGroupBox3.Controls.Add(this.nudColBoxMaxZ);
+            this.darkGroupBox3.Controls.Add(this.nudColBoxMaxY);
+            this.darkGroupBox3.Controls.Add(this.nudColBoxMaxX);
+            this.darkGroupBox3.Controls.Add(this.nudColBoxMinZ);
+            this.darkGroupBox3.Controls.Add(this.nudColBoxMinY);
+            this.darkGroupBox3.Controls.Add(this.nudColBoxMinX);
             this.darkGroupBox3.Controls.Add(this.butClearCollisionBox);
             this.darkGroupBox3.Controls.Add(this.cbCollisionBox);
             this.darkGroupBox3.Controls.Add(this.darkLabel13);
             this.darkGroupBox3.Controls.Add(this.darkLabel10);
-            this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMaxX);
-            this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMinZ);
             this.darkGroupBox3.Controls.Add(this.darkLabel9);
             this.darkGroupBox3.Controls.Add(this.darkLabel11);
-            this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMaxY);
-            this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMinY);
             this.darkGroupBox3.Controls.Add(this.darkLabel8);
             this.darkGroupBox3.Controls.Add(this.darkLabel12);
-            this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMaxZ);
-            this.darkGroupBox3.Controls.Add(this.tbCollisionBoxMinX);
             this.darkGroupBox3.Controls.Add(this.butCalculateCollisionBox);
             this.darkGroupBox3.Location = new System.Drawing.Point(5, 231);
             this.darkGroupBox3.Name = "darkGroupBox3";
@@ -745,8 +648,153 @@
             this.darkGroupBox3.TabIndex = 110;
             this.darkGroupBox3.TabStop = false;
             // 
+            // nudColBoxMaxZ
+            // 
+            this.nudColBoxMaxZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudColBoxMaxZ.Location = new System.Drawing.Point(164, 97);
+            this.nudColBoxMaxZ.LoopValues = false;
+            this.nudColBoxMaxZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudColBoxMaxZ.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudColBoxMaxZ.Name = "nudColBoxMaxZ";
+            this.nudColBoxMaxZ.Size = new System.Drawing.Size(72, 22);
+            this.nudColBoxMaxZ.TabIndex = 124;
+            this.nudColBoxMaxZ.ValueChanged += new System.EventHandler(this.nudColBoxMaxZ_ValueChanged);
+            // 
+            // nudColBoxMaxY
+            // 
+            this.nudColBoxMaxY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudColBoxMaxY.Location = new System.Drawing.Point(85, 97);
+            this.nudColBoxMaxY.LoopValues = false;
+            this.nudColBoxMaxY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudColBoxMaxY.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudColBoxMaxY.Name = "nudColBoxMaxY";
+            this.nudColBoxMaxY.Size = new System.Drawing.Size(73, 22);
+            this.nudColBoxMaxY.TabIndex = 123;
+            this.nudColBoxMaxY.ValueChanged += new System.EventHandler(this.nudColBoxMaxY_ValueChanged);
+            // 
+            // nudColBoxMaxX
+            // 
+            this.nudColBoxMaxX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudColBoxMaxX.Location = new System.Drawing.Point(6, 98);
+            this.nudColBoxMaxX.LoopValues = false;
+            this.nudColBoxMaxX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudColBoxMaxX.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudColBoxMaxX.Name = "nudColBoxMaxX";
+            this.nudColBoxMaxX.Size = new System.Drawing.Size(73, 22);
+            this.nudColBoxMaxX.TabIndex = 122;
+            this.nudColBoxMaxX.ValueChanged += new System.EventHandler(this.nudColBoxMaxX_ValueChanged);
+            // 
+            // nudColBoxMinZ
+            // 
+            this.nudColBoxMinZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudColBoxMinZ.Location = new System.Drawing.Point(164, 54);
+            this.nudColBoxMinZ.LoopValues = false;
+            this.nudColBoxMinZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudColBoxMinZ.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudColBoxMinZ.Name = "nudColBoxMinZ";
+            this.nudColBoxMinZ.Size = new System.Drawing.Size(72, 22);
+            this.nudColBoxMinZ.TabIndex = 121;
+            this.nudColBoxMinZ.ValueChanged += new System.EventHandler(this.nudColBoxMinZ_ValueChanged);
+            // 
+            // nudColBoxMinY
+            // 
+            this.nudColBoxMinY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudColBoxMinY.Location = new System.Drawing.Point(85, 54);
+            this.nudColBoxMinY.LoopValues = false;
+            this.nudColBoxMinY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudColBoxMinY.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudColBoxMinY.Name = "nudColBoxMinY";
+            this.nudColBoxMinY.Size = new System.Drawing.Size(73, 22);
+            this.nudColBoxMinY.TabIndex = 120;
+            this.nudColBoxMinY.ValueChanged += new System.EventHandler(this.nudColBoxMinY_ValueChanged);
+            // 
+            // nudColBoxMinX
+            // 
+            this.nudColBoxMinX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudColBoxMinX.Location = new System.Drawing.Point(6, 55);
+            this.nudColBoxMinX.LoopValues = false;
+            this.nudColBoxMinX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudColBoxMinX.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudColBoxMinX.Name = "nudColBoxMinX";
+            this.nudColBoxMinX.Size = new System.Drawing.Size(73, 22);
+            this.nudColBoxMinX.TabIndex = 119;
+            this.nudColBoxMinX.ValueChanged += new System.EventHandler(this.nudColBoxMinX_ValueChanged);
+            // 
             // butClearCollisionBox
             // 
+            this.butClearCollisionBox.Checked = false;
             this.butClearCollisionBox.Location = new System.Drawing.Point(102, 7);
             this.butClearCollisionBox.Name = "butClearCollisionBox";
             this.butClearCollisionBox.Size = new System.Drawing.Size(56, 23);
@@ -757,29 +805,174 @@
             // 
             // darkGroupBox1
             // 
+            this.darkGroupBox1.Controls.Add(this.nudVisBoxMaxZ);
+            this.darkGroupBox1.Controls.Add(this.nudVisBoxMaxY);
+            this.darkGroupBox1.Controls.Add(this.nudVisBoxMaxX);
+            this.darkGroupBox1.Controls.Add(this.nudVisBoxMinZ);
+            this.darkGroupBox1.Controls.Add(this.nudVisBoxMinY);
+            this.darkGroupBox1.Controls.Add(this.nudVisBoxMinX);
             this.darkGroupBox1.Controls.Add(this.butClearVisibilityBox);
-            this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMaxX);
             this.darkGroupBox1.Controls.Add(this.butCalculateVisibilityBox);
-            this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMaxZ);
             this.darkGroupBox1.Controls.Add(this.darkLabel5);
             this.darkGroupBox1.Controls.Add(this.cbVisibilityBox);
-            this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMaxY);
             this.darkGroupBox1.Controls.Add(this.darkLabel6);
             this.darkGroupBox1.Controls.Add(this.darkLabel7);
-            this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMinZ);
             this.darkGroupBox1.Controls.Add(this.darkLabel4);
             this.darkGroupBox1.Controls.Add(this.darkLabel2);
-            this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMinY);
             this.darkGroupBox1.Controls.Add(this.darkLabel3);
-            this.darkGroupBox1.Controls.Add(this.tbVisibilityBoxMinX);
             this.darkGroupBox1.Location = new System.Drawing.Point(5, 101);
             this.darkGroupBox1.Name = "darkGroupBox1";
             this.darkGroupBox1.Size = new System.Drawing.Size(242, 126);
             this.darkGroupBox1.TabIndex = 109;
             this.darkGroupBox1.TabStop = false;
             // 
+            // nudVisBoxMaxZ
+            // 
+            this.nudVisBoxMaxZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVisBoxMaxZ.Location = new System.Drawing.Point(164, 97);
+            this.nudVisBoxMaxZ.LoopValues = false;
+            this.nudVisBoxMaxZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudVisBoxMaxZ.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudVisBoxMaxZ.Name = "nudVisBoxMaxZ";
+            this.nudVisBoxMaxZ.Size = new System.Drawing.Size(72, 22);
+            this.nudVisBoxMaxZ.TabIndex = 121;
+            this.nudVisBoxMaxZ.ValueChanged += new System.EventHandler(this.nudVisBoxMaxZ_ValueChanged);
+            // 
+            // nudVisBoxMaxY
+            // 
+            this.nudVisBoxMaxY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVisBoxMaxY.Location = new System.Drawing.Point(85, 97);
+            this.nudVisBoxMaxY.LoopValues = false;
+            this.nudVisBoxMaxY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudVisBoxMaxY.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudVisBoxMaxY.Name = "nudVisBoxMaxY";
+            this.nudVisBoxMaxY.Size = new System.Drawing.Size(73, 22);
+            this.nudVisBoxMaxY.TabIndex = 120;
+            this.nudVisBoxMaxY.ValueChanged += new System.EventHandler(this.nudVisBoxMaxY_ValueChanged);
+            // 
+            // nudVisBoxMaxX
+            // 
+            this.nudVisBoxMaxX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVisBoxMaxX.Location = new System.Drawing.Point(6, 98);
+            this.nudVisBoxMaxX.LoopValues = false;
+            this.nudVisBoxMaxX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudVisBoxMaxX.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudVisBoxMaxX.Name = "nudVisBoxMaxX";
+            this.nudVisBoxMaxX.Size = new System.Drawing.Size(73, 22);
+            this.nudVisBoxMaxX.TabIndex = 119;
+            this.nudVisBoxMaxX.ValueChanged += new System.EventHandler(this.nudVisBoxMaxX_ValueChanged);
+            // 
+            // nudVisBoxMinZ
+            // 
+            this.nudVisBoxMinZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVisBoxMinZ.Location = new System.Drawing.Point(164, 55);
+            this.nudVisBoxMinZ.LoopValues = false;
+            this.nudVisBoxMinZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudVisBoxMinZ.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudVisBoxMinZ.Name = "nudVisBoxMinZ";
+            this.nudVisBoxMinZ.Size = new System.Drawing.Size(72, 22);
+            this.nudVisBoxMinZ.TabIndex = 118;
+            this.nudVisBoxMinZ.ValueChanged += new System.EventHandler(this.nudVisBoxMinZ_ValueChanged);
+            // 
+            // nudVisBoxMinY
+            // 
+            this.nudVisBoxMinY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVisBoxMinY.Location = new System.Drawing.Point(85, 55);
+            this.nudVisBoxMinY.LoopValues = false;
+            this.nudVisBoxMinY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudVisBoxMinY.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudVisBoxMinY.Name = "nudVisBoxMinY";
+            this.nudVisBoxMinY.Size = new System.Drawing.Size(73, 22);
+            this.nudVisBoxMinY.TabIndex = 117;
+            this.nudVisBoxMinY.ValueChanged += new System.EventHandler(this.nudVisBoxMinY_ValueChanged);
+            // 
+            // nudVisBoxMinX
+            // 
+            this.nudVisBoxMinX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudVisBoxMinX.Location = new System.Drawing.Point(6, 56);
+            this.nudVisBoxMinX.LoopValues = false;
+            this.nudVisBoxMinX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudVisBoxMinX.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudVisBoxMinX.Name = "nudVisBoxMinX";
+            this.nudVisBoxMinX.Size = new System.Drawing.Size(73, 22);
+            this.nudVisBoxMinX.TabIndex = 116;
+            this.nudVisBoxMinX.ValueChanged += new System.EventHandler(this.nudVisBoxMinX_ValueChanged);
+            // 
             // butClearVisibilityBox
             // 
+            this.butClearVisibilityBox.Checked = false;
             this.butClearVisibilityBox.Location = new System.Drawing.Point(101, 7);
             this.butClearVisibilityBox.Name = "butClearVisibilityBox";
             this.butClearVisibilityBox.Size = new System.Drawing.Size(56, 23);
@@ -790,13 +983,13 @@
             // 
             // darkGroupBox2
             // 
+            this.darkGroupBox2.Controls.Add(this.nudPosZ);
+            this.darkGroupBox2.Controls.Add(this.nudPosY);
+            this.darkGroupBox2.Controls.Add(this.nudPosX);
             this.darkGroupBox2.Controls.Add(this.darkLabel21);
-            this.darkGroupBox2.Controls.Add(this.tbPositionX);
             this.darkGroupBox2.Controls.Add(this.darkLabel20);
             this.darkGroupBox2.Controls.Add(this.darkLabel19);
-            this.darkGroupBox2.Controls.Add(this.tbPositionY);
             this.darkGroupBox2.Controls.Add(this.darkLabel18);
-            this.darkGroupBox2.Controls.Add(this.tbPositionZ);
             this.darkGroupBox2.Controls.Add(this.butResetTranslation);
             this.darkGroupBox2.Controls.Add(this.butResetRotation);
             this.darkGroupBox2.Controls.Add(this.butResetScale);
@@ -805,6 +998,78 @@
             this.darkGroupBox2.Size = new System.Drawing.Size(242, 93);
             this.darkGroupBox2.TabIndex = 0;
             this.darkGroupBox2.TabStop = false;
+            // 
+            // nudPosZ
+            // 
+            this.nudPosZ.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudPosZ.Location = new System.Drawing.Point(164, 20);
+            this.nudPosZ.LoopValues = false;
+            this.nudPosZ.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudPosZ.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudPosZ.Name = "nudPosZ";
+            this.nudPosZ.Size = new System.Drawing.Size(72, 22);
+            this.nudPosZ.TabIndex = 115;
+            this.nudPosZ.ValueChanged += new System.EventHandler(this.nudPosZ_ValueChanged);
+            // 
+            // nudPosY
+            // 
+            this.nudPosY.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudPosY.Location = new System.Drawing.Point(85, 20);
+            this.nudPosY.LoopValues = false;
+            this.nudPosY.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudPosY.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudPosY.Name = "nudPosY";
+            this.nudPosY.Size = new System.Drawing.Size(73, 22);
+            this.nudPosY.TabIndex = 114;
+            this.nudPosY.ValueChanged += new System.EventHandler(this.nudPosY_ValueChanged);
+            // 
+            // nudPosX
+            // 
+            this.nudPosX.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudPosX.Location = new System.Drawing.Point(6, 21);
+            this.nudPosX.LoopValues = false;
+            this.nudPosX.Maximum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            0});
+            this.nudPosX.Minimum = new decimal(new int[] {
+            65535,
+            0,
+            0,
+            -2147483648});
+            this.nudPosX.Name = "nudPosX";
+            this.nudPosX.Size = new System.Drawing.Size(73, 22);
+            this.nudPosX.TabIndex = 113;
+            this.nudPosX.ValueChanged += new System.EventHandler(this.nudPosX_ValueChanged);
             // 
             // darkLabel21
             // 
@@ -859,6 +1124,7 @@
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.Location = new System.Drawing.Point(981, 583);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(81, 23);
@@ -905,10 +1171,25 @@
             this.darkGroupBox4.ResumeLayout(false);
             this.darkGroupBox3.ResumeLayout(false);
             this.darkGroupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMaxZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMaxY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMaxX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMinZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMinY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudColBoxMinX)).EndInit();
             this.darkGroupBox1.ResumeLayout(false);
             this.darkGroupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMaxZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMaxY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMaxX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMinZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMinY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudVisBoxMinX)).EndInit();
             this.darkGroupBox2.ResumeLayout(false);
             this.darkGroupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPosZ)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPosY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudPosX)).EndInit();
             this.darkSectionPanel1.ResumeLayout(false);
             this.darkGroupBox5.ResumeLayout(false);
             this.darkGroupBox5.PerformLayout();
@@ -923,30 +1204,18 @@
         private DarkUI.Controls.DarkButton butSaveChanges;
         private DarkUI.Controls.DarkCheckBox cbVisibilityBox;
         private DarkUI.Controls.DarkLabel darkLabel2;
-        private DarkUI.Controls.DarkTextBox tbVisibilityBoxMinX;
-        private DarkUI.Controls.DarkTextBox tbVisibilityBoxMinY;
         private DarkUI.Controls.DarkLabel darkLabel3;
-        private DarkUI.Controls.DarkTextBox tbVisibilityBoxMinZ;
         private DarkUI.Controls.DarkLabel darkLabel4;
-        private DarkUI.Controls.DarkTextBox tbVisibilityBoxMaxZ;
         private DarkUI.Controls.DarkLabel darkLabel5;
-        private DarkUI.Controls.DarkTextBox tbVisibilityBoxMaxY;
         private DarkUI.Controls.DarkLabel darkLabel6;
-        private DarkUI.Controls.DarkTextBox tbVisibilityBoxMaxX;
         private DarkUI.Controls.DarkLabel darkLabel7;
         private DarkUI.Controls.DarkButton butCalculateVisibilityBox;
         private DarkUI.Controls.DarkButton butCalculateCollisionBox;
-        private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxZ;
         private DarkUI.Controls.DarkLabel darkLabel8;
-        private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxY;
         private DarkUI.Controls.DarkLabel darkLabel9;
-        private DarkUI.Controls.DarkTextBox tbCollisionBoxMaxX;
         private DarkUI.Controls.DarkLabel darkLabel10;
-        private DarkUI.Controls.DarkTextBox tbCollisionBoxMinZ;
         private DarkUI.Controls.DarkLabel darkLabel11;
-        private DarkUI.Controls.DarkTextBox tbCollisionBoxMinY;
         private DarkUI.Controls.DarkLabel darkLabel12;
-        private DarkUI.Controls.DarkTextBox tbCollisionBoxMinX;
         private DarkUI.Controls.DarkLabel darkLabel13;
         private DarkUI.Controls.DarkCheckBox cbCollisionBox;
         private DarkUI.Controls.DarkCheckBox cbDrawGrid;
@@ -968,11 +1237,8 @@
         private DarkUI.Controls.DarkCheckBox cbDrawNormals;
         private DarkUI.Controls.DarkButton butRecalcNormals;
         private DarkUI.Controls.DarkComboBox comboLightType;
-        private DarkUI.Controls.DarkTextBox tbPositionZ;
         private DarkUI.Controls.DarkLabel darkLabel18;
-        private DarkUI.Controls.DarkTextBox tbPositionY;
         private DarkUI.Controls.DarkLabel darkLabel19;
-        private DarkUI.Controls.DarkTextBox tbPositionX;
         private DarkUI.Controls.DarkLabel darkLabel20;
         private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkGroupBox darkGroupBox3;
@@ -987,5 +1253,20 @@
         private DarkUI.Controls.DarkButton butClearCollisionBox;
         private DarkUI.Controls.DarkButton butClearVisibilityBox;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
+        private DarkUI.Controls.DarkNumericUpDown nudPosZ;
+        private DarkUI.Controls.DarkNumericUpDown nudPosY;
+        private DarkUI.Controls.DarkNumericUpDown nudPosX;
+        private DarkUI.Controls.DarkNumericUpDown nudVisBoxMinZ;
+        private DarkUI.Controls.DarkNumericUpDown nudVisBoxMinY;
+        private DarkUI.Controls.DarkNumericUpDown nudVisBoxMinX;
+        private DarkUI.Controls.DarkNumericUpDown nudVisBoxMaxZ;
+        private DarkUI.Controls.DarkNumericUpDown nudVisBoxMaxY;
+        private DarkUI.Controls.DarkNumericUpDown nudVisBoxMaxX;
+        private DarkUI.Controls.DarkNumericUpDown nudColBoxMinZ;
+        private DarkUI.Controls.DarkNumericUpDown nudColBoxMinY;
+        private DarkUI.Controls.DarkNumericUpDown nudColBoxMinX;
+        private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxZ;
+        private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxY;
+        private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxX;
     }
 }
