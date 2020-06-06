@@ -105,8 +105,19 @@ namespace TombEditor.Controls
                         else
                             EditorActions.AddWad(Parent);
                     }
-                    else if (CurrentObject != null)
-                        DoDragDrop(CurrentObject, DragDropEffects.Copy);
+                    else if (_editor.ChosenItem != null)
+                    {
+                        if (_editor.ChosenItem.Value.IsStatic)
+                        {
+                            var stat = _editor.Level.Settings.WadTryGetStatic(_editor.ChosenItem.Value.StaticId);
+                            if (stat != null) DoDragDrop(stat, DragDropEffects.Copy);
+                        }
+                        else
+                        {
+                            var mov = _editor.Level.Settings.WadTryGetMoveable(_editor.ChosenItem.Value.MoveableId);
+                            if (mov != null) DoDragDrop(mov, DragDropEffects.Copy);
+                        }
+                    }
                     break;
             }
         }
