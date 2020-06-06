@@ -504,7 +504,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
                     // Otherwise use original unpadded correction offsets.
-                    if (version >= TRVersion.Game.TR4)
+                    if (version >= TRVersion.Game.TR4 && version != TRVersion.Game.TR5Main)
                     {
                         if (parent.Padding.All(p => p == 0))
                             coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
