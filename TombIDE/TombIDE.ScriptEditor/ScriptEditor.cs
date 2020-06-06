@@ -363,7 +363,7 @@ namespace TombIDE.ScriptEditor
 						DocumentLine jline = _textEditor.Document.GetLineByNumber(j);
 						string jlineText = _textEditor.Document.GetText(jline.Offset, jline.Length);
 
-						if (Regex.IsMatch(jlineText, @"^\d+:\s*\b" + Regex.Escape(ngString) + @"\b\s*(;.*)?"))
+						if (Regex.IsMatch(jlineText, @"^\d+:\s*\b" + Regex.Escape(ngString) + @"\b\s*(;.*)?$"))
 							return false;
 					}
 
