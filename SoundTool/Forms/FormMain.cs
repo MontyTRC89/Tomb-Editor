@@ -346,7 +346,8 @@ namespace SoundTool
             if (string.IsNullOrEmpty(mainSFXPath))
                 return; // User cancelled saving
 
-            var samples = WadSample.CompileSamples(sounds, settings, onlyIndexed);
+            bool missing;
+            var samples = WadSample.CompileSamples(sounds, settings, onlyIndexed, out missing);
 
             try
             {
@@ -357,6 +358,7 @@ namespace SoundTool
                 }
 
                 var message = "MAIN.SFX compiled successfully!";
+                if (missing) message += "\n" + "Some samples weren't found and won't play in game.";
                 popup.ShowInfo(soundInfoEditor, message);
                 _configuration.SoundTool_LastMainSFXPath = mainSFXPath;
             }

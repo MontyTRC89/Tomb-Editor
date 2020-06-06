@@ -815,7 +815,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Step 4: load samples
-            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, null);
+            var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, _progressReporter);
             _finalSamplesList = loadedSamples.Values.ToList();
         }
 
