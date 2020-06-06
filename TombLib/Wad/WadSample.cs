@@ -28,7 +28,7 @@ namespace TombLib.Wad
         private const int SampleRateOffset = 24;
         [XmlIgnore]
         private const int SampleBytesPerSecondOffset = 28;
-       
+
         // RAW sample data, with hash
         [XmlIgnore]
         public byte[] Data { get; }
@@ -157,7 +157,7 @@ namespace TombLib.Wad
                         Array.Copy(data, arrayClone, checkFormatResult);
                         checkFormatResult -= 8;
 
-                        arrayClone[4]     = unchecked((byte)(checkFormatResult));
+                        arrayClone[4] = unchecked((byte)(checkFormatResult));
                         arrayClone[4 + 1] = unchecked((byte)(checkFormatResult >> 8));
                         arrayClone[4 + 2] = unchecked((byte)(checkFormatResult >> 16));
                         arrayClone[4 + 3] = unchecked((byte)(checkFormatResult >> 24));
@@ -167,7 +167,7 @@ namespace TombLib.Wad
                     else
                         return data;
                 }
-                    
+
                 // If we don't need to resample we can just replace the sample rate in place without NAudio.
                 if (!resampleInfo.Value.Resample)
                 {
@@ -431,7 +431,18 @@ namespace TombLib.Wad
             }
         }
 
-        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, IProgressReporter reporter = null)
+        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, IProgressReporter reporter)
+        {
+            bool temp;
+            return CompileSamples(soundMap, settings, onlyIndexed, reporter, out temp);
+        }
+
+        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, out bool missing)
+        {
+            return CompileSamples(soundMap, settings, onlyIndexed, null, out missing);
+        }
+
+        public static SortedDictionary<int, WadSample> CompileSamples(List<WadSoundInfo> soundMap, LevelSettings settings, bool onlyIndexed, IProgressReporter reporter, out bool samplesMissing)
         {
             var samples = new List<WadSample>();
             foreach (var soundInfo in soundMap)
@@ -444,23 +455,24 @@ namespace TombLib.Wad
 
             var loadedSamples = new SortedDictionary<int, WadSample>();
 
-            // Set up maximum buffer sizes
-            int maxBufferLength;
-            int warnBufferLength;
+            // Set up maximum buffer sizes and sample rate
+            int maxBufferLength = 1024 * 256;
+            int warnBufferLength = 1024 * 256;
+            uint supportedSampleRate = 22050;
+
             switch (settings.GameVersion)
             {
                 case TRVersion.Game.TR5Main:
-                    maxBufferLength = int.MaxValue;
+                    maxBufferLength = int.MaxValue; // Unlimited
                     warnBufferLength = int.MaxValue;
                     break;
                 case TRVersion.Game.TR4:
                 case TRVersion.Game.TRNG:
-                    maxBufferLength = 1024 * 256;
-                    warnBufferLength = 1024 * 1024; // TREP limit
+                    maxBufferLength = 1024 * 1024; // Raised TREP limit
                     break;
-                default:
-                    maxBufferLength = 1024 * 256;
-                    warnBufferLength = 1024 * 256;
+                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR2:
+                    supportedSampleRate = 11025;
                     break;
             }
 
@@ -489,8 +501,11 @@ namespace TombLib.Wad
                             else
                                 currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, false));
 
+                            if (currentSample.SampleRate != supportedSampleRate)
+                                reporter?.ReportWarn("Sample " + samplePath + " has a sample rate of " + currentSample.SampleRate + " which is unsupported for this engine version.");
+
                             if (buffer.Length > maxBufferLength)
-                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It is too big for this game version, crashes may occur." );
+                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It is too big for this game version, crashes may occur.");
                             else if (buffer.Length > warnBufferLength)
                                 reporter?.ReportWarn("Sample " + samplePath + " is more than " + warnBufferLength / 1024 + " kbytes long. It may cause problems without additional measures, such as patching.");
                         }
@@ -515,6 +530,7 @@ namespace TombLib.Wad
             if (missing)
                 reporter?.ReportWarn("Some samples are missing. Make sure sample paths are specified correctly. Check level settings for details.");
 
+            samplesMissing = missing;
             return loadedSamples;
         }
 
