@@ -503,8 +503,14 @@ namespace TombLib.LevelData.Compilers.Util
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
                     // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
-                    if (!parent.Padding.All(p => p == 0) && version >= TRVersion.Game.TR4)
-                        coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
+                    // Otherwise use original unpadded correction offsets.
+                    if (version >= TRVersion.Game.TR4)
+                    {
+                        if (parent.Padding.All(p => p == 0))
+                            coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
+                        else
+                            coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
+                    }
 
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
