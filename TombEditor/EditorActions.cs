@@ -988,7 +988,7 @@ namespace TombEditor
                 string prompt = "Do you really want to delete ";
                 prompt += (objects.Count() == 1) ? (objects.First() + "?") : "specified objects?";
 
-                if (DarkMessageBox.Show(owner, prompt, "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (DarkMessageBox.Show(owner, prompt, "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
 
