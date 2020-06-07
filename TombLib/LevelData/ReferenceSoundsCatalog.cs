@@ -82,7 +82,7 @@ namespace TombLib.LevelData
 
         public bool Equals(ReferencedSoundsCatalog other)
         {
-            if(other != null)
+            if (other != null)
                 return (UniqueID == other.UniqueID && Path.ToLower() == other.Path.ToLower());
             return false;
         }
