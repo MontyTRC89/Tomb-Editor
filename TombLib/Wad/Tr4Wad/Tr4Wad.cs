@@ -463,37 +463,6 @@ namespace TombLib.Wad.Tr4Wad
                 logger.Info("Wad loaded successfully.");
             }
 
-            // Read sounds
-            // XML_SOUND_SYSTEM: to remove?
-            /*logger.Info("Reading sound (sfx/sam) files associated with wad.");
-            int soundMapSize = Version == 130 ? 2048 : 370;
-            using (var readerSounds = new StreamReader(new FileStream(BasePath + "\\" + BaseName + ".sam", FileMode.Open, FileAccess.Read, FileShare.Read)))
-                    while (!readerSounds.EndOfStream)
-                        Sounds.Add(readerSounds.ReadLine());
-
-            using (var readerSfx = new BinaryReaderEx(new FileStream(BasePath + "\\" + BaseName + ".sfx", FileMode.Open, FileAccess.Read, FileShare.Read)))
-            {
-                SoundMap = new short[soundMapSize];
-                for (var i = 0; i < soundMapSize; i++)
-                {
-                    SoundMap[i] = readerSfx.ReadInt16();
-                }
-
-                var numSounds = readerSfx.ReadUInt32();
-                logger.Info("Sounds: " + numSounds);
-                for (var i = 0; i < numSounds; i++)
-                {
-                    var info = new wad_sound_info();
-                    info.Sample = readerSfx.ReadUInt16();
-                    info.Volume = readerSfx.ReadByte();
-                    info.Range = readerSfx.ReadByte();
-                    info.Chance = readerSfx.ReadByte();
-                    info.Pitch = readerSfx.ReadByte();
-                    info.Characteristics = readerSfx.ReadUInt16();
-                    SoundInfo.Add(info);
-                }
-            }*/
-
             // Read sprites
             logger.Info("Reading sprites (swd file) associated with wad.");
             using (var readerSprites = new BinaryReaderEx(new FileStream(BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
