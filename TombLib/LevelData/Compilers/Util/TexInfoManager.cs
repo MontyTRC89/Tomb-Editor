@@ -516,7 +516,7 @@ namespace TombLib.LevelData.Compilers.Util
                         // For some reason texel alignment without padding 
                         // breaks adjacent textures in TR2-3, so bypass it for such cases.
                         if (parent.Padding.All(p => p != 0))
-                            coord -= new Vector2(1.0f);
+                            coord -= Vector2.One;
                     }
 
                     // Clamp coordinates that are possibly out of bounds
