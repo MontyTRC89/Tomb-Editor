@@ -511,6 +511,13 @@ namespace TombLib.LevelData.Compilers.Util
                         else
                             coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
                     }
+                    else
+                    {
+                        // For some reason texel alignment without padding 
+                        // breaks adjacent textures in TR2-3, so bypass it for such cases.
+                        if (parent.Padding.All(p => p != 0))
+                            coord -= new Vector2(0.5f);
+                    }
 
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
