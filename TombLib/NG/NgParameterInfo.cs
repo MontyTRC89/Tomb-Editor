@@ -20,9 +20,7 @@ namespace TombLib.NG
             yield return TriggerType.Antipad;
             yield return TriggerType.Combat;
             yield return TriggerType.Dummy;
-
-            if (levelSettings.GameVersion >= TRVersion.Game.TR3)
-                yield return TriggerType.Antitrigger;
+            yield return TriggerType.Antitrigger;
 
             if (levelSettings.GameVersion >= TRVersion.Game.TR4)
             {
