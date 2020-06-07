@@ -10,6 +10,7 @@ Tomb Editor:
  * Warn user about oversized samples.
  * Ask for confirmation before deleting multiple triggers.
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
+ * Add missing antitrigger type for TR2.
  * Fix ExtraNG string index in trigger window.
  * Fix persistent issues with auto-reloading resources.
  * Fix incorrect texel alignment in TR4-5 levels with padding set to 0.
