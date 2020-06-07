@@ -2714,6 +2714,7 @@
       <sprite_sequence id="460" name="Sky graphics" />
       <sprite_sequence id="463" name="Default sprites" />
       <sprite_sequence id="464" name="Misc sprites" />
+      <sprite_sequence id="470" name="NG Font Graphics" />
       <sprite_sequence id="494" name="NG custom sprites" />
     </sprite_sequences>
     <sounds max="370">
