@@ -313,5 +313,18 @@ namespace TombEditor.ToolWindows
             }));
             cMenu.Show(Cursor.Position, ToolStripDropDownDirection.BelowRight);
         }
+
+        private void panel2DMap_DragEnter(object sender, DragEventArgs e)
+        {
+            if (EditorActions.DragDropFileSupported(e, true))
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void panel2DMap_DragDrop(object sender, DragEventArgs e)
+        {
+            EditorActions.DragDropCommonFiles(e, FindForm());
+        }
     }
 }
