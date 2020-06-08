@@ -3758,8 +3758,8 @@ namespace TombEditor
             if (DarkMessageBox.Show(owner, "Are you sure to DELETE ALL " + _editor.Level.Settings.Textures.Count +
                 " texture files loaded? Everything will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
+            _editor.SelectedTexture = TextureArea.None;
             _editor.Level.RemoveTextures(texture => true);
-            //ClearAllTexturesInLevel(_editor.Level);
             _editor.Level.Settings.Textures.Clear();
             _editor.LoadedTexturesChange();
         }
