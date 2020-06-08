@@ -81,6 +81,15 @@ namespace TombLib
             // Properly clamp screen coords to fix issues with out-of-bounds windows
             if (form.Location.X < 0) form.Location = new Point(0, form.Location.Y);
             if (form.Location.Y < 0) form.Location = new Point(form.Location.X, 0);
+
+            // Also clamp max. width/height if we're not on multidisplay config
+            if (Screen.AllScreens.Length == 1)
+            {
+                var w = Screen.PrimaryScreen.Bounds.Width - form.Width;
+                var h = Screen.PrimaryScreen.Bounds.Height - form.Height;
+                if (form.Location.X >= w) form.Location = new Point(w, form.Location.Y);
+                if (form.Location.Y >= h) form.Location = new Point(form.Location.X, h);
+            }
         }
 
         public string GetVariable(VariableType variableType)
