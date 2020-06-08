@@ -16,6 +16,7 @@ Tomb Editor:
  * Fix incorrect texel alignment in TR4-5 levels with padding set to 0.
  * Fix Metasequoia room exporter.
  * Fix corrupted faces in the corner of the exported room mesh.
+ * Fix selected texture not being dereferenced when "Remove all textures" command is used.
  * Fix prj2 drag-n-drop into main window.
  * Fix drag-n-drop from recent files in Windows 10.
  * Fix floating toolbox getting out of reach on low-res mode switch.
