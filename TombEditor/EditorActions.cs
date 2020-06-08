@@ -3761,6 +3761,7 @@ namespace TombEditor
             _editor.SelectedTexture = TextureArea.None;
             _editor.Level.RemoveTextures(texture => true);
             _editor.Level.Settings.Textures.Clear();
+            _editor.Level.Settings.AnimatedTextureSets.Clear();
             _editor.LoadedTexturesChange();
         }
 
