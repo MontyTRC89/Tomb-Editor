@@ -4601,7 +4601,7 @@
 		<moveable id="122" name="BIG_SCORPION" />
 		<moveable id="123" name="SMALL_SCORPION" />
 		<moveable id="124" name="BABOON_NORMAL" />
-		<moveable id="125" name="BABOON_INV" use_body_from="123" />
+		<moveable id="125" name="BABOON_INV" use_body_from="124" />
 		<moveable id="126" name="BABOON_SILENT" />
 		<moveable id="127" name="LITTLE_BEETLE" />
 		<moveable id="128" name="LOCUSTS" />
