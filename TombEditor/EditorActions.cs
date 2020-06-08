@@ -3637,7 +3637,7 @@ namespace TombEditor
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load imported geometry", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false));
 
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (string.IsNullOrEmpty(path))
                 return null;
 
             var geometry = new ImportedGeometry();
