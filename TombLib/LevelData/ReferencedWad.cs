@@ -75,7 +75,8 @@ namespace TombLib.LevelData
 
         public bool Equals(ReferencedWad other)
         {
-            return (UniqueID == other?.UniqueID && Path.ToLower() == other?.Path.ToLower());
+            if (other == null) return false;
+            return (UniqueID == other.UniqueID && Path.ToLower() == other.Path.ToLower());
         }
     }
 }
