@@ -3650,7 +3650,7 @@ namespace TombEditor
                 if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
                     return null;
 
-                var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
+                var info = new ImportedGeometryInfo(path, settingsDialog.Settings);
                 _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
                 _editor.Level.Settings.ImportedGeometries.Add(geometry);
                 _editor.LoadedImportedGeometriesChange();
