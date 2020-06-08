@@ -4592,27 +4592,28 @@
 		<moveable id="113" name="SMALL_DINOSAUR" />
 		<moveable id="114" name="FISH_EMITTER" />
 		<moveable id="115" name="RAT" />
-		<moveable id="116" name="CROCODILE" />
-		<moveable id="117" name="BAT" />
-		<moveable id="118" name="SPHINX" />
-		<moveable id="119" name="WILD_BOAR" />
-		<moveable id="120" name="HARPY" />
-		<moveable id="121" name="BIG_SCORPION" />
-		<moveable id="122" name="SMALL_SCORPION" />
-		<moveable id="123" name="BABOON_NORMAL" />
-		<moveable id="124" name="BABOON_INV" use_body_from="123" />
-		<moveable id="125" name="BABOON_SILENT" />
-		<moveable id="126" name="LITTLE_BEETLE" />
-		<moveable id="127" name="LOCUSTS" />
-		<moveable id="128" name="SHARK" />
-		<moveable id="129" name="HUSKIE" />
-		<moveable id="130" name="DOG" />
-		<moveable id="131" name="BATS_EMITTER" />
-		<moveable id="132" name="RATS_EMITTER" />
-		<moveable id="133" name="SPIDERS_EMITTER" />
-		<moveable id="134" name="LION" />
-		<moveable id="135" name="DOBERMAN" />
-		<moveable id="136" name="HAMMERHEAD" />
+		<moveable id="116" name="BIG_RAT" />
+		<moveable id="117" name="CROCODILE" />
+		<moveable id="118" name="BAT" />
+		<moveable id="119" name="SPHINX" />
+		<moveable id="120" name="WILD_BOAR" />
+		<moveable id="121" name="HARPY" />
+		<moveable id="122" name="BIG_SCORPION" />
+		<moveable id="123" name="SMALL_SCORPION" />
+		<moveable id="124" name="BABOON_NORMAL" />
+		<moveable id="125" name="BABOON_INV" use_body_from="123" />
+		<moveable id="126" name="BABOON_SILENT" />
+		<moveable id="127" name="LITTLE_BEETLE" />
+		<moveable id="128" name="LOCUSTS" />
+		<moveable id="129" name="SHARK" />
+		<moveable id="130" name="HUSKIE" />
+		<moveable id="131" name="DOG" />
+		<moveable id="132" name="BATS_EMITTER" />
+		<moveable id="133" name="RATS_EMITTER" />
+		<moveable id="134" name="SPIDERS_EMITTER" />
+		<moveable id="135" name="LION" />
+		<moveable id="136" name="DOBERMAN" />
+		<moveable id="137" name="HAMMERHEAD" />
 		<moveable id="150" name="SCUBA_HARPOON" />
 		<moveable id="151" name="SCUBA_DIVER" />
 		<moveable id="152" name="GOON_SILENCER1" />
