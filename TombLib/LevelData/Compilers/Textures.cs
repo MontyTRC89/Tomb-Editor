@@ -50,6 +50,11 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(70, "    Num room pages: " + _textureInfoManager.NumRoomPages);
             ReportProgress(70, "    Num objects pages: " + _textureInfoManager.NumObjectsPages);
             ReportProgress(70, "    Num bumpmap pages: " + _textureInfoManager.NumBumpPages);
+
+            // Throw warning if texture pages count is big
+            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
+                if (_textureInfoManager.NumObjectsPages + _textureInfoManager.NumRoomPages >= 28)
+                    _progressReporter.ReportWarn("The number of total texture pages is 28 or more. Texture glitches or crashes may occur.\nReduce padding, use aggressive texture packing or use less or smaller textures.");
         }
 
         private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
