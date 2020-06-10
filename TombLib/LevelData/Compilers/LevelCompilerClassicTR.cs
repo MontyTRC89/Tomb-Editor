@@ -142,11 +142,6 @@ namespace TombLib.LevelData.Compilers
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
-
-            //Throw warning if texture pages count is big
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                if (_textureInfoManager.NumObjectsPages + _textureInfoManager.NumRoomPages >= 28)
-                    _progressReporter.ReportWarn("The number of total texture pages is 28 or more. Texture glitches or crashes may occur.\nReduce padding, use aggressive texture packing or use less or smaller textures.");
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
