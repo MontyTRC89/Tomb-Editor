@@ -4614,6 +4614,8 @@
 		<moveable id="135" name="LION" />
 		<moveable id="136" name="DOBERMAN" />
 		<moveable id="137" name="HAMMERHEAD" />
+		<moveable id="138" name="CROCODILE_GOD" />
+		<moveable id="139" name="LOCUSTS_EMITTER" />
 		<moveable id="150" name="SCUBA_HARPOON" />
 		<moveable id="151" name="SCUBA_DIVER" />
 		<moveable id="152" name="GOON_SILENCER1" />
