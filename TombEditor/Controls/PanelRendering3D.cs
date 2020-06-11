@@ -239,7 +239,8 @@ namespace TombEditor.Controls
                 BoundingBox b = room.WorldBoundingBox;
 
                 if (p.X >= b.Minimum.X && p.Y >= b.Minimum.Y && p.Z >= b.Minimum.Z &&
-                    p.X <= b.Maximum.X && p.Y <= b.Maximum.Y && p.Z <= b.Maximum.Z)
+                    p.X <= b.Maximum.X && p.Y <= b.Maximum.Y && p.Z <= b.Maximum.Z &&
+                    _editor.SelectedRoom.IsAlternate == room.IsAlternate)
                 {
                     return room;
                 }
