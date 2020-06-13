@@ -83,6 +83,8 @@ namespace TombLib.Wad.TrLevels
 
             using (var reader = new BinaryReaderEx(File.OpenRead(levelName)))
             {
+                version = reader.ReadUInt32();
+
                 if (Version == TRVersion.Game.TR4 && fileName.ToLower().Trim().EndsWith(".trc"))
                     Version = TRVersion.Game.TR5;
 
