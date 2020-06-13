@@ -83,7 +83,6 @@
             // 
             // treeSkeleton
             // 
-            this.treeSkeleton.AllowMoveNodes = true;
             this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeSkeleton.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -95,7 +94,6 @@
             this.treeSkeleton.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.treeSkeleton.Size = new System.Drawing.Size(310, 383);
             this.treeSkeleton.TabIndex = 0;
-            this.treeSkeleton.Text = "darkTreeView1";
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
             this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDown);
             // 
