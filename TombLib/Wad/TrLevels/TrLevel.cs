@@ -43,7 +43,7 @@ namespace TombLib.Wad.TrLevels
 
         public void LoadLevel(string fileName)
         {
-            bool decrypt = false;
+            bool needsDecrypt = false;
             string levelName = fileName;
 
             uint version;
@@ -65,7 +65,7 @@ namespace TombLib.Wad.TrLevels
                 else if (version == 0x63345254) // Encrypted TRNG level
                 {
                     Version = TRVersion.Game.TR4;
-                    decrypt = true;
+                    needsDecrypt = true;
                 }
                 else
                     throw new Exception("Unknown game version 0x" + version.ToString("X") + ".");
@@ -73,7 +73,7 @@ namespace TombLib.Wad.TrLevels
 
             // If encrypted TRNG level, make temporary copy of it and decrypt it.
             // Copy will be deleted after parsing.
-            if (decrypt)
+            if (needsDecrypt)
             {
                 levelName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "_decrypted" + Path.GetExtension(fileName));
                 if (File.Exists(levelName)) File.Delete(levelName);
@@ -975,7 +975,7 @@ namespace TombLib.Wad.TrLevels
             }
 
             // Delete decrypted level after processing
-            if (decrypt && levelName != fileName)
+            if (needsDecrypt && levelName != fileName)
                 File.Delete(levelName);
 
             // If TR2 or TR3, read samples from SFX files
