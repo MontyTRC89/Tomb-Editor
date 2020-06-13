@@ -76,9 +76,8 @@ namespace TombLib.Wad.TrLevels
             if (needsDecrypt)
             {
                 levelName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "_decrypted" + Path.GetExtension(fileName));
-                if (File.Exists(levelName)) File.Delete(levelName);
-                File.Copy(fileName, levelName);
-                NgEncryption.DecryptLevel(levelName);
+                if (!NgEncryption.DecryptLevel(fileName, levelName))
+                    throw new Exception("Can't decrypt TRNG level " + fileName + ".");
             }
 
             using (var reader = new BinaryReaderEx(File.OpenRead(levelName)))
@@ -975,7 +974,7 @@ namespace TombLib.Wad.TrLevels
             }
 
             // Delete decrypted level after processing
-            if (needsDecrypt && levelName != fileName)
+            if (needsDecrypt && levelName != fileName && File.Exists(levelName))
                 File.Delete(levelName);
 
             // If TR2 or TR3, read samples from SFX files
