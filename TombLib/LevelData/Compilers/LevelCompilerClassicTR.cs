@@ -255,14 +255,20 @@ namespace TombLib.LevelData.Compilers
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
+
+                ushort boxIndex;
+                if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
+                    boxIndex = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7FF0) >> 4);
+                else
+                    boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
+
                 _cameras.Add(new tr_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = instance.Strength,
-                    Flags = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex &
-                                       0x7FF0) >> 4)
+                    Flags = boxIndex
                 });
             }
 
