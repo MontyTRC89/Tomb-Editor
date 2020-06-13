@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using TombLib.IO;
 using TombLib.LevelData;
+using TombLib.NG;
 using TombLib.Utils;
 
 namespace TombLib.Wad.TrLevels
@@ -42,9 +43,13 @@ namespace TombLib.Wad.TrLevels
 
         public void LoadLevel(string fileName)
         {
+            bool decrypt = false;
+            string levelName = fileName;
+
+            uint version;
             using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
             {
-                var version = reader.ReadUInt32();
+                version = reader.ReadUInt32();
                 if (version == 0x00000020)
                     Version = TRVersion.Game.TR1;
                 else if (version == 0x0000002D)
@@ -57,9 +62,27 @@ namespace TombLib.Wad.TrLevels
                     Version = TRVersion.Game.TR3;
                 else if (version == 0x00345254)
                     Version = TRVersion.Game.TR4;
+                else if (version == 0x63345254) // Encrypted TRNG level
+                {
+                    Version = TRVersion.Game.TR4;
+                    decrypt = true;
+                }
                 else
                     throw new Exception("Unknown game version 0x" + version.ToString("X") + ".");
+            }
 
+            // If encrypted TRNG level, make temporary copy of it and decrypt it.
+            // Copy will be deleted after parsing.
+            if (decrypt)
+            {
+                levelName = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "_decrypted" + Path.GetExtension(fileName));
+                if (File.Exists(levelName)) File.Delete(levelName);
+                File.Copy(fileName, levelName);
+                NgEncryption.DecryptLevel(levelName);
+            }
+
+            using (var reader = new BinaryReaderEx(File.OpenRead(levelName)))
+            {
                 if (Version == TRVersion.Game.TR4 && fileName.ToLower().Trim().EndsWith(".trc"))
                     Version = TRVersion.Game.TR5;
 
@@ -948,6 +971,10 @@ namespace TombLib.Wad.TrLevels
                     }
                 }
             }
+
+            // Delete decrypted level after processing
+            if (decrypt && levelName != fileName)
+                File.Delete(levelName);
 
             // If TR2 or TR3, read samples from SFX files
             if (Version == TRVersion.Game.TR2 || Version == TRVersion.Game.TR3)
