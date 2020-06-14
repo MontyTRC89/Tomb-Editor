@@ -32,7 +32,7 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
+                newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
                 if (isWad2 && newWad.SoundSystem == SoundSystem.Dynamic)
                 {
                     if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
@@ -52,7 +52,7 @@ namespace WadTool
                     if (newWad.HasUnknownData)
                         tool.SendMessage("Loaded wad2 is of newer version.\nSome data was lost. Don't save this wad2 and use newest version of Wad Tool.", PopupType.Warning);
 
-                    newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
+                    newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
                 }
             }
             catch (OperationCanceledException)
