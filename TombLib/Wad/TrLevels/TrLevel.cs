@@ -41,7 +41,7 @@ namespace TombLib.Wad.TrLevels
         internal List<uint> RealPointers = new List<uint>();
         internal List<uint> HelperPointers = new List<uint>();
 
-        public void LoadLevel(string fileName)
+        public void LoadLevel(string fileName, bool allowTRNGDecryption)
         {
             bool needsDecrypt = false;
             string levelName = fileName;
@@ -62,7 +62,7 @@ namespace TombLib.Wad.TrLevels
                     Version = TRVersion.Game.TR3;
                 else if (version == 0x00345254)
                     Version = TRVersion.Game.TR4;
-                else if (version == 0x63345254) // Encrypted TRNG level
+                else if (version == 0x63345254 && allowTRNGDecryption) // Encrypted TRNG level
                 {
                     Version = TRVersion.Game.TR4;
                     needsDecrypt = true;
