@@ -634,7 +634,7 @@ namespace TombLib.LevelData.Compilers
                 }
             }
             else if (parameter is TriggerParameterUshort)
-                index = ((TriggerParameterUshort)parameter).Key;
+                index = ((TriggerParameterUshort)parameter).Key & upperBound;
             else
                 throw new Exception("Trigger has unrecognized parameter! ('" + triggerDiagnostic + "')");
 

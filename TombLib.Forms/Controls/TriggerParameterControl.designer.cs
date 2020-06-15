@@ -66,21 +66,24 @@ namespace TombLib.Controls
             // 
             this.numericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.numericUpDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(69)))), ((int)(((byte)(73)))), ((int)(((byte)(74)))));
             this.numericUpDown.Font = new System.Drawing.Font("Segoe UI", 8.5F);
-            this.numericUpDown.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.numericUpDown.IncrementAlternate = new decimal(new int[] {
             256,
             0,
             0,
             0});
             this.numericUpDown.Location = new System.Drawing.Point(0, 0);
+            this.numericUpDown.LoopValues = false;
             this.numericUpDown.Maximum = new decimal(new int[] {
             65535,
             0,
             0,
             0});
-            this.numericUpDown.LoopValues = false;
+            this.numericUpDown.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
             this.numericUpDown.Name = "numericUpDown";
             this.numericUpDown.Size = new System.Drawing.Size(259, 23);
             this.numericUpDown.TabIndex = 2;
@@ -90,6 +93,7 @@ namespace TombLib.Controls
             // butView
             // 
             this.butView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butView.Checked = false;
             this.butView.Location = new System.Drawing.Point(264, 0);
             this.butView.Name = "butView";
             this.butView.Size = new System.Drawing.Size(51, 23);
@@ -103,6 +107,7 @@ namespace TombLib.Controls
             this.butReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butReset.BackColor = System.Drawing.Color.Maroon;
             this.butReset.BackColorUseGeneric = false;
+            this.butReset.Checked = false;
             this.butReset.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.butReset.Location = new System.Drawing.Point(264, 0);
             this.butReset.Name = "butReset";
@@ -115,6 +120,7 @@ namespace TombLib.Controls
             // butSearch
             // 
             this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
             this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
             this.butSearch.Location = new System.Drawing.Point(235, 0);
             this.butSearch.Name = "butSearch";
