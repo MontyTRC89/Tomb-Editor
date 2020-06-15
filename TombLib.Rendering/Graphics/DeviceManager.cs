@@ -24,7 +24,7 @@ namespace TombLib.Graphics
             // Recreate legacy environment
             {
                 ___LegacyDevice = GraphicsDevice.New(((Rendering.DirectX11.Dx11RenderingDevice)Device).Device);
-                LevelData.ImportedGeometry.TemporaryDevice = ___LegacyDevice;
+                LevelData.ImportedGeometry.Device = ___LegacyDevice;
 
                 // Load legacy effects
                 string dir = Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location);

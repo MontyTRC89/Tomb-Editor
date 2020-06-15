@@ -159,6 +159,7 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.levelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.cbRemapAnimTextures = new DarkUI.Controls.DarkCheckBox();
             this.cbDither16BitTextures = new DarkUI.Controls.DarkCheckBox();
             this.cbOverrideAllLightQuality = new DarkUI.Controls.DarkCheckBox();
             this.cmbDefaultLightQuality = new DarkUI.Controls.DarkComboBox();
@@ -180,7 +181,6 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbRemapAnimTextures = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
@@ -460,10 +460,11 @@
             // 
             // lblGameEnableQuickStartFeature2
             // 
+            this.lblGameEnableQuickStartFeature2.AutoSize = true;
             this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 137);
             this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
-            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(404, 31);
+            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(698, 13);
             this.lblGameEnableQuickStartFeature2.TabIndex = 5;
             this.lblGameEnableQuickStartFeature2.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
     " to enable \'soft fullscreen\' mode in the TRNG settings.";
@@ -1694,7 +1695,7 @@
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 347);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 344);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1723,7 +1724,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 296);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 293);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1753,7 +1754,7 @@
             this.panelScripts.Controls.Add(this.darkLabel15);
             this.panelScripts.Controls.Add(this.tbScriptPath);
             this.panelScripts.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelScripts.Location = new System.Drawing.Point(0, 246);
+            this.panelScripts.Location = new System.Drawing.Point(0, 243);
             this.panelScripts.Name = "panelScripts";
             this.panelScripts.Size = new System.Drawing.Size(778, 50);
             this.panelScripts.TabIndex = 95;
@@ -1794,7 +1795,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 194);
+            this.panel6.Location = new System.Drawing.Point(0, 191);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -1846,8 +1847,21 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 194);
+            this.panel12.Size = new System.Drawing.Size(778, 191);
             this.panel12.TabIndex = 91;
+            // 
+            // cbRemapAnimTextures
+            // 
+            this.cbRemapAnimTextures.AutoSize = true;
+            this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 166);
+            this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
+            this.cbRemapAnimTextures.Size = new System.Drawing.Size(396, 17);
+            this.cbRemapAnimTextures.TabIndex = 110;
+            this.cbRemapAnimTextures.Tag = "";
+            this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
+            this.pathToolTip.SetToolTip(this.cbRemapAnimTextures, "Scan all objects for textures which are similar to any animated frame and apply a" +
+        "nimations to them");
+            this.cbRemapAnimTextures.CheckedChanged += new System.EventHandler(this.cbRemapAnimTextures_CheckedChanged);
             // 
             // cbDither16BitTextures
             // 
@@ -1858,6 +1872,7 @@
             this.cbDither16BitTextures.TabIndex = 109;
             this.cbDither16BitTextures.Tag = "";
             this.cbDither16BitTextures.Text = "Dither 16-bit textures";
+            this.pathToolTip.SetToolTip(this.cbDither16BitTextures, "Apply dithering and premultiply alpha channel to brightness for 16-bit textures");
             this.cbDither16BitTextures.CheckedChanged += new System.EventHandler(this.cbDither16BitTextures_CheckedChanged);
             // 
             // cbOverrideAllLightQuality
@@ -1869,6 +1884,7 @@
             this.cbOverrideAllLightQuality.TabIndex = 108;
             this.cbOverrideAllLightQuality.Tag = "";
             this.cbOverrideAllLightQuality.Text = "Override individual settings";
+            this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
             this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
             // 
             // cmbDefaultLightQuality
@@ -1882,6 +1898,7 @@
             this.cmbDefaultLightQuality.Name = "cmbDefaultLightQuality";
             this.cmbDefaultLightQuality.Size = new System.Drawing.Size(81, 23);
             this.cmbDefaultLightQuality.TabIndex = 107;
+            this.pathToolTip.SetToolTip(this.cmbDefaultLightQuality, "Raytracing quality for all lights with \'Default\' light quality setting");
             this.cmbDefaultLightQuality.SelectedIndexChanged += new System.EventHandler(this.cmbDefaultLightQuality_SelectedIndexChanged);
             // 
             // darkLabel22
@@ -1904,6 +1921,7 @@
             this.cbAgressiveFloordataPacking.TabIndex = 105;
             this.cbAgressiveFloordataPacking.Tag = "";
             this.cbAgressiveFloordataPacking.Text = "Aggressive floordata packing";
+            this.pathToolTip.SetToolTip(this.cbAgressiveFloordataPacking, "Scan and merge similar floordata sequences");
             this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
             // 
             // cbAgressiveTexturePacking
@@ -1915,6 +1933,8 @@
             this.cbAgressiveTexturePacking.TabIndex = 104;
             this.cbAgressiveTexturePacking.Tag = "";
             this.cbAgressiveTexturePacking.Text = "Aggressive texture packing (merge object and room textures)";
+            this.pathToolTip.SetToolTip(this.cbAgressiveTexturePacking, "Pack both object and room textures in same texture pages.\r\nRecommended mode for T" +
+        "R2/3 targets.");
             this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // darkLabel13
@@ -1949,6 +1969,8 @@
             this.numPadding.Name = "numPadding";
             this.numPadding.Size = new System.Drawing.Size(81, 22);
             this.numPadding.TabIndex = 102;
+            this.pathToolTip.SetToolTip(this.numPadding, "Edge pixel padding to prevent texture border bleeding.\r\nIf set to 0, seams betwee" +
+        "n textures may become visible.");
             this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
             // 
             // panelRoomAmbientLight
@@ -2064,17 +2086,6 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // cbRemapAnimTextures
-            // 
-            this.cbRemapAnimTextures.AutoSize = true;
-            this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 166);
-            this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
-            this.cbRemapAnimTextures.Size = new System.Drawing.Size(396, 17);
-            this.cbRemapAnimTextures.TabIndex = 110;
-            this.cbRemapAnimTextures.Tag = "";
-            this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
-            this.cbRemapAnimTextures.CheckedChanged += new System.EventHandler(this.cbRemapAnimTextures_CheckedChanged);
             // 
             // FormLevelSettings
             // 

@@ -16,8 +16,6 @@
         private void InitializeComponent()
         {
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
-            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
             this.butFaceEdit = new System.Windows.Forms.ToolStripButton();
@@ -61,6 +59,7 @@
             this.butAddGhostBlock = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
+            this.butCompileAndPlayPreview = new System.Windows.Forms.ToolStripButton();
             this.butAddBoxVolume = new System.Windows.Forms.ToolStripButton();
             this.butAddPrismVolume = new System.Windows.Forms.ToolStripButton();
             this.butAddSphereVolume = new System.Windows.Forms.ToolStripButton();
@@ -71,6 +70,8 @@
             this.butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
             this.butSearch = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
+            this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -117,6 +118,7 @@
             this.butAddGhostBlock,
             this.butCompileLevel,
             this.butCompileLevelAndPlay,
+            this.butCompileAndPlayPreview,
             this.butAddBoxVolume,
             this.butAddPrismVolume,
             this.butAddSphereVolume,
@@ -134,32 +136,6 @@
             this.toolStrip.TabIndex = 12;
             this.toolStrip.Text = "darkToolStrip1";
             this.toolStrip.MouseClick += new System.Windows.Forms.MouseEventHandler(this.toolStrip_MouseClick);
-            // 
-            // panel3D
-            // 
-            this.panel3D.AllowDrop = true;
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Location = new System.Drawing.Point(3, 31);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.ShowLightingWhiteTextureOnly = false;
-            this.panel3D.ShowRealTintForObjects = false;
-            this.panel3D.Size = new System.Drawing.Size(833, 255);
-            this.panel3D.TabIndex = 13;
-            // 
-            // panel2DMap
-            // 
-            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
-            this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
-            this.panel2DMap.TabIndex = 14;
-            this.panel2DMap.Visible = false;
             // 
             // but2D
             // 
@@ -662,6 +638,17 @@
             this.butCompileLevelAndPlay.Size = new System.Drawing.Size(24, 24);
             this.butCompileLevelAndPlay.Tag = "BuildAndPlay";
             // 
+            // butCompileAndPlayPreview
+            // 
+            this.butCompileAndPlayPreview.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butCompileAndPlayPreview.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butCompileAndPlayPreview.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butCompileAndPlayPreview.Image = global::TombEditor.Properties.Resources.actions_play_fast_16;
+            this.butCompileAndPlayPreview.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butCompileAndPlayPreview.Name = "butCompileAndPlayPreview";
+            this.butCompileAndPlayPreview.Size = new System.Drawing.Size(24, 24);
+            this.butCompileAndPlayPreview.Tag = "BuildAndPlayPreview";
+            // 
             // butAddBoxVolume
             // 
             this.butAddBoxVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -772,6 +759,32 @@
             this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(24, 24);
             this.butSearchAndReplaceObjects.Tag = "SearchAndReplaceObjects";
             // 
+            // panel3D
+            // 
+            this.panel3D.AllowDrop = true;
+            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel3D.Location = new System.Drawing.Point(3, 31);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.Size = new System.Drawing.Size(833, 255);
+            this.panel3D.TabIndex = 13;
+            // 
+            // panel2DMap
+            // 
+            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
+            this.panel2DMap.Name = "panel2DMap";
+            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
+            this.panel2DMap.TabIndex = 14;
+            this.panel2DMap.Visible = false;
+            this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
+            this.panel2DMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragEnter);
+            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -847,5 +860,6 @@
         private System.Windows.Forms.ToolStripButton butDrawStaticTint;
         private System.Windows.Forms.ToolStripButton butDisableHiddenRoomPicking;
         private System.Windows.Forms.ToolStripButton butHideTransparentFaces;
+        private System.Windows.Forms.ToolStripButton butCompileAndPlayPreview;
     }
 }

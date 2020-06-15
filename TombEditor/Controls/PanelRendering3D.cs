@@ -239,7 +239,8 @@ namespace TombEditor.Controls
                 BoundingBox b = room.WorldBoundingBox;
 
                 if (p.X >= b.Minimum.X && p.Y >= b.Minimum.Y && p.Z >= b.Minimum.Z &&
-                    p.X <= b.Maximum.X && p.Y <= b.Maximum.Y && p.Z <= b.Maximum.Z)
+                    p.X <= b.Maximum.X && p.Y <= b.Maximum.Y && p.Z <= b.Maximum.Z &&
+                    _editor.SelectedRoom.IsAlternate == room.IsAlternate)
                 {
                     return room;
                 }
@@ -1368,12 +1369,9 @@ namespace TombEditor.Controls
             if ((e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject) != null)
                 e.Effect = DragDropEffects.Copy;
             else if (e.Data.GetDataPresent(typeof(DarkFloatingToolboxContainer)))
-            {
                 e.Effect = DragDropEffects.Move;
-                Parent.Cursor = Cursors.Arrow;
-            }
             else if (EditorActions.DragDropFileSupported(e, true))
-                e.Effect = DragDropEffects.Move;
+                e.Effect = DragDropEffects.Copy;
             else
                 e.Effect = DragDropEffects.None;
         }
@@ -3457,10 +3455,10 @@ namespace TombEditor.Controls
         private static string GetObjectPositionString(Room room, PositionBasedObjectInstance instance)
         {
             // Get the distance between point and floor in units
-            float height = instance.Position.Y - GetFloorHeight(room, instance.Position);
+            int height = (int)(instance.Position.Y - GetFloorHeight(room, instance.Position)) / 256;
 
             string message = "Pos: [" + Math.Round(instance.Position.X) + ", " + Math.Round(instance.Position.Y) + ", " + Math.Round(instance.Position.Z) + "]";
-            message += "\nSector Pos: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "]";
+            message += "\nSector Pos: [" + instance.SectorPosition.X + ", " + instance.SectorPosition.Y + "], " + height + " clicks";
 
             return message;
         }

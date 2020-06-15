@@ -21,8 +21,9 @@ namespace TombLib.LevelData.Compilers
         {
             ReportProgress(5, "Lighting Rooms");
             Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
-                room.RebuildLighting(true);
+                room.RebuildLighting(!_level.Settings.FastMode);
             });
+
             ReportProgress(15, "Building rooms");
 
             foreach (var room in _level.Rooms.Where(r => r != null))
@@ -72,13 +73,17 @@ namespace TombLib.LevelData.Compilers
 #endif
 
             ReportProgress(20, "    Number of rooms: " + _roomsUnmapping.Count);
-            ReportProgress(23, "    Matching vertex colors on portals...");
 
-            _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
-            var rooms = _tempRooms.Values.ToList();
-            for (int flipped = 0; flipped <= 1; flipped++)
-                foreach (var room in rooms)
-                    MatchDoorShades(rooms, room, (_level.Settings.GameVersion < TRVersion.Game.TR3), flipped == 1);
+            if (!_level.Settings.FastMode)
+            {
+                ReportProgress(23, "    Matching vertex colors on portals...");
+
+                _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
+                var rooms = _tempRooms.Values.ToList();
+                for (int flipped = 0; flipped <= 1; flipped++)
+                    foreach (var room in rooms)
+                        MatchDoorShades(rooms, room, (_level.Settings.GameVersion < TRVersion.Game.TR3), flipped == 1);
+            }
 
             Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
             {
@@ -407,6 +412,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Merge static meshes
 
+                if (!_level.Settings.FastMode)
                 foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                 {
                     // Сheck if static Mesh is in the Auto Merge list

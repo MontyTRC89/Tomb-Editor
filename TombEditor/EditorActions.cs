@@ -974,22 +974,45 @@ namespace TombEditor
             }
         }
 
-        public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
+        public static void DeleteObjects(IEnumerable<ObjectInstance> objects, IWin32Window owner = null)
         {
-            bool silent  = !_editor.Configuration.UI_WarnBeforeDeletingObjects;
-                 silent &= !(instance is TriggerInstance || instance is PortalInstance);
-                 silent |= owner == null;
-
-            if (!silent && DarkMessageBox.Show(owner, "Do you really want to delete " + instance + "?",
-                "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (objects.Count() == 0)
                 return;
 
-            if (instance is PositionBasedObjectInstance)
-                _editor.UndoManager.PushObjectDeleted((PositionBasedObjectInstance)instance);
-            else if (instance is GhostBlockInstance)
-                _editor.UndoManager.PushGhostBlockDeleted((GhostBlockInstance)instance);
+            bool silent = !_editor.Configuration.UI_WarnBeforeDeletingObjects;
+            silent &= (!objects.Any(obj => obj is TriggerInstance) && !objects.Any(obj => obj is PortalInstance));
+            silent |= owner == null;
 
-            DeleteObjectWithoutUpdate(instance);
+            if (!silent)
+            {
+                string prompt = "Do you really want to delete ";
+                prompt += (objects.Count() == 1) ? (objects.First() + "?") : "specified objects?";
+
+                if (DarkMessageBox.Show(owner, prompt, "Confirm delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+            }
+
+            // Prepare undo
+            var undoList = new List<UndoRedoInstance>();
+            foreach (var instance in objects)
+            {
+                if (instance is PositionBasedObjectInstance)
+                    undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
+                else if (instance is GhostBlockInstance)
+                    undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
+            }
+
+            // Push undo
+            _editor.UndoManager.Push(undoList);
+
+            // Delete objects
+            foreach (var instance in objects)
+                DeleteObjectWithoutUpdate(instance);
+        }
+
+        public static void DeleteObject(ObjectInstance instance, IWin32Window owner = null)
+        {
+            DeleteObjects(new List<ObjectInstance>() { instance }, owner);
         }
 
         public static void DeleteObjectWithoutUpdate(ObjectInstance instance)
@@ -3524,12 +3547,18 @@ namespace TombEditor
             }
         }
 
-        public static void BuildLevelAndPlay(IWin32Window owner)
+        public static void BuildLevelAndPlay(IWin32Window owner, bool fastMode = false)
         {
             if (IsLaraInLevel())
             {
+                // Temporarily enable fast mode if specified
+                _editor.Level.Settings.FastMode = fastMode;
+
                 if (BuildLevel(true, owner))
                     TombLauncher.Launch(_editor.Level.Settings, owner);
+
+                // Set fast mode back off
+                _editor.Level.Settings.FastMode = false;
             }
             else
                 _editor.SendMessage("No Lara found. Place Lara to play level.", PopupType.Error);
@@ -3592,11 +3621,14 @@ namespace TombEditor
 
             if (geometryToPlace == null)
                 geometryToPlace = AddImportedGeometry(owner, file);
+            
+            if (geometryToPlace != null)
+            {
+                PlaceObject(_editor.SelectedRoom, position, new ImportedGeometryInstance { Model = geometryToPlace });
+                return true;
+            }
 
-            PlaceObject(_editor.SelectedRoom, position,
-                new ImportedGeometryInstance { Model = geometryToPlace });
-
-            return true;
+            return false;
         }
 
         public static ImportedGeometry AddImportedGeometry(IWin32Window owner, string predefinedPath = null)
@@ -3605,7 +3637,7 @@ namespace TombEditor
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load imported geometry", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false));
 
-            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            if (string.IsNullOrEmpty(path))
                 return null;
 
             var geometry = new ImportedGeometry();
@@ -3618,7 +3650,7 @@ namespace TombEditor
                 if (settingsDialog.ShowDialog(owner) == DialogResult.Cancel)
                     return null;
 
-                var info = new ImportedGeometryInfo(_editor.Level.Settings.MakeRelative(path, VariableType.LevelDirectory), settingsDialog.Settings);
+                var info = new ImportedGeometryInfo(path, settingsDialog.Settings);
                 _editor.Level.Settings.ImportedGeometryUpdate(geometry, info);
                 _editor.Level.Settings.ImportedGeometries.Add(geometry);
                 _editor.LoadedImportedGeometriesChange();
@@ -3726,9 +3758,10 @@ namespace TombEditor
             if (DarkMessageBox.Show(owner, "Are you sure to DELETE ALL " + _editor.Level.Settings.Textures.Count +
                 " texture files loaded? Everything will be untextured.", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
+            _editor.SelectedTexture = TextureArea.None;
             _editor.Level.RemoveTextures(texture => true);
-            //ClearAllTexturesInLevel(_editor.Level);
             _editor.Level.Settings.Textures.Clear();
+            _editor.Level.Settings.AnimatedTextureSets.Clear();
             _editor.LoadedTexturesChange();
         }
 
@@ -3871,7 +3904,7 @@ namespace TombEditor
             _editor.LoadedWadsChange();
         }
 
-        public static void UpdateImportedGeometryFilePath(IWin32Window owner, LevelSettings settings, ImportedGeometry toReplace, bool searchForOthers = true)
+        public static void UpdateImportedGeometryFilePath(IWin32Window owner, LevelSettings settings, ImportedGeometry toReplace, bool sendEvent = false, bool searchForOthers = true)
         {
             string path = LevelFileDialog.BrowseFile(owner, settings, toReplace.Info.Path,
                 "Select 3D file that you want to see imported.", ImportedGeometry.FileExtensions, VariableType.LevelDirectory, false);
@@ -3905,6 +3938,9 @@ namespace TombEditor
                 newInfo.Path = item.Value;
                 settings.ImportedGeometryUpdate(item.Key, newInfo);
             }
+
+            if (sendEvent)
+                _editor.LoadedImportedGeometriesChange();
         }
 
         public static void ReloadSounds(IWin32Window owner)
@@ -4423,15 +4459,16 @@ namespace TombEditor
                         foreach (Room r in newLevel.Rooms.Where(room => room != null))
                             r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         AddProjectToRecent(fileName);
-
-                        if (newLevel.Settings.HasUnknownData)
-                            _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
                     }
 
                     _editor.Level = newLevel;
                     newLevel = null;
                     GC.Collect(); // Clean up memory
                     _editor.HasUnsavedChanges = hasUnsavedChanges;
+
+                    if (!silent && _editor.Level.Settings.HasUnknownData)
+                        _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
+
                     return true;
                 }
             }

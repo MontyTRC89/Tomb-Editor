@@ -116,12 +116,12 @@ namespace WadTool
 
         private void UpdateVisibilityBoxUI()
         {
-            tbVisibilityBoxMinX.Text = _workingStatic.VisibilityBox.Minimum.X.ToString();
-            tbVisibilityBoxMinY.Text = _workingStatic.VisibilityBox.Minimum.Y.ToString();
-            tbVisibilityBoxMinZ.Text = _workingStatic.VisibilityBox.Minimum.Z.ToString();
-            tbVisibilityBoxMaxX.Text = _workingStatic.VisibilityBox.Maximum.X.ToString();
-            tbVisibilityBoxMaxY.Text = _workingStatic.VisibilityBox.Maximum.Y.ToString();
-            tbVisibilityBoxMaxZ.Text = _workingStatic.VisibilityBox.Maximum.Z.ToString();
+            nudVisBoxMinX.Value = (decimal)_workingStatic.VisibilityBox.Minimum.X;
+            nudVisBoxMinY.Value = (decimal)_workingStatic.VisibilityBox.Minimum.Y;
+            nudVisBoxMinZ.Value = (decimal)_workingStatic.VisibilityBox.Minimum.Z;
+            nudVisBoxMaxX.Value = (decimal)_workingStatic.VisibilityBox.Maximum.X;
+            nudVisBoxMaxY.Value = (decimal)_workingStatic.VisibilityBox.Maximum.Y;
+            nudVisBoxMaxZ.Value = (decimal)_workingStatic.VisibilityBox.Maximum.Z;
         }
 
         private void butCalculateVisibilityBox_Click(object sender, EventArgs e)
@@ -133,12 +133,12 @@ namespace WadTool
 
         private void UpdateCollisionBoxUI()
         {
-            tbCollisionBoxMinX.Text = _workingStatic.CollisionBox.Minimum.X.ToString();
-            tbCollisionBoxMinY.Text = _workingStatic.CollisionBox.Minimum.Y.ToString();
-            tbCollisionBoxMinZ.Text = _workingStatic.CollisionBox.Minimum.Z.ToString();
-            tbCollisionBoxMaxX.Text = _workingStatic.CollisionBox.Maximum.X.ToString();
-            tbCollisionBoxMaxY.Text = _workingStatic.CollisionBox.Maximum.Y.ToString();
-            tbCollisionBoxMaxZ.Text = _workingStatic.CollisionBox.Maximum.Z.ToString();
+            nudColBoxMinX.Value = (decimal)_workingStatic.CollisionBox.Minimum.X;
+            nudColBoxMinY.Value = (decimal)_workingStatic.CollisionBox.Minimum.Y;
+            nudColBoxMinZ.Value = (decimal)_workingStatic.CollisionBox.Minimum.Z;
+            nudColBoxMaxX.Value = (decimal)_workingStatic.CollisionBox.Maximum.X;
+            nudColBoxMaxY.Value = (decimal)_workingStatic.CollisionBox.Maximum.Y;
+            nudColBoxMaxZ.Value = (decimal)_workingStatic.CollisionBox.Maximum.Z;
         }
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
@@ -285,66 +285,64 @@ namespace WadTool
                         return;
                     }
                     _workingStatic.Mesh = mesh;
-                    _workingStatic.VisibilityBox = _workingStatic.Mesh.BoundingBox;
-                    _workingStatic.CollisionBox = _workingStatic.Mesh.BoundingBox;
+                    _workingStatic.VisibilityBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+                    _workingStatic.CollisionBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
                     _workingStatic.Version = DataVersion.GetNext();
                     _workingStatic.Mesh.CalculateNormals();
+
                     panelRendering.Invalidate();
                     UpdatePositionUI();
+                    UpdateCollisionBoxUI();
+                    UpdateVisibilityBoxUI();
+                    UpdateLightUI();
                 }
             }
         }
 
-        private void tbVisibilityBoxMinX_Validated(object sender, EventArgs e)
+        private void nudVisBoxMinX_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbVisibilityBoxMinX.Text, out result))
-                return;
+            var result = (float)nudVisBoxMinX.Value;
 
             _workingStatic.VisibilityBox = new BoundingBox(new Vector3(result,
-                                                                     _workingStatic.VisibilityBox.Minimum.Y,
-                                                                     _workingStatic.VisibilityBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                     _workingStatic.VisibilityBox.Maximum.Y,
-                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+                                                                       _workingStatic.VisibilityBox.Minimum.Y,
+                                                                       _workingStatic.VisibilityBox.Minimum.Z),
+                                                           new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                       _workingStatic.VisibilityBox.Maximum.Y,
+                                                                       _workingStatic.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
-        private void tbVisibilityBoxMinY_Validated(object sender, EventArgs e)
+        private void nudVisBoxMinY_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbVisibilityBoxMinY.Text, out result))
-                return;
+            var result = (float)nudVisBoxMinY.Value;
 
             _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
-                                                                     result,
-                                                                     _workingStatic.VisibilityBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                     _workingStatic.VisibilityBox.Maximum.Y,
-                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+                                                                       result,
+                                                                       _workingStatic.VisibilityBox.Minimum.Z),
+                                                           new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                       _workingStatic.VisibilityBox.Maximum.Y,
+                                                                       _workingStatic.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
-        private void tbVisibilityBoxMinZ_Validated(object sender, EventArgs e)
+        private void nudVisBoxMinZ_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbVisibilityBoxMinZ.Text, out result))
-                return;
+            var result = (float)nudVisBoxMinZ.Value;
 
             _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
-                                                                     _workingStatic.VisibilityBox.Minimum.Y,
-                                                                     result),
-                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                     _workingStatic.VisibilityBox.Maximum.Y,
-                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+                                                                       _workingStatic.VisibilityBox.Minimum.Y,
+                                                                       result),
+                                                           new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+                                                                       _workingStatic.VisibilityBox.Maximum.Y,
+                                                                       _workingStatic.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
-        private void tbVisibilityBoxMaxX_Validated(object sender, EventArgs e)
+
+
+        private void nudVisBoxMaxX_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbVisibilityBoxMaxX.Text, out result))
-                return;
+            var result = (float)nudVisBoxMaxX.Value;
 
             _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
                                                                      _workingStatic.VisibilityBox.Minimum.Y,
@@ -355,11 +353,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbVisibilityBoxMaxY_Validated(object sender, EventArgs e)
+        private void nudVisBoxMaxY_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbVisibilityBoxMaxY.Text, out result))
-                return;
+            var result = (float)nudVisBoxMaxY.Value;
 
             _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
                                                                      _workingStatic.VisibilityBox.Minimum.Y,
@@ -370,11 +366,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbVisibilityBoxMaxZ_Validated(object sender, EventArgs e)
+        private void nudVisBoxMaxZ_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbVisibilityBoxMaxZ.Text, out result))
-                return;
+            var result = (float)nudVisBoxMaxZ.Value;
 
             _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
                                                                      _workingStatic.VisibilityBox.Minimum.Y,
@@ -385,11 +379,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbCollisionBoxMinX_Validated(object sender, EventArgs e)
+        private void nudColBoxMinX_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMinX.Text, out result))
-                return;
+            var result = (float)nudColBoxMinX.Value;
 
             _workingStatic.CollisionBox = new BoundingBox(new Vector3(result,
                                                                      _workingStatic.CollisionBox.Minimum.Y,
@@ -400,11 +392,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbCollisionBoxMinY_Validated(object sender, EventArgs e)
+        private void nudColBoxMinY_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMinY.Text, out result))
-                return;
+            var result = (float)nudColBoxMinY.Value;
 
             _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
                                                                      result,
@@ -415,11 +405,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbCollisionBoxMinZ_Validated(object sender, EventArgs e)
+        private void nudColBoxMinZ_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMinZ.Text, out result))
-                return;
+            var result = (float)nudColBoxMinZ.Value;
 
             _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
                                                                      _workingStatic.CollisionBox.Minimum.Y,
@@ -430,11 +418,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbCollisionBoxMaxX_Validated(object sender, EventArgs e)
+        private void nudColBoxMaxX_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMaxX.Text, out result))
-                return;
+            var result = (float)nudColBoxMaxX.Value;
 
             _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
                                                                      _workingStatic.CollisionBox.Minimum.Y,
@@ -445,11 +431,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbCollisionBoxMaxY_TextChanged(object sender, EventArgs e)
+        private void nudColBoxMaxY_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMaxY.Text, out result))
-                return;
+            var result = (float)nudColBoxMaxY.Value;
 
             _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
                                                                      _workingStatic.CollisionBox.Minimum.Y,
@@ -460,11 +444,9 @@ namespace WadTool
             panelRendering.Invalidate();
         }
 
-        private void tbCollisionBoxMaxZ_Validated(object sender, EventArgs e)
+        private void nudColBoxMaxZ_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbCollisionBoxMaxZ.Text, out result))
-                return;
+            var result = (float)nudColBoxMaxZ.Value;
 
             _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
                                                                      _workingStatic.CollisionBox.Minimum.Y,
@@ -540,41 +522,32 @@ namespace WadTool
             }
         }
 
-        private void tbPositionX_Validated(object sender, EventArgs e)
+        private void nudPosX_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbPositionX.Text, out result))
-                return;
 
-            panelRendering.StaticPosition = new Vector3(result, panelRendering.StaticPosition.Y, panelRendering.StaticPosition.Z);
+            panelRendering.StaticPosition = new Vector3((float)nudPosX.Value, panelRendering.StaticPosition.Y, panelRendering.StaticPosition.Z);
             panelRendering.Invalidate();
         }
 
-        private void tbPositionY_Validated(object sender, EventArgs e)
+        private void nudPosY_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbPositionY.Text, out result))
-                return;
 
-            panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, result, panelRendering.StaticPosition.Z);
+            panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, (float)nudPosY.Value, panelRendering.StaticPosition.Z);
             panelRendering.Invalidate();
         }
 
-        private void tbPositionZ_Validated(object sender, EventArgs e)
+        private void nudPosZ_ValueChanged(object sender, EventArgs e)
         {
-            short result = 0;
-            if (!short.TryParse(tbPositionZ.Text, out result))
-                return;
 
-            panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, panelRendering.StaticPosition.Y, result);
+            panelRendering.StaticPosition = new Vector3(panelRendering.StaticPosition.X, panelRendering.StaticPosition.Y, (float)nudPosZ.Value);
             panelRendering.Invalidate();
         }
 
         public void UpdatePositionUI()
         {
-            tbPositionX.Text = panelRendering.StaticPosition.X.ToString();
-            tbPositionY.Text = panelRendering.StaticPosition.Y.ToString();
-            tbPositionZ.Text = panelRendering.StaticPosition.Z.ToString();
+            nudPosX.Value = (decimal)panelRendering.StaticPosition.X;
+            nudPosY.Value = (decimal)panelRendering.StaticPosition.Y;
+            nudPosZ.Value = (decimal)panelRendering.StaticPosition.Z;
         }
 
         private void butCancel_Click(object sender, EventArgs e)

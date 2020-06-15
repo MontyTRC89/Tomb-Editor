@@ -276,14 +276,16 @@ namespace TombLib.Wad
                         }
                     }
 
-
                 if (!mergeIntoOne || i == tmpModel.Meshes.Count - 1)
                 {
                     mesh.BoundingBox = mesh.CalculateBoundingBox();
                     mesh.BoundingSphere = mesh.CalculateBoundingSphere();
 
                     if (mesh.VerticesNormals.Count == 0 || calculateNormals)
-                        mesh.CalculateNormals(); //MQO files rarely have normals
+                        mesh.CalculateNormals(); // MQO files rarely have normals
+                    
+                    if (mesh.VerticesPositions.Count != mesh.VerticesShades.Count)
+                        mesh.VerticesShades.Clear(); // Reset vertex shades in case they got desynced from vertex count
 
                     lastBaseVertex = 0;
                     meshList.Add(mesh);

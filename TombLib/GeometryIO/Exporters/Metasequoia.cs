@@ -28,8 +28,9 @@ namespace TombLib.GeometryIO.Exporters
                 writer.WriteLine("}");
 
                 // Write materials
-                writer.WriteLine("Material " + model.Materials.Count + " {");
-                foreach (var material in model.Materials)
+                writer.WriteLine("Material " + model.UsedMaterials.Count + " {");
+
+                foreach (var material in model.UsedMaterials)
                 {
                     writer.Write("\t\"" + material.Name + "\" col(1.000 1.000 1.000 1.000) dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
                     writer.Write("tex(\"" + material.TexturePath /*GetTexturePath(path, material.Texture)*/ + "\") ");
@@ -122,7 +123,7 @@ namespace TombLib.GeometryIO.Exporters
                             if (poly.Shape == IOPolygonShape.Triangle)
                             {
                                 writer.Write("\t\t3 V(" + optimizedIndices[v1] + " " + optimizedIndices[v2] + " " + optimizedIndices[v3] + ") ");
-                                writer.Write("M(" + model.Materials.IndexOf(submesh.Value.Material) + ") ");
+                                writer.Write("M(" + model.UsedMaterials.IndexOf(submesh.Value.Material) + ") ");
                                 writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + ") ");
                                 writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + ") ");
                             }
@@ -132,7 +133,7 @@ namespace TombLib.GeometryIO.Exporters
                                 var color4 = GetColor(ApplyColorTransform(mesh.Colors[v4]));
 
                                 writer.Write("\t\t4 V(" + optimizedIndices[v1] + " " + optimizedIndices[v2] + " " + optimizedIndices[v3] + " " + optimizedIndices[v4] + ") ");
-                                writer.Write("M(" + model.Materials.IndexOf(submesh.Value.Material) + ") ");
+                                writer.Write("M(" + model.UsedMaterials.IndexOf(submesh.Value.Material) + ") ");
                                 writer.Write("UV(" + uv1 + " " + uv2 + " " + uv3 + " " + uv4 + ") ");
                                 writer.WriteLine("COL(" + color1 + " " + color2 + " " + color3 + " " + color4 + ") ");
                             }

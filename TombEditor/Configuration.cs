@@ -170,7 +170,7 @@ namespace TombEditor
             "Copy", "Paste", "Stamp", "|",
             "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
             "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "|",
-            "CompileLevel", "CompileLevelAndPlay"
+            "CompileLevel", "CompileLevelAndPlay", "CompileLevelAndPlay", "CompileAndPlayPreview"
         };
 
         // Window options

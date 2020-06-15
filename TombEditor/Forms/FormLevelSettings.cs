@@ -611,6 +611,9 @@ namespace TombEditor.Forms
             cbOverrideAllLightQuality.Checked = _levelSettings.OverrideIndividualLightQualitySettings;
             cmbDefaultLightQuality.SelectedIndex = _levelSettings.DefaultLightQuality == LightQuality.Default ? 0 : ((int)_levelSettings.DefaultLightQuality) - 1;
 
+            // Update sound autodetection option
+            cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
+
             // Update compiler options
             numPadding.Value = _levelSettings.TexturePadding;
             cbDither16BitTextures.Checked = _levelSettings.Dither16BitTextures;
@@ -618,8 +621,9 @@ namespace TombEditor.Forms
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
 
-            // Update sound autodetection option
-            cbAutodetectIfNoneSelected.Checked = _levelSettings.AutoAssignSoundsIfNoSelection;
+            // Lock settings dependent on preview mode
+            cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
+            cbDither16BitTextures.Enabled = !_levelSettings.FastMode;
 
             // Hide version-specific controls
             // TRNG only

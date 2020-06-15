@@ -692,6 +692,11 @@ namespace TombEditor
                 EditorActions.BuildLevelAndPlay(args.Window);
             });
 
+            AddCommand("BuildAndPlayPreview", "Build level and play in preview mode", CommandType.File, delegate (CommandArgs args)
+            {
+                EditorActions.BuildLevelAndPlay(args.Window, true);
+            });
+
             AddCommand("Cut", "Cut", CommandType.Edit, delegate (CommandArgs args)
             {
                 GetCommand("Copy").Execute.Invoke(args);

@@ -73,7 +73,7 @@ namespace TombLib.Wad
             return new WadStaticId();
         }
 
-        public static Wad2 ImportFromFile(string fileName, bool withSounds, IDialogHandler progressReporter)
+        public static Wad2 ImportFromFile(string fileName, bool withSounds, IDialogHandler progressReporter, bool allowTRNGDecryption = false)
         {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
                 return Wad2Loader.LoadFromFile(fileName);
@@ -93,7 +93,7 @@ namespace TombLib.Wad
             else
             {
                 var originalLevel = new TrLevel();
-                originalLevel.LoadLevel(fileName);
+                originalLevel.LoadLevel(fileName, allowTRNGDecryption);
                 return TrLevelOperations.ConvertTrLevel(originalLevel);
             }
         }

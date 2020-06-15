@@ -142,11 +142,6 @@ namespace TombLib.LevelData.Compilers
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
-
-            //Throw warning if texture pages count is big
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                if (_textureInfoManager.NumObjectsPages + _textureInfoManager.NumRoomPages >= 28)
-                    _progressReporter.ReportWarn("The number of total texture pages is 28 or more. Texture glitches or crashes may occur.\nReduce padding, use aggressive texture packing or use less or smaller textures.");
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
@@ -260,14 +255,20 @@ namespace TombLib.LevelData.Compilers
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
+
+                ushort boxIndex;
+                if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
+                    boxIndex = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7FF0) >> 4);
+                else
+                    boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
+
                 _cameras.Add(new tr_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = instance.Strength,
-                    Flags = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex &
-                                       0x7FF0) >> 4)
+                    Flags = boxIndex
                 });
             }
 

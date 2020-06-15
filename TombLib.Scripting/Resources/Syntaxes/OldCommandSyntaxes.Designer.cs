@@ -205,6 +205,15 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [Level] Layer2= {RED_VALUE}, {GREEN_VALUE}, {BLUE_VALUE}, {SPEED}.
+        /// </summary>
+        public static string Layer2 {
+            get {
+                return ResourceManager.GetString("Layer2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [Level] Legend= {MESSAGE_STRING}.
         /// </summary>
         public static string Legend {
@@ -363,6 +372,15 @@ namespace TombLib.Scripting.Resources.Syntaxes {
         public static string ResidentCut {
             get {
                 return ResourceManager.GetString("ResidentCut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Options] Security= ??? ; Not used?.
+        /// </summary>
+        public static string Security {
+            get {
+                return ResourceManager.GetString("Security", resourceCulture);
             }
         }
         

@@ -1,18 +1,44 @@
+Version 1.3.4
+=============
+Tomb Editor:
+ * Implement negative timer.
+ * Fix sinks in TR2.
+ * Don't jump to flipped rooms in fly mode.
+ * Clamp window positions to maximum if resolution was changed.
+
 Version 1.3.3
 =============
 Tomb Editor:
  * Added imported geometry browser (toggle it in "Window" menu).
+ * Implement fast preview compile mode (new button in the toolbar, reset toolbar to defaults to see).
  * Autosave window layout on closing editor.
  * Update list of hardcoded sounds for TR3.
  * Don't draw transparency in item browser preview.
  * Focus on tool window while picking texture or object.
  * Warn user about oversized samples.
+ * Ask for confirmation before deleting multiple triggers.
  * Remove stray triangle on ceiling after converting diagonal wall to full wall.
+ * Add missing antitrigger type for TR2.
  * Fix ExtraNG string index in trigger window.
  * Fix persistent issues with auto-reloading resources.
+ * Fix incorrect texel alignment in TR4-5 levels with padding set to 0.
+ * Fix Metasequoia room exporter.
+ * Fix corrupted faces in the corner of the exported room mesh.
+ * Fix selected texture not being dereferenced when "Remove all textures" command is used.
  * Fix prj2 drag-n-drop into main window.
+ * Fix drag-n-drop from recent files in Windows 10.
+ * Fix floating toolbox getting out of reach on low-res mode switch.
  
-Sound Tool:
+TombIDE:
+ * Added direct plugin uninstalling.
+ * Fixed several plugin issues.
+ 
+WadTool: 
+ * Fix static mesh properties not updated after mesh import.
+ * Fix exception after deleting root bone in skeleton editor.
+ * Fix potential issues with meshes with inconsistent vertex color count.
+ 
+SoundTool:
  * Fix exception when last sound was deleted.
 
 Version 1.3.2

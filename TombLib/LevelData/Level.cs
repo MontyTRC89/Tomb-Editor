@@ -310,8 +310,6 @@ namespace TombLib.LevelData
 
         public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)
         {
-            var emptyTexture = new TextureArea() { Texture = null };
-
             Parallel.ForEach(Rooms.Where(room => room != null), room =>
             {
                 foreach (Block sector in room.Blocks)
@@ -321,13 +319,17 @@ namespace TombLib.LevelData
                         LevelTexture currentTexture = currentTextureArea.Texture as LevelTexture;
                         if (currentTexture != null && askIfTextureToRemove(currentTexture))
                         {
-                            sector.SetFaceTexture(face, emptyTexture);
+                            sector.SetFaceTexture(face, TextureArea.None);
                         }
                     }
                 room.RoomGeometry = new RoomGeometry(room);
             });
+
             foreach (AnimatedTextureSet set in Settings.AnimatedTextureSets)
                 set.Frames.RemoveAll(frame => askIfTextureToRemove(frame.Texture));
+
+            // Clean up empty texture sets as well
+            Settings.AnimatedTextureSets.RemoveAll(set => set.Frames.Count == 0);
         }
 
         public void ApplyNewLevelSettings(LevelSettings newSettings, Action<ObjectInstance> objectChangedNotification)

@@ -11,6 +11,7 @@ namespace WadTool
     {
         public override string ConfigName { get { return "WadToolConfiguration.xml"; } }
 
+        public bool Tool_AllowTRNGDecryption { get; set; } = false;
         public bool Tool_MakeEmptyWadAtStartup { get; set; } = false;
         public string Tool_ReferenceProject { get; set; } = string.Empty;
 

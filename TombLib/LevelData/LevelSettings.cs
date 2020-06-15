@@ -195,6 +195,7 @@ namespace TombLib.LevelData
         public bool Dither16BitTextures { get; set; } = true;
         public bool RemapAnimatedTextures { get; set; } = true;
         public int TexturePadding { get; set; } = 8;
+        public bool FastMode { get; set; } = false;
 
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;
