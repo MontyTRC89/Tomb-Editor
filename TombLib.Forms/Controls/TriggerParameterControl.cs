@@ -110,7 +110,7 @@ namespace TombLib.Controls
         {
             if (_currentlyChanging || !numericUpDown.Visible)
                 return;
-            Parameter = new TriggerParameterUshort(BitConverter.ToUInt16(BitConverter.GetBytes((short)numericUpDown.Value), 0));
+            Parameter = new TriggerParameterUshort(BitConverter.ToUInt16(BitConverter.GetBytes((int)numericUpDown.Value), 0));
         }
 
         private void label_MouseDown(object sender, MouseEventArgs e)
