@@ -171,7 +171,7 @@ namespace TombLib.LevelData
                     output += Target;
             }
 
-            if (Timer != null) output += " (Timer: " + Timer;
+            if (Timer != null) output += " (Timer: " + ((Timer is TriggerParameterUshort) ? BitConverter.ToInt16(BitConverter.GetBytes(((TriggerParameterUshort)Timer).Key), 0).ToString() : Timer.ToString());
             if (Extra != null) output += ", Extra: " + Extra;
             if (Timer != null || Extra != null) output += ")";
 

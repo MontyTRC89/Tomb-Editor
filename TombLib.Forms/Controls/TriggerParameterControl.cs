@@ -110,7 +110,7 @@ namespace TombLib.Controls
         {
             if (_currentlyChanging || !numericUpDown.Visible)
                 return;
-            Parameter = new TriggerParameterUshort((ushort)numericUpDown.Value);
+            Parameter = new TriggerParameterUshort(BitConverter.ToUInt16(BitConverter.GetBytes((short)numericUpDown.Value), 0));
         }
 
         private void label_MouseDown(object sender, MouseEventArgs e)
@@ -169,7 +169,7 @@ namespace TombLib.Controls
                         butSearch.Visible = false;
                         numericUpDown.Visible = true;
                         if (_parameter != null && _parameter is TriggerParameterUshort)
-                            numericUpDown.Value = (_parameter as TriggerParameterUshort).Key;
+                            numericUpDown.Value = BitConverter.ToInt16(BitConverter.GetBytes((_parameter as TriggerParameterUshort).Key), 0);
                         else
                             Parameter = new TriggerParameterUshort(0);
                         label.Visible = Parameter == null;
