@@ -1556,7 +1556,7 @@ namespace TombLib.LevelData.Compilers.Util
             resizedAtlas.CopyFrom(0, 0, currentAtlas, 0, 0, AtlasSize, numRowsInLastAtlas * 256);
             currentAtlas = resizedAtlas;
 
-            currentAtlas.Save("F:\\atlas" + (Atlas.Count) + ".png");
+            //currentAtlas.Save("F:\\atlas" + (Atlas.Count) + ".png");
         }
 
         // Compiles all final texture infos into final list to be written into level file.
