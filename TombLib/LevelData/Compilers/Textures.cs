@@ -26,17 +26,17 @@ namespace TombLib.LevelData.Compilers
             byte[] texture32Data = new byte[numPages * 256 * 256 * 4];
             int totalPages = 0;
 
-            _textureInfoManager.RoomPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.RoomsPagesPacked.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
             totalPages += _textureInfoManager.NumRoomPages;
 
-            _textureInfoManager.ObjectsPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.ObjectsPagesPacked.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
             totalPages += _textureInfoManager.NumObjectsPages;
 
             for (int i = 0; i < spritePages.Count; i++)
                 spritePages[i].RawCopyTo(texture32Data, (totalPages + i) * 256 * 256 * 4);
             totalPages += spritePages.Count;
 
-            _textureInfoManager.BumpPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.BumpPagesPacked.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
 
             _texture32Data = texture32Data;
 
