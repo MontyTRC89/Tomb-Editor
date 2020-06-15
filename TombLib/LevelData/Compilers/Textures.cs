@@ -26,17 +26,17 @@ namespace TombLib.LevelData.Compilers
             byte[] texture32Data = new byte[numPages * 256 * 256 * 4];
             int totalPages = 0;
 
-            _textureInfoManager.RoomsPagesPacked.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.RoomPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
             totalPages += _textureInfoManager.NumRoomPages;
 
-            _textureInfoManager.ObjectsPagesPacked.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.ObjectsPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
             totalPages += _textureInfoManager.NumObjectsPages;
 
             for (int i = 0; i < spritePages.Count; i++)
                 spritePages[i].RawCopyTo(texture32Data, (totalPages + i) * 256 * 256 * 4);
             totalPages += spritePages.Count;
 
-            _textureInfoManager.BumpPagesPacked.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
+            _textureInfoManager.BumpPages.RawCopyTo(texture32Data, totalPages * 256 * 256 * 4);
 
             _texture32Data = texture32Data;
 
@@ -50,11 +50,6 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(70, "    Num room pages: " + _textureInfoManager.NumRoomPages);
             ReportProgress(70, "    Num objects pages: " + _textureInfoManager.NumObjectsPages);
             ReportProgress(70, "    Num bumpmap pages: " + _textureInfoManager.NumBumpPages);
-
-            // Throw warning if texture pages count is big
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                if (_textureInfoManager.NumObjectsPages + _textureInfoManager.NumRoomPages >= 28)
-                    _progressReporter.ReportWarn("The number of total texture pages is 28 or more. Texture glitches or crashes may occur.\nReduce padding, use aggressive texture packing or use less or smaller textures.");
         }
 
         private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
@@ -164,7 +159,7 @@ namespace TombLib.LevelData.Compilers
                     var id = spriteTextureIDs[sprite.Texture.Hash];
                     if (id == -1)
                     {
-                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) + 
+                        _progressReporter.ReportWarn("Sprite #" + sequence.Sprites.IndexOf(sprite) +
                             " in sequence #" + sequence.Id.TypeId + " wasn't added: size is too big or coordinates are invalid.");
                         continue;
                     }
@@ -213,7 +208,7 @@ namespace TombLib.LevelData.Compilers
             return texturePages;
         }
 
-        private static byte[] PackTextureMap32To16Bit(byte [] textureData, LevelSettings settings)
+        private static byte[] PackTextureMap32To16Bit(byte[] textureData, LevelSettings settings)
         {
             if (settings.Dither16BitTextures && !settings.FastMode)
                 return PackTextureMap32To16BitDithered(textureData, 256);
@@ -337,9 +332,9 @@ namespace TombLib.LevelData.Compilers
                             {
                                 // Convert true alpha to brightness with slight noise to prevent banding
                                 a -= (byte)seed.Next(0, MathC.Clamp((255 - a) / 20, 0, a));
-                                r  = (byte)(r * (a / 255.0f));
-                                g  = (byte)(g * (a / 255.0f));
-                                b  = (byte)(b * (a / 255.0f));
+                                r = (byte)(r * (a / 255.0f));
+                                g = (byte)(g * (a / 255.0f));
+                                b = (byte)(b * (a / 255.0f));
                             }
 
                             r /= 8;
