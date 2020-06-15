@@ -572,8 +572,12 @@ namespace TombLib.LevelData.Compilers
                             trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (14 << 10));
                             outFloorData.Add(trigger2);
                             break;
+                        case TriggerTargetType.TimerfieldNg:
+                            trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (15 << 10));
+                            outFloorData.Add(trigger2);
+                            break;
                         default:
-                            throw new Exception("Unknown trigger type found '" + trigger + "'");
+                            throw new Exception("Unknown trigger target found '" + trigger + "'");
                     }
                 }
 
