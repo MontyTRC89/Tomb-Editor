@@ -68,9 +68,7 @@ namespace DarkUI.Controls
                 using (var g = Graphics.FromHdcInternal(hdc))
                 {
                     var rect = new Rectangle(0, 0, ClientSize.Width - 1, ClientSize.Height - 1);
-                    var borderColor = Focused && TabStop ? Colors.BlueHighlight : Colors.GreySelection;
-
-                    using (var p = new Pen(borderColor))
+                    using (var p = new Pen(Colors.GreySelection))
                         g.DrawRectangle(p, rect);
                 }
             }
