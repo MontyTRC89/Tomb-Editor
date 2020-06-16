@@ -4449,7 +4449,7 @@ namespace TombEditor
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
                         DarkMessageBox.Show(owner, "This project uses old sound system and is not supported anymore." +
-                            "Use Tomb Editor 1.3.1 or earlier to load and re-save this project.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            "Use Tomb Editor 1.3.4 or earlier to load and re-save this project.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         newLevel = null;
                         return false;
                     }

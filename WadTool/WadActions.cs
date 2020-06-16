@@ -37,7 +37,7 @@ namespace WadTool
                 if (newWad == null || newWad.SoundSystem == SoundSystem.Dynamic)
                 {
                     DarkMessageBox.Show(owner, "This wad2 is broken or uses old sound system which is not supported anymore." +
-                            "Use WadTool 1.3.1 or earlier to load and re-save this wad2.",
+                            "Use WadTool 1.3.4 or earlier to load and re-save this wad2.",
                             "Convert Wad2", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
