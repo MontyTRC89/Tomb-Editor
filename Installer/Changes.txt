@@ -1,6 +1,7 @@
 Version 1.3.4
 =============
 Tomb Editor:
+ * Implement negative timer.
  * Fix sinks in TR2.
  * Don't jump to flipped rooms in fly mode.
  * Clamp window positions to maximum if resolution was changed.
