@@ -6,7 +6,6 @@ using System.Security;
 using System.Windows.Forms;
 using DarkUI.Config;
 using DarkUI.Extensions;
-using DarkUI.Win32;
 
 namespace DarkUI.Controls
 {
@@ -49,8 +48,8 @@ namespace DarkUI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new BorderStyle BorderStyle
         {
-            get { return BorderStyle.None; }
-            set { base.BorderStyle = BorderStyle.None; }
+            get { return BorderStyle.FixedSingle; }
+            set { base.BorderStyle = BorderStyle.FixedSingle; }
         }
 
         #endregion Property Region
@@ -61,6 +60,7 @@ namespace DarkUI.Controls
         {
             BackColor = Colors.LightBackground;
             ForeColor = Colors.LightText;
+            BorderStyle = BorderStyle.FixedSingle;
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.ResizeRedraw |
@@ -182,12 +182,11 @@ namespace DarkUI.Controls
 
             var g = e.Graphics;
             var rect = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
-            var borderColor = Focused && TabStop ? Colors.BlueHighlight : Colors.GreySelection;
 
             using (var b = new SolidBrush(BackColor))
                 g.FillRectangle(b, rect);
 
-            using (var p = new Pen(borderColor, 1))
+            using (var p = new Pen(Colors.GreySelection, 1))
             {
                 var modRect = new Rectangle(rect.Left, rect.Top, rect.Width - 1, rect.Height - 1);
                 g.DrawRectangle(p, modRect);
