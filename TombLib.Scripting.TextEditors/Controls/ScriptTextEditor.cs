@@ -533,7 +533,7 @@ namespace TombLib.Scripting.TextEditors.Controls
 					takenIndicesList = GetTakenIndicesList(commandKey, sectionStartLineNumber + 1);
 				}
 				else
-					takenIndicesList = GetTakenIndicesList(commandKey, 0);
+					takenIndicesList = GetTakenIndicesList(commandKey, 1);
 
 				for (int i = 1; i < 1024; i++)
 					if (!takenIndicesList.Contains(i))
