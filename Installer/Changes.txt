@@ -4,6 +4,7 @@ Tomb Editor:
  * Implement negative timer.
  * Implement TRNG timerfield trigger target type.
  * Fix sinks in TR2.
+ * Update TR2 sound names.
  * Don't jump to flipped rooms in fly mode.
  * Clamp window positions to maximum if resolution was changed.
 
