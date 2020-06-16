@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using TombLib.GeometryIO;
-using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Tr4Wad;
@@ -27,45 +23,15 @@ namespace TombLib.Wad
     public class Wad2
     {
         public bool HasUnknownData { get; set; } = false;
-        public SoundSystem SoundSystem { get; set; }
+        public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
         public SortedList<WadMoveableId, WadMoveable> Moveables { get; set; } = new SortedList<WadMoveableId, WadMoveable>();
         public SortedList<WadStaticId, WadStatic> Statics { get; set; } = new SortedList<WadStaticId, WadStatic>();
         public SortedList<WadSpriteSequenceId, WadSpriteSequence> SpriteSequences { get; set; } = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
 
-        // DEPRECATED
-        public SortedList<WadFixedSoundInfoId, WadFixedSoundInfo> FixedSoundInfosObsolete { get; set; } = new SortedList<WadFixedSoundInfoId, WadFixedSoundInfo>();
-        // DEPRECATED
-        public SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo> AdditionalSoundInfosObsolete { get; set; } = new SortedList<WadAdditionalSoundInfoId, WadAdditionalSoundInfo>();
-        public Dictionary<long, WadSoundInfo> AllLoadedSoundInfos { get; set; } = new Dictionary<long, WadSoundInfo>();
-
-        public WadSounds Sounds { get; set; }
         public string FileName { get; set; }
 
-        public Wad2()
-        {
-            Sounds = new WadSounds();
-        }
-
         public bool WadIsEmpty => String.IsNullOrEmpty(FileName) && Moveables.Count == 0 && Statics.Count == 0 && SpriteSequences.Count == 0;
-
-        public HashSet<WadSoundInfo> SoundInfosUniqueObsolete
-        {
-            get
-            {
-                var soundInfos = new HashSet<WadSoundInfo>();
-                foreach (WadFixedSoundInfo fixedSoundInfo in FixedSoundInfosObsolete.Values)
-                    soundInfos.Add(fixedSoundInfo.SoundInfo);
-                foreach (WadMoveable moveable in Moveables.Values)
-                    foreach (WadAnimation animation in moveable.Animations)
-                        foreach (WadAnimCommand animCommand in animation.AnimCommands)
-                            if (animCommand.Type == WadAnimCommandType.PlaySound)
-                                soundInfos.Add(animCommand.SoundInfoObsolete);
-                foreach (var info in AdditionalSoundInfosObsolete.Values)
-                    soundInfos.Add(info.SoundInfo);
-                return soundInfos;
-            }
-        }
 
         public HashSet<WadTexture> MeshTexturesUnique
         {
@@ -110,7 +76,7 @@ namespace TombLib.Wad
         public static Wad2 ImportFromFile(string fileName, bool withSounds, IDialogHandler progressReporter, bool allowTRNGDecryption = false)
         {
             if (fileName.EndsWith(".wad2", StringComparison.InvariantCultureIgnoreCase))
-                return Wad2Loader.LoadFromFile(fileName, withSounds);
+                return Wad2Loader.LoadFromFile(fileName);
             else if (fileName.EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase) ||
                      fileName.EndsWith(".was", StringComparison.InvariantCultureIgnoreCase) ||
                      fileName.EndsWith(".sam", StringComparison.InvariantCultureIgnoreCase) ||

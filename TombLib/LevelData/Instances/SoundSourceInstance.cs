@@ -1,5 +1,4 @@
-﻿using System;
-using TombLib.Wad;
+﻿using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
@@ -15,30 +14,6 @@ namespace TombLib.LevelData
     {
         public int SoundId { get; set; } = -1;
         public SoundSourcePlayMode PlayMode { get; set; } = SoundSourcePlayMode.Automatic;
-
-        // XML_SOUND_SYSTEM: legacy stuff present only for loading. Probably we'll force user to to a one-way migration on 
-        // load time so we need just properties
-        private string _wadReferencedSoundName = null;
-        public string WadReferencedSoundName
-        {
-            get { return _wadReferencedSoundName; }
-            set
-            {
-                _wadReferencedSoundName = string.IsNullOrEmpty(value) ? null : value;
-                _embeddedSoundInfo = null;
-            }
-        }
-
-        private WadSoundInfo _embeddedSoundInfo = null;
-        public WadSoundInfo EmbeddedSoundInfo
-        {
-            get { return _embeddedSoundInfo; }
-            set
-            {
-                _embeddedSoundInfo = value;
-                _wadReferencedSoundName = null;
-            }
-        }
 
         public bool IsEmpty => SoundId == -1;
 

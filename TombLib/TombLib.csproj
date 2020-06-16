@@ -148,18 +148,6 @@
     <Compile Include="Types\BoundingSphere.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
     <Compile Include="Utils\Configuration.cs" />
-    <Compile Include="Forms\Prj2SoundsConversionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Prj2SoundsConversionDialog.Designer.cs">
-      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Wad2SoundsConversionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Wad2SoundsConversionDialog.Designer.cs">
-      <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
     <Compile Include="GeometryIO\Exporters\Assimp.cs" />
@@ -264,7 +252,6 @@
     <Compile Include="Script\ScriptCompilerTR5Main.cs" />
     <Compile Include="Script\ScriptCompilerTRNG.cs" />
     <Compile Include="Utils\BrowseFolderDialog.cs" />
-    <Compile Include="Utils\FileFormatConversions.cs" />
     <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="Utils\MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />
@@ -369,12 +356,6 @@
     <None Include="ResourcesC\pcsky.raw.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\Prj2SoundsConversionDialog.resx">
-      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Wad2SoundsConversionDialog.resx">
-      <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ResourcesC\ResourcesC.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>
