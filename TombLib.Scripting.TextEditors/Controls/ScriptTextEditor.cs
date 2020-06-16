@@ -529,7 +529,11 @@ namespace TombLib.Scripting.TextEditors.Controls
 
 				if (DocumentHelper.DocumentContainsSections(Document))
 				{
-					int sectionStartLineNumber = DocumentHelper.GetSectionStartLine(Document, CaretOffset).LineNumber;
+                    DocumentLine sectionStartLine = DocumentHelper.GetSectionStartLine(Document, CaretOffset);
+                    if (sectionStartLine == null)
+                        return;
+
+                    int sectionStartLineNumber = sectionStartLine.LineNumber;
 					takenIndicesList = GetTakenIndicesList(commandKey, sectionStartLineNumber + 1);
 				}
 				else
