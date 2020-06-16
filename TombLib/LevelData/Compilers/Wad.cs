@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.Compilers.Util;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -193,13 +194,15 @@ namespace TombLib.LevelData.Compilers
                 bool topmostAndUnpadded = (j == 0) ? isWaterfall : false;
 
                 // Check if we should merge object and room textures in same texture tiles.
-                bool agressivePacking = _level.Settings.AgressiveTexturePacking;
+                TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
+                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && _level.Settings.AgressiveTexturePacking)
+                    destination = TextureDestination.RoomOrAggressive;
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
                     FixWadTextureCoordinates(ref poly.Texture);
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, false, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(poly.Texture, destination, false, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
@@ -210,7 +213,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     FixWadTextureCoordinates(ref poly.Texture);
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, true, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(poly.Texture, destination, true, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using TombLib.LevelData.Compilers.Util;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -375,13 +376,13 @@ namespace TombLib.LevelData.Compilers
                                             vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         }
                                     
-                                        var result = _textureInfoManager.AddTexture(texture, true, false);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
                                         roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
                                                         doubleSided, 0));
                                         if (copyFace)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
                                             roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
                                                             doubleSided, 0));
                                         }
@@ -396,13 +397,13 @@ namespace TombLib.LevelData.Compilers
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
                                     
-                                        var result = _textureInfoManager.AddTexture(texture, true, true);
+                                        var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
                                         roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
                                                         doubleSided, 0));
                                         if (copyFace)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
                                             roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
                                                             doubleSided, 0));
                                         }
@@ -509,7 +510,7 @@ namespace TombLib.LevelData.Compilers
                             else
                             {
                                 FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
+                                var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, true);
                                 tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
                                 roomTriangles.Add(tri);
                                 _mergedStaticMeshTextureInfos.Add(poly, result);
@@ -526,7 +527,7 @@ namespace TombLib.LevelData.Compilers
                             else
                             {
                                 FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                                var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, false);
                                 tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
                                 roomQuads.Add(quad);
                                 _mergedStaticMeshTextureInfos.Add(poly, result);
@@ -649,7 +650,7 @@ namespace TombLib.LevelData.Compilers
                                 if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
                                 if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
-                                var result = _textureInfoManager.AddTexture(texture, true, true);
+                                var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
                                 roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
                             }
                         }
