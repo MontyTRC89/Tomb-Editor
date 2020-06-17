@@ -697,7 +697,7 @@ namespace TombLib.LevelData.Compilers.Util
                     if (result != _noTexInfo)
                     {
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
-                        parent.TopmostAndUnpadded = topmostAndUnpadded;
+                        parent.TopmostAndUnpadded |= topmostAndUnpadded;
 
                         // Refresh parent area (only in case it's from the same texture set, otherwise clashes are possible)
                         if (areaToLook.Texture == parent.Texture)
