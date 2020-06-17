@@ -699,6 +699,10 @@ namespace TombLib.LevelData.Compilers.Util
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
                         parent.TopmostAndUnpadded = topmostAndUnpadded;
 
+                        // Refresh parent area (only in case it's from the same texture set, otherwise clashes are possible)
+                        if (areaToLook.Texture == parent.Texture)
+                            parent.Area = areaToLook.ParentArea;
+
                         // Child is rotation-wise equal to incoming area
                         return new Result() { TexInfoIndex = child.TexInfoIndex, Rotation = (byte)result };
                     }
