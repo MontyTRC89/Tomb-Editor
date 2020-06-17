@@ -356,7 +356,7 @@ namespace TombLib.LevelData.Compilers.Util
                 });
 
                 // Refresh topmost flag
-                TopmostAndUnpadded = topmostAndUnpadded;
+                TopmostAndUnpadded |= topmostAndUnpadded;
 
                 // Expand parent area, if needed
                 var rect = texture.GetRect();
@@ -403,7 +403,7 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var parent in parents)
                 {
                     Area = Area.Union(parent.Area);
-                    TopmostAndUnpadded = parent.TopmostAndUnpadded; // Refresh topmost flag
+                    TopmostAndUnpadded |= parent.TopmostAndUnpadded; // Refresh topmost flag
 
                     foreach (var child in parent.Children)
                         parent.MoveChild(child, this);
@@ -700,7 +700,7 @@ namespace TombLib.LevelData.Compilers.Util
                         parent.TopmostAndUnpadded |= topmostAndUnpadded;
 
                         // Refresh parent area (only in case it's from the same texture set, otherwise clashes are possible)
-                        if (areaToLook.Texture == parent.Texture)
+                        if (areaToLook.Texture == parent.Texture && !areaToLook.ParentArea.IsZero)
                             parent.Area = areaToLook.ParentArea;
 
                         // Child is rotation-wise equal to incoming area
