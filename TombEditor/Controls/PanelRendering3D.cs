@@ -1761,8 +1761,6 @@ namespace TombEditor.Controls
                 if (ShowGhostBlocks)
                     foreach (var ghost in room.GhostBlocks)
                     {
-                        if (!ghost.Editable) continue;
-
                         if (_editor.SelectedObject == ghost)
                         {
                             for (int f = 0; f < 2; f++)
