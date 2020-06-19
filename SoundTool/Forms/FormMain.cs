@@ -90,41 +90,49 @@ namespace SoundTool
             if (filename == null || !File.Exists(filename))
                 return false;
 
-            // Read the sounds archive in XML or TXT format
-            var sounds = WadSounds.ReadFromFile(filename);
+            try
+            {
+                // Read the sounds archive in XML or TXT format
+                var sounds = WadSounds.ReadFromFile(filename);
 
-            if (sounds == null)
+                if (sounds == null)
+                    return false;
+
+                // File read correctly, save catalog path to recent
+                _configuration.SoundTool_LastCatalogPath = filename;
+
+                dgvSoundInfos.Rows.Clear();
+
+                // Fill the grid
+                sounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
+                foreach (var soundInfo in sounds.SoundInfos)
+                {
+                    dgvSoundInfos.Rows.Add(soundInfo.Id.ToString().PadLeft(4, '0'), soundInfo.Name);
+                    dgvSoundInfos.Rows[dgvSoundInfos.Rows.Count - 1].Tag = soundInfo;
+                }
+
+                SelectSoundInfo();
+
+                // Decide on saved flag based on file format.
+                // If TXT was loaded (i.e. conversion was made), mark the file as unsaved.
+                var extension = Path.GetExtension(filename);
+                if (extension == ".xml")
+                {
+                    _currentArchive = filename;
+                    Saved = true;
+                }
+                else
+                {
+                    _currentArchive = null;
+                    Saved = false;
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                popup.ShowError(soundInfoEditor, "Loading failed. Exception: " + ex.Message);
                 return false;
-
-            // File read correctly, save catalog path to recent
-            _configuration.SoundTool_LastCatalogPath = filename;
-
-            dgvSoundInfos.Rows.Clear();
-
-            // Fill the grid
-            sounds.SoundInfos.Sort((a, b) => a.Id.CompareTo(b.Id));
-            foreach (var soundInfo in sounds.SoundInfos)
-            {
-                dgvSoundInfos.Rows.Add(soundInfo.Id.ToString().PadLeft(4, '0'), soundInfo.Name);
-                dgvSoundInfos.Rows[dgvSoundInfos.Rows.Count - 1].Tag = soundInfo;
             }
-
-            SelectSoundInfo();
-
-            // Decide on saved flag based on file format.
-            // If TXT was loaded (i.e. conversion was made), mark the file as unsaved.
-            var extension = Path.GetExtension(filename);
-            if (extension == ".xml")
-            {
-                _currentArchive = filename;
-                Saved = true;
-            }
-            else
-            {
-                _currentArchive = null;
-                Saved = false;
-            }
-            return true;
         }
 
         private void SaveArchive(string filename = null)
