@@ -39,7 +39,7 @@ namespace TombLib.Wad
                 return ReadFromXml(filename);
             else if (extension == ".txt")
                 return ReadFromTxt(filename);
-            else if (extension == ".sfx")
+            else if (extension == ".sfx" && SFXIsValid(filename))
                 return ReadFromSfx(filename);
             throw new ArgumentException("Invalid file format");
         }
@@ -184,6 +184,23 @@ namespace TombLib.Wad
             var sounds = new WadSounds(soundInfos);
 
             return sounds;
+        }
+
+        private static bool SFXIsValid(string path)
+        {
+            if (System.IO.Path.GetExtension(path).Equals(".sfx", StringComparison.InvariantCultureIgnoreCase))
+            {
+                using (var reader = new BinaryReaderEx(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)))
+                {
+                    var riffSignature = reader.ReadUInt32();
+                    if (riffSignature == 0x46464952)
+                        return false;
+                    else
+                        return true;
+                }
+            }
+            else
+                return true;
         }
 
         private static WadSounds ReadFromTxt(string filename)
