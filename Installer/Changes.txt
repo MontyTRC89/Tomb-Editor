@@ -4,6 +4,7 @@ Tomb Editor:
  * Fix possible issues with seamless texturing.
  * Allow selecting ghost blocks embedded into walls.
  * Add warnings for box/overlap limits.
+ * Prevent loading MAIN.SFX as sound catalog.
 
 TombIDE:
  * Fix exceptions while using F1 key outside of section blocks.
