@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
