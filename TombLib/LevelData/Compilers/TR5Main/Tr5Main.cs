@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
-namespace TombLib.LevelData.Compilers
+namespace TombLib.LevelData.Compilers.TR5Main
 {
-    public partial class LevelCompilerClassicTR
+    public sealed partial class LevelCompilerTR5Main
     {
         private const string _indent = "    ";
 
@@ -160,7 +160,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
                 writer.Write(new byte[] { 0x54, 0x45, 0x58, 0x00 });
 
-                _textureInfoManager.WriteTextureInfos(writer, _level);
+                _textureInfoManager.WriteTextureInfosTR5Main(writer, _level);
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
@@ -188,62 +188,85 @@ namespace TombLib.LevelData.Compilers
                     ReportProgress(90, "Writing final level");
                     writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
 
-                    ReportProgress(91, "Writing textures");
-
-                    // The room texture tile count currently also currently contains the wad textures
-                    // But lets not bother with those fields too much since they only matter when bump maps are used and we don't use them.
-                    writer.Write((ushort)_textureInfoManager.NumRoomPages);
-                    writer.Write((ushort)_textureInfoManager.NumObjectsPages);
-                    // Bump map pages must be multiplied by 2 or tile index will be wrong
-                    writer.Write((ushort)(_textureInfoManager.NumBumpPages * 2));
-
                     // Compress data
                     ReportProgress(95, "Compressing data");
 
-                    byte[] texture32 = null;
-                    int texture32UncompressedSize = -1;
-                    byte[] texture16 = null;
-                    int texture16UncompressedSize = -1;
-                    byte[] textureMisc = null;
-                    int textureMiscUncompressedSize = -1;
-                    byte[] geometryData = geometryDataBuffer;
-                    int geometryDataUncompressedSize = geometryData.Length;
+                    // Rooms atlas
+                    writer.Write(_textureInfoManager.RoomsAtlas.Count);
+                    foreach (var atlas in _textureInfoManager.RoomsAtlas)
+                    {
+                        writer.Write(atlas.Width);
+                        writer.Write(atlas.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                    }
 
-                    using (Task Texture32task = Task.Factory.StartNew(() =>
+                    // Moveables atlas
+                    writer.Write(_textureInfoManager.MoveablesAtlas.Count);
+                    foreach (var atlas in _textureInfoManager.MoveablesAtlas)
                     {
-                        texture32 = ZLib.CompressData(_texture32Data);
-                        texture32UncompressedSize = _texture32Data.Length;
-                    }))
-                    using (Task Texture16task = Task.Factory.StartNew(() =>
-                    {
-                        byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
-                        texture16 = ZLib.CompressData(texture16Data);
-                        texture16UncompressedSize = texture16Data.Length;
-                    }))
-                    using (Task textureMiscTask = Task.Factory.StartNew(() =>
-                    {
-                        Stream textureMiscData = PrepareFontAndSkyTexture();
-                        textureMisc = ZLib.CompressData(textureMiscData);
-                        textureMiscUncompressedSize = (int)textureMiscData.Length;
-                    }))
+                        writer.Write(atlas.Width);
+                        writer.Write(atlas.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                    }
 
-                        Task.WaitAll(Texture32task, Texture16task, textureMiscTask);
+                    // Statics atlas
+                    writer.Write(_textureInfoManager.StaticsAtlas.Count);
+                    foreach (var atlas in _textureInfoManager.StaticsAtlas)
+                    {
+                        writer.Write(atlas.Width);
+                        writer.Write(atlas.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                    }
+
+                    // Sprites textures
+                    writer.Write(_spritesTexturesPages.Count);
+                    foreach (var atlas in _spritesTexturesPages)
+                    {
+                        writer.Write(atlas.Width);
+                        writer.Write(atlas.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                    }
+
+                    // Font and sky textures
+                    Stream textureMiscData = PrepareFontAndSkyTexture();
+                    ImageC misc = ImageC.FromStreamRaw(textureMiscData, 256, 512);
+                    using (var ms = new MemoryStream())
+                    {
+                        misc.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        writer.Write(256);
+                        writer.Write(512);
+                        var output = RemoveColorChunks(ms);
+                        writer.Write((int)output.Length);
+                        writer.Write(output.ToArray());
+                    }
 
                     // Write data
                     ReportProgress(97, "Writing compressed data to file.");
-
-                    writer.Write(texture32UncompressedSize);
-                    writer.Write(texture32.Length);
-                    writer.Write(texture32);
-
-                    writer.Write(texture16UncompressedSize);
-                    writer.Write(texture16.Length);
-                    writer.Write(texture16);
-
-                    writer.Write(textureMiscUncompressedSize);
-                    writer.Write(textureMisc.Length);
-                    writer.Write(textureMisc);
-
+                                       
                     writer.Write((ushort)_level.Settings.Tr5LaraType);
                     writer.Write((ushort)_level.Settings.Tr5WeatherType);
 
@@ -251,6 +274,9 @@ namespace TombLib.LevelData.Compilers
                         writer.Write((byte)0);
 
                     // In TR5 geometry data is not compressed
+                    byte[] geometryData = geometryDataBuffer;
+                    int geometryDataUncompressedSize = geometryData.Length;
+
                     writer.Write(geometryDataUncompressedSize);
                     writer.Write(geometryDataUncompressedSize);
                     writer.Write(geometryData);

@@ -23,6 +23,7 @@ using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.LevelData.Compilers.TR5Main;
 
 namespace TombEditor
 {
@@ -3520,15 +3521,31 @@ namespace TombEditor
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
-                    using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
+                    if (level.Settings.GameVersion != TRVersion.Game.TR5Main)
                     {
-                        var watch = new Stopwatch();
-                        watch.Start();
-                        var statistics = compiler.CompileLevel();
-                        watch.Stop();
-                        progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
-                        // Raise an event for statistics update
-                        Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
+                        {
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel();
+                            watch.Stop();
+                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                            // Raise an event for statistics update
+                            Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        }
+                    }
+                    else
+                    {
+                        using (var compiler = new LevelCompilerTR5Main(level, fileName, progressReporter))
+                        {
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel();
+                            watch.Stop();
+                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                            // Raise an event for statistics update
+                            Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        }
                     }
 
                     // Force garbage collector to compact memory

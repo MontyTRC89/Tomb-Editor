@@ -93,21 +93,22 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int NumRoomPages { get; private set; }
         public ImageC RoomsPagesPacked { get; private set; }
-        public List<TexturePage> RoomsPages { get; private set; }
-        public List<TexturePage> BumpRoomsPages { get; private set; }
+        public List<ImageC> RoomsAtlas { get; private set; }
 
         public int NumObjectsPages { get; private set; }
         public ImageC ObjectsPagesPacked { get; private set; }
-        public List<TexturePage> ObjectsPages { get; private set; }
-        public List<TexturePage> BumpObjectsPages { get; private set; }
+
+        public int NumMoveablesPages { get; private set; }
+        public ImageC MoveablesPagesPacked { get; private set; }
+        public List<ImageC> MoveablesAtlas { get; private set; }
+
+        public int NumStaticsPages { get; private set; }
+        public ImageC StaticsPagesPacked { get; private set; }
+        public List<ImageC> StaticsAtlas { get; private set; }
 
         public int NumBumpPages { get; private set; }
         public ImageC BumpPagesPacked { get; private set; }
 
-        public List<ImageC> RoomAtlas { get; private set; }
-        public List<ImageC> MoveablesAtlas { get; private set; }
-        public List<ImageC> StaticsAtlas { get; private set; }
-        public List<ImageC> BumpAtlas { get; private set; }
 
         // Precompiled object textures are kept in this dictionary.
 
@@ -169,7 +170,10 @@ namespace TombLib.LevelData.Compilers.Util
         public class ParentTextureArea
         {
             public VectorInt2 PositionInPage { get; set; }
+            public VectorInt2 PositionInAtlas { get; set; }
             public int Page { get; set; }
+            public int AtlasIndex { get; set; }
+            public VectorInt2 AtlasDimensions { get; set; }
             public int[] Padding { get; set; } = new int[4]; // LTRB
             public bool SqueezeAndDuplicate { get; set; } // Needed for UVRotate
 
@@ -507,15 +511,18 @@ namespace TombLib.LevelData.Compilers.Util
         private class ObjectTexture
         {
             public int Tile;
-            public int Atlas;
             public VectorInt2[] TexCoord = new VectorInt2[4];
-            public Vector2[] TexCoordFloat = new Vector2[4];
             public ushort UVAdjustmentFlag;
 
             public bool IsForTriangle;
             public TextureDestination Destination;
             public BlendMode BlendMode;
             public BumpMappingLevel BumpLevel;
+
+            public int AtlasIndex;
+            public VectorInt2 AtlasDimensions;
+            public VectorInt2 PositionInAtlas;
+            public Vector2[] TexCoordFloat = new Vector2[4];
 
             public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, TRVersion.Game version, float maxTextureSize)
             {
@@ -525,7 +532,7 @@ namespace TombLib.LevelData.Compilers.Util
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
                 UVAdjustmentFlag = (ushort)TextureExtensions.GetTextureShapeType(child.RelCoord, IsForTriangle);
-
+                
                 for (int i = 0; i < child.RelCoord.Length; i++)
                 {
                     var coord = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
@@ -554,16 +561,17 @@ namespace TombLib.LevelData.Compilers.Util
 
                     if (version == TRVersion.Game.TR5Main)
                     {
-                        // In TR5Main we use float coordinates and atlas
-                        int page = (parent.Page < PagesPerAtlas ? parent.Page : parent.Page % PagesPerAtlas);
-                        int atlasX = page % PagesPerRowInAtlas;
-                        int atlasY = (int)Math.Floor((double)page / PagesPerRowInAtlas);
+                        AtlasIndex = parent.AtlasIndex;
+                        AtlasDimensions = parent.AtlasDimensions;
+                        PositionInAtlas = parent.PositionInAtlas;
+
+                        int atlasX = PositionInAtlas.X;
+                        int atlasY = PositionInAtlas.Y;
 
                         // Float coordinates must be in 0.0f ... 1.0f range
-                        TexCoordFloat[i] = (coord + new Vector2(atlasX * 256.0f, atlasY * 256.0f)) / (float)AtlasSize;
-
-                        // Page in TR5Main is the atlas
-                        Atlas = (int)Math.Floor((double)parent.Page / PagesPerAtlas);
+                        TexCoordFloat[i] = (coord + new Vector2(atlasX * 256.0f, atlasY * 256.0f));
+                        TexCoordFloat[i].X /= (float)AtlasDimensions.X;
+                        TexCoordFloat[i].Y /= (float)AtlasDimensions.Y;
                     }
 
                     // Pack coordinates into 2-byte set (whole and frac parts)
@@ -1224,7 +1232,7 @@ namespace TombLib.LevelData.Compilers.Util
             return image;
         }
 
-        private Tuple<List<TexturePage>, List<TexturePage>> BuildTexturePages(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding = false)
+        private List<ImageC> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding = false)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
             var colorMaps = new List<TexturePage>();
@@ -1239,12 +1247,13 @@ namespace TombLib.LevelData.Compilers.Util
             }
 
             var actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
+            int x, y;
 
             for (int i = 0; i < textures.Count; i++)
             {
                 var p = textures[i];
-                var x = (int)p.Area.Start.X;
-                var y = (int)p.Area.Start.Y;
+                x = (int)p.Area.Start.X;
+                y = (int)p.Area.Start.Y;
                 var width = (int)p.Area.Width;
                 var height = (int)p.Area.Height;
 
@@ -1288,7 +1297,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                 // Do the bump map if needed
 
-                if (p.Texture is LevelTexture)
+                /*if (p.Texture is LevelTexture)
                 {
                     var tex = (p.Texture as LevelTexture);
                     var bumpX = destX;
@@ -1349,10 +1358,93 @@ namespace TombLib.LevelData.Compilers.Util
                             AddPadding(p, bumpImg.Image, bumpImg.Image, 0, actualPadding, bumpX, bumpY);
                         }
                     }
-                }
+                }*/
             }
 
-            return new Tuple<List<TexturePage>, List<TexturePage>>(colorMaps, bumpMaps);
+            // Calculate how many atlases we need
+            var atlasList = new List<ImageC>();
+            int totalPages = numPages;
+            int numAtlases = (int)Math.Floor((float)totalPages / PagesPerAtlas);
+            if (totalPages % PagesPerAtlas != 0) numAtlases++;
+
+            // Build a list of all packed pages in the previous step
+            var pages = colorMaps;
+
+            ImageC currentAtlas = new ImageC();
+            x = 0;
+            y = 0;
+            int pagesProcessed = 0;
+            VectorInt2 pagesPerAtlas = VectorInt2.Zero;
+
+            foreach (var page in pages)
+            {
+                // At first iteration atlas is null, so create it
+                if (pagesProcessed == 0)
+                {
+                    pagesPerAtlas = GetOptimalSizeForAtlas(pages.Count - pagesProcessed);
+                    currentAtlas = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    atlasList.Add(currentAtlas);
+                }
+
+                // Time to go to the next row? 
+                if (x == pagesPerAtlas.X)
+                {
+                    x = 0;
+                    y++;
+                }
+
+                // Is atlas full and we need a new one?
+                if (y == pagesPerAtlas.Y)
+                {
+                    x = 0;
+                    y = 0;
+                    pagesPerAtlas = GetOptimalSizeForAtlas(pages.Count - pagesProcessed);
+                    currentAtlas = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    atlasList.Add(currentAtlas);
+                }
+
+                // Store the atlas index and position
+                page.Atlas = atlasList.Count - 1;
+                page.Position = new VectorInt2(x, y);
+
+                // Copy the texture into the atlas
+                currentAtlas.CopyFrom(x * 256, y * 256, page.Image, 0, 0, 256, 256);
+
+                // Increment atlas position
+                x++;
+
+                pagesProcessed++;
+            }
+
+            // The last atlas could be resized for saving memory. If we have just one atlas, then we can optimize a lot.
+            /*int numPagesInLastAtlas = pages.Count % PagesPerAtlas;
+            int numRowsInLastAtlas = (int)Math.Floor((double)numPagesInLastAtlas / PagesPerRowInAtlas);
+            if (numPagesInLastAtlas % PagesPerRowInAtlas != 0) numRowsInLastAtlas++;
+            var resizedAtlas = ImageC.CreateNew(AtlasSize, numRowsInLastAtlas * 256);
+            resizedAtlas.CopyFrom(0, 0, currentAtlas, 0, 0, AtlasSize, numRowsInLastAtlas * 256);
+            currentAtlas = resizedAtlas;*/
+
+            for (int i = 0; i < textures.Count; i++)
+            {
+                textures[i].AtlasIndex = colorMaps[textures[i].Page].Atlas;
+                textures[i].AtlasDimensions = atlasList[textures[i].AtlasIndex].Size;
+                textures[i].PositionInAtlas = colorMaps[textures[i].Page].Position;
+            }
+
+            return atlasList;
+        }
+
+        private VectorInt2 GetOptimalSizeForAtlas(int remainingPages)
+        {
+            if (remainingPages > PagesPerAtlas)
+                return new VectorInt2(PagesPerAtlas, PagesPerAtlas);
+            else
+            {
+                VectorInt2 size;
+                size.X = (int)Math.Ceiling(Math.Sqrt(remainingPages));
+                size.Y = (int)Math.Ceiling(remainingPages / (float)size.X);
+                return size;
+            }
         }
 
         // Expands edge pixels to create padding which prevents border bleeding problems.
@@ -1364,7 +1456,7 @@ namespace TombLib.LevelData.Compilers.Util
             var y = customY.HasValue ? customY.Value : (int)p.Area.Start.Y;
             var width = (int)p.Area.Width;
             var height = (int)p.Area.Height;
-            var dataOffset = (p.Page + pageOffset) * 256;
+            var dataOffset = (_level.Settings.GameVersion != TRVersion.Game.TR5Main ? (p.Page + pageOffset) * 256 : 0);
 
             // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
 
@@ -1426,18 +1518,32 @@ namespace TombLib.LevelData.Compilers.Util
             var roomTextures = new List<ParentTextureArea>();
             var objectsTextures = new List<ParentTextureArea>();
             var bumpedTextures = new List<ParentTextureArea>();
+            var moveablesTextures = new List<ParentTextureArea>();
+            var staticsTextures = new List<ParentTextureArea>();
 
             for (int i = 0; i < _parentTextures.Count; i++)
             {
-                if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
                 {
-                    if (_parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
-                        bumpedTextures.Add(_parentTextures[i]);
-                    else
+                    if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
                         roomTextures.Add(_parentTextures[i]);
+                    else if (_parentTextures[i].Destination == TextureDestination.Moveable)
+                        moveablesTextures.Add(_parentTextures[i]);
+                    else
+                        staticsTextures.Add(_parentTextures[i]);
                 }
                 else
-                    objectsTextures.Add(_parentTextures[i]);
+                {
+                    if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                    {
+                        if (_parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
+                            bumpedTextures.Add(_parentTextures[i]);
+                        else
+                            roomTextures.Add(_parentTextures[i]);
+                    }
+                    else
+                        objectsTextures.Add(_parentTextures[i]);
+                }
             }
 
             for (int n = 0; n < _actualAnimTextures.Count; n++)
@@ -1445,28 +1551,40 @@ namespace TombLib.LevelData.Compilers.Util
                 var parentTextures = _actualAnimTextures[n].CompiledAnimation;
                 for (int i = 0; i < parentTextures.Count; i++)
                 {
-                    if (parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                    if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
                     {
-                        if (parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
-                            bumpedTextures.Add(parentTextures[i]);
+                        if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                            roomTextures.Add(_parentTextures[i]);
+                        else if (_parentTextures[i].Destination == TextureDestination.Moveable)
+                            moveablesTextures.Add(_parentTextures[i]);
                         else
-                            roomTextures.Add(parentTextures[i]);
+                            staticsTextures.Add(_parentTextures[i]);
                     }
                     else
-                        objectsTextures.Add(parentTextures[i]);
+                    {
+                        if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                        {
+                            if (_parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
+                                bumpedTextures.Add(_parentTextures[i]);
+                            else
+                                roomTextures.Add(_parentTextures[i]);
+                        }
+                        else
+                            objectsTextures.Add(_parentTextures[i]);
+                    }
                 }
             }
 
             // Cleanup duplicated parent areas.
-            if (!_level.Settings.FastMode)
+            /*if (!_level.Settings.FastMode)
             {
                 CleanUp(ref roomTextures);
                 CleanUp(ref objectsTextures);
                 CleanUp(ref bumpedTextures);
-            }
+            }*/
 
             // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
-            if (_level.Settings.AgressiveTexturePacking)
+            if (_level.Settings.AgressiveTexturePacking && _level.Settings.GameVersion != TRVersion.Game.TR5Main)
                 roomTextures = roomTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
             else
                 objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
@@ -1475,6 +1593,11 @@ namespace TombLib.LevelData.Compilers.Util
             NumRoomPages = PlaceTexturesInMap(ref roomTextures);
             NumObjectsPages = PlaceTexturesInMap(ref objectsTextures, true);
             NumBumpPages = PlaceTexturesInMap(ref bumpedTextures);
+            if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            {
+                NumMoveablesPages = PlaceTexturesInMap(ref moveablesTextures, true);
+                NumStaticsPages = PlaceTexturesInMap(ref staticsTextures, true);
+            }
 
             // Place all the textures areas in the maps
             RoomsPagesPacked = BuildTextureMap(ref roomTextures, NumRoomPages, false);
@@ -1485,22 +1608,19 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 // In TR5Main, we have only 4K texture atlases
                 // We pack pages like in old games, but then we pack them quickly in big atlases
-                var roomsPages = BuildTexturePages(ref roomTextures, NumRoomPages, false);
-                RoomsPages = roomsPages.Item1;
-                BumpRoomsPages = roomsPages.Item2;
-
-                var objectsPages = BuildTexturePages(ref objectsTextures, NumObjectsPages, false, true);
-                ObjectsPages = objectsPages.Item1;
-                BumpObjectsPages = objectsPages.Item2;
-
-                CreateAtlas();
+                RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, false, false);
+                RoomsAtlas[0].Save("F:\\atlasROOMS.png");
+                MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true);
+                MoveablesAtlas[0].Save("F:\\atlasMOVEABLES.png");
+                StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true);
+                StaticsAtlas[0].Save("F:\\atlasSTATICS.png");
             }
 
             // Finally compile all texinfos
             BuildTextureInfos(version);
         }
 
-        private void CreateAtlas()
+        private void CreateAtlas2()
         {
             // Calculate how many atlases we need
             /*int totalPages = RoomsPages.Count + ObjectsPages.Count;
@@ -1656,7 +1776,7 @@ namespace TombLib.LevelData.Compilers.Util
                 var texture = _objectTextures.ElementAt(i).Value;
 
                 // Tile and flags
-                ushort tile = (ushort)texture.Tile;
+                ushort tile = (ushort)(_level.Settings.GameVersion != TRVersion.Game.TR5Main ? texture.Tile : texture.AtlasIndex);
                 if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
 
                 // Blend mode
@@ -1688,21 +1808,40 @@ namespace TombLib.LevelData.Compilers.Util
                     writer.Write(newFlags);
                 }
 
-                for (int j = 0; j < 4; j++)
+                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main)
                 {
-                    if (texture.IsForTriangle && j == 3)
+                    for (int j = 0; j < 4; j++)
                     {
-                        writer.Write((ushort)0);
-                        writer.Write((ushort)0);
+                        if (texture.IsForTriangle && j == 3)
+                        {
+                            writer.Write((ushort)0);
+                            writer.Write((ushort)0);
+                        }
+                        else
+                        {
+                            writer.Write((ushort)(texture.TexCoord[j].X));
+                            writer.Write((ushort)(texture.TexCoord[j].Y));
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    for (int j = 0; j < 4; j++)
                     {
-                        writer.Write((ushort)(texture.TexCoord[j].X));
-                        writer.Write((ushort)(texture.TexCoord[j].Y));
+                        if (texture.IsForTriangle && j == 3)
+                        {
+                            writer.Write((float)0);
+                            writer.Write((float)0);
+                        }
+                        else
+                        {
+                            writer.Write(texture.TexCoordFloat[j].X);
+                            writer.Write(texture.TexCoordFloat[j].Y);
+                        }
                     }
                 }
 
-                if (level.Settings.GameVersion >= TRVersion.Game.TR4)
+                if (level.Settings.GameVersion >= TRVersion.Game.TR4 && level.Settings.GameVersion != TRVersion.Game.TR5Main)
                 {
                     var rect = texture.GetRect();
                     writer.Write((int)0);
@@ -1711,8 +1850,67 @@ namespace TombLib.LevelData.Compilers.Util
                     writer.Write(rect.Height - 1);
                 }
 
-                if (level.Settings.GameVersion == TRVersion.Game.TR5 || level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                if (level.Settings.GameVersion == TRVersion.Game.TR5)
                     writer.Write((ushort)0);
+
+                if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                {
+                    writer.Write((int)texture.Destination);
+                }
+            }
+        }
+
+        public void WriteTextureInfosTR5Main(BinaryWriterEx writer, Level level)
+        {
+            writer.Write((int)_objectTextures.Count);
+            for (int i = 0; i < _objectTextures.Count; i++)
+            {
+                var texture = _objectTextures.ElementAt(i).Value;
+
+                // Tile and flags
+                int tile = texture.AtlasIndex;
+                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
+
+                // Blend mode
+                int attribute = (int)texture.BlendMode;
+
+                // Clamp blend modes according to game version
+                if (level.Settings.GameVersion <= TRVersion.Game.TR2 && attribute > 1)
+                    attribute = 1;
+                if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5) && attribute > 2)
+                    attribute = 2;
+
+                // Now write the texture
+                writer.Write(attribute);
+                writer.Write(tile);
+
+                // Built-in TR4-5 mapping correction is not used. Dummy mapping type is used
+                // together with compensation coordinate distortion.
+                int newFlags = texture.UVAdjustmentFlag;
+
+                if (texture.Destination == TextureDestination.RoomOrAggressive) newFlags |= 0x8000;
+
+                if (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
+                else if (texture.BumpLevel == BumpMappingLevel.Level2) newFlags |= (2 << 9);
+                else if (texture.BumpLevel == BumpMappingLevel.Level3) newFlags |= (3 << 9);
+
+                writer.Write(newFlags);
+
+                for (int j = 0; j < 4; j++)
+                {
+                    if (texture.IsForTriangle && j == 3)
+                    {
+                        writer.Write((float)0);
+                        writer.Write((float)0);
+                    }
+                    else
+                    {
+                        writer.Write(texture.TexCoordFloat[j].X);
+                        writer.Write(texture.TexCoordFloat[j].Y);
+                    }
+                }
+
+                writer.Write((int)texture.Destination);
             }
         }
 

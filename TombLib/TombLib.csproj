@@ -140,6 +140,16 @@
     </Compile>
     <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
     <Compile Include="Graphics\Frustum.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\FloorData.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\LevelCompilerTR5Main.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Ng.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Pathfinding.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\PathfindingDecompiled.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Rooms.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Structs.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Textures.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Tr5Main.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Wad.cs" />
     <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
     <Compile Include="LevelData\Instances\ScriptInstance.cs" />
     <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
@@ -204,7 +214,6 @@
     <Compile Include="LevelData\Compilers\Tr3.cs" />
     <Compile Include="LevelData\Compilers\Tr4.cs" />
     <Compile Include="LevelData\Compilers\Tr5.cs" />
-    <Compile Include="LevelData\Compilers\Tr5Main.cs" />
     <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
     <Compile Include="LevelData\Compilers\Util\SpriteAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />
