@@ -1026,7 +1026,6 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectSoundSource  ||
                          id3 == Prj2Chunks.ObjectSoundSource2 ||
-                         id3 == Prj2Chunks.ObjectSoundSource3 ||
                          id3 == Prj2Chunks.ObjectSoundSource4 ||
                          id3 == Prj2Chunks.ObjectSoundSourceFinal)
                 {
@@ -1035,13 +1034,12 @@ namespace TombLib.LevelData.IO
 
                     if (id3 == Prj2Chunks.ObjectSoundSource)
                     {
-                        instance.WadReferencedSoundName = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, chunkIO.Raw.ReadUInt16());
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
                     else if (id3 == Prj2Chunks.ObjectSoundSource2)
                     {
-                        instance.WadReferencedSoundName = chunkIO.Raw.ReadString(); // Used wrong string type
+                        chunkIO.Raw.ReadString(); // DEPRECATED: Sound info string ID
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
@@ -1058,18 +1056,14 @@ namespace TombLib.LevelData.IO
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
-                    else
-                    {
-                        instance.WadReferencedSoundName = chunkIO.Raw.ReadStringUTF8();
-
-                        // Use an embedded sound info
-                        long soundInfoId = LEB128.ReadLong(chunkIO.Raw);
-                        if (soundInfoId >= 0)
-                            instance.EmbeddedSoundInfo = embeddedSoundInfoWad.FixedSoundInfosObsolete[new WadFixedSoundInfoId((uint)soundInfoId)].SoundInfo;
-                    }
 
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectSoundSource3) // DEPRECATED: Dynamic sound system sound source
+                {
+                    chunkIO.Raw.ReadStringUTF8(); // DEPRECATED: Sound info string ID
+                    LEB128.ReadLong(chunkIO.Raw); // DEPRECATED: Embedded sound info numerical ID
                 }
                 else if (id3 == Prj2Chunks.ObjectLight3 ||
                          id3 == Prj2Chunks.ObjectLight4)

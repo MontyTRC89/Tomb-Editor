@@ -4463,24 +4463,12 @@ namespace TombEditor
 
                     bool hasUnsavedChanges = false;
 
-                    // SOUND_SYSTEM_XML: Check if the level needs to be converted to new Xml sound system
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
-                        // Convert the level
-                        if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName,
-                                                                     "Sounds\\TR4\\Sounds.txt", false))
-                        {
-                            DarkMessageBox.Show(owner, "There was an error while converting your project to the new " +
-                                            "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            newLevel = null;
-                            return false;
-                        }
-                        else
-                        {
-                            DarkMessageBox.Show(owner, "Your level was converted to the new Xml sound system. Please save it.",
-                                            "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            hasUnsavedChanges = true;
-                        }
+                        DarkMessageBox.Show(owner, "This project uses old sound system and is not supported anymore." +
+                            "Use Tomb Editor 1.3.4 or earlier to load and re-save this project.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        newLevel = null;
+                        return false;
                     }
 
                     if (!silent)

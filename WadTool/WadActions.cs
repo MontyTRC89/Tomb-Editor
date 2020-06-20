@@ -32,27 +32,14 @@ namespace WadTool
             Wad2 newWad = null;
             try
             {
-                newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
-                if (isWad2 && newWad.SoundSystem == SoundSystem.Dynamic)
+                newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner));
+
+                if (newWad == null || newWad.SoundSystem == SoundSystem.Dynamic)
                 {
-                    if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
-                                            "to the new Xml sound system. A backup copy will be created under the same directory. " +
-                                            "Do you want to continue?",
-                                            "Convert Wad2", MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Question) != DialogResult.Yes)
-                        return;
-
-                    File.Copy(fileName, fileName + ".bak", true);
-                    if (!FileFormatConversions.ConvertWad2ToNewSoundFormat(fileName, fileName))
-                    {
-                        tool.SendMessage("Converting the file failed!", PopupType.Error);
-                        return;
-                    }
-
-                    if (newWad.HasUnknownData)
-                        tool.SendMessage("Loaded wad2 is of newer version.\nSome data was lost. Don't save this wad2 and use newest version of Wad Tool.", PopupType.Warning);
-
-                    newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
+                    DarkMessageBox.Show(owner, "This wad2 is broken or uses old sound system which is not supported anymore." +
+                            "Use WadTool 1.3.4 or earlier to load and re-save this wad2.",
+                            "Convert Wad2", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
             }
             catch (OperationCanceledException)
@@ -150,7 +137,6 @@ namespace WadTool
             // Save the wad2
             try
             {
-                // XML_SOUND_SYSTEM
                 Wad2Writer.SaveToFile(wadToSave, outPath);
 
                 // Immediately reload new wad, if it wasn't saved before (new or imported)

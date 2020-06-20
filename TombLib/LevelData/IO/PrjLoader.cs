@@ -1272,8 +1272,7 @@ namespace TombLib.LevelData.IO
                     }
                 }
 
-                // XML_SOUND_SYSTEM: Read sound catalog. We need it just for names, because we'll take 
-                // sound infos from SFX/SAM.
+                // Read sound catalog. We need it just for names, because we'll take sound infos from SFX/SAM.
                 WadSounds sounds = null;
                 if (File.Exists(soundsPath))
                 {
@@ -1305,7 +1304,7 @@ namespace TombLib.LevelData.IO
                         if (newWad.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonWadUnloadable { Settings = level.Settings, Wad = newWad });
 
-                        // XML_SOUND_SYSTEM: SFX is a valid catalog source so let's add it (SAM is implicitly loaded)
+                        // SFX is a valid catalog source so let's add it (SAM is implicitly loaded)
                         string sfxPath = (newWad.LoadException == null ?
                             level.Settings.MakeAbsolute(newWad.Path).ToLower().Replace(".wad", ".sfx") :
                             Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx");
@@ -1318,7 +1317,7 @@ namespace TombLib.LevelData.IO
                         if (sfx.LoadException != null)
                             progressReporter.RaiseDialog(new DialogDescriptonSoundsCatalogUnloadable { Settings = level.Settings, Sounds = sfx });
 
-                        // XML_SOUND_SYSTEM: we actually have a valid WAD loaded, let's change names using the catalog
+                        // We actually have a valid WAD loaded, let's change names using the catalog
                         // and mark them automatically for compilation
                         if (sfx.Sounds != null)
                             foreach (var soundInfo in sfx.Sounds.SoundInfos)

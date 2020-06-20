@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
 using TombLib.IO;
 using TombLib.Utils;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -36,13 +34,6 @@ namespace TombLib.Wad
                 // Save successful, write temp file over original (if exists)
                 if (File.Exists(filename)) File.Delete(filename);
                 File.Move(tempName, filename);
-            }
-
-            // Save sounds to XML file
-            if (wad.Sounds.SoundInfos.Count > 0)
-            {
-                string xmlFilename = Path.Combine(Path.GetDirectoryName(filename), Path.GetFileNameWithoutExtension(filename) + ".xml");
-                WadSounds.SaveToXml(xmlFilename, wad.Sounds);
             }
         }
 
@@ -303,7 +294,7 @@ namespace TombLib.Wad
                                         LEB128.Write(chunkIO.Raw, command.Parameter1);
                                         LEB128.Write(chunkIO.Raw, command.Parameter2);
                                         LEB128.Write(chunkIO.Raw, command.Parameter3);
-                                        chunkIO.WriteChunkInt(Wad2Chunks.AnimCommandSoundInfo, -1);
+                                        chunkIO.WriteChunkInt(Wad2Chunks.AnimCommandSoundInfo, -1); // DEPRECATED: WadSoundInfo
                                     });
                                 }
 
