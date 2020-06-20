@@ -210,6 +210,17 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(52, "    Number of boxes/zones: " + _boxes.Length);
             ReportProgress(52, "    Number of overlaps: " + _overlaps.Length);
+
+            if (_level.Settings.GameVersion != TRVersion.Game.TR5Main)
+            {
+                var boxLimit = _level.Settings.GameVersion >= TRVersion.Game.TR3 ? 2047 : 32767;
+                if (_boxes.Length > boxLimit)
+                    _progressReporter.ReportWarn("Box limit is reached. Maximum is " + boxLimit + ", you have " + _boxes.Length + ". Game will crash. Reduce level size or split it.");
+
+                var overlapLimit = 8192;
+                if (_overlaps.Length > overlapLimit)
+                    _progressReporter.ReportWarn("Overlap limit is reached. Maximum is " + overlapLimit + ", you have " + _overlaps.Length + ". Game will crash. Reduce level size or split it.");
+            }
         }
 
         private IEnumerable<int> GetAllReachableBoxes(int box, int zoneType, bool flipped)
