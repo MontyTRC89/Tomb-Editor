@@ -3292,9 +3292,7 @@ namespace TombEditor.Controls
             _frustum.Update(Camera, ClientSize);
 
             // Collect stuff to draw
-            var roomsToDraw = CollectRoomsToDraw();
-            roomsToDraw = roomsToDraw.Where(r => _frustum.Contains(r.WorldBoundingBox)).ToArray();
-
+            var roomsToDraw = CollectRoomsToDraw().Where(r => _frustum.Contains(r.WorldBoundingBox)).ToArray();
             var moveablesToDraw = CollectMoveablesToDraw(roomsToDraw);
             var staticsToDraw = CollectStaticsToDraw(roomsToDraw);
             var importedGeometryToDraw = CollectImportedGeometryToDraw(roomsToDraw);
