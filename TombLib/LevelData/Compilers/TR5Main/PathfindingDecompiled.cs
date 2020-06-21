@@ -57,12 +57,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     // Room must be defined and also must be base room or the flipped version
                     if (room != null && (flipped == 0 && room.AlternateBaseRoom == null || flipped == 1 && room.AlternateBaseRoom != null))
                     {
-                        tr_room tempRoom = _tempRooms[room];
+                        tr5main_room tempRoom = _tempRooms[room];
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                                int boxIndex = _level.Settings.GameVersion >= TRVersion.Game.TR3 ? 0x7ff : 0xffff;
+                                int boxIndex = 2047;
                                 if (!room.FlagExcludeFromPathFinding)
                                 {
                                     dec_tr_box_aux box = new dec_tr_box_aux();
@@ -80,11 +80,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                     }
                                 }
 
+                                // Assign the box index to the sector
                                 ushort sectorBoxIndex = tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex;
-                                if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
-                                    sectorBoxIndex = (ushort)((sectorBoxIndex & 0x0f) | (boxIndex << 4));
-                                else
-                                    sectorBoxIndex = (ushort)boxIndex;
+                                sectorBoxIndex = (ushort)((sectorBoxIndex & 0x0f) | (boxIndex << 4));
 
                                 // Assign the box index to the sector
                                 tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex = sectorBoxIndex;

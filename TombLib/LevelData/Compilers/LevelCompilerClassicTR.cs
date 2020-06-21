@@ -136,9 +136,6 @@ namespace TombLib.LevelData.Compilers
                 case TRVersion.Game.TR5:
                     WriteLevelTr5();
                     break;
-                case TRVersion.Game.TR5Main:
-                    WriteLevelTr5Main();
-                    break;
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");
             }
@@ -428,8 +425,6 @@ namespace TombLib.LevelData.Compilers
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
             _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
 
-            _luaIdToItems = new Dictionary<int, int>();
-
             foreach (Room room in _level.Rooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
@@ -481,10 +476,6 @@ namespace TombLib.LevelData.Compilers
                             Flags = unchecked((ushort)flags)
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
-
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                            if (!_luaIdToItems.ContainsKey(instance.LuaId))
-                                _luaIdToItems.Add(instance.LuaId, _items.Count - 1);
                     }
                 }
 

@@ -24,7 +24,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
+        private readonly Dictionary<Room, tr5main_room> _tempRooms = new Dictionary<Room, tr5main_room>(new ReferenceEqualityComparer<Room>());
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -293,12 +293,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
             ReportProgress(47, "    Number of sinks: " + _sinkTable.Count);
         }
 
-        private static tr_room_sector GetSector(tr_room room, int x, int z)
+        private static tr_room_sector GetSector(tr5main_room room, int x, int z)
         {
             return room.Sectors[room.NumZSectors * x + z];
         }
 
-        private static void SaveSector(tr_room room, int x, int z, tr_room_sector sector)
+        private static void SaveSector(tr5main_room room, int x, int z, tr_room_sector sector)
         {
             room.Sectors[room.NumZSectors * x + z] = sector;
         }

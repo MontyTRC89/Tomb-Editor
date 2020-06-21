@@ -39,7 +39,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 _tempRooms.Add(room, BuildRoom(room));
 
             // Remove WaterScheme values for water rooms
-            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
+            Parallel.ForEach(_tempRooms.Values, (tr5main_room trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
 #if DEBUG
             using (var writer = new StreamWriter(File.OpenWrite("Portals.txt")))
@@ -86,7 +86,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         MatchDoorShades(rooms, room, (_level.Settings.GameVersion < TRVersion.Game.TR3), flipped == 1);
             }
 
-            Parallel.ForEach(_tempRooms.Values, (tr_room trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, (tr5main_room trRoom) =>
             {
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {
@@ -137,14 +137,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
         }
 
-        private tr_room BuildRoom(Room room)
+        private tr5main_room BuildRoom(Room room)
         {
             tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
 
             if (room.NumXSectors > Room.MaxRecommendedRoomDimensions || room.NumZSectors > Room.MaxRecommendedRoomDimensions)
                 _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + Room.MaxRecommendedRoomDimensions + " sectors per side cause trouble with rendering.");
 
-            var newRoom = new tr_room
+            var newRoom = new tr5main_room
             {
                 OriginalRoom = room,
                 Lights = new List<tr4_room_light>(),
@@ -981,7 +981,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return vertexIndex;
         }
 
-        private void ConvertLights(Room room, tr_room newRoom)
+        private void ConvertLights(Room room, tr5main_room newRoom)
         {
             int lightCount = 0;
 
@@ -1081,7 +1081,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 _progressReporter.ReportWarn("Room '" + room + "' has more than 20 dynamic lights (" + lightCount + "). This can cause crashes with the original engine!");
         }
 
-        private void ConvertSectors(Room room, tr_room newRoom)
+        private void ConvertSectors(Room room, tr5main_room newRoom)
         {
             newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
             newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
@@ -1183,7 +1183,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, tr_room newRoom)
+        private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, tr5main_room newRoom)
         {
             foreach (var portal in portals)
             {
@@ -1534,7 +1534,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private void MatchDoorShades(List<tr_room> roomList, tr_room room, bool grayscale, bool flipped)
+        private void MatchDoorShades(List<tr5main_room> roomList, tr5main_room room, bool grayscale, bool flipped)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)

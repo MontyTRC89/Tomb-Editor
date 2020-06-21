@@ -146,7 +146,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                     _spritesTexturesPages.Add(sprite.Texture.Image);
                     tempSprites.Add(newTexture);
-                    sprite.Texture.Image.Save("F:\\sprite" + newTexture.Tile + ".png");
+                    //sprite.Texture.Image.Save("F:\\sprite" + newTexture.Tile + ".png");
                 }
 
                 tempSequences.Add(newSequence);

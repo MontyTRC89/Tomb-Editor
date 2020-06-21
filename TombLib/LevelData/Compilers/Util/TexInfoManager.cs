@@ -1553,35 +1553,35 @@ namespace TombLib.LevelData.Compilers.Util
                 {
                     if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
                     {
-                        if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
-                            roomTextures.Add(_parentTextures[i]);
-                        else if (_parentTextures[i].Destination == TextureDestination.Moveable)
-                            moveablesTextures.Add(_parentTextures[i]);
+                        if (parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                            roomTextures.Add(parentTextures[i]);
+                        else if (parentTextures[i].Destination == TextureDestination.Moveable)
+                            moveablesTextures.Add(parentTextures[i]);
                         else
-                            staticsTextures.Add(_parentTextures[i]);
+                            staticsTextures.Add(parentTextures[i]);
                     }
                     else
                     {
-                        if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                        if (parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
                         {
-                            if (_parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
-                                bumpedTextures.Add(_parentTextures[i]);
+                            if (parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
+                                bumpedTextures.Add(parentTextures[i]);
                             else
-                                roomTextures.Add(_parentTextures[i]);
+                                roomTextures.Add(parentTextures[i]);
                         }
                         else
-                            objectsTextures.Add(_parentTextures[i]);
+                            objectsTextures.Add(parentTextures[i]);
                     }
                 }
             }
 
             // Cleanup duplicated parent areas.
-            /*if (!_level.Settings.FastMode)
+            if (!_level.Settings.FastMode)
             {
                 CleanUp(ref roomTextures);
                 CleanUp(ref objectsTextures);
                 CleanUp(ref bumpedTextures);
-            }*/
+            }
 
             // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
             if (_level.Settings.AgressiveTexturePacking && _level.Settings.GameVersion != TRVersion.Game.TR5Main)
@@ -1609,11 +1609,11 @@ namespace TombLib.LevelData.Compilers.Util
                 // In TR5Main, we have only 4K texture atlases
                 // We pack pages like in old games, but then we pack them quickly in big atlases
                 RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, false, false);
-                RoomsAtlas[0].Save("F:\\atlasROOMS.png");
+                //RoomsAtlas[0].Save("F:\\atlasROOMS.png");
                 MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true);
-                MoveablesAtlas[0].Save("F:\\atlasMOVEABLES.png");
+                //MoveablesAtlas[0].Save("F:\\atlasMOVEABLES.png");
                 StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true);
-                StaticsAtlas[0].Save("F:\\atlasSTATICS.png");
+                //StaticsAtlas[0].Save("F:\\atlasSTATICS.png");
             }
 
             // Finally compile all texinfos
