@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using TombLib.NG;
 
 namespace TombLib.LevelData.Compilers.TR5Main
@@ -790,6 +791,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
         private void BuildFloorDataCollision(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, List<ushort> outFloorData, ref int lastFloorDataFunction, Room reportRoom, VectorInt2 reportPos)
         {
+            tr5main_room newRoom = _tempRooms[reportRoom];
+            tr5main_room_sector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
+            Block sector = reportRoom.GetBlock(reportPos);
+
             if (shape.IsSplit && _level.Settings.GameVersion >= TRVersion.Game.TR3)
             { // Build a triangulated slope
                 int bisectingIndex = shape.SplitDirectionIsXEqualsZ ? 1 : 0;
@@ -865,9 +870,55 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add(data0);
                 outFloorData.Add(data1);
+
+                // New TR5Main sector data
+                if (!isCeiling)
+                {
+                    newSector.FloorCollision.Split = (shape.SplitDirectionIsXEqualsZ ? tr5main_split_type.Split1 : tr5main_split_type.Split2);
+                    newSector.FloorCollision.NoCollision = (shape.SplitPortalFirst && !shape.SplitPortalSecond ? tr5main_nocollision_type.Triangle1 : tr5main_nocollision_type.Triangle2);
+
+                    if (shape.SplitDirectionIsXEqualsZ)
+                    {
+                        newSector.FloorCollision.Planes[0] = GetPlane(
+                                new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZp) * 256.0f, 1024.0f),
+                                new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZp) * 256.0f, 1024.0f),
+                                new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZn) * 256.0f, 0.0f)
+                            );
+                        newSector.FloorCollision.Planes[1] = GetPlane(
+                                new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZn) * 256.0f, 0.0f),
+                                new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZn) * 256.0f, 0.0f),
+                                new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZp) * 256.0f, 1024.0f)
+                            );
+                    }
+                    else
+                    {
+                        newSector.FloorCollision.Planes[0] = GetPlane(
+                              new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZn) * 256.0f, 0.0f),
+                              new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZp) * 256.0f, 1024.0f),
+                              new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZn) * 256.0f, 0.0f)
+                          );
+                        newSector.FloorCollision.Planes[1] = GetPlane(
+                                new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZp) * 256.0f, 1024.0f),
+                                new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZn) * 256.0f, 0.0f),
+                                new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZp) * 256.0f, 1024.0f)
+                            );
+                    }
+                }
+                else
+                {
+                    /*newSector.CeilingCollision.Split = tr5main_split_type.None;
+                    newSector.CeilingCollision.NoCollision = tr5main_nocollision_type.None;
+                    newSector.CeilingCollision.Planes[0] = GetPlane(
+                            new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZp) * 256.0f, 1024.0f),
+                            new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZp) * 256.0f, 1024.0f),
+                            new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZn) * 256.0f, 0.0f)
+                        );
+                    newSector.CeilingCollision.Planes[1] = newSector.CeilingCollision.Planes[0];*/
+                }
             }
             else if (!shape.IsFlat)
-            { // Build a quad slope
+            { 
+                // Build a quad slope
                 int heightDiffX = shape.HeightXnZp - shape.HeightXnZn;
                 int heightDiffY = shape.HeightXpZn - shape.HeightXnZn;
                 if (isCeiling)
@@ -887,7 +938,40 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 lastFloorDataFunction = outFloorData.Count;
                 outFloorData.Add((ushort)(isCeiling ? 0x03 : 0x02));
                 outFloorData.Add(result);
+
+                // New TR5Main sector data
+                if (!isCeiling)
+                {
+                    newSector.FloorCollision.Split = tr5main_split_type.None;
+                    newSector.FloorCollision.NoCollision = tr5main_nocollision_type.None;
+                    newSector.FloorCollision.Planes[0] = GetPlane(
+                            new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZp) * 256.0f, 1024.0f),
+                            new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZp) * 256.0f, 1024.0f),
+                            new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZn) * 256.0f, 0.0f)
+                        );
+                    newSector.FloorCollision.Planes[1] = newSector.FloorCollision.Planes[0];
+                }
+                else
+                {
+                    newSector.CeilingCollision.Split = tr5main_split_type.None;
+                    newSector.CeilingCollision.NoCollision = tr5main_nocollision_type.None;
+                    newSector.CeilingCollision.Planes[0] = GetPlane(
+                            new Vector3(1024.0f, (-reportRoom.Position.Y - shape.HeightXpZp) * 256.0f, 1024.0f),
+                            new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZp) * 256.0f, 1024.0f),
+                            new Vector3(0.0f, (-reportRoom.Position.Y - shape.HeightXnZn) * 256.0f, 0.0f)
+                        );
+                    newSector.CeilingCollision.Planes[1] = newSector.CeilingCollision.Planes[0];
+                }
             }
+
+            newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y] = newSector;
+        }
+
+        private Vector3 GetPlane(Vector3 p1, Vector3 p2, Vector3 p3)
+        {
+            var e1 = p1 - p2;
+            var e2 = p2 - p3;
+            return Vector3.Normalize(Vector3.Cross(e1, e2));
         }
 
         private void BuildRoomSectorShape_t00_t01(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, out int out_t00, out int out_t01)

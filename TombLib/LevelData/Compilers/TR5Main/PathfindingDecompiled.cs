@@ -81,7 +81,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 }
 
                                 // Assign the box index to the sector
-                                ushort sectorBoxIndex = tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex;
+                                int sectorBoxIndex = tempRoom.Sectors[tempRoom.NumZSectors * x + z].BoxIndex;
                                 sectorBoxIndex = (ushort)((sectorBoxIndex & 0x0f) | (boxIndex << 4));
 
                                 // Assign the box index to the sector

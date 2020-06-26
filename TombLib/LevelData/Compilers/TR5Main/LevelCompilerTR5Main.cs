@@ -230,19 +230,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
 
-                ushort boxIndex;
-                if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
-                    boxIndex = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7FF0) >> 4);
-                else
-                    boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
-
+                int boxIndex = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7FF0) >> 4);
+                
                 _cameras.Add(new tr_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = instance.Strength,
-                    Flags = boxIndex
+                    Flags = (ushort)boxIndex
                 });
             }
 
@@ -293,12 +289,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
             ReportProgress(47, "    Number of sinks: " + _sinkTable.Count);
         }
 
-        private static tr_room_sector GetSector(tr5main_room room, int x, int z)
+        private static tr5main_room_sector GetSector(tr5main_room room, int x, int z)
         {
             return room.Sectors[room.NumZSectors * x + z];
         }
 
-        private static void SaveSector(tr5main_room room, int x, int z, tr_room_sector sector)
+        private static void SaveSector(tr5main_room room, int x, int z, tr5main_room_sector sector)
         {
             room.Sectors[room.NumZSectors * x + z] = sector;
         }

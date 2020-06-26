@@ -1083,7 +1083,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
         private void ConvertSectors(Room room, tr5main_room newRoom)
         {
-            newRoom.Sectors = new tr_room_sector[room.NumXSectors * room.NumZSectors];
+            newRoom.Sectors = new tr5main_room_sector[room.NumXSectors * room.NumZSectors];
             newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
 
             for (var z = 0; z < room.NumZSectors; z++)
@@ -1091,13 +1091,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     var block = room.Blocks[x, z];
-                    var sector = new tr_room_sector();
+                    var sector = new tr5main_room_sector();
                     var aux = new TrSectorAux();
 
-                    if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
-                        sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (short)GetTextureSound(room, x, z)));
-                    else
-                        sector.BoxIndex = 0xffff;
+                    sector.FloorCollision.Planes = new Vector3[2];
+                    sector.CeilingCollision.Planes = new Vector3[2];
+
+                    sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (short)GetTextureSound(room, x, z)));
                     sector.FloorDataIndex = 0;
 
                     // Setup portals
@@ -1109,14 +1109,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     }
                     else
                     {
-                        sector.RoomBelow = 255;
+                        sector.RoomBelow = -1;
                         aux.FloorPortal = null;
                     }
 
                     if (room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true).TraversableType != Room.RoomConnectionType.NoPortal)
                         sector.RoomAbove = (byte)_roomsRemappingDictionary[block.CeilingPortal.AdjoiningRoom];
                     else
-                        sector.RoomAbove = 255;
+                        sector.RoomAbove = -1;
 
                     if (block.WallPortal != null && block.WallPortal.Opacity != PortalOpacity.SolidFaces)
                         aux.WallPortal = block.WallPortal.AdjoiningRoom;
