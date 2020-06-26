@@ -73,7 +73,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public ushort NumZSectors;
         public ushort NumXSectors;
         public tr5main_room_sector[] Sectors;
-        public uint AmbientIntensity;
+        public Vector3 AmbientLight;
         public short LightMode;
         public List<tr4_room_light> Lights;
         public List<tr_room_staticmesh> StaticMeshes;
@@ -148,17 +148,19 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.Write(s.RoomAbove);
                 writer.Write(s.Ceiling);
                 writer.Write((int)s.FloorCollision.Split);
-                writer.Write((int)s.FloorCollision.Split);
+                writer.Write((int)s.FloorCollision.NoCollision);
                 writer.Write(s.FloorCollision.Planes[0]);
                 writer.Write(s.FloorCollision.Planes[1]);
                 writer.Write((int)s.CeilingCollision.Split);
-                writer.Write((int)s.CeilingCollision.Split);
+                writer.Write((int)s.CeilingCollision.NoCollision);
                 writer.Write(s.CeilingCollision.Planes[0]);
                 writer.Write(s.CeilingCollision.Planes[1]);
             }
 
             // Write room color
-            writer.Write(AmbientIntensity);
+            writer.Write(AmbientLight.X);
+            writer.Write(AmbientLight.Y);
+            writer.Write(AmbientLight.Z);
 
             // Write lights
             writer.WriteBlock((ushort)Lights.Count);

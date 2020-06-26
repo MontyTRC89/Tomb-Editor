@@ -176,12 +176,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 newRoom.AlternateKind = AlternateKind.BaseRoom;
 
             // Store ambient intensity
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.AmbientLight);
-            else
-                newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | 
-                                           ((uint)roomAmbientColor.Green << 8) | 
-                                                  roomAmbientColor.Blue;
+            newRoom.AmbientLight = new Vector3(roomAmbientColor.Red / 255.0f, roomAmbientColor.Green / 255.0f, roomAmbientColor.Blue / 255.0f);
 
             // Properly identify game version to swap light mode, quicksand and no lensflare flags
             bool isTR2  = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
