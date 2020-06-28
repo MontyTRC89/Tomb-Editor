@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.Compilers.TR5Main;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -508,7 +509,7 @@ namespace TombLib.LevelData.Compilers.Util
             }
         }
 
-        private class ObjectTexture
+        public class ObjectTexture
         {
             public int Tile;
             public VectorInt2[] TexCoord = new VectorInt2[4];
@@ -665,6 +666,8 @@ namespace TombLib.LevelData.Compilers.Util
             // As result, CreateFace3/4 should return a face with changed index order.
             public byte Rotation;
 
+            public bool Animated;
+
             public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
             {
                 if (indices.Length != 3)
@@ -708,6 +711,65 @@ namespace TombLib.LevelData.Compilers.Util
                 }
 
                 return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
+            }
+
+            public tr5main_polygon CreateTr5MainPolygon3(int[] indices, byte blendMode)
+            {
+                if (indices.Length != 3)
+                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
+
+                int objectTextureIndex = TexInfoIndex;
+                int[] transformedIndices = new int[3] { indices[0], indices[1], indices[2] };
+
+                if (Rotation > 0)
+                {
+                    for (int i = 0; i < Rotation; i++)
+                    {
+                        int tempIndex = transformedIndices[0];
+                        transformedIndices[0] = transformedIndices[2];
+                        transformedIndices[2] = transformedIndices[1];
+                        transformedIndices[1] = tempIndex;
+                    }
+                }
+
+                var polygon = new tr5main_polygon();
+                polygon.Shape = tr5main_polygon_shape.Triangle;
+                polygon.Indices.AddRange(transformedIndices);
+                polygon.TextureId = objectTextureIndex;
+                polygon.BlendMode = blendMode;
+                polygon.Animated = Animated;
+
+                return polygon;
+            }
+
+            public tr5main_polygon CreateTr5MainPolygon4(int[] indices, byte blendMode)
+            {
+                if (indices.Length != 4)
+                    throw new ArgumentOutOfRangeException(nameof(indices.Length));
+
+                int objectTextureIndex = TexInfoIndex;
+                int[] transformedIndices = new int[4] { indices[0], indices[1], indices[2], indices[3] };
+
+                if (Rotation > 0)
+                {
+                    for (int i = 0; i < Rotation; i++)
+                    {
+                        int tempIndex = transformedIndices[0];
+                        transformedIndices[0] = transformedIndices[3];
+                        transformedIndices[3] = transformedIndices[2];
+                        transformedIndices[2] = transformedIndices[1];
+                        transformedIndices[1] = tempIndex;
+                    }
+                }
+
+                var polygon = new tr5main_polygon();
+                polygon.Shape = tr5main_polygon_shape.Quad;
+                polygon.Indices.AddRange(transformedIndices);
+                polygon.TextureId = objectTextureIndex;
+                polygon.BlendMode = blendMode;
+                polygon.Animated = Animated;
+
+                return polygon;
             }
         }
 
@@ -828,7 +890,9 @@ namespace TombLib.LevelData.Compilers.Util
                     if (GetTexInfo(texture, refTex.CompiledAnimation, destination, isForTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
                     {
                         GenerateAnimTexture(refTex, texture, destination, isForTriangle);
-                        return AddTexture(texture, destination, isForTriangle);
+                        var result = AddTexture(texture, destination, isForTriangle);
+                        result.Animated = true;
+                        return result;
                     }
                 }
 
@@ -1935,5 +1999,11 @@ namespace TombLib.LevelData.Compilers.Util
 
             NumObjectsPages += numSpritesPages;
         }
+
+        public List<ObjectTexture> GetObjectTextures()
+        {
+            return _objectTextures.Values.ToList();
+        }
+
     }
 }

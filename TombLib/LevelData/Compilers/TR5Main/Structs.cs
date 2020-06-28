@@ -38,6 +38,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
         Triangle2
     }
 
+    public enum tr5main_polygon_shape : int
+    {
+        Quad,
+        Triangle
+    }
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr5main_collision_info
     {
@@ -61,29 +67,89 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public tr5main_collision_info CeilingCollision;
     }
 
+    public class tr5main_polygon
+    {
+        public tr5main_polygon_shape Shape;
+        public List<int> Indices = new List<int>();
+        public int TextureId;
+        public byte BlendMode;
+        public bool Animated;
+        public int BaseIndex;
+    }
+
+    public class tr5main_vertex
+    {
+        public Vector3 Position;
+        public Vector3 Normal;
+        public Vector2 TextureCoords;
+        public Vector4 Color;
+        public int Bone;
+        public int Effects;
+
+        public bool IsOnPortal;
+    }
+
+    public class tr5main_material
+    {
+        public class Tr5MainMaterialComparer : IEqualityComparer<tr5main_material>
+        {
+            public bool Equals(tr5main_material x, tr5main_material y)
+            {
+                return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated);
+            }
+
+            public int GetHashCode(tr5main_material obj)
+            {
+                unchecked
+                {
+                    int hash = 17;
+                    hash = hash * 23 + obj.Texture.GetHashCode();
+                    hash = hash * 23 + obj.BlendMode.GetHashCode();
+                    hash = hash * 23 + obj.Animated.GetHashCode();
+                    return hash;
+                }
+            }
+        }
+
+        public int Texture;
+        public byte BlendMode;
+        public bool Animated;
+    }
+
+    public class tr5main_bucket
+    {
+        public tr5main_material Material;
+        public List<int> Indices;
+        public List<tr5main_polygon> Polygons;
+
+        public tr5main_bucket()
+        {
+            Indices = new List<int>();
+            Polygons = new List<tr5main_polygon>();
+        }
+    }
+
     public class tr5main_room
     {
         public tr_room_info Info;
-        public uint NumDataWords;
-        public List<tr_room_vertex> Vertices;
-        public List<tr_face4> Quads;
-        public List<tr_face3> Triangles;
-        public ushort NumSprites;
+        public int NumDataWords;
+        public List<tr5main_vertex> Vertices;
+        public Dictionary<tr5main_material, tr5main_bucket> Buckets;
         public List<tr_room_portal> Portals;
-        public ushort NumZSectors;
-        public ushort NumXSectors;
+        public int NumZSectors;
+        public int NumXSectors;
         public tr5main_room_sector[] Sectors;
         public Vector3 AmbientLight;
-        public short LightMode;
         public List<tr4_room_light> Lights;
         public List<tr_room_staticmesh> StaticMeshes;
-        public short AlternateRoom;
-        public short Flags;
-        public byte WaterScheme;
-        public byte ReverbInfo;
-        public byte AlternateGroup;
+        public int AlternateRoom;
+        public int Flags;
+        public int WaterScheme;
+        public int ReverbInfo;
+        public int AlternateGroup;
 
         // Helper data
+        public List<tr5main_polygon> Polygons;
         public TrSectorAux[,] AuxSectors;
         public AlternateKind AlternateKind;
         public List<Room> ReachableRooms;
@@ -93,44 +159,40 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public Room BaseRoom;
         public Room OriginalRoom;
 
-        public void WriteTr5(BinaryWriterEx writer)
+        public void Write(BinaryWriterEx writer)
         {
             writer.WriteBlock(Info);
 
-            var offset = writer.BaseStream.Position;
-
-            writer.Write(0);
-
-            writer.Write((ushort)Vertices.Count);
+            writer.Write(Vertices.Count);
             for (var k = 0; k < Vertices.Count; k++)
             {
                 writer.Write(Vertices[k].Position.X);
                 writer.Write(Vertices[k].Position.Y);
                 writer.Write(Vertices[k].Position.Z);
-                writer.Write(Vertices[k].Color);
-                writer.Write(Vertices[k].Attributes);
+                writer.Write(Vertices[k].Normal.X);
+                writer.Write(Vertices[k].Normal.Y);
+                writer.Write(Vertices[k].Normal.Z);
+                writer.Write(Vertices[k].TextureCoords.X);
+                writer.Write(Vertices[k].TextureCoords.Y);
+                writer.Write(Vertices[k].Color.X);
+                writer.Write(Vertices[k].Color.Y);
+                writer.Write(Vertices[k].Color.Z);
+                writer.Write(Vertices[k].Effects);
             }
 
-            writer.Write((ushort)Quads.Count);
-            for (var k = 0; k < Quads.Count; k++)
-                Quads[k].Write(writer);
-
-            writer.Write((ushort)Triangles.Count);
-            for (var k = 0; k < Triangles.Count; k++)
-                Triangles[k].Write(writer);
-
-            // Now save current offset and calculate the size of the geometry
-            var offset2 = writer.BaseStream.Position;
-            // ReSharper disable once SuggestVarOrType_BuiltInTypes
-            ushort roomGeometrySize = (ushort)((offset2 - offset - 4) / 2);
-
-            // Save the size of the geometry
-            writer.BaseStream.Seek(offset, SeekOrigin.Begin);
-            writer.Write(roomGeometrySize);
-            writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
-
+            writer.Write(Buckets.Count);
+            foreach (var bucket in Buckets.Values)
+            {
+                writer.Write(bucket.Material.Texture);
+                writer.Write(bucket.Material.BlendMode);
+                writer.Write(bucket.Material.Animated);
+                writer.Write(bucket.Indices.Count);
+                foreach (var index in bucket.Indices)
+                    writer.Write(index);
+            }            
+    
             // Write portals
-            writer.WriteBlock((ushort)Portals.Count);
+            writer.WriteBlock(Portals.Count);
             if (Portals.Count != 0)
                 writer.WriteBlockArray(Portals);
 
@@ -163,7 +225,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             writer.Write(AmbientLight.Z);
 
             // Write lights
-            writer.WriteBlock((ushort)Lights.Count);
+            writer.WriteBlock(Lights.Count);
             foreach (var light in Lights)
             {
                 writer.Write((float)light.X);
@@ -188,7 +250,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
 
             // Write static meshes
-            writer.WriteBlock((ushort)StaticMeshes.Count);
+            writer.WriteBlock(StaticMeshes.Count);
             if (StaticMeshes.Count != 0)
                 writer.WriteBlockArray(StaticMeshes);
 

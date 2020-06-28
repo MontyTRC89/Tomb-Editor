@@ -42,7 +42,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 foreach (var r in _level.Rooms.Where(r => r != null))
                 {
-                    _tempRooms[r].WriteTr5(writer);
+                    _tempRooms[r].Write(writer);
                 }
 
                 // Write floordata

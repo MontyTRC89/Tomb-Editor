@@ -113,6 +113,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
             BuildFloorData();
             BuildSprites();
 
+            PrepareRoomsBuckets();
+
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
             WriteLevelTr5Main();

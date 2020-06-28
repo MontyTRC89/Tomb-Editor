@@ -16,7 +16,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<WadPolygon, Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
-        private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
+        private Dictionary<ShadeMatchSignature, Vector3> _vertexColors;
 
         private void BuildRooms()
         {
@@ -79,11 +79,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
             {
                 ReportProgress(23, "    Matching vertex colors on portals...");
 
-                _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
+                _vertexColors = new Dictionary<ShadeMatchSignature, Vector3>();
                 var rooms = _tempRooms.Values.ToList();
                 for (int flipped = 0; flipped <= 1; flipped++)
                     foreach (var room in rooms)
-                        MatchDoorShades(rooms, room, (_level.Settings.GameVersion < TRVersion.Game.TR3), flipped == 1);
+                        MatchDoorShades(rooms, room, flipped == 1);
             }
 
             Parallel.ForEach(_tempRooms.Values, (tr5main_room trRoom) =>
@@ -98,13 +98,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     {
                         IsWater = ((trRoom.Flags & 1) == 1),
                         AlternateGroup = trRoom.AlternateKind == AlternateKind.AlternateRoom ? trRoom.AlternateGroup : -1,
-                        Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
+                        Position = new Vector3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
                     };
 
                     if (_vertexColors.ContainsKey(sig))
                     {
-                        v.Lighting1 = _vertexColors[sig];
-                        v.Lighting2 = _vertexColors[sig];
+                        v.Color = new Vector4(_vertexColors[sig], 1.0f);
                         trRoom.Vertices[i] = v;
                     }
                 }
@@ -179,10 +178,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
             newRoom.AmbientLight = new Vector3(roomAmbientColor.Red / 255.0f, roomAmbientColor.Green / 255.0f, roomAmbientColor.Blue / 255.0f);
 
             // Properly identify game version to swap light mode, quicksand and no lensflare flags
-            bool isTR2  = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
+            bool isTR2 = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
             bool isTR23 = isTR2 || room.Level.Settings.GameVersion == TRVersion.Game.TR3;
-            bool isNL   = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
-            bool isNG   = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+            bool isNL = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
+            bool isNG = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             // Room flags
             if (room.FlagHorizon)
@@ -258,25 +257,21 @@ namespace TombLib.LevelData.Compilers.TR5Main
             {
                 case RoomLightEffect.GlowAndMovement:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
-                    newRoom.LightMode = 3; // Used in TR2 only
                     newRoom.Flags |= 0x0100;
                     break;
 
                 case RoomLightEffect.Movement:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
-                    newRoom.LightMode = 1; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
-                    newRoom.LightMode = 2; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Reflection:
                     newRoom.Flags |= 0x0200;
-                    newRoom.LightMode = 2; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.None:
@@ -308,11 +303,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 var vertexPositions = room.RoomGeometry.VertexPositions;
                 var vertexColors = room.RoomGeometry.VertexColors;
 
-                var roomVerticesDictionary = new Dictionary<int, ushort>();
-                var roomVertices = new List<tr_room_vertex>();
-
-                var roomTriangles = new List<tr_face3>();
-                var roomQuads = new List<tr_face4>();
+                var roomVerticesDictionary = new Dictionary<int, int>();
+                var roomVertices = new List<tr5main_vertex>();
+                var roomPolygons = new List<tr5main_polygon>();
 
                 // Add room's own geometry
 
@@ -328,32 +321,29 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                     continue;
 
                                 TextureArea texture = room.Blocks[x, z].GetFaceTexture(face);
-                                if(texture.TextureIsInvisible)
+                                if (texture.TextureIsInvisible)
                                     continue;
 
-                                if(texture.TextureIsUnavailable)
+                                if (texture.TextureIsUnavailable)
                                 {
                                     _progressReporter.ReportWarn("Missing texture at sector (" + x + "," + z + ") in room " + room.Name + ". Check texture file location.");
                                     continue;
                                 }
 
-                                if((shape == BlockFaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == BlockFaceShape.Quad && texture.QuadCoordsOutOfBounds))
+                                if ((shape == BlockFaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == BlockFaceShape.Quad && texture.QuadCoordsOutOfBounds))
                                 {
                                     _progressReporter.ReportWarn("Texture is out of bounds at sector (" + x + "," + z + ") in room " + room.Name + ". Wrong or resized texture file?");
                                     continue;
                                 }
 
-                                var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
-                                var copyFace    = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
-
                                 int rangeEnd = range.Start + range.Count;
                                 for (int i = range.Start; i < rangeEnd; i += 3)
                                 {
-                                    ushort vertex0Index, vertex1Index, vertex2Index;
-                                
+                                    int vertex0Index, vertex1Index, vertex2Index;
+
                                     if (shape == BlockFaceShape.Quad)
                                     {
-                                        ushort vertex3Index;
+                                        int vertex3Index;
 
                                         if (face == BlockFace.Ceiling)
                                         {
@@ -370,16 +360,16 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                             vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                             vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         }
-                                    
+
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                        roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-                                                        doubleSided, 0));
-                                        if (copyFace)
+                                        roomPolygons.Add(result.CreateTr5MainPolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
+                                                         (byte)texture.BlendMode));
+                                        if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                            roomQuads.Add(result.CreateFace4(new ushort[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-                                                            doubleSided, 0));
+                                            roomPolygons.Add(result.CreateTr5MainPolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+                                                            (byte)texture.BlendMode));
                                         }
                                         i += 3;
                                     }
@@ -391,16 +381,16 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                         vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
                                         vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                    
+
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                        roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        doubleSided, 0));
-                                        if (copyFace)
+                                        roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
+                                                        (byte)texture.BlendMode));
+                                        if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                            roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
-                                                            doubleSided, 0));
+                                            roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
+                                                            (byte)texture.BlendMode));
                                         }
                                     }
                                 }
@@ -409,127 +399,123 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 // Merge static meshes
 
                 if (!_level.Settings.FastMode)
-                foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
-                {
-                    // Сheck if static Mesh is in the Auto Merge list
-                    var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
-                        mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
-
-                    if (entry == null)
-                        continue;
-
-                    bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
-                    bool clearShades = entry.ClearShades;
-                    int meshVertexBase = roomVertices.Count;
-                    var worldTransform = staticMesh.RotationMatrix *
-                                         Matrix4x4.CreateTranslation(staticMesh.Position);
-                    var normalTransform = staticMesh.RotationMatrix;
-                    WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
-
-                    for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
+                    foreach (var staticMesh in room.Objects.OfType<StaticInstance>())
                     {
-                        // Apply the transform to the vertex
-                        Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
-                        Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
-                        normal = Vector3.Normalize(normal);
-                        int lightingEffect = 0;
-                        float shade = 1.0f;
-                        if (interpretShadesAsMovement &&
-                            _level.Settings.GameVersion >= TRVersion.Game.TR3)
-                        {
-                            if (j < wadStatic.Mesh.VerticesShades.Count)
-                            {
-                                lightingEffect = wadStatic.Mesh.VerticesShades[j];
+                        // Сheck if static Mesh is in the Auto Merge list
+                        var entry = _level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
+                            mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
 
-                                if (lightingEffect > 4227) lightingEffect = 0x2000; // Movement
-                                else if (lightingEffect > 0) lightingEffect = 0x4000; // Glow
-                            }
-                        }
-                        else
-                        {
-                            // If we have shades, use them as a factor for the resulting vertex color
-                            if (!clearShades && j < wadStatic.Mesh.VerticesShades.Count)
-                            {
-                                shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
-                                shade = 1.0f - shade;
-                            }
-                        }
-                        Vector3 color;
-                        if (!entry.TintAsAmbient)
-                        {
-                            color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
-                            // Apply Shade factor
-                            color *= shade;
-                            // Apply Instance Color
-                            color *= staticMesh.Color;
-                        }
-                        else
-                        {
-                            color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
-                            //Apply Shade factor
-                            color *= shade;
-                        }
-                        var vertexColor = PackLightColor(color, _level.Settings.GameVersion);
-                        var trVertex = new tr_room_vertex
-                        {
-                            Position = new tr_vertex
-                            {
-                                X = (short)position.X,
-                                Y = (short)-(position.Y + room.WorldPos.Y),
-                                Z = (short)position.Z
-                            },
-                            Lighting1 = vertexColor,
-                            Lighting2 = vertexColor,
-                            Attributes = (ushort)lightingEffect
-                        };
-                        roomVertices.Add(trVertex);
-                    }
+                        if (entry == null)
+                            continue;
 
-                    for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
-                    {
-                        WadPolygon poly = wadStatic.Mesh.Polys[i];
-                        ushort index0 = (ushort)(poly.Index0 + meshVertexBase);
-                        ushort index1 = (ushort)(poly.Index1 + meshVertexBase);
-                        ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
-                        ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
+                        bool interpretShadesAsMovement = entry.InterpretShadesAsEffect;
+                        bool clearShades = entry.ClearShades;
+                        int meshVertexBase = roomVertices.Count;
+                        var worldTransform = staticMesh.RotationMatrix *
+                                             Matrix4x4.CreateTranslation(staticMesh.Position);
+                        var normalTransform = staticMesh.RotationMatrix;
+                        WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
 
-                        if (poly.Shape == WadPolygonShape.Triangle)
+                        for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
                         {
-
-                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                            // Apply the transform to the vertex
+                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
+                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
+                            normal = Vector3.Normalize(normal);
+                            int lightingEffect = 0;
+                            float shade = 1.0f;
+                            if (interpretShadesAsMovement &&
+                                _level.Settings.GameVersion >= TRVersion.Game.TR3)
                             {
-                                var result = _mergedStaticMeshTextureInfos[poly];
-                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
-                                roomTriangles.Add(tri);
+                                if (j < wadStatic.Mesh.VerticesShades.Count)
+                                {
+                                    lightingEffect = wadStatic.Mesh.VerticesShades[j];
+
+                                    if (lightingEffect > 4227) lightingEffect = 0x2000; // Movement
+                                    else if (lightingEffect > 0) lightingEffect = 0x4000; // Glow
+                                }
                             }
                             else
                             {
-                                FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, true);
-                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
-                                roomTriangles.Add(tri);
-                                _mergedStaticMeshTextureInfos.Add(poly, result);
+                                // If we have shades, use them as a factor for the resulting vertex color
+                                if (!clearShades && j < wadStatic.Mesh.VerticesShades.Count)
+                                {
+                                    shade = wadStatic.Mesh.VerticesShades[j] / 8191.0f;
+                                    shade = 1.0f - shade;
+                                }
                             }
-                        }
-                        else
-                        {
-                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                            Vector3 color;
+                            if (!entry.TintAsAmbient)
                             {
-                                var result = _mergedStaticMeshTextureInfos[poly];
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
-                                roomQuads.Add(quad);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
+                                // Apply Shade factor
+                                color *= shade;
+                                // Apply Instance Color
+                                color *= staticMesh.Color;
                             }
                             else
                             {
-                                FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, false);
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
-                                roomQuads.Add(quad);
-                                _mergedStaticMeshTextureInfos.Add(poly, result);
+                                color = CalculateLightForCustomVertex(room, position, normal, false, staticMesh.Color * 128);
+                                //Apply Shade factor
+                                color *= shade;
+                            }
+
+                            var trVertex = new tr5main_vertex
+                            {
+                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
+                                Color = new Vector4(color, 1.0f),
+                                Normal = normal,
+                                Effects = (ushort)lightingEffect
+                            };
+
+                            roomVertices.Add(trVertex);
+                        }
+
+                        for (int i = 0; i < wadStatic.Mesh.Polys.Count; i++)
+                        {
+                            WadPolygon poly = wadStatic.Mesh.Polys[i];
+                            int index0 = (poly.Index0 + meshVertexBase);
+                            int index1 = (poly.Index1 + meshVertexBase);
+                            int index2 = (poly.Index2 + meshVertexBase);
+                            int index3 = (poly.Index3 + meshVertexBase);
+
+                            if (poly.Shape == WadPolygonShape.Triangle)
+                            {
+
+                                if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                                {
+                                    var result = _mergedStaticMeshTextureInfos[poly];
+                                    var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
+                                    roomPolygons.Add(tri);
+                                }
+                                else
+                                {
+                                    FixWadTextureCoordinates(ref poly.Texture);
+                                    var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, true);
+                                    var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
+                                    roomPolygons.Add(tri);
+                                    _mergedStaticMeshTextureInfos.Add(poly, result);
+                                }
+                            }
+                            else
+                            {
+                                if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                                {
+                                    var result = _mergedStaticMeshTextureInfos[poly];
+                                    var quad = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode);
+                                    roomPolygons.Add(quad);
+                                }
+                                else
+                                {
+                                    FixWadTextureCoordinates(ref poly.Texture);
+                                    var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, false);
+                                    var quad = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode);
+                                    roomPolygons.Add(quad);
+                                    _mergedStaticMeshTextureInfos.Add(poly, result);
+                                }
                             }
                         }
                     }
-                }
 
                 // Add geometry imported objects
 
@@ -559,37 +545,26 @@ namespace TombLib.LevelData.Compilers.TR5Main
                             Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
                             normal = Vector3.Normalize(normal);
 
-                            var trVertex = new tr_room_vertex
+                            var trVertex = new tr5main_vertex
                             {
-                                Position = new tr_vertex
-                                {
-                                    X = (short)position.X,
-                                    Y = (short)-(position.Y + room.WorldPos.Y),
-                                    Z = (short)position.Z
-                                },
-                                Lighting1 = 0,
-                                Lighting2 = 0,
-                                Attributes = 0
+                                Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
+                                Normal = normal
                             };
 
                             // Pack the light according to chosen lighting model
                             if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                             {
-                                var color = PackLightColor(vertex.Color, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                trVertex.Color = new Vector4(vertex.Color, 1.0f);
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128);
+                                trVertex.Color = new Vector4(color, 1.0f);
                             }
                             else
                             {
-                                var color = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
-                                trVertex.Lighting1 = color;
-                                trVertex.Lighting2 = color;
+                                var color = room.AmbientLight;
+                                trVertex.Color = new Vector4(color, 1.0f);
                             }
 
                             // HACK: Find a vertex with same coordinates and merge with it.
@@ -621,9 +596,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         {
                             for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
                             {
-                                ushort index0 = (ushort)(indexList[j + baseIndex + 0]);
-                                ushort index1 = (ushort)(indexList[j + baseIndex + 1]);
-                                ushort index2 = (ushort)(indexList[j + baseIndex + 2]);
+                                int index0 = (indexList[j + baseIndex + 0]);
+                                int index1 = (indexList[j + baseIndex + 1]);
+                                int index2 = (indexList[j + baseIndex + 2]);
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
@@ -646,22 +621,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
                                 var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
+                                roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode));
                             }
                         }
 
                         baseIndex += currentMeshIndexCount;
                     }
                 }
-
-                // Check for the limits reached
-
-                if (roomVertices.Count >= 65536)
-                    _progressReporter.ReportWarn("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
-
-                int numPolygons = roomQuads.Count + roomTriangles.Count;
-                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 2800)
-                    _progressReporter.ReportWarn("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit is around 2800)! Try to unmerge statics or remove some imported geometry objects.");
 
                 // Assign vertex effects
 
@@ -675,8 +641,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                     foreach (var portal in room.Portals)
                     {
-                        var xv = trVertex.Position.X / 1024;
-                        var zv = trVertex.Position.Z / 1024;
+                        int xv = (int)Math.Floor(trVertex.Position.X / 1024);
+                        int zv = (int)Math.Floor(trVertex.Position.Z / 1024);
 
                         var otherRoomLightEffect = portal.AdjoiningRoom.LightEffect;
                         if (otherRoomLightEffect == RoomLightEffect.Default)
@@ -730,7 +696,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                             // A bit complex but working code for water surface movement.
                             // Works better than winroomedit as it takes adjacent portals into account.
-                            if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, true)))
+                            if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(new VectorInt3(
+                                (int)trVertex.Position.X, 
+                                (int)trVertex.Position.Y, 
+                                (int)trVertex.Position.Z), 
+                                false, true)))
                             {
                                 // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
                                 if ((isTraversablePortal || isOppositeCorner) &&
@@ -750,7 +720,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                             if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && isTraversablePortal)
                             {
                                 // Assign mist, if set, for vertices inside portal
-                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                if (portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), true, false))
                                 {
                                     flags |= 0x4000;
                                     break;
@@ -759,19 +729,19 @@ namespace TombLib.LevelData.Compilers.TR5Main
                             else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
                             {
                                 // Assign reflection, if set, for all enclosed portal faces
-                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                if (portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), false, false) ||
+                                    portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), true, false))
                                 {
                                     flags |= 0x4000;
                                     break;
                                 }
                             }
-                            else if ((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement) 
+                            else if ((lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
                                     || isTR23) // Always check portal edges for TR2-3 because of "no movement" 0x8000 flag in that games
                             {
                                 // Disable movement for portal faces
-                                if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                    portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                if (portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), false, false) ||
+                                    portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), true, false))
                                 {
                                     // Still allow movement, if adjoining room has very same properties
                                     if (!(otherRoomLightEffect == lightEffect &&
@@ -786,8 +756,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 if (interpMode != RoomLightInterpolationMode.NoInterpolate)
                                 {
                                     // Disable glow for portal faces
-                                    if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
-                                        portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), true, false))
+                                    if (portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), false, false) ||
+                                        portal.PositionOnPortal(new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z), true, false))
                                     {
                                         // Still allow glow, if adjoining room has very same properties
                                         if (!((otherRoomLightEffect == RoomLightEffect.Glow ||
@@ -802,47 +772,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                     if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x2000;
-                    if (allowGlow     && (lightEffect == RoomLightEffect.Glow     || lightEffect == RoomLightEffect.GlowAndMovement))
+                    if (allowGlow && (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement))
                         flags |= 0x4000;
 
-                    // Remap vertex flags to LightEffect intensity for TR2.
-                    // FIXME: In original TR2 winroomedit and Dxtre3d, intensity value was based on dummy light object
-                    // placed in a room. As we don't have this mechanism yet, just assign effect to whole room.
-
-                    if (isTR2)
-                    {
-                        bool glowMapped = (flags & 0x4000) == 0x4000;
-                        bool moveMapped = (flags & 0x2000) == 0x2000;
-
-                        // Clear existing flags
-                        flags = 0x0000;
-
-                        // Force remap if sunset effect is used.
-                        // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
-                        if (room.LightEffect == RoomLightEffect.Sunset)
-                        {
-                            if (allowMovement)
-                                flags = (ushort)(17 + room.LightEffectStrength * 3.25f); // Closest to max. value of 30
-                            else
-                                flags = (ushort)16;
-                        }
-                        else if (room.LightEffect != RoomLightEffect.None)
-                        {
-                            // Remap TR3+ glow / movement to TR2 glow / flicker
-                            if (glowMapped || moveMapped)
-                                flags = (ushort)(16 - room.LightEffectStrength * 3.0f); // Closest to max. value of 15
-                            else
-                                flags = (ushort)16;
-                        }
-                    }
-
-                    // Additionally set "no movement" flag for water rooms. This feature is present in TR2-3, in later games
-                    // 0x8000 flag is broken.
-                    if (isTR23 && !allowMovement)
-                        flags |= 0x8000;
-
-
-                    if (lightEffect == RoomLightEffect.None && trVertex.Attributes != 0x0000)
+                    if (lightEffect == RoomLightEffect.None && trVertex.Effects != 0x0000)
                     {
                         // Workaround for desynced water reflections (possibly make it an option in TR5Main?)
                         // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
@@ -852,14 +785,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         // Do not remove this condition.
                     }
                     else
-                        trVertex.Attributes = flags;
+                        trVertex.Effects = flags;
 
                     roomVertices[i] = trVertex;
                 }
 
                 newRoom.Vertices = roomVertices;
-                newRoom.Quads = roomQuads;
-                newRoom.Triangles = roomTriangles;
+                newRoom.Polygons = roomPolygons;
             }
 
             // Build portals
@@ -906,66 +838,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             ConvertLights(room, newRoom);
 
-            // Clear double-sided flag for versions prior to TR3, so at least surfaces remain visible
-            if (_level.Settings.GameVersion < TRVersion.Game.TR3)
-            {
-                for (int i = 0; i < newRoom.Triangles.Count; i++)
-                {
-                    var tri = newRoom.Triangles[i];
-                    if ((tri.Texture & 0x8000) == 0x8000)
-                        tri.Texture = (ushort)(tri.Texture & 0x7FFF);
-                }
-
-                for (int i = 0; i < newRoom.Quads.Count; i++)
-                {
-                    var tri = newRoom.Quads[i];
-                    if ((tri.Texture & 0x8000) == 0x8000)
-                        tri.Texture = (ushort)(tri.Texture & 0x7FFF);
-                }
-            }
-
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<tr5main_vertex> roomVertices, 
+            Vector3 Position, Vector3 Color)
         {
-            tr_room_vertex trVertex;
-            trVertex.Position = new tr_vertex
-            {
-                X = (short)Position.X,
-                Y = (short)-(Position.Y + room.WorldPos.Y),
-                Z = (short)Position.Z
-            };
+            var trVertex = new tr5main_vertex();
 
-            trVertex.Lighting1 = 0;
-            trVertex.Attributes = 0;
-            trVertex.Lighting2 = 0;
-            trVertex.Color = 0;
+            trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
+            trVertex.Color = new Vector4(Color, 1.0f);
             trVertex.IsOnPortal = false;
-            trVertex.Normal = new tr_vertex
-            {
-                X = 0,
-                Y = 0,
-                Z = 0
-            };
-
-            // Ignore this for TRNG ad TR4
-            if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                trVertex.Color = PackColorTo32Bit(Color);
-            else {
-                var color = PackLightColor(Color, room.Level.Settings.GameVersion);
-                trVertex.Lighting1 = color;
-                trVertex.Lighting2 = color;
-
-            }
 
             return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, tr_room_vertex trVertex)
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<tr5main_vertex> roomVertices, tr5main_vertex trVertex)
         {
             // Do the check here, so we can save some time with unuseful calculations
-            ushort vertexIndex;
+            int vertexIndex;
             if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
                 return vertexIndex;
 
@@ -1529,7 +1420,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private void MatchDoorShades(List<tr5main_room> roomList, tr5main_room room, bool grayscale, bool flipped)
+        private void MatchDoorShades(List<tr5main_room> roomList, tr5main_room room, bool flipped)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
@@ -1607,7 +1498,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                             // appropriate rooms, and not all rooms at once.
                             IsWater = (room.Flags & 1) == 1,
                             AlternateGroup = room.AlternateKind == AlternateKind.AlternateRoom ? room.AlternateGroup : -1,
-                            Position = new VectorInt3(v1.Position.X + room.Info.X, v1.Position.Y, v1.Position.Z + room.Info.Z)
+                            Position = new VectorInt3((int)v1.Position.X + room.Info.X, (int)v1.Position.Y, (int)v1.Position.Z + room.Info.Z)
                         };
 
                         if (v1.Position.X >= x1 && v1.Position.X <= x2)
@@ -1617,22 +1508,22 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                     v1.IsOnPortal = true;
                                     room.Vertices[i] = v1;
 
-                                    int otherX = v1.Position.X + room.Info.X - otherRoom.Info.X;
-                                    int otherY = v1.Position.Y;
-                                    int otherZ = v1.Position.Z + room.Info.Z - otherRoom.Info.Z;
+                                    int otherX = (int)v1.Position.X + room.Info.X - otherRoom.Info.X;
+                                    int otherY = (int)v1.Position.Y;
+                                    int otherZ = (int)v1.Position.Z + room.Info.Z - otherRoom.Info.Z;
 
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
                                     {
                                         var v2 = otherRoom.Vertices[j];
-                                        ushort refColor;
+                                        Vector3 refColor;
                                         var isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
-                                        if (!isPresentInLookup) refColor = v1.Lighting2;
+                                        if (!isPresentInLookup) refColor = v1.Color.To3();
 
                                         if (room.Info.X + v1.Position.X == otherRoom.Info.X + v2.Position.X &&
                                             v1.Position.Y == v2.Position.Y &&
                                             room.Info.Z + v1.Position.Z == otherRoom.Info.Z + v2.Position.Z)
                                         {
-                                            ushort newColor;
+                                            Vector3 newColor;
 
                                             // NOTE: We DON'T INTERPOLATE colours of both rooms in case we're dealing with alternate room and matched room
                                             // isn't alternate room itself. Instead, we simply copy vertex colour from matched base room.
@@ -1641,16 +1532,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                             if (flipped && otherRoom.AlternateKind != AlternateKind.AlternateRoom)
                                             {
                                                 var baseSig = new ShadeMatchSignature() { IsWater = sig.IsWater, AlternateGroup = -1, Position = sig.Position };
-                                                if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Lighting2;
+                                                if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Color.To3();
                                             }
                                             else
                                             {
-                                                if (grayscale)
-                                                    newColor = (ushort)(8160 - (((8160 - v2.Lighting2) / 2) + ((8160 - refColor) / 2)));
-                                                else
-                                                    newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
-                                                                        32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
-                                                                            32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
+                                                newColor = (v2.Color.To3() + refColor) / 2.0f;
                                             }
 
                                             if (!isPresentInLookup)
@@ -1785,5 +1671,60 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return result;
         }
 
+        private void PrepareRoomsBuckets()
+        {
+            for (int i = 0; i < _tempRooms.Count; i++)
+                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
+        }
+
+        private tr5main_bucket GetOrAddBucket(int texture, byte blendMode, bool animated, Dictionary<tr5main_material, tr5main_bucket> buckets)
+        {
+            var material = new tr5main_material
+            {
+                Texture = texture,
+                BlendMode = blendMode,
+                Animated = animated
+            };
+
+            if (!buckets.ContainsKey(material))
+                buckets.Add(material, new tr5main_bucket { Material = material });
+
+            return buckets[material];
+        }
+
+        private void PrepareRoomBuckets(tr5main_room room)
+        {
+            var textures = _textureInfoManager.GetObjectTextures();
+            room.Buckets = new Dictionary<tr5main_material, tr5main_bucket>(new tr5main_material.Tr5MainMaterialComparer());
+            foreach (var poly in room.Polygons)
+            {
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, room.Buckets);
+
+                var texture = textures[poly.TextureId];
+
+                // We output only triangles, no quads anymore
+                if (poly.Shape == tr5main_polygon_shape.Quad)
+                {
+                    bucket.Indices.Add(poly.Indices[0]);
+                    bucket.Indices.Add(poly.Indices[1]);
+                    bucket.Indices.Add(poly.Indices[3]);
+                    bucket.Indices.Add(poly.Indices[2]);
+                    bucket.Indices.Add(poly.Indices[3]);
+                    bucket.Indices.Add(poly.Indices[1]);
+
+                    for (int n = 0; n < 4; n++)
+                        room.Vertices[poly.Indices[n]].TextureCoords = texture.TexCoordFloat[n];
+                }
+                else
+                {
+                    bucket.Indices.Add(poly.Indices[0]);
+                    bucket.Indices.Add(poly.Indices[1]);
+                    bucket.Indices.Add(poly.Indices[2]);
+
+                    for (int n = 0; n < 3; n++)
+                        room.Vertices[poly.Indices[n]].TextureCoords = texture.TexCoordFloat[n];
+                }
+            }
+        }
     }
 }
