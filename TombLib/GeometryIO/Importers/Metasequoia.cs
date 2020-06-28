@@ -61,31 +61,21 @@ namespace TombLib.GeometryIO.Importers
                         for (var i = 0; i < numMaterials; i++)
                         {
                             var materialString = reader.ReadLine().Trim();
-                            var tokensMaterial = materialString.Split(' ');
-                            var material = new IOMaterial(tokensMaterial[0]);
+                            var material = new IOMaterial(GetSubBlock(materialString, string.Empty, "\"", "\""));
+                            var texturePath = GetSubBlock(materialString, "tex").Trim(new char[] { '\"' });
 
-                            for (var j = 0; j < tokensMaterial.Length; j++)
+                            if (texturePath != "")
                             {
-                                var texturePath = "";
-                                if (tokensMaterial[j].StartsWith("tex"))
-                                {
-                                    texturePath = tokensMaterial[j].Substring(5, tokensMaterial[j].Length - 7);
-                                    if (texturePath != "")
-                                    {
-                                        string basePath = Path.GetDirectoryName(filename);
-                                        if (!File.Exists(Path.Combine(basePath, texturePath)))
-                                            basePath = Path.Combine(Path.GetDirectoryName(filename),"Texture");
-                                        if (!File.Exists(Path.Combine(basePath, texturePath)))
-                                            throw new FileNotFoundException("Texture " + texturePath + " could not be found");
+                                string basePath = Path.GetDirectoryName(filename);
+                                if (!File.Exists(Path.Combine(basePath, texturePath)))
+                                    basePath = Path.Combine(Path.GetDirectoryName(filename), "Texture");
+                                if (!File.Exists(Path.Combine(basePath, texturePath)))
+                                    throw new FileNotFoundException("Texture " + texturePath + " could not be found");
 
-                                        textures.Add(i, GetTexture(basePath, texturePath));
-                                    }
-                                        
-                                    material.Texture = textures[i];
-                                    break;
-                                }
+                                textures.Add(i, GetTexture(basePath, texturePath));
                             }
 
+                            material.Texture = textures[i];
                             model.Materials.Add(material);
                         }
                     }
@@ -238,12 +228,15 @@ namespace TombLib.GeometryIO.Importers
             return 0.0f;
         }
 
-        private string GetSubBlock(string line, string pattern)
+        private string GetSubBlock(string line, string pattern, string startChar = "(", string endChar = ")")
         {
-            if (!line.Contains(" " + pattern + "("))
-                return "";
-            var s = line.Substring(line.IndexOf(" " + pattern + "(") + 2 + pattern.Length);
-            s = s.Substring(0, s.IndexOf(")"));
+            line = " " + line.Trim(); // Remove leading/trailing tabs and replace with start space
+
+            if (!line.Contains(" " + pattern + startChar))
+                return string.Empty;
+
+            var s = line.Substring(line.IndexOf(" " + pattern + startChar) + 1 + startChar.Length + pattern.Length);
+            s = s.Substring(0, s.IndexOf(endChar));
             return s;
         }
 
