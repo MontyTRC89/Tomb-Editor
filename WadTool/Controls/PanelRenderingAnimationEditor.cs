@@ -92,8 +92,8 @@ namespace WadTool.Controls
             Configuration = _editor.Tool.Configuration;
 
             if (skin != null)
-                _skinModel = _wadRenderer.GetMoveable(skin);
-
+                _skinModel = _wadRenderer.GetMoveable(editor.Moveable.ReplaceDummyMeshes(skin));
+           
             // Actual "InitializeRendering"
             _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
             _fontDefault = Device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 24, FontIsBold = true, TextureAllocator = _fontTexture });

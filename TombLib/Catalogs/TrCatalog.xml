@@ -2037,7 +2037,7 @@
       <moveable id="7" name="FLARE_ANIM" description="Flare Anim" use_body_from="8" t5m="FLARE_ANIM" />
       <moveable id="8" name="LARA_SKIN" description="Lara Skin" t5m="LARA_SKIN" />
       <moveable id="9" name="LARA_SKIN_JOINTS" description="Lara Skin Joints" t5m="LARA_SKIN_JOINTS" />
-      <moveable id="10" name="LARA_SCREAM" description="Lara Scream" t5m="LARA_SCREAM" />
+      <moveable id="10" name="LARA_SCREAM" description="Lara Scream" use_body_from="8" t5m="LARA_SCREAM" />
       <moveable id="11" name="LARA_CROSSBOW_LASER" description="Lara Crossbow Laser" t5m="LARA_CROSSBOW_LASER" />
       <moveable id="12" name="LARA_REVOLVER_LASER" description="Lara Revolver Laser" t5m="LARA_REVOLVER_LASER" />
       <moveable id="13" name="LARA_HOLSTERS" description="Lara Holsters" t5m="LARA_HOLSTERS" />
