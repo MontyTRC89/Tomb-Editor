@@ -90,31 +90,30 @@ namespace WadTool
 
         private void ConfirmAndClose()
         {
+            uint newId;
+
             if (lstSlots.Items.Count == 0 || lstSlots.SelectedItems.Count == 0)
-                DialogResult = DialogResult.Cancel;
+                newId = (uint)chosenId.Value;
             else
-            {
-                uint newId = (uint)lstSlots.SelectedItems[0].Tag;
+                newId = (uint)lstSlots.SelectedItems[0].Tag;
 
-                if (TypeClass == typeof(WadMoveableId))
-                    NewId = new WadMoveableId(newId);
-                else if (TypeClass == typeof(WadStaticId))
-                    NewId = new WadStaticId(newId);
-                else if (TypeClass == typeof(WadSpriteSequenceId))
-                    NewId = new WadSpriteSequenceId(newId);
+            if (TypeClass == typeof(WadMoveableId))
+                NewId = new WadMoveableId(newId);
+            else if (TypeClass == typeof(WadStaticId))
+                NewId = new WadStaticId(newId);
+            else if (TypeClass == typeof(WadSpriteSequenceId))
+                NewId = new WadSpriteSequenceId(newId);
 
-                // FIXME: Are we still handling copying/moving/etc of deprecated sound info objects?
+            // FIXME: Are we still handling copying/moving/etc of deprecated sound info objects?
 
-                else if (TypeClass == typeof(WadFixedSoundInfoId))
-                    NewId = new WadFixedSoundInfoId((uint) chosenId.Value);
-                else if (TypeClass == typeof(WadAdditionalSoundInfoId))
-                    NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
-                else
-                    throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
+            else if (TypeClass == typeof(WadFixedSoundInfoId))
+                NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
+            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
+                NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
+            else
+                throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
-                DialogResult = DialogResult.OK;
-            }
-
+            DialogResult = DialogResult.OK;
             Close();
         }
 
