@@ -2038,8 +2038,8 @@
       <moveable id="8" name="LARA_SKIN" description="Lara Skin" t5m="LARA_SKIN" />
       <moveable id="9" name="LARA_SKIN_JOINTS" description="Lara Skin Joints" t5m="LARA_SKIN_JOINTS" />
       <moveable id="10" name="LARA_SCREAM" description="Lara Scream" use_body_from="8" t5m="LARA_SCREAM" />
-      <moveable id="11" name="LARA_CROSSBOW_LASER" description="Lara Crossbow Laser" t5m="LARA_CROSSBOW_LASER" />
-      <moveable id="12" name="LARA_REVOLVER_LASER" description="Lara Revolver Laser" t5m="LARA_REVOLVER_LASER" />
+      <moveable id="11" name="LARA_CROSSBOW_LASER" description="Lara Crossbow Laser" use_body_from="8" t5m="LARA_CROSSBOW_LASER" />
+      <moveable id="12" name="LARA_REVOLVER_LASER" description="Lara Revolver Laser" use_body_from="8" t5m="LARA_REVOLVER_LASER" />
       <moveable id="13" name="LARA_HOLSTERS" description="Lara Holsters" t5m="LARA_HOLSTERS" />
       <moveable id="14" name="LARA_HOLSTERS_PISTOLS" description="Lara Holsters Pistols" t5m="LARA_HOLSTERS_PISTOLS"  />
       <moveable id="15" name="LARA_HOLSTERS_UZIS" description="Lara Holsters Uzis" t5m="LARA_HOLSTERS_UZIS" />
@@ -2052,9 +2052,9 @@
       <moveable id="22" name="ACTOR1_SPEECH_HEAD2" description="Actor1 Speech Head2" t5m="ACTOR1_SPEECH_HEAD2" />
       <moveable id="23" name="ACTOR2_SPEECH_HEAD1" description="Actor2 Speech Head1" t5m="ACTOR2_SPEECH_HEAD1" />
       <moveable id="24" name="ACTOR2_SPEECH_HEAD2" description="Actor2 Speech Head2" t5m="ACTOR2_SPEECH_HEAD2" />
-      <moveable id="25" name="LARA_WATER_MESH" description="Lara Water Mesh" t5m="LARA_WATER_MESH" />
-      <moveable id="26" name="LARA_PETROL_MESH" description="Lara Petrol Mesh" t5m="LARA_PETROL_MESH" />
-      <moveable id="27" name="LARA_DIRT_MESH" description="Lara Dirt Mesh" t5m="LARA_DIRT_MESH" />
+      <moveable id="25" name="LARA_WATER_MESH" description="Lara Water Mesh" use_body_from="8" t5m="LARA_WATER_MESH" />
+      <moveable id="26" name="LARA_PETROL_MESH" description="Lara Petrol Mesh" use_body_from="8" t5m="LARA_PETROL_MESH" />
+      <moveable id="27" name="LARA_DIRT_MESH" description="Lara Dirt Mesh" use_body_from="8" t5m="LARA_DIRT_MESH" />
       <moveable id="28" name="CROWBAR_ANIM" description="Crowbar Anim" use_body_from="8" t5m="CROWBAR_ANIM" />
       <moveable id="29" name="TORCH_ANIM" description="Torch Anim" use_body_from="8" t5m="TORCH_ANIM" />
       <moveable id="30" name="HAIR" description="Hair" t5m="HAIR" />
@@ -4532,9 +4532,9 @@
 		<moveable id="11" name="LARA_FLARE_ANIM" use_body_from="12" />
 		<moveable id="12" name="LARA_SKIN" />
 		<moveable id="13" name="LARA_SKIN_JOINTS" />
-		<moveable id="14" name="LARA_SCREAM" />
-		<moveable id="15" name="LARA_CROSSBOW_LASER" />
-		<moveable id="16" name="LARA_REVOLVER_LASER" />
+		<moveable id="14" name="LARA_SCREAM" use_body_from="12" />
+		<moveable id="15" name="LARA_CROSSBOW_LASER" use_body_from="12" />
+		<moveable id="16" name="LARA_REVOLVER_LASER" use_body_from="12" />
 		<moveable id="17" name="LARA_HOLSTERS" />
 		<moveable id="18" name="LARA_HOLSTERS_PISTOLS" />
 		<moveable id="19" name="LARA_HOLSTERS_UZIS" />
@@ -5858,8 +5858,8 @@
       <sound id="408" name="GGOD_FIRE" description="Ggod fire" />
       <sound id="409" name="GGOD_ATTACK" description="Ggod attack" />
       <sound id="410" name="PORTAL_LOOP" hardcoded="true" description="Portal loop" />  
-		<sound id="449" name="INV_MENU_PASSPORT" />
 	  
+		<sound id="449" name="INV_MENU_PASSPORT" />
 		<sound id="450" name="TR1_LARA_FOOTSTEP" />
 		<sound id="451" name="TR1_LARA_GRUNT" />
 		<sound id="452" name="TR1_LARA_NO" />
