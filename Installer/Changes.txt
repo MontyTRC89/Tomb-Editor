@@ -9,6 +9,9 @@ Tomb Editor:
 
 TombIDE:
  * Fix exceptions while using F1 key outside of section blocks.
+ 
+WadTool:
+ * Show meshswaps properly for different Lara animation objects.
 
 Version 1.3.4
 =============

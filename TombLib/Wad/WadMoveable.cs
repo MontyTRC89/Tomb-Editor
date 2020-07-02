@@ -97,15 +97,16 @@ namespace TombLib.Wad
 
         public WadMoveable ReplaceDummyMeshes(WadMoveable skin)
         {
-            if(skin.Meshes.Count != Meshes.Count) { return this;}
-            if(Meshes.Count != Bones.Count) { return this; }
+            if (skin.Meshes.Count != Meshes.Count) return this;
+            if (Meshes.Count != Bones.Count) return this;
+
             var mov = new WadMoveable(Id);
             for (int i = 0; i < Meshes.Count; i++)
             {
                 WadMesh msh = Meshes[i].Clone();
                 WadMesh msh2 = skin.Meshes[i].Clone();
                 WadBone bone = Bones[i].Clone();
-                if (msh.Name != "Mesh_0")
+                if (!msh.Name.EndsWith("-0"))
                 {
                     mov.Bones.Add(bone);
                     continue;
