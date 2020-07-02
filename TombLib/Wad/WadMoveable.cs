@@ -106,7 +106,7 @@ namespace TombLib.Wad
                 WadMesh msh = Meshes[i].Clone();
                 WadMesh msh2 = skin.Meshes[i].Clone();
                 WadBone bone = Bones[i].Clone();
-                if (!msh.Name.EndsWith("-0"))
+                if (!msh.Name.EndsWith("-0") && !msh.Name.Equals("Mesh_0", StringComparison.InvariantCultureIgnoreCase))
                 {
                     mov.Bones.Add(bone);
                     continue;
