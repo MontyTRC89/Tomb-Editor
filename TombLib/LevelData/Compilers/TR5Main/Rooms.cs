@@ -348,17 +348,17 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                         if (face == BlockFace.Ceiling)
                                         {
                                             texture.Mirror();
-                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
-                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
-                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5]);
+                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 0);
+                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 1);
+                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 2);
+                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5], 3);
                                         }
                                         else
                                         {
-                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3]);
-                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
-                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
-                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                            vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3], 0);
+                                            vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 1);
+                                            vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 2);
+                                            vertex3Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 3);
                                         }
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
@@ -378,9 +378,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                         if (face == BlockFace.Ceiling || face == BlockFace.CeilingTriangle2)
                                             texture.Mirror(true);
 
-                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
-                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
-                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                        vertex0Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0], 0);
+                                        vertex1Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1], 1);
+                                        vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
                                         roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
@@ -842,15 +842,19 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<tr5main_vertex> roomVertices, 
-            Vector3 Position, Vector3 Color)
+            Vector3 Position, Vector3 Color, int index)
         {
             var trVertex = new tr5main_vertex();
 
             trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
             trVertex.Color = new Vector4(Color, 1.0f);
             trVertex.IsOnPortal = false;
+            trVertex.Index = index;
 
-            return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
+            //return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
+            int vertexIndex = roomVertices.Count;
+            roomVertices.Add(trVertex);
+            return vertexIndex;
         }
 
         private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<tr5main_vertex> roomVertices, tr5main_vertex trVertex)
@@ -1671,12 +1675,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return result;
         }
 
-        private void PrepareRoomsBuckets()
-        {
-            for (int i = 0; i < _tempRooms.Count; i++)
-                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
-        }
-
         private tr5main_bucket GetOrAddBucket(int texture, byte blendMode, bool animated, Dictionary<tr5main_material, tr5main_bucket> buckets)
         {
             var material = new tr5main_material
@@ -1690,6 +1688,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 buckets.Add(material, new tr5main_bucket { Material = material });
 
             return buckets[material];
+        }
+
+        private void PrepareRoomsBuckets()
+        {
+            for (int i = 0; i < _tempRooms.Count; i++)
+                PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
         }
 
         private void PrepareRoomBuckets(tr5main_room room)

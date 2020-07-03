@@ -14,8 +14,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
     public sealed partial class LevelCompilerTR5Main
     {
         private static readonly bool _writeDbgWadTxt = false;
-        private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
-        private int _totalMeshSize = 0;
         private List<int> _finalSelectedSoundsList;
         private List<int> _finalSoundIndicesList;
         private List<WadSoundInfo> _finalSoundInfosList;
@@ -47,37 +45,37 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId,int meshIndex,
-                                       bool isWaterfall = false, bool isOptics = false,
-                                       WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
+        private void AddMeshVertex(Vector3 position, Vector3 normal, short shade, int bone, int index, bool useShades, tr5main_mesh mesh)
         {
-            int currentMeshSize = 0;
+            var newVertex = new tr5main_vertex();
 
-            var newMesh = new tr_mesh
+            newVertex.Position = new Vector3(position.X, -position.Y, position.Z);
+            if (useShades)
             {
-                Center = new tr_vertex
-                {
-                    X = (short)oldMesh.BoundingSphere.Center.X,
-                    Y = (short)-oldMesh.BoundingSphere.Center.Y,
-                    Z = (short)oldMesh.BoundingSphere.Center.Z
-                },
-                Radius = (short)oldMesh.BoundingSphere.Radius
-            };
-
-            currentMeshSize += 10;
-
-            newMesh.NumVertices = (short)oldMesh.VerticesPositions.Count;
-            currentMeshSize += 2;
-
-            newMesh.Vertices = new tr_vertex[oldMesh.VerticesPositions.Count];
-
-            for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
-            {
-                var vertex = oldMesh.VerticesPositions[j];
-                newMesh.Vertices[j] = new tr_vertex((short)vertex.X, (short)-vertex.Y, (short)vertex.Z);
-
-                currentMeshSize += 6;
+                newVertex.Color = new Vector4(shade, shade, shade, 1.0f); ;
             }
+            else
+            {
+                newVertex.Color = new Vector4(0.5f,0.5f,0.5f,1.0f); ;
+                newVertex.Normal = Vector3.Normalize(normal);
+            }
+            newVertex.Bone = bone;
+            newVertex.Index = index;
+
+            mesh.Vertices.Add(newVertex);
+        }
+
+        private tr5main_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, int meshIndex,
+                                            bool isWaterfall = false, bool isOptics = false,
+                                            WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
+        {
+            var newMesh = new tr5main_mesh
+            {
+                Sphere = oldMesh.BoundingSphere,
+                Vertices = new List<tr5main_vertex>(),
+                Polygons = new List<tr5main_polygon>(),
+                Buckets = new Dictionary<tr5main_material, tr5main_bucket>()
+            };
 
             // FIX: the following code will check for valid normals and shades combinations.
             // As last chance, I recalculate the normals on the fly.
@@ -122,66 +120,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 useShades = false;
             }
 
-            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesShades.Count : oldMesh.VerticesNormals.Count);
-            currentMeshSize += 2;
-
-            if (!useShades)
-            {
-                newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
-
-                for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
-                {
-                    Vector3 normal = oldMesh.VerticesNormals[j];
-                    normal = Vector3.Normalize(normal);
-                    normal *= 16300.0f;
-                    newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
-
-                    currentMeshSize += 6;
-                }
-            }
-            else
-            {
-                newMesh.Lights = new short[oldMesh.VerticesShades.Count];
-
-                for (int j = 0; j < oldMesh.VerticesShades.Count; j++)
-                {
-                    newMesh.Lights[j] = oldMesh.VerticesShades[j];
-
-                    currentMeshSize += 2;
-                }
-            }
-
-            short numQuads = 0;
-            short numTriangles = 0;
-
-            foreach (var poly in oldMesh.Polys)
-            {
-                if (poly.Shape == WadPolygonShape.Quad)
-                    numQuads++;
-                else
-                    numTriangles++;
-            }
-
-            newMesh.NumTexturedQuads = numQuads;
-            currentMeshSize += 2;
-
-            newMesh.NumTexturedTriangles = numTriangles;
-            currentMeshSize += 2;
-
-            int lastQuad = 0;
-            int lastTriangle = 0;
-
-            newMesh.TexturedQuads = new tr_face4[numQuads];
-            newMesh.TexturedTriangles = new tr_face3[numTriangles];
-
             for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
                 var poly = oldMesh.Polys[j];
+                tr5main_polygon newPoly;
 
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
-                if(poly.ShineStrength > 0)
+                if (poly.ShineStrength > 0)
                 {
-                    if(useShades && isStatic)
+                    if (useShades && isStatic)
                         _progressReporter.ReportWarn("Stray shiny effect found on static " + objectId + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {
@@ -195,8 +142,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 // Check if we should merge object and room textures in same texture tiles.
                 TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
-                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && _level.Settings.AgressiveTexturePacking)
-                    destination = TextureDestination.RoomOrAggressive;
+
+                int index0 = newMesh.Vertices.Count;
+                int index1 = newMesh.Vertices.Count + 1;
+                int index2 = newMesh.Vertices.Count + 2;
+                int index3 = newMesh.Vertices.Count + 3;
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
@@ -205,9 +155,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     var result = _textureInfoManager.AddTexture(poly.Texture, destination, false, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
-                        poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 10 : 12;
+                    newPoly = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode);
                 }
                 else
                 {
@@ -216,29 +164,84 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     var result = _textureInfoManager.AddTexture(poly.Texture, destination, true, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
-                        poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
+                    newPoly = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
                 }
+
+                if (newPoly.Shape == tr5main_polygon_shape.Quad)
+                {
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index0], oldMesh.VerticesNormals[poly.Index0],
+                        (poly.Index0 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index0] : (short)0),
+                        meshIndex, 0, useShades, newMesh);
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index1], oldMesh.VerticesNormals[poly.Index1],
+                        (poly.Index1 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index1] : (short)0),
+                        meshIndex, 1, useShades, newMesh);
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index2], oldMesh.VerticesNormals[poly.Index2],
+                        (poly.Index2 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index2] : (short)0),
+                        meshIndex, 2, useShades, newMesh);
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index3], oldMesh.VerticesNormals[poly.Index3],
+                        (poly.Index3 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index3] : (short)0),
+                        meshIndex, 3, useShades, newMesh);
+                }
+                else
+                {
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index0], oldMesh.VerticesNormals[poly.Index0],
+                       (poly.Index0 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index0] : (short)0),
+                       meshIndex, 0, useShades, newMesh);
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index1], oldMesh.VerticesNormals[poly.Index1],
+                        (poly.Index1 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index1] : (short)0),
+                        meshIndex, 1, useShades, newMesh);
+                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index2], oldMesh.VerticesNormals[poly.Index2],
+                        (poly.Index2 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index2] : (short)0),
+                        meshIndex, 2, useShades, newMesh);
+                }
+
+                newMesh.Polygons.Add(newPoly);
             }
-
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                currentMeshSize += 4; // Num colored quads and triangles
-
-            if (currentMeshSize % 4 != 0)
-            {
-                currentMeshSize += 2;
-            }
-
-            newMesh.MeshSize = currentMeshSize;
-            newMesh.MeshPointer = _totalMeshSize;
-            _meshPointers.Add((uint)_totalMeshSize);
-
-            _totalMeshSize += currentMeshSize;
 
             _meshes.Add(newMesh);
 
             return newMesh;
+        }
+
+        private void PrepareMeshBuckets()
+        {
+            for (int i = 0; i < _meshes.Count; i++)
+                PrepareMeshBuckets(_meshes[i]);
+        }
+
+        private void PrepareMeshBuckets(tr5main_mesh mesh)
+        {
+            var textures = _textureInfoManager.GetObjectTextures();
+            mesh.Buckets = new Dictionary<tr5main_material, tr5main_bucket>(new tr5main_material.Tr5MainMaterialComparer());
+            foreach (var poly in mesh.Polygons)
+            {
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, mesh.Buckets);
+
+                var texture = textures[poly.TextureId];
+
+                // We output only triangles, no quads anymore
+                if (poly.Shape == tr5main_polygon_shape.Quad)
+                {
+                    bucket.Indices.Add(poly.Indices[0]);
+                    bucket.Indices.Add(poly.Indices[1]);
+                    bucket.Indices.Add(poly.Indices[3]);
+                    bucket.Indices.Add(poly.Indices[2]);
+                    bucket.Indices.Add(poly.Indices[3]);
+                    bucket.Indices.Add(poly.Indices[1]);
+
+                    for (int n = 0; n < 4; n++)
+                        mesh.Vertices[poly.Indices[n]].TextureCoords = texture.TexCoordFloat[n];
+                }
+                else
+                {
+                    bucket.Indices.Add(poly.Indices[0]);
+                    bucket.Indices.Add(poly.Indices[1]);
+                    bucket.Indices.Add(poly.Indices[2]);
+
+                    for (int n = 0; n < 3; n++)
+                        mesh.Vertices[poly.Indices[n]].TextureCoords = texture.TexCoordFloat[n];
+                }
+            }
         }
 
         private class AnimationTr4HelperData
@@ -310,9 +313,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new tr_moveable();
-                newMoveable.Animation = checked((ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
-                newMoveable.NumMeshes = checked((ushort)oldMoveable.Meshes.Count());
-                newMoveable.ObjectID = oldMoveable.Id.TypeId;
+                newMoveable.Animation = (short)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
+                newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
+                newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;
 
                 // Add animations
@@ -348,8 +351,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                     // Setup the final animation
                     if (j == 0)
-                        newMoveable.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
-                    newAnimation.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
+                        newMoveable.FrameOffset = checked(animationHelper.KeyFrameOffset);
+                    newAnimation.FrameOffset = checked(animationHelper.KeyFrameOffset);
                     newAnimation.FrameRate = oldAnimation.FrameRate;
                     newAnimation.FrameSize = checked((byte)animationHelper.KeyFrameSize);
                     newAnimation.Speed = speed;
@@ -448,8 +451,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
-                newMoveable.MeshTree = (uint)_meshTrees.Count;
-                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
+                newMoveable.MeshTree = _meshTrees.Count;
+                newMoveable.StartingMesh = (short)_meshes.Count;
 
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
                     var wadMesh = oldMoveable.Meshes[i];
@@ -507,7 +510,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             {
                 var newStaticMesh = new tr_staticmesh();
 
-                newStaticMesh.ObjectID = oldStaticMesh.Id.TypeId;
+                newStaticMesh.ObjectID = checked((int)oldStaticMesh.Id.TypeId);
 
                 newStaticMesh.CollisionBox = new tr_bounding_box
                 {
@@ -534,7 +537,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 else
                     newStaticMesh.Flags = 2; // bit 0: no collision, bit 1: visibility
 
-                newStaticMesh.Mesh = (ushort)_meshPointers.Count;
+                newStaticMesh.Mesh = (short)_meshes.Count;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
@@ -614,19 +617,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     for (int jj = 0; jj < _meshPointers.Count; jj++)
                     {
                         writer.WriteLine("MeshPointer #" + jj + ": " + _meshPointers[jj]);
-
-                        n++;
-                    }
-
-                    n = 0;
-                    foreach (var mesh in _meshes)
-                    {
-                        writer.WriteLine("Mesh #" + n);
-                        writer.WriteLine("    Vertices: " + mesh.NumVertices);
-                        writer.WriteLine("    Normals: " + mesh.NumNormals);
-                        writer.WriteLine("    Polygons: " + (mesh.NumTexturedQuads + mesh.NumTexturedTriangles));
-                        writer.WriteLine("    MeshPointer: " + mesh.MeshPointer);
-                        writer.WriteLine();
 
                         n++;
                     }
@@ -928,57 +918,17 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private tr_mesh CreateDummyWadMesh(WadMesh oldMesh, bool isStatic, int objectId,
+        private tr5main_mesh CreateDummyWadMesh(WadMesh oldMesh, bool isStatic, int objectId,
                                        bool isWaterfall = false, bool isOptics = false,
                                        WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
-            int currentMeshSize = 0;
-            var newMesh = new tr_mesh
+            var newMesh = new tr5main_mesh
             {
-                Center = new tr_vertex
-                {
-                    X = (short)oldMesh.BoundingSphere.Center.X,
-                    Y = (short)-oldMesh.BoundingSphere.Center.Y,
-                    Z = (short)oldMesh.BoundingSphere.Center.Z
-                },
-                Radius = (short)oldMesh.BoundingSphere.Radius
+                Sphere = oldMesh.BoundingSphere,
+                Vertices = new List<tr5main_vertex>(),
+                Polygons = new List<tr5main_polygon>(),
+                Buckets = new Dictionary<tr5main_material, tr5main_bucket>()
             };
-            int numShades = 0;
-            currentMeshSize += 10;
-            newMesh.NumVertices = 0;
-            currentMeshSize += 2;
-            int numNormals = 0;
-            newMesh.Vertices = new tr_vertex[0];
-
-            newMesh.NumNormals = 0;
-            currentMeshSize += 2;
-            short numQuads = 0;
-            short numTriangles = 0;
-
-            newMesh.NumTexturedQuads = numQuads;
-            currentMeshSize += 2;
-
-            newMesh.NumTexturedTriangles = numTriangles;
-            currentMeshSize += 2;
-
-            int lastQuad = 0;
-            int lastTriangle = 0;
-
-            newMesh.TexturedQuads = new tr_face4[numQuads];
-            newMesh.TexturedTriangles = new tr_face3[numTriangles];
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                currentMeshSize += 4; // Num colored quads and triangles
-
-            if (currentMeshSize % 4 != 0)
-            {
-                currentMeshSize += 2;
-            }
-
-            newMesh.MeshSize = currentMeshSize;
-            newMesh.MeshPointer = _totalMeshSize;
-            _meshPointers.Add((uint)_totalMeshSize);
-
-            _totalMeshSize += currentMeshSize;
 
             _meshes.Add(newMesh);
 

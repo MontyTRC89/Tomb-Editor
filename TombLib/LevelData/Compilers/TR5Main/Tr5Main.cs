@@ -51,30 +51,34 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.WriteBlockArray(_floorData);
 
                 // Write meshes
-                var offset = writer.BaseStream.Position;
-
-                const int numMeshData = 0;
-                writer.Write(numMeshData);
-                var totalMeshSize = 0;
-
-                for (var i = 0; i < _meshes.Count; i++)
+                writer.Write(_meshes.Count);
+                foreach (var mesh in _meshes)
                 {
-                    var meshSize = _meshes[i].WriteTr4AndTr5(writer);
-                    totalMeshSize += (int)meshSize;
+                    writer.Write(mesh.Sphere.Center);
+                    writer.Write(mesh.Sphere.Radius);
+
+                    writer.Write(mesh.Vertices.Count);
+                    foreach (var vertex in mesh.Vertices)
+                    {
+                        writer.Write(vertex.Position);
+                        writer.Write(vertex.Normal);
+                        writer.Write(vertex.TextureCoords);
+                        writer.Write(vertex.Color);
+                        writer.Write(vertex.Bone);
+                        writer.Write(vertex.Index);
+                    }
+
+                    writer.Write(mesh.Buckets.Count);
+                    foreach (var bucket in mesh.Buckets.Values)
+                    {
+                        writer.Write(bucket.Material.Texture);
+                        writer.Write(bucket.Material.BlendMode);
+                        writer.Write(bucket.Material.Animated);
+                        writer.Write(bucket.Indices.Count);
+                        foreach (var index in bucket.Indices)
+                            writer.Write(index);
+                    }
                 }
-
-                var offset2 = writer.BaseStream.Position;
-                // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
-
-                // Save the size of the meshes
-                writer.BaseStream.Seek(offset, SeekOrigin.Begin);
-                writer.Write(meshDataSize);
-                writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
-
-                // Write mesh pointers
-                writer.Write((uint)_meshPointers.Count);
-                writer.WriteBlockArray(_meshPointers);
 
                 // Write animations' data
                 writer.Write((uint)_animations.Count);

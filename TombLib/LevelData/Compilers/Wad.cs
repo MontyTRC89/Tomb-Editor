@@ -310,9 +310,9 @@ namespace TombLib.LevelData.Compilers
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
                 var newMoveable = new tr_moveable();
-                newMoveable.Animation = checked((ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
-                newMoveable.NumMeshes = checked((ushort)oldMoveable.Meshes.Count());
-                newMoveable.ObjectID = oldMoveable.Id.TypeId;
+                newMoveable.Animation = checked((short)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
+                newMoveable.NumMeshes = checked((short)oldMoveable.Meshes.Count());
+                newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;
 
                 // Add animations
@@ -348,8 +348,8 @@ namespace TombLib.LevelData.Compilers
 
                     // Setup the final animation
                     if (j == 0)
-                        newMoveable.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
-                    newAnimation.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
+                        newMoveable.FrameOffset = checked((int)animationHelper.KeyFrameOffset);
+                    newAnimation.FrameOffset = checked((int)animationHelper.KeyFrameOffset);
                     newAnimation.FrameRate = oldAnimation.FrameRate;
                     newAnimation.FrameSize = checked((byte)animationHelper.KeyFrameSize);
                     newAnimation.Speed = speed;
@@ -448,8 +448,8 @@ namespace TombLib.LevelData.Compilers
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
-                newMoveable.MeshTree = (uint)_meshTrees.Count;
-                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
+                newMoveable.MeshTree = _meshTrees.Count;
+                newMoveable.StartingMesh = (short)_meshPointers.Count;
 
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
                     var wadMesh = oldMoveable.Meshes[i];
@@ -507,7 +507,7 @@ namespace TombLib.LevelData.Compilers
             {
                 var newStaticMesh = new tr_staticmesh();
 
-                newStaticMesh.ObjectID = oldStaticMesh.Id.TypeId;
+                newStaticMesh.ObjectID = checked((int)oldStaticMesh.Id.TypeId);
 
                 newStaticMesh.CollisionBox = new tr_bounding_box
                 {
@@ -534,7 +534,7 @@ namespace TombLib.LevelData.Compilers
                 else
                     newStaticMesh.Flags = 2; // bit 0: no collision, bit 1: visibility
 
-                newStaticMesh.Mesh = (ushort)_meshPointers.Count;
+                newStaticMesh.Mesh = (short)_meshPointers.Count;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))

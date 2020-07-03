@@ -85,8 +85,38 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public Vector4 Color;
         public int Bone;
         public int Effects;
+        public int Index;
 
         public bool IsOnPortal;
+
+        // Custom implementation of these because default implementation is *insanely* slow.
+        // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
+        /*public static bool operator ==(tr5main_vertex first, tr5main_vertex second)
+        {
+            return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
+        }
+
+        public static bool operator !=(tr5main_vertex first, tr5main_vertex second)
+        {
+            return !(first == second);
+        }
+
+        public bool Equals(tr5main_vertex other)
+        {
+            return this == other;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is tr5main_vertex))
+                return false;
+            return this == (tr5main_vertex)obj;
+        }
+
+        public override int GetHashCode()
+        {
+            return unchecked(X + Y * 695504311 + Z * 550048883);
+        }*/
     }
 
     public class tr5main_material
@@ -178,6 +208,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.Write(Vertices[k].Color.Y);
                 writer.Write(Vertices[k].Color.Z);
                 writer.Write(Vertices[k].Effects);
+                writer.Write(Vertices[k].Index);
             }
 
             writer.Write(Buckets.Count);
@@ -261,5 +292,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
             writer.Write(ReverbInfo);
             writer.Write(AlternateGroup);
         }
+    }
+
+    public class tr5main_mesh
+    {
+        public BoundingSphere Sphere;
+        public List<tr5main_vertex> Vertices;
+        public List<tr5main_polygon> Polygons;
+        public Dictionary<tr5main_material, tr5main_bucket> Buckets;
     }
 }
