@@ -71,10 +71,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
     {
         public tr5main_polygon_shape Shape;
         public List<int> Indices = new List<int>();
+        public List<Vector2> TextureCoordinates = new List<Vector2>();
         public int TextureId;
         public byte BlendMode;
         public bool Animated;
-        public int BaseIndex;
     }
 
     public class tr5main_vertex
@@ -82,10 +82,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public Vector3 Position;
         public Vector3 Normal;
         public Vector2 TextureCoords;
-        public Vector4 Color;
+        public Vector3 Color;
         public int Bone;
         public int Effects;
-        public int Index;
+        public int IndexInPoly;
+        public int OriginalIndex;
 
         public bool IsOnPortal;
 
@@ -149,12 +150,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
     public class tr5main_bucket
     {
         public tr5main_material Material;
-        public List<int> Indices;
         public List<tr5main_polygon> Polygons;
 
         public tr5main_bucket()
         {
-            Indices = new List<int>();
             Polygons = new List<tr5main_polygon>();
         }
     }
@@ -163,7 +162,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
     {
         public tr_room_info Info;
         public int NumDataWords;
-        public List<tr5main_vertex> Vertices;
+        public List<Vector3> Positions = new List<Vector3>();
+        public List<Vector3> Normals = new List<Vector3>();
+        public List<Vector3> Colors = new List<Vector3>();
+        public List<tr5main_vertex> Vertices = new List<tr5main_vertex>();
         public Dictionary<tr5main_material, tr5main_bucket> Buckets;
         public List<tr_room_portal> Portals;
         public int NumZSectors;
@@ -193,23 +195,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
         {
             writer.WriteBlock(Info);
 
-            writer.Write(Vertices.Count);
-            for (var k = 0; k < Vertices.Count; k++)
-            {
-                writer.Write(Vertices[k].Position.X);
-                writer.Write(Vertices[k].Position.Y);
-                writer.Write(Vertices[k].Position.Z);
-                writer.Write(Vertices[k].Normal.X);
-                writer.Write(Vertices[k].Normal.Y);
-                writer.Write(Vertices[k].Normal.Z);
-                writer.Write(Vertices[k].TextureCoords.X);
-                writer.Write(Vertices[k].TextureCoords.Y);
-                writer.Write(Vertices[k].Color.X);
-                writer.Write(Vertices[k].Color.Y);
-                writer.Write(Vertices[k].Color.Z);
-                writer.Write(Vertices[k].Effects);
-                writer.Write(Vertices[k].Index);
-            }
+            writer.Write(Positions.Count);
+            foreach (var p in Positions)
+                writer.Write(p);
+            foreach (var n in Normals)
+                writer.Write(n);
+            foreach (var c in Colors)
+                writer.Write(c);
 
             writer.Write(Buckets.Count);
             foreach (var bucket in Buckets.Values)
@@ -217,9 +209,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.Write(bucket.Material.Texture);
                 writer.Write(bucket.Material.BlendMode);
                 writer.Write(bucket.Material.Animated);
-                writer.Write(bucket.Indices.Count);
-                foreach (var index in bucket.Indices)
-                    writer.Write(index);
+                writer.Write(bucket.Polygons.Count);
+                foreach (var poly in bucket.Polygons)
+                {
+                    writer.Write((int)poly.Shape);
+                    foreach (int index in poly.Indices)
+                        writer.Write(index);
+                    foreach (var uv in poly.TextureCoordinates)
+                        writer.Write(uv);
+                }
             }            
     
             // Write portals
@@ -297,8 +295,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
     public class tr5main_mesh
     {
         public BoundingSphere Sphere;
-        public List<tr5main_vertex> Vertices;
-        public List<tr5main_polygon> Polygons;
-        public Dictionary<tr5main_material, tr5main_bucket> Buckets;
+        public List<Vector3> Positions = new List<Vector3>();
+        public List<Vector3> Normals = new List<Vector3>();
+        public List<Vector3> Colors = new List<Vector3>();
+        public List<int> Bones = new List<int>();
+        public List<tr5main_polygon> Polygons = new List<tr5main_polygon>();
+        public Dictionary<tr5main_material, tr5main_bucket> Buckets = new Dictionary<tr5main_material, tr5main_bucket>();
     }
 }

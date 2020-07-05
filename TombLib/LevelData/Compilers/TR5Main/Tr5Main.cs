@@ -57,16 +57,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     writer.Write(mesh.Sphere.Center);
                     writer.Write(mesh.Sphere.Radius);
 
-                    writer.Write(mesh.Vertices.Count);
-                    foreach (var vertex in mesh.Vertices)
-                    {
-                        writer.Write(vertex.Position);
-                        writer.Write(vertex.Normal);
-                        writer.Write(vertex.TextureCoords);
-                        writer.Write(vertex.Color);
-                        writer.Write(vertex.Bone);
-                        writer.Write(vertex.Index);
-                    }
+                    writer.Write(mesh.Positions.Count);
+                    foreach (var p in mesh.Positions)
+                        writer.Write(p);
+                    foreach (var n in mesh.Normals)
+                        writer.Write(n);
+                    foreach (var c in mesh.Colors)
+                        writer.Write(c);
+                    foreach (var b in mesh.Bones)
+                        writer.Write(b);
 
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)
@@ -74,9 +73,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         writer.Write(bucket.Material.Texture);
                         writer.Write(bucket.Material.BlendMode);
                         writer.Write(bucket.Material.Animated);
-                        writer.Write(bucket.Indices.Count);
-                        foreach (var index in bucket.Indices)
-                            writer.Write(index);
+                        writer.Write(bucket.Polygons.Count);
+                        foreach (var poly in bucket.Polygons)
+                        {
+                            writer.Write((int)poly.Shape);
+                            foreach (int index in poly.Indices)
+                                writer.Write(index);
+                            foreach (var uv in poly.TextureCoordinates)
+                                writer.Write(uv);
+                        }
                     }
                 }
 

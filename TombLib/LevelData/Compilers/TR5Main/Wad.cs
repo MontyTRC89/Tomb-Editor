@@ -45,36 +45,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private void AddMeshVertex(Vector3 position, Vector3 normal, short shade, int bone, int index, bool useShades, tr5main_mesh mesh)
-        {
-            var newVertex = new tr5main_vertex();
-
-            newVertex.Position = new Vector3(position.X, -position.Y, position.Z);
-            if (useShades)
-            {
-                newVertex.Color = new Vector4(shade, shade, shade, 1.0f); ;
-            }
-            else
-            {
-                newVertex.Color = new Vector4(0.5f,0.5f,0.5f,1.0f); ;
-                newVertex.Normal = Vector3.Normalize(normal);
-            }
-            newVertex.Bone = bone;
-            newVertex.Index = index;
-
-            mesh.Vertices.Add(newVertex);
-        }
-
         private tr5main_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, int meshIndex,
                                             bool isWaterfall = false, bool isOptics = false,
                                             WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
             var newMesh = new tr5main_mesh
             {
-                Sphere = oldMesh.BoundingSphere,
-                Vertices = new List<tr5main_vertex>(),
-                Polygons = new List<tr5main_polygon>(),
-                Buckets = new Dictionary<tr5main_material, tr5main_bucket>()
+                Sphere = oldMesh.BoundingSphere
             };
 
             // FIX: the following code will check for valid normals and shades combinations.
@@ -105,6 +82,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     }
                     else
                     {
+                        if (oldMesh.VerticesNormals.Count == 0)
+                        {
+
+                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
+                            oldMesh.CalculateNormals();
+                        }
                         useShades = true;
                     }
                 }
@@ -143,10 +126,28 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 // Check if we should merge object and room textures in same texture tiles.
                 TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
 
-                int index0 = newMesh.Vertices.Count;
-                int index1 = newMesh.Vertices.Count + 1;
-                int index2 = newMesh.Vertices.Count + 2;
-                int index3 = newMesh.Vertices.Count + 3;
+                // Add vertices components
+                foreach (var pos in oldMesh.VerticesPositions)
+                    newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
+                foreach (var normal in oldMesh.VerticesNormals)
+                    newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
+                if (useShades)
+                {
+                    foreach (var shade in oldMesh.VerticesShades)
+                        newMesh.Colors.Add(new Vector3(shade / 255.0f, shade / 255.0f, shade / 255.0f));
+                }
+                else
+                {
+                    for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                        newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
+                }
+                for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                    newMesh.Bones.Add(meshIndex);
+
+                int index0 = poly.Index0;
+                int index1 = poly.Index1;
+                int index2 = poly.Index2;
+                int index3 = poly.Index3;
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
@@ -165,34 +166,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     newPoly = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
-                }
-
-                if (newPoly.Shape == tr5main_polygon_shape.Quad)
-                {
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index0], oldMesh.VerticesNormals[poly.Index0],
-                        (poly.Index0 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index0] : (short)0),
-                        meshIndex, 0, useShades, newMesh);
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index1], oldMesh.VerticesNormals[poly.Index1],
-                        (poly.Index1 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index1] : (short)0),
-                        meshIndex, 1, useShades, newMesh);
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index2], oldMesh.VerticesNormals[poly.Index2],
-                        (poly.Index2 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index2] : (short)0),
-                        meshIndex, 2, useShades, newMesh);
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index3], oldMesh.VerticesNormals[poly.Index3],
-                        (poly.Index3 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index3] : (short)0),
-                        meshIndex, 3, useShades, newMesh);
-                }
-                else
-                {
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index0], oldMesh.VerticesNormals[poly.Index0],
-                       (poly.Index0 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index0] : (short)0),
-                       meshIndex, 0, useShades, newMesh);
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index1], oldMesh.VerticesNormals[poly.Index1],
-                        (poly.Index1 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index1] : (short)0),
-                        meshIndex, 1, useShades, newMesh);
-                    AddMeshVertex(oldMesh.VerticesPositions[poly.Index2], oldMesh.VerticesNormals[poly.Index2],
-                        (poly.Index2 < oldMesh.VerticesShades.Count ? oldMesh.VerticesShades[poly.Index2] : (short)0),
-                        meshIndex, 2, useShades, newMesh);
                 }
 
                 newMesh.Polygons.Add(newPoly);
@@ -222,24 +195,17 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 // We output only triangles, no quads anymore
                 if (poly.Shape == tr5main_polygon_shape.Quad)
                 {
-                    bucket.Indices.Add(poly.Indices[0]);
-                    bucket.Indices.Add(poly.Indices[1]);
-                    bucket.Indices.Add(poly.Indices[3]);
-                    bucket.Indices.Add(poly.Indices[2]);
-                    bucket.Indices.Add(poly.Indices[3]);
-                    bucket.Indices.Add(poly.Indices[1]);
-
                     for (int n = 0; n < 4; n++)
-                        mesh.Vertices[poly.Indices[n]].TextureCoords = texture.TexCoordFloat[n];
+                        poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+
+                    bucket.Polygons.Add(poly);
                 }
                 else
                 {
-                    bucket.Indices.Add(poly.Indices[0]);
-                    bucket.Indices.Add(poly.Indices[1]);
-                    bucket.Indices.Add(poly.Indices[2]);
-
                     for (int n = 0; n < 3; n++)
-                        mesh.Vertices[poly.Indices[n]].TextureCoords = texture.TexCoordFloat[n];
+                        poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+
+                    bucket.Polygons.Add(poly);
                 }
             }
         }
@@ -924,10 +890,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         {
             var newMesh = new tr5main_mesh
             {
-                Sphere = oldMesh.BoundingSphere,
-                Vertices = new List<tr5main_vertex>(),
-                Polygons = new List<tr5main_polygon>(),
-                Buckets = new Dictionary<tr5main_material, tr5main_bucket>()
+                Sphere = oldMesh.BoundingSphere
             };
 
             _meshes.Add(newMesh);
