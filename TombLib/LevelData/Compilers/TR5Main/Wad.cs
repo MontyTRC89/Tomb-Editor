@@ -103,6 +103,24 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 useShades = false;
             }
 
+            // Add vertices components
+            foreach (var pos in oldMesh.VerticesPositions)
+                newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
+            foreach (var normal in oldMesh.VerticesNormals)
+                newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
+            if (useShades)
+            {
+                foreach (var shade in oldMesh.VerticesShades)
+                    newMesh.Colors.Add(new Vector3(shade / 255.0f, shade / 255.0f, shade / 255.0f));
+            }
+            else
+            {
+                for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                    newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
+            }
+            for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                newMesh.Bones.Add(meshIndex);
+
             for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
                 var poly = oldMesh.Polys[j];
@@ -125,24 +143,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 // Check if we should merge object and room textures in same texture tiles.
                 TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
-
-                // Add vertices components
-                foreach (var pos in oldMesh.VerticesPositions)
-                    newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
-                foreach (var normal in oldMesh.VerticesNormals)
-                    newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
-                if (useShades)
-                {
-                    foreach (var shade in oldMesh.VerticesShades)
-                        newMesh.Colors.Add(new Vector3(shade / 255.0f, shade / 255.0f, shade / 255.0f));
-                }
-                else
-                {
-                    for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
-                        newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
-                }
-                for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
-                    newMesh.Bones.Add(meshIndex);
 
                 int index0 = poly.Index0;
                 int index1 = poly.Index1;
