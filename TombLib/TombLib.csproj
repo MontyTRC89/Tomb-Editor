@@ -305,6 +305,7 @@
     <Compile Include="Utils\NegativeIndexArray.cs" />
     <Compile Include="Utils\PathC.cs" />
     <Compile Include="Utils\PolygonFunctions.cs" />
+    <Compile Include="Utils\ProjectConverter.cs" />
     <Compile Include="Utils\RectTransformation.cs" />
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\ReferenceEqualityComparer.cs" />

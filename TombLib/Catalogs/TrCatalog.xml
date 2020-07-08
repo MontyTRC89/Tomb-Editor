@@ -2718,18 +2718,18 @@
       <sprite_sequence id="494" name="NG custom sprites" />
     </sprite_sequences>
     <sounds max="370">
-      <sound id="0" name="LARA_FEET" description="Lara feet" />
-      <sound id="1" name="LARA_CLIMB2" description="Lara climb2" />
-      <sound id="2" name="LARA_NO" hardcoded="true" description="Lara no" />
-      <sound id="3" name="LARA_SLIPPING" hardcoded="true" description="Lara slipping" />
-      <sound id="4" name="LARA_LAND" hardcoded="true" description="Lara land" />
-      <sound id="5" name="LARA_CLIMB1" description="Lara climb1" />
-      <sound id="6" name="LARA_DRAW" hardcoded="true" description="Lara draw" />
-      <sound id="7" name="LARA_HOLSTER" hardcoded="true" description="Lara holster" />
-      <sound id="8" name="LARA_FIRE" hardcoded="true" description="Lara fire" />
-      <sound id="9" name="LARA_RELOAD" hardcoded="true" description="Lara reload" />
-      <sound id="10" name="LARA_RICOCHET" hardcoded="true" description="Lara ricochet" />
-      <sound id="11" name="PUSH_BLOCK_END" hardcoded="true" description="Push block end" />
+      <sound id="0" name="LARA_FEET" description="Lara feet" t5m="LARA_FEET" />
+      <sound id="1" name="LARA_CLIMB2" description="Lara climb2" t5m="LARA_CLIMB2" />
+      <sound id="2" name="LARA_NO" hardcoded="true" description="Lara no" t5m="LARA_NO" />
+      <sound id="3" name="LARA_SLIPPING" hardcoded="true" description="Lara slipping" t5m="LARA_SLIPPING" />
+      <sound id="4" name="LARA_LAND" hardcoded="true" description="Lara land" t5m="LARA_LAND" />
+      <sound id="5" name="LARA_CLIMB1" description="Lara climb1" t5m="LARA_CLIMB1" />
+      <sound id="6" name="LARA_HOLSTER_DRAW" hardcoded="true" description="Lara draw" t5m="LARA_HOLSTER_DRAW" />
+      <sound id="7" name="LARA_HOLSTER_AWAY" hardcoded="true" description="Lara holster" t5m="LARA_HOLSTER_AWAY" />
+      <sound id="8" name="LARA_FIRE" hardcoded="true" description="Lara fire" t5m="LARA_FIRE" />
+      <sound id="9" name="LARA_RELOAD" hardcoded="true" description="Lara reload" t5m="LARA_RELOAD" />
+      <sound id="10" name="LARA_RICOCHET" hardcoded="true" description="Lara ricochet" t5m="LARA_RICOCHET" />
+      <sound id="11" name="PUSH_BLOCK_END" hardcoded="true" description="Push block end" t5m="PUSH_BLOCK_END" />
       <sound id="12" name="METAL_SCRAPE_LOOP" hardcoded="true" description="Metal scrape loop" />
       <sound id="13" name="SMALL_SCARAB_FEET" description="Small scarab feet" />
       <sound id="14" name="BIG_SCARAB_ATTACK" description="Big scarab attack" />

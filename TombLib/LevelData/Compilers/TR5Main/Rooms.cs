@@ -820,8 +820,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                     sector.FloorCollision.Planes = new Vector3[2];
                     sector.CeilingCollision.Planes = new Vector3[2];
-
-                    sector.BoxIndex = (ushort)(0x7ff0 | (0xf & (short)GetTextureSound(room, x, z)));
+                    sector.StepSound = (int)GetTextureSound(room, x, z);
+                    sector.BoxIndex = 2047;
                     sector.FloorDataIndex = 0;
 
                     // Setup portals
