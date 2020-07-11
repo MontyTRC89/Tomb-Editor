@@ -1,17 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace TombLib.LevelData.Compilers.TR5Main
 {
-    public struct dec_tr_box_aux
+    public class dec_tr5main_box_aux
     {
         public int Zmin;
         public int Zmax;
         public int Xmin;
         public int Xmax;
         public short TrueFloor;
-        public short OverlapIndex;
+        public int OverlapIndex;
         public bool IsolatedBox;
         public bool NotWalkableBox;
         public bool Monkey;
@@ -34,16 +35,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private short dec_q1 = -1;
         private short dec_q2 = -1;
         private short dec_q3 = -1;
-        private dec_tr_box_aux[] dec_boxes;
-        private ushort[] dec_overlaps;
-        private int dec_numBoxes;
-        private int dec_numOverlaps;
+        private List<dec_tr5main_box_aux> dec_boxes;
+        private List<tr5main_overlap> dec_overlaps;
         private bool dec_boxExtendsInAnotherRoom;
 
         private void Dec_BuildBoxesAndOverlaps()
         {
             dec_currentRoom = _level.Rooms[0];
-            dec_boxes = new dec_tr_box_aux[2048];
+            dec_boxes = new List<dec_tr5main_box_aux>();
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -62,20 +61,21 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
-                                int boxIndex = 2047;
+                                int boxIndex = -1;
+
                                 if (!room.FlagExcludeFromPathFinding)
                                 {
-                                    dec_tr_box_aux box = new dec_tr_box_aux();
+                                    dec_tr5main_box_aux box = new dec_tr5main_box_aux();
 
                                     // First create the box...
                                     if (x != 0 &&
                                         z != 0 &&
                                         x != room.NumXSectors - 1 &&
                                         z != room.NumZSectors - 1 &&
-                                        Dec_CreateNewBox(ref box, x, z, room))
+                                        Dec_CreateNewBox(box, x, z, room))
                                     {
                                         // ...then try to add it to the box array
-                                        boxIndex = Dec_AddBox(ref box);
+                                        boxIndex = Dec_AddBox(box);
                                         if (boxIndex < 0) return;
                                     }
                                 }
@@ -97,7 +97,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             dec_flipped = false;
 
             watch.Stop();
-            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build boxes: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numBoxes);
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build boxes: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_boxes.Count);
 
             watch.Restart();
 
@@ -105,13 +105,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
             Dec_BuildOverlaps();
 
             watch.Stop();
-            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build overlaps: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_numOverlaps);
+            Console.WriteLine("Dec_BuildBoxesAndOverlaps() -> Build overlaps: " + watch.ElapsedMilliseconds + " ms, Count = " + dec_overlaps.Count);
         }
 
         private bool Dec_BuildOverlaps()
         {
-            dec_numOverlaps = 0;
-            dec_overlaps = new ushort[16384];
+            dec_overlaps = new List<tr5main_overlap>();
 
             int i = 0;
             int j = 0;
@@ -124,7 +123,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             // 0x04 is for normal rooms and 0x02 is for flipped rooms.
             // This is an hack, because probably both flags were set in this case with the FlipAllRooms() function
             // That I could not implement because the way Tomb Editor is designed.
-            for (int k = 0; k < dec_numBoxes; k++)
+            for (int k = 0; k < dec_boxes.Count; k++)
             {
                 if (!_tempRooms[dec_boxes[k].Room].Flipped)
                 {
@@ -133,12 +132,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 }
             }
 
-            // TODO: don't return even if too many overlaps are added (like winroomedit does)
-            // Just warn the user about the problem
             do
             {
-                dec_tr_box_aux box1 = dec_boxes[i];
-                dec_boxes[i].OverlapIndex = 0x3FFF;  
+                var box1 = dec_boxes[i];
+                dec_boxes[i].OverlapIndex = -1;  
 
                 int numOverlapsAdded = 0;
 
@@ -154,23 +151,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     {
                         if (i != j)
                         {
-                            dec_tr_box_aux box2 = dec_boxes[j];
+                            var box2 = dec_boxes[j];
 
                             if (box2.Flag0x04)
                             {
-                                if (Dec_BoxesOverlap(ref box1, ref box2))
+                                if (Dec_BoxesOverlap(box1, box2))
                                 {
-                                    if (dec_numOverlaps == 16382) return false;
-                                    if (dec_boxes[i].OverlapIndex == 0x3FFF) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                    if (dec_boxes[i].OverlapIndex == -1) dec_boxes[i].OverlapIndex = dec_overlaps.Count;
 
-                                    dec_overlaps[dec_numOverlaps] = (ushort)j;
+                                    var overlap = new tr5main_overlap
+                                    {
+                                        Box = j
+                                    };
 
-                                    if (_level.Settings.GameVersion >= TRVersion.Game.TR4 && dec_jump)
-                                        dec_overlaps[dec_numOverlaps] |= 0x800;
-                                    if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && dec_monkey)
-                                        dec_overlaps[dec_numOverlaps] |= 0x2000;
+                                    if (dec_jump)
+                                        overlap.Flags |= 0x800;
+                                    if (dec_monkey)
+                                        overlap.Flags |= 0x2000;
 
-                                    dec_numOverlaps++;
+                                    dec_overlaps.Add(overlap);
                                     numOverlapsAdded++;
                                 }
                             }
@@ -178,7 +177,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                         j++;
                     }
-                    while (j < dec_numBoxes);
+                    while (j < dec_boxes.Count);
                 }
 
                 if (box1.Flag0x02)
@@ -193,25 +192,27 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     {
                         if (i != j)
                         {
-                            dec_tr_box_aux box2 = dec_boxes[j];
+                            var box2 = dec_boxes[j];
 
                             if (box2.Flag0x02)
                             {
                                 if (!(box1.Flag0x04 && box2.Flag0x04))
                                 {
-                                    if (Dec_BoxesOverlap(ref box1, ref box2))
+                                    if (Dec_BoxesOverlap(box1, box2))
                                     {
-                                        if (dec_numOverlaps == 16382) return false;
-                                        if (dec_boxes[i].OverlapIndex == 0x3FFF) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                        if (dec_boxes[i].OverlapIndex == -1) dec_boxes[i].OverlapIndex = dec_overlaps.Count;
 
-                                        dec_overlaps[dec_numOverlaps] = (ushort)j;
+                                        var overlap = new tr5main_overlap
+                                        {
+                                            Box = j
+                                        };
 
-                                        if (_level.Settings.GameVersion >= TRVersion.Game.TR4 && dec_jump)
-                                            dec_overlaps[dec_numOverlaps] |= 0x800;
-                                        if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && dec_monkey)
-                                            dec_overlaps[dec_numOverlaps] |= 0x2000;
+                                        if (dec_jump)
+                                            overlap.Flags |= 0x800;
+                                        if (dec_monkey)
+                                            overlap.Flags |= 0x2000;
 
-                                        dec_numOverlaps++;
+                                        dec_overlaps.Add(overlap);
                                         numOverlapsAdded++;
                                     }
                                 }
@@ -220,14 +221,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                         j++;
                     }
-                    while (j < dec_numBoxes);
+                    while (j < dec_boxes.Count);
                 }
 
                 i++;
 
-                if (numOverlapsAdded != 0) dec_overlaps[dec_numOverlaps - 1] |= 0x8000;
+                if (numOverlapsAdded != 0)
+                    dec_overlaps[dec_overlaps.Count - 1].Flags |= 0x8000;
             }
-            while (i < dec_numBoxes);
+            while (i < dec_boxes.Count);
 
             dec_flipped = false;
 
@@ -235,13 +237,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private int Dec_AddBox(ref dec_tr_box_aux box)
+        private int Dec_AddBox(dec_tr5main_box_aux box)
         {
-            if (dec_numBoxes == 2048) return -1;
-
             int boxIndex = -1;
 
-            for (int i = 0; i < dec_numBoxes; i++)
+            for (int i = 0; i < dec_boxes.Count; i++)
             {
                 if (dec_boxes[i].Xmin == box.Xmin &&
                     dec_boxes[i].Xmax == box.Xmax &&
@@ -257,10 +257,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             if (boxIndex == -1)
             {
-                boxIndex = dec_numBoxes;
-                box.OverlapIndex = 0x3FFF;
-                dec_boxes[dec_numBoxes] = box;
-                dec_numBoxes++;
+                boxIndex = dec_boxes.Count;
+                box.OverlapIndex = -1;
+                dec_boxes.Add(box);
             }
             else
             {
@@ -270,7 +269,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return boxIndex;
         }
 
-        private bool Dec_CreateNewBox(ref dec_tr_box_aux box, int x, int z, Room theRoom)
+        private bool Dec_CreateNewBox(dec_tr5main_box_aux box, int x, int z, Room theRoom)
         {
             bool monkey = false;
 
@@ -320,7 +319,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 box.Flag0x04 = true;
             }
 
-            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && dec_monkey)
+            if (dec_monkey)
             {
                 box.Monkey = true;
                 monkey = true;
@@ -895,7 +894,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             if ((block.Flags & BlockFlags.Box) == 0)
             {
-                dec_monkey = _level.Settings.GameVersion >= TRVersion.Game.TR3 && (block.Flags & BlockFlags.Monkey) != 0;
+                dec_monkey = (block.Flags & BlockFlags.Monkey) != 0;
                 return floorHeight;
             }
             else
@@ -903,7 +902,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 if (!dec_graybox)
                 {
                     dec_graybox = true;
-                    dec_monkey = _level.Settings.GameVersion >= TRVersion.Game.TR3 && (block.Flags & BlockFlags.Monkey) != 0;
+                    dec_monkey = (block.Flags & BlockFlags.Monkey) != 0;
                     return floorHeight;
                 }
                 else
@@ -913,11 +912,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private bool Dec_CheckIfCanJumpX(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        private bool Dec_CheckIfCanJumpX(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
-            // Jump is from TR4
-            if (_level.Settings.GameVersion < TRVersion.Game.TR4) return false;
-
             // Boxes must have the same height for jump
             if (a.TrueFloor != b.TrueFloor) return false;
 
@@ -1016,11 +1012,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return false;
         }
 
-        private bool Dec_CheckIfCanJumpZ(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        private bool Dec_CheckIfCanJumpZ(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
-            // Jump is from TR4
-            if (_level.Settings.GameVersion < TRVersion.Game.TR4) return false;
-
             // Boxes must have the same height for jump
             if (a.TrueFloor != b.TrueFloor) return false;
 
@@ -1120,7 +1113,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Dec_OverlapXmax(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        public bool Dec_OverlapXmax(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
             int startZ = b.Zmin;
             if (a.Zmin > b.Zmin)
@@ -1156,7 +1149,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Dec_OverlapXmin(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        public bool Dec_OverlapXmin(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
             int startZ = b.Zmin;
             if (a.Zmin > b.Zmin)
@@ -1192,7 +1185,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Dec_OverlapZmax(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        public bool Dec_OverlapZmax(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
             int startX = b.Xmin;
             if (a.Xmin > b.Xmin)
@@ -1228,7 +1221,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Dec_OverlapZmin(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        public bool Dec_OverlapZmin(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
             int startX = b.Xmin;
             if (a.Xmin > b.Xmin)
@@ -1263,13 +1256,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return false;
         }
 
-        private bool Dec_BoxesOverlap(ref dec_tr_box_aux a, ref dec_tr_box_aux b)
+        private bool Dec_BoxesOverlap(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
             dec_jump = false;
             dec_monkey = false;
 
-            dec_tr_box_aux box1 = a;
-            dec_tr_box_aux box2 = b;
+            dec_tr5main_box_aux box1 = a;
+            dec_tr5main_box_aux box2 = b;
 
             if (b.TrueFloor > a.TrueFloor)
             {
@@ -1279,7 +1272,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             if (box1.Xmax <= box2.Xmin || box1.Xmin >= box2.Xmax)
             {
-                if (box1.Zmax > box2.Zmin && box1.Zmin < box2.Zmax && Dec_CheckIfCanJumpZ(ref box1, ref box2))
+                if (box1.Zmax > box2.Zmin && box1.Zmin < box2.Zmax && Dec_CheckIfCanJumpZ(box1, box2))
                 {
                     dec_jump = true;
                     return true;
@@ -1289,8 +1282,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     box1.Xmin > box2.Xmax ||
                     box1.Zmax <= box2.Zmin ||
                     box1.Zmin >= box2.Zmax ||
-                    box1.Xmax == box2.Xmin && !Dec_OverlapXmax(ref box1, ref box2) ||
-                    box1.Xmin == box2.Xmax && !Dec_OverlapXmin(ref box1, ref box2))
+                    box1.Xmax == box2.Xmin && !Dec_OverlapXmax(box1, box2) ||
+                    box1.Xmin == box2.Xmax && !Dec_OverlapXmin(box1, box2))
                 {
                     return false;
                 }
@@ -1303,11 +1296,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
             {
                 if (box1.TrueFloor != box2.TrueFloor) return false;
 
-                if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && box1.Monkey && box2.Monkey) dec_monkey = true;
+                if (box1.Monkey && box2.Monkey) dec_monkey = true;
                 return true;
             }
 
-            if (Dec_CheckIfCanJumpX(ref box2, ref box1))
+            if (Dec_CheckIfCanJumpX(box2, box1))
             {
                 dec_jump = true;
                 return true;
@@ -1315,20 +1308,20 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             if (box1.Zmax < box2.Zmin ||
                 box1.Zmin > box2.Zmax ||
-                box1.Zmax == box2.Zmin && !Dec_OverlapZmax(ref box1, ref box2))
+                box1.Zmax == box2.Zmin && !Dec_OverlapZmax(box1, box2))
             {
                 return false;
             }
 
             if (box1.Zmin != box2.Zmax)
             {
-                if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && box1.Monkey && box2.Monkey) dec_monkey = true;
+                if (box1.Monkey && box2.Monkey) dec_monkey = true;
                 return true;
             }
 
-            if (Dec_OverlapZmin(ref box1, ref box2))
+            if (Dec_OverlapZmin(box1, box2))
             {
-                if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && box1.Monkey && box2.Monkey) dec_monkey = true;
+                if (box1.Monkey && box2.Monkey) dec_monkey = true;
                 return true;
             }
 

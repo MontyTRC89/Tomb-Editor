@@ -36,8 +36,8 @@ namespace ProjectConverter
                     // Copy all objects to new wad
                     foreach (var moveable in wad.Moveables)
                     {
-                        var newId=TrCatalog.
-                        newWad.Add()
+                        //var newId=TrCatalog.
+                        //newWad.Add()
                     }
                 }
             }
@@ -45,6 +45,8 @@ namespace ProjectConverter
             {
 
             }
+
+            return true;
         }
 
         static void Main(string[] args)

@@ -27,107 +27,110 @@ namespace TombLib.LevelData.Compilers.TR5Main
             Dec_BuildBoxesAndOverlaps();
 
             // Convert ovelaps to TR format
-            _overlaps = new ushort[dec_numOverlaps];
-            if (dec_numOverlaps != 0)
-                Array.Copy(dec_overlaps, _overlaps, dec_numOverlaps);
+            _overlaps = new List<tr5main_overlap>();
+            _overlaps.AddRange(dec_overlaps);
 
             // Convert boxes to TR format
-            _boxes = new tr_box[dec_numBoxes];
-            _zones = new tr_zone[dec_numBoxes];
-            for (var i = 0; i < dec_numBoxes; i++)
+            _boxes = new List<tr5main_box>();
+            _zones = new List<tr5main_zone>();
+            for (var i = 0; i < dec_boxes.Count; i++)
             {
-                _boxes[i] = new tr_box()
+                var box = new tr5main_box()
                 {
-                    Xmin = (byte)dec_boxes[i].Xmin,
-                    Xmax = (byte)dec_boxes[i].Xmax,
-                    Zmin = (byte)dec_boxes[i].Zmin,
-                    Zmax = (byte)dec_boxes[i].Zmax,
-                    TrueFloor = (short)-(dec_boxes[i].TrueFloor * 256),
-                    OverlapIndex = (ushort)((ushort)dec_boxes[i].OverlapIndex | (dec_boxes[i].IsolatedBox ? 0x8000 : 0))
+                    Xmin = dec_boxes[i].Xmin,
+                    Xmax = dec_boxes[i].Xmax,
+                    Zmin = dec_boxes[i].Zmin,
+                    Zmax = dec_boxes[i].Zmax,
+                    TrueFloor = -(dec_boxes[i].TrueFloor * 256),
+                    OverlapIndex = dec_boxes[i].OverlapIndex,
+                    Flags = dec_boxes[i].IsolatedBox ? 0x8000 : 0
                 };
-                _zones[i] = new tr_zone()
+                _boxes.Add(box);
+
+                var zone = new tr5main_zone()
                 {
-                    GroundZone1_Normal = 0x7ff,
-                    GroundZone2_Normal = 0x7ff,
-                    GroundZone3_Normal = 0x7ff,
-                    GroundZone4_Normal = 0x7ff,
-                    FlyZone_Normal = 0x7ff,
-                    GroundZone1_Alternate = 0x7ff,
-                    GroundZone2_Alternate = 0x7ff,
-                    GroundZone3_Alternate = 0x7ff,
-                    GroundZone4_Alternate = 0x7ff,
-                    FlyZone_Alternate = 0x7ff
+                    GroundZone1_Normal = int.MaxValue,
+                    GroundZone2_Normal = int.MaxValue,
+                    GroundZone3_Normal = int.MaxValue,
+                    GroundZone4_Normal = int.MaxValue,
+                    FlyZone_Normal = int.MaxValue,
+                    GroundZone1_Alternate = int.MaxValue,
+                    GroundZone2_Alternate = int.MaxValue,
+                    GroundZone3_Alternate = int.MaxValue,
+                    GroundZone4_Alternate = int.MaxValue,
+                    FlyZone_Alternate = int.MaxValue
                 };
+                _zones.Add(zone);
             }
 
             // Create zones
-            ushort groundZone1 = 1;
-            ushort groundZone2 = 1;
-            ushort groundZone3 = 1;
-            ushort groundZone4 = 1;
-            ushort flyZone = 1;
-            for (var i = 0; i < _zones.Length; i++)
+            int groundZone1 = 1;
+            int groundZone2 = 1;
+            int groundZone3 = 1;
+            int groundZone4 = 1;
+            int flyZone = 1;
+            for (var i = 0; i < _zones.Count; i++)
             {
                 // Skeleton like enemis: in the future implement also jump
-                if (_zones[i].GroundZone1_Normal == 0x7ff)
+                if (_zones[i].GroundZone1_Normal == int.MaxValue)
                 {
                     _zones[i].GroundZone1_Normal = groundZone1;
 
                     foreach (var box in GetAllReachableBoxes(i, 1, false))
                     {
-                        if (_zones[box].GroundZone1_Normal == 0x7ff) _zones[box].GroundZone1_Normal = groundZone1;
+                        if (_zones[box].GroundZone1_Normal == int.MaxValue) _zones[box].GroundZone1_Normal = groundZone1;
                     }
 
                     groundZone1++;
                 }
 
                 // Mummy like enemis: the simplest case
-                if (_zones[i].GroundZone2_Normal == 0x7ff)
+                if (_zones[i].GroundZone2_Normal == int.MaxValue)
                 {
                     _zones[i].GroundZone2_Normal = groundZone2;
 
                     foreach (var box in GetAllReachableBoxes(i, 2, false))
                     {
-                        if (_zones[box].GroundZone2_Normal == 0x7ff) _zones[box].GroundZone2_Normal = groundZone2;
+                        if (_zones[box].GroundZone2_Normal == int.MaxValue) _zones[box].GroundZone2_Normal = groundZone2;
                     }
 
                     groundZone2++;
                 }
 
                 // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
-                if (_zones[i].GroundZone3_Normal == 0x7ff)
+                if (_zones[i].GroundZone3_Normal == int.MaxValue)
                 {
                     _zones[i].GroundZone3_Normal = groundZone3;
 
                     foreach (var box in GetAllReachableBoxes(i, 3, false))
                     {
-                        if (_zones[box].GroundZone3_Normal == 0x7ff) _zones[box].GroundZone3_Normal = groundZone3;
+                        if (_zones[box].GroundZone3_Normal == int.MaxValue) _zones[box].GroundZone3_Normal = groundZone3;
                     }
 
                     groundZone3++;
                 }
 
                 // Baddy like enemis: they can jump, grab and monkey
-                if (_zones[i].GroundZone4_Normal == 0x7ff)
+                if (_zones[i].GroundZone4_Normal == int.MaxValue)
                 {
                     _zones[i].GroundZone4_Normal = groundZone4;
 
                     foreach (var box in GetAllReachableBoxes(i, 4, false))
                     {
-                        if (_zones[box].GroundZone4_Normal == 0x7ff) _zones[box].GroundZone4_Normal = groundZone4;
+                        if (_zones[box].GroundZone4_Normal == int.MaxValue) _zones[box].GroundZone4_Normal = groundZone4;
                     }
 
                     groundZone4++;
                 }
 
                 // Bat like enemis: they can fly everywhere, except into the water
-                if (_zones[i].FlyZone_Normal == 0x7ff)
+                if (_zones[i].FlyZone_Normal == int.MaxValue)
                 {
                     _zones[i].FlyZone_Normal = flyZone;
 
                     foreach (var box in GetAllReachableBoxes(i, 5, false))
                     {
-                        if (_zones[box].FlyZone_Normal == 0x7ff) _zones[box].FlyZone_Normal = flyZone;
+                        if (_zones[box].FlyZone_Normal == int.MaxValue) _zones[box].FlyZone_Normal = flyZone;
                     }
 
                     flyZone++;
@@ -135,86 +138,90 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
 
             // Flipped rooms------------------------------------------
-            ushort aGroundZone1 = 1;
-            ushort aGroundZone2 = 1;
-            ushort aGroundZone3 = 1;
-            ushort aGroundZone4 = 1;
-            ushort aFlyZone = 1;
-            for (var i = 0; i < _zones.Length; i++)
+            int aGroundZone1 = 1;
+            int aGroundZone2 = 1;
+            int aGroundZone3 = 1;
+            int aGroundZone4 = 1;
+            int aFlyZone = 1;
+            for (var i = 0; i < _zones.Count; i++)
             {
                 // Skeleton like enemis: in the future implement also jump
-                if (_zones[i].GroundZone1_Alternate == 0x7ff)
+                if (_zones[i].GroundZone1_Alternate == int.MaxValue)
                 {
                     _zones[i].GroundZone1_Alternate = aGroundZone1;
 
                     foreach (var box in GetAllReachableBoxes(i, 1, true))
                     {
-                        if (_zones[box].GroundZone1_Alternate == 0x7ff) _zones[box].GroundZone1_Alternate = aGroundZone1;
+                        if (_zones[box].GroundZone1_Alternate == int.MaxValue) _zones[box].GroundZone1_Alternate = aGroundZone1;
                     }
 
                     aGroundZone1++;
                 }
 
                 // Mummy like enemis: the simplest case
-                if (_zones[i].GroundZone2_Alternate == 0x7ff)
+                if (_zones[i].GroundZone2_Alternate == int.MaxValue)
                 {
                     _zones[i].GroundZone2_Alternate = aGroundZone2;
 
                     foreach (var box in GetAllReachableBoxes(i, 2, true))
                     {
-                        if (_zones[box].GroundZone2_Alternate == 0x7ff) _zones[box].GroundZone2_Alternate = aGroundZone2;
+                        if (_zones[box].GroundZone2_Alternate == int.MaxValue) _zones[box].GroundZone2_Alternate = aGroundZone2;
                     }
 
                     aGroundZone2++;
                 }
 
                 // Crocodile like enemis: like 1 & 2 but they can go inside water and swim
-                if (_zones[i].GroundZone3_Alternate == 0x7ff)
+                if (_zones[i].GroundZone3_Alternate == int.MaxValue)
                 {
                     _zones[i].GroundZone3_Alternate = aGroundZone3;
 
                     foreach (var box in GetAllReachableBoxes(i, 3, true))
                     {
-                        if (_zones[box].GroundZone3_Alternate == 0x7ff) _zones[box].GroundZone3_Alternate = aGroundZone3;
+                        if (_zones[box].GroundZone3_Alternate == int.MaxValue) _zones[box].GroundZone3_Alternate = aGroundZone3;
                     }
 
                     aGroundZone3++;
                 }
 
                 // Baddy like enemis: they can jump, grab and monkey
-                if (_zones[i].GroundZone4_Alternate == 0x7ff)
+                if (_zones[i].GroundZone4_Alternate == int.MaxValue)
                 {
                     _zones[i].GroundZone4_Alternate = aGroundZone4;
 
                     foreach (var box in GetAllReachableBoxes(i, 4, true))
                     {
-                        if (_zones[box].GroundZone4_Alternate == 0x7ff) _zones[box].GroundZone4_Alternate = aGroundZone4;
+                        if (_zones[box].GroundZone4_Alternate == int.MaxValue) _zones[box].GroundZone4_Alternate = aGroundZone4;
                     }
 
                     aGroundZone4++;
                 }
 
                 // Bat like enemis: they can fly everywhere, except into the water
-                if (_zones[i].FlyZone_Alternate == 0x7ff)
+                if (_zones[i].FlyZone_Alternate == int.MaxValue)
                 {
                     _zones[i].FlyZone_Alternate = aFlyZone;
 
                     foreach (var box in GetAllReachableBoxes(i, 5, true))
                     {
-                        if (_zones[box].FlyZone_Alternate == 0x7ff) _zones[box].FlyZone_Alternate = aFlyZone;
+                        if (_zones[box].FlyZone_Alternate == int.MaxValue) _zones[box].FlyZone_Alternate = aFlyZone;
                     }
 
                     aFlyZone++;
                 }
             }
 
-            ReportProgress(52, "    Number of boxes/zones: " + _boxes.Length);
-            ReportProgress(52, "    Number of overlaps: " + _overlaps.Length);
+            ReportProgress(52, "    Number of boxes/zones: " + _boxes.Count);
+            ReportProgress(52, "    Number of overlaps: " + _overlaps.Count);
         }
 
         private IEnumerable<int> GetAllReachableBoxes(int box, int zoneType, bool flipped)
         {
             var boxes = new List<int>();
+
+            // HACK: boxes with no overlaps have overlapIndex = -1
+            if (_boxes[box].OverlapIndex < 0)
+                return boxes;
 
             // This is a non-recursive version of the algorithm for finding all reachable boxes.
             // Avoid recursion all the times you can!
@@ -229,12 +236,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 var next = stack.Pop();
                 var last = false;
 
-                for (int i = _boxes[next].OverlapIndex & 0x3fff; i < _overlaps.Length && !last; i++)
+                for (int i = _boxes[next].OverlapIndex; i < _overlaps.Count && !last; i++)
                 {
                     int overlapIndex = i;
-                    last = (_overlaps[overlapIndex] & 0x8000) != 0;
+                    last = (_overlaps[overlapIndex].Flags & 0x8000) != 0;
 
-                    var boxIndex = _overlaps[overlapIndex] & 0x7ff;
+                    var boxIndex = _overlaps[overlapIndex].Box;
 
                     var add = false;
 

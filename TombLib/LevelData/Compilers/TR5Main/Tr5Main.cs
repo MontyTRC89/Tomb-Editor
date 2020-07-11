@@ -135,31 +135,31 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.WriteBlockArray(_soundSources);
 
                 // Write pathfinding data
-                writer.Write((uint)_boxes.Length);
+                writer.Write((uint)_boxes.Count);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write((uint)_overlaps.Length);
+                writer.Write((uint)_overlaps.Count);
                 writer.WriteBlockArray(_overlaps);
 
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone1_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone2_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 // Write animated textures

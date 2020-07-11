@@ -302,4 +302,58 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public List<tr5main_polygon> Polygons = new List<tr5main_polygon>();
         public Dictionary<tr5main_material, tr5main_bucket> Buckets = new Dictionary<tr5main_material, tr5main_bucket>();
     }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_box
+    {
+        public int Zmin;
+        public int Zmax;
+        public int Xmin;
+        public int Xmax;
+        public int TrueFloor;
+        public int OverlapIndex;
+        public int Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class tr5main_overlap
+    {
+        public int Box;
+        public int Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class tr5main_zone
+    {
+        public int GroundZone1_Normal;
+        public int GroundZone2_Normal;
+        public int GroundZone3_Normal;
+        public int GroundZone4_Normal;
+        public int FlyZone_Normal;
+        public int GroundZone1_Alternate;
+        public int GroundZone2_Alternate;
+        public int GroundZone3_Alternate;
+        public int GroundZone4_Alternate;
+        public int FlyZone_Alternate;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_camera
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public int Room;
+        public int Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_sound_source
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public int SoundID;
+        public int Flags;
+    }
 }

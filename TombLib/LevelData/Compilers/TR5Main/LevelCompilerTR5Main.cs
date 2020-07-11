@@ -41,7 +41,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
 
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
-        private byte[] _texture32Data;
         private readonly List<ushort> _floorData = new List<ushort>();
         private readonly List<tr5main_mesh> _meshes = new List<tr5main_mesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
@@ -56,12 +55,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
         private List<tr5main_sprite_texture> _spriteTextures = new List<tr5main_sprite_texture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();
-        private readonly List<tr_camera> _cameras = new List<tr_camera>();
+        private readonly List<tr5main_camera> _cameras = new List<tr5main_camera>();
         private readonly List<tr4_flyby_camera> _flyByCameras = new List<tr4_flyby_camera>();
-        private readonly List<tr_sound_source> _soundSources = new List<tr_sound_source>();
-        private tr_box[] _boxes = new tr_box[0];
-        private ushort[] _overlaps = new ushort[0];
-        private tr_zone[] _zones = new tr_zone[0];
+        private readonly List<tr5main_sound_source> _soundSources = new List<tr5main_sound_source>();
+        private List<tr5main_box> _boxes = new List<tr5main_box>();
+        private List<tr5main_overlap> _overlaps = new List<tr5main_overlap>();
+        private List<tr5main_zone> _zones = new List<tr5main_zone>();
 
         private readonly List<tr_item> _items = new List<tr_item>();
         private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
@@ -126,8 +125,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
             // Return statistics
             return new CompilerStatistics
             {
-                BoxCount = _boxes.Length,
-                OverlapCount = _overlaps.Length,
+                BoxCount = _boxes.Count,
+                OverlapCount = _overlaps.Count,
                 ObjectTextureCount = _textureInfoManager.TexInfoCount,
             };
         }
@@ -174,7 +173,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 }
 
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                _soundSources.Add(new tr_sound_source
+                _soundSources.Add(new tr5main_sound_source
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
@@ -214,13 +213,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
             foreach (var instance in _cameraTable.Keys)
             {
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                _cameras.Add(new tr_camera
+                _cameras.Add(new tr5main_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
-                    Flags = instance.Fixed ? (ushort)1 : (ushort)0
+                    Flags = instance.Fixed ? 1 : 0
                 });
             }
 
@@ -233,15 +232,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
 
-                int boxIndex = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7FF0) >> 4);
+                int boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
                 
-                _cameras.Add(new tr_camera
+                _cameras.Add(new tr5main_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = instance.Strength,
-                    Flags = (ushort)boxIndex
+                    Flags = boxIndex
                 });
             }
 
