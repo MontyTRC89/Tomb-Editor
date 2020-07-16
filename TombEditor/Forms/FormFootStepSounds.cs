@@ -52,10 +52,10 @@ namespace TombEditor.Forms
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
 
             // Initialize texture map
-            if (editor.SelectedTexture.TextureIsInvisible)
-                textureMap.ResetVisibleTexture(texture);
-            else
+            if (editor.SelectedTexture.Texture == texture)
                 textureMap.ShowTexture(editor.SelectedTexture);
+            else
+                textureMap.ResetVisibleTexture(texture);
 
             // Add texture sounds to combo box
             foreach (TextureFootStepSound sound in Enum.GetValues(typeof(TextureFootStepSound)))
