@@ -11,6 +11,7 @@ Tomb Editor:
  * Prevent loading MAIN.SFX as sound catalog.
 
 TombIDE:
+ * Assign sound sample path correctly for levels generated with TombIDE.
  * Fix exceptions while using F1 key outside of section blocks.
  
 WadTool:
