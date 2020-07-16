@@ -172,10 +172,10 @@ namespace TombEditor.ToolWindows
             {
                 bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
 
-                butAddBoxVolume.Enabled = isT5M;
+                butAddBoxVolume.Enabled    = isT5M;
                 butAddSphereVolume.Enabled = isT5M;
-                butAddPrismVolume.Enabled = isT5M;
-                butDrawVolumes.Enabled = isT5M;
+                butAddPrismVolume.Enabled  = isT5M;
+                butDrawVolumes.Visible     = isT5M; // We may safely hide it because it's not customizable
 
                 butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
             }
