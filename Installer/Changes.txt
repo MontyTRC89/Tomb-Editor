@@ -4,6 +4,7 @@ Tomb Editor:
  * Fix MQO importer to accept spaces in texture paths.
  * Fix possible issues with seamless texturing.
  * Fix texture coordinates in TR2-3.
+ * Fix texture sounds window picking up wrong texture set if texture from other set is selected.
  * Fix imported geometry light flag being overwritten by static light flag.
  * Allow selecting ghost blocks embedded into walls.
  * Add warnings for box/overlap limits.
