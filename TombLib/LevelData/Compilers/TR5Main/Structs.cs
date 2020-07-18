@@ -51,6 +51,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public ImageC ColorMap;
         public ImageC NormalMap;
         public bool HasNormalMap;
+        public bool CustomNormalMap;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

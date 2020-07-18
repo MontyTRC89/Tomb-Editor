@@ -145,6 +145,11 @@ namespace TombLib.Utils
 
         public ColorC GetPixel(int x, int y)
         {
+            if (x < 0) x = 0;
+            if (y < 0) y = 0;
+            if (x >= Width) x = Width - 1;
+            if (y >= Height) y = Height - 1;
+
             int index = (y * Width + x) * PixelSize;
             if (index + 3 >= _data.Length || index < 0)
                 return new ColorC(255, 0, 0);
@@ -249,25 +254,30 @@ namespace TombLib.Utils
 
         public void Sobel()
         {
-            var normalMap = ImageC.CreateNew(Width, Height);
-            float strength = 8.0f;
+            Sobel(0, 0, Width, Height);
+        }
 
-            for (int x = 1; x < Width - 1; x++)
+        public void Sobel(int posX, int posY, int width, int height)
+        {
+            var normalMap = ImageC.CreateNew(width, height);
+            //float strength = 8.0f;
+
+            for (int x = 0; x < Width; x++)
             {
-                for (int y = 1; y < Height - 1; y++)
+                for (int y = 0; y < Height; y++)
                 {
                     // Get all surrounding pixels
-                    float tl = GetPixel(x - 1, y - 1).R;
-                    float l = GetPixel(x - 1, y).R;
-                    float bl = GetPixel(x - 1, y + 1).R;
-                    float t = GetPixel(x, y - 1).R;
-                    float b = GetPixel(x, y + 1).R;
-                    float tr = GetPixel(x + 1, y - 1).R;
-                    float r = GetPixel(x + 1, y).R;
-                    float br = GetPixel(x + 1, y + 1).R;
+                    float tl = GetPixel(posX+x - 1, posY + y - 1).R;
+                    float l = GetPixel(posX + x - 1, posX + y).R;
+                    float bl = GetPixel(posX + x - 1, posX + y + 1).R;
+                    float t = GetPixel(posX + x, posX + y - 1).R;
+                    float b = GetPixel(posX + x, posX + y + 1).R;
+                    float tr = GetPixel(posX + x + 1, posX + y - 1).R;
+                    float r = GetPixel(posX + x + 1, posX + y).R;
+                    float br = GetPixel(posX + x + 1, posX + y + 1).R;
 
                     // Do Sobel filter
-                    double dX = (tr + 2.0 * r + br) - (tl + 2.0 * l + bl);
+                    /*double dX = (tr + 2.0 * r + br) - (tl + 2.0 * l + bl);
                     double dY = (bl + 2.0 * b + br) - (tl + 2.0 * t + tr);
                     double dZ = 1.0 / strength;
 
@@ -277,13 +287,22 @@ namespace TombLib.Utils
                     // Scale the result in 0 ... 255 range
                     byte red = (byte)((vec.X + 1.0) * (255.0 / 2.0));
                     byte green = (byte)((vec.Y + 1.0) * (255.0 / 2.0));
-                    byte blue = (byte)((vec.Z + 1.0) * (255.0 / 2.0));
+                    byte blue = (byte)((vec.Z + 1.0) * (255.0 / 2.0));*/
+
+                    double vert = (b - t) * 2.0 + br + bl - tr - tl;
+                    double horiz = (r - l) * 2.0 + tr + br - tl - bl;
+                    double depth = 1.0 / 2.0f;
+                    double scale = 127.0 / Math.Sqrt(vert * vert + horiz * horiz + depth * depth);
+
+                    byte red = (byte)(128 - horiz * scale);
+                    byte green = (byte)(128 + vert * scale);
+                    byte blue = (byte)(128 + depth * scale);
 
                     normalMap.SetPixel(x, y, new ColorC(red, green, blue));
                 }
             }
 
-            CopyFrom(0, 0, normalMap);
+            CopyFrom(posX, posY, normalMap, 0, 0, width, height);
         }
 
         public VectorInt2 Size => new VectorInt2(Width, Height);
