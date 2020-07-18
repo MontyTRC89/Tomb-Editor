@@ -247,6 +247,45 @@ namespace TombLib.Utils
             ApplyKernel(xStart, yStart, width, height, weight, kernel);
         }
 
+        public void Sobel()
+        {
+            var normalMap = ImageC.CreateNew(Width, Height);
+            float strength = 8.0f;
+
+            for (int x = 1; x < Width - 1; x++)
+            {
+                for (int y = 1; y < Height - 1; y++)
+                {
+                    // Get all surrounding pixels
+                    float tl = GetPixel(x - 1, y - 1).R;
+                    float l = GetPixel(x - 1, y).R;
+                    float bl = GetPixel(x - 1, y + 1).R;
+                    float t = GetPixel(x, y - 1).R;
+                    float b = GetPixel(x, y + 1).R;
+                    float tr = GetPixel(x + 1, y - 1).R;
+                    float r = GetPixel(x + 1, y).R;
+                    float br = GetPixel(x + 1, y + 1).R;
+
+                    // Do Sobel filter
+                    double dX = (tr + 2.0 * r + br) - (tl + 2.0 * l + bl);
+                    double dY = (bl + 2.0 * b + br) - (tl + 2.0 * t + tr);
+                    double dZ = 1.0 / strength;
+
+                    Vector3 vec = new Vector3((float)dX, (float)dY, (float)dZ);
+                    vec = Vector3.Normalize(vec);
+
+                    // Scale the result in 0 ... 255 range
+                    byte red = (byte)((vec.X + 1.0) * (255.0 / 2.0));
+                    byte green = (byte)((vec.Y + 1.0) * (255.0 / 2.0));
+                    byte blue = (byte)((vec.Z + 1.0) * (255.0 / 2.0));
+
+                    normalMap.SetPixel(x, y, new ColorC(red, green, blue));
+                }
+            }
+
+            CopyFrom(0, 0, normalMap);
+        }
+
         public VectorInt2 Size => new VectorInt2(Width, Height);
 
         public int DataSize => Width * Height * PixelSize;

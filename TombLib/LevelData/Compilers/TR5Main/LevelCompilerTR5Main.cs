@@ -44,14 +44,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private readonly List<ushort> _floorData = new List<ushort>();
         private readonly List<tr5main_mesh> _meshes = new List<tr5main_mesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
-        private readonly List<tr_animation> _animations = new List<tr_animation>();
+        private readonly List<tr5main_animation> _animations = new List<tr5main_animation>();
         private readonly List<tr_state_change> _stateChanges = new List<tr_state_change>();
         private readonly List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
         private readonly List<short> _animCommands = new List<short>();
         private readonly List<int> _meshTrees = new List<int>();
         private readonly List<short> _frames = new List<short>();
-        private List<tr_moveable> _moveables = new List<tr_moveable>();
-        private readonly List<tr_staticmesh> _staticMeshes = new List<tr_staticmesh>();
+        private List<tr5main_moveable> _moveables = new List<tr5main_moveable>();
+        private readonly List<tr5main_staticmesh> _staticMeshes = new List<tr5main_staticmesh>();
 
         private List<tr5main_sprite_texture> _spriteTextures = new List<tr5main_sprite_texture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();

@@ -873,8 +873,8 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_staticmesh
     {
-        public int ObjectID;
-        public short Mesh;
+        public uint ObjectID;
+        public ushort Mesh;
         public tr_bounding_box VisibilityBox;
         public tr_bounding_box CollisionBox;
         public ushort Flags;
@@ -894,12 +894,12 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_moveable
     {
-        public int ObjectID;
-        public short NumMeshes;
-        public short StartingMesh;
-        public int MeshTree;
-        public int FrameOffset;
-        public short Animation;
+        public uint ObjectID;
+        public ushort NumMeshes;
+        public ushort StartingMesh;
+        public uint MeshTree;
+        public uint FrameOffset;
+        public ushort Animation;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -950,7 +950,7 @@ namespace TombLib.LevelData.Compilers
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr_animation
     {
-        public int FrameOffset;
+        public uint FrameOffset;
         public byte FrameRate;
         public byte FrameSize;
         public ushort StateID;

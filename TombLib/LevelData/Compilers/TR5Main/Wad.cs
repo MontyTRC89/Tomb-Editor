@@ -105,7 +105,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             // Add vertices components
             foreach (var pos in oldMesh.VerticesPositions)
+            {
                 newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
+                newMesh.Vertices.Add(new tr5main_vertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
+            }
             foreach (var normal in oldMesh.VerticesNormals)
                 newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
             if (useShades)
@@ -156,7 +159,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     var result = _textureInfoManager.AddTexture(poly.Texture, destination, false, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newPoly = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode);
+                    newPoly = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, null);
                 }
                 else
                 {
@@ -165,10 +168,22 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     var result = _textureInfoManager.AddTexture(poly.Texture, destination, true, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newPoly = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
+                    newPoly = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, null);
                 }
 
                 newMesh.Polygons.Add(newPoly);
+
+                newMesh.Vertices[index0].Polygons.Add(new NormalHelper(newPoly));
+                newMesh.Vertices[index1].Polygons.Add(new NormalHelper(newPoly));
+                newMesh.Vertices[index2].Polygons.Add(new NormalHelper(newPoly));
+                if (poly.Shape == WadPolygonShape.Quad)
+                    newMesh.Vertices[index3].Polygons.Add(new NormalHelper(newPoly));
+
+                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[0]]);
+                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[1]]);
+                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[2]]);
+                if (poly.Shape == WadPolygonShape.Quad)
+                    newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[3]]);
             }
 
             _meshes.Add(newMesh);
@@ -196,16 +211,86 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 if (poly.Shape == tr5main_polygon_shape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
+                    {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.Tangents.Add(Vector3.Zero);
+                        poly.Bitangents.Add(Vector3.Zero);
+                    }
 
                     bucket.Polygons.Add(poly);
                 }
                 else
                 {
                     for (int n = 0; n < 3; n++)
+                    {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.Tangents.Add(poly.Tangent);
+                        poly.Bitangents.Add(poly.Bitangent);
+                    }
 
                     bucket.Polygons.Add(poly);
+                }
+            }
+
+            // Calculate tangents and bitangents
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                var vertex = mesh.Vertices[i];
+                var polygons = vertex.Polygons;
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+
+                    var e1 = mesh.Positions[poly.Polygon.Indices[1]] - mesh.Positions[poly.Polygon.Indices[0]];
+                    var e2 = mesh.Positions[poly.Polygon.Indices[2]] - mesh.Positions[poly.Polygon.Indices[0]];
+
+                    var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
+                    var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
+
+                    float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
+                    poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
+                    poly.Polygon.Bitangent = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                }
+            }
+
+            // Average everything
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                var vertex = mesh.Vertices[i];
+                var polygons = vertex.Polygons;
+
+                var tangent = Vector3.Zero;
+                var bitangent = Vector3.Zero;
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+                    tangent += poly.Polygon.Tangent;
+                    bitangent += poly.Polygon.Bitangent;
+                }
+
+                if (polygons.Count > 0)
+                {
+                    tangent = Vector3.Normalize(tangent / (float)polygons.Count);
+                    bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
+                }
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+
+                    // TODO: for now we smooth all tangents and bitangents
+                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
+                    {
+                        int index = poly.Polygon.Indices[k];
+                        if (index == i)
+                        {
+                            poly.Polygon.Tangents[k] = tangent;
+                            poly.Polygon.Bitangents[k] = bitangent;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -278,7 +363,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             int lastAnimDispatch = 0;
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
-                var newMoveable = new tr_moveable();
+                var newMoveable = new tr5main_moveable();
                 newMoveable.Animation = (short)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
                 newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
@@ -289,7 +374,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
-                    var newAnimation = new tr_animation();
+                    var newAnimation = new tr5main_animation();
                     var animationHelper = animationDictionary[oldAnimation];
 
                     // Calculate accelerations from velocities
@@ -474,7 +559,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
-                var newStaticMesh = new tr_staticmesh();
+                var newStaticMesh = new tr5main_staticmesh();
 
                 newStaticMesh.ObjectID = checked((int)oldStaticMesh.Id.TypeId);
 
@@ -498,11 +583,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.Z))
                 };
 
-                if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-                    newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
-                else
-                    newStaticMesh.Flags = 2; // bit 0: no collision, bit 1: visibility
-
+                
+                newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh

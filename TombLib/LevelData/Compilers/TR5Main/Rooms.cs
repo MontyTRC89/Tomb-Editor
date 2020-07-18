@@ -21,7 +21,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private void BuildRooms()
         {
             ReportProgress(5, "Lighting Rooms");
-            Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
+            Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) =>
+            {
                 room.RebuildLighting(!_level.Settings.FastMode);
             });
 
@@ -357,14 +358,24 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                         }
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                        roomPolygons.Add(result.CreateTr5MainPolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
-                                                         (byte)texture.BlendMode));
+                                        var poly = result.CreateTr5MainPolygon4(new int[] { vertex0Index, vertex1Index, vertex2Index, vertex3Index },
+                                                         (byte)texture.BlendMode, roomVertices);
+                                        roomPolygons.Add(poly);
+                                        roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex3Index].Polygons.Add(new NormalHelper(poly));
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                            roomPolygons.Add(result.CreateTr5MainPolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
-                                                            (byte)texture.BlendMode));
+                                            poly = result.CreateTr5MainPolygon4(new int[] { vertex3Index, vertex2Index, vertex1Index, vertex0Index },
+                                                            (byte)texture.BlendMode, roomVertices);
+                                            roomPolygons.Add(poly);
+                                            roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex3Index].Polygons.Add(new NormalHelper(poly));
                                         }
                                         i += 3;
                                     }
@@ -378,14 +389,22 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2], 2);
 
                                         var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                        roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        (byte)texture.BlendMode));
+                                        var poly = result.CreateTr5MainPolygon3(new int[] { vertex0Index, vertex1Index, vertex2Index },
+                                                        (byte)texture.BlendMode, roomVertices);
+                                        roomPolygons.Add(poly);
+                                        roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
+                                        roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
                                         if (texture.DoubleSided)
                                         {
                                             texture.Mirror();
                                             result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                            roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
-                                                            (byte)texture.BlendMode));
+                                            poly = result.CreateTr5MainPolygon3(new int[] { vertex2Index, vertex1Index, vertex0Index },
+                                                            (byte)texture.BlendMode, roomVertices);
+                                            roomPolygons.Add(poly);
+                                            roomVertices[vertex0Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex1Index].Polygons.Add(new NormalHelper(poly));
+                                            roomVertices[vertex2Index].Polygons.Add(new NormalHelper(poly));
                                         }
                                     }
                                 }
@@ -480,16 +499,19 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
                                 {
                                     var result = _mergedStaticMeshTextureInfos[poly];
-                                    var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
+                                    var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, roomVertices);
                                     roomPolygons.Add(tri);
                                 }
                                 else
                                 {
                                     FixWadTextureCoordinates(ref poly.Texture);
                                     var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, true);
-                                    var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode);
+                                    var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, roomVertices);
                                     roomPolygons.Add(tri);
                                     _mergedStaticMeshTextureInfos.Add(poly, result);
+                                    roomVertices[index0].Polygons.Add(new NormalHelper(tri));
+                                    roomVertices[index1].Polygons.Add(new NormalHelper(tri));
+                                    roomVertices[index2].Polygons.Add(new NormalHelper(tri));
                                 }
                             }
                             else
@@ -497,16 +519,20 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
                                 {
                                     var result = _mergedStaticMeshTextureInfos[poly];
-                                    var quad = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode);
+                                    var quad = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, roomVertices);
                                     roomPolygons.Add(quad);
                                 }
                                 else
                                 {
                                     FixWadTextureCoordinates(ref poly.Texture);
                                     var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, false);
-                                    var quad = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode);
+                                    var quad = result.CreateTr5MainPolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, roomVertices);
                                     roomPolygons.Add(quad);
                                     _mergedStaticMeshTextureInfos.Add(poly, result);
+                                    roomVertices[index0].Polygons.Add(new NormalHelper(quad));
+                                    roomVertices[index1].Polygons.Add(new NormalHelper(quad));
+                                    roomVertices[index2].Polygons.Add(new NormalHelper(quad));
+                                    roomVertices[index3].Polygons.Add(new NormalHelper(quad));
                                 }
                             }
                         }
@@ -616,7 +642,11 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
                                 var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                roomPolygons.Add(result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode));
+                                var tri = result.CreateTr5MainPolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode, roomVertices);
+                                roomPolygons.Add(tri);
+                                roomVertices[index0].Polygons.Add(new NormalHelper(tri));
+                                roomVertices[index1].Polygons.Add(new NormalHelper(tri));
+                                roomVertices[index2].Polygons.Add(new NormalHelper(tri));
                             }
                         }
 
@@ -626,6 +656,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 newRoom.Vertices = roomVertices;
                 newRoom.Polygons = roomPolygons;
+
+                // Now we need to build final normals, tangents, bitangents
             }
 
             // Build portals
@@ -675,7 +707,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             return newRoom;
         }
 
-        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<tr5main_vertex> roomVertices, 
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<tr5main_vertex> roomVertices,
             Vector3 Position, Vector3 color, int index)
         {
             var trVertex = new tr5main_vertex();
@@ -685,9 +717,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
             trVertex.IsOnPortal = false;
             trVertex.IndexInPoly = index;
 
+            int vertexIndex;
+            if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
+                return vertexIndex;
+
             //return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
-            int vertexIndex = roomVertices.Count;
+            vertexIndex = roomVertices.Count;
             roomVertices.Add(trVertex);
+            roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
             return vertexIndex;
         }
 
@@ -1532,13 +1569,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
         private void PrepareRoomBuckets(tr5main_room room)
         {
+            // Add main vertex channels
             foreach (var vertex in room.Vertices)
             {
                 room.Positions.Add(vertex.Position);
-                room.Normals.Add(vertex.Normal);
                 room.Colors.Add(vertex.Color);
             }
 
+            // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
             room.Buckets = new Dictionary<tr5main_material, tr5main_bucket>(new tr5main_material.Tr5MainMaterialComparer());
             foreach (var poly in room.Polygons)
@@ -1551,16 +1589,93 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 if (poly.Shape == tr5main_polygon_shape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
+                    {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.Normals.Add(poly.Normal);
+                        poly.Tangents.Add(Vector3.Zero);
+                        poly.Bitangents.Add(Vector3.Zero);
+                    }
 
                     bucket.Polygons.Add(poly);
+
                 }
                 else
                 {
                     for (int n = 0; n < 3; n++)
+                    {
                         poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.Normals.Add(poly.Normal);
+                        poly.Tangents.Add(Vector3.Zero);
+                        poly.Bitangents.Add(Vector3.Zero);
+                    }
 
                     bucket.Polygons.Add(poly);
+                }
+            }
+
+            // Calculate tangents and bitangents
+            for (int i = 0; i < room.Vertices.Count; i++)
+            {
+                var vertex = room.Vertices[i];
+                var polygons = vertex.Polygons;
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+
+                    var e1 = room.Vertices[poly.Polygon.Indices[1]].Position - room.Vertices[poly.Polygon.Indices[0]].Position;
+                    var e2 = room.Vertices[poly.Polygon.Indices[2]].Position - room.Vertices[poly.Polygon.Indices[0]].Position;
+
+                    var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
+                    var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
+
+                    float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
+                    poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
+                    poly.Polygon.Bitangent = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                }
+            }
+
+            // Average everything
+            for (int i = 0; i < room.Vertices.Count; i++)
+            {
+                var vertex = room.Vertices[i];
+                var polygons = vertex.Polygons;
+
+                var normal = Vector3.Zero;
+                var tangent = Vector3.Zero;
+                var bitangent = Vector3.Zero;
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+                    normal += poly.Polygon.Normal;
+                    tangent += poly.Polygon.Tangent;
+                    bitangent += poly.Polygon.Bitangent;
+                }
+
+                if (polygons.Count > 0)
+                {
+                    normal = Vector3.Normalize(normal / (float)polygons.Count);
+                    tangent = Vector3.Normalize(tangent / (float)polygons.Count);
+                    bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
+                }
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+
+                    // TODO: for now we smooth all normals
+                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
+                    {
+                        int index = poly.Polygon.Indices[k];
+                        if (index == i)
+                        {
+                            poly.Polygon.Normals[k] = normal;
+                            poly.Polygon.Tangents[k] = tangent;
+                            poly.Polygon.Bitangents[k] = bitangent;
+                            break;
+                        }
+                    }
                 }
             }
         }

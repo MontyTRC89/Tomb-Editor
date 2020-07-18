@@ -94,18 +94,18 @@ namespace TombLib.LevelData.Compilers.Util
 
         public int NumRoomPages { get; private set; }
         public ImageC RoomsPagesPacked { get; private set; }
-        public List<ImageC> RoomsAtlas { get; private set; }
+        public List<tr5main_atlas> RoomsAtlas { get; private set; }
 
         public int NumObjectsPages { get; private set; }
         public ImageC ObjectsPagesPacked { get; private set; }
 
         public int NumMoveablesPages { get; private set; }
         public ImageC MoveablesPagesPacked { get; private set; }
-        public List<ImageC> MoveablesAtlas { get; private set; }
+        public List<tr5main_atlas> MoveablesAtlas { get; private set; }
 
         public int NumStaticsPages { get; private set; }
         public ImageC StaticsPagesPacked { get; private set; }
-        public List<ImageC> StaticsAtlas { get; private set; }
+        public List<tr5main_atlas> StaticsAtlas { get; private set; }
 
         public int NumBumpPages { get; private set; }
         public ImageC BumpPagesPacked { get; private set; }
@@ -137,7 +137,9 @@ namespace TombLib.LevelData.Compilers.Util
         {
             public int Atlas { get; set; }
             public VectorInt2 Position { get; set; }
-            public ImageC Image { get; set; }
+            public ImageC ColorMap { get; set; }
+            public ImageC NormalMap { get; set; }
+            public bool HasNormalMap;
         }
 
         // ChildTextureArea is a simple enclosed relative texture area with stripped down parameters
@@ -713,7 +715,7 @@ namespace TombLib.LevelData.Compilers.Util
                 return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
             }
 
-            public tr5main_polygon CreateTr5MainPolygon3(int[] indices, byte blendMode)
+            public tr5main_polygon CreateTr5MainPolygon3(int[] indices, byte blendMode, List<tr5main_vertex> vertices)
             {
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -739,10 +741,18 @@ namespace TombLib.LevelData.Compilers.Util
                 polygon.BlendMode = blendMode;
                 polygon.Animated = Animated;
 
+                if (vertices != null)
+                {
+                    // Calculate the normal
+                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+                    polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+                }
+
                 return polygon;
             }
 
-            public tr5main_polygon CreateTr5MainPolygon4(int[] indices, byte blendMode)
+            public tr5main_polygon CreateTr5MainPolygon4(int[] indices, byte blendMode, List<tr5main_vertex> vertices)
             {
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -768,6 +778,14 @@ namespace TombLib.LevelData.Compilers.Util
                 polygon.TextureId = objectTextureIndex;
                 polygon.BlendMode = blendMode;
                 polygon.Animated = Animated;
+
+                if (vertices != null)
+                {
+                    // Calculate the normal
+                    Vector3 e1 = vertices[polygon.Indices[1]].Position - vertices[polygon.Indices[0]].Position;
+                    Vector3 e2 = vertices[polygon.Indices[2]].Position - vertices[polygon.Indices[0]].Position;
+                    polygon.Normal = Vector3.Normalize(Vector3.Cross(e1, e2));
+                }
 
                 return polygon;
             }
@@ -1296,145 +1314,155 @@ namespace TombLib.LevelData.Compilers.Util
             return image;
         }
 
-        private List<ImageC> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding = false)
+        private List<tr5main_atlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding = false)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
-            var colorMaps = new List<TexturePage>();
+            var texturePages = new List<TexturePage>();
             for (int i = 0; i < numPages; i++)
             {
-                colorMaps.Add(new TexturePage { Image = ImageC.CreateNew(256, 256) });
-            }
-            var bumpMaps = new List<TexturePage>();
-            for (int i = 0; i < numPages; i++)
-            {
-                bumpMaps.Add(new TexturePage { Image = ImageC.CreateNew(256, 256) });
+                texturePages.Add(new TexturePage { ColorMap = ImageC.CreateNew(256, 256) });
             }
 
             var actualPadding = (_padding == 0 && forceMinimumPadding) ? _minimumPadding : _padding;
             int x, y;
 
-            for (int i = 0; i < textures.Count; i++)
+            for (int b = 0; b < (bump ? 2 : 1); b++)
             {
-                var p = textures[i];
-                x = (int)p.Area.Start.X;
-                y = (int)p.Area.Start.Y;
-                var width = (int)p.Area.Width;
-                var height = (int)p.Area.Height;
-
-                var image = colorMaps[p.Page];
-                var bumpImg = bumpMaps[p.Page];
-
-                var destX = p.PositionInPage.X + p.Padding[0];
-                var destY = p.PositionInPage.Y + p.Padding[1];
-
-                if (p.SqueezeAndDuplicate)
+                for (int i = 0; i < textures.Count; i++)
                 {
-                    // If squeeze-and-duplicate approach is needed (UVRotate), use system drawing routines
-                    // to do high-quality bicubic resampling.
+                    var p = textures[i];
+                    x = (int)p.Area.Start.X;
+                    y = (int)p.Area.Start.Y;
+                    var width = (int)p.Area.Width;
+                    var height = (int)p.Area.Height;
 
-                    // Copy original region to new image
-                    var originalImage = ImageC.CreateNew(width, height);
-                    originalImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
+                    var image = texturePages[p.Page];
 
-                    // Make squeezed bitmap and put original one into it using bicubic resampling
-                    var destBitmap = new Bitmap(width, height / 2);
-                    using (var graphics = System.Drawing.Graphics.FromImage(destBitmap))
+                    var destX = p.PositionInPage.X + p.Padding[0];
+                    var destY = p.PositionInPage.Y + p.Padding[1];
+
+                    if (p.SqueezeAndDuplicate)
                     {
-                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
-                    }
+                        // If squeeze-and-duplicate approach is needed (UVRotate), use system drawing routines
+                        // to do high-quality bicubic resampling.
 
-                    // Twice copy squeezed image to original image
-                    var squeezedImage = ImageC.FromSystemDrawingImage(destBitmap);
-                    originalImage.CopyFrom(0, 0, squeezedImage, 0, 0, width, height / 2);
-                    originalImage.CopyFrom(0, height / 2, squeezedImage, 0, 0, width, height / 2);
+                        // Copy original region to new image
+                        var originalImage = ImageC.CreateNew(width, height);
+                        originalImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
 
-                    // Copy squeezed-and-duplicated image to texture map and add padding
-                    image.Image.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
-                    AddPadding(p, originalImage, image.Image, 0, actualPadding, 0, 0);
-                }
-                else
-                {
-                    image.Image.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
-                    AddPadding(p, p.Texture.Image, image.Image, 0, actualPadding);
-                }
-
-                // Do the bump map if needed
-
-                /*if (p.Texture is LevelTexture)
-                {
-                    var tex = (p.Texture as LevelTexture);
-                    var bumpX = destX;
-                    var bumpY = destY;
-
-                    // Try to copy custom bumpmaps
-                    if (!String.IsNullOrEmpty(tex.BumpPath))
-                    {
-                        if (!customBumpmaps.ContainsKey(tex.BumpPath))
+                        // Make squeezed bitmap and put original one into it using bicubic resampling
+                        var destBitmap = new Bitmap(width, height / 2);
+                        using (var graphics = System.Drawing.Graphics.FromImage(destBitmap))
                         {
-                            var potentialBumpImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
-
-                            // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
-
-                            if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
-                                customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
-                            else
-                            {
-                                _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
-                                customBumpmaps.Add(tex.BumpPath, ImageC.Black);
-                            }
+                            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            graphics.DrawImage(originalImage.ToBitmap(), 0, 0, destBitmap.Width, destBitmap.Height);
                         }
 
-                        bumpImg.Image.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
-                        AddPadding(p, bumpImg.Image, bumpImg.Image, 0, actualPadding, bumpX, bumpY);
+                        // Twice copy squeezed image to original image
+                        var squeezedImage = ImageC.FromSystemDrawingImage(destBitmap);
+                        originalImage.CopyFrom(0, 0, squeezedImage, 0, 0, width, height / 2);
+                        originalImage.CopyFrom(0, height / 2, squeezedImage, 0, 0, width, height / 2);
+
+                        // Copy squeezed-and-duplicated image to texture map and add padding
+                        image.ColorMap.CopyFrom(destX, destY, originalImage, 0, 0, width, height);
+                        AddPadding(p, originalImage, image.ColorMap, 0, actualPadding, 0, 0);
                     }
                     else
                     {
-                        var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
+                        image.ColorMap.CopyFrom(destX, destY, p.Texture.Image, x, y, width, height);
+                        AddPadding(p, p.Texture.Image, image.ColorMap, 0, actualPadding);
+                    }
 
-                        if (level != BumpMappingLevel.None)
+                    // Do the bump map if needed
+
+                    if (p.Texture is LevelTexture && b == 1)
+                    {
+                        var tex = (p.Texture as LevelTexture);
+                        var bumpX = destX;
+                        var bumpY = destY;
+
+                        // Try to copy custom bumpmaps
+                        if (!String.IsNullOrEmpty(tex.BumpPath))
                         {
-                            var bumpImage = ImageC.CreateNew(width, height);
-                            bumpImage.CopyFrom(0, 0, image.Image, destX, destY, width, height);
-
-                            int effectWeight = 0;
-                            int effectSize = 0;
-
-                            switch (level)
+                            if (!customBumpmaps.ContainsKey(tex.BumpPath))
                             {
-                                case BumpMappingLevel.Level1:
-                                    effectWeight = -2;
-                                    effectSize = 2;
-                                    break;
-                                case BumpMappingLevel.Level2:
-                                    effectWeight = -2;
-                                    effectSize = 3;
-                                    break;
-                                case BumpMappingLevel.Level3:
-                                    effectWeight = -1;
-                                    effectSize = 2;
-                                    break;
+                                var potentialBumpImage = ImageC.FromFile(_level.Settings.MakeAbsolute(tex.BumpPath));
+
+                                // Only assign bumpmap image if size is equal to texture image size, otherwise use dummy
+
+                                if (potentialBumpImage != null && potentialBumpImage.Size == tex.Image.Size)
+                                    customBumpmaps.Add(tex.BumpPath, potentialBumpImage);
+                                else
+                                {
+                                    _progressReporter.ReportWarn("Texture file '" + tex + "' has external bumpmap assigned which has different size and was ignored.");
+                                    customBumpmaps.Add(tex.BumpPath, ImageC.Black);
+                                }
                             }
 
-                            bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
+                            // Init the normal map if not done yet
+                            if (!image.HasNormalMap)
+                            {
+                                image.HasNormalMap = true;
+                                image.NormalMap = ImageC.CreateNew(256, 256);
+                            }
+                            image.NormalMap.CopyFrom(bumpX, bumpY, customBumpmaps[tex.BumpPath], x, y, width, height);
+                            //AddPadding(p, bumpImg.NormalMap, bumpImg.Image, 0, actualPadding, bumpX, bumpY);
+                        }
+                        else
+                        {
+                            var level = tex.GetBumpMappingLevelFromTexCoord(p.Area.GetMid());
 
-                            bumpImg.Image.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
-                            AddPadding(p, bumpImg.Image, bumpImg.Image, 0, actualPadding, bumpX, bumpY);
+                            if (level != BumpMappingLevel.None)
+                            {
+                                var bumpImage = ImageC.CreateNew(width, height);
+                                bumpImage.CopyFrom(0, 0, p.Texture.Image, x, y, width, height);
+
+                                int effectWeight = 0;
+                                int effectSize = 0;
+
+                                switch (level)
+                                {
+                                    case BumpMappingLevel.Level1:
+                                        effectWeight = -2;
+                                        effectSize = 2;
+                                        break;
+                                    case BumpMappingLevel.Level2:
+                                        effectWeight = -2;
+                                        effectSize = 3;
+                                        break;
+                                    case BumpMappingLevel.Level3:
+                                        effectWeight = -1;
+                                        effectSize = 2;
+                                        break;
+                                }
+
+                                // Init the normal map if not done yet
+                                if (!image.HasNormalMap)
+                                {
+                                    image.HasNormalMap = true;
+                                    image.NormalMap = ImageC.CreateNew(256, 256);
+                                }
+
+                                bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
+
+                                image.NormalMap.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
+                                AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
+                            }
                         }
                     }
-                }*/
+                }
             }
 
             // Calculate how many atlases we need
-            var atlasList = new List<ImageC>();
+            var atlasList = new List<tr5main_atlas>();
             int totalPages = numPages;
             int numAtlases = (int)Math.Floor((float)totalPages / PagesPerAtlas);
             if (totalPages % PagesPerAtlas != 0) numAtlases++;
 
             // Build a list of all packed pages in the previous step
-            var pages = colorMaps;
+            var pages = texturePages;
 
-            ImageC currentAtlas = new ImageC();
+            var currentAtlas = new tr5main_atlas();
             x = 0;
             y = 0;
             int pagesProcessed = 0;
@@ -1446,7 +1474,12 @@ namespace TombLib.LevelData.Compilers.Util
                 if (pagesProcessed == 0)
                 {
                     pagesPerAtlas = GetOptimalSizeForAtlas(pages.Count - pagesProcessed);
-                    currentAtlas = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    currentAtlas.ColorMap = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    if (page.HasNormalMap)
+                    {
+                        currentAtlas.HasNormalMap = true;
+                        currentAtlas.NormalMap = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    }
                     atlasList.Add(currentAtlas);
                 }
 
@@ -1463,7 +1496,12 @@ namespace TombLib.LevelData.Compilers.Util
                     x = 0;
                     y = 0;
                     pagesPerAtlas = GetOptimalSizeForAtlas(pages.Count - pagesProcessed);
-                    currentAtlas = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    currentAtlas.ColorMap = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    if (page.HasNormalMap)
+                    {
+                        currentAtlas.HasNormalMap = true;
+                        currentAtlas.NormalMap = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
+                    }
                     atlasList.Add(currentAtlas);
                 }
 
@@ -1472,7 +1510,9 @@ namespace TombLib.LevelData.Compilers.Util
                 page.Position = new VectorInt2(x, y);
 
                 // Copy the texture into the atlas
-                currentAtlas.CopyFrom(x * 256, y * 256, page.Image, 0, 0, 256, 256);
+                currentAtlas.ColorMap.CopyFrom(x * 256, y * 256, page.ColorMap, 0, 0, 256, 256);
+                if (page.HasNormalMap)
+                    currentAtlas.NormalMap.CopyFrom(x * 256, y * 256, page.NormalMap, 0, 0, 256, 256);
 
                 // Increment atlas position
                 x++;
@@ -1490,9 +1530,16 @@ namespace TombLib.LevelData.Compilers.Util
 
             for (int i = 0; i < textures.Count; i++)
             {
-                textures[i].AtlasIndex = colorMaps[textures[i].Page].Atlas;
-                textures[i].AtlasDimensions = atlasList[textures[i].AtlasIndex].Size;
-                textures[i].PositionInAtlas = colorMaps[textures[i].Page].Position;
+                textures[i].AtlasIndex = texturePages[textures[i].Page].Atlas;
+                textures[i].AtlasDimensions = atlasList[textures[i].AtlasIndex].ColorMap.Size;
+                textures[i].PositionInAtlas = texturePages[textures[i].Page].Position;
+            }
+
+            // Convert bump maps to normal maps
+            for (int i = 0; i < atlasList.Count; i++)
+            {
+                if (atlasList[i].HasNormalMap)
+                    atlasList[i].NormalMap.Sobel();
             }
 
             return atlasList;
@@ -1672,8 +1719,9 @@ namespace TombLib.LevelData.Compilers.Util
             {
                 // In TR5Main, we have only 4K texture atlases
                 // We pack pages like in old games, but then we pack them quickly in big atlases
-                RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, false, false);
-                //RoomsAtlas[0].Save("F:\\atlasROOMS.png");
+                RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false);
+                //RoomsAtlas[0].ColorMap.Save("F:\\atlasROOMS.png");
+                //RoomsAtlas[0].NormalMap.Save("F:\\atlasROOMS_Normals.png");
                 MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true);
                 //MoveablesAtlas[0].Save("F:\\atlasMOVEABLES.png");
                 StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true);

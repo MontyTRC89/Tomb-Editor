@@ -60,8 +60,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     writer.Write(mesh.Positions.Count);
                     foreach (var p in mesh.Positions)
                         writer.Write(p);
-                    foreach (var n in mesh.Normals)
-                        writer.Write(n);
                     foreach (var c in mesh.Colors)
                         writer.Write(c);
                     foreach (var b in mesh.Bones)
@@ -81,6 +79,12 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                 writer.Write(index);
                             foreach (var uv in poly.TextureCoordinates)
                                 writer.Write(uv);
+                            foreach (var n in poly.Normals)
+                                writer.Write(n);
+                            foreach (var t in poly.Tangents)
+                                writer.Write(t);
+                            foreach (var bt in poly.Bitangents)
+                                writer.Write(bt);
                         }
                     }
                 }
@@ -204,14 +208,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     writer.Write(_textureInfoManager.RoomsAtlas.Count);
                     foreach (var atlas in _textureInfoManager.RoomsAtlas)
                     {
-                        writer.Write(atlas.Width);
-                        writer.Write(atlas.Height);
+                        writer.Write(atlas.ColorMap.Width);
+                        writer.Write(atlas.ColorMap.Height);
                         using (var ms = new MemoryStream())
                         {
-                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            atlas.ColorMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                             var output = RemoveColorChunks(ms);
                             writer.Write((int)output.Length);
                             writer.Write(output.ToArray());
+                        }
+                        writer.Write(atlas.HasNormalMap);
+                        if (atlas.HasNormalMap)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                atlas.NormalMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                var output = RemoveColorChunks(ms);
+                                writer.Write((int)output.Length);
+                                writer.Write(output.ToArray());
+                            }
                         }
                     }
 
@@ -219,14 +234,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     writer.Write(_textureInfoManager.MoveablesAtlas.Count);
                     foreach (var atlas in _textureInfoManager.MoveablesAtlas)
                     {
-                        writer.Write(atlas.Width);
-                        writer.Write(atlas.Height);
+                        writer.Write(atlas.ColorMap.Width);
+                        writer.Write(atlas.ColorMap.Height);
                         using (var ms = new MemoryStream())
                         {
-                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            atlas.ColorMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                             var output = RemoveColorChunks(ms);
                             writer.Write((int)output.Length);
                             writer.Write(output.ToArray());
+                        }
+                        writer.Write(atlas.HasNormalMap);
+                        if (atlas.HasNormalMap)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                atlas.NormalMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                var output = RemoveColorChunks(ms);
+                                writer.Write((int)output.Length);
+                                writer.Write(output.ToArray());
+                            }
                         }
                     }
 
@@ -234,14 +260,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     writer.Write(_textureInfoManager.StaticsAtlas.Count);
                     foreach (var atlas in _textureInfoManager.StaticsAtlas)
                     {
-                        writer.Write(atlas.Width);
-                        writer.Write(atlas.Height);
+                        writer.Write(atlas.ColorMap.Width);
+                        writer.Write(atlas.ColorMap.Height);
                         using (var ms = new MemoryStream())
                         {
-                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            atlas.ColorMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                             var output = RemoveColorChunks(ms);
                             writer.Write((int)output.Length);
                             writer.Write(output.ToArray());
+                        }
+                        writer.Write(atlas.HasNormalMap);
+                        if (atlas.HasNormalMap)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                atlas.NormalMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                var output = RemoveColorChunks(ms);
+                                writer.Write((int)output.Length);
+                                writer.Write(output.ToArray());
+                            }
                         }
                     }
 

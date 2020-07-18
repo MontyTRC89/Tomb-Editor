@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TR5Main
 {
@@ -45,6 +46,14 @@ namespace TombLib.LevelData.Compilers.TR5Main
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class tr5main_atlas
+    {
+        public ImageC ColorMap;
+        public ImageC NormalMap;
+        public bool HasNormalMap;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct tr5main_collision_info
     {
         public tr5main_split_type Split;
@@ -72,9 +81,26 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public tr5main_polygon_shape Shape;
         public List<int> Indices = new List<int>();
         public List<Vector2> TextureCoordinates = new List<Vector2>();
+        public List<Vector3> Normals = new List<Vector3>();
+        public List<Vector3> Tangents = new List<Vector3>();
+        public List<Vector3> Bitangents = new List<Vector3>();
         public int TextureId;
         public byte BlendMode;
         public bool Animated;
+        public Vector3 Normal;
+        public Vector3 Tangent;
+        public Vector3 Bitangent;
+    }
+
+    public class NormalHelper
+    {
+        public tr5main_polygon Polygon;
+        public bool Smooth;
+
+        public NormalHelper(tr5main_polygon poly)
+        {
+            Polygon = poly;
+        }
     }
 
     public class tr5main_vertex
@@ -83,18 +109,21 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public Vector3 Normal;
         public Vector2 TextureCoords;
         public Vector3 Color;
+        public Vector3 Tangent;
+        public Vector3 Bitangent;
         public int Bone;
         public int Effects;
         public int IndexInPoly;
         public int OriginalIndex;
 
+        public List<NormalHelper> Polygons = new List<NormalHelper>();
         public bool IsOnPortal;
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        /*public static bool operator ==(tr5main_vertex first, tr5main_vertex second)
+        public static bool operator ==(tr5main_vertex first, tr5main_vertex second)
         {
-            return first.X == second.X && first.Y == second.Y && first.Z == second.Z;
+            return first.Position.X == second.Position.X && first.Position.Y == second.Position.Y && first.Position.Z == second.Position.Z;
         }
 
         public static bool operator !=(tr5main_vertex first, tr5main_vertex second)
@@ -116,8 +145,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
         public override int GetHashCode()
         {
-            return unchecked(X + Y * 695504311 + Z * 550048883);
-        }*/
+            return unchecked((int)Position.X + (int)Position.Y * 695504311 + (int)Position.Z * 550048883);
+        }
     }
 
     public class tr5main_material
@@ -126,7 +155,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         {
             public bool Equals(tr5main_material x, tr5main_material y)
             {
-                return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated);
+                return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping);
             }
 
             public int GetHashCode(tr5main_material obj)
@@ -137,6 +166,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     hash = hash * 23 + obj.Texture.GetHashCode();
                     hash = hash * 23 + obj.BlendMode.GetHashCode();
                     hash = hash * 23 + obj.Animated.GetHashCode();
+                    hash = hash * 23 + obj.NormalMapping.GetHashCode();
                     return hash;
                 }
             }
@@ -145,6 +175,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public int Texture;
         public byte BlendMode;
         public bool Animated;
+        public bool NormalMapping;
     }
 
     public class tr5main_bucket
@@ -164,6 +195,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public int NumDataWords;
         public List<Vector3> Positions = new List<Vector3>();
         public List<Vector3> Normals = new List<Vector3>();
+        public List<Vector3> Tangents = new List<Vector3>();
+        public List<Vector3> Bitangents = new List<Vector3>();
         public List<Vector3> Colors = new List<Vector3>();
         public List<tr5main_vertex> Vertices = new List<tr5main_vertex>();
         public Dictionary<tr5main_material, tr5main_bucket> Buckets;
@@ -217,9 +250,15 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         writer.Write(index);
                     foreach (var uv in poly.TextureCoordinates)
                         writer.Write(uv);
+                    foreach (var n in poly.Normals)
+                        writer.Write(n);
+                    foreach (var t in poly.Tangents)
+                        writer.Write(t);
+                    foreach (var bt in poly.Bitangents)
+                        writer.Write(bt);
                 }
-            }            
-    
+            }
+
             // Write portals
             writer.WriteBlock(Portals.Count);
             if (Portals.Count != 0)
@@ -301,6 +340,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public List<int> Bones = new List<int>();
         public List<tr5main_polygon> Polygons = new List<tr5main_polygon>();
         public Dictionary<tr5main_material, tr5main_bucket> Buckets = new Dictionary<tr5main_material, tr5main_bucket>();
+        public List<tr5main_vertex> Vertices = new List<tr5main_vertex>();
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -355,5 +395,70 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public int Z;
         public int SoundID;
         public int Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_staticmesh
+    {
+        public int ObjectID;
+        public short Mesh;
+        public tr_bounding_box VisibilityBox;
+        public tr_bounding_box CollisionBox;
+        public ushort Flags;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_moveable
+    {
+        public int ObjectID;
+        public short NumMeshes;
+        public short StartingMesh;
+        public int MeshTree;
+        public int FrameOffset;
+        public short Animation;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_animation
+    {
+        public int FrameOffset;
+        public byte FrameRate;
+        public byte FrameSize;
+        public ushort StateID;
+        public int Speed;
+        public int Accel;
+        public int SpeedLateral;
+        public int AccelLateral;
+        public ushort FrameStart;
+        public ushort FrameEnd;
+        public ushort NextAnimation;
+        public ushort NextFrame;
+        public ushort NumStateChanges;
+        public ushort StateChangeOffset;
+        public ushort NumAnimCommands;
+        public ushort AnimCommand;
+
+        public void Write(BinaryWriterEx writer, Level level)
+        {
+            writer.Write(FrameOffset);
+            writer.Write(FrameRate);
+            writer.Write(FrameSize);
+            writer.Write(StateID);
+            writer.Write(Speed);
+            writer.Write(Accel);
+            if (level.Settings.GameVersion >= TRVersion.Game.TR4)
+            {
+                writer.Write(SpeedLateral);
+                writer.Write(AccelLateral);
+            }
+            writer.Write(FrameStart);
+            writer.Write(FrameEnd);
+            writer.Write(NextAnimation);
+            writer.Write(NextFrame);
+            writer.Write(NumStateChanges);
+            writer.Write(StateChangeOffset);
+            writer.Write(NumAnimCommands);
+            writer.Write(AnimCommand);
+        }
     }
 }
