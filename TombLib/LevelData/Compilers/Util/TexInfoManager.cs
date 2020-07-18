@@ -1723,8 +1723,8 @@ namespace TombLib.LevelData.Compilers.Util
                 // In TR5Main, we have only 4K texture atlases
                 // We pack pages like in old games, but then we pack them quickly in big atlases
                 RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false);
-                RoomsAtlas[0].ColorMap.Save("F:\\atlasROOMS.png");
-                RoomsAtlas[0].NormalMap.Save("F:\\atlasROOMS_Normals.png");
+                //RoomsAtlas[0].ColorMap.Save("F:\\atlasROOMS.png");
+                //RoomsAtlas[0].NormalMap.Save("F:\\atlasROOMS_Normals.png");
                 MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true);
                 //MoveablesAtlas[0].Save("F:\\atlasMOVEABLES.png");
                 StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true);
