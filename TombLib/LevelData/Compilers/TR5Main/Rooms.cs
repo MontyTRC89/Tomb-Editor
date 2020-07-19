@@ -1631,7 +1631,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                     float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
                     poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
-                    poly.Polygon.Bitangent = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                    poly.Polygon.Bitangent = Vector3.Cross(poly.Polygon.Normal, poly.Polygon.Tangent); // Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
                 }
             }
 
@@ -1641,23 +1641,24 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 var vertex = room.Vertices[i];
                 var polygons = vertex.Polygons;
 
+                //TODO: tangents and bitangents must be averaged? It seems that no
                 var normal = Vector3.Zero;
-                var tangent = Vector3.Zero;
-                var bitangent = Vector3.Zero;
+                //var tangent = Vector3.Zero;
+                //var bitangent = Vector3.Zero;
 
                 for (int j = 0; j < polygons.Count; j++)
                 {
                     var poly = polygons[j];
                     normal += poly.Polygon.Normal;
-                    tangent += poly.Polygon.Tangent;
-                    bitangent += poly.Polygon.Bitangent;
+                    //tangent += poly.Polygon.Tangent;
+                    //bitangent += poly.Polygon.Bitangent;
                 }
 
                 if (polygons.Count > 0)
                 {
                     normal = Vector3.Normalize(normal / (float)polygons.Count);
-                    tangent = Vector3.Normalize(tangent / (float)polygons.Count);
-                    bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
+                    //tangent = Vector3.Normalize(tangent / (float)polygons.Count);
+                    //bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
                 }
 
                 for (int j = 0; j < polygons.Count; j++)
@@ -1671,8 +1672,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         if (index == i)
                         {
                             poly.Polygon.Normals[k] = normal;
-                            poly.Polygon.Tangents[k] = tangent;
-                            poly.Polygon.Bitangents[k] = bitangent;
+                            poly.Polygon.Tangents[k] = poly.Polygon.Tangent;
+                            poly.Polygon.Bitangents[k] = poly.Polygon.Bitangent;
                             break;
                         }
                     }
