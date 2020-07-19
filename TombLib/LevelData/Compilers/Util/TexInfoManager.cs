@@ -1443,8 +1443,11 @@ namespace TombLib.LevelData.Compilers.Util
                                     image.NormalMap = ImageC.CreateNew(256, 256);
                                 }
 
-                                bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
-                                bumpImage.Sobel();
+                                //bumpImage.Emboss(0, 0, bumpImage.Width, bumpImage.Height, effectWeight, effectSize);
+                                //bumpImage.Sobel();
+
+                                bumpImage = ImageC.GrayScaleFilter(bumpImage, true, 0, 0, bumpImage.Width, bumpImage.Height);
+                                bumpImage = ImageC.SobelFilter(bumpImage, 2.5f, 7.0f, SobelFilterType.Sobel, 0, 0, bumpImage.Width, bumpImage.Height);
 
                                 image.NormalMap.CopyFrom(bumpX, bumpY, bumpImage, 0, 0, width, height);
                                 AddPadding(p, image.NormalMap, image.NormalMap, 0, actualPadding, bumpX, bumpY);
@@ -1723,8 +1726,12 @@ namespace TombLib.LevelData.Compilers.Util
                 // In TR5Main, we have only 4K texture atlases
                 // We pack pages like in old games, but then we pack them quickly in big atlases
                 RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false);
-                //RoomsAtlas[0].ColorMap.Save("F:\\atlasROOMS.png");
-                //RoomsAtlas[0].NormalMap.Save("F:\\atlasROOMS_Normals.png");
+                /*RoomsAtlas[0].ColorMap.Save("F:\\atlasROOMS.png");
+                var bump = ImageC.CreateNew(RoomsAtlas[0].ColorMap.Width, RoomsAtlas[0].ColorMap.Height);
+                bump.CopyFrom(0, 0, RoomsAtlas[0].ColorMap);
+                bump.Emboss(0, 0, RoomsAtlas[0].ColorMap.Width, RoomsAtlas[0].ColorMap.Height, -2, 2);
+                bump.Save("F:\\atlasROOMS_Bump.png");
+                RoomsAtlas[0].NormalMap.Save("F:\\atlasROOMS_Normals.png");*/
                 MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true);
                 //MoveablesAtlas[0].Save("F:\\atlasMOVEABLES.png");
                 StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true);
