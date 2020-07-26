@@ -211,7 +211,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public int NumXSectors;
         public tr5main_room_sector[] Sectors;
         public Vector3 AmbientLight;
-        public List<tr4_room_light> Lights;
+        public List<tr5main_room_light> Lights;
         public List<tr_room_staticmesh> StaticMeshes;
         public int AlternateRoom;
         public int Flags;
@@ -302,25 +302,22 @@ namespace TombLib.LevelData.Compilers.TR5Main
             writer.WriteBlock(Lights.Count);
             foreach (var light in Lights)
             {
-                writer.Write((float)light.X);
-                writer.Write((float)light.Y);
-                writer.Write((float)light.Z);
-                writer.Write(light.Color.Red / 255.0f);
-                writer.Write(light.Color.Green / 255.0f);
-                writer.Write(light.Color.Blue / 255.0f);
-
-                writer.Write(light.In);
-                writer.Write(light.Out);
-
-                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.In) * 2.0f : 0));
-                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : 0));
+                writer.Write((int)light.Position.X);
+                writer.Write((int)light.Position.Y);
+                writer.Write((int)light.Position.Z);
+                writer.Write(light.Direction.X);
+                writer.Write(light.Direction.Y);
+                writer.Write(light.Direction.Z);
+                writer.Write(light.Color.X);
+                writer.Write(light.Color.Y);
+                writer.Write(light.Color.Z);
+                writer.Write(light.Intensity);
+                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.In) * 2.0f : light.In));
+                writer.Write((float)(light.LightType == 2 ? Math.Acos(light.Out) * 2.0f : light.Out));
+                writer.Write(light.Length);
                 writer.Write(light.CutOff);
-
-                writer.Write(light.DirectionX);
-                writer.Write(light.DirectionY);
-                writer.Write(light.DirectionZ);
-
                 writer.Write(light.LightType);
+                writer.Write((byte)(light.CastShadows ? 1 : 0));
             }
 
             // Write static meshes
@@ -335,6 +332,21 @@ namespace TombLib.LevelData.Compilers.TR5Main
             writer.Write(ReverbInfo);
             writer.Write(AlternateGroup);
         }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_room_light
+    {
+        public VectorInt3 Position;
+        public Vector3 Direction;
+        public Vector3 Color;
+        public float Intensity;
+        public float In;
+        public float Out;
+        public float Length;
+        public float CutOff;
+        public byte LightType;
+        public bool CastShadows;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

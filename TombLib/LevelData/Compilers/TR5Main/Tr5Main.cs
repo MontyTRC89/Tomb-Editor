@@ -333,7 +333,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     // Write extra data
                     _volumeScripts = new List<VolumeScriptInstance>();
 
-                    using (var ms = new MemoryStream())
+                    /*using (var ms = new MemoryStream())
                     {
                         var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(ms));
 
@@ -424,65 +424,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                             }
                         }
 
-                        /*
-                        using (var extraDataChunk = chunkIO.WriteChunk(Tr5MainExtraData))
-                        {
-                            using (var volScriptListChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScriptList))
-                            {
-                                for (int i = 0; i < _volumeScripts.Count; i++)
-                                {
-                                    var script = _volumeScripts[i];
-                                    using (var volScriptChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScript))
-                                    {
-                                        chunkIO.Raw.WriteStringUTF8(script.Name);
-
-                                        string onEnter = string.Empty;
-                                        string onInside = string.Empty;
-                                        string onLeave = string.Empty;
-
-                                        if (script.OnEnter.Trim().Length > 0)
-                                            onEnter = "volscripts[" + i + "].OnEnter  = function(activator) \n" +
-                                                        _indent + script.OnEnter.Replace("\n", "\n" + _indent) + "\n" + "end;";
-
-                                        if (script.OnInside.Trim().Length > 0)
-                                            onInside = "volscripts[" + i + "].OnInside = function(activator) \n" +
-                                                        _indent + script.OnInside.Replace("\n", "\n" + _indent) + "\n" + "end;";
-
-                                        if (script.OnLeave.Trim().Length > 0)
-                                            onLeave  = "volscripts[" + i + "].OnLeave = function(activator) \n" +
-                                                        _indent + script.OnLeave.Replace("\n", "\n" + _indent) + "\n" + "end;";
-
-                                        string functionCode =
-                                            onEnter  + (string.IsNullOrEmpty(onEnter)  ? string.Empty : "\n\n") +
-                                            onInside + (string.IsNullOrEmpty(onInside) ? string.Empty : "\n\n") +
-                                            onLeave  + (string.IsNullOrEmpty(onLeave)  ? string.Empty : "\n\n") ;
-
-                                        chunkIO.Raw.WriteStringUTF8(functionCode);
-                                    }
-                                }
-                            }
-
-                            using (var chunkLuaIds = chunkIO.WriteChunk(Tr5MainChunkLuaIds))
-                            {
-                                for (int i = 0; i < _luaIdToItems.Count; i++)
-                                {
-                                    chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
-                                    {
-                                        chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
-                                        chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
-                                    });
-                                }
-                            }
-                        }
-                        */
-
                         chunkIO.Raw.Flush();
 
                         writer.Write((int)(ms.Length + 4));
                         writer.Write((int)(ms.Length + 4));
                         writer.Write(ms.ToArray(), 0, (int)ms.Length);
                         writer.Write((int)0);
-                    }
+                    }*/
                 }
 
                 ReportProgress(90, "Compressing level...");
@@ -495,8 +443,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     using (var writer = new BinaryWriter(fs))
                     {
                         writer.Write(new byte[] { 0x54, 0x52, 0x34, 0x00 });
-                        writer.Write(inStream.Length);
-                        writer.Write(data.Length);
+                        writer.Write((int)inStream.Length);
+                        writer.Write((int)data.Length);
                         writer.Write(data, 0, data.Length);
                     }
                 }

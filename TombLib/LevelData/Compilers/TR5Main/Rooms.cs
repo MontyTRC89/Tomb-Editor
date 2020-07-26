@@ -145,7 +145,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             var newRoom = new tr5main_room
             {
                 OriginalRoom = room,
-                Lights = new List<tr4_room_light>(),
+                Lights = new List<tr5main_room_light>(),
                 StaticMeshes = new List<tr_room_staticmesh>(),
                 Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
@@ -713,7 +713,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             var trVertex = new tr5main_vertex();
 
             trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
-            trVertex.Color = color;
+            trVertex.Color = color / 2.0f;
             trVertex.IsOnPortal = false;
             trVertex.IndexInPoly = index;
 
@@ -721,7 +721,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
             if (roomVerticesDictionary.TryGetValue(trVertex.GetHashCode(), out vertexIndex))
                 return vertexIndex;
 
-            //return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
             vertexIndex = roomVertices.Count;
             roomVertices.Add(trVertex);
             roomVerticesDictionary.Add(trVertex.GetHashCode(), vertexIndex);
@@ -748,46 +747,22 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             foreach (var light in room.Objects.OfType<LightInstance>())
             {
-                // If target game is <= TR3 then ignore all special lights (except sun for TR3) and fog bulbs
-                if (_level.Settings.GameVersion < TRVersion.Game.TR4 &&
-                    (light.Type == LightType.Spot || light.Type == LightType.Shadow || light.Type == LightType.FogBulb))
+                if (!light.Enabled || !light.IsDynamicallyUsed || light.Type == LightType.FogBulb)
                     continue;
 
-                // FIXME: For now sun type is blocked for TR3 because normal format is yet to be figured out
-                // Change to TRVersion.Game.TR3 when fixed.
-                if (_level.Settings.GameVersion < TRVersion.Game.TR4 && light.Type == LightType.Sun)
+                if (light.Intensity == 0 || light.Color.X == 0 && light.Color.Y == 0 && light.Color.Z == 0)
                     continue;
 
-                if (!light.Enabled || !light.IsDynamicallyUsed)
-                    continue;
-
-                tr_color color;
-                ushort intensity;
-
-                // HACK: remap TR4 fog bulb intensity to color (native TR4 hack)
-                if (_level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
-                {
-                    var remappedColor = new Vector3(MathC.Clamp(light.Intensity, 0.0f, 2.0f));
-                    color = PackColorTo24Bit(remappedColor);
-                    intensity = (ushort)8191;
-                }
-                else
-                {
-                    color = PackColorTo24Bit(light.Color);
-                    intensity = (ushort)Math.Max(0, Math.Min(ushort.MaxValue, Math.Abs(light.Intensity) * 8191.0f));
-                }
-
-                if (intensity == 0 || color.Red == 0 && color.Green == 0 && color.Blue == 0)
-                    continue;
                 lightCount += 1;
 
-                var newLight = new tr4_room_light
+                var newLight = new tr5main_room_light
                 {
-                    X = (int)Math.Round(newRoom.Info.X + light.Position.X),
-                    Y = (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
-                    Z = (int)Math.Round(newRoom.Info.Z + light.Position.Z),
-                    Color = color,
-                    Intensity = intensity
+                    Position = new VectorInt3(
+                        (int)Math.Round(newRoom.Info.X + light.Position.X),
+                        (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
+                        (int)Math.Round(newRoom.Info.Z + light.Position.Z)),
+                    Color = light.Color / 255.0f,
+                    Intensity = light.Intensity
                 };
 
                 switch (light.Type)
@@ -809,9 +784,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         newLight.Length = light.InnerRange * 1024.0f;
                         newLight.CutOff = light.OuterRange * 1024.0f;
                         Vector3 spotDirection = light.GetDirection();
-                        newLight.DirectionX = -spotDirection.X;
-                        newLight.DirectionY = spotDirection.Y;
-                        newLight.DirectionZ = -spotDirection.Z;
+                        newLight.Direction.X = -spotDirection.X;
+                        newLight.Direction.Y = spotDirection.Y;
+                        newLight.Direction.Z = -spotDirection.Z;
                         break;
                     case LightType.Sun:
                         newLight.LightType = 0;
@@ -820,9 +795,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         newLight.Length = 0;
                         newLight.CutOff = 0;
                         Vector3 sunDirection = light.GetDirection();
-                        newLight.DirectionX = -sunDirection.X;
-                        newLight.DirectionY = sunDirection.Y;
-                        newLight.DirectionZ = -sunDirection.Z;
+                        newLight.Direction.X = -sunDirection.X;
+                        newLight.Direction.Y = sunDirection.Y;
+                        newLight.Direction.Z = -sunDirection.Z;
                         break;
                     case LightType.FogBulb:
                         newLight.LightType = 4;
@@ -837,9 +812,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 newRoom.Lights.Add(newLight);
             }
-
-            if (lightCount > 20)
-                _progressReporter.ReportWarn("Room '" + room + "' has more than 20 dynamic lights (" + lightCount + "). This can cause crashes with the original engine!");
         }
 
         private void ConvertSectors(Room room, tr5main_room newRoom)
