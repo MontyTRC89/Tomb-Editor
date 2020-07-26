@@ -143,5 +143,11 @@ namespace TombLib.Wad
                 RotationVectorInRadians.Y,
                 RotationVectorInRadians.X,
                 RotationVectorInRadians.Z);
+
+        public Quaternion Quaternion =>
+            Quaternion.CreateFromYawPitchRoll(
+                RotationVectorInRadians.Y,
+                -RotationVectorInRadians.X,
+                -RotationVectorInRadians.Z);
     }
 }

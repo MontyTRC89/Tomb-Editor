@@ -49,7 +49,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private readonly List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
         private readonly List<short> _animCommands = new List<short>();
         private readonly List<int> _meshTrees = new List<int>();
-        private readonly List<short> _frames = new List<short>();
+        private readonly List<tr5main_keyframe> _frames = new List<tr5main_keyframe>();
         private List<tr5main_moveable> _moveables = new List<tr5main_moveable>();
         private readonly List<tr5main_staticmesh> _staticMeshes = new List<tr5main_staticmesh>();
 

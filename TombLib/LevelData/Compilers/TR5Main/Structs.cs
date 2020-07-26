@@ -77,6 +77,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public tr5main_collision_info CeilingCollision;
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_polygon
     {
         public tr5main_polygon_shape Shape;
@@ -104,6 +105,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_vertex
     {
         public Vector3 Position;
@@ -150,6 +152,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_material
     {
         public class Tr5MainMaterialComparer : IEqualityComparer<tr5main_material>
@@ -179,6 +182,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public bool NormalMapping;
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_bucket
     {
         public tr5main_material Material;
@@ -190,6 +194,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_room
     {
         public tr_room_info Info;
@@ -332,6 +337,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         }
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_mesh
     {
         public BoundingSphere Sphere;
@@ -402,9 +408,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
     public struct tr5main_staticmesh
     {
         public int ObjectID;
-        public short Mesh;
-        public tr_bounding_box VisibilityBox;
-        public tr_bounding_box CollisionBox;
+        public int Mesh;
+        public tr5main_bounding_box VisibilityBox;
+        public tr5main_bounding_box CollisionBox;
         public ushort Flags;
     }
 
@@ -423,8 +429,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
     public struct tr5main_animation
     {
         public int FrameOffset;
-        public byte FrameRate;
-        public byte FrameSize;
+        public short FrameRate;
         public ushort StateID;
         public int Speed;
         public int Accel;
@@ -438,28 +443,24 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public ushort StateChangeOffset;
         public ushort NumAnimCommands;
         public ushort AnimCommand;
+    }
 
-        public void Write(BinaryWriterEx writer, Level level)
-        {
-            writer.Write(FrameOffset);
-            writer.Write(FrameRate);
-            writer.Write(FrameSize);
-            writer.Write(StateID);
-            writer.Write(Speed);
-            writer.Write(Accel);
-            if (level.Settings.GameVersion >= TRVersion.Game.TR4)
-            {
-                writer.Write(SpeedLateral);
-                writer.Write(AccelLateral);
-            }
-            writer.Write(FrameStart);
-            writer.Write(FrameEnd);
-            writer.Write(NextAnimation);
-            writer.Write(NextFrame);
-            writer.Write(NumStateChanges);
-            writer.Write(StateChangeOffset);
-            writer.Write(NumAnimCommands);
-            writer.Write(AnimCommand);
-        }
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public class tr5main_keyframe
+    {
+        public tr5main_bounding_box BoundingBox;
+        public Vector3 Offset;
+        public List<Quaternion> Angles;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_bounding_box
+    {
+        public short X1;
+        public short X2;
+        public short Y1;
+        public short Y2;
+        public short Z1;
+        public short Z2;
     }
 }

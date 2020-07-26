@@ -310,53 +310,34 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             // First thing build frames
             ReportProgress(1, "Building animations");
-            var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
+            var animationDictionary = new Dictionary<WadAnimation, int>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
-                {
-                    AnimationTr4HelperData animationHelper = animationDictionary.TryAdd(animation, new AnimationTr4HelperData());
-                    animationHelper.KeyFrameOffset = _frames.Count * 2;
+                { 
+                    animationDictionary.Add(animation, _frames.Count);
 
-                    // Store the frames in an intermediate data structure to pad them to the same size in the next step.
-                    var unpaddedFrames = new List<short>[animation.KeyFrames.Count];
-                    for (int i = 0; i < animation.KeyFrames.Count; ++i)
+                    foreach (var wadFrame in animation.KeyFrames)
                     {
-                        var unpaddedFrame = new List<short>();
-                        WadKeyFrame wadFrame = animation.KeyFrames[i];
-                        unpaddedFrames[i] = unpaddedFrame;
+                        var newFrame = new tr5main_keyframe
+                        {
+                            Angles = new List<Quaternion>()
+                        };
 
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.X)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.X)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.BoundingBox.Minimum.Y)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.BoundingBox.Maximum.Y)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Z)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Z)));
+                        newFrame.BoundingBox.X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.X));
+                        newFrame.BoundingBox.Y1 = (short)-Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Y));
+                        newFrame.BoundingBox.Z1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Z));
+                        newFrame.BoundingBox.X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.X));
+                        newFrame.BoundingBox.Y2 = (short)-Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Y));
+                        newFrame.BoundingBox.Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Z));
+                        newFrame.Offset = new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z);
 
-                        unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.X))));
-                        unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.Offset.Y))));
-                        unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z))));
+                        foreach (var oldRot in wadFrame.Angles)
+                        {
+                            newFrame.Angles.Add(oldRot.Quaternion);
+                        }
 
-                        foreach (var angle in wadFrame.Angles)
-                            WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
-                                false,
-                                _level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                                _level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5 ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5Main);
+                        _frames.Add(newFrame);
                     }
-
-                    // Figure out padding of the frames
-                    int longestFrame = 0;
-                    foreach (List<short> unpaddedFrame in unpaddedFrames)
-                        longestFrame = Math.Max(longestFrame, unpaddedFrame.Count);
-
-                    // Add frames
-                    foreach (List<short> unpaddedFrame in unpaddedFrames)
-                    {
-                        _frames.AddRange(unpaddedFrame);
-                        _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
-                    }
-                    animationHelper.KeyFrameSize = longestFrame;
                 }
 
             int lastAnimation = 0;
@@ -375,7 +356,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 {
                     var oldAnimation = oldMoveable.Animations[j];
                     var newAnimation = new tr5main_animation();
-                    var animationHelper = animationDictionary[oldAnimation];
+                    var offset = animationDictionary[oldAnimation];
 
                     // Calculate accelerations from velocities
                     int acceleration = 0;
@@ -401,11 +382,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         frameCount = maxFrame;
 
                     // Setup the final animation
-                    if (j == 0)
-                        newMoveable.FrameOffset = checked(animationHelper.KeyFrameOffset);
-                    newAnimation.FrameOffset = checked(animationHelper.KeyFrameOffset);
+                    newAnimation.FrameOffset = checked(offset);
                     newAnimation.FrameRate = oldAnimation.FrameRate;
-                    newAnimation.FrameSize = checked((byte)animationHelper.KeyFrameSize);
                     newAnimation.Speed = speed;
                     newAnimation.Accel = acceleration;
                     newAnimation.SpeedLateral = lateralSpeed;
@@ -563,7 +541,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 newStaticMesh.ObjectID = checked((int)oldStaticMesh.Id.TypeId);
 
-                newStaticMesh.CollisionBox = new tr_bounding_box
+                newStaticMesh.CollisionBox = new tr5main_bounding_box
                 {
                     X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Minimum.X)),
                     X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.X)),
@@ -573,7 +551,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.Z))
                 };
 
-                newStaticMesh.VisibilityBox = new tr_bounding_box
+                newStaticMesh.VisibilityBox = new tr5main_bounding_box
                 {
                     X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Minimum.X)),
                     X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.X)),
@@ -616,7 +594,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         writer.WriteLine("Anim #" + n);
                         writer.WriteLine("    KeyframeOffset: " + anim.FrameOffset);
                         writer.WriteLine("    FrameRate: " + anim.FrameRate);
-                        writer.WriteLine("    KeyFrameSize: " + anim.FrameSize);
                         writer.WriteLine("    FrameStart: " + anim.FrameStart);
                         writer.WriteLine("    FrameEnd: " + anim.FrameEnd);
                         writer.WriteLine("    StateChangeOffset: " + anim.StateChangeOffset);

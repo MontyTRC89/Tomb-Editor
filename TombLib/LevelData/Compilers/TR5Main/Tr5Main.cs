@@ -34,9 +34,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
                 ReportProgress(80, "Writing geometry data to memory buffer");
 
-                const int filler = 0;
-                writer.Write(filler);
-
                 var numRooms = (uint)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
@@ -91,8 +88,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                 // Write animations' data
                 writer.Write((uint)_animations.Count);
-                foreach (var anim in _animations)
-                    anim.Write(writer, _level);
+                writer.WriteBlockArray(_animations);
 
                 writer.Write((uint)_stateChanges.Count);
                 writer.WriteBlockArray(_stateChanges);
@@ -107,7 +103,21 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.WriteBlockArray(_meshTrees);
 
                 writer.Write((uint)_frames.Count);
-                writer.WriteBlockArray(_frames);
+                foreach (var frame in _frames)
+                {
+                    writer.Write((short)frame.BoundingBox.X1);
+                    writer.Write((short)frame.BoundingBox.X2);
+                    writer.Write((short)frame.BoundingBox.Y1);
+                    writer.Write((short)frame.BoundingBox.Y2);
+                    writer.Write((short)frame.BoundingBox.Z1);
+                    writer.Write((short)frame.BoundingBox.Z2);
+                    writer.Write((short)frame.Offset.X);
+                    writer.Write((short)frame.Offset.Y);
+                    writer.Write((short)frame.Offset.Z);
+                    writer.Write((short)frame.Angles.Count);
+                    foreach (var angle in frame.Angles)
+                        writer.Write(angle);
+                }
 
                 writer.Write((uint)_moveables.Count);
                 for (var k = 0; k < _moveables.Count; k++)
@@ -194,16 +204,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+            //using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var inStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriterEx(fs))
+                using (var writer = new BinaryWriterEx(inStream, true))
                 {
                     ReportProgress(90, "Writing final level");
-                    writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
-
-                    // Compress data
-                    ReportProgress(95, "Compressing data");
-
+                   
                     // Rooms atlas
                     writer.Write(_textureInfoManager.RoomsAtlas.Count);
                     foreach (var atlas in _textureInfoManager.RoomsAtlas)
@@ -311,20 +318,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     }
 
                     // Write data
-                    ReportProgress(97, "Writing compressed data to file.");
-                                       
-                    writer.Write((ushort)_level.Settings.Tr5LaraType);
-                    writer.Write((ushort)_level.Settings.Tr5WeatherType);
+                    ReportProgress(97, "Writing level data to file.");
 
-                    for (var i = 0; i < 28; i++)
-                        writer.Write((byte)0);
+                    writer.Write((byte)_level.Settings.Tr5LaraType);
+                    writer.Write((byte)_level.Settings.Tr5WeatherType);
 
                     // In TR5 geometry data is not compressed
                     byte[] geometryData = geometryDataBuffer;
-                    int geometryDataUncompressedSize = geometryData.Length;
-
-                    writer.Write(geometryDataUncompressedSize);
-                    writer.Write(geometryDataUncompressedSize);
                     writer.Write(geometryData);
 
                     ReportProgress(98, "Writing WAVE sounds");
@@ -376,7 +376,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                                                 add = (int)((vol as BoxVolumeInstance).Size.Y / 2.0f);
 
                                             var X = (int)Math.Round(trRoom.Info.X + vol.Position.X);
-                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add); 
+                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add);
                                             var Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z);
 
                                             if (vol is BoxVolumeInstance)
@@ -483,10 +483,26 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         writer.Write(ms.ToArray(), 0, (int)ms.Length);
                         writer.Write((int)0);
                     }
-
-                    ReportProgress(99, "Done");   
                 }
-            }
+
+                ReportProgress(90, "Compressing level...");
+
+                inStream.Seek(0, SeekOrigin.Begin);
+
+                var data = ZLib.CompressData(inStream);
+                using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    using (var writer = new BinaryWriter(fs))
+                    {
+                        writer.Write(new byte[] { 0x54, 0x52, 0x34, 0x00 });
+                        writer.Write(inStream.Length);
+                        writer.Write(data.Length);
+                        writer.Write(data, 0, data.Length);
+                    }
+                }
+            }           
+
+            ReportProgress(99, "Done");
         }
     }
 }
