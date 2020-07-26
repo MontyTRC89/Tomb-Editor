@@ -761,7 +761,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         (int)Math.Round(newRoom.Info.X + light.Position.X),
                         (int)-Math.Round(light.Position.Y + room.WorldPos.Y),
                         (int)Math.Round(newRoom.Info.Z + light.Position.Z)),
-                    Color = light.Color / 255.0f,
+                    Color = light.Color,
                     Intensity = light.Intensity
                 };
 
