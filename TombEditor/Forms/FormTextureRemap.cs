@@ -184,7 +184,7 @@ namespace TombEditor.Forms
                     }
 
             // Push undo
-            if(undoList.Count > 0)
+            if (undoList.Count > 0)
                 _editor.UndoManager.Push(undoList);
 
             // Animated textures
@@ -250,7 +250,19 @@ namespace TombEditor.Forms
         private void comboSourceTexture_SelectedValueChanged(object sender, EventArgs e)
         {
             if (sourceTextureMap.VisibleTexture != comboSourceTexture.SelectedItem)
+            {
                 sourceTextureMap.ResetVisibleTexture(comboSourceTexture.SelectedItem as LevelTexture);
+
+                // Reset selection if out of bounds
+
+                var dimRect = new Rectangle2(Vector2.Zero, sourceTextureMap.VisibleTexture.Image.Size);
+                if (!dimRect.Contains(sourceTextureMap.Start) || !dimRect.Contains(sourceTextureMap.End))
+                {
+                    sourceTextureMap.Start = Vector2.Zero;
+                    sourceTextureMap.End = sourceTextureMap.VisibleTexture.Image.Size;
+                    destinationTextureMap.Invalidate();
+                }
+            }
         }
 
         private void comboDestinationTexture_SelectedValueChanged(object sender, EventArgs e)
