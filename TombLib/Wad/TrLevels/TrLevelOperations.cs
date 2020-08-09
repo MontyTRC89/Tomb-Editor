@@ -388,6 +388,11 @@ namespace TombLib.Wad.TrLevels
 
                     for (int k = 0; k < oldAnimation.NumAnimCommands; k++)
                     {
+                        // HACK: FexMerger corrupts some animcommand sequences, refering to the anim command uint16 outside
+                        // of animcommand block. We still try to load animations, ignoring corrupted animcommands.
+                        if (lastCommand >= oldLevel.AnimCommands.Count)
+                            continue;
+
                         short commandType = oldLevel.AnimCommands[lastCommand + 0];
 
                         WadAnimCommand command = new WadAnimCommand { Type = (WadAnimCommandType)commandType };

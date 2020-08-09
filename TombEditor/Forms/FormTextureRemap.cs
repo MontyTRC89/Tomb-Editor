@@ -34,7 +34,13 @@ namespace TombEditor.Forms
         private bool SourceContains(Vector2 texCoord)
         {
             return sourceTextureMap.Start.X <= texCoord.X && sourceTextureMap.Start.Y <= texCoord.Y &&
-                sourceTextureMap.End.X >= texCoord.X && sourceTextureMap.End.Y >= texCoord.Y;
+                   sourceTextureMap.End.X >= texCoord.X && sourceTextureMap.End.Y >= texCoord.Y;
+        }
+
+        private bool SourceEquals(Rectangle2 rect)
+        {
+            return sourceTextureMap.Start.X == rect.Start.X && sourceTextureMap.Start.Y == rect.Start.Y &&
+                   sourceTextureMap.End.X == rect.End.X && sourceTextureMap.End.Y == rect.End.Y;
         }
 
         private AnimatedTextureFrame RemapTexture(AnimatedTextureFrame source, float scale)
@@ -89,14 +95,6 @@ namespace TombEditor.Forms
             source.TexCoord1 += distance + shift;
             source.TexCoord2 += distance + shift;
             source.TexCoord3 += distance + shift;
-
-            // Also shift and scale parent area
-            if (source.ParentArea != Rectangle2.Zero)
-            {
-                distance = (source.ParentArea.End - source.ParentArea.Start) * scale;
-                source.ParentArea.Start += shift;
-                source.ParentArea.End    = source.ParentArea.Start + distance;
-            }
 
             return source;
         }
@@ -155,7 +153,7 @@ namespace TombEditor.Forms
                 foreach (Block sector in room.Blocks)
                     for (BlockFace face = 0; face < BlockFace.Count; ++face)
                     {
-                        TextureArea currentTextureArea = sector.GetFaceTexture(face);
+                        var currentTextureArea = sector.GetFaceTexture(face);
                         if (currentTextureArea.Texture == sourceTexture &&
                             SourceContains(currentTextureArea.TexCoord0) &&
                             SourceContains(currentTextureArea.TexCoord1) &&
@@ -169,15 +167,24 @@ namespace TombEditor.Forms
                             // Replace texture
                             currentTextureArea = RemapTexture(currentTextureArea, destinationTextureMap.Scaling);
                             currentTextureArea.Texture = destinationTexture;
+
+                            // Remove texture if untexture option is set
                             if (untextureCompletely)
                                 currentTextureArea.Texture = null;
+
+                            // Replace parent area if equal
+                            if (SourceEquals(currentTextureArea.ParentArea))
+                                currentTextureArea.ParentArea = new Rectangle2(destinationTextureMap.Start, destinationTextureMap.End);
+                            else
+                                currentTextureArea.ParentArea = Rectangle2.Zero;
+
                             sector.SetFaceTexture(face, currentTextureArea);
                             ++roomTextureCount;
                         }
                     }
 
             // Push undo
-            if(undoList.Count > 0)
+            if (undoList.Count > 0)
                 _editor.UndoManager.Push(undoList);
 
             // Animated textures
@@ -243,7 +250,19 @@ namespace TombEditor.Forms
         private void comboSourceTexture_SelectedValueChanged(object sender, EventArgs e)
         {
             if (sourceTextureMap.VisibleTexture != comboSourceTexture.SelectedItem)
+            {
                 sourceTextureMap.ResetVisibleTexture(comboSourceTexture.SelectedItem as LevelTexture);
+
+                // Reset selection if out of bounds
+
+                var dimRect = new Rectangle2(Vector2.Zero, sourceTextureMap.VisibleTexture.Image.Size);
+                if (!dimRect.Contains(sourceTextureMap.Start) || !dimRect.Contains(sourceTextureMap.End))
+                {
+                    sourceTextureMap.Start = Vector2.Zero;
+                    sourceTextureMap.End = sourceTextureMap.VisibleTexture.Image.Size;
+                    destinationTextureMap.Invalidate();
+                }
+            }
         }
 
         private void comboDestinationTexture_SelectedValueChanged(object sender, EventArgs e)
@@ -355,6 +374,7 @@ namespace TombEditor.Forms
                         finalStart.Y = newStart.Y;
 
                     FormParent.destinationTextureMap.Start = finalStart;
+                    FormParent.destinationTextureMap.End = finalStart + size;
 
                     Invalidate();
                 }

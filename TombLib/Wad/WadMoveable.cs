@@ -94,5 +94,29 @@ namespace TombLib.Wad
                 mov.Animations.Add(animation.Clone());
             return mov;
         }
+
+        public WadMoveable ReplaceDummyMeshes(WadMoveable skin)
+        {
+            if (skin.Meshes.Count != Meshes.Count) return this;
+            if (Meshes.Count != Bones.Count) return this;
+
+            var mov = new WadMoveable(Id);
+            for (int i = 0; i < Meshes.Count; i++)
+            {
+                WadMesh msh = Meshes[i].Clone();
+                WadMesh msh2 = skin.Meshes[i].Clone();
+                WadBone bone = Bones[i].Clone();
+                if (!msh.Name.EndsWith("-0") && !msh.Name.Equals("Mesh_0", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    mov.Bones.Add(bone);
+                    continue;
+                }
+                bone.Mesh = msh2;
+                mov.Bones.Add(bone);
+            }
+            foreach (var animation in Animations)
+                mov.Animations.Add(animation.Clone());
+            return mov;
+        }
     }
 }

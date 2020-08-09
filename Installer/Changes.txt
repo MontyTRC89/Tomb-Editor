@@ -1,8 +1,31 @@
+Version 1.3.5
+=============
+Tomb Editor:
+ * Fix MQO importer to accept spaces in texture paths.
+ * Fix possible issues with seamless texturing.
+ * Fix texture coordinates in TR2-3.
+ * Fix texture sounds window picking up wrong texture set if texture from other set is selected.
+ * Fix imported geometry light flag being overwritten by static light flag.
+ * Allow selecting ghost blocks embedded into walls.
+ * Add warnings for box/overlap limits.
+ * Prevent loading MAIN.SFX as sound catalog.
+
+TombIDE:
+ * Assign sound sample path correctly for levels generated with TombIDE.
+ * Fix exceptions while using F1 key outside of section blocks.
+ 
+WadTool:
+ * Allow selecting numerical slot ID when copying object to another slot.
+ * Load TR level files with animcommands corrupted by FexMerger properly.
+ * Show meshswaps properly for different Lara animation objects.
+
 Version 1.3.4
 =============
 Tomb Editor:
  * Implement negative timer.
+ * Implement TRNG timerfield trigger target type.
  * Fix sinks in TR2.
+ * Update TR2 sound names.
  * Don't jump to flipped rooms in fly mode.
  * Clamp window positions to maximum if resolution was changed.
 

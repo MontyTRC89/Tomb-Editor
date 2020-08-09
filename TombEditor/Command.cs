@@ -1989,7 +1989,7 @@ namespace TombEditor
                 EditorActions.SetStaticMeshesColor(args.Window);
             });
 
-            AddCommand("MakeQuickItemGroup", "Make quick Itemgroup", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("MakeQuickItemGroup", "Make quick itemgroup", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TRNG, "Item grouping"))
                     return;

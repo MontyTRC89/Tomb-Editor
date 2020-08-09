@@ -1082,7 +1082,6 @@ namespace TombLib.LevelData.IO
                     instance.IsDynamicallyUsed = chunkIO.Raw.ReadBoolean();
                     instance.IsStaticallyUsed = chunkIO.Raw.ReadBoolean();
                     instance.IsUsedForImportedGeometry = chunkIO.Raw.ReadBoolean();
-                    instance.IsUsedForImportedGeometry = instance.IsStaticallyUsed; // Expected behaviour for legacy prj2s
                     instance.Quality = (LightQuality)chunkIO.Raw.ReadByte();
 
                     // Remap fog bulb intensity from red color

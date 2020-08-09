@@ -44,6 +44,14 @@ namespace DarkUI.Controls
             set { base.ForeColor = Colors.LightText; }
         }
 
+        [ReadOnly(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public new BorderStyle BorderStyle
+        {
+            get { return BorderStyle.FixedSingle; }
+            set { base.BorderStyle = BorderStyle.FixedSingle; }
+        }
+
         #endregion Property Region
 
         #region Constructor Region
@@ -52,11 +60,13 @@ namespace DarkUI.Controls
         {
             BackColor = Colors.LightBackground;
             ForeColor = Colors.LightText;
+            BorderStyle = BorderStyle.FixedSingle;
             SetStyle(ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.ResizeRedraw |
                      ControlStyles.UserPaint, true);
-            Controls[0].Paint += SubControlPaint_Paint;
+            Controls[0].Paint += SubControl_Paint;
+
             try
             {
                 // Prevent flickering, only if our assembly
@@ -81,7 +91,7 @@ namespace DarkUI.Controls
 
         #region Method Region
 
-        private void SubControlPaint_Paint(object sender, PaintEventArgs e)
+        private void SubControl_Paint(object sender, PaintEventArgs e)
         {
             var upDownRect = new Rectangle(0, 0, Controls[0].Width + 1, Controls[0].Height);
 
@@ -118,21 +128,26 @@ namespace DarkUI.Controls
         {
             base.OnMouseDown(mevent);
             _mouseDown = true;
-            Controls[0].Invalidate();
+            Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs mevent)
         {
             base.OnMouseUp(mevent);
             _mouseDown = false;
-            Controls[0].Invalidate();
+            Invalidate();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
             _mousePos = new Point(e.Location.X - (Width - Controls[0].Width), e.Location.Y);
-            Controls[0].Invalidate();
+            Invalidate();
+        }
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            Invalidate();
         }
 
         protected override void OnMouseLeave(EventArgs e)
@@ -140,13 +155,42 @@ namespace DarkUI.Controls
             base.OnMouseLeave(e);
             _mousePos = null;
             _mouseDown = false;
-            Controls[0].Invalidate();
+            Invalidate();
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            base.OnGotFocus(e);
+            Invalidate();
+        }
+
+        protected override void OnLostFocus(EventArgs e)
+        {
+            base.OnLostFocus(e);
+            Invalidate();
+        }
+
+        protected override void OnTextBoxLostFocus(object source, EventArgs e)
+        {
+            base.OnTextBoxLostFocus(source, e);
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Colors.GreySelection, ButtonBorderStyle.Solid);
+
+            var g = e.Graphics;
+            var rect = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
+
+            using (var b = new SolidBrush(BackColor))
+                g.FillRectangle(b, rect);
+
+            using (var p = new Pen(Colors.GreySelection, 1))
+            {
+                var modRect = new Rectangle(rect.Left, rect.Top, rect.Width - 1, rect.Height - 1);
+                g.DrawRectangle(p, modRect);
+            }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -165,7 +209,10 @@ namespace DarkUI.Controls
 
             var eH = e as HandledMouseEventArgs;
             if (eH != null) eH.Handled = true;
+
+            Invalidate();
         }
+
 
         public override void UpButton()
         {

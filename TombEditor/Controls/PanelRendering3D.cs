@@ -1761,8 +1761,6 @@ namespace TombEditor.Controls
                 if (ShowGhostBlocks)
                     foreach (var ghost in room.GhostBlocks)
                     {
-                        if (!ghost.Editable) continue;
-
                         if (_editor.SelectedObject == ghost)
                         {
                             for (int f = 0; f < 2; f++)
@@ -3294,9 +3292,7 @@ namespace TombEditor.Controls
             _frustum.Update(Camera, ClientSize);
 
             // Collect stuff to draw
-            var roomsToDraw = CollectRoomsToDraw();
-            roomsToDraw = roomsToDraw.Where(r => _frustum.Contains(r.WorldBoundingBox)).ToArray();
-
+            var roomsToDraw = CollectRoomsToDraw().Where(r => _frustum.Contains(r.WorldBoundingBox)).ToArray();
             var moveablesToDraw = CollectMoveablesToDraw(roomsToDraw);
             var staticsToDraw = CollectStaticsToDraw(roomsToDraw);
             var importedGeometryToDraw = CollectImportedGeometryToDraw(roomsToDraw);

@@ -3,7 +3,7 @@
   <SoundInfos>
     <WadSoundInfo>
       <Id>0</Id>
-      <Name>SOUND_000</Name>
+      <Name>LARA_FEET</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -31,7 +31,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>1</Id>
-      <Name>SOUND_001</Name>
+      <Name>LARA_CLIMB2</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>80</Chance>
@@ -50,7 +50,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>2</Id>
-      <Name>SOUND_002</Name>
+      <Name>LARA_NO</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -69,7 +69,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>3</Id>
-      <Name>SOUND_003</Name>
+      <Name>LARA_SLIPPING</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -88,7 +88,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>4</Id>
-      <Name>SOUND_004</Name>
+      <Name>LARA_LAND</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -107,7 +107,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>5</Id>
-      <Name>SOUND_005</Name>
+      <Name>LARA_CLIMB1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -126,7 +126,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>6</Id>
-      <Name>SOUND_006</Name>
+      <Name>LARA_DRAW</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -145,7 +145,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>7</Id>
-      <Name>SOUND_007</Name>
+      <Name>LARA_HOLSTER</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -164,7 +164,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>8</Id>
-      <Name>SOUND_008</Name>
+      <Name>LARA_FIRE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -183,7 +183,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>9</Id>
-      <Name>SOUND_009</Name>
+      <Name>LARA_RELOAD</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -202,7 +202,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>10</Id>
-      <Name>SOUND_010</Name>
+      <Name>LARA_RICOCHET</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>10</Chance>
@@ -224,7 +224,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>11</Id>
-      <Name>SOUND_011</Name>
+      <Name>LARA_FLARE_IGNITE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -243,7 +243,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>12</Id>
-      <Name>SOUND_012</Name>
+      <Name>LARA_FLARE_BURN</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -262,7 +262,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>15</Id>
-      <Name>SOUND_015</Name>
+      <Name>LARA_HARPOON_FIRE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -281,7 +281,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>16</Id>
-      <Name>SOUND_016</Name>
+      <Name>LARA_HARPOON_LOAD</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -300,7 +300,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>17</Id>
-      <Name>SOUND_017</Name>
+      <Name>LARA_WET_FEET</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -328,7 +328,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>18</Id>
-      <Name>SOUND_018</Name>
+      <Name>LARA_WADE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -350,7 +350,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>20</Id>
-      <Name>SOUND_020</Name>
+      <Name>LARA_TREAD</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -369,7 +369,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>21</Id>
-      <Name>SOUND_021</Name>
+      <Name>LARA_FIRE_MAGNUMS</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -388,7 +388,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>22</Id>
-      <Name>SOUND_022</Name>
+      <Name>LARA_HARPOON_LOAD_WATER</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -407,7 +407,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>23</Id>
-      <Name>SOUND_023</Name>
+      <Name>LARA_HARPOON_FIRE_WATER</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -426,7 +426,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>24</Id>
-      <Name>SOUND_024</Name>
+      <Name>MASSIVE_CRASH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -445,7 +445,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>25</Id>
-      <Name>SOUND_025</Name>
+      <Name>PUSH_SWITCH</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -464,7 +464,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>26</Id>
-      <Name>SOUND_026</Name>
+      <Name>LARA_CLIMB3</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -483,7 +483,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>27</Id>
-      <Name>SOUND_027</Name>
+      <Name>LARA_BODYSL</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -505,7 +505,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>28</Id>
-      <Name>SOUND_028</Name>
+      <Name>LARA_SHIMMY</Name>
       <Volume>45</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -527,7 +527,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>29</Id>
-      <Name>SOUND_029</Name>
+      <Name>LARA_JUMP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -546,7 +546,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>30</Id>
-      <Name>SOUND_030</Name>
+      <Name>LARA_FALL</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -565,7 +565,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>31</Id>
-      <Name>SOUND_031</Name>
+      <Name>LARA_INJURY</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -587,7 +587,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>32</Id>
-      <Name>SOUND_032</Name>
+      <Name>LARA_ROLL</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -606,7 +606,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>33</Id>
-      <Name>SOUND_033</Name>
+      <Name>LARA_SPLASH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -625,7 +625,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>34</Id>
-      <Name>SOUND_034</Name>
+      <Name>LARA_GETOUT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -644,7 +644,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>35</Id>
-      <Name>SOUND_035</Name>
+      <Name>LARA_SWIM</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -663,7 +663,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>36</Id>
-      <Name>SOUND_036</Name>
+      <Name>LARA_BREATH</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -682,7 +682,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>37</Id>
-      <Name>SOUND_037</Name>
+      <Name>LARA_BUBBLES</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -701,7 +701,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>38</Id>
-      <Name>SOUND_038</Name>
+      <Name>LARA_SWITCH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -720,7 +720,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>39</Id>
-      <Name>SOUND_039</Name>
+      <Name>LARA_KEY</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -739,7 +739,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>40</Id>
-      <Name>SOUND_040</Name>
+      <Name>LARA_OBJECT</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -758,7 +758,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>41</Id>
-      <Name>SOUND_041</Name>
+      <Name>LARA_GENERAL_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -777,7 +777,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>42</Id>
-      <Name>SOUND_042</Name>
+      <Name>LARA_KNEES_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -796,7 +796,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>43</Id>
-      <Name>SOUND_043</Name>
+      <Name>LARA_UZI_FIRE</Name>
       <Volume>88</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -815,7 +815,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>44</Id>
-      <Name>SOUND_044</Name>
+      <Name>LARA_UZI_STOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -834,7 +834,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>45</Id>
-      <Name>SOUND_045</Name>
+      <Name>LARA_SHOTGUN</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -853,7 +853,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>46</Id>
-      <Name>SOUND_046</Name>
+      <Name>LARA_BLOCK_PUSH1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -872,7 +872,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>47</Id>
-      <Name>SOUND_047</Name>
+      <Name>LARA_BLOCK_PUSH2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -897,7 +897,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>48</Id>
-      <Name>SOUND_048</Name>
+      <Name>CLICK</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -916,7 +916,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>49</Id>
-      <Name>SOUND_049</Name>
+      <Name>LARA_HIT</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -935,7 +935,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>50</Id>
-      <Name>SOUND_050</Name>
+      <Name>LARA_BULLETHIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -954,7 +954,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>51</Id>
-      <Name>SOUND_051</Name>
+      <Name>LARA_BLKPULL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -973,7 +973,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>52</Id>
-      <Name>SOUND_052</Name>
+      <Name>LARA_FLOATING</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -992,7 +992,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>53</Id>
-      <Name>SOUND_053</Name>
+      <Name>LARA_FALLDETH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1011,7 +1011,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>54</Id>
-      <Name>SOUND_054</Name>
+      <Name>LARA_GRABHAND</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1030,7 +1030,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>55</Id>
-      <Name>SOUND_055</Name>
+      <Name>LARA_GRABBODY</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1049,7 +1049,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>56</Id>
-      <Name>SOUND_056</Name>
+      <Name>LARA_GRABFEET</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1068,7 +1068,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>57</Id>
-      <Name>SOUND_057</Name>
+      <Name>LARA_SWITCHUP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1087,7 +1087,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>58</Id>
-      <Name>SOUND_058</Name>
+      <Name>GLASS_BREAK</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1106,7 +1106,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>59</Id>
-      <Name>SOUND_059</Name>
+      <Name>WATER_LOOP</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1125,7 +1125,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>60</Id>
-      <Name>SOUND_060</Name>
+      <Name>UNDERWATER</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1144,7 +1144,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>61</Id>
-      <Name>SOUND_061</Name>
+      <Name>UNDERWATER_SWITCH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1163,7 +1163,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>62</Id>
-      <Name>SOUND_062</Name>
+      <Name>LARA_PICKUP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1182,7 +1182,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>63</Id>
-      <Name>SOUND_063</Name>
+      <Name>BLOCK_SOUND</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1201,7 +1201,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>64</Id>
-      <Name>SOUND_064</Name>
+      <Name>DOOR</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1220,7 +1220,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>65</Id>
-      <Name>SOUND_065</Name>
+      <Name>SWING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1239,7 +1239,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>66</Id>
-      <Name>SOUND_066</Name>
+      <Name>ROCK_FALL_CRUMBLE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1258,7 +1258,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>67</Id>
-      <Name>SOUND_067</Name>
+      <Name>ROCK_FALL_LAND</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1277,7 +1277,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>68</Id>
-      <Name>SOUND_068</Name>
+      <Name>ROCK_FALL_SOLID</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1296,7 +1296,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>69</Id>
-      <Name>SOUND_069</Name>
+      <Name>ENEMY_FEET</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1321,7 +1321,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>70</Id>
-      <Name>SOUND_070</Name>
+      <Name>ENEMY_GRUNT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>40</Chance>
@@ -1340,7 +1340,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>71</Id>
-      <Name>SOUND_071</Name>
+      <Name>ENEMY_HIT1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1359,7 +1359,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>72</Id>
-      <Name>SOUND_072</Name>
+      <Name>ENEMY_HIT2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1378,7 +1378,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>73</Id>
-      <Name>SOUND_073</Name>
+      <Name>ENEMY_DEATH1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1397,7 +1397,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>74</Id>
-      <Name>SOUND_074</Name>
+      <Name>ENEMY_JUMP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1416,7 +1416,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>75</Id>
-      <Name>SOUND_075</Name>
+      <Name>ENEMY_CLIMBUP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1435,7 +1435,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>76</Id>
-      <Name>SOUND_076</Name>
+      <Name>ENEMY_CLIMBDOWN</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1454,7 +1454,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>77</Id>
-      <Name>SOUND_077</Name>
+      <Name>WEAPON_CLATTER</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1473,7 +1473,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>78</Id>
-      <Name>SOUND_078</Name>
+      <Name>M16_FIRE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1492,7 +1492,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>79</Id>
-      <Name>SOUND_079</Name>
+      <Name>WATERFALL_LOOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1511,7 +1511,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>80</Id>
-      <Name>SOUND_080</Name>
+      <Name>SWORD_STATUE_DROP</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1530,7 +1530,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>81</Id>
-      <Name>SOUND_081</Name>
+      <Name>SWORD_STATUE_LIFT</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1549,7 +1549,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>82</Id>
-      <Name>SOUND_082</Name>
+      <Name>PORTCULLIS_UP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1568,7 +1568,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>83</Id>
-      <Name>SOUND_083</Name>
+      <Name>PORTCULLIS_DOWN</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1587,7 +1587,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>84</Id>
-      <Name>SOUND_084</Name>
+      <Name>DOG_FEET1</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1606,7 +1606,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>85</Id>
-      <Name>SOUND_085</Name>
+      <Name>BODY_SLAM</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1631,7 +1631,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>86</Id>
-      <Name>SOUND_086</Name>
+      <Name>DOG_BARK1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1650,7 +1650,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>87</Id>
-      <Name>SOUND_087</Name>
+      <Name>DOG_FEET2</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1675,7 +1675,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>88</Id>
-      <Name>SOUND_088</Name>
+      <Name>DOG_BARK2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1694,7 +1694,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>89</Id>
-      <Name>SOUND_089</Name>
+      <Name>DOG_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1719,7 +1719,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>90</Id>
-      <Name>SOUND_090</Name>
+      <Name>DOG_PANT</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1738,7 +1738,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>91</Id>
-      <Name>SOUND_091</Name>
+      <Name>LEOPARD_FEET</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1763,7 +1763,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>92</Id>
-      <Name>SOUND_092</Name>
+      <Name>LEOPARD_ROAR</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1782,7 +1782,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>93</Id>
-      <Name>SOUND_093</Name>
+      <Name>LEOPARD_BITE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1801,7 +1801,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>94</Id>
-      <Name>SOUND_094</Name>
+      <Name>LEOPARD_STRIKE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1820,7 +1820,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>95</Id>
-      <Name>SOUND_095</Name>
+      <Name>LEOPARD_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1839,7 +1839,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>96</Id>
-      <Name>SOUND_096</Name>
+      <Name>LEOPARD_GROWL</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1858,7 +1858,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>97</Id>
-      <Name>SOUND_097</Name>
+      <Name>RAT_ATTACK</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -1880,7 +1880,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>98</Id>
-      <Name>SOUND_098</Name>
+      <Name>RAT_DEATH</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1899,7 +1899,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>99</Id>
-      <Name>SOUND_099</Name>
+      <Name>TIGER_ROAR</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1918,7 +1918,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>100</Id>
-      <Name>SOUND_100</Name>
+      <Name>TIGER_BITE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1937,7 +1937,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>101</Id>
-      <Name>SOUND_101</Name>
+      <Name>TIGER_STRIKE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1956,7 +1956,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>102</Id>
-      <Name>SOUND_102</Name>
+      <Name>TIGER_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1975,7 +1975,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>103</Id>
-      <Name>SOUND_103</Name>
+      <Name>TIGER_GROWL</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -1994,7 +1994,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>104</Id>
-      <Name>SOUND_104</Name>
+      <Name>M16_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2013,7 +2013,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>105</Id>
-      <Name>SOUND_105</Name>
+      <Name>EXPLOSION1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2035,7 +2035,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>106</Id>
-      <Name>SOUND_106</Name>
+      <Name>GROWL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2054,7 +2054,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>107</Id>
-      <Name>SOUND_107</Name>
+      <Name>SPIDER_JUMP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2073,7 +2073,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>108</Id>
-      <Name>SOUND_108</Name>
+      <Name>MENU_ROTATE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2092,7 +2092,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>109</Id>
-      <Name>SOUND_109</Name>
+      <Name>MENU_LARA_HOME</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2111,7 +2111,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>111</Id>
-      <Name>SOUND_111</Name>
+      <Name>MENU_SPININ</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2130,7 +2130,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>112</Id>
-      <Name>SOUND_112</Name>
+      <Name>MENU_SPINOUT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2149,7 +2149,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>113</Id>
-      <Name>SOUND_113</Name>
+      <Name>MENU_STOPWATCH</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2168,7 +2168,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>114</Id>
-      <Name>SOUND_114</Name>
+      <Name>MENU_GUNS</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2187,7 +2187,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>115</Id>
-      <Name>SOUND_115</Name>
+      <Name>MENU_PASSPORT</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2206,7 +2206,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>116</Id>
-      <Name>SOUND_116</Name>
+      <Name>MENU_MEDI</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2225,7 +2225,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>117</Id>
-      <Name>SOUND_117</Name>
+      <Name>ENEMY_HEELS</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2253,7 +2253,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>118</Id>
-      <Name>SOUND_118</Name>
+      <Name>ENEMY_FIRE_SILENCER</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2275,7 +2275,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>119</Id>
-      <Name>SOUND_119</Name>
+      <Name>ENEMY_AH_DYING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2294,7 +2294,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>120</Id>
-      <Name>SOUND_120</Name>
+      <Name>ENEMY_OOH_DYING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2313,7 +2313,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>121</Id>
-      <Name>SOUND_121</Name>
+      <Name>ENEMY_THUMP</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2332,7 +2332,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>122</Id>
-      <Name>SOUND_122</Name>
+      <Name>SPIDER_MOVING</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2351,7 +2351,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>123</Id>
-      <Name>SOUND_123</Name>
+      <Name>LARA_MINI_LOAD</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2370,7 +2370,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>124</Id>
-      <Name>SOUND_124</Name>
+      <Name>LARA_MINI_LOCK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2389,7 +2389,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>125</Id>
-      <Name>SOUND_125</Name>
+      <Name>LARA_MINI_FIRE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2408,7 +2408,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>126</Id>
-      <Name>SOUND_126</Name>
+      <Name>SPIDER_BITE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2427,7 +2427,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>127</Id>
-      <Name>SOUND_127</Name>
+      <Name>SLAM_DOOR_SLIDE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2446,7 +2446,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>128</Id>
-      <Name>SOUND_128</Name>
+      <Name>SLAM_DOOR_CLOSE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2465,7 +2465,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>129</Id>
-      <Name>SOUND_129</Name>
+      <Name>EAGLE_SQUAWK</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2484,7 +2484,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>130</Id>
-      <Name>SOUND_130</Name>
+      <Name>EAGLE_WING_FLAP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2503,7 +2503,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>131</Id>
-      <Name>SOUND_131</Name>
+      <Name>EAGLE_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2522,7 +2522,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>132</Id>
-      <Name>SOUND_132</Name>
+      <Name>CROW_CAW</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2541,7 +2541,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>133</Id>
-      <Name>SOUND_133</Name>
+      <Name>CROW_WING_FLAP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2560,7 +2560,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>134</Id>
-      <Name>SOUND_134</Name>
+      <Name>CROW_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2579,7 +2579,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>135</Id>
-      <Name>SOUND_135</Name>
+      <Name>CROW_ATTACK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2598,7 +2598,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>136</Id>
-      <Name>SOUND_136</Name>
+      <Name>ENEMY_GUN_COCKING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2617,7 +2617,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>137</Id>
-      <Name>SOUND_137</Name>
+      <Name>ENEMY_FIRE1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2636,7 +2636,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>138</Id>
-      <Name>SOUND_138</Name>
+      <Name>ENEMY_FIRE_TWIRL</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2655,7 +2655,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>139</Id>
-      <Name>SOUND_139</Name>
+      <Name>ENEMY_HOLSTER</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2674,7 +2674,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>140</Id>
-      <Name>SOUND_140</Name>
+      <Name>ENEMY_BREATH1</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2693,7 +2693,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>141</Id>
-      <Name>SOUND_141</Name>
+      <Name>ENEMY_CHUCKLE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>40</Chance>
@@ -2712,7 +2712,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>142</Id>
-      <Name>SOUND_142</Name>
+      <Name>MONK_POY</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2731,7 +2731,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>143</Id>
-      <Name>SOUND_143</Name>
+      <Name>MONK_DEATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2750,7 +2750,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>145</Id>
-      <Name>SOUND_145</Name>
+      <Name>LARA_SPIKE_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2769,7 +2769,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>146</Id>
-      <Name>SOUND_146</Name>
+      <Name>LARA_DEATH3</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2788,7 +2788,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>147</Id>
-      <Name>SOUND_147</Name>
+      <Name>ROLLING_BALL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2807,7 +2807,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>148</Id>
-      <Name>SOUND_148</Name>
+      <Name>SANDBAG_SNAP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2826,7 +2826,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>149</Id>
-      <Name>SOUND_149</Name>
+      <Name>SANDBAG_HIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2845,7 +2845,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>150</Id>
-      <Name>SOUND_150</Name>
+      <Name>LOOP_FOR_SMALL_FIRES</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2864,7 +2864,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>152</Id>
-      <Name>SOUND_152</Name>
+      <Name>SKIDOO_START</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2883,7 +2883,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>153</Id>
-      <Name>SOUND_153</Name>
+      <Name>SKIDOO_IDLE</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2902,7 +2902,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>154</Id>
-      <Name>SOUND_154</Name>
+      <Name>SKIDOO_ACCELERATE</Name>
       <Volume>95</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2921,7 +2921,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>155</Id>
-      <Name>SOUND_155</Name>
+      <Name>SKIDOO_MOVING</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2940,7 +2940,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>156</Id>
-      <Name>SOUND_156</Name>
+      <Name>SKIDOO_STOP</Name>
       <Volume>88</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2959,7 +2959,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>157</Id>
-      <Name>SOUND_157</Name>
+      <Name>ENEMY_FIRE2</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2978,7 +2978,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>158</Id>
-      <Name>SOUND_158</Name>
+      <Name>ENEMY_DEATH2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -2997,7 +2997,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>159</Id>
-      <Name>SOUND_159</Name>
+      <Name>ENEMY_BREATH2</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3016,7 +3016,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>160</Id>
-      <Name>SOUND_160</Name>
+      <Name>STICK_TAP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3035,7 +3035,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>161</Id>
-      <Name>SOUND_161</Name>
+      <Name>TRAPDOOR_OPEN</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3054,7 +3054,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>162</Id>
-      <Name>SOUND_162</Name>
+      <Name>TRAPDOOR_CLOSE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3073,7 +3073,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>163</Id>
-      <Name>SOUND_163</Name>
+      <Name>YETI_GROWL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3095,7 +3095,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>164</Id>
-      <Name>SOUND_164</Name>
+      <Name>YETI_CHEST_BEAT</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3114,7 +3114,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>165</Id>
-      <Name>SOUND_165</Name>
+      <Name>YETI_THUMP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3133,7 +3133,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>166</Id>
-      <Name>SOUND_166</Name>
+      <Name>YETI_GRUNT1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3152,7 +3152,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>167</Id>
-      <Name>SOUND_167</Name>
+      <Name>YETI_SCREAM</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3171,7 +3171,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>168</Id>
-      <Name>SOUND_168</Name>
+      <Name>YETI_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3190,7 +3190,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>169</Id>
-      <Name>SOUND_169</Name>
+      <Name>YETI_GROWL1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3209,7 +3209,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>170</Id>
-      <Name>SOUND_170</Name>
+      <Name>YETI_GROWL2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3228,7 +3228,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>171</Id>
-      <Name>SOUND_171</Name>
+      <Name>YETI_GRUNT2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3247,7 +3247,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>172</Id>
-      <Name>SOUND_172</Name>
+      <Name>YETI_GROWL3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3266,7 +3266,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>173</Id>
-      <Name>SOUND_173</Name>
+      <Name>YETI_FEET</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3288,7 +3288,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>174</Id>
-      <Name>SOUND_174</Name>
+      <Name>ENEMY_HEAVY_BREATH</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3307,7 +3307,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>175</Id>
-      <Name>SOUND_175</Name>
+      <Name>ENEMY_FLAMETHROWER_FIRE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3326,7 +3326,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>176</Id>
-      <Name>SOUND_176</Name>
+      <Name>ENEMY_FLAMETHROWER_SCRAPE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3345,7 +3345,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>177</Id>
-      <Name>SOUND_177</Name>
+      <Name>ENEMY_FLAMETHROWER_CLICK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3364,7 +3364,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>178</Id>
-      <Name>SOUND_178</Name>
+      <Name>ENEMY_FLAMETHROWER_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3383,7 +3383,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>179</Id>
-      <Name>SOUND_179</Name>
+      <Name>ENEMY_FLAMETHROWER_FALL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3402,7 +3402,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>180</Id>
-      <Name>SOUND_180</Name>
+      <Name>ENEMY_BELT_JINGLE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3421,7 +3421,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>181</Id>
-      <Name>SOUND_181</Name>
+      <Name>ENEMY_WRENCH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3440,7 +3440,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>182</Id>
-      <Name>SOUND_182</Name>
+      <Name>FOOTSTEP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3459,7 +3459,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>183</Id>
-      <Name>SOUND_183</Name>
+      <Name>FOOTSTEP_HIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3478,7 +3478,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>184</Id>
-      <Name>SOUND_184</Name>
+      <Name>ENEMY_COCKING_SHOTGUN</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3497,7 +3497,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>186</Id>
-      <Name>SOUND_186</Name>
+      <Name>SCUBA_DIVER_FLIPPER</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3516,7 +3516,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>188</Id>
-      <Name>SOUND_188</Name>
+      <Name>SCUBA_DIVER_BREATH</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3535,7 +3535,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>190</Id>
-      <Name>SOUND_190</Name>
+      <Name>PULLEY_CRANE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3554,7 +3554,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>191</Id>
-      <Name>SOUND_191</Name>
+      <Name>CURTAIN</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3573,7 +3573,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>192</Id>
-      <Name>SOUND_192</Name>
+      <Name>SCUBA_DIVER_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3592,7 +3592,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>193</Id>
-      <Name>SOUND_193</Name>
+      <Name>SCUBA_DIVER_DIVING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3611,7 +3611,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>194</Id>
-      <Name>SOUND_194</Name>
+      <Name>BOAT_START</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3630,7 +3630,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>195</Id>
-      <Name>SOUND_195</Name>
+      <Name>BOAT_IDLE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3649,7 +3649,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>196</Id>
-      <Name>SOUND_196</Name>
+      <Name>BOAT_ACCELERATE</Name>
       <Volume>93</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3668,7 +3668,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>197</Id>
-      <Name>SOUND_197</Name>
+      <Name>BOAT_MOVING</Name>
       <Volume>83</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3687,7 +3687,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>198</Id>
-      <Name>SOUND_198</Name>
+      <Name>BOAT_STOP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3706,7 +3706,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>199</Id>
-      <Name>SOUND_199</Name>
+      <Name>BOAT_SLOW_DOWN</Name>
       <Volume>88</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3725,7 +3725,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>200</Id>
-      <Name>SOUND_200</Name>
+      <Name>BOAT_HIT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3744,7 +3744,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>201</Id>
-      <Name>SOUND_201</Name>
+      <Name>CLATTER_1</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3763,7 +3763,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>202</Id>
-      <Name>SOUND_202</Name>
+      <Name>CLATTER_2</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3782,7 +3782,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>203</Id>
-      <Name>SOUND_203</Name>
+      <Name>CLATTER_3</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3801,7 +3801,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>204</Id>
-      <Name>SOUND_204</Name>
+      <Name>DOOR_SLIDE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3820,7 +3820,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>205</Id>
-      <Name>SOUND_205</Name>
+      <Name>LARA_FLESH_WOUND</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3842,7 +3842,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>206</Id>
-      <Name>SOUND_206</Name>
+      <Name>SAW_REVVING</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3861,7 +3861,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>207</Id>
-      <Name>SOUND_207</Name>
+      <Name>SAW_STOP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3880,7 +3880,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>208</Id>
-      <Name>SOUND_208</Name>
+      <Name>DOOR_CHIME</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3899,7 +3899,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>209</Id>
-      <Name>SOUND_209</Name>
+      <Name>CHAIN_CREAK_SNAP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3918,7 +3918,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>210</Id>
-      <Name>SOUND_210</Name>
+      <Name>SWINGING</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3937,7 +3937,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>211</Id>
-      <Name>SOUND_211</Name>
+      <Name>BREAKING1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3956,7 +3956,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>212</Id>
-      <Name>SOUND_212</Name>
+      <Name>PULLEY_MOVE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3975,7 +3975,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>213</Id>
-      <Name>SOUND_213</Name>
+      <Name>AIRPLANE_IDLE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -3994,7 +3994,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>215</Id>
-      <Name>SOUND_215</Name>
+      <Name>UNDERWATER_FAN_ON</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4013,7 +4013,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>217</Id>
-      <Name>SOUND_217</Name>
+      <Name>SMALL_FAN_ON</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4032,7 +4032,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>218</Id>
-      <Name>SOUND_218</Name>
+      <Name>SWINGING_BOX_BAG</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4051,7 +4051,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>219</Id>
-      <Name>SOUND_219</Name>
+      <Name>JUMP_PAD_UP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4070,7 +4070,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>220</Id>
-      <Name>SOUND_220</Name>
+      <Name>JUMP_PAD_DOWN</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4089,7 +4089,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>221</Id>
-      <Name>SOUND_221</Name>
+      <Name>BREAKING2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4108,7 +4108,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>222</Id>
-      <Name>SOUND_222</Name>
+      <Name>SNOWBALL_ROLL</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4127,7 +4127,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>223</Id>
-      <Name>SOUND_223</Name>
+      <Name>SNOWBALL_STOP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4146,7 +4146,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>224</Id>
-      <Name>SOUND_224</Name>
+      <Name>ROLLING</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4165,7 +4165,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>225</Id>
-      <Name>SOUND_225</Name>
+      <Name>ROLLING_STOP1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4184,7 +4184,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>226</Id>
-      <Name>SOUND_226</Name>
+      <Name>ROLLING_STOP2</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4203,7 +4203,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>227</Id>
-      <Name>SOUND_227</Name>
+      <Name>ROLLING2</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4222,7 +4222,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>228</Id>
-      <Name>SOUND_228</Name>
+      <Name>ROLLING2_HIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4241,7 +4241,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>229</Id>
-      <Name>SOUND_229</Name>
+      <Name>SIDE_BLADE_SWING</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4260,7 +4260,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>230</Id>
-      <Name>SOUND_230</Name>
+      <Name>SIDE_BLADE_BACK</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4279,7 +4279,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>231</Id>
-      <Name>SOUND_231</Name>
+      <Name>ROLLING_BLADE</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4298,7 +4298,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>232</Id>
-      <Name>SOUND_232</Name>
+      <Name>ICILE_DETACH</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4317,7 +4317,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>233</Id>
-      <Name>SOUND_233</Name>
+      <Name>ICICLE_HIT</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4336,7 +4336,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>234</Id>
-      <Name>SOUND_234</Name>
+      <Name>ROTATING_HANDLE_LOOSE</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4355,7 +4355,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>235</Id>
-      <Name>SOUND_235</Name>
+      <Name>ROTATING_HANDLE_TURN</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4374,7 +4374,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>236</Id>
-      <Name>SOUND_236</Name>
+      <Name>ROTATING_HANDLE_OPEN</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4393,7 +4393,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>237</Id>
-      <Name>SOUND_237</Name>
+      <Name>ROTATING_HANDLE_CREAK</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4412,7 +4412,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>238</Id>
-      <Name>SOUND_238</Name>
+      <Name>MONK_FEET</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4440,7 +4440,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>239</Id>
-      <Name>SOUND_239</Name>
+      <Name>MONK_SWORD_SWING1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4459,7 +4459,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>240</Id>
-      <Name>SOUND_240</Name>
+      <Name>MONK_SWORD_SWING2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4478,7 +4478,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>241</Id>
-      <Name>SOUND_241</Name>
+      <Name>MONK_SHOUT1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4503,7 +4503,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>242</Id>
-      <Name>SOUND_242</Name>
+      <Name>MONK_SHOUT2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4528,7 +4528,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>243</Id>
-      <Name>SOUND_243</Name>
+      <Name>MONK_SHOUT3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4553,7 +4553,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>244</Id>
-      <Name>SOUND_244</Name>
+      <Name>MONK_SHOUT4</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4578,7 +4578,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>245</Id>
-      <Name>SOUND_245</Name>
+      <Name>MONK_CRUNCH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4600,7 +4600,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>246</Id>
-      <Name>SOUND_246</Name>
+      <Name>MONK_BREATH</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4619,7 +4619,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>247</Id>
-      <Name>SOUND_247</Name>
+      <Name>SPLASH_SURFACE</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>85</Chance>
@@ -4638,7 +4638,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>248</Id>
-      <Name>SOUND_248</Name>
+      <Name>WATERFALL1</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4657,7 +4657,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>249</Id>
-      <Name>SOUND_249</Name>
+      <Name>ENEMY_FEET_SNOW</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4682,7 +4682,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>250</Id>
-      <Name>SOUND_250</Name>
+      <Name>ENEMY_FIRE3</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4701,7 +4701,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>251</Id>
-      <Name>SOUND_251</Name>
+      <Name>ENEMY_FIRE_SEMIAUTO</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4720,7 +4720,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>252</Id>
-      <Name>SOUND_252</Name>
+      <Name>ENEMY_DEATH3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4739,7 +4739,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>253</Id>
-      <Name>SOUND_253</Name>
+      <Name>ENEMY_DEATH4</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4758,7 +4758,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>254</Id>
-      <Name>SOUND_254</Name>
+      <Name>CIRCLE_BLADE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4777,7 +4777,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>255</Id>
-      <Name>SOUND_255</Name>
+      <Name>KNIFETHROWER_FEET</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4805,7 +4805,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>256</Id>
-      <Name>SOUND_256</Name>
+      <Name>MONK_OYE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4824,7 +4824,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>257</Id>
-      <Name>SOUND_257</Name>
+      <Name>MONK_AWEH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4843,7 +4843,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>258</Id>
-      <Name>SOUND_258</Name>
+      <Name>CIRCLE_BLADE_HIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4862,7 +4862,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>259</Id>
-      <Name>SOUND_259</Name>
+      <Name>KNIFETHROWER_WARRIOR_FEET</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4881,7 +4881,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>260</Id>
-      <Name>SOUND_260</Name>
+      <Name>WARRIOR_BLADE_SWING1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4906,7 +4906,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>261</Id>
-      <Name>SOUND_261</Name>
+      <Name>WARRIOR_BLADE_SWING2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4925,7 +4925,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>262</Id>
-      <Name>SOUND_262</Name>
+      <Name>WARRIOR_GROWL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4947,7 +4947,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>263</Id>
-      <Name>SOUND_263</Name>
+      <Name>KNIFETHROWER_HICCUP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4966,7 +4966,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>264</Id>
-      <Name>SOUND_264</Name>
+      <Name>WARROPR_BURP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -4991,7 +4991,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>265</Id>
-      <Name>SOUND_265</Name>
+      <Name>WARRIOR_GROWL1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5010,7 +5010,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>267</Id>
-      <Name>SOUND_267</Name>
+      <Name>WARRIOR_WAKE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5029,7 +5029,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>268</Id>
-      <Name>SOUND_268</Name>
+      <Name>WARRIOR_GROWL2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5048,7 +5048,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>269</Id>
-      <Name>SOUND_269</Name>
+      <Name>SMALL_SWITCH</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5067,7 +5067,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>278</Id>
-      <Name>SOUND_278</Name>
+      <Name>CHAIN_PULLEY</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5086,7 +5086,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>279</Id>
-      <Name>SOUND_279</Name>
+      <Name>DEATH_SLIDE_GRAB</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5105,7 +5105,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>280</Id>
-      <Name>SOUND_280</Name>
+      <Name>DEATH_SLIDE_GO</Name>
       <Volume>75</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5124,7 +5124,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>281</Id>
-      <Name>SOUND_281</Name>
+      <Name>DEATH_SLIDE_STOP</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5143,7 +5143,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>282</Id>
-      <Name>SOUND_282</Name>
+      <Name>BODY_SLUMP</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5162,7 +5162,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>283</Id>
-      <Name>SOUND_283</Name>
+      <Name>BOWL_TIPPING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5181,7 +5181,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>284</Id>
-      <Name>SOUND_284</Name>
+      <Name>BOWL_POUR</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5200,7 +5200,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>285</Id>
-      <Name>SOUND_285</Name>
+      <Name>WATERFALL2</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5219,7 +5219,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>286</Id>
-      <Name>SOUND_286</Name>
+      <Name>ELEVATOR_OPEN</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5238,7 +5238,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>287</Id>
-      <Name>SOUND_287</Name>
+      <Name>ELEVATOR_CLOSE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5257,7 +5257,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>288</Id>
-      <Name>SOUND_288</Name>
+      <Name>MINISUB_CLATTER1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5276,7 +5276,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>289</Id>
-      <Name>SOUND_289</Name>
+      <Name>MINISUB_CLATTER2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5295,7 +5295,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>290</Id>
-      <Name>SOUND_290</Name>
+      <Name>MINISUB_CLATTER3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5314,7 +5314,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>291</Id>
-      <Name>SOUND_291</Name>
+      <Name>BIRD_MONSTER_SCREAM</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5333,7 +5333,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>292</Id>
-      <Name>SOUND_292</Name>
+      <Name>BIRD_MONSTER_GASP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5358,7 +5358,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>293</Id>
-      <Name>SOUND_293</Name>
+      <Name>BIRD_MONSTER_BREATH</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5377,7 +5377,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>294</Id>
-      <Name>SOUND_294</Name>
+      <Name>BIRD_MONSTER_FEET</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5396,7 +5396,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>295</Id>
-      <Name>SOUND_295</Name>
+      <Name>BIRD_MONSTER_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5415,7 +5415,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>296</Id>
-      <Name>SOUND_296</Name>
+      <Name>BIRD_MONSTER_SCRAPE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5434,7 +5434,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>297</Id>
-      <Name>SOUND_297</Name>
+      <Name>HELICOPTER_LOOP</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5453,7 +5453,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>298</Id>
-      <Name>SOUND_298</Name>
+      <Name>DRAGON_FEET</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5472,7 +5472,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>299</Id>
-      <Name>SOUND_299</Name>
+      <Name>DRAGON_GROWL1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5491,7 +5491,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>300</Id>
-      <Name>SOUND_300</Name>
+      <Name>DRAGON_GROWL2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5510,7 +5510,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>301</Id>
-      <Name>SOUND_301</Name>
+      <Name>DRAGON_FALL</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5529,7 +5529,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>302</Id>
-      <Name>SOUND_302</Name>
+      <Name>DRAGON_BREATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5548,7 +5548,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>303</Id>
-      <Name>SOUND_303</Name>
+      <Name>DRAGON_GROWL3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5567,7 +5567,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>304</Id>
-      <Name>SOUND_304</Name>
+      <Name>DRAGON_GRUNT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5586,7 +5586,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>305</Id>
-      <Name>SOUND_305</Name>
+      <Name>DRAGON_FIRE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5605,7 +5605,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>306</Id>
-      <Name>SOUND_306</Name>
+      <Name>DRAGON_LEG_LIFT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5624,7 +5624,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>307</Id>
-      <Name>SOUND_307</Name>
+      <Name>DRAGON_LEG_HIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5643,7 +5643,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>308</Id>
-      <Name>SOUND_308</Name>
+      <Name>WARRIOR_BLADE_SWING3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5665,7 +5665,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>309</Id>
-      <Name>SOUND_309</Name>
+      <Name>WARRIOR_BLADE_SWING_FAST</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5684,7 +5684,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>311</Id>
-      <Name>SOUND_311</Name>
+      <Name>WARRIOR_BREATH_ACTIVE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5703,7 +5703,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>312</Id>
-      <Name>SOUND_312</Name>
+      <Name>WARRIOR_HOVER</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5722,7 +5722,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>313</Id>
-      <Name>SOUND_313</Name>
+      <Name>WARRIOR_LANDING</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5741,7 +5741,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>314</Id>
-      <Name>SOUND_314</Name>
+      <Name>WARRIOR_SWORD_CLANK</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5760,7 +5760,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>315</Id>
-      <Name>SOUND_315</Name>
+      <Name>WARRIOR_SWORD_SLICE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5782,7 +5782,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>316</Id>
-      <Name>SOUND_316</Name>
+      <Name>BIRDS_CHIRP</Name>
       <Volume>50</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5804,7 +5804,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>317</Id>
-      <Name>SOUND_317</Name>
+      <Name>CRUNCH1</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5823,7 +5823,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>318</Id>
-      <Name>SOUND_318</Name>
+      <Name>CRUNCH2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5848,7 +5848,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>319</Id>
-      <Name>SOUND_319</Name>
+      <Name>DOOR_CREAK</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5867,7 +5867,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>320</Id>
-      <Name>SOUND_320</Name>
+      <Name>BREAKING3</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5886,7 +5886,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>321</Id>
-      <Name>SOUND_321</Name>
+      <Name>BIG_SPIDER_SNARL</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5905,7 +5905,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>322</Id>
-      <Name>SOUND_322</Name>
+      <Name>BIG_SPIDER_FEET</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5933,7 +5933,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>323</Id>
-      <Name>SOUND_323</Name>
+      <Name>BIG_SPIDER_DEATH</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5952,7 +5952,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>324</Id>
-      <Name>SOUND_324</Name>
+      <Name>T_REX_ROAR</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5971,7 +5971,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>325</Id>
-      <Name>SOUND_325</Name>
+      <Name>T_REX_FEET</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -5990,7 +5990,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>326</Id>
-      <Name>SOUND_326</Name>
+      <Name>T_REX_GROWL1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6009,7 +6009,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>327</Id>
-      <Name>SOUND_327</Name>
+      <Name>T_REX_DEATH</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6028,7 +6028,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>329</Id>
-      <Name>SOUND_329</Name>
+      <Name>DRIPS_REVERB</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6053,7 +6053,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>330</Id>
-      <Name>SOUND_330</Name>
+      <Name>STAGE_BACKDROP</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6072,7 +6072,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>331</Id>
-      <Name>SOUND_331</Name>
+      <Name>STONE_DOOR_SLIDE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6091,7 +6091,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>332</Id>
-      <Name>SOUND_332</Name>
+      <Name>PLATFORM_ALARM</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6110,7 +6110,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>333</Id>
-      <Name>SOUND_333</Name>
+      <Name>TICK_TOCK</Name>
       <Volume>65</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6129,7 +6129,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>334</Id>
-      <Name>SOUND_334</Name>
+      <Name>DOORBELL</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6148,7 +6148,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>335</Id>
-      <Name>SOUND_335</Name>
+      <Name>BURGLAR_ALARM</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6167,7 +6167,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>336</Id>
-      <Name>SOUND_336</Name>
+      <Name>BOAT_ENGINE</Name>
       <Volume>85</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6186,7 +6186,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>337</Id>
-      <Name>SOUND_337</Name>
+      <Name>BOAT_INTO_WATER</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6205,7 +6205,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>338</Id>
-      <Name>SOUND_338</Name>
+      <Name>UNKNOWN1</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6224,7 +6224,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>339</Id>
-      <Name>SOUND_339</Name>
+      <Name>UNKNOWN2</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6243,7 +6243,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>340</Id>
-      <Name>SOUND_340</Name>
+      <Name>UNKNOWN3</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6262,7 +6262,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>341</Id>
-      <Name>SOUND_341</Name>
+      <Name>UNKNOWN4</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6281,7 +6281,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>342</Id>
-      <Name>SOUND_342</Name>
+      <Name>WINSTON_SHUFFLE</Name>
       <Volume>15</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6300,7 +6300,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>343</Id>
-      <Name>SOUND_343</Name>
+      <Name>WINSTON_FEET</Name>
       <Volume>20</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6319,7 +6319,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>344</Id>
-      <Name>SOUND_344</Name>
+      <Name>WINSTON_GRUNT1</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>60</Chance>
@@ -6350,7 +6350,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>345</Id>
-      <Name>SOUND_345</Name>
+      <Name>WINSTON_GRUNT2</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>50</Chance>
@@ -6378,7 +6378,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>346</Id>
-      <Name>SOUND_346</Name>
+      <Name>WINSTON_GRUNT3</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6400,7 +6400,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>347</Id>
-      <Name>SOUND_347</Name>
+      <Name>WINSTON_CUPS</Name>
       <Volume>60</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6422,7 +6422,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>348</Id>
-      <Name>SOUND_348</Name>
+      <Name>BRITTLE_GROUND_BREAK</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6441,7 +6441,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>349</Id>
-      <Name>SOUND_349</Name>
+      <Name>SPIDER_EXPLODE</Name>
       <Volume>70</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6460,7 +6460,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>350</Id>
-      <Name>SOUND_350</Name>
+      <Name>SHARK_BITE</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6479,7 +6479,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>351</Id>
-      <Name>SOUND_351</Name>
+      <Name>LAVA_BUBBLES</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6498,7 +6498,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>352</Id>
-      <Name>SOUND_352</Name>
+      <Name>EXPLOSION2</Name>
       <Volume>90</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6517,7 +6517,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>353</Id>
-      <Name>SOUND_353</Name>
+      <Name>BURGLARS</Name>
       <Volume>100</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>
@@ -6536,7 +6536,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>354</Id>
-      <Name>SOUND_354</Name>
+      <Name>ZIPPER</Name>
       <Volume>80</Volume>
       <RangeInSectors>10</RangeInSectors>
       <Chance>100</Chance>

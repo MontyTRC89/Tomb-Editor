@@ -660,17 +660,14 @@ namespace TombEditor
                     }
                 }
 
-            if(ghostList.Count == 0)
+            if (ghostList.Count == 0)
             {
-                _editor.SendMessage("No collision overrides were added. You already have it in specified area.", PopupType.Warning);
+                _editor.SendMessage("No ghost blocks were added. You already have it in specified area.", PopupType.Warning);
                 return;
             }
-
             
             _editor.RoomSectorPropertiesChange(room);
-
-            // Undo
-            _editor.UndoManager.PushGhostBlockCreated(ghostList);
+            _editor.UndoManager.PushGhostBlockCreated(ghostList); // Undo
         }
 
         public static void AddVolume(VolumeShape shape)
