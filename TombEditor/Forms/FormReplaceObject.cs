@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad;
 
 namespace TombEditor.Forms
 {
@@ -348,21 +349,21 @@ namespace TombEditor.Forms
 
         private void FormReplaceObject_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(ItemType)))
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject) != null)
                 e.Effect = DragDropEffects.Copy;
         }
 
         private void FormReplaceObject_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(ItemType)))
+            if ((e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject) != null)
             {
-                var item = ItemInstance.FromItemType((ItemType)e.Data.GetData(typeof(ItemType)));
+                var item = e.Data.GetData(e.Data.GetFormats()[0]) as IWadObject;
                 PositionBasedObjectInstance instance;
 
-                if (item is StaticInstance)
-                    instance = new StaticInstance() { WadObjectId = item.ItemType.StaticId };
-                else if (item is MoveableInstance)
-                    instance = new MoveableInstance() { WadObjectId = item.ItemType.MoveableId };
+                if (item is WadStatic)
+                    instance = new StaticInstance() { WadObjectId = ((WadStatic)item).Id };
+                else if (item is WadMoveable)
+                    instance = new MoveableInstance() { WadObjectId = ((WadMoveable)item).Id };
                 else
                     return;
 
