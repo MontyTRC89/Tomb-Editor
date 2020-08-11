@@ -364,6 +364,8 @@ namespace TombEditor.Forms
                     instance = new StaticInstance() { WadObjectId = ((WadStatic)item).Id };
                 else if (item is WadMoveable)
                     instance = new MoveableInstance() { WadObjectId = ((WadMoveable)item).Id };
+                else if (item is ImportedGeometry)
+                    instance = new ImportedGeometryInstance() { Model = (ImportedGeometry)item };
                 else
                     return;
 
