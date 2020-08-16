@@ -27,7 +27,6 @@ namespace TombLib.LevelData.Compilers
                 palette8[5] = new tr_color() { Red = 255, Green = 255, Blue = 0 };
                 palette8[12] = new tr_color() { Red = 0, Green = 128, Blue = 0 };
                 palette8[13] = new tr_color() { Red = 0, Green = 255, Blue = 0 };
-                palette8[14] = new tr_color() { Red = 0, Green = 255, Blue = 255 };
                 palette8[14] = new tr_color() { Red = 0, Green = 0, Blue = 255 };
                 palette8[15] = new tr_color() { Red = 255, Green = 0, Blue = 255 };
                 foreach (tr_color c in palette8)

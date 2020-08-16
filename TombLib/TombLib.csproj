@@ -147,6 +147,7 @@
     <Compile Include="NG\NgEncryption.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />
+    <Compile Include="Utils\ImageQuantizer.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
     <Compile Include="Utils\Configuration.cs" />
     <Compile Include="Forms\Prj2SoundsConversionDialog.cs">

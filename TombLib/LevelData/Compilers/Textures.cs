@@ -1,10 +1,13 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using TombLib.Utils;
+using TombLib.Utils.ImageQuantizer;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -360,6 +363,74 @@ namespace TombLib.LevelData.Compilers
                 }
             }
             return newTextureData;
+        }
+
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, int pageSize, int colorCount, byte offset, out tr_color[] palette)
+        {
+            int pixelCount = textureData.Length / 4;
+            var height = pixelCount / pageSize;
+            byte[] newTextureData = new byte[pixelCount * 2];
+
+            IColorQuantizer quantizer = new PaletteQuantizer();
+            quantizer.Clear();
+
+            var image = (Image)ImageC.FromByteArray(textureData, pageSize, pageSize).ToBitmap();
+            image.AddColorsToQuantizer(quantizer);
+
+            var originalColorCount = quantizer.GetColorCount();
+
+            // creates a target bitmap in 8-bit format
+            var result = new Bitmap(image.Width, image.Height, PixelFormat.Format8bppIndexed);
+            var newPalette = quantizer.GetPalette(colorCount);
+            result.SetPalette(newPalette);
+
+            // initializes both source and target image enumerators
+            IEnumerable<Pixel> sourceEnum = image.EnumerateImagePixels(ImageLockMode.ReadOnly);
+            IEnumerable<Pixel> targetEnum = result.EnumerateImagePixels(ImageLockMode.WriteOnly);
+
+            // ensures that both enumerators are released from memory afterwards
+            using (IEnumerator<Pixel> source = sourceEnum.GetEnumerator())
+            using (IEnumerator<Pixel> target = targetEnum.GetEnumerator())
+            {
+                var isSourceAvailable = source.MoveNext();
+                var isTargetAvailable = target.MoveNext();
+
+                // moves to next pixel for both images
+                while (isSourceAvailable || isTargetAvailable)
+                {
+                    var color = QuantizationHelper.ConvertAlpha(source.Current.Color);
+                    var paletteIndex = quantizer.GetPaletteIndex(color);
+                    target.Current.SetIndex((byte)paletteIndex);
+
+                    isSourceAvailable = source.MoveNext();
+                    isTargetAvailable = target.MoveNext();
+                }
+            }
+
+            // convert system palette to TR palette
+            palette = new tr_color[colorCount];
+            for (int i = 0; i < colorCount; i++)
+            {
+                palette[i].Red   = newPalette[i].R;
+                palette[i].Green = newPalette[i].G;
+                palette[i].Blue  = newPalette[i].B;
+            }
+
+            // derive raw data
+            var newData = ImageC.FromSystemDrawingImage(result).ToByteArray();
+
+            // offset every pixel if requested
+            if (offset > 0)
+                for (int i = 0; i < newData.Length; i++)
+                {
+                    var newIndex = newData[i] + offset;
+                    if (newIndex <= 255)
+                        newData[i] = (byte)newIndex;
+                    else
+                        newData[i] = 255;
+                }
+
+            return newData;
         }
     }
 }
