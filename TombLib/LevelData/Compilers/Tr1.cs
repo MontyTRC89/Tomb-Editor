@@ -20,12 +20,13 @@ namespace TombLib.LevelData.Compilers
                 int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
 
-                // 8 bit textures
-                // TODO: Replace fake texture palette indices with real ones
-                var fakeTextures = new byte[256 * 256 * numTextureTiles];
-                for (int i = 0; i < fakeTextures.Length; i++)
-                    fakeTextures[i] = 32;
-                writer.Write(fakeTextures);
+                // Create palette and 8-bit indexed textures
+                tr_color[] palette;
+                var textureData = PackTextureMap32To8Bit(_texture32Data, 256, 256, 0, out palette);
+
+                // Write 8-bit textures
+                var textureDataSize = 256 * 256 * numTextureTiles;
+                writer.Write(textureData);
 
                 const int filler = 0;
                 writer.Write(filler);
@@ -159,32 +160,8 @@ namespace TombLib.LevelData.Compilers
                 var lightmap = new byte[8192];
                 writer.Write(lightmap);
 
-                // TODO: for now I write fake palette, they should be needed only for 8 bit textures
-                tr_color[] palette8 = new tr_color[256];
-
-                // TODO: Test palette, fill all colours with red to yellow
-                for (var i = 0; i < palette8.Length; i++)
-                {
-                    palette8[i].Red = 255;
-                    palette8[i].Green = (byte)i;
-                    palette8[i].Blue = 0;
-                }
-
-                // Following colors have hardcoded meaning in TR2
-                // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
-                // TODO: Needed for TR1 or not?
-                palette8[1] = new tr_color() { Red = 128, Green = 128, Blue = 128 };
-                palette8[2] = new tr_color() { Red = 255, Green = 255, Blue = 255 };
-                palette8[3] = new tr_color() { Red = 255, Green = 0, Blue = 0 };
-                palette8[4] = new tr_color() { Red = 255, Green = 165, Blue = 0 };
-                palette8[5] = new tr_color() { Red = 255, Green = 255, Blue = 0 };
-                palette8[12] = new tr_color() { Red = 0, Green = 128, Blue = 0 };
-                palette8[13] = new tr_color() { Red = 0, Green = 255, Blue = 0 };
-                palette8[14] = new tr_color() { Red = 0, Green = 255, Blue = 255 };
-                palette8[14] = new tr_color() { Red = 0, Green = 0, Blue = 255 };
-                palette8[15] = new tr_color() { Red = 255, Green = 0, Blue = 255 };
-
-                foreach (tr_color c in palette8)
+                // Write palette
+                foreach (var c in palette)
                     c.write(writer);
 
                 const ushort numCinematicFrames = 0;
