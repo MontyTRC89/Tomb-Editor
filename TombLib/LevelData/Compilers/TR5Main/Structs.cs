@@ -94,6 +94,19 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public Vector3 Bitangent;
     }
 
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct tr5main_room_staticmesh
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public ushort Rotation;
+        public ushort Intensity1;
+        public ushort Intensity2;
+        public ushort ObjectID;
+        public short HitPoints;
+    }
+
     public class NormalHelper
     {
         public tr5main_polygon Polygon;
@@ -212,7 +225,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public tr5main_room_sector[] Sectors;
         public Vector3 AmbientLight;
         public List<tr5main_room_light> Lights;
-        public List<tr_room_staticmesh> StaticMeshes;
+        public List<tr5main_room_staticmesh> StaticMeshes;
         public int AlternateRoom;
         public int Flags;
         public int WaterScheme;
@@ -424,6 +437,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public tr5main_bounding_box VisibilityBox;
         public tr5main_bounding_box CollisionBox;
         public ushort Flags;
+        public short ShatterType;
+        public short ShatterDamage;
+        public short ShatterSound;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

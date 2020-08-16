@@ -565,6 +565,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
                 newStaticMesh.Mesh = (short)_meshes.Count;
 
+                newStaticMesh.ShatterType = (short)oldStaticMesh.ShatterType;
+                newStaticMesh.ShatterDamage = (short)oldStaticMesh.HitPoints;
+                newStaticMesh.ShatterSound = (short)oldStaticMesh.ShatterSound;
+
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {

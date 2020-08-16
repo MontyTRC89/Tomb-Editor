@@ -146,7 +146,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             {
                 OriginalRoom = room,
                 Lights = new List<tr5main_room_light>(),
-                StaticMeshes = new List<tr_room_staticmesh>(),
+                StaticMeshes = new List<tr5main_room_staticmesh>(),
                 Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
                 {
@@ -689,7 +689,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 // For TRNG statics chunk
                 _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
 
-                newRoom.StaticMeshes.Add(new tr_room_staticmesh
+                var sm = _level.Settings?.WadTryGetStatic(instance.WadObjectId);
+
+                newRoom.StaticMeshes.Add(new tr5main_room_staticmesh
                 {
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
@@ -698,7 +700,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion),
-                    Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 0x0001 : instance.Ocb)
+                    Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 0x0001 : instance.Ocb),
+                    HitPoints = (short)(sm != null ? sm.HitPoints : (short)1)
                 });
             }
 

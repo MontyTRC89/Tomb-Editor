@@ -680,6 +680,12 @@ namespace TombLib.Wad
                         });
                         s.Lights.Add(light);
                     }
+                    else if (id2 == Wad2Chunks.StaticShatter)
+                    {
+                        s.ShatterType = (WadShatterType)chunkIO.Raw.ReadInt32();
+                        s.HitPoints = chunkIO.Raw.ReadInt32();
+                        s.ShatterSound = chunkIO.Raw.ReadInt32();
+                    }
                     else
                     {
                         return false;

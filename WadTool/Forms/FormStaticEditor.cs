@@ -12,6 +12,7 @@ using TombLib.Graphics;
 using TombLib.Wad;
 using WadTool.Controls;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -51,6 +52,24 @@ namespace WadTool
             UpdatePositionUI();
             UpdateLightsList();
             UpdateLightUI();
+
+            if (_wad.GameVersion != TombLib.LevelData.TRVersion.Game.TR5Main)
+            {
+                panelShatter.Visible = false;
+            }
+            else
+            {
+                panelShatter.Visible = true;
+
+                var sounds = TrCatalog.GetAllSounds(_wad.GameVersion).Values;
+                var array = new string[sounds.Count];
+                sounds.CopyTo(array, 0);
+                comboShatterSound.Items.AddRange(array);
+
+                comboShatterType.SelectedIndex = (int)_workingStatic.ShatterType;
+                numShatterDamage.Value = _workingStatic.HitPoints;
+                comboShatterSound.SelectedIndex = _workingStatic.ShatterSound;
+            }
 
             numAmbient.Value = (decimal)_workingStatic.AmbientLight;
 
@@ -569,6 +588,23 @@ namespace WadTool
             _workingStatic.VisibilityBox = new BoundingBox();
             UpdateVisibilityBoxUI();
             panelRendering.Invalidate();
+        }
+
+        private void ComboShatterType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _workingStatic.ShatterType = (WadShatterType)comboShatterType.SelectedIndex;
+            comboShatterSound.Enabled = _workingStatic.ShatterType != WadShatterType.None;
+            numShatterDamage.Enabled = _workingStatic.ShatterType != WadShatterType.None;
+        }
+
+        private void NumShatterDamage_ValueChanged(object sender, EventArgs e)
+        {
+            _workingStatic.HitPoints = (int)numShatterDamage.Value;
+        }
+
+        private void ComboShatterSound_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _workingStatic.ShatterSound = comboShatterSound.SelectedIndex;
         }
     }
 }

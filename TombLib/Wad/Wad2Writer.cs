@@ -351,6 +351,16 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMax, s.CollisionBox.Maximum);
                         });
 
+                        if (wad.GameVersion == LevelData.TRVersion.Game.TR5Main)
+                        {
+                            chunkIO.WriteChunk(Wad2Chunks.StaticShatter, () =>
+                            {
+                                chunkIO.Raw.Write((int)s.ShatterType);
+                                chunkIO.Raw.Write(s.HitPoints);
+                                chunkIO.Raw.Write(s.ShatterSound);
+                            });
+                        }
+
                         //chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
                     });
                 }
