@@ -6,7 +6,7 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
-        private void WriteLevelTr2()
+        private void WriteLevelTr1()
         {
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
@@ -14,50 +14,28 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(80, "Writing geometry data to memory buffer");
 
                 // Write version
-                writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
-
-                // TODO: for now I write fake palette, they should be needed only for 8 bit textures
-                tr_color[] palette8 = new tr_color[256];
-                //Following colors have hardcoded meaning in TR2
-                // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
-                palette8[1] = new tr_color() { Red = 128, Green = 128, Blue = 128 };
-                palette8[2] = new tr_color() { Red = 255, Green = 255, Blue = 255 };
-                palette8[3] = new tr_color() { Red = 255, Green = 0, Blue = 0 };
-                palette8[4] = new tr_color() { Red = 255, Green = 165, Blue = 0 };
-                palette8[5] = new tr_color() { Red = 255, Green = 255, Blue = 0 };
-                palette8[12] = new tr_color() { Red = 0, Green = 128, Blue = 0 };
-                palette8[13] = new tr_color() { Red = 0, Green = 255, Blue = 0 };
-                palette8[14] = new tr_color() { Red = 0, Green = 255, Blue = 255 };
-                palette8[14] = new tr_color() { Red = 0, Green = 0, Blue = 255 };
-                palette8[15] = new tr_color() { Red = 255, Green = 0, Blue = 255 };
-                foreach (tr_color c in palette8)
-                    c.write(writer);
-                for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
+                writer.WriteBlockArray(new byte[] { 0x20, 0x00, 0x00, 0x00 });
 
                 // Write textures
                 int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
 
-                // TODO 8 bit textures (altough who uses 8 bit textures in 2018?)
+                // 8 bit textures
+                // TODO: Replace fake texture palette indices with real ones
                 var fakeTextures = new byte[256 * 256 * numTextureTiles];
+                for (int i = 0; i < fakeTextures.Length; i++)
+                    fakeTextures[i] = 32;
                 writer.Write(fakeTextures);
-
-                // 16 bit textures
-                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
-                writer.Write(texture16Data);
 
                 const int filler = 0;
                 writer.Write(filler);
 
+                // Write rooms
                 var numRooms = (ushort)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                long offset;
-                long offset2;
                 foreach (var r in _level.Rooms.Where(r => r != null))
-                {
-                    _tempRooms[r].WriteTr2(writer);
-                }
+                    _tempRooms[r].WriteTr1(writer);
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;
@@ -65,7 +43,7 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_floorData);
 
                 // Write meshes
-                offset = writer.BaseStream.Position;
+                long offset = writer.BaseStream.Position;
 
                 const int numMeshData = 0;
                 writer.Write(numMeshData);
@@ -77,7 +55,7 @@ namespace TombLib.LevelData.Compilers
                     totalMeshSize += (int)meshSize;
                 }
 
-                offset2 = writer.BaseStream.Position;
+                long offset2 = writer.BaseStream.Position;
                 uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
 
                 // Save the size of the meshes
@@ -125,7 +103,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
 
-                // Write camera, sound sources
+                // Write cameras, sound sources
                 writer.Write((uint)_cameras.Count);
                 writer.WriteBlockArray(_cameras);
 
@@ -134,7 +112,15 @@ namespace TombLib.LevelData.Compilers
 
                 // Write pathfinding data
                 writer.Write((uint)_boxes.Length);
-                writer.WriteBlockArray(_boxes);
+                for (var i = 0; i < _boxes.Length; i++)
+                {
+                    writer.Write((int)_boxes[i].Zmin);
+                    writer.Write((int)_boxes[i].Zmax);
+                    writer.Write((int)_boxes[i].Xmin);
+                    writer.Write((int)_boxes[i].Xmax);
+                    writer.Write(_boxes[i].TrueFloor);
+                    writer.Write(_boxes[i].OverlapIndex);
+                }
 
                 writer.Write((uint)_overlaps.Length);
                 writer.WriteBlockArray(_overlaps);
@@ -144,19 +130,11 @@ namespace TombLib.LevelData.Compilers
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Normal);
                 for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone4_Alternate);
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
@@ -165,20 +143,61 @@ namespace TombLib.LevelData.Compilers
 
                 // Write items
                 writer.Write((uint)_items.Count);
-                writer.WriteBlockArray(_items);
+                foreach (var item in _items)
+                {
+                    writer.Write(item.ObjectID);
+                    writer.Write(item.Room);
+                    writer.Write(item.X);
+                    writer.Write(item.Y);
+                    writer.Write(item.Z);
+                    writer.Write(item.Angle);
+                    writer.Write(item.Intensity1);
+                    writer.Write(item.Flags);
+                }
 
                 // TODO Figure out light map
                 var lightmap = new byte[8192];
                 writer.Write(lightmap);
 
-                const ushort numDemo = 0;
+                // TODO: for now I write fake palette, they should be needed only for 8 bit textures
+                tr_color[] palette8 = new tr_color[256];
+
+                // TODO: Test palette, fill all colours with red to yellow
+                for (var i = 0; i < palette8.Length; i++)
+                {
+                    palette8[i].Red = 255;
+                    palette8[i].Green = (byte)i;
+                    palette8[i].Blue = 0;
+                }
+
+                // Following colors have hardcoded meaning in TR2
+                // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
+                // TODO: Needed for TR1 or not?
+                palette8[1] = new tr_color() { Red = 128, Green = 128, Blue = 128 };
+                palette8[2] = new tr_color() { Red = 255, Green = 255, Blue = 255 };
+                palette8[3] = new tr_color() { Red = 255, Green = 0, Blue = 0 };
+                palette8[4] = new tr_color() { Red = 255, Green = 165, Blue = 0 };
+                palette8[5] = new tr_color() { Red = 255, Green = 255, Blue = 0 };
+                palette8[12] = new tr_color() { Red = 0, Green = 128, Blue = 0 };
+                palette8[13] = new tr_color() { Red = 0, Green = 255, Blue = 0 };
+                palette8[14] = new tr_color() { Red = 0, Green = 255, Blue = 255 };
+                palette8[14] = new tr_color() { Red = 0, Green = 0, Blue = 255 };
+                palette8[15] = new tr_color() { Red = 255, Green = 0, Blue = 255 };
+
+                foreach (tr_color c in palette8)
+                    c.write(writer);
+
                 const ushort numCinematicFrames = 0;
-                writer.Write(numDemo);
+                const ushort numDemo = 0;
                 writer.Write(numCinematicFrames);
+                writer.Write(numDemo);
 
                 // Write sound meta data
                 PrepareSoundsData();
                 WriteSoundMetadata(writer);
+
+                ReportProgress(97, "Writing WAVE sounds");
+                WriteSoundData(writer);
             }
         }
     }

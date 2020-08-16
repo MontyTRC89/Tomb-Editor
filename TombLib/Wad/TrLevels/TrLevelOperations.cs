@@ -457,13 +457,9 @@ namespace TombLib.Wad.TrLevels
                 else
                 {
                     if (oldAnimation.FrameSize == 0)
-                    {
                         numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame + 1) / newAnimation.FrameRate) : 0;
-                    }
                     else
-                    {
                         numFrames = (oldLevel.Animations[oldMoveable.Animation + j + 1].FrameOffset - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
-                    }
                 }
 
                 for (int f = 0; f < numFrames; f++)
