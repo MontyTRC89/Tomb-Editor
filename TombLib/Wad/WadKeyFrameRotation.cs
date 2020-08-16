@@ -133,8 +133,33 @@ namespace TombLib.Wad
             int rotY = 0x3ff & (int)Math.Round(angle.Rotations.Y * (1024.0f / 360.0f));
             int rotZ = 0x3ff & (int)Math.Round(-angle.Rotations.Z * (1024.0f / 360.0f));
 
-            outFrameData.Add((short)((rotX << 4) | ((rotY & 0xfc0) >> 6)));
-            outFrameData.Add((short)(((rotY & 0x3f) << 10) | (rotZ & 0x3ff)));
+            /*
+            TR1
+            int rot1 = frameData[index++];
+            int rot0 = frameData[index++];
+            int rotX = ((rot0 & 0x3FF0) >> 4);
+            int rotY = ((rot0 & 0x000F) << 6) | ((rot1 & 0xFC00) >> 10);
+            int rotZ = ((rot1) & 0x03FF);
+
+            OTHERS
+            int rot0 = frameData[index++];
+            int rot1 = frameData[index++];
+            int rotX = ((rot0 & 0x3FF0) >> 4);
+            int rotY = (((rot1 & 0xFC00) >> 10) | ((rot0 & 0x000F) << 6) & 0x03FF);
+            int rotZ = ((rot1) & 0x03FF);
+
+            */
+
+            if (!isTr1)
+            {
+                outFrameData.Add((short)((rotX << 4) | ((rotY & 0xfc0) >> 6)));
+                outFrameData.Add((short)(((rotY & 0x3f) << 10) | (rotZ & 0x3ff)));
+            }
+            else
+            {
+                outFrameData.Add((short)((rotZ << 4) | ((rotY & 0xfc0) >> 6)));
+                outFrameData.Add((short)(((rotY & 0x3f) << 10) | (rotX & 0x3ff)));
+            }
         }
 
         public Vector3 RotationVectorInRadians => Rotations * ((float)Math.PI / 180.0f);

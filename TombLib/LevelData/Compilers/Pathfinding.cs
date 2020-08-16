@@ -215,11 +215,11 @@ namespace TombLib.LevelData.Compilers
             {
                 var boxLimit = _level.Settings.GameVersion >= TRVersion.Game.TR3 ? 2047 : 32767;
                 if (_boxes.Length > boxLimit)
-                    _progressReporter.ReportWarn("Box limit is reached. Maximum is " + boxLimit + ", you have " + _boxes.Length + ". Game will crash. Reduce level size or split it.");
+                    _progressReporter.ReportWarn("Box limit is reached. Maximum is " + boxLimit + ", you have " + _boxes.Length + ". Game may crash. Reduce level size or split it.");
 
                 var overlapLimit = 8192;
                 if (_overlaps.Length > overlapLimit)
-                    _progressReporter.ReportWarn("Overlap limit is reached. Maximum is " + overlapLimit + ", you have " + _overlaps.Length + ". Game will crash. Reduce level size or split it.");
+                    _progressReporter.ReportWarn("Overlap limit is reached. Maximum is " + overlapLimit + ", you have " + _overlaps.Length + ". Game may crash. Reduce level size or split it.");
             }
         }
 

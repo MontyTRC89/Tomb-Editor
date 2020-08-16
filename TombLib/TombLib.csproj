@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
     <Compile Include="Graphics\Frustum.cs" />
+    <Compile Include="LevelData\Compilers\Tr1.cs" />
     <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
     <Compile Include="LevelData\Instances\ScriptInstance.cs" />
     <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
