@@ -1462,12 +1462,10 @@ namespace TombLib.Utils.ImageQuantizer
 
     public class QuantizationHelper
     {
-        private static readonly Color BackgroundColor;
         private static readonly Double[] Factors;
 
         static QuantizationHelper()
         {
-            BackgroundColor = SystemColors.Control;
             Factors = PrecalculateFactors();
         }
 
@@ -1498,11 +1496,10 @@ namespace TombLib.Utils.ImageQuantizer
             if (color.A < 255)
             {
                 // performs a alpha blending (second color is BackgroundColor, by default a Control color)
-                Double colorFactor = Factors[color.A];
-                Double backgroundFactor = Factors[255 - color.A];
-                Int32 red = (Int32)(color.R * colorFactor + BackgroundColor.R * backgroundFactor);
-                Int32 green = (Int32)(color.G * colorFactor + BackgroundColor.G * backgroundFactor);
-                Int32 blue = (Int32)(color.B * colorFactor + BackgroundColor.B * backgroundFactor);
+                Double colorFactor = (Double)color.A / 255.0d;
+                Int32 red = (Int32)(color.R * colorFactor);
+                Int32 green = (Int32)(color.G * colorFactor);
+                Int32 blue = (Int32)(color.B * colorFactor);
                 result = Color.FromArgb(255, red, green, blue);
             }
 

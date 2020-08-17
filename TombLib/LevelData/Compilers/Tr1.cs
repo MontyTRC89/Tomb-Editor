@@ -22,7 +22,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Create palette and 8-bit indexed textures
                 tr_color[] palette;
-                var textureData = PackTextureMap32To8Bit(_texture32Data, 256, 256, 0, out palette);
+                var textureData = PackTextureMap32To8Bit(_texture32Data, 256, 255, 1, out palette);
 
                 // Write 8-bit textures
                 var textureDataSize = 256 * 256 * numTextureTiles;
