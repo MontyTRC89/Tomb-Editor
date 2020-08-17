@@ -393,12 +393,12 @@ namespace TombLib.LevelData.Compilers
                 }
 
             // Convert system palette to TR palette
-            palette = new tr_color[colorCount];
-            for (int i = 0; i < colorCount; i++)
+            palette = new tr_color[colorCount + offset];
+            for (int i = offset; i < colorCount; i++)
             {
-                palette[i].Red   = newPalette[i].R;
-                palette[i].Green = newPalette[i].G;
-                palette[i].Blue  = newPalette[i].B;
+                palette[i].Red   = (byte)(newPalette[i - offset].R / 4);
+                palette[i].Green = (byte)(newPalette[i - offset].G / 4);
+                palette[i].Blue  = (byte)(newPalette[i - offset].B / 4);
             }
 
             // Offset every pixel if requested (TR2?)
