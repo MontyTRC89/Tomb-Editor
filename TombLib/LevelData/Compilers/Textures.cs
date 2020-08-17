@@ -369,45 +369,30 @@ namespace TombLib.LevelData.Compilers
         {
             int pixelCount = textureData.Length / 4;
             var height = pixelCount / pageSize;
-            byte[] newTextureData = new byte[pixelCount * 2];
 
+            // Initialize quantizer
             IColorQuantizer quantizer = new PaletteQuantizer();
             quantizer.Clear();
 
-            var image = (Image)ImageC.FromByteArray(textureData, pageSize, pageSize).ToBitmap();
-            image.AddColorsToQuantizer(quantizer);
+            // Create temporary bitmap out of texture data
+            var bitmap = ImageC.FromByteArray(textureData, pageSize, textureData.Length / 4 / pageSize).ToBitmap();
+            ((Image)bitmap).AddColorsToQuantizer(quantizer);
 
-            var originalColorCount = quantizer.GetColorCount();
-
-            // creates a target bitmap in 8-bit format
-            var result = new Bitmap(image.Width, image.Height, PixelFormat.Format8bppIndexed);
+            // Get palette
             var newPalette = quantizer.GetPalette(colorCount);
-            result.SetPalette(newPalette);
-
-            // initializes both source and target image enumerators
-            IEnumerable<Pixel> sourceEnum = image.EnumerateImagePixels(ImageLockMode.ReadOnly);
-            IEnumerable<Pixel> targetEnum = result.EnumerateImagePixels(ImageLockMode.WriteOnly);
-
-            // ensures that both enumerators are released from memory afterwards
-            using (IEnumerator<Pixel> source = sourceEnum.GetEnumerator())
-            using (IEnumerator<Pixel> target = targetEnum.GetEnumerator())
-            {
-                var isSourceAvailable = source.MoveNext();
-                var isTargetAvailable = target.MoveNext();
-
-                // moves to next pixel for both images
-                while (isSourceAvailable || isTargetAvailable)
+            
+            // Put palette indices into texture data array
+            var result = new byte[textureData.Length / 4];
+            for (int x = 0; x < pageSize; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    var color = QuantizationHelper.ConvertAlpha(source.Current.Color);
+                    var current = bitmap.GetPixel(x, y);
+                    var color = QuantizationHelper.ConvertAlpha(current);
                     var paletteIndex = quantizer.GetPaletteIndex(color);
-                    target.Current.SetIndex((byte)paletteIndex);
-
-                    isSourceAvailable = source.MoveNext();
-                    isTargetAvailable = target.MoveNext();
+                    result[y * pageSize + x] = (byte)paletteIndex;
                 }
-            }
 
-            // convert system palette to TR palette
+            // Convert system palette to TR palette
             palette = new tr_color[colorCount];
             for (int i = 0; i < colorCount; i++)
             {
@@ -416,21 +401,18 @@ namespace TombLib.LevelData.Compilers
                 palette[i].Blue  = newPalette[i].B;
             }
 
-            // derive raw data
-            var newData = ImageC.FromSystemDrawingImage(result).ToByteArray();
-
-            // offset every pixel if requested
+            // Offset every pixel if requested (TR2?)
             if (offset > 0)
-                for (int i = 0; i < newData.Length; i++)
+                for (int i = 0; i < result.Length; i++)
                 {
-                    var newIndex = newData[i] + offset;
+                    var newIndex = result[i] + offset;
                     if (newIndex <= 255)
-                        newData[i] = (byte)newIndex;
+                        result[i] = (byte)newIndex;
                     else
-                        newData[i] = 255;
+                        result[i] = 255;
                 }
 
-            return newData;
+            return result;
         }
     }
 }
