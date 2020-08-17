@@ -853,7 +853,27 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
 
-                        ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
+                        ushort characteristics;
+
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+                        {
+                            switch (soundDetail.LoopBehaviour)
+                            {
+                                default:
+                                case WadSoundLoopBehaviour.None:
+                                    characteristics = 0;
+                                    break;
+                                case WadSoundLoopBehaviour.OneShotRewound:
+                                    characteristics = 1;
+                                    break;
+                                case WadSoundLoopBehaviour.Looped:
+                                    characteristics = 2;
+                                    break;
+                            }
+                        }
+                        else
+                            characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
+
                         characteristics |= (ushort)(soundDetail.Samples.Count << 2);
                         if (soundDetail.DisablePanning)
                             characteristics |= 0x1000;

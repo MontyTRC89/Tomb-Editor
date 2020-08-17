@@ -148,7 +148,7 @@ namespace TombLib.LevelData.Compilers
 
                 int numOverlapsAdded = 0;
 
-                if ( box1.Flag0x04)
+                if (box1.Flag0x04)
                 {
                     if (dec_flipped)
                     {
