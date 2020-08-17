@@ -371,7 +371,7 @@ namespace TombLib.LevelData.Compilers
             var height = pixelCount / pageSize;
 
             // Initialize quantizer
-            IColorQuantizer quantizer = new PaletteQuantizer();
+            IColorQuantizer quantizer = new OctreeQuantizer();
             quantizer.Clear();
 
             // Create temporary bitmap out of texture data
