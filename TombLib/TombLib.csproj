@@ -323,7 +323,6 @@
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="Types\VectorInt2.cs" />
     <Compile Include="Types\VectorInt3.cs" />
-    <Compile Include="Wad\AnimationFile.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
     <Compile Include="Wad\WadAdditionalSoundInfo.cs" />
     <Compile Include="Wad\WadLight.cs" />
