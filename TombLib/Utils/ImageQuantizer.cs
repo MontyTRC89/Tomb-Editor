@@ -1387,79 +1387,6 @@ namespace TombLib.Utils.ImageQuantizer
         #endregion
     }
 
-    /// <summary>
-    /// Stores all the informations about single color only once, to be used later.
-    /// </summary>
-    internal struct ColorInfo
-    {
-        /// <summary>
-        /// The original color.
-        /// </summary>
-        public Color Color { get; private set; }
-
-        /// <summary>
-        /// The pixel presence count in the image.
-        /// </summary>
-        public Int32 Count { get; private set; }
-
-        /// <summary>
-        /// A hue component of the color.
-        /// </summary>
-        public Single Hue { get; private set; }
-
-        /// <summary>
-        /// A saturation component of the color.
-        /// </summary>
-        public Single Saturation { get; private set; }
-
-        /// <summary>
-        /// A brightness component of the color.
-        /// </summary>
-        public Single Brightness { get; private set; }
-
-        /// <summary>
-        /// A cached hue hashcode.
-        /// </summary>
-        public Int32 HueHashCode { get; private set; }
-
-        /// <summary>
-        /// A cached saturation hashcode.
-        /// </summary>
-        public Int32 SaturationHashCode { get; private set; }
-
-        /// <summary>
-        /// A cached brightness hashcode.
-        /// </summary>
-        public Int32 BrightnessHashCode { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ColorInfo"/> struct.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        public ColorInfo(Color color)
-            : this()
-        {
-            Color = color;
-            Count = 1;
-
-            Hue = color.GetHue();
-            Saturation = color.GetSaturation();
-            Brightness = color.GetBrightness();
-
-            HueHashCode = Hue.GetHashCode();
-            SaturationHashCode = Saturation.GetHashCode();
-            BrightnessHashCode = Brightness.GetHashCode();
-        }
-
-        /// <summary>
-        /// Increases the count of pixels of this color.
-        /// </summary>
-        public void IncreaseCount()
-        {
-            Count++;
-        }
-    }
-
     public class QuantizationHelper
     {
         private static readonly Double[] Factors;
@@ -1565,89 +1492,401 @@ namespace TombLib.Utils.ImageQuantizer
             return redFactor + greenFactor + blueFactor;
         }
     }
-
-    /// <summary>
-    /// This is my baby. Read more in the article on the Code Project:
-    /// http://www.codeproject.com/KB/recipes/SimplePaletteQuantizer.aspx
-    /// </summary>
-    public class PaletteQuantizer : IColorQuantizer
+    internal class OctreeNode
     {
-        private readonly List<Color> palette;
-        private readonly Dictionary<Color, Int32> cache;
-        private readonly Dictionary<Color, ColorInfo> colorMap;
+        private static readonly Byte[] Mask = new Byte[] { 0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01 };
+
+        private Int32 red;
+        private Int32 green;
+        private Int32 blue;
+
+        private Int32 pixelCount;
+        private Int32 paletteIndex;
+
+        private readonly OctreeNode[] nodes;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PaletteQuantizer"/> class.
+        /// Initializes a new instance of the <see cref="OctreeNode"/> class.
         /// </summary>
-        public PaletteQuantizer()
+        public OctreeNode(Int32 level, OctreeQuantizer parent)
         {
-            palette = new List<Color>();
-            cache = new Dictionary<Color, Int32>();
-            colorMap = new Dictionary<Color, ColorInfo>();
+            nodes = new OctreeNode[8];
+
+            if (level < 7)
+            {
+                parent.AddLevelNode(level, this);
+            }
         }
+
+        #region | Calculated properties |
+
+        /// <summary>
+        /// Gets a value indicating whether this node is a leaf.
+        /// </summary>
+        /// <value><c>true</c> if this node is a leaf; otherwise, <c>false</c>.</value>
+        public Boolean IsLeaf
+        {
+            get { return pixelCount > 0; }
+        }
+
+        /// <summary>
+        /// Gets the averaged leaf color.
+        /// </summary>
+        /// <value>The leaf color.</value>
+        public Color Color
+        {
+            get
+            {
+                Color result;
+
+                // determines a color of the leaf
+                if (IsLeaf)
+                {
+                    if (pixelCount == 1)
+                    {
+                        // if a pixel count for this color is 1 than this node contains our color already
+                        result = Color.FromArgb(255, red, green, blue);
+                    }
+                    else
+                    {
+                        // otherwise calculates the average color (without rounding)
+                        result = Color.FromArgb(255, red / pixelCount, green / pixelCount, blue / pixelCount);
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Cannot retrieve a color for other node than leaf.");
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets the active nodes pixel count.
+        /// </summary>
+        /// <value>The active nodes pixel count.</value>
+        public Int32 ActiveNodesPixelCount
+        {
+            get
+            {
+                Int32 result = pixelCount;
+
+                // sums up all the pixel presence for all the active nodes
+                for (Int32 index = 0; index < 8; index++)
+                {
+                    OctreeNode node = nodes[index];
+
+                    if (node != null)
+                    {
+                        result += node.pixelCount;
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Enumerates only the leaf nodes.
+        /// </summary>
+        /// <value>The enumerated leaf nodes.</value>
+        public IEnumerable<OctreeNode> ActiveNodes
+        {
+            get
+            {
+                List<OctreeNode> result = new List<OctreeNode>();
+
+                // adds all the active sub-nodes to a list
+                for (Int32 index = 0; index < 8; index++)
+                {
+                    OctreeNode node = nodes[index];
+
+                    if (node != null)
+                    {
+                        if (node.IsLeaf)
+                        {
+                            result.Add(node);
+                        }
+                        else
+                        {
+                            result.AddRange(node.ActiveNodes);
+                        }
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        #endregion
+
+        #region | Methods |
+
+        /// <summary>
+        /// Adds the color.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="parent">The parent.</param>
+        public void AddColor(Color color, Int32 level, OctreeQuantizer parent)
+        {
+            // if this node is a leaf, then increase a color amount, and pixel presence
+            if (level == 8)
+            {
+                red += color.R;
+                green += color.G;
+                blue += color.B;
+                pixelCount++;
+            }
+            else if (level < 8) // otherwise goes one level deeper
+            {
+                // calculates an index for the next sub-branch
+                Int32 index = GetColorIndexAtLevel(color, level);
+
+                // if that branch doesn't exist, grows it
+                if (nodes[index] == null)
+                {
+                    nodes[index] = new OctreeNode(level, parent);
+                }
+
+                // adds a color to that branch
+                nodes[index].AddColor(color, level + 1, parent);
+            }
+        }
+
+        /// <summary>
+        /// Gets the index of the palette.
+        /// </summary>
+        /// <param name="color">The color.</param>
+        /// <param name="level">The level.</param>
+        /// <returns></returns>
+        public Int32 GetPaletteIndex(Color color, Int32 level)
+        {
+            Int32 result;
+
+            // if a node is leaf, then we've found are best match already
+            if (IsLeaf)
+            {
+                result = paletteIndex;
+            }
+            else // otherwise continue in to the lower depths
+            {
+                Int32 index = GetColorIndexAtLevel(color, level);
+                result = nodes[index].GetPaletteIndex(color, level + 1);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Removes the leaves by summing all it's color components and pixel presence.
+        /// </summary>
+        /// <returns></returns>
+        public Int32 RemoveLeaves(Int32 level, Int32 activeColorCount, Int32 targetColorCount, OctreeQuantizer parent)
+        {
+            Int32 result = 0;
+
+            // scans thru all the active nodes
+            for (Int32 index = 0; index < 8; index++)
+            {
+                OctreeNode node = nodes[index];
+
+                if (node != null)
+                {
+                    // sums up their color components
+                    red += node.red;
+                    green += node.green;
+                    blue += node.blue;
+
+                    // and pixel presence
+                    pixelCount += node.pixelCount;
+
+                    // then deactivates the node 
+                    // nodes[index] = null;
+
+                    // increases the count of reduced nodes
+                    result++;
+                }
+            }
+
+            // returns a number of reduced sub-nodes, minus one because this node becomes a leaf
+            return result - 1;
+        }
+
+        #endregion
+
+        #region | Helper methods |
+
+        /// <summary>
+        /// Calculates the color component bit (level) index.
+        /// </summary>
+        /// <param name="color">The color for which the index will be calculated.</param>
+        /// <param name="level">The bit index to be used for index calculation.</param>
+        /// <returns>The color index at a certain depth level.</returns>
+        private static Int32 GetColorIndexAtLevel(Color color, Int32 level)
+        {
+            return ((color.R & Mask[level]) == Mask[level] ? 4 : 0) |
+                   ((color.G & Mask[level]) == Mask[level] ? 2 : 0) |
+                   ((color.B & Mask[level]) == Mask[level] ? 1 : 0);
+        }
+
+        /// <summary>
+        /// Sets a palette index to this node.
+        /// </summary>
+        /// <param name="index">The palette index.</param>
+        internal void SetPaletteIndex(Int32 index)
+        {
+            paletteIndex = index;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// The idea here is to build a tree structure containing always a maximum of K different 
+    /// colors. If a further color is to be added to the tree structure, its color value has 
+    /// to be merged with the most likely one that is already in the tree. The both values are 
+    /// substituted by their mean. 
+    ///
+    /// The most important data structure are the nodes of the octree. Each inner node of the 
+    /// octree contain a maximum of eight successors, the leave nodes keep information for the 
+    /// color value (colorvalue), the color index (colorindex), and a counter (colorcount) for 
+    /// the pixel that are already mapped to a particular leave. Because each of the red, green 
+    /// and blue value is between 0 and 255 the maximum depth of the tree is eight. In level i 
+    /// Bit i of RGB is used as selector for the successors. 
+    ///
+    /// The octree is constructed during reading the image that is to be quantized. Only that 
+    /// parts of the octree are created that are really needed. Initially the first K values 
+    /// are represented exactly (in level eight). When the number of leaves nodes (currentK) 
+    /// exceeds K, the tree has to reduced. That would mean that leaves at the largest depth 
+    /// are substituted by their predecessor.
+    /// </summary>
+    /// 
+    public class OctreeQuantizer : IColorQuantizer
+    {
+        private OctreeNode root;
+        private readonly List<OctreeNode>[] levels;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Octree"/> class.
+        /// </summary>
+        public OctreeQuantizer()
+        {
+            // initializes the octree level lists
+            levels = new List<OctreeNode>[7];
+
+            // creates the octree level lists
+            for (Int32 level = 0; level < 7; level++)
+            {
+                levels[level] = new List<OctreeNode>();
+            }
+
+            // creates a root node
+            root = new OctreeNode(0, this);
+        }
+
+        #region | Calculated properties |
+
+        /// <summary>
+        /// Gets the leaf nodes only (recursively).
+        /// </summary>
+        /// <value>All the tree leaves.</value>
+        internal IEnumerable<OctreeNode> Leaves
+        {
+            get { return root.ActiveNodes.Where(node => node.IsLeaf); }
+        }
+
+        #endregion
+
+        #region | Methods |
+
+        /// <summary>
+        /// Adds the node to a level node list.
+        /// </summary>
+        /// <param name="level">The depth level.</param>
+        /// <param name="octreeNode">The octree node to be added.</param>
+        internal void AddLevelNode(Int32 level, OctreeNode octreeNode)
+        {
+            levels[level].Add(octreeNode);
+        }
+
+        #endregion
 
         #region << IColorQuantizer >>
 
         /// <summary>
-        /// Adds the color to quantizer, only unique colors are added.
+        /// Adds the color to quantizer.
         /// </summary>
         /// <param name="color">The color to be added.</param>
         public void AddColor(Color color)
         {
-            // if alpha is higher then fully transparent, convert it to a RGB value for more precise processing
             color = QuantizationHelper.ConvertAlpha(color);
-            ColorInfo value;
-
-            if (colorMap.TryGetValue(color, out value))
-            {
-                value.IncreaseCount();
-            }
-            else
-            {
-                ColorInfo colorInfo = new ColorInfo(color);
-                colorMap.Add(color, colorInfo);
-            }
+            root.AddColor(color, 0, this);
         }
 
         /// <summary>
-        /// Gets the palette with a specified count of the colors.
+        /// Gets the palette with specified count of the colors.
         /// </summary>
         /// <param name="colorCount">The color count.</param>
         /// <returns></returns>
         public List<Color> GetPalette(Int32 colorCount)
         {
-            palette.Clear();
+            List<Color> result = new List<Color>();
+            Int32 leafCount = Leaves.Count();
+            Int32 paletteIndex = 0;
 
-            // lucky seed :)
-            Random random = new Random(13);
-
-            // shuffles the colormap
-            IEnumerable<ColorInfo> colorInfoList = colorMap.
-                OrderBy(entry => random.NextDouble()).
-                Select(entry => entry.Value);
-
-            // if there're less colors in the image then allowed, simply pass them all
-            if (colorMap.Count > colorCount)
+            // goes thru all the levels starting at the deepest, and goes upto a root level
+            for (Int32 level = 6; level >= 0; level--)
             {
-                // solves the color quantization
-                colorInfoList = SolveRootLevel(colorInfoList, colorCount);
-
-                // if there're still too much colors, just snap them from the top))
-                if (colorInfoList.Count() > colorCount)
+                // if level contains any node
+                if (levels[level].Count > 0)
                 {
-                    colorInfoList.OrderByDescending(colorInfo => colorInfo.Count);
-                    colorInfoList = colorInfoList.Take(colorCount);
+                    // orders the level node list by pixel presence (those with least pixels are at the top)
+                    IEnumerable<OctreeNode> sortedNodeList = levels[level].
+                        OrderBy(node => node.ActiveNodesPixelCount);
+
+                    // removes the nodes unless the count of the leaves is lower or equal than our requested color count
+                    foreach (OctreeNode node in sortedNodeList)
+                    {
+                        // removes a node
+                        leafCount -= node.RemoveLeaves(level, leafCount, colorCount, this);
+
+                        // if the count of leaves is lower then our requested count terminate the loop
+                        if (leafCount <= colorCount) break;
+                    }
+
+                    // if the count of leaves is lower then our requested count terminate the level loop as well
+                    if (leafCount <= colorCount) break;
+
+                    // otherwise clear whole level, as it is not needed anymore
+                    levels[level].Clear();
                 }
             }
 
-            // clears the hit cache
-            cache.Clear();
+            // goes through all the leaves that are left in the tree (there should now be less or equal than requested)
+            foreach (OctreeNode node in Leaves.OrderByDescending(node => node.ActiveNodesPixelCount))
+            {
+                if (paletteIndex >= colorCount) break;
 
-            // adds the selected colors to a final palette
-            palette.AddRange(colorInfoList.Select(colorInfo => colorInfo.Color));
+                // adds the leaf color to a palette
+                if (node.IsLeaf)
+                {
+                    result.Add(node.Color);
+                }
 
-            // returns our new palette
-            return palette;
+                // and marks the node with a palette index
+                node.SetPaletteIndex(paletteIndex++);
+            }
+
+            // we're unable to reduce the Octree with enough precision, and the leaf count is zero
+            if (result.Count == 0)
+            {
+                throw new NotSupportedException("The Octree contains after the reduction 0 colors, it may happen for 1-16 colors because it reduces by 1-8 nodes at time. Should be used on 8 or above to ensure the correct functioning.");
+            }
+
+            // returns the palette
+            return result;
         }
 
         /// <summary>
@@ -1657,19 +1896,10 @@ namespace TombLib.Utils.ImageQuantizer
         /// <returns></returns>
         public Int32 GetPaletteIndex(Color color)
         {
-            Int32 result;
             color = QuantizationHelper.ConvertAlpha(color);
 
-            // checks whether color was already requested, in that case returns an index from a cache
-            if (!cache.TryGetValue(color, out result))
-            {
-                // otherwise finds the nearest color
-                result = QuantizationHelper.GetNearestColor(color, palette);
-                cache[color] = result;
-            }
-
-            // returns a palette index
-            return result;
+            // retrieves a palette index
+            return root.GetPaletteIndex(color, 0);
         }
 
         /// <summary>
@@ -1678,7 +1908,8 @@ namespace TombLib.Utils.ImageQuantizer
         /// <returns></returns>
         public Int32 GetColorCount()
         {
-            return colorMap.Count;
+            // calculates the number of leaves, by parsing the whole tree
+            return Leaves.Count();
         }
 
         /// <summary>
@@ -1686,181 +1917,14 @@ namespace TombLib.Utils.ImageQuantizer
         /// </summary>
         public void Clear()
         {
-            // clears all the information
-            cache.Clear();
-            colorMap.Clear();
-        }
-
-        #endregion
-
-        #region | Helper methods |
-
-        /// <summary>
-        /// Selects three lists, based on distinct values of each hue, saturation and brightness color
-        /// components, in a single pass.
-        /// </summary>
-        private static void SelectDistinct(IEnumerable<ColorInfo> colors, out Dictionary<Single, ColorInfo> hueColors, out Dictionary<Single, ColorInfo> saturationColors, out Dictionary<Single, ColorInfo> brightnessColors)
-        {
-            hueColors = new Dictionary<Single, ColorInfo>();
-            saturationColors = new Dictionary<Single, ColorInfo>();
-            brightnessColors = new Dictionary<Single, ColorInfo>();
-
-            foreach (ColorInfo colorInfo in colors)
+            // clears all the node list levels
+            foreach (List<OctreeNode> level in levels)
             {
-                if (!hueColors.ContainsKey(colorInfo.Hue))
-                {
-                    hueColors.Add(colorInfo.Hue, colorInfo);
-                }
-
-                if (!saturationColors.ContainsKey(colorInfo.Saturation))
-                {
-                    saturationColors.Add(colorInfo.Saturation, colorInfo);
-                }
-
-                if (!brightnessColors.ContainsKey(colorInfo.Brightness))
-                {
-                    brightnessColors.Add(colorInfo.Brightness, colorInfo);
-                }
-            }
-        }
-
-        private static IEnumerable<ColorInfo> SolveRootLevel(IEnumerable<ColorInfo> colors, Int32 colorCount)
-        {
-            // initializes the comparers based on hue, saturation and brightness (HSB color model)
-            ColorHueComparer hueComparer = new ColorHueComparer();
-            ColorSaturationComparer saturationComparer = new ColorSaturationComparer();
-            ColorBrightnessComparer brightnessComparer = new ColorBrightnessComparer();
-
-            // selects three palettes: 1) hue is unique, 2) saturation is unique, 3) brightness is unique
-            Dictionary<Single, ColorInfo> hueColors, saturationColors, brightnessColors;
-            SelectDistinct(colors, out hueColors, out saturationColors, out brightnessColors);
-
-            // selects the palette (from those 3) which has the most colors, because an image has some details in that category)
-            if (hueColors.Count > saturationColors.Count && hueColors.Count > brightnessColors.Count)
-            {
-                colors = Solve2ndLevel(colors, hueColors, saturationComparer, brightnessComparer, colorCount);
-            }
-            else if (saturationColors.Count > hueColors.Count && saturationColors.Count > brightnessColors.Count)
-            {
-                colors = Solve2ndLevel(colors, saturationColors, hueComparer, brightnessComparer, colorCount);
-            }
-            else
-            {
-                colors = Solve2ndLevel(colors, brightnessColors, hueComparer, saturationComparer, colorCount);
+                level.Clear();
             }
 
-            return colors;
-        }
-
-        /// <summary>
-        /// If the color count is still high, determine which of the remaining color components 
-        /// are prevalent, and filter all the non-distinct values of that color component.
-        /// </summary>
-        private static IEnumerable<ColorInfo> Solve2ndLevel(IEnumerable<ColorInfo> colors, Dictionary<Single, ColorInfo> defaultColors, IEqualityComparer<ColorInfo> firstComparer, IEqualityComparer<ColorInfo> secondComparer, Int32 colorCount)
-        {
-            IEnumerable<ColorInfo> result = colors;
-
-            if (defaultColors.Count() > colorCount)
-            {
-                result = defaultColors.Select(entry => entry.Value);
-
-                IEnumerable<ColorInfo> firstColors = result.Distinct(firstComparer);
-                IEnumerable<ColorInfo> secondColors = result.Distinct(secondComparer);
-
-                Int32 firstColorsCount = firstColors.Count();
-                Int32 secondColorsCount = secondColors.Count();
-
-                if (firstColorsCount > secondColorsCount)
-                {
-                    if (firstColorsCount > colorCount)
-                    {
-                        result = Solve3rdLevel(result, firstColors, secondComparer, colorCount);
-                    }
-                }
-                else
-                {
-                    if (secondColorsCount > colorCount)
-                    {
-                        result = Solve3rdLevel(result, secondColors, firstComparer, colorCount);
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// If the color count is still high even so, filter all the non-distinct values of the last color component.
-        /// </summary>
-        private static IEnumerable<ColorInfo> Solve3rdLevel(IEnumerable<ColorInfo> colors, IEnumerable<ColorInfo> defaultColors, IEqualityComparer<ColorInfo> comparer, Int32 colorCount)
-        {
-            IEnumerable<ColorInfo> result = colors;
-
-            if (result.Count() > colorCount)
-            {
-                result = defaultColors;
-
-                IEnumerable<ColorInfo> filteredColors = result.Distinct(comparer);
-
-                if (filteredColors.Count() >= colorCount)
-                {
-                    result = filteredColors;
-                }
-            }
-
-            return result;
-        }
-
-        #endregion
-
-        #region | Helper classes (comparers) |
-
-        /// <summary>
-        /// Compares a hue components of a color info.
-        /// </summary>
-        private class ColorHueComparer : IEqualityComparer<ColorInfo>
-        {
-            public Boolean Equals(ColorInfo x, ColorInfo y)
-            {
-                return x.Hue == y.Hue;
-            }
-
-            public Int32 GetHashCode(ColorInfo color)
-            {
-                return color.HueHashCode;
-            }
-        }
-
-        /// <summary>
-        /// Compares a saturation components of a color info.
-        /// </summary>
-        private class ColorSaturationComparer : IEqualityComparer<ColorInfo>
-        {
-            public Boolean Equals(ColorInfo x, ColorInfo y)
-            {
-                return x.Saturation == y.Saturation;
-            }
-
-            public Int32 GetHashCode(ColorInfo color)
-            {
-                return color.SaturationHashCode;
-            }
-        }
-
-        /// <summary>
-        /// Compares a brightness components of a color info.
-        /// </summary>
-        private class ColorBrightnessComparer : IEqualityComparer<ColorInfo>
-        {
-            public Boolean Equals(ColorInfo x, ColorInfo y)
-            {
-                return x.Brightness == y.Brightness;
-            }
-
-            public Int32 GetHashCode(ColorInfo color)
-            {
-                return color.BrightnessHashCode;
-            }
+            // creates a new root node (thus throwing away the old tree)
+            root = new OctreeNode(0, this);
         }
 
         #endregion
