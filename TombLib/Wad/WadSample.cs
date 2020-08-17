@@ -95,8 +95,6 @@ namespace TombLib.Wad
                     return -1;
                 if (channelCount != 1) // We want mono audio
                     return -1;
-                // if (requiredSampleRate != 22050) // We allow custom sample rates
-                //    return false;
                 if (bytesPerSecond != (sampleRate * blockAlign))
                     return -1;
                 if (blockAlign != ((bitsPerSample * channelCount) / 8))
@@ -143,55 +141,11 @@ namespace TombLib.Wad
 
         public static byte[] ConvertSampleFormat(byte[] data, bool resample = true, uint sampleRate = GameSupportedSampleRate, uint bitsPerSample = 16) =>
             ConvertSampleFormat(data, r => new ResampleInfo { Resample = resample, SampleRate = sampleRate, BitsPerSample = bitsPerSample });
+
         public static byte[] ConvertSampleFormat(byte[] data, Func<uint, ResampleInfo> negotiateSampleRate)
         {
             // Check if the format is actually already correct.
             ResampleInfo? resampleInfo = null;
-            var checkFormatResult = CheckSampleDataForFormat(data);
-            if (checkFormatResult >= 0)
-            {
-                // Performance: We could have a special case if it's just the file size in the WAVE header that's wrong
-                // like with the original TR4 samples that have some garbage data at the end.
-
-                uint sampleRate = BitConverter.ToUInt32(data, SampleRateOffset);
-                resampleInfo = negotiateSampleRate(sampleRate);
-                if (sampleRate == resampleInfo.Value.SampleRate)
-                {
-                    if (data.Length != checkFormatResult)
-                    {
-                        byte[] arrayClone = new byte[checkFormatResult];
-                        Array.Copy(data, arrayClone, checkFormatResult);
-                        checkFormatResult -= 8;
-
-                        arrayClone[4] = unchecked((byte)(checkFormatResult));
-                        arrayClone[4 + 1] = unchecked((byte)(checkFormatResult >> 8));
-                        arrayClone[4 + 2] = unchecked((byte)(checkFormatResult >> 16));
-                        arrayClone[4 + 3] = unchecked((byte)(checkFormatResult >> 24));
-
-                        return arrayClone;
-                    }
-                    else
-                        return data;
-                }
-
-                // If we don't need to resample we can just replace the sample rate in place without NAudio.
-                if (!resampleInfo.Value.Resample)
-                {
-                    uint oldBytesPerSecond = BitConverter.ToUInt32(data, SampleBytesPerSecondOffset);
-                    uint newBytesPerSecond = (oldBytesPerSecond / sampleRate) * resampleInfo.Value.SampleRate;
-
-                    byte[] arrayClone = (byte[])data.Clone();
-                    arrayClone[SampleRateOffset] = unchecked((byte)(resampleInfo.Value.SampleRate));
-                    arrayClone[SampleRateOffset + 1] = unchecked((byte)(resampleInfo.Value.SampleRate >> 8));
-                    arrayClone[SampleRateOffset + 2] = unchecked((byte)(resampleInfo.Value.SampleRate >> 16));
-                    arrayClone[SampleRateOffset + 3] = unchecked((byte)(resampleInfo.Value.SampleRate >> 24));
-                    arrayClone[SampleBytesPerSecondOffset] = unchecked((byte)(newBytesPerSecond));
-                    arrayClone[SampleBytesPerSecondOffset + 1] = unchecked((byte)(newBytesPerSecond >> 8));
-                    arrayClone[SampleBytesPerSecondOffset + 2] = unchecked((byte)(newBytesPerSecond >> 16));
-                    arrayClone[SampleBytesPerSecondOffset + 3] = unchecked((byte)(newBytesPerSecond >> 24));
-                    return arrayClone;
-                }
-            }
 
             // Use NAudio now to convert the audio data
             using (var inStream = new MemoryStream(data, false))
