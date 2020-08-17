@@ -392,7 +392,7 @@ namespace TombLib.LevelData.Compilers
                     if (current.A == 0)
                         paletteIndex = 0;
                     else
-                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current));
+                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + 1;
 
                     result[y * pageSize + x] = (byte)paletteIndex;
                 }
@@ -410,18 +410,16 @@ namespace TombLib.LevelData.Compilers
                 }
             }
 
-            // Offset every pixel, accounting for null color
-            for (int i = 0; i < result.Length; i++)
-            {
-                // Ignore null color
-                if (result[i] == 0) continue;
-
-                var newIndex = result[i] + offset + 1;
-                if (newIndex <= 255)
-                    result[i] = (byte)newIndex;
-                else
-                    result[i] = 255;
-            }
+            // Offset every pixel if needed
+            if (offset > 0)
+                for (int i = 0; i < result.Length; i++)
+                {
+                    var newIndex = result[i] + offset;
+                    if (newIndex <= 255)
+                        result[i] = (byte)newIndex;
+                    else
+                        result[i] = 255;
+                }
 
             return result;
         }
