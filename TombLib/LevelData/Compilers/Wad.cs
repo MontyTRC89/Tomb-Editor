@@ -279,6 +279,10 @@ namespace TombLib.LevelData.Compilers
                         unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.Offset.Y))));
                         unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z))));
 
+                        // TR1 has also the number of angles to follow
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+                            unpaddedFrame.Add((short)3);
+
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
                                 _level.Settings.GameVersion == TRVersion.Game.TR1,
