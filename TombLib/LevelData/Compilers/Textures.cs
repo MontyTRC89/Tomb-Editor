@@ -379,7 +379,7 @@ namespace TombLib.LevelData.Compilers
             ((Image)bitmap).AddColorsToQuantizer(quantizer);
 
             // Get palette
-            var newPalette = quantizer.GetPalette(colorCount);
+            var newPalette = quantizer.GetPalette(colorCount - 1);
             
             // Put palette indices into texture data array
             var result = new byte[textureData.Length / 4];
@@ -387,30 +387,41 @@ namespace TombLib.LevelData.Compilers
                 for (int y = 0; y < height; y++)
                 {
                     var current = bitmap.GetPixel(x, y);
-                    var color = QuantizationHelper.ConvertAlpha(current);
-                    var paletteIndex = quantizer.GetPaletteIndex(color);
+                    int paletteIndex;
+
+                    if (current.A == 0)
+                        paletteIndex = 0;
+                    else
+                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current));
+
                     result[y * pageSize + x] = (byte)paletteIndex;
                 }
 
             // Convert system palette to TR palette
-            palette = new tr_color[colorCount + offset];
-            for (int i = offset; i < colorCount; i++)
+            palette = new tr_color[colorCount];
+            for (int i = offset + 1; i < colorCount; i++) // offset + 1 means "account for extra null color which index is 0"
             {
-                palette[i].Red   = (byte)(newPalette[i - offset].R / 4);
-                palette[i].Green = (byte)(newPalette[i - offset].G / 4);
-                palette[i].Blue  = (byte)(newPalette[i - offset].B / 4);
+                var index = i - offset - 1;
+                if (index < newPalette.Count)
+                {
+                    palette[i].Red   = (byte)(newPalette[index].R / 4);
+                    palette[i].Green = (byte)(newPalette[index].G / 4);
+                    palette[i].Blue  = (byte)(newPalette[index].B / 4);
+                }
             }
 
-            // Offset every pixel if requested (TR2?)
-            if (offset > 0)
-                for (int i = 0; i < result.Length; i++)
-                {
-                    var newIndex = result[i] + offset;
-                    if (newIndex <= 255)
-                        result[i] = (byte)newIndex;
-                    else
-                        result[i] = 255;
-                }
+            // Offset every pixel, accounting for null color
+            for (int i = 0; i < result.Length; i++)
+            {
+                // Ignore null color
+                if (result[i] == 0) continue;
+
+                var newIndex = result[i] + offset + 1;
+                if (newIndex <= 255)
+                    result[i] = (byte)newIndex;
+                else
+                    result[i] = 255;
+            }
 
             return result;
         }
