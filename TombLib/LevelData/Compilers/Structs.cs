@@ -1050,7 +1050,10 @@ namespace TombLib.LevelData.Compilers
         {
             writer.Write(FrameOffset);
             writer.Write(FrameRate);
-            writer.Write(FrameSize);
+            if (level.Settings.GameVersion == TRVersion.Game.TR1)
+                writer.Write((byte)0);
+            else
+                writer.Write(FrameSize);
             writer.Write(StateID);
             writer.Write(Speed);
             writer.Write(Accel);

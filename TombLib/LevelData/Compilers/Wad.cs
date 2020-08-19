@@ -281,7 +281,16 @@ namespace TombLib.LevelData.Compilers
 
                         // TR1 has also the number of angles to follow
                         if (_level.Settings.GameVersion == TRVersion.Game.TR1)
-                            unpaddedFrame.Add((short)3);
+                        {
+                            if (wadFrame.Angles.Count == 0)
+                            {
+                                unpaddedFrame.Add(0);
+                                continue; // Don't write any angles if not needed
+                            }
+                            else
+                                unpaddedFrame.Add((short)wadFrame.Angles.Count);
+
+                        }
 
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
@@ -301,7 +310,8 @@ namespace TombLib.LevelData.Compilers
                     foreach (List<short> unpaddedFrame in unpaddedFrames)
                     {
                         _frames.AddRange(unpaddedFrame);
-                        _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
+                        if (_level.Settings.GameVersion != TRVersion.Game.TR1)
+                            _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
                     }
                     animationHelper.KeyFrameSize = longestFrame;
                 }
