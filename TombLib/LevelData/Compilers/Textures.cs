@@ -365,10 +365,11 @@ namespace TombLib.LevelData.Compilers
             return newTextureData;
         }
 
-        private static byte[] PackTextureMap32To8Bit(byte[] textureData, int pageSize, byte offset, out tr_color[] palette)
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, int pageSize, List<Color> predefinedColors, out tr_color[] palette)
         {
+            int offset = predefinedColors.Count;
+            int colorCount = 256 - offset;
             int pixelCount = textureData.Length / 4;
-            int colorCount = 255 - offset;
 
             // Initialize quantizer
             IColorQuantizer quantizer = new OctreeQuantizer();
@@ -378,8 +379,8 @@ namespace TombLib.LevelData.Compilers
             var bitmap = ImageC.FromByteArray(textureData, pageSize, textureData.Length / 4 / pageSize).ToBitmap();
             ((Image)bitmap).AddColorsToQuantizer(quantizer);
 
-            // Get palette
-            var newPalette = quantizer.GetPalette(colorCount);
+            // Get palette and merge with predefined colors
+            var newPalette = predefinedColors.Concat(quantizer.GetPalette(colorCount)).ToList();
             
             // Put palette indices into texture data array
             var result = new byte[textureData.Length / 4];
@@ -392,21 +393,26 @@ namespace TombLib.LevelData.Compilers
                     if (current.A == 0)
                         paletteIndex = 0;
                     else
-                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + 1 + offset;
+                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + offset;
 
                     result[y * pageSize + x] = (byte)paletteIndex;
                 }
 
             // Convert system palette to TR palette
             palette = new tr_color[256];
-            for (int i = 0; i < colorCount; i++)
+            for (int i = 0; i < palette.Length; i++)
             {
-                var index = i + offset + 1;
-                if (i < newPalette.Count && index < palette.Length)
+                if (i < offset)
                 {
-                    palette[index].Red   = (byte)(newPalette[i].R / 4);
-                    palette[index].Green = (byte)(newPalette[i].G / 4);
-                    palette[index].Blue  = (byte)(newPalette[i].B / 4);
+                    palette[i].Red   = newPalette[i].R;
+                    palette[i].Green = newPalette[i].G;
+                    palette[i].Blue  = newPalette[i].B;
+                }
+                else if (i < newPalette.Count)
+                {
+                    palette[i].Red   = (byte)(newPalette[i].R / 4);
+                    palette[i].Green = (byte)(newPalette[i].G / 4);
+                    palette[i].Blue  = (byte)(newPalette[i].B / 4);
                 }
             }
 
