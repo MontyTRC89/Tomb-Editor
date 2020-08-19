@@ -365,10 +365,10 @@ namespace TombLib.LevelData.Compilers
             return newTextureData;
         }
 
-        private static byte[] PackTextureMap32To8Bit(byte[] textureData, int pageSize, int colorCount, byte offset, out tr_color[] palette)
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, int pageSize, byte offset, out tr_color[] palette)
         {
             int pixelCount = textureData.Length / 4;
-            var height = pixelCount / pageSize;
+            int colorCount = 255 - offset;
 
             // Initialize quantizer
             IColorQuantizer quantizer = new OctreeQuantizer();
@@ -379,12 +379,12 @@ namespace TombLib.LevelData.Compilers
             ((Image)bitmap).AddColorsToQuantizer(quantizer);
 
             // Get palette
-            var newPalette = quantizer.GetPalette(colorCount - 1);
+            var newPalette = quantizer.GetPalette(colorCount);
             
             // Put palette indices into texture data array
             var result = new byte[textureData.Length / 4];
             for (int x = 0; x < pageSize; x++)
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < pixelCount / pageSize; y++)
                 {
                     var current = bitmap.GetPixel(x, y);
                     int paletteIndex;
@@ -392,34 +392,23 @@ namespace TombLib.LevelData.Compilers
                     if (current.A == 0)
                         paletteIndex = 0;
                     else
-                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + 1;
+                        paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + 1 + offset;
 
                     result[y * pageSize + x] = (byte)paletteIndex;
                 }
 
             // Convert system palette to TR palette
-            palette = new tr_color[colorCount];
-            for (int i = offset + 1; i < colorCount; i++) // offset + 1 means "account for extra null color which index is 0"
+            palette = new tr_color[256];
+            for (int i = 0; i < colorCount; i++)
             {
-                var index = i - offset - 1;
-                if (index < newPalette.Count)
+                var index = i + offset + 1;
+                if (i < newPalette.Count && index < palette.Length)
                 {
-                    palette[i].Red   = (byte)(newPalette[index].R / 4);
-                    palette[i].Green = (byte)(newPalette[index].G / 4);
-                    palette[i].Blue  = (byte)(newPalette[index].B / 4);
+                    palette[index].Red   = (byte)(newPalette[i].R / 4);
+                    palette[index].Green = (byte)(newPalette[i].G / 4);
+                    palette[index].Blue  = (byte)(newPalette[i].B / 4);
                 }
             }
-
-            // Offset every pixel if needed
-            if (offset > 0)
-                for (int i = 0; i < result.Length; i++)
-                {
-                    var newIndex = result[i] + offset;
-                    if (newIndex <= 255)
-                        result[i] = (byte)newIndex;
-                    else
-                        result[i] = 255;
-                }
 
             return result;
         }
