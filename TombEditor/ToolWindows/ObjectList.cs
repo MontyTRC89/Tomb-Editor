@@ -33,6 +33,8 @@ namespace TombEditor.ToolWindows
             // Update the trigger control
             if (obj is Editor.SelectedRoomChangedEvent || obj is Editor.ObjectChangedEvent)
             {
+                // Preserve selection
+                var currentObject = lstObjects.SelectedItems.Count > 0 ? lstObjects.SelectedItem.Tag : null;
                 lstObjects.Items.Clear();
 
                 foreach (var o in _editor.SelectedRoom.Objects)
@@ -40,6 +42,14 @@ namespace TombEditor.ToolWindows
 
                 foreach (var o in _editor.SelectedRoom.GhostBlocks)
                     lstObjects.Items.Add(new DarkListItem(o.ToShortString()) { Tag = o });
+
+                // Restore selection
+                for (int i = 0; i < lstObjects.Items.Count; i++)
+                    if (lstObjects.Items[i].Tag == currentObject)
+                    {
+                        lstObjects.SelectItem(i);
+                        break;
+                    }
             }
 
             // Update the object control selection
