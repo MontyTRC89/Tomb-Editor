@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using TombLib.IO;
 
@@ -16,21 +18,32 @@ namespace TombLib.LevelData.Compilers
                 // Write version
                 writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
 
-                // Create palette and 8-bit indexed textures
-                tr_color[] palette;
-                var textureData = PackTextureMap32To8Bit(_texture32Data, 256, 15, out palette);
+                // Predefine hardcoded palette colours
+                var predefinedPaletteColors = new List<Color>();
 
                 // Following palette colors have hardcoded meaning in TR2
                 // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
-                palette[1]  = new tr_color() { Red = 128, Green = 128, Blue = 128 };
-                palette[2]  = new tr_color() { Red = 255, Green = 255, Blue = 255 };
-                palette[3]  = new tr_color() { Red = 255, Green = 0,   Blue = 0 };
-                palette[4]  = new tr_color() { Red = 255, Green = 165, Blue = 0 };
-                palette[5]  = new tr_color() { Red = 255, Green = 255, Blue = 0 };
-                palette[12] = new tr_color() { Red = 0,   Green = 128, Blue = 0 };
-                palette[13] = new tr_color() { Red = 0,   Green = 255, Blue = 0 };
-                palette[14] = new tr_color() { Red = 0,   Green = 0,   Blue = 255 };
-                palette[15] = new tr_color() { Red = 255, Green = 0,   Blue = 255 };
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));
+                predefinedPaletteColors.Add(Color.FromArgb(128, 128, 128));
+                predefinedPaletteColors.Add(Color.FromArgb(255, 255, 255));
+                predefinedPaletteColors.Add(Color.FromArgb(255, 0,   0));
+                predefinedPaletteColors.Add(Color.FromArgb(255, 165, 0));
+                predefinedPaletteColors.Add(Color.FromArgb(255, 255, 0));
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
+                predefinedPaletteColors.Add(Color.FromArgb(0,   128, 0));
+                predefinedPaletteColors.Add(Color.FromArgb(0,   255, 0));
+                predefinedPaletteColors.Add(Color.FromArgb(0,   255, 255));
+                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   255));
+                predefinedPaletteColors.Add(Color.FromArgb(255, 0,   255));
+
+                // Create palette and 8-bit indexed textures
+                tr_color[] palette;
+                var textureData = PackTextureMap32To8Bit(_texture32Data, 256, predefinedPaletteColors, out palette);
 
                 // Write 8-bit palette
                 foreach (tr_color c in palette)
