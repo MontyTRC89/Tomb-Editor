@@ -16,32 +16,37 @@ namespace TombLib.LevelData.Compilers
                 // Write version
                 writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
 
-                // TODO: for now I write fake palette, they should be needed only for 8 bit textures
-                tr_color[] palette8 = new tr_color[256];
-                //Following colors have hardcoded meaning in TR2
+                // Create palette and 8-bit indexed textures
+                tr_color[] palette;
+                var textureData = PackTextureMap32To8Bit(_texture32Data, 256, 15, out palette);
+
+                // Following palette colors have hardcoded meaning in TR2
                 // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
-                palette8[1] = new tr_color() { Red = 128, Green = 128, Blue = 128 };
-                palette8[2] = new tr_color() { Red = 255, Green = 255, Blue = 255 };
-                palette8[3] = new tr_color() { Red = 255, Green = 0, Blue = 0 };
-                palette8[4] = new tr_color() { Red = 255, Green = 165, Blue = 0 };
-                palette8[5] = new tr_color() { Red = 255, Green = 255, Blue = 0 };
-                palette8[12] = new tr_color() { Red = 0, Green = 128, Blue = 0 };
-                palette8[13] = new tr_color() { Red = 0, Green = 255, Blue = 0 };
-                palette8[14] = new tr_color() { Red = 0, Green = 0, Blue = 255 };
-                palette8[15] = new tr_color() { Red = 255, Green = 0, Blue = 255 };
-                foreach (tr_color c in palette8)
+                palette[1]  = new tr_color() { Red = 128, Green = 128, Blue = 128 };
+                palette[2]  = new tr_color() { Red = 255, Green = 255, Blue = 255 };
+                palette[3]  = new tr_color() { Red = 255, Green = 0,   Blue = 0 };
+                palette[4]  = new tr_color() { Red = 255, Green = 165, Blue = 0 };
+                palette[5]  = new tr_color() { Red = 255, Green = 255, Blue = 0 };
+                palette[12] = new tr_color() { Red = 0,   Green = 128, Blue = 0 };
+                palette[13] = new tr_color() { Red = 0,   Green = 255, Blue = 0 };
+                palette[14] = new tr_color() { Red = 0,   Green = 0,   Blue = 255 };
+                palette[15] = new tr_color() { Red = 255, Green = 0,   Blue = 255 };
+
+                // Write 8-bit palette
+                foreach (tr_color c in palette)
                     c.write(writer);
+
+                // Write fake 16-bit palette
                 for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
 
                 // Write textures
                 int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
 
-                // TODO 8 bit textures (altough who uses 8 bit textures in 2018?)
-                var fakeTextures = new byte[256 * 256 * numTextureTiles];
-                writer.Write(fakeTextures);
+                // Write 8-bit textures
+                writer.Write(textureData);
 
-                // 16 bit textures
+                // Write 16-bit textures
                 byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
                 writer.Write(texture16Data);
 
