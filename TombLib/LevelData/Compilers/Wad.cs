@@ -353,7 +353,7 @@ namespace TombLib.LevelData.Compilers
                     // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 
                     var frameCount = oldAnimation.EndFrame + 1;
-                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
+                    var maxFrame = oldAnimation.GetRealNumberOfFrames();
                     if (frameCount > maxFrame)
                         frameCount = maxFrame;
 
