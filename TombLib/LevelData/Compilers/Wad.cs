@@ -281,16 +281,7 @@ namespace TombLib.LevelData.Compilers
 
                         // TR1 has also the number of angles to follow
                         if (_level.Settings.GameVersion == TRVersion.Game.TR1)
-                        {
-                            if (wadFrame.Angles.Count == 0)
-                            {
-                                unpaddedFrame.Add(0);
-                                continue; // Don't write any angles if not needed
-                            }
-                            else
-                                unpaddedFrame.Add((short)wadFrame.Angles.Count);
-
-                        }
+                            unpaddedFrame.Add((short)wadFrame.Angles.Count);
 
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
