@@ -365,7 +365,9 @@ namespace TombLib.LevelData.Compilers
             return newTextureData;
         }
 
-        private static byte[] PackTextureMap32To8Bit(byte[] textureData, int pageSize, List<Color> predefinedColors, out tr_color[] palette)
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, out tr_color[] palette) =>
+            PackTextureMap32To8Bit(textureData, new List<Color>(), out palette);
+        private static byte[] PackTextureMap32To8Bit(byte[] textureData, List<Color> predefinedColors, out tr_color[] palette)
         {
             int offset = predefinedColors.Count;
             int colorCount = 256 - offset;
@@ -376,7 +378,7 @@ namespace TombLib.LevelData.Compilers
             quantizer.Clear();
 
             // Create temporary bitmap out of texture data
-            var bitmap = ImageC.FromByteArray(textureData, pageSize, textureData.Length / 4 / pageSize).ToBitmap();
+            var bitmap = ImageC.FromByteArray(textureData, 256, textureData.Length / 4 / 256).ToBitmap();
             ((Image)bitmap).AddColorsToQuantizer(quantizer);
 
             // Get palette and merge with predefined colors
@@ -384,8 +386,8 @@ namespace TombLib.LevelData.Compilers
             
             // Put palette indices into texture data array
             var result = new byte[textureData.Length / 4];
-            for (int x = 0; x < pageSize; x++)
-                for (int y = 0; y < pixelCount / pageSize; y++)
+            for (int x = 0; x < 256; x++)
+                for (int y = 0; y < pixelCount / 256; y++)
                 {
                     var current = bitmap.GetPixel(x, y);
                     int paletteIndex;
@@ -395,7 +397,7 @@ namespace TombLib.LevelData.Compilers
                     else
                         paletteIndex = quantizer.GetPaletteIndex(QuantizationHelper.ConvertAlpha(current)) + offset;
 
-                    result[y * pageSize + x] = (byte)paletteIndex;
+                    result[y * 256 + x] = (byte)paletteIndex;
                 }
 
             // Convert system palette to TR palette
