@@ -450,14 +450,14 @@ namespace TombLib.Wad.TrLevels
                 if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame + 1) / newAnimation.FrameRate) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame) / newAnimation.FrameRate + 1) : 0;
                     else
                         numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
                 else
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame + 1) / newAnimation.FrameRate) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame) / newAnimation.FrameRate + 1) : 0;
                     else
                         numFrames = (oldLevel.Animations[oldMoveable.Animation + j + 1].FrameOffset - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
@@ -525,11 +525,6 @@ namespace TombLib.Wad.TrLevels
                 if (animation.KeyFrames.Count == 0)
                     animation.EndFrame = 0;
 
-                // FIXME: hack for total EndFrame shitfest in TR1.
-                // WARNING: This will prevent original TR1 from working at least partially but will fix OpenLara gameplay.
-                if (oldLevel.Version == TRVersion.Game.TR1 && animation.EndFrame >= animation.GetRealNumberOfFrames())
-                    animation.EndFrame = (ushort)(animation.GetRealNumberOfFrames() - 1);
-
                 // HACK: this fixes some invalid NextAnimations values
                 animation.NextAnimation %= (ushort)newMoveable.Animations.Count;
 
@@ -543,15 +538,6 @@ namespace TombLib.Wad.TrLevels
                 // HACK: this fixes some invalid NextFrame values.
                 if (frameBases[newMoveable.Animations[animation.NextAnimation]] != 0)
                     animation.NextFrame %= frameBases[newMoveable.Animations[animation.NextAnimation]];
-
-                // FIXME: hack for total NextFrame shitfest in TR1.
-                // WARNING: This will prevent original TR1 from working at least partially but will fix OpenLara gameplay.
-                if (oldLevel.Version == TRVersion.Game.TR1)
-                {
-                    var newAnim = newMoveable.Animations[animation.NextAnimation];
-                    if (animation.NextFrame >= newAnim.GetRealNumberOfFrames())
-                        animation.NextFrame = (ushort)(newAnim.GetRealNumberOfFrames() - 1);
-                }
 
                 foreach (var stateChange in animation.StateChanges)
                 {
@@ -568,18 +554,6 @@ namespace TombLib.Wad.TrLevels
                                 newFrame = 0;
 
                             animDispatch.NextFrame = newFrame;
-
-                            // FIXME: hack for anim dispatch shitfest in TR1.
-                            // WARNING: This will prevent original TR1 from working at least partially but will fix OpenLara gameplay.
-                            if (oldLevel.Version == TRVersion.Game.TR1)
-                            {
-                                var newAnim = newMoveable.Animations[animDispatch.NextAnimation];
-                                if (animDispatch.NextFrame >= newAnim.GetRealNumberOfFrames())
-                                    animDispatch.NextFrame = (ushort)(newAnim.GetRealNumberOfFrames() - 1);
-
-                                if (animDispatch.OutFrame >= animation.GetRealNumberOfFrames())
-                                    animDispatch.OutFrame = (ushort)(animation.GetRealNumberOfFrames() - 1);
-                            }
                         }
                         stateChange.Dispatches[J] = animDispatch;
                     }
