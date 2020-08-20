@@ -59,6 +59,8 @@ namespace TombEditor.ToolWindows
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
                 bool isTR1 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR1;
 
+                cbHorizon.Enabled = !isTR1;
+                cbFlagOutside.Enabled = !isTR1;
                 cbFlagCold.Enabled = isNGorT5M;
                 cbFlagDamage.Enabled = isNGorT5M;
                 cbNoLensflare.Enabled = isTR4or5;
