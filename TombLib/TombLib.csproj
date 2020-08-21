@@ -140,12 +140,14 @@
     </Compile>
     <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
     <Compile Include="Graphics\Frustum.cs" />
+    <Compile Include="LevelData\Compilers\Tr1.cs" />
     <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
     <Compile Include="LevelData\Instances\ScriptInstance.cs" />
     <Compile Include="LevelData\Instances\TriggerVolumeInstance.cs" />
     <Compile Include="NG\NgEncryption.cs" />
     <Compile Include="Types\BoundingBox.cs" />
     <Compile Include="Types\BoundingSphere.cs" />
+    <Compile Include="Utils\ImageQuantizer.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
     <Compile Include="Utils\Configuration.cs" />
     <Compile Include="Forms\Prj2SoundsConversionDialog.cs">
@@ -321,7 +323,6 @@
     <Compile Include="Utils\ZLib.cs" />
     <Compile Include="Types\VectorInt2.cs" />
     <Compile Include="Types\VectorInt3.cs" />
-    <Compile Include="Wad\AnimationFile.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
     <Compile Include="Wad\WadAdditionalSoundInfo.cs" />
     <Compile Include="Wad\WadLight.cs" />
@@ -404,9 +405,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Catalogs\Sounds.tr1.xml" />
     <Content Include="Catalogs\Sounds.tr2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catalogs\Sounds.tr5.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Catalogs\Sounds.tr3.xml">

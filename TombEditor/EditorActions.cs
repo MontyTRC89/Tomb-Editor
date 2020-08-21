@@ -3508,11 +3508,22 @@ namespace TombEditor
                 return false;
             }
 
-            if (level.Settings.GameVersion.UsesMainSfx() && level.Settings.SoundsCatalogs.Count == 0)
+            var whatLoaded = string.Empty;
+
+            if (level.Settings.SoundsCatalogs.Count == 0)
+            {
                 AutoLoadSoundCatalog(level.Settings);
+                whatLoaded += "Default sound catalog was preloaded automatically.";
+            }
 
             if (level.Settings.SelectedSounds.Count == 0 && level.Settings.AutoAssignSoundsIfNoSelection)
+            {
                 AutodetectAndAssignSounds(level.Settings);
+                whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Sounds" : "\nAlso sounds") + " were auto-assigned because none were selected.";
+            }
+
+            if (!string.IsNullOrEmpty(whatLoaded))
+                _editor.SendMessage(whatLoaded, PopupType.Info);
 
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
@@ -4880,6 +4891,10 @@ namespace TombEditor
 
             switch (settings.GameVersion)
             {
+                case TRVersion.Game.TR1:
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr1.xml";
+                    break;
+
                 case TRVersion.Game.TR2:
                     catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr2.xml";
                     break;
@@ -4890,6 +4905,10 @@ namespace TombEditor
 
                 case TRVersion.Game.TR4:
                     catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr4.xml";
+                    break;
+
+                case TRVersion.Game.TR5:
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr5.xml";
                     break;
             }
 

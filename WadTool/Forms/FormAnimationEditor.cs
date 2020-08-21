@@ -2032,7 +2032,7 @@ namespace WadTool
                             SelectAnimation(nextNode); // Update in UI failed, directly jump to anim
 
                         var maxFrameNumber = _editor.GetRealNumberOfFrames(nextIndex);
-                        if (nextFrame > maxFrameNumber)
+                        if (nextFrame >= maxFrameNumber)
                         {
                             _frameCount = 0;
                             popup.ShowWarning(panelRendering, "No frame " + nextFrame + " in animation " + nextIndex + ". Using first frame.");
