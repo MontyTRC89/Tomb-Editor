@@ -244,7 +244,7 @@ namespace TombLib.LevelData.Compilers
             public int KeyFrameSize { get; set; }
         }
 
-        public void ConvertWad2DataToTr4()
+        public void ConvertWad2DataToTrData()
         {
             ReportProgress(0, "Preparing WAD data");
 
@@ -279,9 +279,13 @@ namespace TombLib.LevelData.Compilers
                         unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.Offset.Y))));
                         unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z))));
 
+                        // TR1 has also the number of angles to follow
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+                            unpaddedFrame.Add((short)wadFrame.Angles.Count);
+
                         foreach (var angle in wadFrame.Angles)
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
-                                false,
+                                _level.Settings.GameVersion == TRVersion.Game.TR1,
                                 _level.Settings.GameVersion == TRVersion.Game.TR4 ||
                                 _level.Settings.GameVersion == TRVersion.Game.TRNG ||
                                 _level.Settings.GameVersion == TRVersion.Game.TR5 ||
@@ -297,7 +301,8 @@ namespace TombLib.LevelData.Compilers
                     foreach (List<short> unpaddedFrame in unpaddedFrames)
                     {
                         _frames.AddRange(unpaddedFrame);
-                        _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
+                        if (_level.Settings.GameVersion != TRVersion.Game.TR1)
+                            _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
                     }
                     animationHelper.KeyFrameSize = longestFrame;
                 }
@@ -339,7 +344,7 @@ namespace TombLib.LevelData.Compilers
                     // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 
                     var frameCount = oldAnimation.EndFrame + 1;
-                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
+                    var maxFrame = oldAnimation.GetRealNumberOfFrames();
                     if (frameCount > maxFrame)
                         frameCount = maxFrame;
 
@@ -775,8 +780,8 @@ namespace TombLib.LevelData.Compilers
             // Step 3: create the sound map
             switch (_level.Settings.GameVersion)
             {
-                case TRVersion.Game.TRNG:
-                    _soundMapSize = 2048;
+                case TRVersion.Game.TR1:
+                    _soundMapSize = 256;
                     break;
                 case TRVersion.Game.TR2:
                 case TRVersion.Game.TR3:
@@ -785,6 +790,9 @@ namespace TombLib.LevelData.Compilers
                     break;
                 case TRVersion.Game.TR5:
                     _soundMapSize = 450;
+                    break;
+                case TRVersion.Game.TRNG:
+                    _soundMapSize = 2048;
                     break;
                 case TRVersion.Game.TR5Main:
                     _soundMapSize = 4096;
@@ -846,7 +854,27 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
 
-                        ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
+                        ushort characteristics;
+
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+                        {
+                            switch (soundDetail.LoopBehaviour)
+                            {
+                                default:
+                                case WadSoundLoopBehaviour.None:
+                                    characteristics = 0;
+                                    break;
+                                case WadSoundLoopBehaviour.OneShotRewound:
+                                    characteristics = 1;
+                                    break;
+                                case WadSoundLoopBehaviour.Looped:
+                                    characteristics = 2;
+                                    break;
+                            }
+                        }
+                        else
+                            characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
+
                         characteristics |= (ushort)(soundDetail.Samples.Count << 2);
                         if (soundDetail.DisablePanning)
                             characteristics |= 0x1000;
@@ -880,12 +908,15 @@ namespace TombLib.LevelData.Compilers
 
                     if (_level.Settings.GameVersion < TRVersion.Game.TR5Main && lastSampleIndex > 255)
                         _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
-                            " samples, while maximum is 256. Level will crash. Turn off some sounds to prevent that.");
+                            " samples, while maximum is 256. Level may crash. Turn off some sounds to prevent that.");
 
                     // Write sample indices (not used but parsed in TR4-5)
-                    bw.Write((uint)_finalSoundIndicesList.Count);
-                    for (int i = 0; i < _finalSoundIndicesList.Count; i++)
-                        bw.Write((uint)_finalSoundIndicesList[i]);
+                    if (_level.Settings.GameVersion > TRVersion.Game.TR1)
+                    {
+                        bw.Write((uint)_finalSoundIndicesList.Count);
+                        for (int i = 0; i < _finalSoundIndicesList.Count; i++)
+                            bw.Write((uint)_finalSoundIndicesList[i]);
+                    }
                 }
 
                 writer.Write(ms.ToArray());
@@ -894,10 +925,39 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundData(BinaryWriter writer)
         {
-            writer.Write((uint)_finalSamplesList.Count); // Write sample count
-            if (_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main)
-            { // We have to compress the samples first
-              // TR5 uses compressed MS-ADPCM samples
+            if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+            {
+                // Calculate sum of all sample sizes
+                int sumSize = 0;
+                _finalSamplesList.ForEach(s => sumSize += s.Data.Length);
+                writer.Write(sumSize);
+
+                // Write uncompressed samples
+                foreach (WadSample sample in _finalSamplesList)
+                {
+                    writer.Write(sample.Data, 0, 24);
+                    writer.Write((uint)WadSample.GameSupportedSampleRate);
+                    writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
+                    writer.Write(sample.Data, 32, sample.Data.Length - 32);
+                }
+
+                // Write sample count
+                writer.Write(_finalSamplesList.Count);
+
+                // Write offset for every sample
+                sumSize = 0;
+                foreach (var sample in _finalSamplesList)
+                {
+                    writer.Write(sumSize);
+                    sumSize += sample.Data.Length;
+                }
+            }
+            else if (_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            {
+                // Write sample count
+                writer.Write((uint)_finalSamplesList.Count);
+
+                // TR5 uses compressed MS-ADPCM samples
                 byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
                 int[] uncompressedSizes = new int[_finalSamplesList.Count];
                 Parallel.For(0, _finalSamplesList.Count, delegate (int i)
@@ -912,13 +972,17 @@ namespace TombLib.LevelData.Compilers
                 }
             }
             else
-            { // Uncompressed samples
+            {
+                // Write sample count
+                writer.Write((uint)_finalSamplesList.Count);
+
+                // Write uncompressed samples
                 foreach (WadSample sample in _finalSamplesList)
                 {
                     writer.Write((uint)sample.Data.Length);
                     writer.Write((uint)sample.Data.Length);
                     writer.Write(sample.Data, 0, 24);
-                    writer.Write((uint)WadSample.GameSupportedSampleRate); // Overwrite sample rate because the engine actually doens't read this and assumes 22050 anyway. Anything else than 22050 would just be a lie.
+                    writer.Write((uint)WadSample.GameSupportedSampleRate);
                     writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
                     writer.Write(sample.Data, 32, sample.Data.Length - 32);
                 }

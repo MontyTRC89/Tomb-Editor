@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TombLib.IO;
 
@@ -11,39 +12,39 @@ namespace TombLib.LevelData.Compilers
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
             {
-                ReportProgress(80, "Writing geometry data to memory buffer");
+                ReportProgress(80, "Writing texture data");
 
                 // Write version
                 writer.WriteBlockArray(new byte[] { 0x38, 0x00, 0x18, 0xFF });
 
-                /*using (var readerPalette = new BinaryReader(new FileStream("Editor\\Misc\\Palette.Tr3.bin", FileMode.Open, FileAccess.Write, FileShare.None)))
-                {
-                    var palette = readerPalette.ReadBytes(1792);
-                    // Write palette
-                    writer.Write(palette);
-                }*/
+                // Create palette and 8-bit indexed textures
+                tr_color[] palette;
+                var textureData = PackTextureMap32To8Bit(_texture32Data, out palette);
 
-                // TODO: for now I write fake palette, they should be needed only for 8 bit textures
-                for (var i = 0; i < 768; i++)
-                    writer.Write((byte)0x00);
-                for (var i = 0; i < 1024; i++)
-                    writer.Write((byte)0x00);
+                // Write 8-bit palette
+                foreach (tr_color c in palette)
+                    c.write(writer);
+
+                // Write fake 16-bit palette
+                for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
 
                 // Write textures
                 int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
 
-                // TODO 8 bit textures (altough who uses 8 bit textures in 2018?)
-                var fakeTextures = new byte[256 * 256 * numTextureTiles];
-                writer.Write(fakeTextures);
+                // Write 8-bit textures
+                writer.Write(textureData);
 
-                // 16 bit textures
+                // Write 16-bit textures
                 byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
                 writer.Write(texture16Data);
 
                 const int filler = 0;
                 writer.Write(filler);
 
+                ReportProgress(85, "Writing geometry data");
+
+                // Write rooms
                 var numRooms = (ushort)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 

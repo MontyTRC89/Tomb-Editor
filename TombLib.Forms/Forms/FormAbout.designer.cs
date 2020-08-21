@@ -632,7 +632,7 @@
             this.darkLabel3.Size = new System.Drawing.Size(486, 79);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte, Nickelony, Raild" +
-    "ex,\r\nChocolateFan, sapper\r\nteme9, Lwmte, Nickelony\r\nDustie, Titak, Gemini, Caesu" +
+    "ex,\r\nChocolateFan, sapper, Daniel\r\nteme9, Lwmte, Nickelony\r\nDustie, Titak, Gemini, Caesu" +
     "m, Lore, JMN, Joey79100, 1mustard";
             // 
             // darkLabel2
@@ -644,7 +644,7 @@
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(107, 79);
             this.darkLabel2.TabIndex = 1;
-            this.darkLabel2.Text = "Original idea:\r\nProgramming:\r\n\r\nAdditional design:\r\nBeta testing:";
+            this.darkLabel2.Text = "Original idea:\r\nCode:\r\n\r\nAdditional design:\r\nBeta testing:";
             // 
             // FormAbout
             // 

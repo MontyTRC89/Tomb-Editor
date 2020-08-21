@@ -8,7 +8,7 @@ namespace TombLib.LevelData.Compilers
 {
     public partial class LevelCompilerClassicTR
     {
-        private void WriteLevelTr2()
+        private void WriteLevelTr1()
         {
             // Now begin to compile the geometry block in a MemoryStream
             using (var writer = new BinaryWriterEx(new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None)))
@@ -16,52 +16,73 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(80, "Writing texture data");
 
                 // Write version
-                writer.WriteBlockArray(new byte[] { 0x2D, 0x00, 0x00, 0x00 });
-
-                // Predefine hardcoded palette colours
-                var predefinedPaletteColors = new List<Color>();
-
-                // Following palette colors have hardcoded meaning in TR2
-                // https://github.com/Arsunt/TR2Main/blob/0586ba8965fc3c260080d9e6ea05f3e17033ba4b/global/types.h#L931
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));
-                predefinedPaletteColors.Add(Color.FromArgb(128, 128, 128));
-                predefinedPaletteColors.Add(Color.FromArgb(255, 255, 255));
-                predefinedPaletteColors.Add(Color.FromArgb(255, 0,   0));
-                predefinedPaletteColors.Add(Color.FromArgb(255, 165, 0));
-                predefinedPaletteColors.Add(Color.FromArgb(255, 255, 0));
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   0));  // Unused
-                predefinedPaletteColors.Add(Color.FromArgb(0,   128, 0));
-                predefinedPaletteColors.Add(Color.FromArgb(0,   255, 0));
-                predefinedPaletteColors.Add(Color.FromArgb(0,   255, 255));
-                predefinedPaletteColors.Add(Color.FromArgb(0,   0,   255));
-                predefinedPaletteColors.Add(Color.FromArgb(255, 0,   255));
-
-                // Create palette and 8-bit indexed textures
-                tr_color[] palette;
-                var textureData = PackTextureMap32To8Bit(_texture32Data, predefinedPaletteColors, out palette);
-
-                // Write 8-bit palette
-                foreach (tr_color c in palette)
-                    c.write(writer);
-
-                // Write fake 16-bit palette
-                for (var i = 0; i < 1024; i++) writer.Write((byte)0x00);
+                writer.WriteBlockArray(new byte[] { 0x20, 0x00, 0x00, 0x00 });
 
                 // Write textures
                 int numTextureTiles = _texture32Data.GetLength(0) / (256 * 256 * 4);
                 writer.Write(numTextureTiles);
 
+                // Predefine hardcoded palette colours
+                var predefinedPaletteColors = new List<Color>();
+
+                // Colors 0-23 reserved for HP bar
+                predefinedPaletteColors.Add(Color.FromArgb(2,  0,  0  ));
+                predefinedPaletteColors.Add(Color.FromArgb(0,  0,  0  ));
+                predefinedPaletteColors.Add(Color.FromArgb(6,  1,  0  ));
+                predefinedPaletteColors.Add(Color.FromArgb(12, 3,  1  ));
+                predefinedPaletteColors.Add(Color.FromArgb(18, 7,  1  ));
+                predefinedPaletteColors.Add(Color.FromArgb(24, 10, 1  ));
+                predefinedPaletteColors.Add(Color.FromArgb(22, 17, 0  ));
+                predefinedPaletteColors.Add(Color.FromArgb(26, 20, 3  ));
+                predefinedPaletteColors.Add(Color.FromArgb(28, 23, 11 ));
+                predefinedPaletteColors.Add(Color.FromArgb(34, 22, 11 ));
+                predefinedPaletteColors.Add(Color.FromArgb(40, 26, 14 ));
+                predefinedPaletteColors.Add(Color.FromArgb(41, 30, 18 ));
+                predefinedPaletteColors.Add(Color.FromArgb(44, 32, 20 ));
+                predefinedPaletteColors.Add(Color.FromArgb(50, 36, 22 ));
+                predefinedPaletteColors.Add(Color.FromArgb(55, 40, 25 ));
+                predefinedPaletteColors.Add(Color.FromArgb(58, 48, 28 ));
+                predefinedPaletteColors.Add(Color.FromArgb(62, 52, 30 ));
+                predefinedPaletteColors.Add(Color.FromArgb(29, 33, 29 ));
+                predefinedPaletteColors.Add(Color.FromArgb(22, 25, 22 ));
+                predefinedPaletteColors.Add(Color.FromArgb(19, 20, 19 ));
+                predefinedPaletteColors.Add(Color.FromArgb(16, 16, 16 ));
+                predefinedPaletteColors.Add(Color.FromArgb(12, 12, 12 ));
+                predefinedPaletteColors.Add(Color.FromArgb(9,  9,  8  ));
+                predefinedPaletteColors.Add(Color.FromArgb(14, 11, 5  ));
+
+                // Colors 24-47 reserved for AP bar
+                predefinedPaletteColors.Add(Color.FromArgb(20, 12, 5  ));
+                predefinedPaletteColors.Add(Color.FromArgb(22, 16, 9  ));
+                predefinedPaletteColors.Add(Color.FromArgb(21, 5,  8  ));
+                predefinedPaletteColors.Add(Color.FromArgb(15, 3,  6  ));
+                predefinedPaletteColors.Add(Color.FromArgb(31, 8,  8  ));
+                predefinedPaletteColors.Add(Color.FromArgb(40, 10, 7  ));
+                predefinedPaletteColors.Add(Color.FromArgb(46, 11, 8  ));
+                predefinedPaletteColors.Add(Color.FromArgb(35, 28, 14 ));
+                predefinedPaletteColors.Add(Color.FromArgb(25, 29, 25 ));
+                predefinedPaletteColors.Add(Color.FromArgb(32, 36, 33 ));
+                predefinedPaletteColors.Add(Color.FromArgb(36, 40, 36 ));
+                predefinedPaletteColors.Add(Color.FromArgb(39, 44, 40 ));
+                predefinedPaletteColors.Add(Color.FromArgb(44, 49, 44 ));
+                predefinedPaletteColors.Add(Color.FromArgb(51, 51, 51 ));
+                predefinedPaletteColors.Add(Color.FromArgb(57, 57, 57 ));
+                predefinedPaletteColors.Add(Color.FromArgb(63, 63, 38 ));
+                predefinedPaletteColors.Add(Color.FromArgb(63, 59, 34 ));
+                predefinedPaletteColors.Add(Color.FromArgb(23, 40, 39 ));
+                predefinedPaletteColors.Add(Color.FromArgb(22, 47, 49 ));
+                predefinedPaletteColors.Add(Color.FromArgb(33, 51, 51 ));
+                predefinedPaletteColors.Add(Color.FromArgb(47, 55, 55 ));
+                predefinedPaletteColors.Add(Color.FromArgb(47, 47, 35 ));
+                predefinedPaletteColors.Add(Color.FromArgb(43, 23, 34 ));
+                predefinedPaletteColors.Add(Color.FromArgb(55, 61, 51 ));
+
+                // Create palette and 8-bit indexed textures
+                tr_color[] palette;
+                var textureData = PackTextureMap32To8Bit(_texture32Data, predefinedPaletteColors, out palette);
+
                 // Write 8-bit textures
                 writer.Write(textureData);
-
-                // Write 16-bit textures
-                byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
-                writer.Write(texture16Data);
 
                 const int filler = 0;
                 writer.Write(filler);
@@ -72,12 +93,8 @@ namespace TombLib.LevelData.Compilers
                 var numRooms = (ushort)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                long offset;
-                long offset2;
                 foreach (var r in _level.Rooms.Where(r => r != null))
-                {
-                    _tempRooms[r].WriteTr2(writer);
-                }
+                    _tempRooms[r].WriteTr1(writer);
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;
@@ -85,7 +102,7 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_floorData);
 
                 // Write meshes
-                offset = writer.BaseStream.Position;
+                long offset = writer.BaseStream.Position;
 
                 const int numMeshData = 0;
                 writer.Write(numMeshData);
@@ -97,7 +114,7 @@ namespace TombLib.LevelData.Compilers
                     totalMeshSize += (int)meshSize;
                 }
 
-                offset2 = writer.BaseStream.Position;
+                long offset2 = writer.BaseStream.Position;
                 uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
 
                 // Save the size of the meshes
@@ -145,7 +162,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_spriteSequences.Count);
                 writer.WriteBlockArray(_spriteSequences);
 
-                // Write camera, sound sources
+                // Write cameras, sound sources
                 writer.Write((uint)_cameras.Count);
                 writer.WriteBlockArray(_cameras);
 
@@ -154,7 +171,15 @@ namespace TombLib.LevelData.Compilers
 
                 // Write pathfinding data
                 writer.Write((uint)_boxes.Length);
-                writer.WriteBlockArray(_boxes);
+                for (var i = 0; i < _boxes.Length; i++)
+                {
+                    writer.Write(_boxes[i].Zmin * 1024);
+                    writer.Write(_boxes[i].Zmax * 1024);
+                    writer.Write(_boxes[i].Xmin * 1024);
+                    writer.Write(_boxes[i].Xmax * 1024);
+                    writer.Write(_boxes[i].TrueFloor);
+                    writer.Write(_boxes[i].OverlapIndex);
+                }
 
                 writer.Write((uint)_overlaps.Length);
                 writer.WriteBlockArray(_overlaps);
@@ -164,19 +189,11 @@ namespace TombLib.LevelData.Compilers
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Normal);
                 for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
-                    writer.Write(_zones[i].GroundZone4_Alternate);
                 for (var i = 0; i < _boxes.Length; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
@@ -185,20 +202,37 @@ namespace TombLib.LevelData.Compilers
 
                 // Write items
                 writer.Write((uint)_items.Count);
-                writer.WriteBlockArray(_items);
+                foreach (var item in _items)
+                {
+                    writer.Write(item.ObjectID);
+                    writer.Write(item.Room);
+                    writer.Write(item.X);
+                    writer.Write(item.Y);
+                    writer.Write(item.Z);
+                    writer.Write(item.Angle);
+                    writer.Write(item.Intensity1);
+                    writer.Write(item.Flags);
+                }
 
                 // TODO Figure out light map
                 var lightmap = new byte[8192];
                 writer.Write(lightmap);
 
-                const ushort numDemo = 0;
+                // Write palette
+                foreach (var c in palette)
+                    c.write(writer);
+
                 const ushort numCinematicFrames = 0;
-                writer.Write(numDemo);
+                const ushort numDemo = 0;
                 writer.Write(numCinematicFrames);
+                writer.Write(numDemo);
 
                 // Write sound meta data
                 PrepareSoundsData();
                 WriteSoundMetadata(writer);
+
+                ReportProgress(97, "Writing WAVE sounds");
+                WriteSoundData(writer);
             }
         }
     }
