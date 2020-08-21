@@ -405,9 +405,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Catalogs\Sounds.tr1.xml" />
     <Content Include="Catalogs\Sounds.tr2.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Catalogs\Sounds.tr5.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Catalogs\Sounds.tr3.xml">

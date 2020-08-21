@@ -450,14 +450,14 @@ namespace TombLib.Wad.TrLevels
                 if (j + oldMoveable.Animation == oldLevel.Animations.Count - 1)
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame) / newAnimation.FrameRate + 1) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(Math.Ceiling((float)newAnimation.EndFrame / (float)newAnimation.FrameRate) + 1) : 0;
                     else
                         numFrames = ((uint)(2 * oldLevel.Frames.Count) - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
                 else
                 {
                     if (oldAnimation.FrameSize == 0)
-                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)((newAnimation.EndFrame) / newAnimation.FrameRate + 1) : 0;
+                        numFrames = oldLevel.Version == TRVersion.Game.TR1 ? (uint)(Math.Ceiling((float)newAnimation.EndFrame / (float)newAnimation.FrameRate) + 1) : 0;
                     else
                         numFrames = (oldLevel.Animations[oldMoveable.Animation + j + 1].FrameOffset - oldAnimation.FrameOffset) / (uint)(2 * oldAnimation.FrameSize);
                 }
