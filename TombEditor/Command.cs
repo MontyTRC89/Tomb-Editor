@@ -1082,6 +1082,14 @@ namespace TombEditor
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new CameraInstance());
             });
 
+            AddCommand("AddSprite", "Add room sprite", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion <= TRVersion.Game.TR2, "Room sprite"))
+                    return;
+
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new SpriteInstance());
+            });
+
             AddCommand("AddFlybyCamera", "Add flyby camera", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TR4, "Flyby camera"))

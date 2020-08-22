@@ -45,6 +45,12 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.BookmarkObject(targetObject);
             }));
 
+            if (targetObject is IReplaceable)
+                Items.Add(new ToolStripMenuItem("Replace object...", null, (o, e) =>
+                {
+                    CommandHandler.GetCommand("SearchAndReplaceObjects").Execute(new CommandArgs { Editor = editor, Window = owner });
+                }));
+
             if (Items.Count > 2 && !(Items[Items.Count - 2] is ToolStripSeparator))
                 Items.Add(new ToolStripSeparator());
 
@@ -149,6 +155,7 @@ namespace TombEditor.Controls.ContextMenus
                         (o, e) =>
                         {
                             _editor.SelectRoom(trigger.Room);
+                            _editor.SelectedSectors = new SectorSelection() { Area = trigger.Area };
                         });
                     Items.Add(triggerItem);
                 }

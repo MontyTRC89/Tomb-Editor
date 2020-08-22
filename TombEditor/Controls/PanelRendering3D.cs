@@ -2430,6 +2430,32 @@ namespace TombEditor.Controls
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
 
             foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<SpriteInstance>())
+                {
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                    var color = new Vector4(0.8f, 1.0f, 0.5f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            "Sprite ID " + instance.SpriteID +
+                            "\n" + GetObjectPositionString(room, instance)));
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(room, instance.Position);
+                    }
+                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(color);
+                    effect.Techniques[0].Passes[0].Apply();
+                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                }
+
+            foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<CameraInstance>())
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -2721,7 +2747,6 @@ namespace TombEditor.Controls
                                   Matrix4x4.CreateTranslation(Camera.GetPosition());
 
                 skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-
                 skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                 foreach (var submesh in mesh.Submeshes)
@@ -2763,7 +2788,7 @@ namespace TombEditor.Controls
                     {
                         var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, currentInstance.WadObjectId.TypeId));
                         var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
-                        if (moveableSkin != null)
+                        if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
                             skin = _wadRenderer.GetMoveable(moveableSkin);
                     }
 

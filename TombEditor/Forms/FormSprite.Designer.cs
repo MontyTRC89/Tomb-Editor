@@ -1,6 +1,6 @@
 ﻿namespace TombEditor.Forms
 {
-    partial class FormCamera
+    partial class FormSprite
     {
         /// <summary>
         /// Required designer variable.
@@ -30,10 +30,8 @@
         {
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
-            this.ckFixed = new DarkUI.Controls.DarkCheckBox();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.nudMoveTimer = new DarkUI.Controls.DarkNumericUpDown();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMoveTimer)).BeginInit();
+            this.panelRenderingSprite = new WadTool.Controls.PanelRenderingSprite();
+            this.cmbSprites = new DarkUI.Controls.DarkComboBox();
             this.SuspendLayout();
             // 
             // butCancel
@@ -41,7 +39,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(124, 67);
+            this.butCancel.Location = new System.Drawing.Point(245, 309);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -53,7 +51,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(38, 67);
+            this.butOk.Location = new System.Drawing.Point(159, 309);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -61,76 +59,56 @@
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
-            // ckFixed
+            // panelRenderingSprite
             // 
-            this.ckFixed.AutoSize = true;
-            this.ckFixed.Location = new System.Drawing.Point(10, 39);
-            this.ckFixed.Name = "ckFixed";
-            this.ckFixed.Size = new System.Drawing.Size(160, 17);
-            this.ckFixed.TabIndex = 6;
-            this.ckFixed.Text = "Disable look key breakout";
+            this.panelRenderingSprite.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelRenderingSprite.Location = new System.Drawing.Point(8, 40);
+            this.panelRenderingSprite.Name = "panelRenderingSprite";
+            this.panelRenderingSprite.Size = new System.Drawing.Size(317, 263);
+            this.panelRenderingSprite.SpriteID = 0;
+            this.panelRenderingSprite.TabIndex = 9;
             // 
-            // darkLabel1
+            // cmbSprites
             // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(7, 14);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(93, 13);
-            this.darkLabel1.TabIndex = 7;
-            this.darkLabel1.Text = "Movement timer:";
+            this.cmbSprites.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSprites.FormattingEnabled = true;
+            this.cmbSprites.Location = new System.Drawing.Point(8, 11);
+            this.cmbSprites.Name = "cmbSprites";
+            this.cmbSprites.Size = new System.Drawing.Size(317, 23);
+            this.cmbSprites.TabIndex = 10;
+            this.cmbSprites.SelectedIndexChanged += new System.EventHandler(this.cmbSprites_SelectedIndexChanged);
             // 
-            // nudMoveTimer
-            // 
-            this.nudMoveTimer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMoveTimer.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.nudMoveTimer.Location = new System.Drawing.Point(124, 12);
-            this.nudMoveTimer.LoopValues = false;
-            this.nudMoveTimer.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.nudMoveTimer.Name = "nudMoveTimer";
-            this.nudMoveTimer.Size = new System.Drawing.Size(80, 22);
-            this.nudMoveTimer.TabIndex = 8;
-            // 
-            // FormCamera
+            // FormSprite
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(212, 98);
-            this.Controls.Add(this.nudMoveTimer);
-            this.Controls.Add(this.darkLabel1);
+            this.ClientSize = new System.Drawing.Size(333, 340);
+            this.Controls.Add(this.cmbSprites);
+            this.Controls.Add(this.panelRenderingSprite);
             this.Controls.Add(this.butCancel);
-            this.Controls.Add(this.ckFixed);
             this.Controls.Add(this.butOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormCamera";
+            this.Name = "FormSprite";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Edit camera";
-            ((System.ComponentModel.ISupportInitialize)(this.nudMoveTimer)).EndInit();
+            this.Text = "Edit sprite";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkButton butOk;
-        private DarkUI.Controls.DarkCheckBox ckFixed;
-        private DarkUI.Controls.DarkLabel darkLabel1;
-        private DarkUI.Controls.DarkNumericUpDown nudMoveTimer;
+        private WadTool.Controls.PanelRenderingSprite panelRenderingSprite;
+        private DarkUI.Controls.DarkComboBox cmbSprites;
     }
 }

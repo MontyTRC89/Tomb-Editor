@@ -15,11 +15,16 @@ namespace TombEditor.Forms
 
             _instance = instance;
             ckFixed.Checked = _instance.Fixed;
+            nudMoveTimer.Value = _instance.MoveTimer;
+
+            ckFixed.Enabled      = (instance.Room.Level.Settings.GameVersion >= TRVersion.Game.TR4);
+            nudMoveTimer.Enabled = (instance.Room.Level.Settings.GameVersion <= TRVersion.Game.TR2);
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
             _instance.Fixed = ckFixed.Checked;
+            _instance.MoveTimer = (byte)nudMoveTimer.Value;
 
             DialogResult = DialogResult.OK;
             Close();

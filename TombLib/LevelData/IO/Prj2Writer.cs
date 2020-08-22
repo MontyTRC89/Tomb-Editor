@@ -447,13 +447,22 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
                         });
                     else if (o is CameraInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera, LEB128.MaximumSize1Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera2, LEB128.MaximumSize1Byte))
                         {
                             var instance = (CameraInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                             chunkIO.Raw.Write(instance.Fixed);
+                            chunkIO.Raw.Write(instance.MoveTimer);
+                        }
+                    else if (o is SpriteInstance)
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSprite, LEB128.MaximumSize1Byte))
+                        {
+                            var instance = (SpriteInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.Write(instance.SpriteID);
                         }
                     else if (o is FlybyCameraInstance)
                         chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectFlyBy, () =>

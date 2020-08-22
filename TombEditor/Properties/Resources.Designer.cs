@@ -773,6 +773,16 @@ namespace TombEditor.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap objects_Sprite_16 {
+            get {
+                object obj = ResourceManager.GetObject("objects_Sprite_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap objects_sun_16 {
             get {
                 object obj = ResourceManager.GetObject("objects_sun_16", resourceCulture);
