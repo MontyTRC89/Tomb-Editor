@@ -632,7 +632,7 @@
             this.darkLabel3.Size = new System.Drawing.Size(486, 79);
             this.darkLabel3.TabIndex = 2;
             this.darkLabel3.Text = "MontyTRC\r\nMontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte, Nickelony, Raild" +
-    "ex,\r\nChocolateFan, sapper, Daniel\r\nteme9, Lwmte, Nickelony\r\nDustie, Titak, Gemini, Caesu" +
+    "ex,\r\nChocolateFan, sapper, Dominik\r\nteme9, Lwmte, Nickelony\r\nDustie, Titak, Gemini, Caesu" +
     "m, Lore, JMN, Joey79100, 1mustard";
             // 
             // darkLabel2
