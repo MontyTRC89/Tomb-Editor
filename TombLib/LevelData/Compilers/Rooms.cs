@@ -861,6 +861,16 @@ namespace TombLib.LevelData.Compilers
                     roomVertices[i] = trVertex;
                 }
 
+                // Add sprites and dummy vertices for them (only for TR1-2 targets, unsupported since TR3)
+
+                newRoom.Sprites = new List<tr_room_sprite>();
+                if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
+                    foreach (var sprite in room.Objects.OfType<SpriteInstance>())
+                    {
+                        newRoom.Sprites.Add(new tr_room_sprite() { SpriteID = sprite.SpriteID, Vertex = roomVertices.Count });
+                        roomVertices.Add(new tr_room_vertex() { Position = new tr_vertex((short)sprite.Position.X, (short)-sprite.Position.Y, (short)sprite.Position.Z) });
+                    }
+
                 newRoom.Vertices = roomVertices;
                 newRoom.Quads = roomQuads;
                 newRoom.Triangles = roomTriangles;

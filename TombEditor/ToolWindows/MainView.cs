@@ -177,6 +177,7 @@ namespace TombEditor.ToolWindows
                 butAddPrismVolume.Enabled  = isT5M;
                 butDrawVolumes.Visible     = isT5M; // We may safely hide it because it's not customizable
 
+                butAddSprite.Enabled      = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
                 butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
             }
 

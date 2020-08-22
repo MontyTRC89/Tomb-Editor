@@ -1,9 +1,14 @@
 Version 1.3.6
 =============
 Tomb Editor:
- * Fixed drag-n-drop in find and replace objects dialog.
  * Added TR1 support.
+ * Added room sprites support for TR1-2.
+ * Added move timer customization for TR1-TR2 cameras.
  * Added 8-bit texture support for TR2/TR3.
+ * Point to specific trigger area when "find where is triggered" context menu was engaged.
+ * Added find and replace object context menu.
+ * Fixed drag-n-drop in find and replace objects dialog.
+ * Fixed exception when Lara skin mesh count doesn't correspond to Lara mesh count.
 
 Version 1.3.5
 =============

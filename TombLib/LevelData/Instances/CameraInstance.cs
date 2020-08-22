@@ -3,6 +3,7 @@
     public class CameraInstance : PositionAndScriptBasedObjectInstance
     {
         public bool Fixed { get; set; }
+        public byte MoveTimer { get; set; }
 
         public override bool CopyToAlternateRooms => false;
 

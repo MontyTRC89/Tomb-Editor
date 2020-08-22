@@ -140,6 +140,9 @@
     <Compile Include="Controls\PanelRenderingImportedGeometry.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PanelRenderingSprite.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ToolBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -151,6 +154,12 @@
     </Compile>
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FormSprite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormSprite.Designer.cs">
+      <DependentUpon>FormSprite.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormFindUntextured.cs">
       <SubType>Form</SubType>
@@ -468,6 +477,9 @@
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormSprite.resx">
+      <DependentUpon>FormSprite.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormFindUntextured.resx">
       <DependentUpon>FormFindUntextured.cs</DependentUpon>
     </EmbeddedResource>
@@ -632,6 +644,7 @@
     <None Include="Resources\icons_actions\actions_HideHiddenRooms-16.png" />
     <None Include="Resources\icons_actions\actions_AlphaTest-16.png" />
     <None Include="Resources\icons_actions\actions_play_fast-16.png" />
+    <None Include="Resources\icons_objects\objects_Sprite-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
   </ItemGroup>

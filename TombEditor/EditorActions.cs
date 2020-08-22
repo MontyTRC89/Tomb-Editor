@@ -882,6 +882,13 @@ namespace TombEditor
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
+            else if (instance is SpriteInstance)
+            {
+                using (var formSprite = new FormSprite((SpriteInstance)instance))
+                    if (formSprite.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
             else if (instance is SinkInstance)
             {
                 using (var formSink = new FormSink((SinkInstance)instance))

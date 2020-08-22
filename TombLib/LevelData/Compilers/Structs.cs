@@ -224,6 +224,18 @@ namespace TombLib.LevelData.Compilers
         public ushort ObjectID;
     }
 
+    public struct tr_room_sprite
+    {
+        public int Vertex;
+        public int SpriteID;
+
+        public void Write(BinaryWriterEx writer)
+        {
+            writer.Write((ushort)Vertex);
+            writer.Write((ushort)SpriteID);
+        }
+    }
+
     public class tr_room
     {
         public tr_room_info Info;
@@ -231,7 +243,7 @@ namespace TombLib.LevelData.Compilers
         public List<tr_room_vertex> Vertices;
         public List<tr_face4> Quads;
         public List<tr_face3> Triangles;
-        public ushort NumSprites;
+        public List<tr_room_sprite> Sprites;
         public List<tr_room_portal> Portals;
         public ushort NumZSectors;
         public ushort NumXSectors;
@@ -281,8 +293,9 @@ namespace TombLib.LevelData.Compilers
             for (var k = 0; k < Triangles.Count; k++)
                 Triangles[k].Write(writer);
 
-            // For sprites, not used
-            writer.Write((ushort)0);
+            // Sprites
+            writer.Write((ushort)Sprites.Count);
+            Sprites.ForEach(s => s.Write(writer));
 
             // Now save current offset and calculate the size of the geometry
             var offset2 = writer.BaseStream.Position;
@@ -368,8 +381,9 @@ namespace TombLib.LevelData.Compilers
             for (var k = 0; k < Triangles.Count; k++)
                 Triangles[k].Write(writer);
 
-            // For sprites, not used
-            writer.Write((ushort)0);
+            // Sprites
+            writer.Write((ushort)Sprites.Count);
+            Sprites.ForEach(s => s.Write(writer));
 
             // Now save current offset and calculate the size of the geometry
             var offset2 = writer.BaseStream.Position;
@@ -451,7 +465,7 @@ namespace TombLib.LevelData.Compilers
             for (var k = 0; k < Triangles.Count; k++)
                 Triangles[k].Write(writer);
 
-            // For sprites, not used
+            // Sprites, not used
             writer.Write((ushort)0);
 
             // Now save current offset and calculate the size of the geometry
@@ -549,7 +563,7 @@ namespace TombLib.LevelData.Compilers
             for (var k = 0; k < Triangles.Count; k++)
                 Triangles[k].Write(writer);
 
-            // For sprites, not used
+            // Sprites, not used
             writer.Write((ushort)0);
 
             // Now save current offset and calculate the size of the geometry
