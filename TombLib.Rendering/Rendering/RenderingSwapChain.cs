@@ -25,6 +25,7 @@ namespace TombLib.Rendering
         public Vector2 Pos11 = new Vector2(1.0f, 1.0f);
         public Vector2 PosStart { set { Pos00 = value; Pos01.X = value.X; Pos10.Y = value.Y;  } }
         public Vector2 PosEnd { set { Pos11 = value; Pos10.X = value.X; Pos01.Y = value.Y;  } }
+        public float Depth = 1.0f;
     }
 
     public abstract class RenderingSwapChain : IDisposable

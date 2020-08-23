@@ -2434,10 +2434,7 @@ namespace TombEditor.Controls
 
         private void DrawSprites(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw)
         {
-            if (HideTransparentFaces)
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-            else
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+            var heightRatio = ((float)ClientSize.Height / ClientSize.Width) * 1024.0f;
 
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
@@ -2454,14 +2451,15 @@ namespace TombEditor.Controls
                         var scale = 1024.0f / (distance != 0 ? distance : 1.0f);
                         var pos = (instance.RotationPositionMatrix * viewProjection).TransformPerspectively(new Vector3());
                         var screenPos = pos.To2();
-                        var start = scale * new Vector2((float)sprite.Alignment.Start.X / ClientSize.Width, (float)sprite.Alignment.Start.Y / ClientSize.Height);
-                        var end = scale * new Vector2((float)sprite.Alignment.End.X / ClientSize.Width, (float)sprite.Alignment.End.Y / ClientSize.Height);
+                        var start = scale * new Vector2(sprite.Alignment.Start.X / 1024.0f, sprite.Alignment.Start.Y / heightRatio);
+                        var end = scale * new Vector2(sprite.Alignment.End.X / 1024.0f, sprite.Alignment.End.Y / heightRatio);
 
-                        SwapChain.RenderSprites(_renderingTextures, false, true, new Sprite
+                        SwapChain.RenderSprites(_renderingTextures, false, false, new Sprite
                         {
                             Texture = _editor.SelectedObject == instance ? ImageC.Red : sprite.Texture.Image,
                             PosStart = screenPos - end,
                             PosEnd = screenPos - start,
+                            Depth = pos.Z
                         });
                     }
                 }
