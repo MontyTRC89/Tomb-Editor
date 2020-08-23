@@ -242,7 +242,7 @@ namespace TombLib.Controls
                 float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
                 Vector2 factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
 
-                SwapChain.RenderSprites(_textureAllocator, false, new Sprite
+                SwapChain.RenderSprites(_textureAllocator, false, true, new Sprite
                 {
                     Texture = sprite.Texture.Image,
                     PosStart = -0.9f * factor,

@@ -43,7 +43,7 @@ namespace TombLib.Rendering
         public abstract void ClearDepth();
         public abstract void Present();
         public abstract void Resize(VectorInt2 newSize);
-        public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, params Sprite[] sprites);
+        public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, params Sprite[] sprites);
         /// <summary>Note that all fonts used in one call must be in the same texture allocator!</summary>
         public abstract void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays);
         public void RenderText(IEnumerable<Text> texts)

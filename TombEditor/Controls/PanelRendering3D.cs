@@ -137,6 +137,7 @@ namespace TombEditor.Controls
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
         private Buffer<SolidVertex> _prismVertexBuffer;
+        private List<WadSprite> _spriteList;
 
         // Flyby stuff
         private const float _flybyPathThickness = 32.0f;
@@ -374,8 +375,8 @@ namespace TombEditor.Controls
 
             // Reset tool handler state
             if (obj is Editor.ModeChangedEvent ||
-                 obj is Editor.ToolChangedEvent ||
-                (obj is Editor.SelectedRoomChangedEvent && _editor.Tool.Tool != EditorToolType.PortalDigger))
+                obj is Editor.ToolChangedEvent ||
+               (obj is Editor.SelectedRoomChangedEvent && _editor.Tool.Tool != EditorToolType.PortalDigger))
             {
                 _toolHandler?.Disengage();
             }
@@ -394,6 +395,8 @@ namespace TombEditor.Controls
                 if (value.ChangeType != ObjectChangeType.Remove && value.Object is LightInstance)
                     _renderingCachedRooms.Remove(value.Object.Room);
             }
+
+            // Reset rooms render cache
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.HighlightedSectorChangedEvent)
                 _renderingCachedRooms.Remove(_editor.SelectedRoom);
@@ -407,6 +410,12 @@ namespace TombEditor.Controls
                 obj is Editor.ConfigurationChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
                 _renderingCachedRooms.Clear();
+
+            // Reset sprite render cache
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.EditorFocusedEvent)
+                _spriteList = _editor.Level.Settings.WadGetAllSprites();
 
             // Update drawing
             if (_editor.Mode != EditorMode.Map2D)
@@ -2423,6 +2432,41 @@ namespace TombEditor.Controls
             }
         }
 
+        private void DrawSprites(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw)
+        {
+            if (HideTransparentFaces)
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
+            else
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+
+            foreach (Room room in roomsWhoseObjectsToDraw)
+                foreach (var instance in room.Objects.OfType<SpriteInstance>())
+                {
+                    if (_editor.SelectedObject == instance)
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                    else
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                    if (_spriteList.Count > instance.SpriteID)
+                    {
+                        var sprite = _spriteList[instance.SpriteID];
+                        var distance = Vector3.Distance(instance.Position + room.WorldPos, Camera.GetPosition());
+                        var scale = 2048.0f / (distance != 0 ? distance : 1.0f);
+                        var pos = (instance.RotationPositionMatrix * viewProjection).TransformPerspectively(new Vector3());
+                        var screenPos = pos.To2();
+                        var start = scale * new Vector2((float)sprite.Alignment.Start.X / ClientSize.Width, (float)sprite.Alignment.Start.Y / ClientSize.Height);
+                        var end = scale * new Vector2((float)sprite.Alignment.End.X / ClientSize.Width, (float)sprite.Alignment.End.Y / ClientSize.Height);
+
+                        SwapChain.RenderSprites(_renderingTextures, false, true, new Sprite
+                        {
+                            Texture = _editor.SelectedObject == instance ? ImageC.Red : sprite.Texture.Image,
+                            PosStart = screenPos - end,
+                            PosEnd = screenPos - start,
+                        });
+                    }
+                }
+        }
+
         private void DrawObjects(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
@@ -2449,11 +2493,17 @@ namespace TombEditor.Controls
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
                     }
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(color);
-                    effect.Techniques[0].Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+
+                    if (_spriteList.Count <= instance.SpriteID)
+                    {
+                        effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                        effect.Parameters["Color"].SetValue(color);
+                        effect.Techniques[0].Passes[0].Apply();
+                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    }
                 }
+
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<CameraInstance>())
@@ -3408,6 +3458,8 @@ namespace TombEditor.Controls
 
             if (ShowOtherObjects)
             {
+                // Draw sprites
+                DrawSprites(viewProjection, effect, roomsToDraw);
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
                 DrawObjects(viewProjection, effect, roomsToDraw, textToDraw);
                 // Draw light objects and bounding volumes
