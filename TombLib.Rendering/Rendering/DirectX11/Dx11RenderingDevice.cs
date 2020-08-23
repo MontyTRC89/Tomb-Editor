@@ -122,7 +122,7 @@ namespace TombLib.Rendering.DirectX11
                 });
                 SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
                 {
-                new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
+                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
                 new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
                 });
                 RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]

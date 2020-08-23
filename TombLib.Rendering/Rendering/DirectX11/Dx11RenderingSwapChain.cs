@@ -140,11 +140,11 @@ namespace TombLib.Rendering.DirectX11
 
             // Build vertex buffer
             int vertexCount = sprites.Length * 6;
-            int bufferSize = vertexCount * (sizeof(Vector2) + sizeof(ulong));
+            int bufferSize = vertexCount * (sizeof(Vector3) + sizeof(ulong));
             fixed (byte* data = new byte[bufferSize])
             {
-                Vector2* positions = (Vector2*)(data);
-                ulong* uvws = (ulong*)(data + vertexCount * sizeof(Vector2));
+                Vector3* positions = (Vector3*)(data);
+                ulong* uvws = (ulong*)(data + vertexCount * sizeof(Vector3));
 
                 // Setup vertices
                 int count = sprites.Length;
@@ -154,10 +154,10 @@ namespace TombLib.Rendering.DirectX11
                     VectorInt3 texPos = textureAllocator.Get(sprite.Texture);
                     VectorInt2 texSize = sprite.Texture.To - sprite.Texture.From;
 
-                    positions[i * 6 + 0] = sprite.Pos00;
-                    positions[i * 6 + 2] = positions[i * 6 + 3] = sprite.Pos10;
-                    positions[i * 6 + 1] = positions[i * 6 + 4] = sprite.Pos01;
-                    positions[i * 6 + 5] = sprite.Pos11;
+                    positions[i * 6 + 0] = new Vector3(sprite.Pos00.X, sprite.Pos00.Y, sprite.Depth);
+                    positions[i * 6 + 2] = positions[i * 6 + 3] = new Vector3(sprite.Pos10.X, sprite.Pos10.Y, sprite.Depth);
+                    positions[i * 6 + 1] = positions[i * 6 + 4] = new Vector3(sprite.Pos01.X, sprite.Pos01.Y, sprite.Depth);
+                    positions[i * 6 + 5] = new Vector3(sprite.Pos11.X, sprite.Pos11.Y, sprite.Depth);
                     uvws[i * 6 + 1] = uvws[i * 6 + 4] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, 0.5f));
                     uvws[i * 6 + 5] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, 0.5f));
                     uvws[i * 6 + 0] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, texSize.Y - 0.5f));
@@ -170,7 +170,7 @@ namespace TombLib.Rendering.DirectX11
                     CpuAccessFlags.None, ResourceOptionFlags.None, 0)))
                 {
                     var VertexBufferBindings = new VertexBufferBinding[] {
-                        new VertexBufferBinding(VertexBuffer, sizeof(Vector2), (int)((byte*)positions - data)),
+                        new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
                         new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvws - data)) };
 
                     // Render
