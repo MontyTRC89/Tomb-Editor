@@ -218,8 +218,8 @@ namespace TombLib.Wad.TrLevels
                 color = new ColorC((byte)(trColor.Red * 4), (byte)(trColor.Green * 4), (byte)(trColor.Blue * 4), 255);
             }
 
-            const int dummyTextureSize = 4;
-            var image = ImageC.CreateNew(dummyTextureSize, dummyTextureSize);
+            const int dummyTextureSize = 2;
+            var image = ImageC.CreateNew(dummyTextureSize * 2, dummyTextureSize * 2);
             image.Fill(color);
 
             TextureArea textureArea = new TextureArea();
