@@ -46,7 +46,7 @@ namespace WadTool.Controls
             }
         }
 
-        private void RebuildSpriteList() => _spriteList = _editor.Level.Settings.WadGetAllSpriteSequences().Values.SelectMany(s => s.Sprites).ToList();
+        private void RebuildSpriteList() => _spriteList = _editor.Level.Settings.WadGetAllSprites();
 
         public override void InitializeRendering(RenderingDevice device, bool antialias)
         {
@@ -71,13 +71,13 @@ namespace WadTool.Controls
             if (_spriteList.Count <= SpriteID || SpriteID == -1)
                 return;
 
-            WadSprite sprite = _spriteList[SpriteID];
+            var sprite = _spriteList[SpriteID];
             float aspectRatioViewport = (float)ClientSize.Width / ClientSize.Height;
             float aspectRatioImage = (float)sprite.Texture.Image.Width / sprite.Texture.Image.Height;
             float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
-            Vector2 factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
+            var factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
 
-            SwapChain.RenderSprites(_renderingTextures, false, new Sprite
+            SwapChain.RenderSprites(_renderingTextures, false, true, new Sprite
             {
                 Texture = sprite.Texture.Image,
                 PosStart = -0.9f * factor,

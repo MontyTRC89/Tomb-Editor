@@ -134,7 +134,7 @@ namespace TombLib.Rendering.DirectX11
             // ResizeTarget is not the correct method!
         }
 
-        public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, params Sprite[] sprites)
+        public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, params Sprite[] sprites)
         {
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
 
@@ -179,7 +179,11 @@ namespace TombLib.Rendering.DirectX11
                     Device.Context.PixelShader.SetSampler(0, linearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest);
                     Device.Context.PixelShader.SetShaderResources(0, ((Dx11RenderingTextureAllocator)(textureAllocator)).TextureView);
                     Device.Context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
-                    Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilNoZBuffer);
+
+                    if (noZ)
+                        Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilNoZBuffer);
+                    else
+                        Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilDefault);
 
                     // Render
                     Device.Context.Draw(vertexCount, 0);
