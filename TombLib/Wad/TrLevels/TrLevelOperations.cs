@@ -177,7 +177,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = oldPoly.Index3;
-                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture, false);
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture);
                 poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
@@ -190,7 +190,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = 0;
-                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture, true);
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture);
                 poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
@@ -202,8 +202,11 @@ namespace TombLib.Wad.TrLevels
             return mesh;
         }
 
-        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, bool isTriangle)
+        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, int textureSize = 1, int margin = 1)
         {
+            if (textureSize < 1) textureSize = 1;
+            if (margin < 1) margin = 1;
+
             ColorC color;
 
             var sixteenBitIndex = paletteIndex >> 8;
@@ -218,16 +221,15 @@ namespace TombLib.Wad.TrLevels
                 color = new ColorC((byte)(trColor.Red * 4), (byte)(trColor.Green * 4), (byte)(trColor.Blue * 4), 255);
             }
 
-            const int dummyTextureSize = 2;
-            var image = ImageC.CreateNew(dummyTextureSize * 2, dummyTextureSize * 2);
+            var image = ImageC.CreateNew(textureSize + margin * 2, textureSize + margin * 2);
             image.Fill(color);
 
             TextureArea textureArea = new TextureArea();
             textureArea.Texture = new WadTexture(image);
-            textureArea.TexCoord0 = new Vector2(0, 0);
-            textureArea.TexCoord1 = new Vector2(dummyTextureSize, 0);
-            textureArea.TexCoord2 = new Vector2(dummyTextureSize, dummyTextureSize);
-            textureArea.TexCoord3 = new Vector2(0, dummyTextureSize);
+            textureArea.TexCoord0 = new Vector2(margin, margin);
+            textureArea.TexCoord1 = new Vector2(image.Width - margin, margin);
+            textureArea.TexCoord2 = new Vector2(image.Width - margin, image.Height - margin);
+            textureArea.TexCoord3 = new Vector2(2, image.Height - margin);
             textureArea.BlendMode = BlendMode.Normal;
             textureArea.DoubleSided = false;
             return textureArea;
