@@ -23,7 +23,7 @@ namespace TombLib.Wad
 
         // Properties for correct encoding of samples.
         [XmlIgnore]
-        public const uint GameSupportedSampleRate = 22050;
+        public const int GameSupportedSampleRate = 22050;
         [XmlIgnore]
         private const int ChannelCountOffset = 22;
         [XmlIgnore]
@@ -132,36 +132,14 @@ namespace TombLib.Wad
         [XmlIgnore]
         public uint BitsPerSample => BitConverter.ToUInt16(Data, BitsPerSampleOffset);
 
-        public struct ResampleInfo
+        public static byte[] ConvertSampleFormat(byte[] data, int sampleRate = GameSupportedSampleRate, int bitsPerSample = 16)
         {
-            public bool Resample;
-            public uint SampleRate;
-            public uint BitsPerSample;
-        }
-
-        public static byte[] ConvertSampleFormat(byte[] data, bool resample = true, uint sampleRate = GameSupportedSampleRate, uint bitsPerSample = 16) =>
-            ConvertSampleFormat(data, r => new ResampleInfo { Resample = resample, SampleRate = sampleRate, BitsPerSample = bitsPerSample });
-
-        public static byte[] ConvertSampleFormat(byte[] data, Func<uint, ResampleInfo> negotiateSampleRate)
-        {
-            // Check if the format is actually already correct.
-            ResampleInfo? resampleInfo = null;
-
             // Use NAudio now to convert the audio data
             using (var inStream = new MemoryStream(data, false))
             using (var anyWaveStream = CreateReader(inStream, data))
             {
-                if (resampleInfo == null) // Negotiate sample rate now, if we haven't already.
-                    resampleInfo = negotiateSampleRate((uint)anyWaveStream.WaveFormat.SampleRate);
-                WaveFormat targetFormat = new WaveFormat((int)resampleInfo.Value.SampleRate, (int)resampleInfo.Value.BitsPerSample, 1);
-
-                // The TR4 engine doesn't seem to resample. So for reading wad samples we stay true to the intended sound by not resampling.
-                // We just pretend to actually use the original sample rate.
-                WaveFormat artificialFormat = targetFormat;
-                if (!resampleInfo.Value.Resample)
-                    artificialFormat = new WaveFormat(anyWaveStream.WaveFormat.SampleRate, anyWaveStream.WaveFormat.BitsPerSample, 1);
-
-                var pcmStream = CreateWaveConverter(artificialFormat, anyWaveStream);
+                var targetFormat = new WaveFormat(sampleRate, bitsPerSample, 1);
+                var pcmStream = CreateWaveConverter(targetFormat, anyWaveStream);
                 try // The pcm stream may need to get disposed.
                 {
                     using (var outStream = new MemoryStream())
@@ -418,8 +396,8 @@ namespace TombLib.Wad
             // Set up maximum buffer sizes and sample rate
             int maxBufferLength = 1024 * 256;
             int warnBufferLength = 1024 * 256;
-            uint supportedSampleRate = 22050;
-            uint supportedBitness = 16;
+            int supportedSampleRate = 22050;
+            int supportedBitness = 16;
 
             switch (settings.GameVersion)
             {
@@ -457,7 +435,7 @@ namespace TombLib.Wad
                             if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
                                 throw new EndOfStreamException();
 
-                            currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, true, supportedSampleRate, supportedBitness));
+                            currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, supportedSampleRate, supportedBitness));
 
                             if (currentSample.SampleRate != supportedSampleRate)
                                 reporter?.ReportWarn("Sample " + samplePath + " has a sample rate of " + currentSample.SampleRate + " which is unsupported for this engine version.");

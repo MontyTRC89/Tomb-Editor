@@ -513,9 +513,10 @@ namespace TombLib.LevelData
         {
             SortedList<WadSpriteSequenceId, WadSpriteSequence> result = new SortedList<WadSpriteSequenceId, WadSpriteSequence>();
             foreach (ReferencedWad wad in Wads)
-                foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> sprite in wad.Wad.SpriteSequences)
-                    if (!result.ContainsKey(sprite.Key))
-                        result.Add(sprite.Key, sprite.Value);
+                if (wad.Wad != null)
+                    foreach (KeyValuePair<WadSpriteSequenceId, WadSpriteSequence> sprite in wad.Wad.SpriteSequences)
+                        if (!result.ContainsKey(sprite.Key))
+                            result.Add(sprite.Key, sprite.Value);
             return result;
         }
 

@@ -169,6 +169,9 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_soundSources.Count);
                 writer.WriteBlockArray(_soundSources);
 
+                if (_boxes.Length <= 1)
+                    _progressReporter.ReportWarn("Level is a single-room flat floor. Add some room geometry or game will crash.");
+
                 // Write pathfinding data
                 writer.Write((uint)_boxes.Length);
                 for (var i = 0; i < _boxes.Length; i++)
