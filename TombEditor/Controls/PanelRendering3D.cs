@@ -2451,7 +2451,7 @@ namespace TombEditor.Controls
                     {
                         var sprite = _spriteList[instance.SpriteID];
                         var distance = Vector3.Distance(instance.Position + room.WorldPos, Camera.GetPosition());
-                        var scale = 2048.0f / (distance != 0 ? distance : 1.0f);
+                        var scale = 1024.0f / (distance != 0 ? distance : 1.0f);
                         var pos = (instance.RotationPositionMatrix * viewProjection).TransformPerspectively(new Vector3());
                         var screenPos = pos.To2();
                         var start = scale * new Vector2((float)sprite.Alignment.Start.X / ClientSize.Width, (float)sprite.Alignment.Start.Y / ClientSize.Height);
