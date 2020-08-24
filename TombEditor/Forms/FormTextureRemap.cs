@@ -22,6 +22,10 @@ namespace TombEditor.Forms
             InitializeComponent();
             sourceTextureMap.FormParent = destinationTextureMap.FormParent = this;
 
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, _editor.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
+
             LevelTexture firstTexture = editor.Level.Settings.Textures.FirstOrDefault();
             comboSourceTexture.Items.AddRange(editor.Level.Settings.Textures.ToArray());
             comboSourceTexture.SelectedItem = firstTexture;

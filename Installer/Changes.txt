@@ -8,6 +8,7 @@ Tomb Editor:
  * Point to specific trigger area when "find where is triggered" context menu was engaged.
  * Added find and replace object context menu.
  * Always resample sounds to proper format.
+ * Store texture remap window properties in config file.
  * Fixed light radius calculation in TR2/TR3.
  * Fixed drag-n-drop in find and replace objects dialog.
  * Fixed exception when Lara skin mesh count doesn't correspond to Lara mesh count.
