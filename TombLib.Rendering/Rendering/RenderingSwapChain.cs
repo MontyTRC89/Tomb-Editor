@@ -25,7 +25,7 @@ namespace TombLib.Rendering
         public Vector2 Pos11 = new Vector2(1.0f, 1.0f);
         public Vector2 PosStart { set { Pos00 = value; Pos01.X = value.X; Pos10.Y = value.Y;  } }
         public Vector2 PosEnd { set { Pos11 = value; Pos10.X = value.X; Pos01.Y = value.Y;  } }
-        public float Depth = 1.0f;
+        public float? Depth = null;
         public Vector4 Tint = Vector4.One;
     }
 
@@ -45,7 +45,7 @@ namespace TombLib.Rendering
         public abstract void ClearDepth();
         public abstract void Present();
         public abstract void Resize(VectorInt2 newSize);
-        public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, params Sprite[] sprites);
+        public abstract void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites);
         /// <summary>Note that all fonts used in one call must be in the same texture allocator!</summary>
         public abstract void RenderGlyphs(RenderingTextureAllocator textureAllocator, List<RenderingFont.GlyphRenderInfo> glyphRenderInfos, List<RectangleInt2> overlays);
         public void RenderText(IEnumerable<Text> texts)

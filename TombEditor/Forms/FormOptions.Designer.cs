@@ -675,7 +675,7 @@
             this.darkLabel58.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel58.Location = new System.Drawing.Point(12, 611);
             this.darkLabel58.Name = "darkLabel58";
-            this.darkLabel58.Size = new System.Drawing.Size(69, 13);
+            this.darkLabel58.Size = new System.Drawing.Size(70, 13);
             this.darkLabel58.TabIndex = 60;
             this.darkLabel58.Text = "Beetle mark:";
             // 
@@ -735,7 +735,7 @@
             this.darkLabel55.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel55.Location = new System.Drawing.Point(12, 524);
             this.darkLabel55.Name = "darkLabel55";
-            this.darkLabel55.Size = new System.Drawing.Size(28, 13);
+            this.darkLabel55.Size = new System.Drawing.Size(29, 13);
             this.darkLabel55.TabIndex = 54;
             this.darkLabel55.Text = "Box:";
             // 
@@ -875,7 +875,7 @@
             this.darkLabel48.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel48.Location = new System.Drawing.Point(12, 321);
             this.darkLabel48.Name = "darkLabel48";
-            this.darkLabel48.Size = new System.Drawing.Size(68, 13);
+            this.darkLabel48.Size = new System.Drawing.Size(69, 13);
             this.darkLabel48.TabIndex = 40;
             this.darkLabel48.Text = "Border wall:";
             // 
@@ -1301,7 +1301,7 @@
             this.darkCheckBox2.AutoSize = true;
             this.darkCheckBox2.Location = new System.Drawing.Point(6, 79);
             this.darkCheckBox2.Name = "darkCheckBox2";
-            this.darkCheckBox2.Size = new System.Drawing.Size(340, 17);
+            this.darkCheckBox2.Size = new System.Drawing.Size(339, 17);
             this.darkCheckBox2.TabIndex = 6;
             this.darkCheckBox2.Tag = "Editor_RespectFlybyPatchOnPrjImport";
             this.darkCheckBox2.Text = "Respect T4Larson\'s mousepatch flyby handling on PRJ import";
@@ -1561,7 +1561,7 @@
             this.darkCheckBox8.AutoSize = true;
             this.darkCheckBox8.Location = new System.Drawing.Point(294, 18);
             this.darkCheckBox8.Name = "darkCheckBox8";
-            this.darkCheckBox8.Size = new System.Drawing.Size(49, 17);
+            this.darkCheckBox8.Size = new System.Drawing.Size(50, 17);
             this.darkCheckBox8.TabIndex = 44;
             this.darkCheckBox8.Tag = "Rendering3D_FontIsBold";
             this.darkCheckBox8.Text = "Bold";
@@ -1678,7 +1678,7 @@
             this.cbGeometryLightPreview.AutoSize = true;
             this.cbGeometryLightPreview.Location = new System.Drawing.Point(6, 44);
             this.cbGeometryLightPreview.Name = "cbGeometryLightPreview";
-            this.cbGeometryLightPreview.Size = new System.Drawing.Size(196, 17);
+            this.cbGeometryLightPreview.Size = new System.Drawing.Size(197, 17);
             this.cbGeometryLightPreview.TabIndex = 41;
             this.cbGeometryLightPreview.Tag = "Rendering3D_HighQualityLightPreview";
             this.cbGeometryLightPreview.Text = "Use real Light Quality for preview";
@@ -1778,10 +1778,10 @@
             this.darkCheckBox16.AutoSize = true;
             this.darkCheckBox16.Location = new System.Drawing.Point(6, 205);
             this.darkCheckBox16.Name = "darkCheckBox16";
-            this.darkCheckBox16.Size = new System.Drawing.Size(156, 17);
+            this.darkCheckBox16.Size = new System.Drawing.Size(190, 17);
             this.darkCheckBox16.TabIndex = 30;
-            this.darkCheckBox16.Tag = "Rendering3D_ShowRenderingStatistics";
-            this.darkCheckBox16.Text = "Show rendering statistics";
+            this.darkCheckBox16.Tag = "Rendering3D_UseSpritesForServiceObjects";
+            this.darkCheckBox16.Text = "Use flat icons for service objects";
             // 
             // darkCheckBox7
             // 
@@ -1833,7 +1833,7 @@
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel14.Location = new System.Drawing.Point(3, 381);
             this.darkLabel14.Name = "darkLabel14";
-            this.darkLabel14.Size = new System.Drawing.Size(110, 13);
+            this.darkLabel14.Size = new System.Drawing.Size(111, 13);
             this.darkLabel14.TabIndex = 19;
             this.darkLabel14.Text = "Block outline width:";
             // 

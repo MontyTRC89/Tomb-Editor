@@ -77,12 +77,12 @@ namespace WadTool.Controls
             float aspectRatioAdjust = aspectRatioViewport / aspectRatioImage;
             var factor = Vector2.Min(new Vector2(1.0f / aspectRatioAdjust, aspectRatioAdjust), new Vector2(1.0f));
 
-            SwapChain.RenderSprites(_renderingTextures, false, true, new Sprite
+            SwapChain.RenderSprites(_renderingTextures, false, true, new List<Sprite>() { new Sprite
             {
                 Texture = sprite.Texture.Image,
                 PosStart = -0.9f * factor,
                 PosEnd = 0.9f * factor
-            });
+            } });
         }
 
         protected override Vector4 ClearColor => _editor.Configuration.UI_ColorScheme.Color3DBackground;

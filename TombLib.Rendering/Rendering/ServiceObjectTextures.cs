@@ -17,6 +17,7 @@ namespace TombLib.Rendering
         sink,
         sound_source,
         sprite,
+        ghost_block,
         light_effect,
         light_fog,
         light_point,
@@ -47,9 +48,27 @@ namespace TombLib.Rendering
             }
         }
 
-        public static Sprite GetSprite(PositionBasedObjectInstance instance, Camera camera, Size viewportSize, Vector4 color, float zoom = 4.0f)
+        public static Sprite GetSprite(ObjectInstance instance, Camera camera, Size viewportSize, Vector4 color, bool noZ = false, float zoom = 4.5f)
         {
+            if (!(instance is PositionBasedObjectInstance) && !(instance is GhostBlockInstance))
+                return null;
+
+            Vector3 absPos;
+            Matrix4x4 posMatrix;
             ServiceObjectTexture type;
+
+            if (instance is PositionBasedObjectInstance)
+            {
+                var obj = (PositionBasedObjectInstance)instance;
+                posMatrix = obj.WorldPositionMatrix;
+                absPos = obj.Position + obj.Room.WorldPos;
+            }
+            else
+            {
+                var obj = (GhostBlockInstance)instance;
+                posMatrix = obj.CenterMatrix(true) * Matrix4x4.CreateTranslation(new Vector3(0, 96.0f, 0));
+                absPos = obj.Center(true);
+            }
 
             if (instance is LightInstance)
             {
@@ -81,6 +100,7 @@ namespace TombLib.Rendering
             else if (instance is SinkInstance) type = ServiceObjectTexture.sink;
             else if (instance is SpriteInstance) type = ServiceObjectTexture.sprite;
             else if (instance is CameraInstance) type = ServiceObjectTexture.camera;
+            else if (instance is GhostBlockInstance) type = ServiceObjectTexture.ghost_block;
             else if (instance is FlybyCameraInstance) type = ServiceObjectTexture.flyby_camera;
             else if (instance is SoundSourceInstance) type = ServiceObjectTexture.sound_source;
             else if (instance is ImportedGeometryInstance) type = ServiceObjectTexture.imp_geo;
@@ -92,22 +112,26 @@ namespace TombLib.Rendering
             var alignment = new Rectangle2(new Vector2(-width / 2.0f, -height / 2.0f), new Vector2(width / 2.0f, height / 2.0f));
 
             var heightRatio = ((float)viewportSize.Height / viewportSize.Width) * 1024.0f;
-            var distance = Vector3.Distance(instance.Position + instance.Room.WorldPos, camera.GetPosition());
+            var distance = Vector3.Distance(absPos, camera.GetPosition());
             var scale = 1024.0f / (distance != 0 ? distance : 1.0f);
-            var pos = (instance.WorldPositionMatrix * camera.GetViewProjectionMatrix(viewportSize.Width, viewportSize.Height)).TransformPerspectively(new Vector3());
+            var pos = (posMatrix * camera.GetViewProjectionMatrix(viewportSize.Width, viewportSize.Height)).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
 
             var start = screenPos - scale * new Vector2(alignment.End.X / 1024.0f, alignment.End.Y / heightRatio);
             var end   = screenPos - scale * new Vector2(alignment.Start.X / 1024.0f, alignment.Start.Y / heightRatio);
 
-            return new Sprite()
+            var result = new Sprite()
             {
                 Texture = tex,
                 PosStart = start,
                 PosEnd = end,
-                Depth = pos.Z,
                 Tint = color
             };
+
+            if (!noZ) result.Depth = pos.Z;
+            if (pos.Z > 1.0f) result = null; // Discard out-of-bounds sprites
+
+            return result;
         }
     }
 }

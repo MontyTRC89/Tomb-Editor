@@ -66,7 +66,6 @@ namespace TombEditor
         public bool Rendering3D_ShowOtherObjects { get; set; } = true;
         public bool Rendering3D_ShowSlideDirections { get; set; } = false;
         public bool Rendering3D_ShowFPS { get; set; } = false;
-        public bool Rendering3D_ShowRenderingStatistics { get; set; } = false;
         public bool Rendering3D_ShowRoomNames { get; set; } = false;
         public bool Rendering3D_ShowCardinalDirections { get; set; } = true;
         public bool Rendering3D_UseRoomEditorDirections { get; set; } = false;
@@ -93,6 +92,7 @@ namespace TombEditor
         public bool Rendering3D_ShowLightRadius { get; set; } = true;
         public bool Rendering3D_HighQualityLightPreview { get; set; } = false;
         public bool Rendering3D_ShowRealTintForObjects { get; set; } = true;
+        public bool Rendering3D_UseSpritesForServiceObjects { get; set; } = true;
 
         // 2D Map options 
 
