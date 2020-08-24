@@ -2501,7 +2501,7 @@ namespace TombEditor.Controls
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                    var color = new Vector4(0.8f, 1.0f, 0.5f, 1.0f);
+                    var color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
