@@ -117,6 +117,9 @@ namespace TombLib.Rendering
             var pos = (posMatrix * camera.GetViewProjectionMatrix(viewportSize.Width, viewportSize.Height)).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
 
+            if (distance < 256.0f)
+                color *= distance / 256.0f;
+
             var start = screenPos - scale * new Vector2(alignment.End.X / 1024.0f, alignment.End.Y / heightRatio);
             var end   = screenPos - scale * new Vector2(alignment.Start.X / 1024.0f, alignment.Start.Y / heightRatio);
 

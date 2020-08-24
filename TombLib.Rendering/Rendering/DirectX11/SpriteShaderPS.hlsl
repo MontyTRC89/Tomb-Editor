@@ -14,9 +14,6 @@ float4 main(PixelInputType input) : SV_TARGET
 	result.rgb *= result.a;
 	result *= input.Color;
 	
-	if (input.Position.z < 0.95f)
-		result.a *= input.Position.z;
-	
 	if (result.a <= 0.05f)
 		discard;
 
