@@ -2,6 +2,7 @@
 using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
@@ -134,15 +135,15 @@ namespace TombLib.Rendering.DirectX11
             // ResizeTarget is not the correct method!
         }
 
-        public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, params Sprite[] sprites)
+        public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, List<Sprite> sprites)
         {
-            if (sprites.Length == 0)
+            if (sprites.Count == 0)
                 return;
 
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
 
             // Build vertex buffer
-            int vertexCount = sprites.Length * 6;
+            int vertexCount = sprites.Count * 6;
             int bufferSize = vertexCount * (sizeof(Vector3) + sizeof(Vector4) + sizeof(ulong));
             fixed (byte* data = new byte[bufferSize])
             {
@@ -151,17 +152,18 @@ namespace TombLib.Rendering.DirectX11
                 ulong*   uvws      = (ulong*)  (data + vertexCount * (sizeof(Vector3) + sizeof(Vector4)));
 
                 // Setup vertices
-                int count = sprites.Length;
+                int count = sprites.Count;
                 for (int i = 0; i < count; ++i)
                 {
                     Sprite sprite = sprites[i];
                     VectorInt3 texPos = textureAllocator.Get(sprite.Texture);
                     VectorInt2 texSize = sprite.Texture.To - sprite.Texture.From;
+                    float depth = sprite.Depth.HasValue ? sprite.Depth.Value : 1.0f;
 
-                    positions[i * 6 + 0] = new Vector3(sprite.Pos00.X, sprite.Pos00.Y, sprite.Depth);
-                    positions[i * 6 + 2] = positions[i * 6 + 3] = new Vector3(sprite.Pos10.X, sprite.Pos10.Y, sprite.Depth);
-                    positions[i * 6 + 1] = positions[i * 6 + 4] = new Vector3(sprite.Pos01.X, sprite.Pos01.Y, sprite.Depth);
-                    positions[i * 6 + 5] = new Vector3(sprite.Pos11.X, sprite.Pos11.Y, sprite.Depth);
+                    positions[i * 6 + 0] = new Vector3(sprite.Pos00.X, sprite.Pos00.Y, depth);
+                    positions[i * 6 + 2] = positions[i * 6 + 3] = new Vector3(sprite.Pos10.X, sprite.Pos10.Y, depth);
+                    positions[i * 6 + 1] = positions[i * 6 + 4] = new Vector3(sprite.Pos01.X, sprite.Pos01.Y, depth);
+                    positions[i * 6 + 5] = new Vector3(sprite.Pos11.X, sprite.Pos11.Y, depth);
                     uvws[i * 6 + 1] = uvws[i * 6 + 4] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, 0.5f));
                     uvws[i * 6 + 5] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, 0.5f));
                     uvws[i * 6 + 0] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, texSize.Y - 0.5f));

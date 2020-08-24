@@ -13,7 +13,9 @@ float4 main(PixelInputType input) : SV_TARGET
     float4 result = SpriteTexture.Sample(DefaultSampler, input.Uvw);
 	result.rgb *= result.a;
 	result *= input.Color;
-	result.a *= input.Position.z;
+	
+	if (input.Position.z < 0.95f)
+		result.a *= input.Position.z;
 	
 	if (result.a <= 0.05f)
 		discard;
