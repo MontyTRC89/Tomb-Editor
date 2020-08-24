@@ -2485,6 +2485,7 @@ namespace TombEditor.Controls
 
             if (sprites.Count > 0)
             {
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
                 SwapChain.RenderSprites(_renderingTextures, true, false, sprites.ToArray());
             }
