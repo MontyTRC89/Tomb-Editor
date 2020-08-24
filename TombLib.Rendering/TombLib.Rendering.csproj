@@ -78,6 +78,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\portable-net45+win8+wp8+wpa81\System.Numerics.Vectors.dll</HintPath>
@@ -113,6 +114,7 @@
     <Compile Include="Rendering\RenderingTextureAllocator.cs" />
     <Compile Include="Rendering\SectorColoringInfo.cs" />
     <Compile Include="Rendering\SectorTextures.cs" />
+    <Compile Include="Rendering\ServiceObjectTextures.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -213,6 +215,8 @@
     <EmbeddedResource Include="Rendering\SectorTextures\texture_unavailable.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\unknown.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\camera.png" />
     <Content Include="Rendering\Legacy\Model.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -225,7 +229,19 @@
     <Content Include="Rendering\Legacy\StaticModel.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\flyby_camera.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\imp_geo.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_effect.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_fog.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_point.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_shadow.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_spot.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_sun.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\sink.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\sound_source.png" />
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\sprite.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\packages\Microsoft.HLSL.CSharpVB.1.0.2\build\Microsoft.HLSL.CSharpVB.targets" Condition="Exists('..\packages\Microsoft.HLSL.CSharpVB.1.0.2\build\Microsoft.HLSL.CSharpVB.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

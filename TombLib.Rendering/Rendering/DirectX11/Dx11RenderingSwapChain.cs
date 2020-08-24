@@ -136,15 +136,19 @@ namespace TombLib.Rendering.DirectX11
 
         public override unsafe void RenderSprites(RenderingTextureAllocator textureAllocator, bool linearFilter, bool noZ, params Sprite[] sprites)
         {
+            if (sprites.Length == 0)
+                return;
+
             Vector2 textureScaling = new Vector2(16777216.0f) / new Vector2(textureAllocator.Size.X, textureAllocator.Size.Y);
 
             // Build vertex buffer
             int vertexCount = sprites.Length * 6;
-            int bufferSize = vertexCount * (sizeof(Vector3) + sizeof(ulong));
+            int bufferSize = vertexCount * (sizeof(Vector3) + sizeof(Vector4) + sizeof(ulong));
             fixed (byte* data = new byte[bufferSize])
             {
                 Vector3* positions = (Vector3*)(data);
-                ulong* uvws = (ulong*)(data + vertexCount * sizeof(Vector3));
+                Vector4* colours   = (Vector4*)(data + vertexCount * sizeof(Vector3));
+                ulong*   uvws      = (ulong*)  (data + vertexCount * (sizeof(Vector3) + sizeof(Vector4)));
 
                 // Setup vertices
                 int count = sprites.Length;
@@ -162,6 +166,9 @@ namespace TombLib.Rendering.DirectX11
                     uvws[i * 6 + 5] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, 0.5f));
                     uvws[i * 6 + 0] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(0.5f, texSize.Y - 0.5f));
                     uvws[i * 6 + 2] = uvws[i * 6 + 3] = Dx11RenderingDevice.CompressUvw(texPos, textureScaling, new Vector2(texSize.X - 0.5f, texSize.Y - 0.5f));
+
+                    for (int j = 0; j < 6; j++)
+                        colours[i * 6 + j] = sprite.Tint;
                 }
 
                 // Create GPU resources
@@ -171,6 +178,7 @@ namespace TombLib.Rendering.DirectX11
                 {
                     var VertexBufferBindings = new VertexBufferBinding[] {
                         new VertexBufferBinding(VertexBuffer, sizeof(Vector3), (int)((byte*)positions - data)),
+                        new VertexBufferBinding(VertexBuffer, sizeof(Vector4), (int)((byte*)colours - data)),
                         new VertexBufferBinding(VertexBuffer, sizeof(ulong), (int)((byte*)uvws - data)) };
 
                     // Render

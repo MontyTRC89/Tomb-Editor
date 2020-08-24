@@ -3,6 +3,7 @@ using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -31,7 +32,6 @@ namespace TombLib.Rendering.DirectX11
         public readonly Device Device;
         public readonly Factory Factory;
         public readonly DeviceContext Context;
-        //public readonly Dx11PipelineState TestShader;
         public readonly Dx11PipelineState TextShader;
         public readonly Dx11PipelineState SpriteShader;
         public readonly Dx11PipelineState RoomShader;
@@ -110,11 +110,6 @@ namespace TombLib.Rendering.DirectX11
             try
             {
                 Context = Device.ImmediateContext;
-                /*TestShader = new Dx11PipelineState(this, "TestShader", new InputElement[]
-                {
-                new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("COLOR", 0, Format.R8G8B8A8_UNorm, 0, 1, InputClassification.PerVertexData, 0)
-                });*/
                 TextShader = new Dx11PipelineState(this, "TextShader", new InputElement[]
                 {
                 new InputElement("POSITION", 0, Format.R32G32_Float, 0, 0, InputClassification.PerVertexData, 0),
@@ -123,7 +118,8 @@ namespace TombLib.Rendering.DirectX11
                 SpriteShader = new Dx11PipelineState(this, "SpriteShader", new InputElement[]
                 {
                 new InputElement("POSITION", 0, Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
-                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 1, InputClassification.PerVertexData, 0)
+                new InputElement("COLOR", 0, Format.R32G32B32A32_Float, 0, 1, InputClassification.PerVertexData, 0),
+                new InputElement("UVW", 0, Format.R32G32_UInt, 0, 2, InputClassification.PerVertexData, 0)
                 });
                 RoomShader = new Dx11PipelineState(this, "RoomShader", new InputElement[]
                 {

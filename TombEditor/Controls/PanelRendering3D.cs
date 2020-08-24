@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
@@ -1762,7 +1763,7 @@ namespace TombEditor.Controls
                             var sprite = instance as SpriteInstance;
                             var matrix = Matrix4x4.CreateTranslation(ray.Position) * Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
                             var rayPos = matrix.TransformPerspectively(new Vector3()).To2();
-                            var size   = sprite.GetSpriteViewportRect(_spriteList[sprite.SpriteID], ClientSize, Camera, out distance);
+                            var size   = sprite.GetViewportRect(_spriteList[sprite.SpriteID].Alignment, ClientSize, Camera, out distance);
 
                             if (distance < 1.0f) // Discard offscreen sprites
                             {
@@ -1924,7 +1925,8 @@ namespace TombEditor.Controls
 
         private void DrawLights(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
-            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+            var sprites = new List<Sprite>();
+
             _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
@@ -1932,27 +1934,35 @@ namespace TombEditor.Controls
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var light in room.Objects.OfType<LightInstance>())
                 {
+                    var color = Vector4.One;
+
                     effect.Parameters["ModelViewProjection"].SetValue((light.ObjectMatrix * viewProjection).ToSharpDX());
 
                     if (light.Type == LightType.Point)
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                        color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
                     if (light.Type == LightType.Spot)
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                        color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
                     if (light.Type == LightType.FogBulb)
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.0f, 1.0f, 1.0f));
+                        color = new Vector4(1.0f, 0.0f, 1.0f, 1.0f);
                     if (light.Type == LightType.Shadow)
-                        effect.Parameters["Color"].SetValue(new Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+                        color = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
                     if (light.Type == LightType.Effect)
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 0.25f, 1.0f));
+                        color = new Vector4(1.0f, 1.0f, 0.25f, 1.0f);
                     if (light.Type == LightType.Sun)
-                        effect.Parameters["Color"].SetValue(new Vector4(1.0f, 0.5f, 0.0f, 1.0f));
-
+                        color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == light)
-                        effect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
 
-                    effect.CurrentTechnique.Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+                    effect.Parameters["Color"].SetValue(color);
+
+                    // effect.CurrentTechnique.Passes[0].Apply();
+                    // _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+
+                    sprites.Add(ServiceObjectTextures.GetSprite(light, Camera, ClientSize, color));
                 }
+
+            SwapChain.RenderSprites(_renderingTextures, true, false, sprites.ToArray());
+            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
             if (Array.IndexOf(roomsWhoseObjectsToDraw, _editor.SelectedObject?.Room) != -1 && _editor.SelectedObject is LightInstance && ShowLightMeshes)
             {
@@ -2448,7 +2458,6 @@ namespace TombEditor.Controls
 
         private void DrawSprites(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw)
         {
-            Sprite selectedSprite = null;
             var sprites = new List<Sprite>();
 
             foreach (Room room in roomsWhoseObjectsToDraw)
@@ -2457,42 +2466,34 @@ namespace TombEditor.Controls
                     {
                         float depth;
                         var sprite = _spriteList[instance.SpriteID];
-                        var pos = instance.GetSpriteViewportRect(sprite, ClientSize, Camera, out depth);
+                        var pos = instance.GetViewportRect(sprite.Alignment, ClientSize, Camera, out depth);
 
                         if (depth < 1.0f) // Discard offscreen sprites
                         {
                             var selected = _editor.SelectedObject == instance;
                             var newSprite = new Sprite
                             {
-                                Texture = selected ? ImageC.Red : sprite.Texture.Image,
+                                Texture = sprite.Texture.Image,
                                 PosStart = pos.Start,
                                 PosEnd = pos.End,
                                 Depth = depth
                             };
-
-                            if (selected)
-                                selectedSprite = newSprite;
-                            else
-                                sprites.Add(newSprite);
+                            if (selected) newSprite.Tint = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                            sprites.Add(newSprite);
                         }
                     }
 
-            if (selectedSprite != null)
-            {
-                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                SwapChain.RenderSprites(_renderingTextures, true, false, selectedSprite);
-            }
-
             if (sprites.Count > 0)
             {
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                 SwapChain.RenderSprites(_renderingTextures, true, false, sprites.ToArray());
             }
         }
 
         private void DrawObjects(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
         {
+            var sprites = new List<Sprite>();
+
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
@@ -2500,14 +2501,8 @@ namespace TombEditor.Controls
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
                 {
-                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                    var color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
-                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.WorldPositionMatrix * viewProjection,
@@ -2520,14 +2515,26 @@ namespace TombEditor.Controls
 
                     if (_spriteList.Count <= instance.SpriteID)
                     {
-                        effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(color);
-                        effect.Techniques[0].Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                        Vector4 color;
+                        if (_editor.SelectedObject == instance)
+                        {
+                            color = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                        }
+                        else
+                        {
+                            color = new Vector4(1.0f, 0.5f, 0.0f, 1.0f);
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                        }
+
+                        sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
+
+                        //effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                        //effect.Parameters["Color"].SetValue(color);
+                        //effect.Techniques[0].Passes[0].Apply();
+                        //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                     }
                 }
-
-            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<CameraInstance>())
@@ -2551,11 +2558,13 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(color);
+                    sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                    effect.Techniques[0].Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    //effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    //effect.Parameters["Color"].SetValue(color);
+                    //
+                    //effect.Techniques[0].Passes[0].Apply();
+                    //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
 
             foreach (Room room in roomsWhoseObjectsToDraw)
@@ -2580,11 +2589,13 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(color);
+                    sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                    effect.Techniques[0].Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    //effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    //effect.Parameters["Color"].SetValue(color);
+                    //
+                    //effect.Techniques[0].Passes[0].Apply();
+                    //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
 
 
@@ -2609,11 +2620,13 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(color);
+                    sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                    effect.Techniques[0].Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    //effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    //effect.Parameters["Color"].SetValue(color);
+                    //
+                    //effect.Techniques[0].Passes[0].Apply();
+                    //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
 
 
@@ -2638,11 +2651,13 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(color);
+                    sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                    effect.Techniques[0].Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                    //effect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                    //effect.Parameters["Color"].SetValue(color);
+                    //
+                    //effect.Techniques[0].Passes[0].Apply();
+                    //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                 }
 
             if (_editor.SelectedRoom != null)
@@ -2671,11 +2686,13 @@ namespace TombEditor.Controls
                             AddObjectHeightLine(room, instance.Position);
                         }
 
-                        effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(color);
+                        sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                        effect.Techniques[0].Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                        //effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                        //effect.Parameters["Color"].SetValue(color);
+                        //
+                        //effect.Techniques[0].Passes[0].Apply();
+                        //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                     }
 
                 foreach (Room room in roomsWhoseObjectsToDraw)
@@ -2701,11 +2718,13 @@ namespace TombEditor.Controls
                             AddObjectHeightLine(room, instance.Position);
                         }
 
-                        effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(color);
+                        sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                        effect.Techniques[0].Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                        //effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                        //effect.Parameters["Color"].SetValue(color);
+                        //
+                        //effect.Techniques[0].Passes[0].Apply();
+                        //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                     }
 
                 foreach (Room room in roomsWhoseObjectsToDraw)
@@ -2727,11 +2746,13 @@ namespace TombEditor.Controls
                                 AddObjectHeightLine(room, instance.Position);
                             }
 
-                            effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
-                            effect.Parameters["Color"].SetValue(color);
+                            sprites.Add(ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color));
 
-                            effect.Techniques[0].Passes[0].Apply();
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+                            //effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
+                            //effect.Parameters["Color"].SetValue(color);
+                            //
+                            //effect.Techniques[0].Passes[0].Apply();
+                            //_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
                         }
             }
 
@@ -2783,6 +2804,15 @@ namespace TombEditor.Controls
                     effect.CurrentTechnique.Passes[0].Apply();
                     _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
                 }
+
+            if (sprites.Count > 0)
+            {
+
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
+                _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
+                SwapChain.RenderSprites(_renderingTextures, true, false, sprites.ToArray());
+            }
         }
 
         private void DrawSkybox(Matrix4x4 viewProjection)
