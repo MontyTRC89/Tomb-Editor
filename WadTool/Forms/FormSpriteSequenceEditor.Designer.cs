@@ -280,7 +280,7 @@
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel6.Location = new System.Drawing.Point(83, 51);
             this.darkLabel6.Name = "darkLabel6";
-            this.darkLabel6.Size = new System.Drawing.Size(63, 13);
+            this.darkLabel6.Size = new System.Drawing.Size(64, 13);
             this.darkLabel6.TabIndex = 15;
             this.darkLabel6.Text = "Vertical adj";
             // 
@@ -330,7 +330,7 @@
             1,
             0,
             0,
-            65536});
+            0});
             // 
             // darkLabel2
             // 

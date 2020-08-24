@@ -46,6 +46,9 @@ namespace WadTool
             if (dataGridView.Rows.Count > 0)
                 dataGridView.Rows[0].Selected = true;
             SelectSprite();
+
+            cmbVerAdj.SelectedIndex = 2;
+            cmbHorAdj.SelectedIndex = 1;
         }
 
         protected override void Dispose(bool disposing)
@@ -264,6 +267,10 @@ namespace WadTool
                     dataGridView.Refresh();
                     dataGridView.Invalidate();
                     SelectSprite();
+                    nudScale.Value = 1;
+                    cmbHorAdj.SelectedIndex = 1;
+                    cmbVerAdj.SelectedIndex = 2;
+                    RecalculateAlignment();
                 }
                 catch (Exception exc)
                 {
