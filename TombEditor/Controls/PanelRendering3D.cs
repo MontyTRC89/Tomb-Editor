@@ -2749,14 +2749,17 @@ namespace TombEditor.Controls
                 var newSprite = ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color, _editor.SelectedObject == instance);
                 if (newSprite != null)
                     sprites.Add(newSprite);
+                return;
             }
-            else if (instance is PositionBasedObjectInstance)
-            {
+
+            if (instance is PositionBasedObjectInstance)
                 effect.Parameters["ModelViewProjection"].SetValue(((instance as PositionBasedObjectInstance).RotationPositionMatrix * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(color);
-                effect.Techniques[0].Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, primitive.IndexBuffer.ElementCount);
-            }
+            else if (instance is GhostBlockInstance)
+                effect.Parameters["ModelViewProjection"].SetValue(((instance as GhostBlockInstance).CenterMatrix(true) * viewProjection).ToSharpDX());
+
+            effect.Parameters["Color"].SetValue(color);
+            effect.Techniques[0].Passes[0].Apply();
+            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, primitive.IndexBuffer.ElementCount);
         }
 
         private void DrawSkybox(Matrix4x4 viewProjection)
