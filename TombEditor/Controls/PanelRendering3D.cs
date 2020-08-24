@@ -1757,6 +1757,20 @@ namespace TombEditor.Controls
                             if (Collision.RayIntersectsSphere(ray, sphere, out distance) && (result == null || distance < result.Distance))
                                 result = new PickingResultObject(distance, instance);
                         }
+                        else if (instance is SpriteInstance && (instance as SpriteInstance).SpriteID < _spriteList.Count)
+                        {
+                            var sprite = instance as SpriteInstance;
+                            var matrix = Matrix4x4.CreateTranslation(ray.Position) * Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+                            var rayPos = matrix.TransformPerspectively(new Vector3()).To2();
+                            var size   = sprite.GetSpriteViewportRect(_spriteList[sprite.SpriteID], ClientSize, Camera, out distance);
+
+                            if (distance < 1.0f) // Discard offscreen sprites
+                            {
+                                distance = Vector3.Distance(Camera.GetPosition(), instance.Position);
+                                if (size.Contains(rayPos) && (result == null || distance < result.Distance))
+                                    result = new PickingResultObject(distance, instance);
+                            }
+                        }
                         else
                         {
                             BoundingBox box = new BoundingBox(
@@ -2446,21 +2460,20 @@ namespace TombEditor.Controls
 
                     if (_spriteList.Count > instance.SpriteID)
                     {
+                        float depth;
                         var sprite = _spriteList[instance.SpriteID];
-                        var distance = Vector3.Distance(instance.Position + room.WorldPos, Camera.GetPosition());
-                        var scale = 1024.0f / (distance != 0 ? distance : 1.0f);
-                        var pos = (instance.RotationPositionMatrix * viewProjection).TransformPerspectively(new Vector3());
-                        var screenPos = pos.To2();
-                        var start = scale * new Vector2(sprite.Alignment.Start.X / 1024.0f, sprite.Alignment.Start.Y / heightRatio);
-                        var end = scale * new Vector2(sprite.Alignment.End.X / 1024.0f, sprite.Alignment.End.Y / heightRatio);
+                        var pos = instance.GetSpriteViewportRect(sprite, ClientSize, Camera, out depth);
 
-                        SwapChain.RenderSprites(_renderingTextures, false, false, new Sprite
+                        if (depth < 1.0f) // Discard offscreen sprites
                         {
-                            Texture = _editor.SelectedObject == instance ? ImageC.Red : sprite.Texture.Image,
-                            PosStart = screenPos - end,
-                            PosEnd = screenPos - start,
-                            Depth = pos.Z
-                        });
+                            SwapChain.RenderSprites(_renderingTextures, true, false, new Sprite
+                            {
+                                Texture = _editor.SelectedObject == instance ? ImageC.Red : sprite.Texture.Image,
+                                PosStart = pos.Start,
+                                PosEnd = pos.End,
+                                Depth = depth
+                            });
+                        }
                     }
                 }
         }
@@ -2484,7 +2497,7 @@ namespace TombEditor.Controls
 
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
-                            instance.RotationPositionMatrix * viewProjection,
+                            instance.WorldPositionMatrix * viewProjection,
                             "Sprite ID " + instance.SpriteID +
                             "\n" + GetObjectPositionString(room, instance)));
 
