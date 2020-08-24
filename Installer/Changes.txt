@@ -5,8 +5,9 @@ Tomb Editor:
  * Added room sprites support for TR1-2.
  * Added move timer customization for TR1-TR2 cameras.
  * Added 8-bit texture support for TR2/TR3.
- * Point to specific trigger area when "find where is triggered" context menu was engaged.
  * Added find and replace object context menu.
+ * Draw service objects as 2D icons by default.
+ * Point to specific trigger area when "find where is triggered" context menu was engaged.
  * Always resample sounds to proper format.
  * Store texture remap window properties in config file.
  * Fixed light radius calculation in TR2/TR3.
