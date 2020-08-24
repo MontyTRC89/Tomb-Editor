@@ -2446,7 +2446,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawSprites(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw)
+        private void DrawSprites(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw)
         {
             Sprite selectedSprite = null;
             var sprites = new List<Sprite>();
@@ -3483,7 +3483,7 @@ namespace TombEditor.Controls
             if (ShowOtherObjects)
             {
                 // Draw sprites
-                DrawSprites(viewProjection, effect, roomsToDraw);
+                DrawSprites(viewProjection, roomsToDraw);
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
                 DrawObjects(viewProjection, effect, roomsToDraw, textToDraw);
                 // Draw light objects and bounding volumes
