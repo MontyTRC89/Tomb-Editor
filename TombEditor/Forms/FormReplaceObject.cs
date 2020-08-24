@@ -9,6 +9,7 @@ using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Forms
 {
@@ -124,7 +125,19 @@ namespace TombEditor.Forms
         private string GetDescription(IReplaceable instance)
         {
             if (instance == null) return string.Empty;
-            var result  = ((ObjectInstance)instance).ToShortString();
+
+            string result;
+
+            // HACK against TRTombalized ItemType madness!
+            // ItemType automatically returns TR4 names by default, and it's impossible to fix without actually
+            // recreating ItemType and derivative instance.
+
+            if (instance is MoveableInstance)
+                result = TrCatalog.GetMoveableName(_editor.Level.Settings.GameVersion, (instance as MoveableInstance).ItemType.MoveableId.TypeId);
+            else if (instance is StaticInstance)
+                result = TrCatalog.GetStaticName(_editor.Level.Settings.GameVersion, (instance as StaticInstance).ItemType.StaticId.TypeId);
+            else
+                result = ((ObjectInstance)instance).ToShortString();
 
             if (instance is MoveableInstance)
                 result += " (" + instance.SecondaryAttribDesc + ": " + ((MoveableInstance)instance).Ocb + ")";

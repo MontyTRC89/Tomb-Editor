@@ -48,6 +48,7 @@ namespace TombEditor.Controls.ContextMenus
             if (targetObject is IReplaceable)
                 Items.Add(new ToolStripMenuItem("Replace object...", null, (o, e) =>
                 {
+                    _editor.SelectedObject = targetObject;
                     CommandHandler.GetCommand("SearchAndReplaceObjects").Execute(new CommandArgs { Editor = editor, Window = owner });
                 }));
 
