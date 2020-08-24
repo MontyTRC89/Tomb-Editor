@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
+using TombLib.Wad.Catalog;
+using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
@@ -21,6 +23,10 @@ namespace TombEditor.Forms
                 _editor = Editor.Instance;
                 _editor.EditorEventRaised += EditorEventRaised;
                 _instance = instance;
+
+                // Set window property handlers
+                Configuration.LoadWindowProperties(this, _editor.Configuration);
+                FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
 
                 InitializeRendering(_editor.RenderingDevice);
                 PopulateSpriteList();
@@ -53,7 +59,7 @@ namespace TombEditor.Forms
                 foreach (var spriteSeq in sprites.Values)
                     for (int i = 0; i < spriteSeq.Sprites.Count; i++)
                     {
-                        cmbSprites.Items.Add("(" + num + ") Sequence #" + spriteSeq.Id.TypeId + ", sprite #" + i);
+                        cmbSprites.Items.Add("(" + num + ") " + TrCatalog.GetSpriteSequenceName(_editor.Level.Settings.GameVersion, spriteSeq.Id.TypeId) + ", sprite #" + i);
                         num++;
                     }
 
@@ -83,6 +89,12 @@ namespace TombEditor.Forms
         {
             if (cmbSprites.SelectedIndex >= 0)
                 panelRenderingSprite.SpriteID = cmbSprites.SelectedIndex;
+        }
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(cmbSprites, _editor.Level.Settings.GameVersion);
+            searchPopUp.Show(this);
         }
     }
 }

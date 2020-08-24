@@ -2448,16 +2448,11 @@ namespace TombEditor.Controls
 
         private void DrawSprites(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw)
         {
-            var heightRatio = ((float)ClientSize.Height / ClientSize.Width) * 1024.0f;
+            Sprite selectedSprite = null;
+            var sprites = new List<Sprite>();
 
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
-                {
-                    if (_editor.SelectedObject == instance)
-                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                    else
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
                     if (_spriteList.Count > instance.SpriteID)
                     {
                         float depth;
@@ -2466,16 +2461,33 @@ namespace TombEditor.Controls
 
                         if (depth < 1.0f) // Discard offscreen sprites
                         {
-                            SwapChain.RenderSprites(_renderingTextures, true, false, new Sprite
+                            var selected = _editor.SelectedObject == instance;
+                            var newSprite = new Sprite
                             {
-                                Texture = _editor.SelectedObject == instance ? ImageC.Red : sprite.Texture.Image,
+                                Texture = selected ? ImageC.Red : sprite.Texture.Image,
                                 PosStart = pos.Start,
                                 PosEnd = pos.End,
                                 Depth = depth
-                            });
+                            };
+
+                            if (selected)
+                                selectedSprite = newSprite;
+                            else
+                                sprites.Add(newSprite);
                         }
                     }
-                }
+
+            if (selectedSprite != null)
+            {
+                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                SwapChain.RenderSprites(_renderingTextures, true, false, selectedSprite);
+            }
+
+            if (sprites.Count > 0)
+            {
+                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                SwapChain.RenderSprites(_renderingTextures, true, false, sprites.ToArray());
+            }
         }
 
         private void DrawObjects(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw)
@@ -2498,7 +2510,7 @@ namespace TombEditor.Controls
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.WorldPositionMatrix * viewProjection,
-                            "Sprite ID " + instance.SpriteID +
+                            "Sprite ID = " + instance.SpriteID +
                             "\n" + GetObjectPositionString(room, instance)));
 
                         // Add the line height of the object
