@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -321,6 +323,20 @@ namespace TombLib.LevelData
         public void Move(int deltaX, int deltaY, int deltaZ)
         {
             Position = Position + new Vector3(deltaX, deltaY, deltaZ);
+        }
+
+        public Rectangle2 GetViewportRect(RectangleInt2 bounds, Size viewportSize, Camera camera, out float depth)
+        {
+            var heightRatio = ((float)viewportSize.Height / viewportSize.Width) * 1024.0f;
+            var distance = Vector3.Distance(Position + Room.WorldPos, camera.GetPosition());
+            var scale = 1024.0f / (distance != 0 ? distance : 1.0f);
+            var pos = (WorldPositionMatrix * camera.GetViewProjectionMatrix(viewportSize.Width, viewportSize.Height)).TransformPerspectively(new Vector3());
+            var screenPos = pos.To2();
+            var start = scale * new Vector2(bounds.Start.X / 1024.0f, bounds.Start.Y / heightRatio);
+            var end = scale * new Vector2(bounds.End.X / 1024.0f, bounds.End.Y / heightRatio);
+
+            depth = pos.Z;
+            return new Rectangle2(screenPos - end, screenPos - start);
         }
 
         public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)

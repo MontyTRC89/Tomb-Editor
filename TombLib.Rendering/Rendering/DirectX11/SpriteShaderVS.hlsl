@@ -5,12 +5,14 @@ struct VertexInputType
 	// Bit 24 - 48; V coordinate fixed point 0 - 1
 	// Bit 48 - 60; W coordinate integer
 	// Bit 61 - 64; Blend mode
+    float4 Color : COLOR;
     uint2 Uvw : UVW;
 };
 
 struct PixelInputType
 {
     float4 Position : SV_POSITION;
+    float4 Color : COLOR;
     float3 Uvw : UVW;
 };
 
@@ -23,6 +25,7 @@ PixelInputType main(VertexInputType input)
         (float)(input.Uvw.x & 0xffffff) / 16777216.0f,
         (float)((input.Uvw.x >> 24) | ((input.Uvw.y & 0xffff) << 8)) / 16777216.0f,
         (float)((input.Uvw.y >> 16) & 0xfff));
+	output.Color = input.Color;
 
     return output;
 }
