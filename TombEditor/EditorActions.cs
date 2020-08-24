@@ -1904,6 +1904,7 @@ namespace TombEditor
 
             room.AddObject(_editor.Level, instance);
             _editor.ObjectChange(instance, ObjectChangeType.Add);
+            _editor.SelectedObject = instance;
             _editor.RoomSectorPropertiesChange(room);
 
             return true;
