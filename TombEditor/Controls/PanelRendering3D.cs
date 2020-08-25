@@ -2462,7 +2462,7 @@ namespace TombEditor.Controls
                                 PosEnd = pos.End,
                                 Depth = depth
                             };
-                            if (selected) newSprite.Tint = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+                            if (selected) newSprite.Tint = _editor.Configuration.UI_ColorScheme.ColorSelection;
                             sprites.Add(newSprite);
                         }
                     }
