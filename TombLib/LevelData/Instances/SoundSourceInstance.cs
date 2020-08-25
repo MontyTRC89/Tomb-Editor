@@ -75,6 +75,8 @@ namespace TombLib.LevelData
                 (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
+        public override string ToShortString() => ShortName;
+
         public string PrimaryAttribDesc => "Sound ID";
         public string SecondaryAttribDesc => string.Empty;
 

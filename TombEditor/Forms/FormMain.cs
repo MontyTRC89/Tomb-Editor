@@ -124,8 +124,12 @@ namespace TombEditor.Forms
             {
                 addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
                 addFlybyCameraToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
-                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+
+                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+                addPrismVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
+                addSphereVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
+                toolStripMenuSeparator7.Visible = addBoxVolumeToolStripMenuItem.Visible;
             }
 
             if (obj is Editor.UndoStackChangedEvent)

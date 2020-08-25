@@ -38,7 +38,7 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PlaceObject(targetRoom, targetBlock, new CameraInstance());
             }));
 
-            Items.Add(new ToolStripMenuItem("Add fly-by camera", Properties.Resources.objects_movie_projector_16, (o, e) =>
+            Items.Add(new ToolStripMenuItem("Add flyby camera", Properties.Resources.objects_movie_projector_16, (o, e) =>
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new FlybyCameraInstance(editor.SelectedObject));
             }));
