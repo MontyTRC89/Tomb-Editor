@@ -74,7 +74,6 @@ namespace TombLib.Rendering
                                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                                 graphics.CompositingQuality = CompositingQuality.HighQuality;
 
-
                                 using (var wrapMode = new ImageAttributes())
                                 {
                                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
