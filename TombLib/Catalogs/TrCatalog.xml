@@ -1,6 +1,24 @@
 <!-- TRCatalog 3.0, updated by MontyTRC, Lwmte and TRTombLevBauer for Tomb Editor -->
 <xml>
   <game id="TR1">
+    <techs>
+	  <tech name="TexPages" value="16" />
+	  <tech name="TexInfos" value="1800" />
+	  <tech name="SoundBitsPerSample" value="8" />
+	  <tech name="SoundSampleRate" value="22050" />
+	  <tech name="ItemMaxCount" value="256" />
+	  <tech name="ItemSafeCount" value="256" />
+	  <tech name="BoxLimit" value="32767" />
+	  <tech name="OverlapLimit" value="16382" />
+	  <tech name="MeshVertexCount" value="256" />
+	  <tech name="RoomVertexCount" value="65536" />
+	  <tech name="RoomFaceCount" value="2800" />
+	  <tech name="RoomCount" value="256" />
+	  <tech name="LightsPerRoom" value="20" />
+	  <tech name="SampleCount" value="256" />
+	  <tech name="SampleSize" value="1024" />
+	  <tech name="SoundMapSize" value="256" />
+	</techs>
     <moveables>
       <moveable id="0" name="Lara" t5m="LARA" />
       <moveable id="1" name="Lara pistol animation" use_body_from="0" t5m="PISTOLS_ANIM" />
@@ -612,6 +630,24 @@
     </states>
   </game>
   <game id="TR2">
+    <techs>
+	  <tech name="TexPages" value="16" />
+	  <tech name="TexInfos" value="4096" />
+	  <tech name="SoundBitsPerSample" value="8" />
+	  <tech name="SoundSampleRate" value="11025" />
+	  <tech name="ItemMaxCount" value="256" />
+	  <tech name="ItemSafeCount" value="256" />
+	  <tech name="BoxLimit" value="32767" />
+	  <tech name="OverlapLimit" value="16382" />
+	  <tech name="MeshVertexCount" value="256" />
+	  <tech name="RoomVertexCount" value="65536" />
+	  <tech name="RoomFaceCount" value="2800" />
+	  <tech name="RoomCount" value="256" />
+	  <tech name="LightsPerRoom" value="20" />
+	  <tech name="SampleCount" value="256" />
+	  <tech name="SampleSize" value="1024" />
+	  <tech name="SoundMapSize" value="256" />
+	</techs>
     <moveables>
       <moveable id="0" name="Lara" />
       <moveable id="1" name="Lara pistol animation" use_body_from="0" />
