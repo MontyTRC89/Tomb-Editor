@@ -6,6 +6,7 @@ Tomb Editor:
  * Added move timer customization for TR1-TR2 cameras.
  * Added 8-bit texture support for TR2/TR3.
  * Added find and replace object context menu.
+ * Added ability to delete objects from search window.
  * Draw service objects as 2D icons by default.
  * Point to specific trigger area when "find where is triggered" context menu was engaged.
  * Always resample sounds to proper format.

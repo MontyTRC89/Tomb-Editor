@@ -406,6 +406,46 @@ namespace TombEditor.Forms
                 _editor.ChosenItem = (ItemType)obj;
         }
 
+        private void DeleteObjects()
+        {
+            if (objectList.SelectedRows.Count == 0 || _currentlyChangingRowCount)
+                return;
+
+            var  roomsToDelete = new List<Room>();
+            var  objectsToDelete = new List<ObjectInstance>();
+
+            bool illegalOperation = false;
+
+            for (int i = 0; i < objectList.SelectedRows.Count; i++)
+            {
+                int rowIndex = objectList.SelectedRows[i].Index;
+                if (_cachedSortedObjects == null || rowIndex < 0 || rowIndex >= _cachedSortedObjects.Count)
+                    continue;
+
+                var entry = _cachedSortedObjects.ElementAt(rowIndex).Value;
+
+                if (entry is Room)
+                    roomsToDelete.Add((Room)entry);
+                else if (entry is ISpatial)
+                    objectsToDelete.Add((ObjectInstance)entry);
+                else
+                    illegalOperation = true;
+            }
+
+            if ((objectsToDelete.Count > 0 || roomsToDelete.Count > 0) &&
+                DarkMessageBox.Show(this, "Do you want to delete all selected entries? This action can't be undone.",
+                                    "Delete selected entries", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                EditorActions.DeleteObjects(objectsToDelete, null, false); // Delete objects first to avoid clashes later
+                EditorActions.DeleteRooms(roomsToDelete, null);
+
+                objectList.ClearSelection();
+            }
+
+            if (illegalOperation)
+                _editor.SendMessage("Some objects weren't deleted because it's impossible to do in batch.", TombLib.Forms.PopupType.Info);
+        }
+
         private IEnumerable<ObjectType> GetRelevantObjects(ScopeMode scope)
         {
             // Rooms
@@ -444,6 +484,14 @@ namespace TombEditor.Forms
                     foreach (ObjectInstance instance in room.AnyObjects.Where(o => o is TriggerInstance))
                         yield return instance;
             }
+        }
+
+        private void butDelete_Click(object sender, EventArgs e) => DeleteObjects();
+
+        private void FormSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+                DeleteObjects();
         }
     }
 }

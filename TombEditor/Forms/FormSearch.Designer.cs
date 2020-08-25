@@ -19,6 +19,7 @@
             this.objectListColumnRoom = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.objectListColumnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.butOk = new DarkUI.Controls.DarkButton();
+            this.butDelete = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.objectList)).BeginInit();
             this.SuspendLayout();
             // 
@@ -83,7 +84,6 @@
             this.objectListColumnRoom,
             this.objectListColumnName});
             this.objectList.Location = new System.Drawing.Point(7, 65);
-            this.objectList.MultiSelect = false;
             this.objectList.Name = "objectList";
             this.objectList.ReadOnly = true;
             this.objectList.RowHeadersWidth = 41;
@@ -118,6 +118,7 @@
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butOk.Location = new System.Drawing.Point(546, 282);
             this.butOk.Name = "butOk";
@@ -126,6 +127,18 @@
             this.butOk.Text = "OK";
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
+            // butDelete
+            // 
+            this.butDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDelete.Checked = false;
+            this.butDelete.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.butDelete.Image = global::TombEditor.Properties.Resources.general_trash_16;
+            this.butDelete.Location = new System.Drawing.Point(517, 282);
+            this.butDelete.Name = "butDelete";
+            this.butDelete.Size = new System.Drawing.Size(23, 23);
+            this.butDelete.TabIndex = 80;
+            this.butDelete.Click += new System.EventHandler(this.butDelete_Click);
+            // 
             // FormSearch
             // 
             this.AcceptButton = this.butOk;
@@ -133,6 +146,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butOk;
             this.ClientSize = new System.Drawing.Size(634, 312);
+            this.Controls.Add(this.butDelete);
             this.Controls.Add(this.butOk);
             this.Controls.Add(this.objectList);
             this.Controls.Add(this.txtKeywords);
@@ -148,6 +162,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search";
+            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.FormSearch_PreviewKeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.objectList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -165,5 +180,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn objectListColumnType;
         private System.Windows.Forms.DataGridViewTextBoxColumn objectListColumnRoom;
         private System.Windows.Forms.DataGridViewTextBoxColumn objectListColumnName;
+        private DarkUI.Controls.DarkButton butDelete;
     }
 }
