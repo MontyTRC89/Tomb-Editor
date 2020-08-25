@@ -29,6 +29,6 @@ namespace TombLib.LevelData
                 ", Z = " + SectorPosition.Y;
         }
 
-        public string ShortName() => "Sprite ID = " + SpriteID + " (" + GetSequenceName() + ")";
+        public string ShortName() => "Sprite (ID = " + SpriteID + ", " + GetSequenceName() + ")";
     }
 }

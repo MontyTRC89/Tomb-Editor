@@ -17,7 +17,7 @@ namespace TombLib.LevelData
                 (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
-        public string ShortName() => "Sink" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
+        public string ShortName() => "Sink (Strength = " + Strength + ")"  + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
 
         public string PrimaryAttribDesc => "Strength";
         public string SecondaryAttribDesc => string.Empty;
