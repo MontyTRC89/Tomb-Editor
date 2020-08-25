@@ -327,13 +327,13 @@ namespace TombLib.LevelData
 
         public Rectangle2 GetViewportRect(RectangleInt2 bounds, Size viewportSize, Camera camera, out float depth)
         {
-            var heightRatio = ((float)viewportSize.Height / viewportSize.Width) * 1024.0f;
+            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * 1024.0f;
             var distance = Vector3.Distance(Position + Room.WorldPos, camera.GetPosition());
-            var scale = 1024.0f / (distance != 0 ? distance : 1.0f);
+            var scale = 2048.0f / (distance != 0 ? distance : 1.0f);
             var pos = (WorldPositionMatrix * camera.GetViewProjectionMatrix(viewportSize.Width, viewportSize.Height)).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
-            var start = scale * new Vector2(bounds.Start.X / 1024.0f, bounds.Start.Y / heightRatio);
-            var end = scale * new Vector2(bounds.End.X / 1024.0f, bounds.End.Y / heightRatio);
+            var start = scale * new Vector2(bounds.Start.X / heightRatio, bounds.Start.Y / 1024.0f);
+            var end = scale * new Vector2(bounds.End.X / heightRatio, bounds.End.Y / 1024.0f);
 
             depth = pos.Z;
             return new Rectangle2(screenPos - end, screenPos - start);
