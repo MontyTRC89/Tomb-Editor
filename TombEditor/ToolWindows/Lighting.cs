@@ -46,37 +46,43 @@ namespace TombEditor.ToolWindows
                 var light = _editor.SelectedObject as LightInstance;
 
                 // Get light type
-                bool HasInOutRange = false;
+                bool HasInRange = false;
+                bool HasOutRange = false;
                 bool HasInOutAngle = false;
                 bool HasDirection = false;
                 bool CanCastShadows = false;
                 bool CanIlluminateGeometry = false;
                 cbLightQuality.Enabled = false;
+
                 if (light != null)
                     switch (light.Type)
                     {
                         case LightType.Point:
-                            HasInOutRange = true;
+                            HasInRange = true;
+                            HasOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateGeometry = true;
                             break;
 
                         case LightType.Shadow:
-                            HasInOutRange = true;
+                            HasInRange = true;
+                            HasOutRange = true;
                             CanCastShadows = true;
                             CanIlluminateGeometry = true;
                             break;
 
                         case LightType.Effect:
-                            HasInOutRange = true;
+                            HasInRange = true;
+                            HasOutRange = true;
                             break;
 
                         case LightType.FogBulb:
-                            HasInOutRange = true;
+                            HasOutRange = true;
                             break;
 
                         case LightType.Spot:
-                            HasInOutRange = true;
+                            HasInRange = true;
+                            HasOutRange = true;
                             HasInOutAngle = true;
                             HasDirection = true;
                             CanCastShadows = true;
@@ -100,8 +106,8 @@ namespace TombEditor.ToolWindows
                 cbLightIsStaticallyUsed.Enabled = CanIlluminateGeometry;
                 cbLightIsUsedForImportedGeometry.Enabled = CanIlluminateGeometry;
                 numIntensity.Enabled = light != null;
-                numInnerRange.Enabled = HasInOutRange;
-                numOuterRange.Enabled = HasInOutRange;
+                numInnerRange.Enabled = HasInRange;
+                numOuterRange.Enabled = HasOutRange;
                 numInnerAngle.Enabled = HasInOutAngle;
                 numOuterAngle.Enabled = HasInOutAngle;
                 numDirectionY.Enabled = HasDirection;
@@ -110,12 +116,13 @@ namespace TombEditor.ToolWindows
                 // Update value state
                 panelLightColor.BackColor = light != null ? new Vector4(light.Color * 0.5f, 1.0f).ToWinFormsColor() : BackColor;
                 numIntensity.Value = (decimal)(light?.Intensity ?? 0);
-                numInnerRange.Value = HasInOutRange ? (decimal)light.InnerRange : 0;
-                numOuterRange.Value = HasInOutRange ? (decimal)light.OuterRange : 0;
+                numInnerRange.Value = HasInRange ? (decimal)light.InnerRange : 0;
+                numOuterRange.Value = HasOutRange ? (decimal)light.OuterRange : 0;
                 numInnerAngle.Value = HasInOutAngle ? (decimal)light.InnerAngle : 0;
                 numOuterAngle.Value = HasInOutAngle ? (decimal)light.OuterAngle : 0;
                 numDirectionY.Value = HasDirection ? (decimal)light.RotationY : 0;
                 numDirectionX.Value = HasDirection ? (decimal)light.RotationX : 0;
+
                 cbLightEnabled.Checked = light?.Enabled ?? false;
                 cbLightIsObstructedByRoomGeometry.Checked = light?.IsObstructedByRoomGeometry ?? false;
                 cbLightIsDynamicallyUsed.Checked = light?.IsDynamicallyUsed ?? false;

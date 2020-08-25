@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using TombLib.IO;
@@ -609,6 +610,9 @@ namespace TombLib.LevelData.Compilers
 
         public void WriteTr5(BinaryWriterEx writer)
         {
+            var lights = Lights.Where(l => l.LightType != 4).ToList();
+            var bulbs  = Lights.Where(l => l.LightType == 4).ToList();
+
             var roomStartOffset = writer.BaseStream.Position;
 
             var xela = System.Text.Encoding.ASCII.GetBytes("XELA");
@@ -647,7 +651,7 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write(AmbientIntensity);
 
-            writer.Write((ushort)Lights.Count);
+            writer.Write((ushort)lights.Count);
             writer.Write((ushort)StaticMeshes.Count);
 
             writer.Write(ReverbInfo);
@@ -685,18 +689,18 @@ namespace TombLib.LevelData.Compilers
 
             writer.Write((uint)Triangles.Count);
             writer.Write((uint)Quads.Count);
-
+            
+            var LightPointerOffsetPosition = writer.BaseStream.Position;
+            writer.Write((uint)0);
             writer.Write((uint)0);
 
-            writer.Write((uint)(Lights.Count * 88));
-            writer.Write((uint)Lights.Count);
-
-            writer.Write((uint)0);
+            writer.Write((uint)lights.Count);
+            writer.Write((uint)bulbs.Count);
 
             writer.Write(Info.YTop);
             writer.Write(Info.YBottom);
 
-            writer.Write((uint)1);
+            writer.Write((uint)1); // Dummy layer
 
             var LayerOffsetPosition = writer.BaseStream.Position;
             var LayerOffset = 0;
@@ -719,7 +723,8 @@ namespace TombLib.LevelData.Compilers
             writer.Write(0xcdcdcdcd);
 
             // Start of room data (after 216 bytes from XELA)
-            foreach (var light in Lights)
+            var LightPointerOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
+            foreach (var light in lights)
             {
                 writer.Write((float)light.X);
                 writer.Write((float)light.Y);
@@ -754,6 +759,22 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((byte)0xcd);
                 writer.Write((byte)0xcd);
                 writer.Write((byte)0xcd);
+            }
+
+            var BulbPointerOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
+            foreach (var bulb in bulbs)
+            {
+                writer.Write((float)bulb.X);
+                writer.Write((float)bulb.Y);
+                writer.Write((float)bulb.Z);
+
+                writer.Write(bulb.Out);
+                writer.Write(bulb.Out * bulb.Out);
+                writer.Write(bulb.Length * 65535.0f);
+
+                writer.Write(bulb.Color.Red / 255.0f);
+                writer.Write(bulb.Color.Green / 255.0f);
+                writer.Write(bulb.Color.Blue / 255.0f);
             }
 
             StartOfSDOffset = (uint)(writer.BaseStream.Position - roomStartOffset - 216);
@@ -837,6 +858,10 @@ namespace TombLib.LevelData.Compilers
 
             writer.Seek((int)EndPortalOffsetPosition, SeekOrigin.Begin);
             writer.Write((int)EndPortalOffset);
+
+            writer.Seek((int)LightPointerOffsetPosition, SeekOrigin.Begin);
+            writer.Write(LightPointerOffset);
+            writer.Write(BulbPointerOffset);
 
             writer.Seek((int)LayerOffsetPosition, SeekOrigin.Begin);
             writer.Write(LayerOffset);
