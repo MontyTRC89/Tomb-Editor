@@ -9,13 +9,14 @@
 
         public override string ToString()
         {
-            return "Camera " + (Fixed ? "Fixed" : "") +
+            return "Camera " + (Fixed ? "Locked" : "") +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y +
                 (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
-        public string ShortName() => (Fixed ? "Fixed camera" : "Camera") + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
+        public string ShortName() => (Fixed ? "Locked camera" : "Camera") + " (Room " + Room?.ToString() ?? "NULL" + ")" + 
+            (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
     }
 }

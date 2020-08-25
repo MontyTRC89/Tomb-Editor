@@ -61,15 +61,25 @@ namespace TombEditor.ToolWindows
                     {
                         var o = _editor.SelectedObject as PositionBasedObjectInstance;
                         var entry = lstObjects.Items.FirstOrDefault(t => t.Tag == o);
-                        if (entry != null) lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                        if (entry != null)
+                        {
+                            lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                            lstObjects.EnsureVisible();
+                        }
                     }
                     else if (_editor.SelectedObject is GhostBlockInstance)
                     {
                         var o = _editor.SelectedObject as GhostBlockInstance;
                         var entry = lstObjects.Items.FirstOrDefault(t => t.Tag == o);
-                        if (entry != null) lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
-                    }
+                        if (entry != null)
+                        {
+                            lstObjects.SelectItem(lstObjects.Items.IndexOf(entry));
+                            lstObjects.EnsureVisible();
+                        }
+                        }
                 }
+                else
+                    lstObjects.ClearSelection();
             }
         }
 

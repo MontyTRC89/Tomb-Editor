@@ -66,9 +66,9 @@
             this.ckFixed.AutoSize = true;
             this.ckFixed.Location = new System.Drawing.Point(10, 39);
             this.ckFixed.Name = "ckFixed";
-            this.ckFixed.Size = new System.Drawing.Size(160, 17);
+            this.ckFixed.Size = new System.Drawing.Size(172, 17);
             this.ckFixed.TabIndex = 6;
-            this.ckFixed.Text = "Disable look key breakout";
+            this.ckFixed.Text = "Lock from look key breakout";
             // 
             // darkLabel1
             // 
