@@ -2033,7 +2033,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
         }
 
-        private void DrawGhostBlocks(Matrix4x4 viewProjection, Effect effect, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw, List<Sprite> sprites)
+        private void DrawGhostBlocks(Matrix4x4 viewProjection, Effect effect, List<GhostBlockInstance> ghostBlocksToDraw, List<Text> textToDraw, List<Sprite> sprites, bool cubes)
         {
             if (ghostBlocksToDraw.Count == 0)
                 return;
@@ -2042,264 +2042,268 @@ namespace TombEditor.Controls
             var normalColor = new Vector4(baseColor.To3() * 0.4f, 0.9f);
             var selectColor = new Vector4(baseColor.To3() * 0.5f, 1.0f);
 
-            int selectedIndex = -1;
-            int lastIndex     = -1;
-            bool selectedCornerDrawn = false;
-            bool lastSelectedCorner  = false;
-
             _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.NonPremultiplied);
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
 
-            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
-            _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
-
-            // Draw cubes (prioritize over block!)
-            for (int i = 0; i < ghostBlocksToDraw.Count; i++)
+            if (cubes)
             {
-                var instance = ghostBlocksToDraw[i];
+                int selectedIndex = -1;
+                int lastIndex     = -1;
+                bool selectedCornerDrawn = false;
+                bool lastSelectedCorner  = false;
 
-                if (_editor.SelectedObject == instance)
-                    selectedIndex = i;
+                _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+                _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
 
-                // Switch colours
-                if (i == selectedIndex && selectedIndex >= 0)
+                // Draw cubes (prioritize over block!)
+                for (int i = 0; i < ghostBlocksToDraw.Count; i++)
                 {
-                    effect.Parameters["Color"].SetValue(selectColor);
+                    var instance = ghostBlocksToDraw[i];
 
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.CenterMatrix(instance.SelectedFloor) * viewProjection,
-                        instance.InfoMessage()));
-                }
-                else if (lastIndex == selectedIndex || lastIndex == -1)
-                    effect.Parameters["Color"].SetValue(normalColor);
-                lastIndex = i;
+                    if (_editor.SelectedObject == instance)
+                        selectedIndex = i;
 
-                if (selectedIndex == i)
-                {
-                    // Corner cubes
-                    for (int f = 0; f < 2; f++)
+                    // Switch colours
+                    if (i == selectedIndex && selectedIndex >= 0)
                     {
-                        bool floor = f == 0;
-                        for (int j = 0; j < 4; j++)
+                        effect.Parameters["Color"].SetValue(selectColor);
+
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.CenterMatrix(instance.SelectedFloor) * viewProjection,
+                            instance.InfoMessage()));
+                    }
+                    else if (lastIndex == selectedIndex || lastIndex == -1)
+                        effect.Parameters["Color"].SetValue(normalColor);
+                    lastIndex = i;
+
+                    if (selectedIndex == i)
+                    {
+                        // Corner cubes
+                        for (int f = 0; f < 2; f++)
                         {
-                            lastSelectedCorner = (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == j && instance.SelectedFloor == floor);
-                            if (lastSelectedCorner == true || j == 4)
-                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                            Matrix4x4 currCubeMatrix;
-                            if (_movementTimer.Mode == AnimationMode.GhostBlockUnfold && !instance.SelectedCorner.HasValue)
-                                currCubeMatrix = Matrix4x4.Lerp(instance.CenterMatrix(true), instance.ControlMatrixes(floor)[j], _movementTimer.MoveMultiplier);
-                            else
-                                currCubeMatrix = instance.ControlMatrixes(floor)[j];
-                            currCubeMatrix *= viewProjection;
-
-                            effect.Parameters["ModelViewProjection"].SetValue((currCubeMatrix).ToSharpDX());
-                            effect.Techniques[0].Passes[0].Apply();
-                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
-
-                            // Bring back solid state and lock it forever
-                            if (lastSelectedCorner != selectedCornerDrawn)
+                            bool floor = f == 0;
+                            for (int j = 0; j < 4; j++)
                             {
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                                selectedCornerDrawn = true;
+                                lastSelectedCorner = (instance.SelectedCorner.HasValue && (int)instance.SelectedCorner.Value == j && instance.SelectedFloor == floor);
+                                if (lastSelectedCorner == true || j == 4)
+                                    _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                                Matrix4x4 currCubeMatrix;
+                                if (_movementTimer.Mode == AnimationMode.GhostBlockUnfold && !instance.SelectedCorner.HasValue)
+                                    currCubeMatrix = Matrix4x4.Lerp(instance.CenterMatrix(true), instance.ControlMatrixes(floor)[j], _movementTimer.MoveMultiplier);
+                                else
+                                    currCubeMatrix = instance.ControlMatrixes(floor)[j];
+                                currCubeMatrix *= viewProjection;
+
+                                effect.Parameters["ModelViewProjection"].SetValue((currCubeMatrix).ToSharpDX());
+                                effect.Techniques[0].Passes[0].Apply();
+                                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _littleCube.IndexBuffer.ElementCount);
+
+                                // Bring back solid state and lock it forever
+                                if (lastSelectedCorner != selectedCornerDrawn)
+                                {
+                                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                                    selectedCornerDrawn = true;
+                                }
                             }
                         }
                     }
-                }
-                else // Default non-selected cube
-                {
-                    RenderOrQueueServiceObject(instance, _littleCube, normalColor, effect, viewProjection, sprites);
+                    else // Default non-selected cube
+                        RenderOrQueueServiceObject(instance, _littleCube, normalColor, effect, viewProjection, sprites);
                 }
             }
-
-            _legacyDevice.SetVertexBuffer(_ghostBlockVertexBuffer);
-            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _ghostBlockVertexBuffer));
-            effect.Parameters["Color"].SetValue(Vector4.One);
-
-            // Draw 3D ghost blocks
-            for (int j = 0; j < ghostBlocksToDraw.Count; j++)
+            else // Draw 3D ghost blocks
             {
-                var instance = ghostBlocksToDraw[j];
-                var selected = j == selectedIndex;
+                _legacyDevice.SetVertexBuffer(_ghostBlockVertexBuffer);
+                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _ghostBlockVertexBuffer));
+                effect.Parameters["Color"].SetValue(Vector4.One);
 
-                if (!instance.Valid)
-                    continue;
-
-                // Create a vertex array
-                SolidVertex[] vtxs = new SolidVertex[84]; // 78 with diagonal steps
-
-                // Derive base block colours
-                var p1c = new Vector4(baseColor.To3() * (selected ? 0.8f : 0.4f), selected ? 0.7f : 0.5f);
-                var p2c = new Vector4(baseColor.To3() * (selected ? 0.5f : 0.2f), selected ? 0.7f : 0.5f);
-
-                // Fill it up
-                for (int f = 0, c = 0; f < 2; f++)
+                for (int j = 0; j < ghostBlocksToDraw.Count; j++)
                 {
-                    bool floor = f == 0;
+                    var instance = ghostBlocksToDraw[j];
+                    var selected = _editor.SelectedObject == instance;
 
-                    if ((floor && !instance.ValidFloor) || (!floor && !instance.ValidCeiling))
+                    if (!instance.Valid)
                         continue;
 
-                    var split = floor ? instance.Block.Floor.DiagonalSplit : instance.Block.Ceiling.DiagonalSplit;
-                    bool toggled = floor ? instance.FloorSplitToggled : instance.CeilingSplitToggled;
-                    var vPos = instance.ControlPositions(floor, false);
-                    var vOrg = instance.ControlPositions(floor, true);
+                    // Create a vertex array
+                    SolidVertex[] vtxs = new SolidVertex[84]; // 78 with diagonal steps
 
-                    bool[] shift = new bool[4];
-                    shift[0] = split == DiagonalSplit.XpZp || split == DiagonalSplit.XpZn;
-                    shift[1] = split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp;
-                    shift[2] = split == DiagonalSplit.XnZn || split == DiagonalSplit.XnZp;
-                    shift[3] = split == DiagonalSplit.XnZn || split == DiagonalSplit.XpZn;
+                    // Derive base block colours
+                    var p1c = new Vector4(baseColor.To3() * (selected ? 0.8f : 0.4f), selected ? 0.7f : 0.5f);
+                    var p2c = new Vector4(baseColor.To3() * (selected ? 0.5f : 0.2f), selected ? 0.7f : 0.5f);
 
-                    for (int i = 0; i < 4; i++)
+                    // Fill it up
+                    for (int f = 0, c = 0; f < 2; f++)
                     {
-                        Vector3[] fPos = new Vector3[4];
+                        bool floor = f == 0;
 
-                        switch (i)
+                        if ((floor && !instance.ValidFloor) || (!floor && !instance.ValidCeiling))
+                            continue;
+
+                        var split = floor ? instance.Block.Floor.DiagonalSplit : instance.Block.Ceiling.DiagonalSplit;
+                        bool toggled = floor ? instance.FloorSplitToggled : instance.CeilingSplitToggled;
+                        var vPos = instance.ControlPositions(floor, false);
+                        var vOrg = instance.ControlPositions(floor, true);
+
+                        bool[] shift = new bool[4];
+                        shift[0] = split == DiagonalSplit.XpZp || split == DiagonalSplit.XpZn;
+                        shift[1] = split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp;
+                        shift[2] = split == DiagonalSplit.XnZn || split == DiagonalSplit.XnZp;
+                        shift[3] = split == DiagonalSplit.XnZn || split == DiagonalSplit.XpZn;
+
+                        for (int i = 0; i < 4; i++)
                         {
-                            case 0: // Xn
-                                fPos[0] = vOrg[0];
-                                fPos[1] = vOrg[3];
-                                fPos[2] = vPos[3];
-                                fPos[3] = vPos[0];
-                                if (shift[i])
-                                    if (split == DiagonalSplit.XpZp)
-                                    {
-                                        fPos[0].Y = vOrg[3].Y;
-                                        fPos[3].Y = (vOrg[3] + (vPos[0] - vOrg[0])).Y;
-                                    }
-                                    else
-                                    {
-                                        fPos[1].Y = vOrg[0].Y;
-                                        fPos[2].Y = (vOrg[0] + (vPos[3] - vOrg[3])).Y;
-                                    }
-                                break;
+                            Vector3[] fPos = new Vector3[4];
 
-                            case 1: // Zn
-                                fPos[0] = vOrg[3];
-                                fPos[1] = vOrg[2];
-                                fPos[2] = vPos[2];
-                                fPos[3] = vPos[3];
-                                if (shift[i])
-                                    if (split == DiagonalSplit.XnZp)
-                                    {
-                                        fPos[0].Y = vOrg[2].Y;
-                                        fPos[3].Y = (vOrg[2] + (vPos[3] - vOrg[3])).Y;
-                                    }
-                                    else
-                                    {
-                                        fPos[1].Y = vOrg[3].Y;
-                                        fPos[2].Y = (vOrg[3] + (vPos[2] - vOrg[2])).Y;
-                                    }
-                                break;
+                            switch (i)
+                            {
+                                case 0: // Xn
+                                    fPos[0] = vOrg[0];
+                                    fPos[1] = vOrg[3];
+                                    fPos[2] = vPos[3];
+                                    fPos[3] = vPos[0];
+                                    if (shift[i])
+                                        if (split == DiagonalSplit.XpZp)
+                                        {
+                                            fPos[0].Y = vOrg[3].Y;
+                                            fPos[3].Y = (vOrg[3] + (vPos[0] - vOrg[0])).Y;
+                                        }
+                                        else
+                                        {
+                                            fPos[1].Y = vOrg[0].Y;
+                                            fPos[2].Y = (vOrg[0] + (vPos[3] - vOrg[3])).Y;
+                                        }
+                                    break;
 
-                            case 2: // Xp
-                                fPos[0] = vOrg[2];
-                                fPos[1] = vOrg[1];
-                                fPos[2] = vPos[1];
-                                fPos[3] = vPos[2];
-                                if (shift[i])
-                                    if (split == DiagonalSplit.XnZn)
-                                    {
-                                        fPos[0].Y = vOrg[1].Y;
-                                        fPos[3].Y = (vOrg[1] + (vPos[2] - vOrg[2])).Y;
-                                    }
-                                    else
-                                    {
-                                        fPos[1].Y = vOrg[2].Y;
-                                        fPos[2].Y = (vOrg[2] + (vPos[1] - vOrg[1])).Y;
-                                    }
-                                break;
+                                case 1: // Zn
+                                    fPos[0] = vOrg[3];
+                                    fPos[1] = vOrg[2];
+                                    fPos[2] = vPos[2];
+                                    fPos[3] = vPos[3];
+                                    if (shift[i])
+                                        if (split == DiagonalSplit.XnZp)
+                                        {
+                                            fPos[0].Y = vOrg[2].Y;
+                                            fPos[3].Y = (vOrg[2] + (vPos[3] - vOrg[3])).Y;
+                                        }
+                                        else
+                                        {
+                                            fPos[1].Y = vOrg[3].Y;
+                                            fPos[2].Y = (vOrg[3] + (vPos[2] - vOrg[2])).Y;
+                                        }
+                                    break;
 
-                            case 3: // Zp
-                                fPos[0] = vOrg[1];
-                                fPos[1] = vOrg[0];
-                                fPos[2] = vPos[0];
-                                fPos[3] = vPos[1];
-                                if (shift[i])
-                                    if (split == DiagonalSplit.XpZn)
-                                    {
-                                        fPos[0].Y = vOrg[0].Y;
-                                        fPos[3].Y = (vOrg[0] + (vPos[1] - vOrg[1])).Y;
-                                    }
-                                    else
-                                    {
-                                        fPos[1].Y = vOrg[1].Y;
-                                        fPos[2].Y = (vOrg[1] + (vPos[0] - vOrg[0])).Y;
-                                    }
-                                break;
+                                case 2: // Xp
+                                    fPos[0] = vOrg[2];
+                                    fPos[1] = vOrg[1];
+                                    fPos[2] = vPos[1];
+                                    fPos[3] = vPos[2];
+                                    if (shift[i])
+                                        if (split == DiagonalSplit.XnZn)
+                                        {
+                                            fPos[0].Y = vOrg[1].Y;
+                                            fPos[3].Y = (vOrg[1] + (vPos[2] - vOrg[2])).Y;
+                                        }
+                                        else
+                                        {
+                                            fPos[1].Y = vOrg[2].Y;
+                                            fPos[2].Y = (vOrg[2] + (vPos[1] - vOrg[1])).Y;
+                                        }
+                                    break;
+
+                                case 3: // Zp
+                                    fPos[0] = vOrg[1];
+                                    fPos[1] = vOrg[0];
+                                    fPos[2] = vPos[0];
+                                    fPos[3] = vPos[1];
+                                    if (shift[i])
+                                        if (split == DiagonalSplit.XpZn)
+                                        {
+                                            fPos[0].Y = vOrg[0].Y;
+                                            fPos[3].Y = (vOrg[0] + (vPos[1] - vOrg[1])).Y;
+                                        }
+                                        else
+                                        {
+                                            fPos[1].Y = vOrg[1].Y;
+                                            fPos[2].Y = (vOrg[1] + (vPos[0] - vOrg[0])).Y;
+                                        }
+                                    break;
+                            }
+
+                            vtxs[c].Position = fPos[0]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = fPos[1]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = fPos[3]; vtxs[c].Color = p2c; c++;
+                            vtxs[c].Position = fPos[1]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = fPos[2]; vtxs[c].Color = p1c; c++;
+                            vtxs[c].Position = fPos[3]; vtxs[c].Color = p2c; c++;
                         }
 
-                        vtxs[c].Position = fPos[0]; vtxs[c].Color = p1c; c++;
-                        vtxs[c].Position = fPos[1]; vtxs[c].Color = p1c; c++;
-                        vtxs[c].Position = fPos[3]; vtxs[c].Color = p2c; c++;
-                        vtxs[c].Position = fPos[1]; vtxs[c].Color = p1c; c++;
-                        vtxs[c].Position = fPos[2]; vtxs[c].Color = p1c; c++;
-                        vtxs[c].Position = fPos[3]; vtxs[c].Color = p2c; c++;
+                        // Equality flags to further hide nonexistent triangle
+                        bool[] equal = new bool[3];
+                        int ch = 0;
+                        int r = 0;
+
+                        switch (split)
+                        {
+                            case DiagonalSplit.XpZn: r = 0; break;
+                            case DiagonalSplit.XnZn: r = 1; break;
+                            case DiagonalSplit.XnZp: r = 2; break;
+                            case DiagonalSplit.XpZp: r = 3; break;
+                        }
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            bool triShift = (i == 0 && (split == DiagonalSplit.XpZn || split == DiagonalSplit.XnZn)) ||
+                                            (i != 0 && (split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp));
+
+                            ch = (i == 0 ? (toggled ? 3 : 0) : (toggled ? 1 : 2));
+                            equal[0] = vPos[ch] == vOrg[ch];
+                            vtxs[c].Position = vPos[ch];
+                            if (triShift) vtxs[c].Position.Y = vOrg[r].Y + (vPos[ch] - vOrg[ch]).Y;
+                            vtxs[c].Color = i == 1 ? p1c : p2c;
+                            c++;
+
+                            ch = (i == 0 ? (toggled ? 0 : 1) : (toggled ? 2 : 3));
+                            equal[1] = vPos[ch] == vOrg[ch];
+                            vtxs[c].Position = vPos[ch];
+                            vtxs[c].Color = i == 1 ? p1c : p2c;
+                            c++;
+
+                            ch = (i == 0 ? (toggled ? 1 : 2) : (toggled ? 3 : 0));
+                            equal[2] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch];
+                            if (triShift) vtxs[c].Position.Y = vOrg[r].Y + (vPos[ch] - vOrg[ch]).Y;
+                            vtxs[c].Color = i == 1 ? p1c : p2c;
+
+                            if (equal[0] && equal[1] && equal[2])
+                                vtxs[c].Color = vtxs[c - 1].Color = vtxs[c - 2].Color = Vector4.Zero;
+                            c++;
+                        }
+
+                        // Draw diagonals
+                        bool flip = split == DiagonalSplit.XnZp || split == DiagonalSplit.XpZn;
+                        bool draw = split != DiagonalSplit.None && !(floor ? instance.FloorIsQuad : instance.CeilingIsQuad);
+
+                        vtxs[c].Position = flip ? vOrg[1] : vOrg[0]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
+                        vtxs[c].Position = flip ? vOrg[3] : vOrg[2]; vtxs[c].Color = draw ? p2c : Vector4.Zero; c++;
+                        vtxs[c].Position = flip ? vPos[3] : vPos[2]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
+                        vtxs[c].Position = flip ? vPos[3] : vPos[2]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
+                        vtxs[c].Position = flip ? vPos[1] : vPos[0]; vtxs[c].Color = draw ? p2c : Vector4.Zero; c++;
+                        vtxs[c].Position = flip ? vOrg[1] : vOrg[0]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
+
                     }
 
-                    // Equality flags to further hide nonexistent triangle
-                    bool[] equal = new bool[3];
-                    int ch = 0;
-                    int r = 0;
+                    _ghostBlockVertexBuffer.SetData(vtxs);
 
-                    switch (split)
-                    {
-                        case DiagonalSplit.XpZn: r = 0; break;
-                        case DiagonalSplit.XnZn: r = 1; break;
-                        case DiagonalSplit.XnZp: r = 2; break;
-                        case DiagonalSplit.XpZp: r = 3; break;
-                    }
-
-                    for (int i = 0; i < 2; i++)
-                    {
-                        bool triShift = (i == 0 && (split == DiagonalSplit.XpZn || split == DiagonalSplit.XnZn)) ||
-                                        (i != 0 && (split == DiagonalSplit.XpZp || split == DiagonalSplit.XnZp));
-
-                        ch = (i == 0 ? (toggled ? 3 : 0) : (toggled ? 1 : 2));
-                        equal[0] = vPos[ch] == vOrg[ch];
-                        vtxs[c].Position = vPos[ch];
-                        if (triShift) vtxs[c].Position.Y = vOrg[r].Y + (vPos[ch] - vOrg[ch]).Y;
-                        vtxs[c].Color = i == 1 ? p1c : p2c;
-                        c++;
-
-                        ch = (i == 0 ? (toggled ? 0 : 1) : (toggled ? 2 : 3));
-                        equal[1] = vPos[ch] == vOrg[ch];
-                        vtxs[c].Position = vPos[ch];
-                        vtxs[c].Color = i == 1 ? p1c : p2c;
-                        c++;
-
-                        ch = (i == 0 ? (toggled ? 1 : 2) : (toggled ? 3 : 0));
-                        equal[2] = vPos[ch] == vOrg[ch]; vtxs[c].Position = vPos[ch];
-                        if (triShift) vtxs[c].Position.Y = vOrg[r].Y + (vPos[ch] - vOrg[ch]).Y;
-                        vtxs[c].Color = i == 1 ? p1c : p2c;
-
-                        if (equal[0] && equal[1] && equal[2])
-                            vtxs[c].Color = vtxs[c - 1].Color = vtxs[c - 2].Color = Vector4.Zero;
-                        c++;
-                    }
-
-                    // Draw diagonals
-                    bool flip = split == DiagonalSplit.XnZp || split == DiagonalSplit.XpZn;
-                    bool draw = split != DiagonalSplit.None && !(floor ? instance.FloorIsQuad : instance.CeilingIsQuad);
-
-                    vtxs[c].Position = flip ? vOrg[1] : vOrg[0]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
-                    vtxs[c].Position = flip ? vOrg[3] : vOrg[2]; vtxs[c].Color = draw ? p2c : Vector4.Zero; c++;
-                    vtxs[c].Position = flip ? vPos[3] : vPos[2]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
-                    vtxs[c].Position = flip ? vPos[3] : vPos[2]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
-                    vtxs[c].Position = flip ? vPos[1] : vPos[0]; vtxs[c].Color = draw ? p2c : Vector4.Zero; c++;
-                    vtxs[c].Position = flip ? vOrg[1] : vOrg[0]; vtxs[c].Color = draw ? p1c : Vector4.Zero; c++;
-
+                    effect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
+                    effect.CurrentTechnique.Passes[0].Apply();
+                    _legacyDevice.Draw(PrimitiveType.TriangleList, 84);
                 }
 
-                _ghostBlockVertexBuffer.SetData(vtxs);
-
-                effect.Parameters["ModelViewProjection"].SetValue((viewProjection).ToSharpDX());
-                effect.CurrentTechnique.Passes[0].Apply();
-                _legacyDevice.Draw(PrimitiveType.TriangleList, 84);
+            
             }
         }
 
@@ -3470,6 +3474,10 @@ namespace TombEditor.Controls
                 DrawFlybyPath(viewProjection, effect);
             }
 
+            // Draw ghost block cubes
+            if (ShowGhostBlocks)
+                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites, true);
+
             // Depth-sort sprites
             sprites = sprites.OrderByDescending(s => s.Depth).ToList();
 
@@ -3481,9 +3489,9 @@ namespace TombEditor.Controls
                 SwapChain.RenderSprites(_renderingTextures, true, false, depthSprites);
             }
 
-            // Draw ghost blocks
+            // Draw ghost block bodies
             if (ShowGhostBlocks)
-                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
+                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites, false);
 
             // Draw disabled rooms, so they don't conceal all geometry behind
             var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Hidden).ToList();
