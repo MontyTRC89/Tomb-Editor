@@ -3,8 +3,9 @@ Version 1.3.6
 Tomb Editor:
  * Added TR1 support.
  * Added room sprites support for TR1-2.
- * Added move timer customization for TR1-TR2 cameras.
+ * Added fog bulb support for TR5.
  * Added 8-bit texture support for TR2/TR3.
+ * Added move timer customization for TR1-TR2 cameras.
  * Added ability to delete objects from search window.
  * Added find & replace object context menu.
  * Draw service objects as 2D icons by default.

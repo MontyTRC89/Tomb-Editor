@@ -1016,11 +1016,20 @@ namespace TombLib.LevelData.Compilers
                 tr_color color;
                 ushort intensity;
 
-                // HACK: remap TR4 fog bulb intensity to color (native TR4 hack)
-                if (_level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb)
+                if (light.Type == LightType.FogBulb)
                 {
-                    var remappedColor = new Vector3(MathC.Clamp(light.Intensity, 0.0f, 2.0f));
-                    color = PackColorTo24Bit(remappedColor);
+                    if (_level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4)
+                    {
+                        // HACK: remap TR4 fog bulb intensity to color (native TR4 hack)
+                        var remappedColor = new Vector3(MathC.Clamp(light.Intensity, 0.0f, 2.0f));
+                        color = PackColorTo24Bit(remappedColor);
+                    }
+                    else
+                    {
+                        // TR5 stores fog bulb intensity and color separately as real values
+                        color = PackColorTo24Bit(light.Color);
+                    }
+
                     intensity = (ushort)8191;
                 }
                 else
@@ -1080,6 +1089,7 @@ namespace TombLib.LevelData.Compilers
                         newLight.LightType = 4;
                         newLight.In = light.InnerRange * 1024;
                         newLight.Out = light.OuterRange * 1024;
+                        newLight.Length = light.Intensity; // Store float intensity as length
                         break;
                     case LightType.Effect:
                         continue;
