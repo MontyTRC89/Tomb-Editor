@@ -12,6 +12,7 @@ using RateType = System.UInt64;
 using ObjectType = System.Object;
 using DarkUI.Config;
 using DarkUI.Extensions;
+using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
@@ -47,6 +48,8 @@ namespace TombEditor.Forms
         private SortedDictionary<RateType, ObjectType> _cachedSortedObjects;
         private string _keyword = "";
         private bool _currentlyChangingRowCount;
+
+        private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormSearch(Editor editor)
         {
@@ -443,7 +446,7 @@ namespace TombEditor.Forms
             }
 
             if (illegalOperation)
-                _editor.SendMessage("Some objects weren't deleted because it's impossible to do in batch.", TombLib.Forms.PopupType.Info);
+                popup.ShowWarning(objectList, "Some objects weren't deleted because it's impossible to do in batch.");
         }
 
         private IEnumerable<ObjectType> GetRelevantObjects(ScopeMode scope)
