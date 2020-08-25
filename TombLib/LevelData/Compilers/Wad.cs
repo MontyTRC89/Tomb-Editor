@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -180,7 +181,7 @@ namespace TombLib.LevelData.Compilers
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if(poly.ShineStrength > 0)
                 {
-                    if(useShades && isStatic)
+                    if (useShades && isStatic)
                         _progressReporter.ReportWarn("Stray shiny effect found on static " + objectId + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {
@@ -778,29 +779,10 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Step 3: create the sound map
-            switch (_level.Settings.GameVersion)
-            {
-                case TRVersion.Game.TR1:
-                    _soundMapSize = 256;
-                    break;
-                case TRVersion.Game.TR2:
-                case TRVersion.Game.TR3:
-                case TRVersion.Game.TR4:
-                    _soundMapSize = 370;
-                    break;
-                case TRVersion.Game.TR5:
-                    _soundMapSize = 450;
-                    break;
-                case TRVersion.Game.TRNG:
-                    _soundMapSize = 2048;
-                    break;
-                case TRVersion.Game.TR5Main:
-                    _soundMapSize = 4096;
-                    break;
-
-                default:
-                    throw new Exception("Unknown game version " + _level.Settings.GameVersion);
-            }
+            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+                _soundMapSize = _limits[Limit.NG_SoundMapSize];
+            else
+                _soundMapSize = _limits[Limit.SoundMapSize];
 
             _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
             foreach (var sound in _finalSoundInfosList)
@@ -906,9 +888,10 @@ namespace TombLib.LevelData.Compilers
                         lastSampleIndex += soundDetail.Samples.Count;
                     }
 
-                    if (_level.Settings.GameVersion < TRVersion.Game.TR5Main && lastSampleIndex > 255)
+                    int maxSampleCount = _limits[Limit.SoundSampleCount];
+                    if (lastSampleIndex > maxSampleCount)
                         _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
-                            " samples, while maximum is 256. Level may crash. Turn off some sounds to prevent that.");
+                            " samples, while maximum is " + maxSampleCount + ". Level may crash. Turn off some sounds to prevent that.");
 
                     // Write sample indices (not used but parsed in TR4-5)
                     if (_level.Settings.GameVersion > TRVersion.Game.TR1)
@@ -925,6 +908,8 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundData(BinaryWriter writer)
         {
+            var sampleRate = _limits[Limit.SoundSampleRate];
+
             if (_level.Settings.GameVersion == TRVersion.Game.TR1)
             {
                 // Calculate sum of all sample sizes
@@ -936,8 +921,8 @@ namespace TombLib.LevelData.Compilers
                 foreach (WadSample sample in _finalSamplesList)
                 {
                     writer.Write(sample.Data, 0, 24);
-                    writer.Write((uint)WadSample.GameSupportedSampleRate);
-                    writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
+                    writer.Write((uint)sampleRate);
+                    writer.Write((uint)sampleRate * 2);
                     writer.Write(sample.Data, 32, sample.Data.Length - 32);
                 }
 
@@ -952,7 +937,7 @@ namespace TombLib.LevelData.Compilers
                     sumSize += sample.Data.Length;
                 }
             }
-            else if (_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            else if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR5)
             {
                 // Write sample count
                 writer.Write((uint)_finalSamplesList.Count);
@@ -962,7 +947,7 @@ namespace TombLib.LevelData.Compilers
                 int[] uncompressedSizes = new int[_finalSamplesList.Count];
                 Parallel.For(0, _finalSamplesList.Count, delegate (int i)
                 {
-                    compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
+                    compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm((uint)sampleRate, out uncompressedSizes[i]);
                 });
                 for (int i = 0; i < _finalSamplesList.Count; ++i)
                 {
@@ -982,8 +967,8 @@ namespace TombLib.LevelData.Compilers
                     writer.Write((uint)sample.Data.Length);
                     writer.Write((uint)sample.Data.Length);
                     writer.Write(sample.Data, 0, 24);
-                    writer.Write((uint)WadSample.GameSupportedSampleRate);
-                    writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
+                    writer.Write((uint)sampleRate);
+                    writer.Write((uint)sampleRate);
                     writer.Write(sample.Data, 32, sample.Data.Length - 32);
                 }
             }

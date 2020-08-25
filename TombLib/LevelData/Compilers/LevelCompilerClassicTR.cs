@@ -76,10 +76,17 @@ namespace TombLib.LevelData.Compilers
         private Dictionary<FlybyCameraInstance, int> _flybyTable;
         private Dictionary<StaticInstance, int> _staticsTable;
 
+        // Collected game limits
+        private Dictionary<Limit, int> _limits;
+
         public LevelCompilerClassicTR(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
         {
             _scriptingIdsTable = level.GlobalScriptingIdsTable.Clone();
+
+            _limits = new Dictionary<Limit, int>();
+            foreach (Limit limit in Enum.GetValues(typeof(Limit)))
+                _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
         public CompilerStatistics CompileLevel()
@@ -101,8 +108,10 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
-            if (_textureInfoManager.TexInfoCount > 32767)
-                _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
+
+            int texInfoLimit = _limits[Limit.TexInfos];
+            if (_textureInfoManager.TexInfoCount > texInfoLimit)
+                _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
             
             GetAllReachableRooms();
             BuildPathFindingData();
@@ -111,8 +120,12 @@ namespace TombLib.LevelData.Compilers
             BuildCamerasAndSinks();
             BuildFloorData();
 
-            // Combine the data collected
-            PrepareTextures();
+            // Combine the texture data collected
+            var pageCount = PrepareTextures();
+
+            int texPageLimit = _limits[Limit.TexPages];
+            if (pageCount > texPageLimit)
+                _progressReporter.ReportWarn("Level has " + pageCount + " texture pages, while limit is " + texPageLimit + ". Use less textures, reduce padding or turn on aggressive texture packing in level settings.");
 
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
@@ -498,29 +511,11 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(45, "    Number of items: " + _items.Count);
 
-            int maxSafeItemCount, maxItemCount;
-            switch(_level.Settings.GameVersion)
-            {
-                case TRVersion.Game.TRNG:
-                    maxSafeItemCount = 255;
-                    maxItemCount = 1023;
-                    break;
-                case TRVersion.Game.TR5Main:
-                    maxSafeItemCount = 1023;
-                    maxItemCount = 32767;
-                    break;
-                default:
-                    maxSafeItemCount = 255;
-                    maxItemCount = 255;
-                    break;
-            }
+            int maxSafeItemCount = _limits[Limit.ItemSafeCount];
+            int maxItemCount     = _limits[Limit.ItemMaxCount];
 
             if (_items.Count > maxItemCount)
-            {
-                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash" +
-                                 (_level.Settings.GameVersion == TRVersion.Game.TR4 ? ", unless you're using TREP." : ".");
-                _progressReporter.ReportWarn(warnString);
-            }
+                _progressReporter.ReportWarn("Level has more than " + maxItemCount + " moveables. This may lead to crash.");
 
             if (_items.Count > maxSafeItemCount)
                 _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");

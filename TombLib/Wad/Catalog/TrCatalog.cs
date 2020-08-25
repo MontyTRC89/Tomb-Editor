@@ -7,6 +7,32 @@ using TombLib.Utils;
 
 namespace TombLib.Wad.Catalog
 {
+    public enum Limit
+    {
+        TexPages,
+        TexInfos,
+        SoundBitsPerSample,
+        SoundSampleRate,
+        SoundSampleSize,
+        SoundSampleCount,
+        SoundMapSize,
+        ItemMaxCount,
+        ItemSafeCount,
+        BoxLimit,
+        BoxMinCount,
+        OverlapLimit,
+        RoomVertexCount,
+        RoomFaceCount,
+        RoomLightCount,
+        RoomDimensions,
+        RoomMaxCount,
+        RoomSafeCount,
+        FloorHeight,
+        CornerHeight,
+
+        NG_SoundMapSize
+    }
+
     public class TrCatalog
     {
         private struct Item
@@ -44,6 +70,7 @@ namespace TombLib.Wad.Catalog
         private class Game
         {
             internal TRVersion.Game Version { get; private set; }
+            internal SortedList<Limit, int> Limits { get; private set; } = new SortedList<Limit, int>();
             internal SortedList<uint, Item> Moveables { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, Item> SpriteSequences { get; private set; } = new SortedList<uint, Item>();
             internal SortedList<uint, Item> Statics { get; private set; } = new SortedList<uint, Item>();
@@ -336,6 +363,30 @@ namespace TombLib.Wad.Catalog
             else return (int)entry.State;
         }
 
+        public static int GetLimit(TRVersion.Game version, Limit limit)
+        {
+            Game game;
+            int value = int.MinValue;
+            Games.TryGetValue(version.Native(), out game);
+
+            if (game != null)
+                value = game.Limits.FirstOrDefault(item => item.Key == limit).Value;
+
+            if (value == int.MinValue)
+            {
+                var otherGames = Games.Where(g => g.Key != version.Native()).ToList();
+                otherGames.Reverse();
+
+                foreach (var otherGame in otherGames)
+                {
+                    value = game.Limits.FirstOrDefault(item => item.Key == limit).Value;
+                    if (value != int.MinValue) break;
+                }
+            }
+
+            return value;
+        }
+
         public static IDictionary<uint, string> GetAllMoveables(TRVersion.Game version)
         {
             return Games[version.Native()].Moveables.DicSelect(item => item.Value.Names.LastOrDefault());
@@ -415,6 +466,32 @@ namespace TombLib.Wad.Catalog
                     continue;
 
                 Game game = new Game(version);
+
+                // Parse limits
+                XmlNode limits = gameNode.SelectSingleNode("limits");
+                if (limits != null)
+                {
+                    var names = Enum.GetNames(typeof(Limit));
+
+                    foreach (XmlNode limitNode in limits.ChildNodes)
+                    {
+                        if (limitNode.Name != "limit")
+                            continue;
+
+                        var name = string.Empty;
+                        if (limitNode.Attributes["name"] != null)
+                            name = limitNode.Attributes["name"].Value;
+
+                        var value = int.MinValue;
+                        if (limitNode.Attributes["value"] != null)
+                            value = int.Parse(limitNode.Attributes["value"].Value);
+
+                        if (string.IsNullOrEmpty(name) || !names.Any(n => n == name) || value == int.MinValue)
+                            continue;
+
+                        game.Limits.Add((Limit)Enum.Parse(typeof(Limit), name), value);
+                    }
+                }
 
                 // Parse moveables
                 XmlNode moveables = gameNode.SelectSingleNode("moveables");

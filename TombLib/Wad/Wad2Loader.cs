@@ -188,7 +188,7 @@ namespace TombLib.Wad
                     data = File.ReadAllBytes(fullPath);
                 }
 
-                samples.Add(obsoleteIndex++, new WadSample("", WadSample.ConvertSampleFormat(data)));
+                samples.Add(obsoleteIndex++, new WadSample("", WadSample.ConvertSampleFormat(data, 22050, 16)));
                 return true;
             });
 

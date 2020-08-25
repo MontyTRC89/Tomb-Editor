@@ -1,24 +1,27 @@
 <!-- TRCatalog 3.0, updated by MontyTRC, Lwmte and TRTombLevBauer for Tomb Editor -->
 <xml>
   <game id="TR1">
-    <techs>
-	  <tech name="TexPages" value="16" />
-	  <tech name="TexInfos" value="1800" />
-	  <tech name="SoundBitsPerSample" value="8" />
-	  <tech name="SoundSampleRate" value="22050" />
-	  <tech name="ItemMaxCount" value="256" />
-	  <tech name="ItemSafeCount" value="256" />
-	  <tech name="BoxLimit" value="32767" />
-	  <tech name="OverlapLimit" value="16382" />
-	  <tech name="MeshVertexCount" value="256" />
-	  <tech name="RoomVertexCount" value="65536" />
-	  <tech name="RoomFaceCount" value="2800" />
-	  <tech name="RoomCount" value="256" />
-	  <tech name="LightsPerRoom" value="20" />
-	  <tech name="SampleCount" value="256" />
-	  <tech name="SampleSize" value="1024" />
-	  <tech name="SoundMapSize" value="256" />
-	</techs>
+    <limits>
+	  <limit name="TexPages" value="16" />
+	  <limit name="TexInfos" value="1800" />
+	  <limit name="SoundBitsPerSample" value="8" />
+	  <limit name="SoundSampleRate" value="22050" />
+	  <limit name="SoundSampleSize" value="256" />
+	  <limit name="SoundSampleCount" value="256" />
+	  <limit name="SoundMapSize" value="256" />
+	  <limit name="ItemMaxCount" value="255" />
+	  <limit name="ItemSafeCount" value="255" />
+	  <limit name="BoxLimit" value="32767" />
+	  <limit name="BoxMinCount" value="2" />
+	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="RoomVertexCount" value="65536" />
+	  <limit name="RoomFaceCount" value="2800" />
+	  <limit name="RoomLightCount" value="20" />
+	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomMaxCount" value="1023" />
+	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="FloorHeight" value="127" />
+	</limits>
     <moveables>
       <moveable id="0" name="Lara" t5m="LARA" />
       <moveable id="1" name="Lara pistol animation" use_body_from="0" t5m="PISTOLS_ANIM" />
@@ -630,24 +633,27 @@
     </states>
   </game>
   <game id="TR2">
-    <techs>
-	  <tech name="TexPages" value="16" />
-	  <tech name="TexInfos" value="4096" />
-	  <tech name="SoundBitsPerSample" value="8" />
-	  <tech name="SoundSampleRate" value="11025" />
-	  <tech name="ItemMaxCount" value="256" />
-	  <tech name="ItemSafeCount" value="256" />
-	  <tech name="BoxLimit" value="32767" />
-	  <tech name="OverlapLimit" value="16382" />
-	  <tech name="MeshVertexCount" value="256" />
-	  <tech name="RoomVertexCount" value="65536" />
-	  <tech name="RoomFaceCount" value="2800" />
-	  <tech name="RoomCount" value="256" />
-	  <tech name="LightsPerRoom" value="20" />
-	  <tech name="SampleCount" value="256" />
-	  <tech name="SampleSize" value="1024" />
-	  <tech name="SoundMapSize" value="256" />
-	</techs>
+    <limits>
+	  <limit name="TexPages" value="32" />
+	  <limit name="TexInfos" value="4000" />
+	  <limit name="SoundBitsPerSample" value="8" />
+	  <limit name="SoundSampleRate" value="11025" />
+	  <limit name="SoundSampleSize" value="256" />
+	  <limit name="SoundSampleCount" value="256" />
+	  <limit name="SoundMapSize" value="370" />
+	  <limit name="ItemMaxCount" value="255" />
+	  <limit name="ItemSafeCount" value="255" />
+	  <limit name="BoxLimit" value="32767" />
+	  <limit name="BoxMinCount" value="1" />
+	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="RoomVertexCount" value="65536" />
+	  <limit name="RoomFaceCount" value="2800" />
+	  <limit name="RoomLightCount" value="20" />
+	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomMaxCount" value="1023" />
+	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="FloorHeight" value="127" />
+	</limits>
     <moveables>
       <moveable id="0" name="Lara" />
       <moveable id="1" name="Lara pistol animation" use_body_from="0" />
@@ -1313,6 +1319,27 @@
     </states>
   </game>
   <game id="TR3">
+    <limits>
+	  <limit name="TexPages" value="32" />
+	  <limit name="TexInfos" value="4000" />
+	  <limit name="SoundBitsPerSample" value="16" />
+	  <limit name="SoundSampleRate" value="22050" />
+	  <limit name="SoundSampleSize" value="256" />
+	  <limit name="SoundSampleCount" value="256" />
+	  <limit name="SoundMapSize" value="370" />
+	  <limit name="ItemMaxCount" value="255" />
+	  <limit name="ItemSafeCount" value="255" />
+	  <limit name="BoxLimit" value="2047" />
+	  <limit name="BoxMinCount" value="1" />
+	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="RoomVertexCount" value="65536" />
+	  <limit name="RoomFaceCount" value="2800" />
+	  <limit name="RoomLightCount" value="20" />
+	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomMaxCount" value="1023" />
+	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="FloorHeight" value="127" />
+	</limits>
     <moveables>
       <moveable id="0" name="Lara" use_body_from="315" />
       <moveable id="1" name="Lara pistol animation" use_body_from="315" />
@@ -2062,6 +2089,29 @@
     </states>
   </game>
   <game id="TR4">
+    <limits>
+	  <limit name="TexPages" value="32767" />
+	  <limit name="TexInfos" value="32767" />
+	  <limit name="SoundBitsPerSample" value="16" />
+	  <limit name="SoundSampleRate" value="22050" />
+	  <limit name="SoundSampleSize" value="256" />
+	  <limit name="SoundSampleCount" value="256" />
+	  <limit name="SoundMapSize" value="370" />
+	  <limit name="ItemMaxCount" value="1023" />
+	  <limit name="ItemSafeCount" value="255" />
+	  <limit name="BoxLimit" value="2047" />
+	  <limit name="BoxMinCount" value="1" />
+	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="RoomVertexCount" value="65536" />
+	  <limit name="RoomFaceCount" value="2800" />
+	  <limit name="RoomLightCount" value="20" />
+	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomMaxCount" value="1023" />
+	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="FloorHeight" value="127" />
+	  
+	  <limit name="NG_SoundMapSize" value="2048" />
+	</limits>
     <moveables>
       <moveable id="0" name="LARA" description="Lara"  use_body_from="8" t5m="LARA" />
       <moveable id="1" name="PISTOLS_ANIM" description="Pistols Anim" use_body_from="8" t5m="PISTOLS_ANIM" />
@@ -3620,6 +3670,27 @@
     </states>
   </game>
   <game id="TR5">
+    <limits>
+	  <limit name="TexPages" value="32767" />
+	  <limit name="TexInfos" value="32767" />
+	  <limit name="SoundBitsPerSample" value="16" />
+	  <limit name="SoundSampleRate" value="22050" />
+	  <limit name="SoundSampleSize" value="256" />
+	  <limit name="SoundSampleCount" value="256" />
+	  <limit name="SoundMapSize" value="450" />
+	  <limit name="ItemMaxCount" value="255" />
+	  <limit name="ItemSafeCount" value="255" />
+	  <limit name="BoxLimit" value="2047" />
+	  <limit name="BoxMinCount" value="1" />
+	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="RoomVertexCount" value="65536" />
+	  <limit name="RoomFaceCount" value="2800" />
+	  <limit name="RoomLightCount" value="20" />
+	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomMaxCount" value="1023" />
+	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="FloorHeight" value="127" />
+	</limits>
     <moveables>
       <moveable id="0" name="Lara" use_body_from="8" t5m="LARA" />
       <moveable id="1" name="Pistol animation" use_body_from="8" t5m="PISTOLS_ANIM" />
@@ -4553,6 +4624,27 @@
     </states>
   </game>
   <game id="TR5Main">
+    <limits>
+	  <limit name="TexPages" value="32767" />
+	  <limit name="TexInfos" value="2147483647" />
+	  <limit name="SoundBitsPerSample" value="16" />
+	  <limit name="SoundSampleRate" value="22050" />
+	  <limit name="SoundSampleSize" value="32768" />
+	  <limit name="SoundSampleCount" value="32768" />
+	  <limit name="SoundMapSize" value="4096" />
+	  <limit name="ItemMaxCount" value="2147483647" />
+	  <limit name="ItemSafeCount" value="2147483647" />
+	  <limit name="BoxLimit" value="2147483647" />
+	  <limit name="BoxMinCount" value="1" />
+	  <limit name="OverlapLimit" value="2147483647" />
+	  <limit name="RoomVertexCount" value="2147483647" />
+	  <limit name="RoomFaceCount" value="2147483647" />
+	  <limit name="RoomLightCount" value="2147483647" />
+	  <limit name="RoomDimensions" value="2147483647" />
+	  <limit name="RoomMaxCount" value="2147483647" />
+	  <limit name="RoomSafeCount" value="2147483647" />
+	  <limit name="FloorHeight" value="127" />
+	</limits>
     <moveables>
 		<moveable id="0" name="LARA" use_body_from="12" />
 		<moveable id="1" name="LARA_EXTRA_ANIMS" use_body_from="12" />

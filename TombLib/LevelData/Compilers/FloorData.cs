@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TombLib.NG;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -57,6 +58,10 @@ namespace TombLib.LevelData.Compilers
         private void BuildFloorData()
         {
             ReportProgress(53, "Building floordata");
+
+            // Get limits from catalog
+            int heightLimit = _limits[Limit.FloorHeight];
+            int roomLimit   = _limits[Limit.RoomSafeCount];
 
             // Floordata sequence dictionary is used OPTIONALLY, if agressive floordata packing is on!
             var floorDataDictionary = new Dictionary<FloordataSequence, ushort>();
@@ -223,29 +228,35 @@ namespace TombLib.LevelData.Compilers
 
                             // Floor
                             int floorHeight = -room.Position.Y - GetBalancedRealHeight(floorShape, ceilingShape.Max, false);
-                            if (floorHeight < -127 || floorHeight > 127)
-                                throw new ApplicationException("Floor height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
+                            if (floorHeight < -heightLimit || floorHeight > heightLimit)
+                            {
+                                floorHeight = MathC.Clamp(floorHeight, -heightLimit, heightLimit);
+                                _progressReporter.ReportWarn("Floor height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
+                            }
                             sector.Floor = (sbyte)floorHeight;
                             if (floorPortalType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.FloorPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                if (roomIndex >= 254)
-                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                if (roomIndex > roomLimit)
+                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first 255 rooms. Portal " + portal + " can't be added.");
                                 else
                                     sector.RoomBelow = (byte)roomIndex;
                             }
 
                             // Ceiling
                             int ceilingHeight = -room.Position.Y - GetBalancedRealHeight(ceilingShape, floorShape.Min, true);
-                            if (ceilingHeight < -127 || ceilingHeight > 127)
-                                throw new ApplicationException("Ceiling height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
+                            if (ceilingHeight < -heightLimit || ceilingHeight > heightLimit)
+                            {
+                                ceilingHeight = MathC.Clamp(ceilingHeight, -heightLimit, heightLimit);
+                                _progressReporter.ReportWarn("Ceiling height in room '" + room + "' at " + new VectorInt2(x, z) + " is out of range.");
+                            }
                             sector.Ceiling = (sbyte)ceilingHeight;
                             if (ceilingPortalType != Room.RoomConnectionType.NoPortal)
                             {
                                 var portal = block.CeilingPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                if (roomIndex >= 254)
+                                if (roomIndex > roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
                                 else
                                     sector.RoomAbove = (byte)roomIndex;
@@ -436,8 +447,7 @@ namespace TombLib.LevelData.Compilers
                     if ((_level.Settings.GameVersion != TRVersion.Game.TR5 && _level.Settings.GameVersion != TRVersion.Game.TR5Main) &&
                         (found.TriggerType > TriggerType.ConditionNg && found.TriggerType < TriggerType.Monkey))
                         _progressReporter.ReportWarn("Level uses trigger type '" + found.TriggerType + "', which is not supported in this game engine.");
-
-
+                    
                     ushort triggerSetup;
                     if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
                     {
@@ -615,7 +625,7 @@ namespace TombLib.LevelData.Compilers
                 if (parameter is MoveableInstance)
                 {
                     MoveableInstance @object = (MoveableInstance)parameter;
-                    bool isAI = @object.WadObjectId.TypeId >= 398 && @object.WadObjectId.TypeId <= 406;
+                    bool isAI = TrCatalog.IsMoveableAI(_level.Settings.GameVersion, @object.WadObjectId.TypeId);
                     var table = isAI ? _aiObjectsTable : _moveablesTable;
                     if (!table.TryGetValue(@object, out index))
                     {
@@ -883,11 +893,12 @@ namespace TombLib.LevelData.Compilers
                 if (isCeiling)
                     heightDiffX = -heightDiffX;
 
-                if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
+                int heightLimit = _limits[Limit.FloorHeight];
+                if (Math.Abs(heightDiffX) > heightLimit || Math.Abs(heightDiffY) > heightLimit)
                 {
                     _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The quad is too steep, the collision is inaccurate.");
-                    heightDiffX = Math.Min(Math.Max(heightDiffX, -127), 127);
-                    heightDiffY = Math.Min(Math.Max(heightDiffY, -127), 127);
+                    heightDiffX = Math.Min(Math.Max(heightDiffX, -heightLimit), heightLimit);
+                    heightDiffY = Math.Min(Math.Max(heightDiffY, -heightLimit), heightLimit);
                 }
 
                 ushort result = 0;

@@ -14,7 +14,7 @@ namespace TombLib.LevelData.Compilers
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-        private void PrepareTextures()
+        private int PrepareTextures()
         {
             // It's fine using the old unpadded way for sprites, they are quad
             List<ImageC> spritePages = BuildSprites(_textureInfoManager.NumRoomPages + _textureInfoManager.NumObjectsPages);
@@ -52,6 +52,8 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(70, "    Num room pages: " + _textureInfoManager.NumRoomPages);
             ReportProgress(70, "    Num objects pages: " + _textureInfoManager.NumObjectsPages);
             ReportProgress(70, "    Num bumpmap pages: " + _textureInfoManager.NumBumpPages);
+
+            return numPages;
         }
 
         private TextureFootStepSound? GetTextureSound(bool isTriangle, TextureArea area)
