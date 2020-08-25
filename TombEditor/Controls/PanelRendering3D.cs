@@ -2490,7 +2490,8 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    if (_spriteList.Count <= instance.SpriteID)
+                    if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2 ||
+                        _spriteList.Count <= instance.SpriteID)
                     {
                         Vector4 color;
                         if (_editor.SelectedObject == instance)
