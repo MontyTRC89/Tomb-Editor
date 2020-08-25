@@ -202,7 +202,7 @@ namespace TombLib.Wad.TrLevels
             return mesh;
         }
 
-        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, int textureSize = 1, int margin = 1)
+        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, int textureSize = 2, int margin = 1)
         {
             if (textureSize < 1) textureSize = 1;
             if (margin < 1) margin = 1;
