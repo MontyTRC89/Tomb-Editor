@@ -16,7 +16,7 @@
                 (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
-        public string ShortName() => (Fixed ? "Locked camera" : "Camera") + " (Room " + Room?.ToString() ?? "NULL" + ")" + 
+        public string ShortName() => (Fixed ? "Locked camera" : "Camera") + " (Room " + (Room?.ToString() ?? "NULL") + ")" + 
             (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
     }
 }
