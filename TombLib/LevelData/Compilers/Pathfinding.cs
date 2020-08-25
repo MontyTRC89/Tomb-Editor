@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -213,11 +214,14 @@ namespace TombLib.LevelData.Compilers
 
             if (_level.Settings.GameVersion != TRVersion.Game.TR5Main)
             {
-                var boxLimit = _level.Settings.GameVersion >= TRVersion.Game.TR3 ? 2047 : 32767;
+                if (_boxes.Length < _limits[Limit.BoxMinCount])
+                    _progressReporter.ReportWarn("Level has too few boxes. Add some room geometry or game may crash.");
+
+                var boxLimit = _limits[Limit.BoxLimit];
                 if (_boxes.Length > boxLimit)
                     _progressReporter.ReportWarn("Box limit is reached. Maximum is " + boxLimit + ", you have " + _boxes.Length + ". Game may crash. Reduce level size or split it.");
 
-                var overlapLimit = 8192;
+                var overlapLimit = _limits[Limit.OverlapLimit];
                 if (_overlaps.Length > overlapLimit)
                     _progressReporter.ReportWarn("Overlap limit is reached. Maximum is " + overlapLimit + ", you have " + _overlaps.Length + ". Game may crash. Reduce level size or split it.");
             }

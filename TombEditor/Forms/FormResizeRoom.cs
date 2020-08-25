@@ -4,8 +4,8 @@ using TombEditor.Controls;
 using TombLib;
 using TombLib.LevelData;
 using System.Drawing;
-using TombLib.Rendering;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.Forms
 {
@@ -59,7 +59,9 @@ namespace TombEditor.Forms
                 numericXp.Minimum = (3 - _roomToResize.NumXSectors) - numericXn.Value;
                 numericZp.Minimum = (3 - _roomToResize.NumZSectors) - numericZn.Value;
 
-                int maxDimensions = cbAllowOversizedRooms.Checked ? 255 : Room.MaxRecommendedRoomDimensions;
+                int recommendedDimensions = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.RoomDimensions);
+                int maxDimensions = cbAllowOversizedRooms.Checked ? 255 : recommendedDimensions;
+
                 numericXn.Maximum = (maxDimensions - _roomToResize.NumXSectors) - numericXp.Value;
                 numericXp.Maximum = (maxDimensions - _roomToResize.NumXSectors) - numericXn.Value;
                 numericZn.Maximum = (maxDimensions - _roomToResize.NumZSectors) - numericZp.Value;
@@ -67,7 +69,7 @@ namespace TombEditor.Forms
 
                 gridControl.Invalidate();
 
-                if (cbAllowOversizedRooms.Checked && (NewArea.Width > Room.MaxRecommendedRoomDimensions || NewArea.Height > Room.MaxRecommendedRoomDimensions))
+                if (cbAllowOversizedRooms.Checked && (NewArea.Width > recommendedDimensions || NewArea.Height > recommendedDimensions))
                 {
                     roomIcon.BackColor = Color.Firebrick;
                     toolTip.SetToolTip(roomIcon, "Room bigger than 32x32 will have in-game rendering issues!");

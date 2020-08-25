@@ -10,6 +10,7 @@ using NAudio.Wave.SampleProviders;
 using System.Xml.Serialization;
 using System.Threading.Tasks;
 using TombLib.LevelData;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
@@ -22,8 +23,6 @@ namespace TombLib.Wad
         public bool IsLoaded => Data != null && Data.Length > 0;
 
         // Properties for correct encoding of samples.
-        [XmlIgnore]
-        public const int GameSupportedSampleRate = 22050;
         [XmlIgnore]
         private const int ChannelCountOffset = 22;
         [XmlIgnore]
@@ -132,7 +131,7 @@ namespace TombLib.Wad
         [XmlIgnore]
         public uint BitsPerSample => BitConverter.ToUInt16(Data, BitsPerSampleOffset);
 
-        public static byte[] ConvertSampleFormat(byte[] data, int sampleRate = GameSupportedSampleRate, int bitsPerSample = 16)
+        public static byte[] ConvertSampleFormat(byte[] data, int sampleRate, int bitsPerSample)
         {
             // Use NAudio now to convert the audio data
             using (var inStream = new MemoryStream(data, false))
@@ -157,7 +156,7 @@ namespace TombLib.Wad
                         writer.Write((uint)16);
                         writer.Write((ushort)targetFormat.Encoding);
                         writer.Write((ushort)targetFormat.Channels);
-                        writer.Write((uint)targetFormat.SampleRate); // We always pretend to have the target sample rate (by default 22050Hz)
+                        writer.Write((uint)targetFormat.SampleRate);
                         writer.Write((uint)targetFormat.AverageBytesPerSecond);
                         writer.Write((ushort)targetFormat.BlockAlign);
                         writer.Write((ushort)targetFormat.BitsPerSample);
@@ -394,29 +393,9 @@ namespace TombLib.Wad
             var loadedSamples = new SortedDictionary<int, WadSample>();
 
             // Set up maximum buffer sizes and sample rate
-            int maxBufferLength = 1024 * 256;
-            int warnBufferLength = 1024 * 256;
-            int supportedSampleRate = 22050;
-            int supportedBitness = 16;
-
-            switch (settings.GameVersion)
-            {
-                case TRVersion.Game.TR1:
-                    supportedBitness = 8;
-                    break;
-                case TRVersion.Game.TR2:
-                    supportedSampleRate = 11025;
-                    supportedBitness = 8;
-                    break;
-                case TRVersion.Game.TR4:
-                case TRVersion.Game.TRNG:
-                    maxBufferLength = 1024 * 1024; // Raised TREP limit
-                    break;
-                case TRVersion.Game.TR5Main:
-                    maxBufferLength = int.MaxValue; // Unlimited
-                    warnBufferLength = int.MaxValue;
-                    break;
-            }
+            int maxBufferLength     = TrCatalog.GetLimit(settings.GameVersion, Limit.SoundSampleSize) * 1024;
+            int supportedSampleRate = TrCatalog.GetLimit(settings.GameVersion, Limit.SoundSampleRate);
+            int supportedBitness    = TrCatalog.GetLimit(settings.GameVersion, Limit.SoundBitsPerSample);
 
             var missing = false;
             Parallel.For(0, samples.Count, i =>
@@ -448,8 +427,6 @@ namespace TombLib.Wad
 
                             if (buffer.Length > maxBufferLength)
                                 reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It is too big for this game version, crashes may occur.");
-                            else if (buffer.Length > warnBufferLength)
-                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + warnBufferLength / 1024 + " kbytes long. It may cause problems without additional measures, such as patching.");
                         }
                     }
                     // ... otherwise output null sample

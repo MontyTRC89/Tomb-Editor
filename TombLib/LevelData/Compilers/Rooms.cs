@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -140,8 +141,9 @@ namespace TombLib.LevelData.Compilers
         {
             tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
 
-            if (room.NumXSectors > Room.MaxRecommendedRoomDimensions || room.NumZSectors > Room.MaxRecommendedRoomDimensions)
-                _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + Room.MaxRecommendedRoomDimensions + " sectors per side cause trouble with rendering.");
+            int maxDimensions = _limits[Limit.RoomDimensions];
+            if (room.NumXSectors > maxDimensions || room.NumZSectors > maxDimensions)
+                _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
 
             var newRoom = new tr_room
             {
@@ -660,12 +662,14 @@ namespace TombLib.LevelData.Compilers
 
                 // Check for the limits reached
 
-                if (roomVertices.Count >= 65536)
-                    _progressReporter.ReportWarn("Room '" + room.Name + "' has too many vertices (limit = 65536)! Try to remove some imported geometry objects.");
+                int maxVertexCount = _limits[Limit.RoomVertexCount];
+                if (roomVertices.Count >= maxVertexCount)
+                    _progressReporter.ReportWarn("Room '" + room.Name + "' has too many vertices (limit is " + maxVertexCount + ")! Try to remove some imported geometry objects.");
 
-                int numPolygons = roomQuads.Count + roomTriangles.Count;
-                if (_level.Settings.GameVersion != TRVersion.Game.TR5Main && numPolygons > 2800)
-                    _progressReporter.ReportWarn("Room '" + room.Name + "' has too many polygons (count = " + numPolygons + ", limit is around 2800)! Try to unmerge statics or remove some imported geometry objects.");
+                int maxPolyCount = _limits[Limit.RoomFaceCount];
+                int numPolygons  = roomQuads.Count + roomTriangles.Count;
+                if (numPolygons > maxPolyCount)
+                    _progressReporter.ReportWarn("Room '" + room.Name + "' has " + numPolygons + " polygons, while limit is around " + maxPolyCount + ". Try to unmerge statics or remove some imported geometry objects.");
 
                 // Assign vertex effects
 
@@ -1086,8 +1090,9 @@ namespace TombLib.LevelData.Compilers
                 newRoom.Lights.Add(newLight);
             }
 
-            if (lightCount > 20)
-                _progressReporter.ReportWarn("Room '" + room + "' has more than 20 dynamic lights (" + lightCount + "). This can cause crashes with the original engine!");
+            int lightLimit = _limits[Limit.RoomLightCount];
+            if (lightCount > lightLimit)
+                _progressReporter.ReportWarn("Room '" + room + "' has more than " + lightLimit + " dynamic lights (count is " + lightCount + "). This may cause crashes.");
         }
 
         private void ConvertSectors(Room room, tr_room newRoom)

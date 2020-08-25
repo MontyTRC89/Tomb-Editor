@@ -11,6 +11,7 @@ Tomb Editor:
  * Point to specific trigger area when "find where is triggered" context menu was engaged.
  * Always resample sounds to proper format.
  * Store texture remap window properties in config file.
+ * Define version-specific game limits in TrCatalog.xml.
  * Fixed light radius calculation in TR2/TR3.
  * Fixed drag-n-drop in find and replace objects dialog.
  * Fixed incorrect TR1-3 item names in find and replace objects dialog.

@@ -1,5 +1,4 @@
-﻿using System;
-using TombLib.Wad;
+﻿using TombLib.Wad;
 
 namespace TombLib.LevelData
 {

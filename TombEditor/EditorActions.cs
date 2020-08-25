@@ -3043,9 +3043,10 @@ namespace TombEditor
                 maxSectorPos = VectorInt2.Max(maxSectorPos, position);
             }
             VectorInt2 size = maxSectorPos - minSectorPos + new VectorInt2(2, 2);
-            if (size.X > Room.MaxRecommendedRoomDimensions || size.Y > Room.MaxRecommendedRoomDimensions)
+            int maxSize = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.RoomDimensions);
+            if (size.X > maxSize || size.Y > maxSize)
                 if (DarkMessageBox.Show(owner, "After merging all rooms, the new room will have size " + size.X + " by " + size.Y + ". That bigger than " +
-                    Room.MaxRecommendedRoomDimensions + " by " + Room.MaxRecommendedRoomDimensions + " which is maximum size for the engine. You can continue anyway," +
+                    maxSize + " by " + maxSize + " which is maximum size for the engine. You can continue anyway," +
                     " but in game there will be issues with rendering. Are you sure?", "Room too big.", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                     return;
 

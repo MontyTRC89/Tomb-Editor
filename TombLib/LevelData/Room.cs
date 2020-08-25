@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using TombLib.Graphics;
 using TombLib.Utils;
-using TombEditor;
+
 namespace TombLib.LevelData
 {
     public enum Reverberation : byte
@@ -36,7 +35,6 @@ namespace TombLib.LevelData
 
         public const short DefaultHeight = 12;
         public const short DefaultRoomDimensions = 20;
-        public const short MaxRecommendedRoomDimensions = 31;
 
         public string Name { get; set; }
         public VectorInt3 Position { get; set; }

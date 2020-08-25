@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 using TombLib.LevelData;
 
@@ -72,25 +71,6 @@ namespace TombLib.Wad
             Indexed = s.Indexed;
             foreach (var sample in s.Samples)
                 Samples.Add(new WadSample(sample.FileName));
-        }
-
-
-        public static float GetMaxPitch(uint sampleFrequency)
-        {
-            float pitchFactor = (float)WadSample.GameSupportedSampleRate / (float)sampleFrequency;
-            return pitchFactor * (255.5f / 128.0f);
-        }
-
-        [XmlIgnore]
-        public int SampleDataSize
-        {
-            get
-            {
-                int dataSize = 0;
-                foreach (WadSample sample in Samples)
-                    dataSize += sample.Data.Length;
-                return dataSize;
-            }
         }
 
         public int SampleCount(LevelSettings settings)
