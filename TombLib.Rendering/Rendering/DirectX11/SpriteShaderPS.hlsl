@@ -11,8 +11,8 @@ Texture2DArray SpriteTexture : register(t0);
 float4 main(PixelInputType input) : SV_TARGET
 {
     float4 result = SpriteTexture.Sample(DefaultSampler, input.Uvw);
+	result.rgb *= input.Color.rgb * result.a;
 	result.rgb *= result.a;
-	result *= input.Color;
 	
 	if (result.a <= 0.05f)
 		discard;

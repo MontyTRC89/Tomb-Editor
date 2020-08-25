@@ -2513,7 +2513,7 @@ namespace TombEditor.Controls
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                    var color = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+                    var color = new Vector4(0.4f, 0.9f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
@@ -2564,7 +2564,7 @@ namespace TombEditor.Controls
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                    Vector4 color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
+                    Vector4 color = new Vector4(0.0f, 0.6f, 1.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
@@ -2589,7 +2589,7 @@ namespace TombEditor.Controls
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                    Vector4 color = new Vector4(1.0f, 1.0f, 0.0f, 1.0f);
+                    Vector4 color = new Vector4(1.0f, 0.7f, 0.0f, 1.0f);
                     if (_editor.SelectedObject == instance)
                     {
                         color = _editor.Configuration.UI_ColorScheme.ColorSelection;
@@ -2667,7 +2667,7 @@ namespace TombEditor.Controls
                     foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
                         if (instance.Model?.DirectXModel == null || instance.Hidden)
                         {
-                            Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                            Vector4 color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
                             if (_editor.SelectedObject == instance)
                             {
                                 color = _editor.Configuration.UI_ColorScheme.ColorSelection;
@@ -2744,9 +2744,9 @@ namespace TombEditor.Controls
                 }
         }
 
-        private void RenderOrQueueServiceObject(ISpatial instance, GeometricPrimitive primitive, Vector4 color, Effect effect, Matrix4x4 viewProjection, List<Sprite> sprites, bool bypassSprites = false)
+        private void RenderOrQueueServiceObject(ISpatial instance, GeometricPrimitive primitive, Vector4 color, Effect effect, Matrix4x4 viewProjection, List<Sprite> sprites)
         {
-            if (!bypassSprites && _editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
+            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
             {
                 var newSprite = ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color, _editor.SelectedObject == instance);
                 if (newSprite != null)
@@ -3470,10 +3470,6 @@ namespace TombEditor.Controls
                 DrawFlybyPath(viewProjection, effect);
             }
 
-            // Draw ghost blocks
-            if (ShowGhostBlocks)
-                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
-
             // Depth-sort sprites
             sprites = sprites.OrderByDescending(s => s.Depth).ToList();
 
@@ -3484,6 +3480,10 @@ namespace TombEditor.Controls
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 SwapChain.RenderSprites(_renderingTextures, true, false, depthSprites);
             }
+
+            // Draw ghost blocks
+            if (ShowGhostBlocks)
+                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
 
             // Draw disabled rooms, so they don't conceal all geometry behind
             var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Hidden).ToList();
