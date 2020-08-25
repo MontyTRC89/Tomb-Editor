@@ -978,7 +978,7 @@ namespace TombEditor
             }
         }
 
-        public static void DeleteObjects(IEnumerable<ObjectInstance> objects, IWin32Window owner = null)
+        public static void DeleteObjects(IEnumerable<ObjectInstance> objects, IWin32Window owner = null, bool undo = true)
         {
             if (objects.Count() == 0)
                 return;
@@ -996,18 +996,21 @@ namespace TombEditor
                     return;
             }
 
-            // Prepare undo
-            var undoList = new List<UndoRedoInstance>();
-            foreach (var instance in objects)
+            if (undo)
             {
-                if (instance is PositionBasedObjectInstance)
-                    undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
-                else if (instance is GhostBlockInstance)
-                    undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
-            }
+                // Prepare undo
+                var undoList = new List<UndoRedoInstance>();
+                foreach (var instance in objects)
+                {
+                    if (instance is PositionBasedObjectInstance)
+                        undoList.Add(new AddRemoveObjectUndoInstance(_editor.UndoManager, (PositionBasedObjectInstance)instance, false));
+                    else if (instance is GhostBlockInstance)
+                        undoList.Add(new AddRemoveGhostBlockUndoInstance(_editor.UndoManager, (GhostBlockInstance)instance, false));
+                }
 
-            // Push undo
-            _editor.UndoManager.Push(undoList);
+                // Push undo
+                _editor.UndoManager.Push(undoList);
+            }
 
             // Delete objects
             foreach (var instance in objects)
@@ -1926,6 +1929,9 @@ namespace TombEditor
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
         {
+            if (rooms_.Count() == 0)
+                return;
+
             rooms_ = rooms_.SelectMany(room => room.Versions).Distinct();
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
 
