@@ -215,6 +215,7 @@
     <EmbeddedResource Include="Rendering\SectorTextures\texture_unavailable.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Rendering\ServiceObjectTextures\volume.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\ghost_block.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\unknown.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\camera.png" />

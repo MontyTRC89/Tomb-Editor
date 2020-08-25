@@ -870,6 +870,9 @@ namespace TombEditor
             }
             else if (instance is FlybyCameraInstance)
             {
+                if (!VersionCheck(_editor.Level.Settings.GameVersion > TRVersion.Game.TR3, "Flyby camera"))
+                    return;
+
                 using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))
                     if (formFlyby.ShowDialog(owner) != DialogResult.OK)
                         return;
@@ -884,6 +887,9 @@ namespace TombEditor
             }
             else if (instance is SpriteInstance)
             {
+                if (!VersionCheck(_editor.Level.Settings.GameVersion <= TRVersion.Game.TR2, "Room sprite"))
+                    return;
+                    
                 using (var formSprite = new FormSprite((SpriteInstance)instance))
                     if (formSprite.ShowDialog(owner) != DialogResult.OK)
                         return;
@@ -927,22 +933,20 @@ namespace TombEditor
             }
             else if (instance is VolumeInstance)
             {
-                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Trigger volume"))
+                    return;
+
+                var existingWindow = Application.OpenForms["FormVolume"];
+                if (existingWindow == null)
                 {
-                    var existingWindow = Application.OpenForms["FormVolume"];
-                    if (existingWindow == null)
-                    {
-                        var volForm = new FormVolume((VolumeInstance)instance);
-                        volForm.Show(owner);
-                    }
-                    else
-                    {
-                        (existingWindow as FormVolume).SaveAndReopenVolume((VolumeInstance)instance);
-                        existingWindow.Focus();
-                    }
+                    var volForm = new FormVolume((VolumeInstance)instance);
+                    volForm.Show(owner);
                 }
                 else
-                    _editor.SendMessage("This object is unavailable in this game version. Switch version to TR5Main.", PopupType.Error);
+                {
+                    (existingWindow as FormVolume).SaveAndReopenVolume((VolumeInstance)instance);
+                    existingWindow.Focus();
+                }
             }
         }
 

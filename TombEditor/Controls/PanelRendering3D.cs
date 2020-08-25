@@ -811,6 +811,9 @@ namespace TombEditor.Controls
                         if (obj is ItemInstance)
                             _dragObjectPicked = true; // Prepare for drag-n-drop
                     }
+
+                    if (obj is ISpatial)
+                        _editor.LastSelection = LastSelectionType.SpatialObject;
                 }
                 else if (newPicking == null)
                 {
@@ -1672,115 +1675,51 @@ namespace TombEditor.Controls
             {
                 // First check for all objects in the room
                 foreach (var instance in room.Objects)
-                    if (instance is MoveableInstance)
+                    if (instance is MoveableInstance && ShowMoveables)
                     {
-                        if (ShowMoveables)
+                        MoveableInstance modelInfo = (MoveableInstance)instance;
+                        WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
+                        if (moveable != null)
                         {
-                            MoveableInstance modelInfo = (MoveableInstance)instance;
-                            WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
-                            if (moveable != null)
+                            // TODO Make picking independent of the rendering data.
+                            AnimatedModel model = _wadRenderer.GetMoveable(moveable);
+                            for (int j = 0; j < model.Meshes.Count; j++)
                             {
-                                // TODO Make picking independent of the rendering data.
-                                AnimatedModel model = _wadRenderer.GetMoveable(moveable);
-                                for (int j = 0; j < model.Meshes.Count; j++)
-                                {
-                                    var mesh = model.Meshes[j];
-                                    DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
-                                }
-                            }
-                            else
-                            {
-                                BoundingBox box = new BoundingBox(
-                                    room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
-                                    room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
-                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                    result = new PickingResultObject(distance, instance);
-                            }
-                        }
-                    }
-                    else if (instance is StaticInstance)
-                    {
-                        if (ShowStatics)
-                        {
-                            StaticInstance modelInfo = (StaticInstance)instance;
-                            WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
-                            if (@static != null)
-                            {
-                                // TODO Make picking independent of the rendering data.
-                                StaticModel model = _wadRenderer.GetStatic(@static);
-                                var mesh = model.Meshes[0];
-                                DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
-                            }
-                            else
-                            {
-                                BoundingBox box = new BoundingBox(
-                                    room.WorldPos + modelInfo.Position - new Vector3(_littleCubeRadius),
-                                    room.WorldPos + modelInfo.Position + new Vector3(_littleCubeRadius));
-                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                    result = new PickingResultObject(distance, instance);
-                            }
-                        }
-                    }
-                    else if (instance is ImportedGeometryInstance)
-                    {
-                        if (ShowImportedGeometry && !DisablePickingForImportedGeometry)
-                        {
-                            var geometry = (ImportedGeometryInstance)instance;
-                            if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
-                            {
-                                BoundingBox box = new BoundingBox(
-                                    room.WorldPos + geometry.Position - new Vector3(_littleCubeRadius),
-                                    room.WorldPos + geometry.Position + new Vector3(_littleCubeRadius));
-                                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                    result = new PickingResultObject(distance, instance);
-                            }
-                            else
-                                foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
-                                    DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
-                        }
-                    }
-                    else if (instance is VolumeInstance)
-                    {
-                        if (ShowVolumes)
-                        {
-                            var vol = (VolumeInstance)instance;
-                            BoundingBox box = new BoundingBox(room.WorldPos + vol.Position - new Vector3(_littleCubeRadius),
-                                                              room.WorldPos + vol.Position + new Vector3(_littleCubeRadius));
-                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                result = new PickingResultObject(distance, instance);
-                        }
-                    }
-                    else if (ShowOtherObjects)
-                    {
-                        if (instance is LightInstance)
-                        {
-                            BoundingSphere sphere = new BoundingSphere(room.WorldPos + instance.Position, _littleSphereRadius);
-                            if (Collision.RayIntersectsSphere(ray, sphere, out distance) && (result == null || distance < result.Distance))
-                                result = new PickingResultObject(distance, instance);
-                        }
-                        else if (instance is SpriteInstance && (instance as SpriteInstance).SpriteID < _spriteList.Count)
-                        {
-                            var sprite = instance as SpriteInstance;
-                            var matrix = Matrix4x4.CreateTranslation(ray.Position) * Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-                            var rayPos = matrix.TransformPerspectively(new Vector3()).To2();
-                            var size   = sprite.GetViewportRect(_spriteList[sprite.SpriteID].Alignment, ClientSize, Camera, out distance);
-
-                            if (distance < 1.0f) // Discard offscreen sprites
-                            {
-                                distance = Vector3.Distance(Camera.GetPosition(), instance.Position);
-                                if (size.Contains(rayPos) && (result == null || distance < result.Distance))
-                                    result = new PickingResultObject(distance, instance);
+                                var mesh = model.Meshes[j];
+                                DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
                             }
                         }
                         else
-                        {
-                            BoundingBox box = new BoundingBox(
-                                room.WorldPos + instance.Position - new Vector3(_littleCubeRadius),
-                                room.WorldPos + instance.Position + new Vector3(_littleCubeRadius));
-                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
-                                result = new PickingResultObject(distance, instance);
-                        }
+                            result = TryPickServiceObject(instance, ray, result, out distance);
                     }
+                    else if (instance is StaticInstance && ShowStatics)
+                    {
+                        StaticInstance modelInfo = (StaticInstance)instance;
+                        WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
+                        if (@static != null)
+                        {
+                            // TODO Make picking independent of the rendering data.
+                            StaticModel model = _wadRenderer.GetStatic(@static);
+                            var mesh = model.Meshes[0];
+                            DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                        }
+                        else
+                            result = TryPickServiceObject(instance, ray, result, out distance);
+                    }
+                    else if (instance is ImportedGeometryInstance && ShowImportedGeometry && 
+                             !DisablePickingForImportedGeometry)
+                    {
+                        var geometry = (ImportedGeometryInstance)instance;
+                        if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
+                            result = TryPickServiceObject(instance, ray, result, out distance);
+                        else
+                            foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
+                                DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                    }
+                    else if (instance is VolumeInstance && ShowVolumes)
+                        result = TryPickServiceObject(instance, ray, result, out distance);
+                    else if (ShowOtherObjects)
+                        result = TryPickServiceObject(instance, ray, result, out distance);
 
                 if (ShowGhostBlocks)
                     foreach (var ghost in room.GhostBlocks)
@@ -1814,18 +1753,20 @@ namespace TombEditor.Controls
                                 }
                             }
                         }
-
-                        // Shift bounding box a bit higher if we use sprites, cause ghost block sprite itself is lifted to avoid clipping.
-                        var shift = _editor.Configuration.Rendering3D_UseSpritesForServiceObjects ? new Vector3(0, 96.0f, 0) : Vector3.Zero;
-
-                        BoundingBox box = new BoundingBox(
-                            ghost.Center(true) - new Vector3(_littleCubeRadius) + shift,
-                            ghost.Center(true) + new Vector3(_littleCubeRadius) + shift);
-
-                        if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                        else
                         {
-                            result = new PickingResultObject(distance, ghost);
-                            ghost.SelectedCorner = null;
+                            // FIXME: For now, ghost blocks don't differentiate sprite mode and 3D mode picking.
+                            // It may need a huge refactoring. Until now, there could be misfiring on higher FOVs.
+
+                            BoundingBox box = new BoundingBox(
+                                ghost.Center(true) - new Vector3(_littleCubeRadius),
+                                ghost.Center(true) + new Vector3(_littleCubeRadius));
+
+                            if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                            {
+                                result = new PickingResultObject(distance, ghost);
+                                ghost.SelectedCorner = null;
+                            }
                         }
                     }
 
@@ -1839,6 +1780,55 @@ namespace TombEditor.Controls
                     if (roomIntersectInfo != null && (result == null || roomIntersectInfo.Value.Distance < result.Distance))
                         result = new PickingResultBlock(roomIntersectInfo.Value.Distance, roomIntersectInfo.Value.VerticalCoord, roomIntersectInfo.Value.Pos, room, roomIntersectInfo.Value.Face);
                 }
+            }
+
+            return result;
+        }
+
+        private PickingResult TryPickServiceObject(PositionBasedObjectInstance instance, Ray ray, PickingResult result, out float distance)
+        {
+            if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects || instance is SpriteInstance)
+            {
+                RectangleInt2 bounds;
+
+                if (instance is SpriteInstance)
+                {
+                    var sprite = instance as SpriteInstance;
+                    if (_spriteList.Count > sprite.SpriteID)
+                        bounds = _spriteList[sprite.SpriteID].Alignment;
+                    else
+                        bounds = ServiceObjectTextures.GetBounds(instance);
+                }
+                else
+                    bounds = ServiceObjectTextures.GetBounds(instance);
+
+                var matrix = Matrix4x4.CreateTranslation(ray.Position) * Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+                var rayPos = matrix.TransformPerspectively(new Vector3()).To2();
+
+                float dist;
+                var rect = instance.GetViewportRect(bounds, ClientSize, Camera, out dist);
+                distance = Vector3.Distance(Camera.GetPosition(), instance.Position + instance.Room.WorldPos);
+
+                // dist < 1.0f discards offscreen sprites which may occasionally pop up from other side
+                // due to sign overflow.
+
+                if (dist < 1.0f && rect.Contains(rayPos) && (result == null || distance < result.Distance))
+                    return new PickingResultObject(distance, instance);
+            }
+            else if (instance is LightInstance)
+            {
+                BoundingSphere sphere = new BoundingSphere(instance.Room.WorldPos + instance.Position, _littleSphereRadius);
+
+                if (Collision.RayIntersectsSphere(ray, sphere, out distance) && (result == null || distance < result.Distance))
+                    return new PickingResultObject(distance, instance);
+            }
+            else
+            {
+                BoundingBox box = new BoundingBox(instance.Room.WorldPos + instance.Position - new Vector3(_littleCubeRadius),
+                                                  instance.Room.WorldPos + instance.Position + new Vector3(_littleCubeRadius));
+
+                if (Collision.RayIntersectsBox(ray, box, out distance) && (result == null || distance < result.Distance))
+                    return new PickingResultObject(distance, instance);
             }
 
             return result;
@@ -2314,7 +2304,7 @@ namespace TombEditor.Controls
             }
         }
 
-        private void DrawVolumes(Matrix4x4 viewProjection, Effect effect, List<VolumeInstance> volumesToDraw, List<Text> textToDraw)
+        private void DrawVolumes(Matrix4x4 viewProjection, Effect effect, List<VolumeInstance> volumesToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
             if (volumesToDraw.Count == 0)
                 return;
@@ -2338,6 +2328,8 @@ namespace TombEditor.Controls
             // Draw center cubes
             for (int i = 0; i < volumesToDraw.Count; i++)
             {
+                Vector4 color = Vector4.One;
+
                 var instance = volumesToDraw[i];
                 if (_editor.SelectedObject == instance)
                     selectedIndex = i;
@@ -2345,7 +2337,7 @@ namespace TombEditor.Controls
                 // Switch colours
                 if (i == selectedIndex && selectedIndex >= 0)
                 {
-                    effect.Parameters["Color"].SetValue(selectColor);
+                    color = selectColor;
                     _legacyDevice.SetRasterizerState(_rasterizerWireframe); // As wireframe if selected
 
                     // Add text message
@@ -2355,14 +2347,12 @@ namespace TombEditor.Controls
                 }
                 else if (lastIndex == selectedIndex || lastIndex == -1)
                 {
-                    effect.Parameters["Color"].SetValue(normalColor);
+                    color = normalColor;
                     _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
                 }
                 lastIndex = i;
 
-                effect.Parameters["ModelViewProjection"].SetValue((instance.RotationPositionMatrix * viewProjection).ToSharpDX());
-                effect.Techniques[0].Passes[0].Apply();
-                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
+                RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
             }
 
             // Reset last index back to default
@@ -2451,6 +2441,9 @@ namespace TombEditor.Controls
 
         private void DrawSprites(Matrix4x4 viewProjection, Room[] roomsWhoseObjectsToDraw, List<Sprite> sprites)
         {
+            if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2)
+                return;
+
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
                     if (_spriteList.Count > instance.SpriteID)
@@ -2480,6 +2473,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
+            _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
 
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
@@ -2561,7 +2555,7 @@ namespace TombEditor.Controls
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites, true);
+                    RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
                 }
 
 
@@ -2697,7 +2691,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _cone.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
-            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
 
             bool wireframe = false;
             foreach (Room room in roomsWhoseObjectsToDraw)
@@ -2722,10 +2716,18 @@ namespace TombEditor.Controls
                     }
                     else
                     {
-                        model = Matrix4x4.CreateTranslation(new Vector3(0, 0, -_coneRadius * 1.2f)) *
-                                Matrix4x4.CreateRotationY((float)Math.PI) *
-                                Matrix4x4.CreateScale(1 / _coneRadius * _littleCubeRadius * 2.0f) *
-                                instance.ObjectMatrix;
+                        // Push unselected cone further away in sprite mode for neatness
+                        if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
+                            model = Matrix4x4.CreateTranslation(new Vector3(0, 0, -_coneRadius * 0.5f));
+                        else
+                            model = Matrix4x4.Identity;
+
+                        model *= Matrix4x4.CreateTranslation(new Vector3(0, 0, -_coneRadius * 1.2f)) *
+                                 Matrix4x4.CreateRotationY((float)Math.PI) *
+                                 Matrix4x4.CreateScale(1 / _coneRadius * _littleCubeRadius * 2.0f) *
+                                 instance.ObjectMatrix;
+
+
                         color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
 
                         if (wireframe == true)
@@ -2742,7 +2744,7 @@ namespace TombEditor.Controls
                 }
         }
 
-        private void RenderOrQueueServiceObject(ObjectInstance instance, GeometricPrimitive primitive, Vector4 color, Effect effect, Matrix4x4 viewProjection, List<Sprite> sprites, bool bypassSprites = false)
+        private void RenderOrQueueServiceObject(ISpatial instance, GeometricPrimitive primitive, Vector4 color, Effect effect, Matrix4x4 viewProjection, List<Sprite> sprites, bool bypassSprites = false)
         {
             if (!bypassSprites && _editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
             {
@@ -3452,13 +3454,9 @@ namespace TombEditor.Controls
             // Prepare a sprite list for collecting sprites of service objects
             var sprites = new List<Sprite>();
 
-            // Draw ghost blocks
-            if (ShowGhostBlocks)
-                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
-
             // Draw volumes
             if (ShowVolumes)
-                DrawVolumes(viewProjection, effect, volumesToDraw, textToDraw);
+                DrawVolumes(viewProjection, effect, volumesToDraw, textToDraw, sprites);
 
             if (ShowOtherObjects)
             {
@@ -3471,6 +3469,13 @@ namespace TombEditor.Controls
                 // Draw flyby path
                 DrawFlybyPath(viewProjection, effect);
             }
+
+            // Draw ghost blocks
+            if (ShowGhostBlocks)
+                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
+
+            // Depth-sort sprites
+            sprites = sprites.OrderByDescending(s => s.Depth).ToList();
 
             // Draw depth-dependent sprites
             var depthSprites = sprites.Where(s => s.Depth.HasValue).ToList();

@@ -102,7 +102,7 @@ namespace TombLib.LevelData
         public Vector3 Center(bool floor)
         {
             var pos = ControlPositions(floor);
-            return (pos[0] + pos[1] + pos[2] + pos[3]) / 4.0f;
+            return (pos[0] + pos[1] + pos[2] + pos[3]) / 4.0f + new Vector3(0, 96.0f, 0);
         }
 
         public Matrix4x4[] ControlMatrixes(bool floor)
