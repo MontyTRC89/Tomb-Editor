@@ -2732,7 +2732,7 @@ namespace TombEditor.Controls
 
                         if (wireframe == true)
                         {
-                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
                             wireframe = false;
                         }
                     }
