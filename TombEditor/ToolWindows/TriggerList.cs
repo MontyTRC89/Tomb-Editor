@@ -108,7 +108,10 @@ namespace TombEditor.ToolWindows
                 {
                     var trigger = _editor.SelectedObject as TriggerInstance;
                     var entry = lstTriggers.Items.FirstOrDefault(t => t.Tag == trigger);
-                    if (entry != null) lstTriggers.SelectItem(lstTriggers.Items.IndexOf(entry));
+                    if (entry != null)
+                        lstTriggers.SelectItem(lstTriggers.Items.IndexOf(entry));
+                    else
+                        lstTriggers.ClearSelection();
                 }
             }
 
