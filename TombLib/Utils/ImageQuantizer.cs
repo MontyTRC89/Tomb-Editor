@@ -155,7 +155,7 @@ namespace TombLib.Utils.ImageQuantizer
         /// </summary>
         /// <param name="image">The image to be processed.</param>
         /// <param name="quantizer">The target color quantizer.</param>
-        public static void AddColorsToQuantizer(this Image image, IColorQuantizer quantizer)
+        public static void AddColorsToQuantizer(this Image image, OctreeQuantizer quantizer)
         {
             // checks whether a source image is valid
             if (image == null)
@@ -1314,7 +1314,7 @@ namespace TombLib.Utils.ImageQuantizer
     /// are substituted by their predecessor.
     /// </summary>
     /// 
-    public class OctreeQuantizer : IColorQuantizer
+    public class OctreeQuantizer
     {
         private OctreeNode root;
         private readonly List<OctreeNode>[] levels;
@@ -1479,42 +1479,5 @@ namespace TombLib.Utils.ImageQuantizer
         }
 
         #endregion
-    }
-
-    /// <summary>
-    /// This interface provides a color quantization capabilities.
-    /// </summary>
-    public interface IColorQuantizer
-    {
-        /// <summary>
-        /// Adds the color to quantizer.
-        /// </summary>
-        /// <param name="color">The color to be added.</param>
-        void AddColor(Color color);
-
-        /// <summary>
-        /// Gets the palette with specified count of the colors.
-        /// </summary>
-        /// <param name="colorCount">The color count.</param>
-        /// <returns></returns>
-        List<Color> GetPalette(Int32 colorCount);
-
-        /// <summary>
-        /// Gets the index of the palette for specific color.
-        /// </summary>
-        /// <param name="color">The color.</param>
-        /// <returns></returns>
-        Int32 GetPaletteIndex(Color color);
-
-        /// <summary>
-        /// Gets the color count.
-        /// </summary>
-        /// <returns></returns>
-        Int32 GetColorCount();
-
-        /// <summary>
-        /// Clears this instance.
-        /// </summary>
-        void Clear();
     }
 }
