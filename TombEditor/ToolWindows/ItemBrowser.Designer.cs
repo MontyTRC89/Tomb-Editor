@@ -109,12 +109,12 @@
             // 
             this.butItemDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butItemDown.Checked = false;
+            this.butItemDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
             this.butItemDown.Location = new System.Drawing.Point(259, 6);
             this.butItemDown.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.butItemDown.Name = "butItemDown";
             this.butItemDown.Size = new System.Drawing.Size(23, 23);
             this.butItemDown.TabIndex = 6;
-            this.butItemDown.Text = "▼";
             this.toolTip.SetToolTip(this.butItemDown, "Next item");
             this.butItemDown.Click += new System.EventHandler(this.butItemDown_Click);
             // 
@@ -122,12 +122,12 @@
             // 
             this.butItemUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butItemUp.Checked = false;
+            this.butItemUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
             this.butItemUp.Location = new System.Drawing.Point(233, 6);
             this.butItemUp.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.butItemUp.Name = "butItemUp";
             this.butItemUp.Size = new System.Drawing.Size(23, 23);
             this.butItemUp.TabIndex = 5;
-            this.butItemUp.Text = "▲";
             this.toolTip.SetToolTip(this.butItemUp, "Previous item");
             this.butItemUp.Click += new System.EventHandler(this.butItemUp_Click);
             // 
@@ -137,7 +137,7 @@
             this.butFindItem.Checked = false;
             this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butFindItem.Image = global::TombEditor.Properties.Resources.general_target_16;
-            this.butFindItem.Location = new System.Drawing.Point(137, 6);
+            this.butFindItem.Location = new System.Drawing.Point(135, 6);
             this.butFindItem.Name = "butFindItem";
             this.butFindItem.Size = new System.Drawing.Size(92, 23);
             this.butFindItem.TabIndex = 7;
