@@ -89,7 +89,9 @@ namespace WadTool
                     ;
                     try
                     {
-                        sprites.Add(new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileName)) });
+                        var newSprite = new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileName)) };
+                        newSprite.RecalculateAlignment();
+                        sprites.Add(newSprite);
                     }
                     catch (Exception exc)
                     {
@@ -263,6 +265,7 @@ namespace WadTool
                 try
                 {
                     sprite = new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileDialog.FileName)) };
+                    sprite.RecalculateAlignment();
                     dataGridView.EditableRowCollection[row.Index] = sprite;
                     dataGridView.Refresh();
                     dataGridView.Invalidate();
@@ -270,7 +273,6 @@ namespace WadTool
                     nudScale.Value = 1;
                     cmbHorAdj.SelectedIndex = 1;
                     cmbVerAdj.SelectedIndex = 2;
-                    RecalculateAlignment();
                 }
                 catch (Exception exc)
                 {
@@ -280,7 +282,6 @@ namespace WadTool
                     return;
                 }
             }
-                      
         }
 
         private void RecalculateAlignment()
@@ -288,45 +289,9 @@ namespace WadTool
             if (dataGridView.SelectedRows.Count > 0 && dataGridView.SelectedRows[0].Index >= 0)
             {
                 var sprite = (WadSprite)dataGridView.SelectedRows[0].DataBoundItem;
-
-                var width = (int)(sprite.Texture.Image.Width * nudScale.Value);
-                var height = (int)(sprite.Texture.Image.Height * nudScale.Value);
-
-                int L, T, R, B;
-
-                switch (cmbHorAdj.SelectedIndex)
-                {
-                    case 0:
-                        L = 0;
-                        R = width;
-                        break;
-                    default:
-                        L = -width / 2;
-                        R =  width / 2;
-                        break;
-                    case 2:
-                        L = -width;
-                        R = 0;
-                        break;
-                }
-
-                switch (cmbVerAdj.SelectedIndex)
-                {
-                    case 0:
-                        T = 0;
-                        B = height;
-                        break;
-                    case 1:
-                        T = -height / 2;
-                        B =  height / 2;
-                        break;
-                    default:
-                        T = -height;
-                        B = 0;
-                        break;
-                }
-
-                sprite.Alignment = new TombLib.RectangleInt2(L, T, R, B);
+                sprite.RecalculateAlignment((WadSprite.HorizontalAlignment)cmbHorAdj.SelectedIndex,
+                                            (WadSprite.VerticalAlignment)cmbVerAdj.SelectedIndex,
+                                            (float)nudScale.Value);
                 dataGridView.EditableRowCollection[dataGridView.SelectedRows[0].Index] = sprite;
                 SelectSprite();
             }
