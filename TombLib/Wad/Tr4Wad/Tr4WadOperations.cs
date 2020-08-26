@@ -208,8 +208,13 @@ namespace TombLib.Wad.Tr4Wad
                                 spriteImage.SetPixel(x, y, b, g, r, 255);
                         }
 
+                    // Make new sprite and recalculate alignment, if needed
+                    var sprite = new WadSprite { Texture = new WadTexture(spriteImage) };
+                    if (sprite.Alignment == RectangleInt2.Zero)
+                        sprite.RecalculateAlignment();
+
                     // Add current sprite to the sequence
-                    newSequence.Sprites.Add(new WadSprite { Texture = new WadTexture(spriteImage) });
+                    newSequence.Sprites.Add(sprite);
                 }
 
                 wad.SpriteSequences.Add(newSequence.Id, newSequence);
