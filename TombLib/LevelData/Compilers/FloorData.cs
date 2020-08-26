@@ -366,13 +366,15 @@ namespace TombLib.LevelData.Compilers
             {
 
                 // First, we search if a special trigger exists.
-                TriggerInstance found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
-                                                                     t.TriggerType == TriggerType.Switch ||
-                                                                     t.TriggerType == TriggerType.Key ||
-                                                                     t.TriggerType == TriggerType.Pickup) ?? firstTrigger;
-                var sortedTriggers = new List<TriggerInstance>() { found };
-                sortedTriggers.AddRange(triggers.Where(trigger => trigger != found));
+                var found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
+                                                         t.TriggerType == TriggerType.Switch ||
+                                                         t.TriggerType == TriggerType.Key ||
+                                                         t.TriggerType == TriggerType.Pickup) ?? null;
+                if (found == null)
+                    found = triggers.FirstOrDefault(t => t.TargetType == TriggerTargetType.Object) ?? firstTrigger;
 
+                var sortedTriggers = triggers.OrderBy(t => t != found)
+                                             .ThenBy (t => t.TargetType == TriggerTargetType.Camera);
                 {
                     lastFloorDataFunction = outFloorData.Count;
 
@@ -476,7 +478,8 @@ namespace TombLib.LevelData.Compilers
 
                 foreach (var trigger in sortedTriggers)
                 {
-                    ushort trigger2;
+                    ushort trigger2 = 0;
+                    ushort trigger3 = 0;
 
                     switch (trigger.TargetType)
                     {
@@ -491,7 +494,6 @@ namespace TombLib.LevelData.Compilers
                             outFloorData.Add(trigger2);
 
                             // Additional short
-                            ushort trigger3 = 0;
                             trigger3 |= GetTriggerParameter(trigger.Timer, trigger, 0xff);
                             trigger3 |= (ushort)(trigger.OneShot ? 0x100 : 0);
 
