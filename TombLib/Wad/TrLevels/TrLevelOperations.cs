@@ -141,6 +141,8 @@ namespace TombLib.Wad.TrLevels
             {
                 TextureArea textureArea = objectTextures[oldPoly.Texture & 0x7fff];
                 textureArea.DoubleSided = (oldPoly.Texture & 0x8000) != 0;
+                if ((oldPoly.LightingEffect & 1) != 0)
+                    textureArea.BlendMode = BlendMode.Additive;
 
                 WadPolygon poly;
                 poly.Shape = WadPolygonShape.Quad;
@@ -156,6 +158,8 @@ namespace TombLib.Wad.TrLevels
             {
                 TextureArea textureArea = objectTextures[oldPoly.Texture & 0x7fff];
                 textureArea.DoubleSided = (oldPoly.Texture & 0x8000) != 0;
+                if ((oldPoly.LightingEffect & 1) != 0)
+                    textureArea.BlendMode = BlendMode.Additive;
 
                 WadPolygon poly = new WadPolygon();
                 poly.Shape = WadPolygonShape.Triangle;
