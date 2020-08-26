@@ -1,5 +1,7 @@
-﻿using DarkUI.Controls;
+﻿using DarkUI.Config;
+using DarkUI.Controls;
 using DarkUI.Docking;
+using DarkUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +52,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.RoomSectorPropertiesChangedEvent)
             {
                 lstTriggers.Items.Clear();
+                bool noHighlight = true;
 
                 if (_editor.Level != null && _editor.SelectedSectors.Valid)
                 {
@@ -60,11 +63,25 @@ namespace TombEditor.ToolWindows
                         for (int z = area.Y0; z <= area.Y1; z++)
                             foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
                                 if (!triggers.Contains(trigger))
+                                {
+                                    noHighlight = x > area.X0 || z > area.Y0;
                                     triggers.Add(trigger);
+                                }
 
-                    // Add triggers to listbox
-                    foreach (TriggerInstance trigger in triggers)
-                        lstTriggers.Items.Add(new DarkListItem(trigger.ToShortString()) { Tag = trigger });
+                    if (triggers.Count > 0)
+                    {
+                        // Find setup trigger
+                        var setupTrigger = TriggerInstance.GetSetupTrigger(triggers);
+
+                        // Add triggers to listbox and highlight setup trigger
+                        foreach (TriggerInstance trigger in triggers)
+                            lstTriggers.Items.Add(new DarkListItem(trigger.ToShortString())
+                            {
+                                Tag = trigger,
+                                TextColor = (!noHighlight && trigger == setupTrigger) ? 
+                                                Colors.BlueHighlight.Multiply(1.2f) : Colors.LightText
+                            });
+                    }
                 }
             }
 
@@ -118,6 +135,7 @@ namespace TombEditor.ToolWindows
 
             EditorActions.DeleteObjects(triggersToRemove, FindForm());
         }
+
 
         private void lstTriggers_KeyDown(object sender, KeyEventArgs e)
         {

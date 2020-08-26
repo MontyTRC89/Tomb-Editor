@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TombLib.LevelData
 {
@@ -255,6 +257,15 @@ namespace TombLib.LevelData
                 _timer = transformRoom((Room)_timer);
             if (_extra is Room)
                 _extra = transformRoom((Room)_extra);
+        }
+
+        public static TriggerInstance GetSetupTrigger(List<TriggerInstance> triggers)
+        {
+            var found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
+                                                     t.TriggerType == TriggerType.Switch ||
+                                                     t.TriggerType == TriggerType.Key ||
+                                                     t.TriggerType == TriggerType.Pickup) ?? triggers.FirstOrDefault();
+            return found;
         }
     }
 }

@@ -360,25 +360,28 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Triggers
-            var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t));
-            var firstTrigger = triggers.FirstOrDefault();
-            if (firstTrigger != null)
+            var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
+            if (triggers.Count > 0)
             {
+                // First, we search if a setup or "special" trigger exists.
+                // "Special" trigger in TRLE terminology is a trigger which is required to be the first one
+                // to define course of action for all next triggers. Historically it was key/switch trigger
+                // in classic TRLE, but pickup trigger and TRNG's condition trigger requires the same.
 
-                // First, we search if a special trigger exists.
-                var found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
-                                                         t.TriggerType == TriggerType.Switch ||
-                                                         t.TriggerType == TriggerType.Key ||
-                                                         t.TriggerType == TriggerType.Pickup) ?? null;
-                if (found == null)
-                    found = triggers.FirstOrDefault(t => t.TargetType == TriggerTargetType.Object) ?? firstTrigger;
+                var found = TriggerInstance.GetSetupTrigger(triggers);
+                
+                // Sort triggers to put special trigger first, and also put all camera triggers to the
+                // end of the chain, cause it may result in clashes with TRNG flipeffect triggers with
+                // extra uint16.
 
                 var sortedTriggers = triggers.OrderBy(t => t != found)
                                              .ThenBy (t => t.TargetType == TriggerTargetType.Camera);
                 {
                     lastFloorDataFunction = outFloorData.Count;
 
-                    // Trigger type and setup are coming from the found trigger. Other triggers are needed only for action.
+                    // Trigger type and setup are coming from the found trigger. 
+                    // Other triggers are needed only for action.
+
                     ushort trigger1 = 0x04;
                     switch (found.TriggerType)
                     {
