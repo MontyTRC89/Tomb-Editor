@@ -115,6 +115,9 @@ namespace TombLib.LevelData
         // indicating that data loss occured.
         public bool HasUnknownData { get; set; } = false;
 
+        // Last used room
+        public int LastSelectedRoom { get; set; } = 0;
+
         // New sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();

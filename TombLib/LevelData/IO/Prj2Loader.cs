@@ -125,6 +125,8 @@ namespace TombLib.LevelData.IO
                     foundSoundSystem = true;
                     settings.SoundSystem = (SoundSystem)chunkIO.ReadChunkInt(chunkSize);
                 }
+                else if (id == Prj2Chunks.LastRoom)
+                    settings.LastSelectedRoom = chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.FontTextureFilePath)
                     settings.FontTextureFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.SkyTextureFilePath)
@@ -192,7 +194,7 @@ namespace TombLib.LevelData.IO
                         {
                             if (id3 == Prj2Chunks.SoundsCatalogPath)
                                 path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
-                                    else
+                            else
                                 return false;
                             return true;
                         });
@@ -470,7 +472,8 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id == Prj2Chunks.AutoMergeStaticMeshes)
                 {
-                    chunkIO.ReadChunks((id2, size) => {
+                    chunkIO.ReadChunks((id2, size) =>
+                    {
                         if (id2 == Prj2Chunks.AutoMergeStaticMeshEntry)
                         {
                             uint value = chunkIO.Raw.ReadUInt32();

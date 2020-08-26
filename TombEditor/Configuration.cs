@@ -173,6 +173,11 @@ namespace TombEditor
             "CompileLevel", "CompileLevelAndPlay", "CompileLevelAndPlay", "CompileAndPlayPreview"
         };
 
+        // Last used tools
+
+        public EditorTool UI_LastGeometryTool { get; set; } = new EditorTool();
+        public EditorTool UI_LastTexturingTool { get; set; } = new EditorTool() { Tool = EditorToolType.Brush };
+
         // Window options
 
         public Point ColorDialog_Position { get; set; } = new Point(-1); // Center by default

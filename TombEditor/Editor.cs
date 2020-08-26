@@ -99,7 +99,7 @@ namespace TombEditor
                 _level = value;
                 EditorEventRaised?.Invoke(new LevelChangedEvent { Previous = previousLevel, Current = value });
                 RoomListChange();
-                SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
+                SelectLastOrDefaultRoom();
                 ResetCamera(true);
                 LoadedWadsChange(false);
                 LoadedSoundsCatalogsChange(false);
@@ -199,7 +199,7 @@ namespace TombEditor
             public EditorTool Previous { get; internal set; }
             public EditorTool Current { get; internal set; }
         }
-        private EditorTool _tool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
+        private EditorTool _tool = new EditorTool();
         public EditorTool Tool
         {
             get { return _tool; }
@@ -212,8 +212,8 @@ namespace TombEditor
                 RaiseEvent(new ToolChangedEvent { Previous = previous, Current = value });
             }
         }
-        private EditorTool _lastGeometryTool = new EditorTool() { Tool = EditorToolType.Selection, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
-        private EditorTool _lastFaceEditTool = new EditorTool() { Tool = EditorToolType.Brush, TextureUVFixer = true, GridSize = PaintGridSize.Grid2x2 };
+        private EditorTool _lastGeometryTool = new EditorTool();
+        private EditorTool _lastFaceEditTool = new EditorTool();
 
         public LastSelectionType LastSelection = LastSelectionType.None;
 
@@ -256,7 +256,12 @@ namespace TombEditor
                     RaiseEvent(new SelectedRoomChangedEvent(previous, value));
                 else
                     RaiseEvent(new SelectedRoomsChangedEvent { Previous = previous, Current = value });
+
+                // Reset sector selection
                 SelectedSectors = SectorSelection.None;
+
+                // Keep last selected room index in level settings
+                Level.Settings.LastSelectedRoom = Array.FindIndex(Level.Rooms, item => item == _selectedRooms[0]);
             }
         }
         public bool SelectedRoomsContains(Room room) => Array.IndexOf(_selectedRooms, room) != -1;
@@ -790,6 +795,15 @@ namespace TombEditor
                 ResetCamera(true);
         }
 
+        // Select last used room or first available room if not available
+        private void SelectLastOrDefaultRoom()
+        {
+            if (_level.Rooms[_level.Settings.LastSelectedRoom] != null)
+                SelectedRooms = new[] { _level.Rooms[_level.Settings.LastSelectedRoom] };
+            else
+                SelectedRooms = new[] { _level.Rooms.First(room => room != null) };
+        }
+
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
         public void ShowObject(ObjectInstance objectInstance)
         {
@@ -914,6 +928,15 @@ namespace TombEditor
 
                 // Resize undo stack if needed
                 UndoManager.Resize(Configuration.Editor_UndoDepth);
+
+                // Update tools
+                _lastFaceEditTool = Configuration.UI_LastTexturingTool;
+                _lastGeometryTool = Configuration.UI_LastGeometryTool;
+
+                if (Mode == EditorMode.Geometry)
+                    Tool = Configuration.UI_LastGeometryTool;
+                else
+                    Tool = Configuration.UI_LastTexturingTool;
             }
 
             // Reset notifications, when changeing between 2D and 3D mode
@@ -937,9 +960,15 @@ namespace TombEditor
             {
                 var @event = (ToolChangedEvent)obj;
                 if (Mode == EditorMode.Geometry)
+                {
                     _lastGeometryTool = @event.Current;
+                    Configuration.UI_LastGeometryTool = _lastGeometryTool;
+                }    
                 else
+                {
                     _lastFaceEditTool = @event.Current;
+                    Configuration.UI_LastTexturingTool = _lastFaceEditTool;
+                }
             }
 
             // Reset highlight, because otherwise it will stuck until _toolHandler.Disengage() is
@@ -952,7 +981,7 @@ namespace TombEditor
             {
                 List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
                 if (newSelection.FirstOrDefault() == null)
-                    SelectRoom(_level.Rooms.Where(room => room != null).First());
+                    SelectLastOrDefaultRoom();
                 else if (newSelection.Contains(SelectedRoom))
                     SelectRooms(newSelection);
                 else

@@ -444,8 +444,6 @@ namespace TombEditor.Forms
 
             configuration.Rendering3D_ToolboxVisible = floatingToolStripMenuItem.Checked;
             configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
-
-            _editor.ConfigurationChange();
         }
 
         protected override void OnKeyUp(KeyEventArgs e)
