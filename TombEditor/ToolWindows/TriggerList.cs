@@ -68,6 +68,9 @@ namespace TombEditor.ToolWindows
                                     triggers.Add(trigger);
                                 }
 
+                    if (triggers.Count == 1)
+                        noHighlight = true;
+
                     if (triggers.Count > 0)
                     {
                         // Find setup trigger
