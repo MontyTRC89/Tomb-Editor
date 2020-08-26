@@ -11,12 +11,13 @@ Tomb Editor:
  * Draw service objects as 2D icons by default.
  * Point to specific trigger area when "find where is triggered" context menu was engaged.
  * Always resample sounds to proper format.
- * Store texture remap window properties in config file.
+ * Store last selected room in project file.
+ * Store last used tool and texture remap window properties in config file.
  * Define version-specific game limits in TrCatalog.xml.
- * Fixed light radius calculation in TR2/TR3.
- * Fixed drag-n-drop in find & replace objects dialog.
- * Fixed incorrect TR1-3 item names in find & replace objects dialog.
- * Fixed exception when Lara skin mesh count doesn't correspond to Lara mesh count.
+ * Fix light radius calculation in TR2/TR3.
+ * Fix drag-n-drop in find & replace objects dialog.
+ * Fix incorrect TR1-3 item names in find & replace objects dialog.
+ * Fix exception when Lara skin mesh count doesn't correspond to Lara mesh count.
  
 WadTool:
  * Add alignment controls in sprite editor (for TR1-3 room and UI sprites).

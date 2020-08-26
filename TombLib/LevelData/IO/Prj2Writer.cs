@@ -145,6 +145,8 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkBool(Prj2Chunks.OverrideLightQuality, settings.OverrideIndividualLightQualitySettings);
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
+                chunkIO.WriteChunkInt(Prj2Chunks.LastRoom, settings.LastSelectedRoom);
+
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
                     foreach (ReferencedWad wad in settings.Wads)

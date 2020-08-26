@@ -24,9 +24,9 @@ namespace TombEditor
 
     public class EditorTool
     {
-        public EditorToolType Tool { get; set; }
-        public bool TextureUVFixer { get; set; }
-        public PaintGridSize GridSize { get; set; }
+        public EditorToolType Tool { get; set; } = EditorToolType.Selection;
+        public bool TextureUVFixer { get; set; } = true;
+        public PaintGridSize GridSize { get; set; } = PaintGridSize.Grid2x2;
 
         public static bool operator ==(EditorTool first, EditorTool second)
         {
