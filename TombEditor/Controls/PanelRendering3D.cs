@@ -1790,7 +1790,7 @@ namespace TombEditor.Controls
             {
                 RectangleInt2 bounds;
 
-                if (instance is SpriteInstance)
+                if (instance is SpriteInstance && _editor.Level.Settings.GameVersion < TRVersion.Game.TR3)
                 {
                     var sprite = instance as SpriteInstance;
                     if (_spriteList.Count > sprite.SpriteID)
