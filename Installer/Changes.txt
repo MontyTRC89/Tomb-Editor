@@ -15,7 +15,7 @@ Tomb Editor:
  * Store last used tool and texture remap window properties in config file.
  * Define version-specific game limits in TrCatalog.xml.
  * Highlight trigger which is used to setup parameters in trigger list.
- * Better trigger sorting to avoid issues with TRNG flipeffect triggers.
+ * Better trigger sorting to avoid issues with TRNG flipeffects.
  * Fix light radius calculation in TR2/TR3.
  * Fix drag-n-drop in find & replace objects dialog.
  * Fix incorrect TR1-3 item names in find & replace objects dialog.
