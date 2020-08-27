@@ -172,7 +172,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>OneShotRewound</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>magnum.wav</FileName>
@@ -223,6 +223,25 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
+      <Id>11</Id>
+      <Name>BEAR_GROWL</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>bear_grwl.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
       <Id>12</Id>
       <Name>BEAR_FEET</Name>
       <Volume>50</Volume>
@@ -239,7 +258,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>13</Id>
@@ -258,7 +277,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>14</Id>
@@ -280,26 +299,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>15</Id>
-      <Name>BEAR_GROWL</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>bear_grwl.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>16</Id>
@@ -318,7 +318,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>18</Id>
@@ -337,11 +337,11 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>19</Id>
-      <Name>WOLF_ATTACK</Name>
+      <Name>WOLF_JUMP</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -352,14 +352,14 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dog_at1.wav</FileName>
+          <FileName>dog_jat1.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>dog_at2.wav</FileName>
+          <FileName>dog_jat2.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>20</Id>
@@ -378,7 +378,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>22</Id>
@@ -400,7 +400,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>24</Id>
@@ -419,11 +419,11 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>25</Id>
-      <Name>WOLF_JUMP</Name>
+      <Name>WOLF_ATTACK</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -434,14 +434,14 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>dog_ja1.wav</FileName>
+          <FileName>dog_at1.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>dog_ja2.wav</FileName>
+          <FileName>dog_at2.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>26</Id>
@@ -785,10 +785,29 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>uzi_fr.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>44</Id>
+      <Name>LARA_MAGNUMS</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>d_eagle.wav</FileName>
         </WadSample>
       </Samples>
       <Global>true</Global>
@@ -1045,7 +1064,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>59</Id>
@@ -1064,7 +1083,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>60</Id>
@@ -1102,10 +1121,10 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>62</Id>
+      <Id>63</Id>
       <Name>BLOCK_SOUND</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -1159,7 +1178,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>66</Id>
@@ -1178,7 +1197,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>67</Id>
@@ -1197,7 +1216,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>68</Id>
@@ -1216,7 +1235,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>69</Id>
@@ -1235,7 +1254,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>70</Id>
@@ -1254,7 +1273,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>71</Id>
@@ -1273,7 +1292,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>72</Id>
@@ -1292,7 +1311,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>73</Id>
@@ -1311,7 +1330,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>74</Id>
@@ -1330,7 +1349,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>75</Id>
@@ -1352,7 +1371,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>76</Id>
@@ -1371,7 +1390,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>77</Id>
@@ -1390,7 +1409,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>78</Id>
@@ -1409,7 +1428,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>79</Id>
@@ -1428,7 +1447,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>80</Id>
@@ -1447,7 +1466,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>81</Id>
@@ -1466,7 +1485,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>82</Id>
@@ -1485,7 +1504,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>83</Id>
@@ -1504,7 +1523,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>84</Id>
@@ -1523,7 +1542,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>85</Id>
@@ -1542,7 +1561,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>86</Id>
@@ -1564,7 +1583,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>87</Id>
@@ -1583,7 +1602,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>88</Id>
@@ -1602,7 +1621,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>89</Id>
@@ -1621,7 +1640,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>90</Id>
@@ -1640,7 +1659,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>91</Id>
@@ -1659,7 +1678,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>92</Id>
@@ -1678,7 +1697,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>93</Id>
@@ -1700,7 +1719,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>94</Id>
@@ -1917,8 +1936,8 @@
           <FileName>explos1.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>108</Id>
@@ -1941,25 +1960,6 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>109</Id>
-      <Name>MENU_SELECT</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>m_select.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>111</Id>
       <Name>MENU_CHOOSE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -1978,42 +1978,118 @@
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>112</Id>
-      <Name>TICK_TOCK</Name>
+      <Id>110</Id>
+      <Name>MENU_GAMEBOY</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
-      <PitchFactor>-86</PitchFactor>
-      <DisablePanning>true</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>tick.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>114</Id>
-      <Name>MENU_COMBINE</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>50</PitchFactor>
+      <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>m_comb.wav</FileName>
+          <FileName>m_controls.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>111</Id>
+      <Name>MENU_SPININ</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>m_spinin.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>112</Id>
+      <Name>MENU_SPINOUT</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>m_spinout.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>113</Id>
+      <Name>MENU_COMPASS</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>m_compass.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>114</Id>
+      <Name>MENU_GUNS</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>m_guns.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>115</Id>
+      <Name>MENU_PASSPORT</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>m_passport.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>116</Id>
@@ -2115,25 +2191,6 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>121</Id>
-      <Name>MAGNUMS</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>d_eagle.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>122</Id>
       <Name>ATLANTEAN_ATTACK</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2152,7 +2209,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>123</Id>
+      <Id>122</Id>
       <Name>ATLANTEAN_JUMP_ATTACK</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2171,7 +2228,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>124</Id>
+      <Id>123</Id>
       <Name>ATLANTEAN_NEEDLE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2190,7 +2247,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>125</Id>
+      <Id>124</Id>
       <Name>ATLANTEAN_BALL</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2209,7 +2266,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>126</Id>
+      <Id>125</Id>
       <Name>ATLANTEAN_WINGS</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2228,7 +2285,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>127</Id>
+      <Id>126</Id>
       <Name>ATLANTEAN_WING_FEET</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2240,23 +2297,23 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>at_f1.wav</FileName>
+          <FileName>at_ft1.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>at_f2.wav</FileName>
+          <FileName>at_ft2.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>at_f3.wav</FileName>
+          <FileName>at_ft3.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>at_f4.wav</FileName>
+          <FileName>at_ft4.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>128</Id>
+      <Id>127</Id>
       <Name>SLAMDOOR_CLOSE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2275,7 +2332,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>129</Id>
+      <Id>128</Id>
       <Name>SLAMDOOR_OPEN</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2294,7 +2351,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>130</Id>
+      <Id>129</Id>
       <Name>SKATEBOARD_MOVE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2313,7 +2370,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>131</Id>
+      <Id>130</Id>
       <Name>SKATEBOARD_STOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2332,7 +2389,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>132</Id>
+      <Id>131</Id>
       <Name>SKATEBOARD_SHOOT</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2351,7 +2408,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>133</Id>
+      <Id>132</Id>
       <Name>SKATEBOARD_HIT</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2370,7 +2427,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>134</Id>
+      <Id>133</Id>
       <Name>SKATEBOARD_START</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2389,7 +2446,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>135</Id>
+      <Id>134</Id>
       <Name>SKATEBOARD_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2408,7 +2465,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>136</Id>
+      <Id>135</Id>
       <Name>SKATEBOART_HIT_GROUND</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2427,7 +2484,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>137</Id>
+      <Id>136</Id>
       <Name>TORSO_HIT_GROUND</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2446,7 +2503,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>138</Id>
+      <Id>137</Id>
       <Name>TORSO_ATTACK1</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2465,7 +2522,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>139</Id>
+      <Id>138</Id>
       <Name>TORSO_ATTACK2</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2484,7 +2541,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>140</Id>
+      <Id>139</Id>
       <Name>TORSO_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2503,7 +2560,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>141</Id>
+      <Id>140</Id>
       <Name>TORSO_ARM_SWING</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2522,7 +2579,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>142</Id>
+      <Id>141</Id>
       <Name>TORSO_MOVE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2541,7 +2598,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>143</Id>
+      <Id>142</Id>
       <Name>TORSO_HIT</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2560,7 +2617,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>144</Id>
+      <Id>143</Id>
       <Name>CENTAUR_FEET</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2582,6 +2639,25 @@
         </WadSample>
         <WadSample>
           <FileName>ct_ft4.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>144</Id>
+      <Name>CENTAUR_ROAR</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>cent_roar.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2622,8 +2698,8 @@
           <FileName>lar_die3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>147</Id>
@@ -2641,30 +2717,11 @@
           <FileName>l_rumb.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>148</Id>
-      <Name>CENTAUR_ROAR</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>cent_roar.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>149</Id>
       <Name>LAVA_LOOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2683,26 +2740,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>150</Id>
-      <Name>FIRE</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>l_fire.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>151</Id>
+      <Id>149</Id>
       <Name>LAVA_FOUNTAIN</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2721,7 +2759,26 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>152</Id>
+      <Id>150</Id>
+      <Name>FIRE</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>l_fire.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>true</Global>
+      <Indexed>true</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>151</Id>
       <Name>DARTS</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2736,11 +2793,11 @@
           <FileName>dart.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>false</Global>
+      <Global>true</Global>
       <Indexed>true</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>153</Id>
+      <Id>152</Id>
       <Name>METAL_DOOR_CLOSE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2759,7 +2816,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>154</Id>
+      <Id>153</Id>
       <Name>METAL_DOOR_OPEN</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2778,7 +2835,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>155</Id>
+      <Id>154</Id>
       <Name>ALTAR_LOOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2797,7 +2854,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>156</Id>
+      <Id>155</Id>
       <Name>LOW_HUM</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2816,7 +2873,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>157</Id>
+      <Id>156</Id>
       <Name>COWBOY_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2835,7 +2892,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>158</Id>
+      <Id>157</Id>
       <Name>BLACK_GOON_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2854,7 +2911,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>159</Id>
+      <Id>158</Id>
       <Name>LARSON_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2873,7 +2930,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>160</Id>
+      <Id>159</Id>
       <Name>PIERRE_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2886,6 +2943,25 @@
       <Samples>
         <WadSample>
           <FileName>pierre_death.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>160</Id>
+      <Name>NATLA_DEATH</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>natla_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2908,7 +2984,7 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>162</Id>
@@ -2927,29 +3003,10 @@
         </WadSample>
       </Samples>
       <Global>false</Global>
-      <Indexed>true</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>163</Id>
-      <Name>NATLA_DEATH</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>natla_die.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>164</Id>
+      <Id>163</Id>
       <Name>ATLANTEAN_EGG</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2968,7 +3025,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>165</Id>
+      <Id>164</Id>
       <Name>ATLANTEAN_EGG_HATCH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -2987,7 +3044,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>166</Id>
+      <Id>165</Id>
       <Name>DRILL_ENGINE_START</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3006,7 +3063,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>167</Id>
+      <Id>166</Id>
       <Name>DRILL_ENGINE_LOOP</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3015,7 +3072,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>l_drill.wav</FileName>
@@ -3025,7 +3082,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>168</Id>
+      <Id>167</Id>
       <Name>CONVEYOR_BELT</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3044,7 +3101,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>169</Id>
+      <Id>168</Id>
       <Name>HUT_LOWERED</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3063,7 +3120,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>170</Id>
+      <Id>169</Id>
       <Name>HUT_HIT_GROUND</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3082,7 +3139,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>171</Id>
+      <Id>170</Id>
       <Name>TNT</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3101,7 +3158,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>172</Id>
+      <Id>171</Id>
       <Name>ATLANTEAN_DEATH</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3120,7 +3177,7 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>173</Id>
+      <Id>172</Id>
       <Name>BRIDGE</Name>
       <Volume>50</Volume>
       <RangeInSectors>8</RangeInSectors>
@@ -3133,6 +3190,614 @@
       <Samples>
         <WadSample>
           <FileName>bridge.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>173</Id>
+      <Name>SECRET</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>secret.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>174</Id>
+      <Name>GYM_HINT_01</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_01.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>175</Id>
+      <Name>GYM_HINT_02</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_02.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>176</Id>
+      <Name>GYM_HINT_03</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_03.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>177</Id>
+      <Name>GYM_HINT_04</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_04.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>178</Id>
+      <Name>GYM_HINT_05</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_05.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>179</Id>
+      <Name>GYM_HINT_06</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_06.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>180</Id>
+      <Name>GYM_HINT_07</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_07.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>181</Id>
+      <Name>GYM_HINT_08</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_08.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>182</Id>
+      <Name>GYM_HINT_09</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_09.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>183</Id>
+      <Name>GYM_HINT_10</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_10.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>184</Id>
+      <Name>GYM_HINT_11</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_11.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>185</Id>
+      <Name>GYM_HINT_12</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_12.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>186</Id>
+      <Name>GYM_HINT_13</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_13.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>187</Id>
+      <Name>GYM_HINT_14</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_14.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>188</Id>
+      <Name>GYM_HINT_15</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_15.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>189</Id>
+      <Name>GYM_HINT_16</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_16.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>190</Id>
+      <Name>GYM_HINT_17</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_17.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>191</Id>
+      <Name>GYM_HINT_18</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_18.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>192</Id>
+      <Name>GYM_HINT_19</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_19.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>193</Id>
+      <Name>GYM_HINT_20</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_20.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>194</Id>
+      <Name>GYM_HINT_21</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_21.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>195</Id>
+      <Name>GYM_HINT_22</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_22.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>196</Id>
+      <Name>GYM_HINT_23</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_23.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>197</Id>
+      <Name>GYM_HINT_24</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_24.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>198</Id>
+      <Name>GYM_HINT_25</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_25.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>199</Id>
+      <Name>COWBOY_SPEECH</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>cowboy_spch.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>200</Id>
+      <Name>LARSON_SPEECH</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>lars_spch.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>201</Id>
+      <Name>NATLA_SPEECH</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>natla_spch.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>202</Id>
+      <Name>PIERRE_SPEECH</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>pierre_spch.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>203</Id>
+      <Name>SKATE_SPEECH</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>skate_spch.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>204</Id>
+      <Name>GYM_HINT_26</Name>
+      <Volume>50</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>gym_26.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
