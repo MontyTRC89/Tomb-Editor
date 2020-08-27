@@ -465,60 +465,65 @@ namespace TombLib.Wad.Tr4Wad
 
             // Read sprites
             logger.Info("Reading sprites (swd file) associated with wad.");
-            using (var readerSprites = new BinaryReaderEx(new FileStream(BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
-                                                                         FileMode.Open, FileAccess.Read, FileShare.Read)))
-            {
-                // Version
-                readerSprites.ReadUInt32();
-
-                var numSpritesTextures = readerSprites.ReadUInt32();
-                logger.Info("Sprites: " + numSpritesTextures);
-
-                //Sprite texture array
-                for (var i = 0; i < numSpritesTextures; i++)
+            var swdName = BasePath + Path.DirectorySeparatorChar + BaseName + ".swd";
+            if (File.Exists(swdName))
+                using (var readerSprites = new BinaryReaderEx(new FileStream(BasePath + Path.DirectorySeparatorChar + BaseName + ".swd",
+                                                                             FileMode.Open, FileAccess.Read, FileShare.Read)))
                 {
-                    var buffer = readerSprites.ReadBytes(16);
+                    // Version
+                    readerSprites.ReadUInt32();
 
-                    var spriteTexture = new wad_sprite_texture
+                    var numSpritesTextures = readerSprites.ReadUInt32();
+                    logger.Info("Sprites: " + numSpritesTextures);
+
+                    //Sprite texture array
+                    for (var i = 0; i < numSpritesTextures; i++)
                     {
-                        Tile = buffer[2],
-                        X = buffer[0],
-                        Y = buffer[1],
-                        Width = buffer[5],
-                        Height = buffer[7],
-                        LeftSide = buffer[0],
-                        TopSide = buffer[1],
-                        RightSide = (short)(buffer[0] + buffer[5] + 1),
-                        BottomSide = (short)(buffer[1] + buffer[7] + 1)
-                    };
+                        var buffer = readerSprites.ReadBytes(16);
 
-                    SpriteTextures.Add(spriteTexture);
+                        var spriteTexture = new wad_sprite_texture
+                        {
+                            Tile = buffer[2],
+                            X = buffer[0],
+                            Y = buffer[1],
+                            Width = buffer[5],
+                            Height = buffer[7],
+                            LeftSide = buffer[0],
+                            TopSide = buffer[1],
+                            RightSide = (short)(buffer[0] + buffer[5] + 1),
+                            BottomSide = (short)(buffer[1] + buffer[7] + 1)
+                        };
+
+                        SpriteTextures.Add(spriteTexture);
+                    }
+
+                    // Sprites size
+                    var spriteDataSize = readerSprites.ReadInt32();
+                    SpriteData = readerSprites.ReadBytes(spriteDataSize);
+
+                    var numSequences = readerSprites.ReadUInt32();
+                    logger.Info("Sprite sequences: " + numSequences);
+
+                    // Sprite sequences
+                    for (var i = 0; i < numSequences; i++)
+                    {
+                        var sequence = new wad_sprite_sequence();
+                        sequence.ObjectID = readerSprites.ReadInt32();
+                        sequence.NegativeLength = readerSprites.ReadInt16();
+                        sequence.Offset = readerSprites.ReadInt16();
+                        SpriteSequences.Add(sequence);
+                    }
                 }
-
-                // Sprites size
-                var spriteDataSize = readerSprites.ReadInt32();
-                SpriteData = readerSprites.ReadBytes(spriteDataSize);
-
-                var numSequences = readerSprites.ReadUInt32();
-                logger.Info("Sprite sequences: " + numSequences);
-
-                // Sprite sequences
-                for (var i = 0; i < numSequences; i++)
-                {
-                    var sequence = new wad_sprite_sequence();
-                    sequence.ObjectID = readerSprites.ReadInt32();
-                    sequence.NegativeLength = readerSprites.ReadInt16();
-                    sequence.Offset = readerSprites.ReadInt16();
-                    SpriteSequences.Add(sequence);
-                }
-            }
 
             // Read WAS
-            using (var reader = new StreamReader(File.OpenRead(BasePath + Path.DirectorySeparatorChar + BaseName + ".was")))
-            {
-                while (!reader.EndOfStream)
-                    LegacyNames.Add(reader.ReadLine().Split(':')[0].Replace(" ", "").Replace("EXTRA0", "EXTRA"));
-            }
+            logger.Info("Reading was file associated with wad.");
+            var wasFile = BasePath + Path.DirectorySeparatorChar + BaseName + ".was";
+            if (File.Exists(wasFile))
+                using (var reader = new StreamReader(File.OpenRead(wasFile)))
+                {
+                    while (!reader.EndOfStream)
+                        LegacyNames.Add(reader.ReadLine().Split(':')[0].Replace(" ", "").Replace("EXTRA0", "EXTRA"));
+                }
         }
 
         internal int GetNextMoveableWithAnimations(int current)
