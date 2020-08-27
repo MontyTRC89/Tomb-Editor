@@ -18,6 +18,7 @@
             this.components = new System.ComponentModel.Container();
             this.panelItem = new TombEditor.Controls.PanelRenderingImportedGeometry();
             this.panelHeader = new System.Windows.Forms.Panel();
+            this.butAddItem = new DarkUI.Controls.DarkButton();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.panelRightBottom = new System.Windows.Forms.Panel();
@@ -25,7 +26,6 @@
             this.butItemUp = new DarkUI.Controls.DarkButton();
             this.panelRight = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.butAddItem = new DarkUI.Controls.DarkButton();
             this.panelHeader.SuspendLayout();
             this.panelRightBottom.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -54,6 +54,17 @@
             this.panelHeader.Padding = new System.Windows.Forms.Padding(1, 2, 0, 0);
             this.panelHeader.Size = new System.Drawing.Size(284, 27);
             this.panelHeader.TabIndex = 72;
+            // 
+            // butAddItem
+            // 
+            this.butAddItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAddItem.Checked = false;
+            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
+            this.butAddItem.Location = new System.Drawing.Point(258, 2);
+            this.butAddItem.Name = "butAddItem";
+            this.butAddItem.Size = new System.Drawing.Size(24, 24);
+            this.butAddItem.TabIndex = 4;
+            this.butAddItem.Tag = "AddImportedGeometry";
             // 
             // butSearch
             // 
@@ -96,12 +107,12 @@
             // 
             this.butItemDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butItemDown.Checked = false;
+            this.butItemDown.Image = global::TombEditor.Properties.Resources.general_ArrowDown_16;
             this.butItemDown.Location = new System.Drawing.Point(259, 6);
             this.butItemDown.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.butItemDown.Name = "butItemDown";
             this.butItemDown.Size = new System.Drawing.Size(23, 23);
             this.butItemDown.TabIndex = 6;
-            this.butItemDown.Text = "▼";
             this.toolTip.SetToolTip(this.butItemDown, "Next item");
             this.butItemDown.Click += new System.EventHandler(this.butItemDown_Click);
             // 
@@ -109,12 +120,12 @@
             // 
             this.butItemUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butItemUp.Checked = false;
+            this.butItemUp.Image = global::TombEditor.Properties.Resources.general_ArrowUp_16;
             this.butItemUp.Location = new System.Drawing.Point(233, 6);
             this.butItemUp.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.butItemUp.Name = "butItemUp";
             this.butItemUp.Size = new System.Drawing.Size(23, 23);
             this.butItemUp.TabIndex = 5;
-            this.butItemUp.Text = "▲";
             this.toolTip.SetToolTip(this.butItemUp, "Previous item");
             this.butItemUp.Click += new System.EventHandler(this.butItemUp_Click);
             // 
@@ -133,17 +144,6 @@
             this.toolTip.AutoPopDelay = 5000;
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
-            // 
-            // butAddItem
-            // 
-            this.butAddItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butAddItem.Checked = false;
-            this.butAddItem.Image = global::TombEditor.Properties.Resources.general_plus_math_16;
-            this.butAddItem.Location = new System.Drawing.Point(258, 2);
-            this.butAddItem.Name = "butAddItem";
-            this.butAddItem.Size = new System.Drawing.Size(24, 24);
-            this.butAddItem.TabIndex = 4;
-            this.butAddItem.Tag = "AddImportedGeometry";
             // 
             // ImportedGeometryBrowser
             // 
