@@ -112,6 +112,9 @@ namespace TombEditor.ToolWindows
 
         private void butEditObject_Click(object sender, EventArgs e)
         {
+            if (lstObjects.SelectedItem == null)
+                return;
+
             var instance = lstObjects.SelectedItem.Tag as ObjectInstance;
             if (instance != null)
                 EditorActions.EditObject(instance, this);
