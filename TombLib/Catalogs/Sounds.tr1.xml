@@ -535,7 +535,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>f2f_scrm.wav</FileName>
