@@ -154,6 +154,7 @@
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.comboScope);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.KeyPreview = true;
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(302, 238);
             this.Name = "FormSearch";
@@ -162,7 +163,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Search";
-            this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.FormSearch_PreviewKeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormSearch_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.objectList)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -101,20 +101,13 @@ namespace TombEditor.ToolWindows
                 EditorActions.EditObject(instance, this);
         }
 
-        private void lstObjects_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
-                butDeleteObject_Click(sender, e);
-        }
-
         private void butDeleteObject_Click(object sender, EventArgs e)
         {
             if (lstObjects.SelectedIndices.Count == 0)
                 return;
 
-            var instance = lstObjects.SelectedItem.Tag as ObjectInstance;
-            if (instance != null)
-                EditorActions.DeleteObject(instance);
+            var instances = lstObjects.SelectedItems.Select(o => o.Tag as ObjectInstance).ToList();
+            EditorActions.DeleteObjects(instances, this);
         }
 
         private void butEditObject_Click(object sender, EventArgs e)

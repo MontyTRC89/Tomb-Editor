@@ -38,6 +38,7 @@
             // 
             // butEditObject
             // 
+            this.butEditObject.Checked = false;
             this.butEditObject.Image = global::TombEditor.Properties.Resources.general_edit_16;
             this.butEditObject.Location = new System.Drawing.Point(3, 3);
             this.butEditObject.Name = "butEditObject";
@@ -48,6 +49,7 @@
             // 
             // butDeleteObject
             // 
+            this.butDeleteObject.Checked = false;
             this.butDeleteObject.Image = global::TombEditor.Properties.Resources.general_trash_16;
             this.butDeleteObject.Location = new System.Drawing.Point(33, 3);
             this.butDeleteObject.Name = "butDeleteObject";
@@ -71,12 +73,12 @@
             this.lstObjects.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstObjects.Location = new System.Drawing.Point(3, 2);
             this.lstObjects.MouseWheelScrollSpeedV = 0.2F;
+            this.lstObjects.MultiSelect = true;
             this.lstObjects.Name = "lstObjects";
             this.lstObjects.Size = new System.Drawing.Size(279, 114);
             this.lstObjects.TabIndex = 0;
             this.lstObjects.Text = "darkListView1";
             this.lstObjects.SelectedIndicesChanged += new System.EventHandler(this.lstObjects_SelectedIndicesChanged);
-            this.lstObjects.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjects_KeyDown);
             this.lstObjects.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lstObjects_MouseDoubleClick);
             // 
             // toolTip
