@@ -169,6 +169,9 @@ namespace TombLib.Wad.Tr4Wad
 
         internal static void ConvertTr4Sprites(Wad2 wad, Tr4Wad oldWad)
         {
+            if (oldWad.SpriteData == null || oldWad.SpriteSequences.Count == 0)
+                return;
+
             int spriteDataSize = oldWad.SpriteData.Length;
 
             // Load the real sprite texture data

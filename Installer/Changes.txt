@@ -25,6 +25,7 @@ WadTool:
  * Add alignment controls in sprite editor (for TR1-3 room and UI sprites).
  
 General:
+ * Allow loading legacy wads without .swd and .was files.
  * Fix distorted texturing on TR1-3 models.
 
 Version 1.3.5

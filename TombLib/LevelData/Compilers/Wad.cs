@@ -844,10 +844,11 @@ namespace TombLib.LevelData.Compilers
                             {
                                 default:
                                 case WadSoundLoopBehaviour.None:
-                                    characteristics = 0;
-                                    break;
                                 case WadSoundLoopBehaviour.OneShotRewound:
                                     characteristics = 1;
+                                    break;
+                                case WadSoundLoopBehaviour.OneShotWait:
+                                    characteristics = 0;
                                     break;
                                 case WadSoundLoopBehaviour.Looped:
                                     characteristics = 2;
