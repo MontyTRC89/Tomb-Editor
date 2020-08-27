@@ -119,6 +119,8 @@ namespace TombEditor.ToolWindows
                     else
                         lstTriggers.ClearSelection();
                 }
+                else
+                    lstTriggers.ClearSelection();
             }
 
             // Update tooltip texts

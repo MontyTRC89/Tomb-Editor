@@ -491,7 +491,7 @@ namespace TombEditor.Forms
 
         private void butDelete_Click(object sender, EventArgs e) => DeleteObjects();
 
-        private void FormSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        private void FormSearch_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
                 DeleteObjects();
