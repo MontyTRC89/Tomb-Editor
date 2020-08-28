@@ -7,11 +7,12 @@ Tomb Editor:
  * Added 8-bit texture support for TR2/TR3.
  * Added move timer customization for TR1-TR2 cameras.
  * Added ability to copy and paste triggers.
+ * Added "Export as animcommand" button to trigger window.
  * Added ability to delete objects from search window.
  * Added ability to delete multiple objects at once from object list.
  * Added find & replace object context menu.
  * Draw service objects as 2D icons by default.
- * Point to specific trigger area when "find where is triggered" context menu was engaged.
+ * Point to specific trigger area when "Find where is triggered" context menu was engaged.
  * Always resample sounds to proper format.
  * Store last selected room in project file.
  * Store last used tool and texture remap window properties in config file.

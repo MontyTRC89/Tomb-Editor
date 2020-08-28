@@ -8,6 +8,7 @@ using TombLib.Controls;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Utils;
+using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
@@ -214,11 +215,12 @@ namespace TombEditor.Forms
 
             try
             {
-                tbScript.Text = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger);
-                tbScript.Tag  = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, true);
+                tbScript.Text = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, null);
+                tbScript.Tag  = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, null, true);
                 tbScript.Enabled = true;
                 butCopyToClipboard.Enabled = true;
                 butCopyWithComments.Enabled = true;
+                butCopyAsAnimcommand.Enabled = true;
             }
             catch (NgParameterInfo.ExceptionScriptNotSupported)
             {
@@ -227,6 +229,7 @@ namespace TombEditor.Forms
                 tbScript.Enabled = false;
                 butCopyToClipboard.Enabled = false;
                 butCopyWithComments.Enabled = false;
+                butCopyAsAnimcommand.Enabled = false;
             }
             catch (NgParameterInfo.ExceptionScriptIdMissing)
             {
@@ -235,6 +238,7 @@ namespace TombEditor.Forms
                 tbScript.Enabled = false;
                 butCopyToClipboard.Enabled = false;
                 butCopyWithComments.Enabled = false;
+                butCopyAsAnimcommand.Enabled = false;
             }
             catch (Exception exc)
             {
@@ -243,6 +247,7 @@ namespace TombEditor.Forms
                 tbScript.Enabled = false;
                 butCopyToClipboard.Enabled = false;
                 butCopyWithComments.Enabled = false;
+                butCopyAsAnimcommand.Enabled = false;
                 logger.Debug(exc, "\"ExportToScriptTrigger\" failed.");
             }
         }
@@ -265,6 +270,31 @@ namespace TombEditor.Forms
             var commentString = tbScript.Tag as string;
             if (!string.IsNullOrEmpty(commentString))
                 Clipboard.SetText(commentString);
+        }
+
+        private void butCopyAsAnimcommand_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormInputBox("Specify animcommand frame number", 
+                "Enter value from -1 (any frame) to 254:", "-1"))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    int frameNumber = 0;
+                    if (!int.TryParse(form.Result, out frameNumber) || frameNumber < -1 || frameNumber > 254)
+                    {
+                        DarkMessageBox.Show(this, "Frame number is invalid. Maximum is 254.", "Error", MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var result = NgParameterInfo.ExportToScriptTrigger(_level, TestTrigger, frameNumber);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        using (var form2 = new FormInputBox("Export as SetPosition animcommand", 
+                            "Put these values into X, Y and Z fields in WadTool:", result))
+                            form2.ShowDialog(this);
+                    }
+                }
+            }
         }
 
         private void scriptExportPanel_Click(object sender, EventArgs e)
