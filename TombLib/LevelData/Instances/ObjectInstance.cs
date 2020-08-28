@@ -57,6 +57,8 @@ namespace TombLib.LevelData
         bool Replace(IReplaceable other, bool withProperties);
     }
 
+    public interface ICopyable { }
+
     public abstract class ObjectInstance : ICloneable, ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(ObjectInstance instance);
@@ -223,7 +225,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public abstract class PositionBasedObjectInstance : ObjectInstance, ISpatial
+    public abstract class PositionBasedObjectInstance : ObjectInstance, ISpatial, ICopyable
     {
         public Vector3 Position { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace TombLib.LevelData
 {
-    public class GhostBlockInstance : SectorBasedObjectInstance, ISpatial
+    public class GhostBlockInstance : SectorBasedObjectInstance, ISpatial, ICopyable
     {
         public BlockSurface Floor;
         public BlockSurface Ceiling;
