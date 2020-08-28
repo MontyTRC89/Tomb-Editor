@@ -851,7 +851,6 @@ namespace TombEditor.Controls
                             {
                                 List<Room> newlySelectedRooms = _editor.SelectedRooms.ToList();
                                 if (newlySelectedRooms.Contains(pickedRoom))
-
                                     newlySelectedRooms.Remove(pickedRoom);
                                 else
                                     newlySelectedRooms.Add(pickedRoom);

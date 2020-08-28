@@ -847,7 +847,7 @@ namespace TombEditor
             AddCommand("SelectAll", "Select all", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Map2D)
-                    args.Editor.SelectRooms(args.Editor.Level.Rooms.Where(room => room != null));
+                    args.Editor.SelectRooms(args.Editor.Level.Rooms.Where(room => room != null), true);
                 else
                     args.Editor.SelectedSectors = new SectorSelection { Area = args.Editor.SelectedRoom.LocalArea };
             });
@@ -1057,20 +1057,11 @@ namespace TombEditor
                 args.Editor.RoomPropertiesChange(room);
             });
 
-            AddCommand("ApplyAmbientLightToAllRooms", "Apply current ambient light to all rooms", CommandType.Rooms, delegate (CommandArgs args)
+            AddCommand("ApplyRoomProperties", "Apply room properties...", CommandType.Rooms, delegate (CommandArgs args)
             {
-                if (DarkMessageBox.Show(args.Window, "Do you really want to apply the ambient light of the current room to all rooms?",
-                                       "Apply ambient light", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    EditorActions.ApplyCurrentAmbientLightToAllRooms();
-                    args.Editor.SendMessage("Ambient light was applied to all rooms.", PopupType.Info);
-                }
-            });
-
-            AddCommand("ApplyAmbientLightToSelectedRooms", "Set ambient light for selected rooms", CommandType.Rooms, delegate (CommandArgs args)
-            {
-                if (EditorActions.ApplyAmbientLightToSelectedRooms(args.Window))
-                    args.Editor.SendMessage("Ambient light was applied to selected rooms.", PopupType.Info);
+                using (var form = new FormRoomProperties(args.Editor))
+                    if (form.ShowDialog(args.Window) == DialogResult.OK)
+                        args.Editor.SendMessage("Chosen room attributes were applied to selected rooms.", PopupType.Info);
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)

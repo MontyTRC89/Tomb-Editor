@@ -155,6 +155,12 @@
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormRoomProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormRoomProperties.Designer.cs">
+      <DependentUpon>FormRoomProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormSprite.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -476,6 +482,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormRoomProperties.resx">
+      <DependentUpon>FormRoomProperties.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSprite.resx">
       <DependentUpon>FormSprite.cs</DependentUpon>
