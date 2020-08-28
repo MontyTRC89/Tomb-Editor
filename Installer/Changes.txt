@@ -17,6 +17,7 @@ Tomb Editor:
  * Store last selected room in project file.
  * Store last used tool and texture remap window properties in config file.
  * Define version-specific game limits in TrCatalog.xml.
+ * Sort triggers in the same order as in final level file in trigger list.
  * Highlight trigger which is used to setup parameters in trigger list.
  * Better trigger sorting to avoid issues with TRNG flipeffects.
  * Fix light radius calculation in TR2/TR3.

@@ -363,123 +363,110 @@ namespace TombLib.LevelData.Compilers
             var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
             if (triggers.Count > 0)
             {
-                // First, we search if a setup or "special" trigger exists.
-                // "Special" trigger in TRLE terminology is a trigger which is required to be the first one
-                // to define course of action for all next triggers. Historically it was key/switch trigger
-                // in classic TRLE, but pickup trigger and TRNG's condition trigger requires the same.
+                if (triggers.Count > 1) TriggerInstance.SortTriggerList(ref triggers);
+                var setupTrigger = triggers[0];
+                lastFloorDataFunction = outFloorData.Count;
 
-                var found = TriggerInstance.GetSetupTrigger(triggers);
-                
-                // Sort triggers to put special trigger first, and also put all camera triggers to the
-                // end of the chain, cause it may result in clashes with TRNG flipeffect triggers with
-                // extra uint16.
+                // Trigger type and setup are coming from the found setup trigger. 
+                // Other triggers are needed only for action.
 
-                var sortedTriggers = triggers.OrderBy(t => t != found)
-                                             .ThenBy (t => t.TargetType == TriggerTargetType.Camera);
+                ushort trigger1 = 0x04;
+                switch (setupTrigger.TriggerType)
                 {
-                    lastFloorDataFunction = outFloorData.Count;
-
-                    // Trigger type and setup are coming from the found trigger. 
-                    // Other triggers are needed only for action.
-
-                    ushort trigger1 = 0x04;
-                    switch (found.TriggerType)
-                    {
-                        case TriggerType.Trigger:
-                            trigger1 |= 0x00 << 8;
-                            break;
-                        case TriggerType.Pad:
-                            trigger1 |= 0x01 << 8;
-                            break;
-                        case TriggerType.Switch:
-                            trigger1 |= 0x02 << 8;
-                            break;
-                        case TriggerType.Key:
-                            trigger1 |= 0x03 << 8;
-                            break;
-                        case TriggerType.Pickup:
-                            trigger1 |= 0x04 << 8;
-                            break;
-                        case TriggerType.Heavy:
-                            trigger1 |= 0x05 << 8;
-                            break;
-                        case TriggerType.Antipad:
-                            trigger1 |= 0x06 << 8;
-                            break;
-                        case TriggerType.Combat:
-                            trigger1 |= 0x07 << 8;
-                            break;
-                        case TriggerType.Dummy:
-                            trigger1 |= 0x08 << 8;
-                            break;
-                        case TriggerType.Antitrigger:
-                            trigger1 |= 0x09 << 8;
-                            break;
-                        case TriggerType.HeavySwitch:
-                            trigger1 |= 0x0a << 8;
-                            break;
-                        case TriggerType.HeavyAntitrigger:
-                            trigger1 |= 0x0b << 8;
-                            break;
-                        case TriggerType.Monkey:
-                        case TriggerType.ConditionNg:   // @FIXME: check if these really use same subfunction?
-                            trigger1 |= 0x0c << 8;
-                            break;
-                        case TriggerType.Skeleton:
-                            trigger1 |= 0x0d << 8;
-                            break;
-                        case TriggerType.TightRope:
-                            trigger1 |= 0x0e << 8;
-                            break;
-                        case TriggerType.Crawl:
-                            trigger1 |= 0x0f << 8;
-                            break;
-                        case TriggerType.Climb:
-                            trigger1 |= 0x10 << 8;
-                            break;
-                        default:
-                            throw new Exception("Unknown trigger type found '" + found + "'");
-                    }
-
-                    // Do some warnings in case user switches targets and some incompatible triggers are left behind
-
-                    if(_level.Settings.GameVersion != TRVersion.Game.TRNG && found.TriggerType == TriggerType.ConditionNg)
-                        _progressReporter.ReportWarn("Level uses 'Condition' trigger type, which is not supported in this game engine.");
-
-                    if(_level.Settings.GameVersion == TRVersion.Game.TRNG && found.TriggerType == TriggerType.Monkey)
-                        _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
-
-                    if ((_level.Settings.GameVersion != TRVersion.Game.TR5 && _level.Settings.GameVersion != TRVersion.Game.TR5Main) &&
-                        (found.TriggerType > TriggerType.ConditionNg && found.TriggerType < TriggerType.Monkey))
-                        _progressReporter.ReportWarn("Level uses trigger type '" + found.TriggerType + "', which is not supported in this game engine.");
-                    
-                    ushort triggerSetup;
-                    if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
-                    {
-                        // NG flipeffects store timer and extra in additional ushort
-                        if (found.TargetType == TriggerTargetType.FlipEffect && (found.Target as TriggerParameterUshort)?.Key > 46)
-                            triggerSetup = 0;
-                        // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
-                        else if (found.TriggerType == TriggerType.ConditionNg)
-                            triggerSetup = GetTriggerRealTimer(found, 0xffff);
-                        // all other triggers work as usual
-                        else
-                            triggerSetup = GetTriggerRealTimer(found, 0xff);
-                    }
-                    else
-                        triggerSetup = GetTriggerParameter(found.Timer, found, 0xff);
-                    
-                    triggerSetup |= (ushort)(found.OneShot ? 0x100 : 0);
-
-                    // Omit writing bitmask for ConditionNg, because it uses these bits for keeping EXTRA param.
-                    if (found.TriggerType != TriggerType.ConditionNg)
-                        triggerSetup |= (ushort)((found.CodeBits & 0x1f) << 9);
-
-                    outFloorData.Add(trigger1);
-                    outFloorData.Add(triggerSetup);
+                    case TriggerType.Trigger:
+                        trigger1 |= 0x00 << 8;
+                        break;
+                    case TriggerType.Pad:
+                        trigger1 |= 0x01 << 8;
+                        break;
+                    case TriggerType.Switch:
+                        trigger1 |= 0x02 << 8;
+                        break;
+                    case TriggerType.Key:
+                        trigger1 |= 0x03 << 8;
+                        break;
+                    case TriggerType.Pickup:
+                        trigger1 |= 0x04 << 8;
+                        break;
+                    case TriggerType.Heavy:
+                        trigger1 |= 0x05 << 8;
+                        break;
+                    case TriggerType.Antipad:
+                        trigger1 |= 0x06 << 8;
+                        break;
+                    case TriggerType.Combat:
+                        trigger1 |= 0x07 << 8;
+                        break;
+                    case TriggerType.Dummy:
+                        trigger1 |= 0x08 << 8;
+                        break;
+                    case TriggerType.Antitrigger:
+                        trigger1 |= 0x09 << 8;
+                        break;
+                    case TriggerType.HeavySwitch:
+                        trigger1 |= 0x0a << 8;
+                        break;
+                    case TriggerType.HeavyAntitrigger:
+                        trigger1 |= 0x0b << 8;
+                        break;
+                    case TriggerType.Monkey:
+                    case TriggerType.ConditionNg:   // @FIXME: check if these really use same subfunction?
+                        trigger1 |= 0x0c << 8;
+                        break;
+                    case TriggerType.Skeleton:
+                        trigger1 |= 0x0d << 8;
+                        break;
+                    case TriggerType.TightRope:
+                        trigger1 |= 0x0e << 8;
+                        break;
+                    case TriggerType.Crawl:
+                        trigger1 |= 0x0f << 8;
+                        break;
+                    case TriggerType.Climb:
+                        trigger1 |= 0x10 << 8;
+                        break;
+                    default:
+                        throw new Exception("Unknown trigger type found '" + setupTrigger + "'");
                 }
 
-                foreach (var trigger in sortedTriggers)
+                // Do some warnings in case user switches targets and some incompatible triggers are left behind
+
+                if(_level.Settings.GameVersion != TRVersion.Game.TRNG && setupTrigger.TriggerType == TriggerType.ConditionNg)
+                    _progressReporter.ReportWarn("Level uses 'Condition' trigger type, which is not supported in this game engine.");
+
+                if(_level.Settings.GameVersion == TRVersion.Game.TRNG && setupTrigger.TriggerType == TriggerType.Monkey)
+                    _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
+
+                if ((_level.Settings.GameVersion != TRVersion.Game.TR5 && _level.Settings.GameVersion != TRVersion.Game.TR5Main) &&
+                    (setupTrigger.TriggerType > TriggerType.ConditionNg && setupTrigger.TriggerType < TriggerType.Monkey))
+                    _progressReporter.ReportWarn("Level uses trigger type '" + setupTrigger.TriggerType + "', which is not supported in this game engine.");
+                    
+                ushort triggerSetup;
+                if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+                {
+                    // NG flipeffects store timer and extra in additional ushort
+                    if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (setupTrigger.Target as TriggerParameterUshort)?.Key > 46)
+                        triggerSetup = 0;
+                    // NG condition trigger uses timer in low byte and extra stored as bits in the high byte
+                    else if (setupTrigger.TriggerType == TriggerType.ConditionNg)
+                        triggerSetup = GetTriggerRealTimer(setupTrigger, 0xffff);
+                    // all other triggers work as usual
+                    else
+                        triggerSetup = GetTriggerRealTimer(setupTrigger, 0xff);
+                }
+                else
+                    triggerSetup = GetTriggerParameter(setupTrigger.Timer, setupTrigger, 0xff);
+                    
+                triggerSetup |= (ushort)(setupTrigger.OneShot ? 0x100 : 0);
+
+                // Omit writing bitmask for ConditionNg, because it uses these bits for keeping EXTRA param.
+                if (setupTrigger.TriggerType != TriggerType.ConditionNg)
+                    triggerSetup |= (ushort)((setupTrigger.CodeBits & 0x1f) << 9);
+
+                outFloorData.Add(trigger1);
+                outFloorData.Add(triggerSetup);
+
+                foreach (var trigger in triggers)
                 {
                     ushort trigger2 = 0;
                     ushort trigger3 = 0;
