@@ -81,10 +81,15 @@ namespace TombLib.LevelData.IO
                 for (int i = 0; i < level.Rooms.Length; i++)
                 {
                     if (level.Rooms[i] == null) continue;
-                    foreach (var objectInstance in level.Rooms[i].Objects)
+                    var objList = level.Rooms[i].Objects;
+                    for (int j = 0; j < objList.Count; j++)
                     {
-                        var encodedID = objectInstance.Room.Objects.IndexOf(o => o == objectInstance) << 12 | i;
-                        objectInstanceLookup.Add(objectInstance, encodedID);
+                        // Use room number and a hashcode truncated to 22 bytes as a lookup ID.
+                        // Truncating hashcode is risky, but since we also use room number as a part
+                        // of an ID, there's a slim chance that ID will misfire.
+
+                        var encodedID = ((objList[j].GetHashCode() & 0x3FFFFF) << 10) | i;
+                        objectInstanceLookup.Add(objList[j], encodedID);
                     }
                 }
 
