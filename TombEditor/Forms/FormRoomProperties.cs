@@ -1,7 +1,10 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using DarkUI.Controls;
 using DarkUI.Forms;
+using System;
+using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Linq;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -17,6 +20,13 @@ namespace TombEditor.Forms
 
         private void butOk_Click(object sender, EventArgs e)
         {
+            if (WinFormsUtils.AllSubControls(this).Where(c => c is DarkCheckBox).All(cb => ((DarkCheckBox)cb).Checked == false))
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+                return;
+            }
+
             if (DarkMessageBox.Show(this, "Are you sure you want to apply selected properties to selected rooms rooms?\n" +
                                           "This action can't be undone.",
                                     "Apply room properties", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -52,9 +62,12 @@ namespace TombEditor.Forms
 
                     _editor.RoomPropertiesChange(r);
                 }
-            }
 
-            DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
+            }
+            else
+                DialogResult = DialogResult.Cancel;
+
             Close();
         }
 
