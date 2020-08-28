@@ -1916,6 +1916,7 @@ namespace TombEditor.Controls
 
         private void DrawLights(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
         {
+            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
             _legacyDevice.SetVertexBuffer(_littleSphere.VertexBuffer);
             _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
             _legacyDevice.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
