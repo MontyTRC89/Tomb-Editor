@@ -23,6 +23,12 @@ namespace TombLib
             End = new VectorInt2(x1, y1);
         }
 
+        public RectangleInt2(VectorInt2 pos)
+        {
+            Start = new VectorInt2(pos.X, pos.Y);
+            End = new VectorInt2(pos.X, pos.Y);
+        }
+
         public int X0
         {
             get { return Start.X; }

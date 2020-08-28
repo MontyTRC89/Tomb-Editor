@@ -573,6 +573,17 @@ namespace TombEditor
 
             SmartBuildGeometry(room, area);
         }
+        public static void AddTrigger(Room room, RectangleInt2 area, TriggerInstance trigger)
+        {
+            trigger.Area = area;
+
+            room.AddObject(_editor.Level, trigger);
+            _editor.ObjectChange(trigger, ObjectChangeType.Add);
+            _editor.RoomSectorPropertiesChange(room);
+
+            // Undo
+            _editor.UndoManager.PushSectorObjectCreated(trigger);
+        }
 
         public static void AddTrigger(Room room, RectangleInt2 area, IWin32Window owner)
         {
@@ -632,15 +643,8 @@ namespace TombEditor
                 if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                     return;
             }
-            room.AddObject(_editor.Level, trigger);
-            _editor.ObjectChange(trigger, ObjectChangeType.Add);
-            _editor.RoomSectorPropertiesChange(room);
 
-            // Undo
-            _editor.UndoManager.PushSectorObjectCreated(trigger);
-
-            //if (_editor.Configuration.UI_AutoSwitchSectorColoringInfo)
-            //    _editor.SectorColoringManager.SetPriority(SectorColoringType.Trigger);
+            AddTrigger(room, area, trigger);
         }
 
         public static void AddGhostBlocks(Room room, RectangleInt2 area)
@@ -4013,9 +4017,9 @@ namespace TombEditor
 
         public static void TryCopyObject(ObjectInstance instance, IWin32Window owner)
         {
-            if (!(instance is ISpatial))
+            if (!(instance is ISpatial || instance is TriggerInstance))
             {
-                _editor.SendMessage("No object selected. \nYou have to select object before you can cut or copy it.", PopupType.Info);
+                _editor.SendMessage("No suitable object selected. \nYou have to select object before you can cut or copy it.", PopupType.Info);
                 return;
             }
 
@@ -4030,7 +4034,7 @@ namespace TombEditor
             if (_editor.SelectedObject == null && instance != null)
             {
                 _editor.SelectedObject = instance;
-                EditorActions.BookmarkObject(instance);
+                BookmarkObject(instance);
             }
 
             Clipboard.SetDataObject(new ObjectClipboardData(_editor));
