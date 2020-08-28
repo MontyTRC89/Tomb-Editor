@@ -24,11 +24,11 @@ namespace TombEditor
             }
         }
 
-        public Prj2Loader.LoadedObjects CreateObjects()
+        public Prj2Loader.LoadedObjects CreateObjects(Level level)
         {
             using (var stream = new MemoryStream(_data, false))
             {
-                var loadedObjects = Prj2Loader.LoadFromPrj2OnlyObjects(_levelPath, stream,
+                var loadedObjects = Prj2Loader.LoadFromPrj2OnlyObjects(_levelPath, level, stream,
                     new Prj2Loader.Settings { IgnoreTextures = true, IgnoreWads = true });
                 return loadedObjects;
             }
@@ -36,7 +36,11 @@ namespace TombEditor
 
         public ObjectInstance MergeGetSingleObject(Editor editor)
         {
-            Prj2Loader.LoadedObjects loadedObjects = CreateObjects();
+            Prj2Loader.LoadedObjects loadedObjects = CreateObjects(editor.Level);
+
+            if (loadedObjects.Objects.Count == 0)
+                return null;
+
             ObjectInstance obj = (ObjectInstance)loadedObjects.Objects[0];
             LevelSettings newLevelSettings = editor.Level.Settings.Clone();
             obj.CopyDependentLevelSettings(new Room.CopyDependentLevelSettingsArgs(null, newLevelSettings, loadedObjects.Settings, true));

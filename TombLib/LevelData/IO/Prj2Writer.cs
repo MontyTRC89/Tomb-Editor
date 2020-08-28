@@ -78,8 +78,21 @@ namespace TombLib.LevelData.IO
             {
                 // Index objects
                 var objectInstanceLookup = new Dictionary<ObjectInstance, int>();
-                foreach (ObjectInstance objectInstance in objects)
-                    objectInstanceLookup.Add(objectInstance, objectInstanceLookup.Count);
+                for (int i = 0; i < level.Rooms.Length; i++)
+                {
+                    if (level.Rooms[i] == null) continue;
+                    foreach (var objectInstance in level.Rooms[i].Objects)
+                    {
+                        var encodedID = objectInstance.Room.Objects.IndexOf(o => o == objectInstance) << 12 | i;
+                        objectInstanceLookup.Add(objectInstance, encodedID);
+                    }
+                }
+
+                // Index rooms
+                var roomLookup = new Dictionary<Room, int>();
+                for (int i = 0; i < level.Rooms.Length; ++i)
+                    if (level.Rooms[i] != null)
+                        roomLookup.Add(level.Rooms[i], i);
 
                 // Write settings
                 LevelSettings settingsToSave = new LevelSettings();
@@ -89,7 +102,7 @@ namespace TombLib.LevelData.IO
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
 
                 // Write objects
-                WriteObjects(chunkIO, objects, new Dictionary<Room, int>(), levelSettingIds, objectInstanceLookup);
+                WriteObjects(chunkIO, objects, roomLookup, levelSettingIds, objectInstanceLookup);
                 chunkIO.WriteChunkEnd();
             }
         }

@@ -63,15 +63,19 @@ namespace TombLib.LevelData.IO
             public LevelSettings Settings;
             public List<ObjectInstance> Objects;
         }
-        public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Stream stream) => LoadFromPrj2OnlyObjects(filename, stream, new Settings());
-        public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Stream stream, Settings loadSettings)
+
+        public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Level level, Stream stream, Settings loadSettings)
         {
+            var roomLinkActions     = new List<KeyValuePair<long, Action<Room>>>();
+            var objectLinkActions   = new List<KeyValuePair<long, Action<ObjectInstance>>>();
+            var objectMapDictionary = new Dictionary<long, ObjectInstance>();
+
             using (var chunkIO = new ChunkReader(Prj2Chunks.MagicNumber, stream, Prj2Chunks.ChunkList))
             {
                 LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
                 LoadedObjects loadedObjects = new LoadedObjects { Settings = new LevelSettings(), Objects = new List<ObjectInstance>() };
-                Dictionary<long, ObjectInstance> newObjects = new Dictionary<long, ObjectInstance>();
                 Wad2 embeddedSoundInfoWad = null;
+
                 chunkIO.ReadChunks((id, chunkSize) =>
                 {
                     if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref loadedObjects.Settings, loadSettings))
@@ -79,11 +83,49 @@ namespace TombLib.LevelData.IO
                     else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad))
                         return true;
                     else if (LoadObjects(chunkIO, id, levelSettingsIds,
-                        obj => loadedObjects.Objects.Add(obj), newObjects, null, null, null, embeddedSoundInfoWad))
+                        obj => { }, objectMapDictionary, null, roomLinkActions, objectLinkActions, embeddedSoundInfoWad))
                         return true;
                     return false;
                 });
 
+                // Link objects
+                foreach (var objectLinkAction in objectLinkActions)
+                    try
+                    {
+                        var roomID = objectLinkAction.Key & 4095;
+                        var objID  = objectLinkAction.Key >> 12;
+
+                        if (level.Rooms[roomID] != null && level.Rooms[roomID].Objects.Count > objID)
+                        {
+                            var candidate = level.Rooms[roomID].Objects[(int)objID];
+                            objectLinkAction.Value(candidate);
+                        }
+                        else
+                            throw new InvalidDataException();
+
+                    }
+                    catch (Exception exc)
+                    {
+                        logger.Error(exc, "An exception was raised while trying to perform room link action.");
+                        return loadedObjects;
+                    }
+
+                // Link rooms
+                foreach (var roomLinkAction in roomLinkActions)
+                    try
+                    {
+                        if (level.Rooms[roomLinkAction.Key] != null)
+                            roomLinkAction.Value(level.Rooms[roomLinkAction.Key]);
+                        else
+                            throw new InvalidDataException();
+                    }
+                    catch (Exception exc)
+                    {
+                        logger.Error(exc, "An exception was raised while trying to perform room link action.");
+                        return loadedObjects;
+                    }
+
+                loadedObjects.Objects = objectMapDictionary.Values.ToList();
                 return loadedObjects;
             }
         }
@@ -1232,7 +1274,6 @@ namespace TombLib.LevelData.IO
                         unchecked((ushort)targetObjectId), realTimer, instance.CodeBits, out timer, out extra);
                     instance.Timer = timer == null ? null : new TriggerParameterUshort(timer.Value);
                     instance.Extra = extra == null ? null : new TriggerParameterUshort(extra.Value);
-
 
                     objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(targetObjectId, targetObj => instance.Target = targetObj));
 

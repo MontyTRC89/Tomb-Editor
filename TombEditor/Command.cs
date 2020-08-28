@@ -743,7 +743,23 @@ namespace TombEditor
                         if (data == null)
                             args.Editor.SendMessage("Clipboard contains no object data.", PopupType.Error);
                         else
-                            args.Editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(args.Editor));
+                        {
+                            var obj = data.MergeGetSingleObject(args.Editor);
+                            if (obj is TriggerInstance)
+                            {
+                                if (args.Editor.SelectedSectors == SectorSelection.None)
+                                    args.Editor.SendMessage("Select sectors to paste trigger.", PopupType.Error);
+                                else
+                                    EditorActions.AddTrigger(args.Editor.SelectedRoom, args.Editor.SelectedSectors.Area, (TriggerInstance)obj);
+                            }
+                            else if (obj is ISpatial)
+                                args.Editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(args.Editor));
+                            else
+                            {
+                                args.Editor.SendMessage("Level state changed. Paste action ignored.", PopupType.Warning);
+                                Clipboard.Clear();
+                            }
+                        }
                     }
                     else if (args.Editor.SelectedSectors.Valid && Clipboard.ContainsData(typeof(SectorsClipboardData).FullName))
                     {
