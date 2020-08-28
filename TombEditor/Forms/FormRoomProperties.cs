@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using System.Collections.Generic;
 
 namespace TombEditor.Forms
 {
@@ -37,7 +38,7 @@ namespace TombEditor.Forms
                     if (cbRoomType.Checked)      r.Type = curr.Type;
                     if (cbRoomType.Checked)      r.TypeStrength = curr.TypeStrength;
                     if (cbSky.Checked)           r.FlagHorizon = curr.FlagHorizon;
-                    if (cbTags.Checked)          r.Tags = curr.Tags;
+                    if (cbTags.Checked)          r.Tags = new List<string>(curr.Tags);
                     if (cbVisible.Checked)       r.Hidden = curr.Hidden;
                     if (cbWind.Checked)          r.FlagOutside = curr.FlagOutside;
 
