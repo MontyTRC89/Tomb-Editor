@@ -259,13 +259,25 @@ namespace TombLib.LevelData
                 _extra = transformRoom((Room)_extra);
         }
 
-        public static TriggerInstance GetSetupTrigger(List<TriggerInstance> triggers)
+        public static void SortTriggerList(ref List<TriggerInstance> triggers)
         {
+            // First, we search if a setup or "special" trigger exists.
+            // "Special" trigger in TRLE terminology is a trigger which is required to be the first one
+            // to define course of action for all next triggers. Historically it was key/switch trigger
+            // in classic TRLE, but pickup trigger and TRNG's condition trigger requires the same.
+
             var found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
                                                      t.TriggerType == TriggerType.Switch ||
                                                      t.TriggerType == TriggerType.Key ||
                                                      t.TriggerType == TriggerType.Pickup) ?? triggers.FirstOrDefault();
-            return found;
+
+            // Sort triggers to put special trigger first, and also put all camera triggers to the
+            // end of the chain, cause it may result in clashes with TRNG flipeffect triggers with
+            // extra uint16.
+
+            triggers = triggers.OrderBy(t => t != found)
+                               .ThenBy(t => t.TargetType == TriggerTargetType.Camera)
+                               .ToList();
         }
     }
 }

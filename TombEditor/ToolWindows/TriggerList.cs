@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.LevelData;
 using TombLib.Rendering;
 
@@ -52,38 +53,49 @@ namespace TombEditor.ToolWindows
                 obj is Editor.RoomSectorPropertiesChangedEvent)
             {
                 lstTriggers.Items.Clear();
-                bool noHighlight = true;
+                bool noSort = true;
 
                 if (_editor.Level != null && _editor.SelectedSectors.Valid)
                 {
                     // Search for unique triggers inside the selected area
                     var triggers = new List<TriggerInstance>();
-                    var area = _editor.SelectedSectors.Area;
+                    var area     = _editor.SelectedSectors.Area;
+                    var origin   = new VectorInt2(-1);
+
                     for (int x = area.X0; x <= area.X1; x++)
                         for (int z = area.Y0; z <= area.Y1; z++)
                             foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
                                 if (!triggers.Contains(trigger))
                                 {
-                                    noHighlight = x > area.X0 || z > area.Y0;
+                                    // Look if incoming trigger doesn't belong to first block in area.
+                                    // If that's the case, we're dealing with overlapping triggers and
+                                    // can't predict proper order for them, so we don't sort.
+
+                                    if (origin.X < 0) origin.X = x;
+                                    if (origin.Y < 0) origin.Y = z;
+                                    noSort = origin.X !=x  || origin.Y != z;
                                     triggers.Add(trigger);
                                 }
 
                     if (triggers.Count == 1)
-                        noHighlight = true;
+                        noSort = true; // Don't sort singular triggers
 
                     if (triggers.Count > 0)
                     {
-                        // Find setup trigger
-                        var setupTrigger = TriggerInstance.GetSetupTrigger(triggers);
+                        // Sort triggers in same order as in compiled level, if area
+                        if (!noSort)
+                            TriggerInstance.SortTriggerList(ref triggers);
 
-                        // Add triggers to listbox and highlight setup trigger
-                        foreach (TriggerInstance trigger in triggers)
+                        // Add triggers to listbox and highlight setup trigger if needed
+                        for (int i = 0; i < triggers.Count; i++)
+                        {
+                            var trigger = triggers[i];
                             lstTriggers.Items.Add(new DarkListItem(trigger.ToShortString())
                             {
                                 Tag = trigger,
-                                TextColor = (!noHighlight && trigger == setupTrigger) ? 
-                                                Colors.BlueHighlight.Multiply(1.2f) : Colors.LightText
+                                TextColor = (!noSort && i == 0) ? Colors.BlueHighlight.Multiply(1.2f) : Colors.LightText
                             });
+                        }
                     }
                 }
             }
