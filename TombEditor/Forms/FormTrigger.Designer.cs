@@ -51,6 +51,7 @@ namespace TombEditor.Forms
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butCopyWithComments = new DarkUI.Controls.DarkButton();
             this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
+            this.butCopyAsAnimcommand = new DarkUI.Controls.DarkButton();
             this.scriptExportPanel = new System.Windows.Forms.Panel();
             this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
             this.panelMain = new System.Windows.Forms.Panel();
@@ -202,7 +203,7 @@ namespace TombEditor.Forms
             this.tbScript.Location = new System.Drawing.Point(48, 0);
             this.tbScript.Name = "tbScript";
             this.tbScript.ReadOnly = true;
-            this.tbScript.Size = new System.Drawing.Size(167, 22);
+            this.tbScript.Size = new System.Drawing.Size(159, 22);
             this.tbScript.TabIndex = 13;
             // 
             // labelScript
@@ -220,7 +221,7 @@ namespace TombEditor.Forms
             this.butCopyWithComments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyWithComments.Checked = false;
             this.butCopyWithComments.Image = global::TombEditor.Properties.Resources.general_copy_comments_16;
-            this.butCopyWithComments.Location = new System.Drawing.Point(249, 0);
+            this.butCopyWithComments.Location = new System.Drawing.Point(241, 1);
             this.butCopyWithComments.Name = "butCopyWithComments";
             this.butCopyWithComments.Size = new System.Drawing.Size(22, 22);
             this.butCopyWithComments.TabIndex = 76;
@@ -232,23 +233,36 @@ namespace TombEditor.Forms
             this.butCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyToClipboard.Checked = false;
             this.butCopyToClipboard.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butCopyToClipboard.Location = new System.Drawing.Point(221, 0);
+            this.butCopyToClipboard.Location = new System.Drawing.Point(213, 1);
             this.butCopyToClipboard.Name = "butCopyToClipboard";
             this.butCopyToClipboard.Size = new System.Drawing.Size(22, 22);
             this.butCopyToClipboard.TabIndex = 12;
             this.toolTip.SetToolTip(this.butCopyToClipboard, "Copy to clipboard");
             this.butCopyToClipboard.Click += new System.EventHandler(this.butCopyToClipboard_Click);
             // 
+            // butCopyAsAnimcommand
+            // 
+            this.butCopyAsAnimcommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCopyAsAnimcommand.Checked = false;
+            this.butCopyAsAnimcommand.Image = global::TombEditor.Properties.Resources.general_animcommand_16;
+            this.butCopyAsAnimcommand.Location = new System.Drawing.Point(269, 1);
+            this.butCopyAsAnimcommand.Name = "butCopyAsAnimcommand";
+            this.butCopyAsAnimcommand.Size = new System.Drawing.Size(22, 22);
+            this.butCopyAsAnimcommand.TabIndex = 77;
+            this.toolTip.SetToolTip(this.butCopyAsAnimcommand, "Export as animcommand");
+            this.butCopyAsAnimcommand.Click += new System.EventHandler(this.butCopyAsAnimcommand_Click);
+            // 
             // scriptExportPanel
             // 
             this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.scriptExportPanel.Controls.Add(this.butCopyAsAnimcommand);
             this.scriptExportPanel.Controls.Add(this.butCopyWithComments);
             this.scriptExportPanel.Controls.Add(this.tbScript);
             this.scriptExportPanel.Controls.Add(this.labelScript);
             this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
-            this.scriptExportPanel.Location = new System.Drawing.Point(415, 133);
+            this.scriptExportPanel.Location = new System.Drawing.Point(395, 133);
             this.scriptExportPanel.Name = "scriptExportPanel";
-            this.scriptExportPanel.Size = new System.Drawing.Size(271, 23);
+            this.scriptExportPanel.Size = new System.Drawing.Size(291, 23);
             this.scriptExportPanel.TabIndex = 78;
             // 
             // cbRawMode
@@ -273,7 +287,7 @@ namespace TombEditor.Forms
             this.panelMain.MinimumSize = new System.Drawing.Size(600, 0);
             this.panelMain.Name = "panelMain";
             this.panelMain.Padding = new System.Windows.Forms.Padding(3, 5, 3, 3);
-            this.panelMain.Size = new System.Drawing.Size(695, 220);
+            this.panelMain.Size = new System.Drawing.Size(695, 223);
             this.panelMain.TabIndex = 82;
             // 
             // panelButtons
@@ -281,7 +295,7 @@ namespace TombEditor.Forms
             this.panelButtons.Controls.Add(this.butOK);
             this.panelButtons.Controls.Add(this.butCancel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(3, 186);
+            this.panelButtons.Location = new System.Drawing.Point(3, 189);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(689, 31);
             this.panelButtons.TabIndex = 85;
@@ -377,7 +391,7 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(695, 220);
+            this.ClientSize = new System.Drawing.Size(695, 223);
             this.Controls.Add(this.panelMain);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
@@ -427,5 +441,6 @@ namespace TombEditor.Forms
         private Panel panelButtons;
         private Panel panelClassicTriggerControls;
         private TriggerParameterControl paramExtra;
+        private DarkButton butCopyAsAnimcommand;
     }
 }

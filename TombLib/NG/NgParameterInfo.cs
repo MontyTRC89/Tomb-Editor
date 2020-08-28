@@ -302,7 +302,7 @@ namespace TombLib.NG
         {
             public ExceptionScriptIdMissing()
                 : base("ScriptID is missing")
-            {}
+            { }
         }
         public class ExceptionScriptNotSupported : NotSupportedException
         {
@@ -328,29 +328,47 @@ namespace TombLib.NG
             else
                 throw new Exception("Trigger parameter of invalid type!");
         }
-        public static string ExportToScriptTrigger(Level level, TriggerInstance trigger, bool withComment = false)
+
+        public static string ExportToScriptTrigger(Level level, TriggerInstance trigger, int? animCommandNumber, bool withComment = false)
         {
             checked
             {
                 string result = null;
+                ushort mask   = 0;
+                ushort firstValue  = 0;
+                ushort secondValue = 0;
+
+                if (animCommandNumber.HasValue)
+                {
+                    mask |= 0x8000;
+
+                    if (animCommandNumber.Value < 0)
+                        mask |= 0xFF;
+                    else
+                        mask |= (byte)Math.Min(animCommandNumber.Value, byte.MaxValue - 1);
+                }
+                else
+                    mask = 0;
 
                 switch (trigger.TriggerType)
                 {
                     case TriggerType.ConditionNg:
                         {
-                            if (!TriggerIsValid(level.Settings, trigger))
+                            // Condition triggers can't be exported as anim command because they use same 
+                            // bit flag as animcommand exporter flag
+
+                            if (!TriggerIsValid(level.Settings, trigger) || animCommandNumber.HasValue)
                                 throw new Exception("Trigger is invalid.");
 
                             ushort conditionId = GetValue(level, trigger.Timer);
                             NgTriggerSubtype conditionTrigger = NgCatalog.ConditionTrigger.MainList[conditionId];
 
-                            ushort firstValue = GetValue(level, trigger.Target);
-                            ushort secondValue = conditionId;
+                            mask |= (ushort)(trigger.Target is ObjectInstance ? 0x9000 : 0x8000);
+                            firstValue = GetValue(level, trigger.Target);
+                            secondValue = conditionId;
+
                             if (!conditionTrigger.Extra.IsEmpty)
                                 secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
-
-                            result = trigger.Target is ObjectInstance ? "$9000," : "$8000,";
-                            result += firstValue + ",$" + secondValue.ToString("X4");
                             break;
                         }
                     default:
@@ -364,12 +382,12 @@ namespace TombLib.NG
                                     ushort flipeffectId = GetValue(level, trigger.Target);
                                     NgTriggerSubtype flipeffectTrigger = NgCatalog.FlipEffectTrigger.MainList[flipeffectId];
 
-                                    ushort firstValue = flipeffectId;
-                                    ushort secondValue = GetValue(level, trigger.Timer);
+                                    mask |= 0x2000;
+                                    firstValue = flipeffectId;
+                                    secondValue = GetValue(level, trigger.Timer);
+
                                     if (!flipeffectTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
-
-                                    result = "$2000," + firstValue + ",$" + secondValue.ToString("X4");
                                     break;
                                 }
 
@@ -381,26 +399,28 @@ namespace TombLib.NG
                                     ushort actionId = GetValue(level, trigger.Timer);
                                     NgTriggerSubtype actionTrigger = NgCatalog.ActionTrigger.MainList[actionId];
 
-                                    ushort firstValue = GetValue(level, trigger.Target);
-                                    ushort secondValue = actionId;
+                                    mask |= (ushort)(trigger.Target is StaticInstance ? 0x4000 : 0x5000);
+                                    firstValue = GetValue(level, trigger.Target);
+                                    secondValue = actionId;
+
                                     if (!actionTrigger.Extra.IsEmpty)
                                         secondValue |= (ushort)(GetValue(level, trigger.Extra) << 8);
-
-                                    result = trigger.Target is StaticInstance ? "$4000," : "$5000,";
-                                    result += firstValue + ",$" + secondValue.ToString("X4");
                                     break;
                                 }
                         }
                         break;
                 }
 
-                if(!string.IsNullOrEmpty(result))
-                    return (withComment ? 
+                result = animCommandNumber.HasValue ? unchecked((short)mask) + " ," + firstValue + " ," + secondValue :
+                                                      "$" + mask.ToString("X4") + "," + firstValue + ",$" + secondValue.ToString("X4");
+
+                if (!string.IsNullOrEmpty(result))
+                    return (withComment ?
                             "; "       + trigger.TriggerType + " for " + trigger.TargetType +
                             "\n; <#> " + trigger.Target +
                             "\n; <&> " + trigger.Timer  +
                             (trigger.Extra == null ? "" : "\n; <E> " + trigger.Extra) +
-                            "\n; Copy following values to your script:"+
+                            "\n; Copy following values to your script:" +
                             "\n; "
                         : "")
                         + result;
