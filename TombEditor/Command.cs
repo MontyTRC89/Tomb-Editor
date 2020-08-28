@@ -756,7 +756,7 @@ namespace TombEditor
                                 args.Editor.Action = new EditorActionPlace(false, (level, room) => data.MergeGetSingleObject(args.Editor));
                             else
                             {
-                                args.Editor.SendMessage("Level state changed. Paste action ignored.", PopupType.Warning);
+                                args.Editor.SendMessage("Clipboard level data is invalid. Nothing was pasted.", PopupType.Warning);
                                 Clipboard.Clear();
                             }
                         }

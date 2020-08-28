@@ -305,12 +305,9 @@ namespace TombIDE.ProjectMaster
 			else
 				prj2Path = Path.Combine(_ide.SelectedLevel.FolderPath, _ide.SelectedLevel.SpecificFile);
 
-			Prj2Loader.LoadedObjects levelObjects = new Prj2Loader.LoadedObjects();
-
-			using (FileStream stream = new FileStream(prj2Path, FileMode.Open, FileAccess.Read, FileShare.Read))
-				levelObjects = Prj2Loader.LoadFromPrj2OnlyObjects(prj2Path, stream);
-
-			LevelSettings settings = levelObjects.Settings;
+            LevelSettings settings;
+            using (FileStream stream = new FileStream(prj2Path, FileMode.Open, FileAccess.Read, FileShare.Read))
+				settings = Prj2Loader.LoadFromPrj2OnlySettings(prj2Path, stream);
 
 			AddTextureFileNodes(settings);
 			AddWadFileNodes(settings);

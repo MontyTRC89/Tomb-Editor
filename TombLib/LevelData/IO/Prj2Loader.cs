@@ -64,6 +64,8 @@ namespace TombLib.LevelData.IO
             public List<ObjectInstance> Objects;
         }
 
+        public static LevelSettings LoadFromPrj2OnlySettings(string filename, Stream stream) =>
+            LoadFromPrj2OnlyObjects(filename, null, stream, new Settings()).Settings;
         public static LoadedObjects LoadFromPrj2OnlyObjects(string filename, Level level, Stream stream, Settings loadSettings)
         {
             var roomLinkActions     = new List<KeyValuePair<long, Action<Room>>>();
@@ -88,42 +90,58 @@ namespace TombLib.LevelData.IO
                     return false;
                 });
 
-                // Link objects
-                foreach (var objectLinkAction in objectLinkActions)
-                    try
-                    {
-                        var roomID = objectLinkAction.Key & 4095;
-                        var objID  = objectLinkAction.Key >> 12;
+                if (level != null)
+                {
 
-                        if (level.Rooms[roomID] != null && level.Rooms[roomID].Objects.Count > objID)
+                    // Link objects
+                    foreach (var objectLinkAction in objectLinkActions)
+                        try
                         {
-                            var candidate = level.Rooms[roomID].Objects[(int)objID];
-                            objectLinkAction.Value(candidate);
+                            // Decode room index and truncated object hash from lookup key.
+
+                            var roomID = objectLinkAction.Key & 1023;
+                            int   hash = (int)((objectLinkAction.Key & 0xFFFFFC00) >> 10);
+                            bool found = false;
+
+                            if (level.Rooms[roomID] != null)
+                            {
+                                var objects = level.Rooms[roomID].Objects;
+                                foreach (var obj in objects)
+                                    if (hash == (obj.GetHashCode() & 0x3FFFFF))
+                                    {
+                                        objectLinkAction.Value(obj);
+                                        found = true;
+                                        break;
+                                    }
+
+                                if (!found)
+                                    throw new InvalidDataException();
+                            }
+                            else
+                                throw new InvalidDataException();
+
                         }
-                        else
-                            throw new InvalidDataException();
+                        catch (Exception exc)
+                        {
+                            logger.Error(exc, "An exception was raised while trying to perform room link action.");
+                            return loadedObjects;
+                        }
 
-                    }
-                    catch (Exception exc)
-                    {
-                        logger.Error(exc, "An exception was raised while trying to perform room link action.");
-                        return loadedObjects;
-                    }
-
-                // Link rooms
-                foreach (var roomLinkAction in roomLinkActions)
-                    try
-                    {
-                        if (level.Rooms[roomLinkAction.Key] != null)
-                            roomLinkAction.Value(level.Rooms[roomLinkAction.Key]);
-                        else
-                            throw new InvalidDataException();
-                    }
-                    catch (Exception exc)
-                    {
-                        logger.Error(exc, "An exception was raised while trying to perform room link action.");
-                        return loadedObjects;
-                    }
+                    // Link rooms
+                    foreach (var roomLinkAction in roomLinkActions)
+                        try
+                        {
+                            if (level.Rooms[roomLinkAction.Key] != null)
+                                roomLinkAction.Value(level.Rooms[roomLinkAction.Key]);
+                            else
+                                throw new InvalidDataException();
+                        }
+                        catch (Exception exc)
+                        {
+                            logger.Error(exc, "An exception was raised while trying to perform room link action.");
+                            return loadedObjects;
+                        }
+                }
 
                 loadedObjects.Objects = objectMapDictionary.Values.ToList();
                 return loadedObjects;
