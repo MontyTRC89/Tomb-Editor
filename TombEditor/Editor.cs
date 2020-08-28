@@ -776,10 +776,17 @@ namespace TombEditor
         }
 
         // Select rooms
-        public void SelectRooms(IEnumerable<Room> newRooms)
+        public void SelectRooms(IEnumerable<Room> newRooms, bool prioritizeCurrentRoom = false)
         {
+            var firstRoom = SelectedRoom;
+
             if (newRooms?.FirstOrDefault() != null)
-                SelectedRooms = newRooms.ToList();
+            {
+                if (prioritizeCurrentRoom && firstRoom != null && newRooms.Contains(firstRoom))
+                    SelectedRooms = newRooms.OrderBy(r => r != firstRoom).ToList();
+                else
+                    SelectedRooms = newRooms.ToList();
+            }
         }
 
         // Select rooms and center the camera
