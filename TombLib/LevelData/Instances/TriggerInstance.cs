@@ -118,7 +118,7 @@ namespace TombLib.LevelData
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => Equals(other);
     }
 
-    public class TriggerInstance : SectorBasedObjectInstance
+    public class TriggerInstance : SectorBasedObjectInstance, ICopyable
     {
         public TriggerType TriggerType { get; set; } = TriggerType.Trigger;
         public TriggerTargetType TargetType { get; set; } = TriggerTargetType.FlipEffect;

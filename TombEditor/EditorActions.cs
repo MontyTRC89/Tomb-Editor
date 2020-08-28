@@ -4017,7 +4017,7 @@ namespace TombEditor
 
         public static void TryCopyObject(ObjectInstance instance, IWin32Window owner)
         {
-            if (!(instance is ISpatial || instance is TriggerInstance))
+            if (!(instance is ICopyable))
             {
                 _editor.SendMessage("No suitable object selected. \nYou have to select object before you can cut or copy it.", PopupType.Info);
                 return;
