@@ -8,6 +8,7 @@ Tomb Editor:
  * Added move timer customization for TR1-TR2 cameras.
  * Added ability to copy and paste triggers.
  * Added ability to delete objects from search window.
+ * Added ability to delete multiple objects at once from object list.
  * Added find & replace object context menu.
  * Draw service objects as 2D icons by default.
  * Point to specific trigger area when "find where is triggered" context menu was engaged.
