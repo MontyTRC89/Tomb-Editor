@@ -24,6 +24,7 @@
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.openSourceWADToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openDestinationWadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openRecentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeReferenceLevelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
@@ -158,6 +159,7 @@
             this.toolStripMenuItem3,
             this.openSourceWADToolStripMenuItem,
             this.openDestinationWadToolStripMenuItem,
+            this.openRecentToolStripMenuItem,
             this.openReferenceLevelToolStripMenuItem,
             this.closeReferenceLevelToolStripMenuItem,
             this.toolStripMenuItem1,
@@ -209,6 +211,14 @@
             this.openDestinationWadToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
             this.openDestinationWadToolStripMenuItem.Text = "Open destination";
             this.openDestinationWadToolStripMenuItem.Click += new System.EventHandler(this.openDestinationWad2ToolStripMenuItem_Click);
+            // 
+            // openRecentToolStripMenuItem
+            // 
+            this.openRecentToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.openRecentToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.openRecentToolStripMenuItem.Name = "openRecentToolStripMenuItem";
+            this.openRecentToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
+            this.openRecentToolStripMenuItem.Text = "Open recent...";
             // 
             // openReferenceLevelToolStripMenuItem
             // 
@@ -344,7 +354,7 @@
             this.aboutWadToolToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.aboutWadToolToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.aboutWadToolToolStripMenuItem.Name = "aboutWadToolToolStripMenuItem";
-            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutWadToolToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
             this.aboutWadToolToolStripMenuItem.Text = "About Wad Tool...";
             this.aboutWadToolToolStripMenuItem.Click += new System.EventHandler(this.aboutWadToolToolStripMenuItem_Click);
             // 
@@ -825,6 +835,7 @@
             // panel3D
             // 
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3D.DrawTransparency = false;
             this.panel3D.Location = new System.Drawing.Point(1, 1);
             this.panel3D.Name = "panel3D";
             this.panel3D.Padding = new System.Windows.Forms.Padding(3);
@@ -1130,6 +1141,7 @@
         private System.Windows.Forms.ToolStripMenuItem openReferenceLevelToolStripMenuItem;
         private System.Windows.Forms.ToolStripLabel labelRefProject;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openRecentToolStripMenuItem;
     }
 }
 
