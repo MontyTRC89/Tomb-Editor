@@ -337,7 +337,10 @@ namespace TombEditor
 
             UndoAction = () =>
             {
+                var relight = Room.Properties.AmbientLight != Properties.AmbientLight;
                 Room.Properties = Properties;
+                if (relight)
+                    Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
                 Parent.Editor.RoomPropertiesChange(Room);
             };
             RedoInstance = () => new RoomPropertyUndoInstance(Parent, Room);

@@ -1023,7 +1023,8 @@ namespace TombEditor
 
             AddCommand("EditAmbientLight", "Edit ambient light...", CommandType.Rooms, delegate (CommandArgs args)
             {
-                Room room = args.Editor.SelectedRoom;
+                var room = args.Editor.SelectedRoom;
+                var undo = new RoomPropertyUndoInstance(args.Editor.UndoManager, room);
 
                 using (var colorDialog = new RealtimeColorDialog(
                     args.Editor.Configuration.ColorDialog_Position.X,
@@ -1053,6 +1054,7 @@ namespace TombEditor
                     args.Editor.Configuration.ColorDialog_Position = colorDialog.Position;
                 }
 
+                args.Editor.UndoManager.Push(undo);
                 args.Editor.SelectedRoom.BuildGeometry();
                 args.Editor.RoomPropertiesChange(room);
             });
