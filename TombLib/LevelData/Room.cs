@@ -36,7 +36,7 @@ namespace TombLib.LevelData
         [DisplayName("Room type")]
         public RoomType Type { get; set; } = RoomType.Normal;
         [DisplayName("Room type")]
-        public byte TypeStrength { get; set; } = 0;
+        public byte TypeStrength { get; set; } = 0; // Internal legacy value for TRNG rain/snow strengths
         [DisplayName("Effect")]
         public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
         [DisplayName("Effect strength")]
@@ -45,18 +45,18 @@ namespace TombLib.LevelData
         public RoomLightInterpolationMode LightInterpolationMode { get; set; } = RoomLightInterpolationMode.Default;
 
         // Flags
-        [DisplayName("Cold")]
-        public bool FlagCold { get; set; }
         [DisplayName("Damage")]
         public bool FlagDamage { get; set; }
-        [DisplayName("Wind")]
-        public bool FlagOutside { get; set; }
+        [DisplayName("Cold")]
+        public bool FlagCold { get; set; }
         [DisplayName("Skybox")]
         public bool FlagHorizon { get; set; }
-        [DisplayName("No lensflare")]
-        public bool FlagNoLensflare { get; set; }
+        [DisplayName("Wind")]
+        public bool FlagOutside { get; set; }
         [DisplayName("No pathfinding")]
         public bool FlagExcludeFromPathFinding { get; set; }
+        [DisplayName("No lensflare")]
+        public bool FlagNoLensflare { get; set; }
         [DisplayName("Reverb type")]
         public Reverberation Reverberation { get; set; }
         [DisplayName("Locked")]
