@@ -41,6 +41,9 @@ namespace WadTool
             if (!string.IsNullOrEmpty(tool.Configuration.Tool_ReferenceProject) &&
                 File.Exists(tool.Configuration.Tool_ReferenceProject))
                 WadActions.LoadReferenceLevel(tool, this, tool.Configuration.Tool_ReferenceProject);
+
+            // Load recent files
+            RefreshRecentWadsList();
         }
 
         private class InitEvent : IEditorEvent { };
@@ -233,6 +236,7 @@ namespace WadTool
                 return;
 
             WadActions.CreateNewWad(_tool, this);
+            RefreshRecentWadsList();
         }
 
         private void TryOpenDestWad()
@@ -244,6 +248,7 @@ namespace WadTool
                 return;
 
             WadActions.LoadWadOpenFileDialog(_tool, this, true);
+            RefreshRecentWadsList();
         }
 
         private void CopyObject(bool otherSlot)
@@ -258,6 +263,35 @@ namespace WadTool
             }
             else
                 _tool.SendMessage("No objects were copied.", PopupType.Info);
+        }
+
+        private void RefreshRecentWadsList()
+        {
+            openRecentToolStripMenuItem.DropDownItems.Clear();
+
+            if (Properties.Settings.Default.RecentProjects != null && Properties.Settings.Default.RecentProjects.Count > 0)
+                foreach (var fileName in Properties.Settings.Default.RecentProjects)
+                {
+                    if (fileName == _tool.DestinationWad?.FileName)   // Skip currently loaded wad
+                        continue;
+
+                    var item = new ToolStripMenuItem() { Name = fileName, Text = fileName };
+                    item.Click += (s, e) =>
+                    {
+                        WadActions.LoadWad(_tool, this, true, ((ToolStripMenuItem)s).Text);
+                        RefreshRecentWadsList();
+                    };
+                    openRecentToolStripMenuItem.DropDownItems.Add(item);
+                }
+
+            // Add "Clear recent files" option
+            openRecentToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            var item2 = new ToolStripMenuItem() { Name = "clearRecentMenuItem", Text = "Clear recent file list" };
+            item2.Click += (s, e) => { Properties.Settings.Default.RecentProjects.Clear(); RefreshRecentWadsList(); Properties.Settings.Default.Save(); };
+            openRecentToolStripMenuItem.DropDownItems.Add(item2);
+
+            // Disable menu item, if list is empty
+            openRecentToolStripMenuItem.Enabled = openRecentToolStripMenuItem.DropDownItems.Count > 2;
         }
 
         private void openSourceWADToolStripMenuItem_Click(object sender, EventArgs e)
@@ -473,7 +507,7 @@ namespace WadTool
 
         private void butEditSkeleton_Click(object sender, EventArgs e)
         {
-            WadActions.EditSkeletion(_tool, this);
+            WadActions.EditSkeleton(_tool, this);
         }
 
         private void butEditAnimations_Click(object sender, EventArgs e)
@@ -483,7 +517,7 @@ namespace WadTool
 
         private void editSkeletonToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WadActions.EditSkeletion(_tool, this);
+            WadActions.EditSkeleton(_tool, this);
         }
 
         private void editAnimationsToolStripMenuItem_Click(object sender, EventArgs e)

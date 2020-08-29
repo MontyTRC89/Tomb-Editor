@@ -71,6 +71,7 @@ namespace WadTool
             {
                 tool.DestinationWad = newWad;
                 tool.ToggleUnsavedChanges(false);
+                AddWadToRecent(fileName);
             }
             else
             {
@@ -154,12 +155,16 @@ namespace WadTool
                 Wad2Writer.SaveToFile(wadToSave, outPath);
 
                 // Immediately reload new wad, if it wasn't saved before (new or imported)
-                if(wadToSave.FileName == null)
+                if (wadToSave.FileName == null)
                     LoadWad(tool, owner, true, outPath);
 
                 // Update last actual filename and call global event to update UI etc
                 wadToSave.FileName = outPath;
                 tool.ToggleUnsavedChanges(false);
+
+                // Update recent files
+                if (tool.DestinationWad.FileName != outPath)
+                    AddWadToRecent(outPath);
             }
             catch (Exception exc)
             {
@@ -926,7 +931,7 @@ namespace WadTool
             return animation;
         }
 
-        public static void EditSkeletion(WadToolClass tool, IWin32Window owner)
+        public static void EditSkeleton(WadToolClass tool, IWin32Window owner)
         {
             if (tool.MainSelection?.WadArea == WadArea.Source)
                 return;
@@ -939,6 +944,20 @@ namespace WadTool
                     return;
                 tool.WadChanged(WadArea.Destination);
             }
+        }
+
+        private static void AddWadToRecent(string fileName)
+        {
+            if (Properties.Settings.Default.RecentProjects == null)
+                Properties.Settings.Default.RecentProjects = new List<string>();
+
+            Properties.Settings.Default.RecentProjects.RemoveAll(s => s == fileName);
+            Properties.Settings.Default.RecentProjects.Insert(0, fileName);
+
+            if (Properties.Settings.Default.RecentProjects.Count > 10)
+                Properties.Settings.Default.RecentProjects.RemoveRange(10, Properties.Settings.Default.RecentProjects.Count - 10);
+
+            Properties.Settings.Default.Save();
         }
     }
 }

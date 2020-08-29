@@ -28,6 +28,7 @@ Tomb Editor:
  * Fix exception when Lara skin mesh count doesn't correspond to Lara mesh count.
  
 WadTool:
+ * Add recent wads list.
  * Add alignment controls in sprite editor (for TR1-3 room and UI sprites).
  
 General:
