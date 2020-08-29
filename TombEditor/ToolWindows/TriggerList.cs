@@ -53,6 +53,12 @@ namespace TombEditor.ToolWindows
                 obj is Editor.RoomSectorPropertiesChangedEvent)
                 UpdateUI();
 
+            // Update the trigger control selection
+            if (obj is Editor.SelectedSectorsChangedEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.SelectedObjectChangedEvent)
+                UpdateSelection();
+
             // Update any modified trigger from area
             if (obj is Editor.ObjectChangedEvent)
             {
@@ -60,28 +66,10 @@ namespace TombEditor.ToolWindows
 
                 if (changedObject.Room == _editor.SelectedRoom &&
                     changedObject is TriggerInstance)
-                    UpdateUI();
-            }
-
-            // Update the trigger control selection
-            if (obj is Editor.SelectedSectorsChangedEvent ||
-                obj is Editor.SelectedRoomChangedEvent ||
-                obj is Editor.SelectedObjectChangedEvent)
-            {
-                if (_editor.SelectedObject is TriggerInstance)
                 {
-                    var trigger = _editor.SelectedObject as TriggerInstance;
-                    var entry = lstTriggers.Items.FirstOrDefault(t => t.Tag == trigger);
-                    if (entry != null)
-                    {
-                        lstTriggers.SelectItem(lstTriggers.Items.IndexOf(entry));
-                        lstTriggers.EnsureVisible();
-                    }
-                    else
-                        lstTriggers.ClearSelection();
+                    UpdateUI();
+                    UpdateSelection();
                 }
-                else
-                    lstTriggers.ClearSelection();
             }
 
             // Update tooltip texts
@@ -156,6 +144,24 @@ namespace TombEditor.ToolWindows
                     }
                 }
             }
+        }
+
+        private void UpdateSelection()
+        {
+            if (_editor.SelectedObject is TriggerInstance)
+            {
+                var trigger = _editor.SelectedObject as TriggerInstance;
+                var entry = lstTriggers.Items.FirstOrDefault(t => t.Tag == trigger);
+                if (entry != null)
+                {
+                    lstTriggers.SelectItem(lstTriggers.Items.IndexOf(entry));
+                    lstTriggers.EnsureVisible();
+                }
+                else
+                    lstTriggers.ClearSelection();
+            }
+            else
+                lstTriggers.ClearSelection();
         }
 
         private void lstTriggers_KeyDown(object sender, KeyEventArgs e)
