@@ -86,7 +86,7 @@ namespace TombLib.LevelData.IO
                     var objList = level.Rooms[i].Objects;
                     for (int j = 0; j < objList.Count; j++)
                     {
-                        // Use room number and a hashcode truncated to 22 bytes as a lookup ID.
+                        // Use room number and a hashcode truncated to 22 bits as a lookup ID.
                         // Truncating hashcode is risky, but since we also use room number as a part
                         // of an ID, there's a slim chance that ID will misfire.
 
