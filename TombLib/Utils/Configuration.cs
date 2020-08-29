@@ -64,7 +64,7 @@ namespace TombLib
             var pos = config.GetType().GetProperty(name + "_Position")?.GetValue(config);
             var max = config.GetType().GetProperty(name + "_Maximized")?.GetValue(config);
 
-            if (size is Size) form.Size = form.MinimumSize = (Size)size;
+            if (size is Size) form.Size = (Size)size;
             if (pos is Point) form.Location = (Point)pos;
             if (max is bool) form.WindowState = (bool)max ? FormWindowState.Maximized : FormWindowState.Normal;
 
