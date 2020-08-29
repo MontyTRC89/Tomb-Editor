@@ -1062,8 +1062,12 @@ namespace TombEditor
             AddCommand("ApplyRoomProperties", "Apply room properties...", CommandType.Rooms, delegate (CommandArgs args)
             {
                 using (var form = new FormRoomProperties(args.Editor))
+                {
                     if (form.ShowDialog(args.Window) == DialogResult.OK)
                         args.Editor.SendMessage("Chosen room attributes were applied to selected rooms.", PopupType.Info);
+                    else
+                        args.Editor.SendMessage("No rooms or properties were selected. Nothing was changed.", PopupType.Warning);
+                }
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)
