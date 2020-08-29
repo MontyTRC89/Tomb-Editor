@@ -1,7 +1,9 @@
 ﻿using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
@@ -77,10 +79,10 @@ namespace TombLib.LevelData.IO
             using (var chunkIO = new ChunkWriter(Prj2Chunks.MagicNumber, stream, ChunkWriter.Compression.None))
             {
                 // Index objects
-                var objectInstanceLookup = new Dictionary<ObjectInstance, int>();
-                for (int i = 0; i < level.Rooms.Length; i++)
+                var objectInstanceLookup = new ConcurrentDictionary<ObjectInstance, int>();
+                Parallel.For(0, level.Rooms.Length, i =>
                 {
-                    if (level.Rooms[i] == null) continue;
+                    if (level.Rooms[i] == null) return;
                     var objList = level.Rooms[i].Objects;
                     for (int j = 0; j < objList.Count; j++)
                     {
@@ -89,9 +91,9 @@ namespace TombLib.LevelData.IO
                         // of an ID, there's a slim chance that ID will misfire.
 
                         var encodedID = ((objList[j].GetHashCode() & 0x3FFFFF) << 10) | i;
-                        objectInstanceLookup.Add(objList[j], encodedID);
+                        objectInstanceLookup.TryAdd(objList[j], encodedID);
                     }
-                }
+                });
 
                 // Index rooms
                 var roomLookup = new Dictionary<Room, int>();
@@ -425,8 +427,8 @@ namespace TombLib.LevelData.IO
         }
 
         private static void WriteObjects(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects,
-            Dictionary<Room, int> rooms, LevelSettingsIds levelSettingIds,
-            Dictionary<ObjectInstance, int> objectInstanceLookup)
+            IDictionary<Room, int> rooms, LevelSettingsIds levelSettingIds,
+            IDictionary<ObjectInstance, int> objectInstanceLookup)
         {
             using (var chunkObjects = chunkIO.WriteChunk(Prj2Chunks.Objects, long.MaxValue))
             {
