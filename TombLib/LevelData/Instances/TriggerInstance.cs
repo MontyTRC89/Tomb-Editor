@@ -269,6 +269,9 @@ namespace TombLib.LevelData
             var found = triggers.FirstOrDefault(t => t.TriggerType == TriggerType.ConditionNg ||
                                                      t.TriggerType == TriggerType.Switch ||
                                                      t.TriggerType == TriggerType.Key ||
+                                                     t.TriggerType == TriggerType.Heavy ||
+                                                     t.TriggerType == TriggerType.HeavyAntitrigger ||
+                                                     t.TriggerType == TriggerType.HeavySwitch ||
                                                      t.TriggerType == TriggerType.Pickup) ?? triggers.FirstOrDefault();
 
             // Sort triggers to put special trigger first, and also put all camera triggers to the
