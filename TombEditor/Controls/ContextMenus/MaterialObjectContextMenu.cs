@@ -156,6 +156,7 @@ namespace TombEditor.Controls.ContextMenus
                         (o, e) =>
                         {
                             _editor.SelectRoom(trigger.Room);
+                            _editor.MoveCameraToSector(trigger.Area.Start);
                             _editor.SelectedSectors = new SectorSelection() { Area = trigger.Area };
                         });
                     Items.Add(triggerItem);
