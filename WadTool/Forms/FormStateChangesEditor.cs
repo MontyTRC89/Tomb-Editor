@@ -3,7 +3,6 @@ using DarkUI.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib;
@@ -111,8 +110,12 @@ namespace WadTool
             if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
-                if (e != null && e.Animation != _animation)
-                    Initialize(e.Animation, null);
+                if (e != null && e.Current != _animation)
+                {
+                    e.Previous.WadAnimation.StateChanges.Clear();
+                    e.Previous.WadAnimation.StateChanges.AddRange(_backupStates);
+                    Initialize(e.Current, null);
+                }
             }
 
             if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)

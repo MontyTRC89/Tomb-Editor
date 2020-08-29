@@ -466,6 +466,7 @@ namespace WadTool
             bool sameAnimSameSize = _editor.CurrentAnim != null && node != null && _editor.CurrentAnim.Index == node.Index &&
                 _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == node.DirectXAnimation.KeyFrames.Count;
 
+            var prevAnim = _editor.CurrentAnim;
             _editor.CurrentAnim = node;
 
             _allowUpdate = false;
@@ -510,7 +511,7 @@ namespace WadTool
 
             panelRendering.Invalidate();
 
-            _editor.Tool.AnimationEditorCurrentAnimationChanged(_editor.CurrentAnim);
+            _editor.Tool.AnimationEditorCurrentAnimationChanged(prevAnim, _editor.CurrentAnim);
         }
 
         private void UpdateSelection()

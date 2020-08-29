@@ -1,11 +1,9 @@
-﻿using DarkUI.Controls;
-using DarkUI.Forms;
+﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using TombLib;
 using TombLib.Graphics;
 using TombLib.Wad;
 
@@ -18,6 +16,8 @@ namespace WadTool
         private readonly AnimationEditor _editor;
         private AnimationNode _animation;
         private BindingList<WadAnimCommand> _animCommands = new BindingList<WadAnimCommand>();
+        private List<WadAnimCommand> _backupCommands;
+
         public FormAnimCommandsEditor(AnimationEditor editor, AnimationNode animation)
         {
             InitializeComponent();
@@ -35,8 +35,13 @@ namespace WadTool
         private void Initialize(AnimationNode animation)
         {
             _animation = animation;
-            //Make a copy of the Animation's commands. we dont want to edit the Commands directly
-            _animCommands = new BindingList<WadAnimCommand>(animation.WadAnimation.AnimCommands.ToList());
+            
+            // Copy current set of animation commands to backup list and directly reference
+            // current set of animcommands to data grid view, so live preview is possible.
+            // Backup list is restored if user pushes cancel or changes animation in parent window.
+
+            _backupCommands = new List<WadAnimCommand>(animation.WadAnimation.AnimCommands);
+            _animCommands = new BindingList<WadAnimCommand>(animation.WadAnimation.AnimCommands);
             gridViewCommands.DataSource = _animCommands;
         }
 
@@ -76,8 +81,11 @@ namespace WadTool
             if (obj is WadToolClass.AnimationEditorCurrentAnimationChangedEvent)
             {
                 var e = obj as WadToolClass.AnimationEditorCurrentAnimationChangedEvent;
-                if (e != null && e.Animation != _animation)
-                    Initialize(e.Animation);
+                if (e != null && e.Current != _animation)
+                {
+                    ApplyAnimCommands(_backupCommands);
+                    Initialize(e.Current);
+                }
             }
 
             if (obj is WadToolClass.AnimationEditorAnimationChangedEvent)
@@ -102,7 +110,7 @@ namespace WadTool
             if (gridViewCommands.SelectedRows.Count == 0)
                 return;
 
-            foreach(DataGridViewRow row in gridViewCommands.SelectedRows)
+            foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
             {
                 int index = row.Index;
                 _animCommands.RemoveAt(index);
@@ -145,17 +153,28 @@ namespace WadTool
             
         }
 
-        private void ApplyChanges(bool undo = true)
+        private void ApplyChanges()
         {
-            if (undo)
-                _editor.Tool.UndoManager.PushAnimationChanged(_editor, _animation);
+            // Bounce to old animcommands for undo
+            var newCommands = new List<WadAnimCommand>(_animation.WadAnimation.AnimCommands);
+            ApplyAnimCommands(_backupCommands);
+            _editor.Tool.UndoManager.PushAnimationChanged(_editor, _animation);
 
-            // Add new commands
-            _animation.WadAnimation.AnimCommands.Clear();
-            _animation.WadAnimation.AnimCommands.AddRange(_animCommands);
-
-            // Update state in parent window
+            // Apply new commands
+            ApplyAnimCommands(newCommands);
             _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
+        }
+
+        private void DiscardChanges()
+        {
+            ApplyAnimCommands(_backupCommands);
+            _editor.Tool.AnimationEditorAnimationChanged(_animation, false);
+        }
+
+        private void ApplyAnimCommands(List<WadAnimCommand> newCommands)
+        {
+            _animation.WadAnimation.AnimCommands.Clear();
+            _animation.WadAnimation.AnimCommands.AddRange(newCommands);
         }
 
         private void butCommandUp_Click(object sender, EventArgs e) => MoveCommand(false);
@@ -176,7 +195,7 @@ namespace WadTool
 
         private void butCopy_Click(object sender, EventArgs e)
         {
-            foreach(DataGridViewRow row in gridViewCommands.SelectedRows)
+            foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
             {
                 int index = row.Index;
                 WadAnimCommand cmdCopy = _animCommands[index].Clone();
@@ -200,6 +219,7 @@ namespace WadTool
             base.OnFormClosing(e);
             _closing = true;
             if (DialogResult == DialogResult.OK) ApplyChanges();
+            if (DialogResult == DialogResult.Cancel) DiscardChanges();
             WadSoundPlayer.StopSample();
         }
 
@@ -211,12 +231,23 @@ namespace WadTool
 
         internal void SelectCommand(WadAnimCommand cmd)
         {
-            foreach(DataGridViewRow row in gridViewCommands.Rows)
+            bool commandFound = false;
+
+            foreach (DataGridViewRow row in gridViewCommands.Rows)
             {
-                if(_animCommands[row.Index].Equals(cmd))
+                if (_animCommands[row.Index].Equals(cmd))
+                {
                     row.Selected = true;
+                    commandFound = true;
+                }
                 else
                     row.Selected = false;
+            }
+
+            if (!commandFound)
+            {
+                _animCommands.Add(cmd);
+                gridViewCommands.Rows[_animCommands.Count - 1].Selected = true;
             }
         }
     }
