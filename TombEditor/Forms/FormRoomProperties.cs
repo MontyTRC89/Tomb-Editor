@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 using DarkUI.Forms;
+using TombLib.LevelData;
+using System.ComponentModel;
+using System.Linq;
+using System.Collections.Generic;
+using TombLib.Utils;
 
 namespace TombEditor.Forms
 {
@@ -20,26 +25,30 @@ namespace TombEditor.Forms
                                           "This action can't be undone.",
                                     "Apply room properties", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                var undoList = new List<UndoRedoInstance>();
+
                 var curr = _editor.SelectedRoom;
                 foreach (var r in _editor.SelectedRooms)
                 {
+                    undoList.Add(new RoomPropertyUndoInstance(_editor.UndoManager, r));
+
                     // Apply selected attribs
 
-                    if (cbAmbient.Checked)       r.AmbientLight = curr.AmbientLight;
-                    if (cbCold.Checked)          r.FlagCold = curr.FlagCold;
-                    if (cbDamage.Checked)        r.FlagDamage = curr.FlagDamage;
-                    if (cbLensflare.Checked)     r.FlagNoLensflare = curr.FlagCold;
-                    if (cbLightEffect.Checked)   r.LightEffect = curr.LightEffect;
-                    if (cbLightStrength.Checked) r.LightEffectStrength = curr.LightEffectStrength;
-                    if (cbPathfinding.Checked)   r.FlagExcludeFromPathFinding = curr.FlagExcludeFromPathFinding;
-                    if (cbPortalShade.Checked)   r.LightInterpolationMode = curr.LightInterpolationMode;
-                    if (cbReverb.Checked)        r.Reverberation = curr.Reverberation;
-                    if (cbRoomType.Checked)      r.Type = curr.Type;
-                    if (cbRoomType.Checked)      r.TypeStrength = curr.TypeStrength;
-                    if (cbSky.Checked)           r.FlagHorizon = curr.FlagHorizon;
-                    if (cbTags.Checked)          r.Tags = curr.Tags;
-                    if (cbVisible.Checked)       r.Hidden = curr.Hidden;
-                    if (cbWind.Checked)          r.FlagOutside = curr.FlagOutside;
+                    if (cbAmbient.Checked)       r.Properties.AmbientLight = curr.Properties.AmbientLight;
+                    if (cbCold.Checked)          r.Properties.FlagCold = curr.Properties.FlagCold;
+                    if (cbDamage.Checked)        r.Properties.FlagDamage = curr.Properties.FlagDamage;
+                    if (cbLensflare.Checked)     r.Properties.FlagNoLensflare = curr.Properties.FlagCold;
+                    if (cbLightEffect.Checked)   r.Properties.LightEffect = curr.Properties.LightEffect;
+                    if (cbLightStrength.Checked) r.Properties.LightEffectStrength = curr.Properties.LightEffectStrength;
+                    if (cbPathfinding.Checked)   r.Properties.FlagExcludeFromPathFinding = curr.Properties.FlagExcludeFromPathFinding;
+                    if (cbPortalShade.Checked)   r.Properties.LightInterpolationMode = curr.Properties.LightInterpolationMode;
+                    if (cbReverb.Checked)        r.Properties.Reverberation = curr.Properties.Reverberation;
+                    if (cbRoomType.Checked)      r.Properties.Type = curr.Properties.Type;
+                    if (cbRoomType.Checked)      r.Properties.TypeStrength = curr.Properties.TypeStrength;
+                    if (cbSky.Checked)           r.Properties.FlagHorizon = curr.Properties.FlagHorizon;
+                    if (cbTags.Checked)          r.Properties.Tags = curr.Properties.Tags;
+                    if (cbVisible.Checked)       r.Properties.Hidden = curr.Properties.Hidden;
+                    if (cbWind.Checked)          r.Properties.FlagOutside = curr.Properties.FlagOutside;
 
                     // Updating operations
 
@@ -51,9 +60,11 @@ namespace TombEditor.Forms
 
                     _editor.RoomPropertiesChange(r);
                 }
+
+                _editor.UndoManager.Push(undoList);
+                DialogResult = DialogResult.OK;
             }
 
-            DialogResult = DialogResult.OK;
             Close();
         }
 

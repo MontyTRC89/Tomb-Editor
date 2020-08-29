@@ -63,7 +63,7 @@ namespace TombLib.LevelData.Compilers
                             for (int x = 0; x < room.NumXSectors; x++)
                             {
                                 int boxIndex = _level.Settings.GameVersion >= TRVersion.Game.TR3 ? 0x7ff : 0xffff;
-                                if (!room.FlagExcludeFromPathFinding)
+                                if (!room.Properties.FlagExcludeFromPathFinding)
                                 {
                                     dec_tr_box_aux box = new dec_tr_box_aux();
 
@@ -315,7 +315,7 @@ namespace TombLib.LevelData.Compilers
             if (floor == 0x7fff) return false;
 
             box.Room = dec_currentRoom;
-            box.Water = room.Type == RoomType.Water;
+            box.Water = room.Properties.Type == RoomType.Water;
 
             if (dec_flipped)
             {
@@ -684,7 +684,7 @@ namespace TombLib.LevelData.Compilers
                 while (room.GetFloorRoomConnectionInfo(new VectorInt2(xInRoom, zInRoom), true).TraversableType == Room.RoomConnectionType.FullPortal)
                 {
                     Room adjoiningRoom = block.FloorPortal.AdjoiningRoom;
-                    if (room.Type == RoomType.Water != (adjoiningRoom.Type == RoomType.Water))
+                    if (room.Properties.Type == RoomType.Water != (adjoiningRoom.Properties.Type == RoomType.Water))
                         break;
 
                     dec_currentRoom = adjoiningRoom;
@@ -714,7 +714,7 @@ namespace TombLib.LevelData.Compilers
             Room room = dec_currentRoom;
 
             // Ignore pathfinding for current room?
-            if (dec_currentRoom.FlagExcludeFromPathFinding) return 0x7fff;
+            if (dec_currentRoom.Properties.FlagExcludeFromPathFinding) return 0x7fff;
 
             int posXblocks = room.Position.X;
             int posZblocks = room.Position.Z;
@@ -797,7 +797,7 @@ namespace TombLib.LevelData.Compilers
 
                 if (block.FloorPortal.Opacity == PortalOpacity.SolidFaces)
                 {
-                    if (!((room.Type == RoomType.Water) ^ (adjoiningRoom2.Type == RoomType.Water)))
+                    if (!((room.Properties.Type == RoomType.Water) ^ (adjoiningRoom2.Properties.Type == RoomType.Water)))
                         break;
                 }
 
@@ -860,12 +860,12 @@ namespace TombLib.LevelData.Compilers
             int floorHeight = meanFloorCornerHeight + room.Position.Y;
             int ceiling = block.Ceiling.Max + room.Position.Y;
 
-            if (dec_water && room.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
+            if (dec_water && room.Properties.Type == RoomType.Water && ceiling - meanFloorCornerHeight <= 1 && block.CeilingPortal != null)
             {
                 Room adjoiningRoom3 = block.CeilingPortal.AdjoiningRoom;
                 if (adjoiningRoom3.AlternateRoom != null && dec_flipped) adjoiningRoom3 = adjoiningRoom3.AlternateRoom;
 
-                if (adjoiningRoom3.Type != RoomType.Water)
+                if (adjoiningRoom3.Properties.Type != RoomType.Water)
                 {
                     dec_water = false;
                 }
@@ -875,7 +875,7 @@ namespace TombLib.LevelData.Compilers
 
             if (slope1 + slope2 + slope4 + slope3 >= 3 || slope1 + slope3 == 2 || slope2 + slope4 == 2)
             {
-                if (dec_water && room.Type != RoomType.Water) return 0x7fff;
+                if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
             }
             else
             {
@@ -887,14 +887,14 @@ namespace TombLib.LevelData.Compilers
                     }
                     else
                     {
-                        if (dec_water && room.Type != RoomType.Water) return 0x7fff;
+                        if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
                     }
                 }
                 else
                 {
                     if (slope1 + slope4 == 2 || slope2 + slope3 == 2)
                     {
-                        if (dec_water && room.Type != RoomType.Water) return 0x7fff;
+                        if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
                     }
                 }
             }

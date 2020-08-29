@@ -496,7 +496,7 @@ namespace TombEditor.Controls
                                 e.Graphics.FillRectangle(colorBrush2, roomRect);
                             if (!CheckRoom(room.MinDepth, room.MaxDepth))
                                 e.Graphics.FillRectangle(_roomsOutsideOverdraw, roomRect);
-                            if (room.Room.Locked)
+                            if (room.Room.Properties.Locked)
                                 e.Graphics.FillRectangle(_roomsLockedBrush, roomRect);
 
                             // Find portals on the selected sector

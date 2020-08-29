@@ -499,7 +499,7 @@ namespace TombLib.Rendering
                 Overlay = Overlay,
                 SectorTexture = SectorTexture,
                 Dimmed = Dimmed,
-                Hidden = room.Hidden && HideHiddenRooms,
+                Hidden = room.Properties.Hidden && HideHiddenRooms,
                 Selected = (SelectionArea.Contains(new VectorInt2(x, z))),
                 Highlighted = (HighlightArea.Contains(new VectorInt2(x, z)))
             };

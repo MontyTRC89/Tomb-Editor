@@ -94,7 +94,7 @@ namespace TombEditor.ToolWindows
                 tbRoomTags.AutocompleteWords.Clear();
                 foreach (var room in (_editor.Level.Rooms))
                     if (room != null && room.ExistsInLevel)
-                        tbRoomTags.AutocompleteWords.AddRange(room.Tags.Except(tbRoomTags.AutocompleteWords));
+                        tbRoomTags.AutocompleteWords.AddRange(room.Properties.Tags.Except(tbRoomTags.AutocompleteWords));
             }
 
             // Update the room property controls
@@ -107,23 +107,23 @@ namespace TombEditor.ToolWindows
 
                 // Update the state of other controls
                 ReadRoomType();
-                panelRoomAmbientLight.BackColor = (room.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
-                comboReverberation.SelectedIndex = (int)room.Reverberation;
-                comboPortalShade.SelectedIndex = (int)room.LightInterpolationMode;
-                comboLightEffect.SelectedIndex = (int)room.LightEffect;
-                numLightEffectStrength.Value = room.LightEffectStrength;
-                cbFlagCold.Checked = room.FlagCold;
-                cbFlagDamage.Checked = room.FlagDamage;
-                cbFlagOutside.Checked = room.FlagOutside;
-                cbHorizon.Checked = room.FlagHorizon;
-                cbNoLensflare.Checked = room.FlagNoLensflare;
-                cbNoPathfinding.Checked = room.FlagExcludeFromPathFinding;
-                butHidden.Checked = room.Hidden;
+                panelRoomAmbientLight.BackColor = (room.Properties.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
+                comboReverberation.SelectedIndex = (int)room.Properties.Reverberation;
+                comboPortalShade.SelectedIndex = (int)room.Properties.LightInterpolationMode;
+                comboLightEffect.SelectedIndex = (int)room.Properties.LightEffect;
+                numLightEffectStrength.Value = room.Properties.LightEffectStrength;
+                cbFlagCold.Checked = room.Properties.FlagCold;
+                cbFlagDamage.Checked = room.Properties.FlagDamage;
+                cbFlagOutside.Checked = room.Properties.FlagOutside;
+                cbHorizon.Checked = room.Properties.FlagHorizon;
+                cbNoLensflare.Checked = room.Properties.FlagNoLensflare;
+                cbNoPathfinding.Checked = room.Properties.FlagExcludeFromPathFinding;
+                butHidden.Checked = room.Properties.Hidden;
 
                 if (!tbRoomTags.ReadOnly) // Only update tags field if we're not in the process of editing
                 {
-                    if (room.Tags.Count > 0)
-                        tbRoomTags.Text = string.Join(" ", room.Tags);
+                    if (room.Properties.Tags.Count > 0)
+                        tbRoomTags.Text = string.Join(" ", room.Properties.Tags);
                     else
                         tbRoomTags.Text = "";
                 }
@@ -131,12 +131,12 @@ namespace TombEditor.ToolWindows
                 if (room.AlternateBaseRoom != null)
                 {
                     butLocked.Enabled = false;
-                    butLocked.Checked = room.AlternateBaseRoom.Locked;
+                    butLocked.Checked = room.AlternateBaseRoom.Properties.Locked;
                 }
                 else
                 {
                     butLocked.Enabled = true;
-                    butLocked.Checked = room.Locked;
+                    butLocked.Checked = room.Properties.Locked;
                 }
 
                 comboFlipMap.SelectedIndex = room.Alternated ? room.AlternateGroup + 1 : 0;
@@ -219,10 +219,10 @@ namespace TombEditor.ToolWindows
                     break;
             }
 
-            if (_editor.SelectedRoom.Type != newType || _editor.SelectedRoom.TypeStrength != newStrength)
+            if (_editor.SelectedRoom.Properties.Type != newType || _editor.SelectedRoom.Properties.TypeStrength != newStrength)
             {
-                _editor.SelectedRoom.Type = newType;
-                _editor.SelectedRoom.TypeStrength = newStrength;
+                _editor.SelectedRoom.Properties.Type = newType;
+                _editor.SelectedRoom.Properties.TypeStrength = newStrength;
                 _editor.RoomPropertiesChange(_editor.SelectedRoom);
             }
         }
@@ -235,17 +235,17 @@ namespace TombEditor.ToolWindows
             // We disable rain/snow types for TR5Main because it is expected to set these options with triggers and/or script.
 
             int roomType = -1;
-            if (room.Type == RoomType.Quicksand &&
+            if (room.Properties.Type == RoomType.Quicksand &&
                 (_editor.Level.Settings.GameVersion != TRVersion.Game.TR3 &&
                  _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG &&
                  _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main))
                 roomType = -1;
-            else if ((room.Type == RoomType.Rain || room.Type == RoomType.Snow) &&
+            else if ((room.Properties.Type == RoomType.Rain || room.Properties.Type == RoomType.Snow) &&
                      _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)
                 roomType = -1;
             else
             {
-                switch (room.Type)
+                switch (room.Properties.Type)
                 {
                     case RoomType.Normal:
                         roomType = 0;
@@ -257,10 +257,10 @@ namespace TombEditor.ToolWindows
                         roomType = 2;
                         break;
                     case RoomType.Rain:
-                        roomType = 3 + room.TypeStrength;
+                        roomType = 3 + room.Properties.TypeStrength;
                         break;
                     case RoomType.Snow:
-                        roomType = 7 + room.TypeStrength;
+                        roomType = 7 + room.Properties.TypeStrength;
                         break;
                 }
             }
@@ -324,16 +324,16 @@ namespace TombEditor.ToolWindows
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.Reverberation == (Reverberation)comboReverberation.SelectedIndex)
+            if (_editor.SelectedRoom.Properties.Reverberation == (Reverberation)comboReverberation.SelectedIndex)
                 return;
 
-            _editor.SelectedRoom.Reverberation = (Reverberation)comboReverberation.SelectedIndex;
+            _editor.SelectedRoom.Properties.Reverberation = (Reverberation)comboReverberation.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void numLightEffectStrength_ValueChanged(object sender, EventArgs e)
         {
-            _editor.SelectedRoom.LightEffectStrength = (byte)numLightEffectStrength.Value;
+            _editor.SelectedRoom.Properties.LightEffectStrength = (byte)numLightEffectStrength.Value;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -347,20 +347,20 @@ namespace TombEditor.ToolWindows
 
         private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.LightEffect == (RoomLightEffect)comboLightEffect.SelectedIndex)
+            if (_editor.SelectedRoom.Properties.LightEffect == (RoomLightEffect)comboLightEffect.SelectedIndex)
                 return;
 
-            _editor.SelectedRoom.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
+            _editor.SelectedRoom.Properties.LightEffect = (RoomLightEffect)comboLightEffect.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
         private void comboPortalShade_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (_editor.SelectedRoom.LightInterpolationMode == (RoomLightInterpolationMode)comboPortalShade.SelectedIndex)
+            if (_editor.SelectedRoom.Properties.LightInterpolationMode == (RoomLightInterpolationMode)comboPortalShade.SelectedIndex)
                 return;
 
-            _editor.SelectedRoom.LightInterpolationMode = (RoomLightInterpolationMode)comboPortalShade.SelectedIndex;
+            _editor.SelectedRoom.Properties.LightInterpolationMode = (RoomLightInterpolationMode)comboPortalShade.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
@@ -371,7 +371,7 @@ namespace TombEditor.ToolWindows
 
             tbRoomTags.ReadOnly = true; // Prevent textbox from internally recalling this event
 
-            _editor.SelectedRoom.Tags = tbRoomTags.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            _editor.SelectedRoom.Properties.Tags = tbRoomTags.Text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
 
             tbRoomTags.ReadOnly = false; // Re-enable editing
