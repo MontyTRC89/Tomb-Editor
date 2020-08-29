@@ -307,7 +307,7 @@ namespace TombLib.LevelData
             }
 
             // Build color array
-            VertexColors.Resize(VertexPositions.Count, room.AmbientLight);
+            VertexColors.Resize(VertexPositions.Count, room.Properties.AmbientLight);
 
             // Lighting
             Relight(room);
@@ -2004,7 +2004,7 @@ namespace TombLib.LevelData
                 for (int j = 0; j < 3; ++j)
                 {
                     var position = VertexPositions[i + j];
-                    Vector3 color = room.AmbientLight * 128;
+                    Vector3 color = room.Properties.AmbientLight * 128;
 
                     foreach (var light in lights) // No Linq here because it's slow
                     {

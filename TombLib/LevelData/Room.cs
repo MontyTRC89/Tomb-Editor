@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -28,6 +29,55 @@ namespace TombLib.LevelData
         Default, Interpolate, NoInterpolate
     }
 
+    public class RoomProperties : ICloneable
+    {
+        [DisplayName("Ambient light")]
+        public Vector3 AmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
+        [DisplayName("Room type")]
+        public RoomType Type { get; set; } = RoomType.Normal;
+        [DisplayName("Room type strength")]
+        public byte TypeStrength { get; set; } = 0;
+        [DisplayName("Effect")]
+        public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
+        [DisplayName("Effect strength")]
+        public byte LightEffectStrength { get; set; } = 1;
+        [DisplayName("Portal shade")]
+        public RoomLightInterpolationMode LightInterpolationMode { get; set; } = RoomLightInterpolationMode.Default;
+
+        // Tags
+        [DisplayName("Tags")]
+        public List<string> Tags { get; set; } = new List<string>();
+
+        // Flags
+        [DisplayName("Cold")]
+        public bool FlagCold { get; set; }
+        [DisplayName("Damage")]
+        public bool FlagDamage { get; set; }
+        [DisplayName("Wind")]
+        public bool FlagOutside { get; set; }
+        [DisplayName("Skybox")]
+        public bool FlagHorizon { get; set; }
+        [DisplayName("No lensflare")]
+        public bool FlagNoLensflare { get; set; }
+        [DisplayName("No pathfinding")]
+        public bool FlagExcludeFromPathFinding { get; set; }
+        [DisplayName("Reverb type")]
+        public Reverberation Reverberation { get; set; }
+        [DisplayName("Locked")]
+        public bool Locked { get; set; }
+        [DisplayName("Hidden")]
+        public bool Hidden { get; set; }
+
+        object ICloneable.Clone() => Clone();
+
+        public RoomProperties Clone()
+        {
+            var result = (RoomProperties)MemberwiseClone();
+            result.Tags = new List<string>(Tags);
+            return result;
+        }
+    }
+
     public class Room : ITriggerParameter
     {
         public delegate void RemovedFromRoomDelegate(Room instance);
@@ -36,7 +86,10 @@ namespace TombLib.LevelData
         public const short DefaultHeight = 12;
         public const short DefaultRoomDimensions = 20;
 
+        public Level Level { get; set; }
+
         public string Name { get; set; }
+        public RoomProperties Properties { get; set; }
         public VectorInt3 Position { get; set; }
         public Block[,] Blocks { get; private set; }
 
@@ -46,30 +99,6 @@ namespace TombLib.LevelData
         public Room AlternateRoom { get; set; }
         public short AlternateGroup { get; set; } = -1;
 
-        public Vector3 AmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
-
-        public RoomType Type { get; set; } = RoomType.Normal;
-        public byte TypeStrength { get; set; } = 0;
-        public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
-        public RoomLightInterpolationMode LightInterpolationMode { get; set; } = RoomLightInterpolationMode.Default;
-
-        public byte LightEffectStrength { get; set; } = 1;
-
-        public bool FlagCold { get; set; }
-        public bool FlagDamage { get; set; }
-        public bool FlagOutside { get; set; }
-        public bool FlagHorizon { get; set; }
-        public bool FlagNoLensflare { get; set; }
-        public bool FlagExcludeFromPathFinding { get; set; }
-        public Reverberation Reverberation { get; set; }
-        public bool Locked { get; set; }
-        public bool Hidden { get; set; }
-        public ImportedGeometryMesh ExternalRoomMesh { get; set; }
-
-        public List<string> Tags { get; set; } = new List<string>();
-
-        public Level Level { get; set; }
-
         // Internal data structures
         public RoomGeometry RoomGeometry { get; set; }
 
@@ -77,7 +106,7 @@ namespace TombLib.LevelData
         {
             Name = name;
             Level = level;
-            AmbientLight = ambientLight;
+            Properties = new RoomProperties() { AmbientLight = ambientLight };
             Resize(null, new RectangleInt2(0, 0, numXSectors - 1, numZSectors - 1), 0, ceiling, true);
             BuildGeometry();
         }
@@ -538,7 +567,7 @@ namespace TombLib.LevelData
         {
             Block sector = GetBlockTry(x, z);
 
-            if (Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
+            if (Properties.Type == RoomType.Water || sector == null || sector.IsAnyWall || !sector.Floor.HasSlope)
                 return false;
 
             const int lowestPassableHeight = 4;
