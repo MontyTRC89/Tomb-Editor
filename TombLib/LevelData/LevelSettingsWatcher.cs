@@ -126,7 +126,7 @@ namespace TombEditor
         {
             public LevelSettingsWatcher Parent;
             public ImportedGeometry ImportedGeometry;
-            public override IEnumerable<string> Files => new[] { Parent.Settings?.MakeAbsolute(ImportedGeometry.Info.Path) };
+            public override IEnumerable<string> Files => GetAllAssociatedFiles();
             public override IEnumerable<string> Directories => null;
             public override string Name => PathC.GetFileNameWithoutExtensionTry(Parent.Settings?.MakeAbsolute(ImportedGeometry.Info.Path));
             public override bool IsRepresentingSameObject(FileSystemWatcherManager.WatchedObj other) => ImportedGeometry.Equals((other as WatchedImportedGeometry)?.ImportedGeometry);
@@ -146,6 +146,18 @@ namespace TombEditor
                 {
                     Parent?.ImportedGeometryChanged(null, new ChangedEventArgs<ImportedGeometry> { Object = ImportedGeometry });
                 }, null);
+            }
+
+            private List<string> GetAllAssociatedFiles()
+            {
+                var result = new List<string>() { Parent.Settings?.MakeAbsolute(ImportedGeometry.Info.Path) };
+
+                if (result[0].EndsWith(".obj", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var mtlPath = Path.ChangeExtension(result[0], ".mtl");
+                    if (File.Exists(mtlPath)) result.Add(mtlPath);
+                }
+                return result;
             }
         }
 
