@@ -35,7 +35,7 @@ namespace TombLib.LevelData
         public Vector3 AmbientLight { get; set; } = new Vector3(0.25f, 0.25f, 0.25f); // Normalized float. (1.0 meaning normal brightness, 2.0 is the maximal brightness supported by tomb4.exe)
         [DisplayName("Room type")]
         public RoomType Type { get; set; } = RoomType.Normal;
-        [DisplayName("Room type strength")]
+        [DisplayName("Room type")]
         public byte TypeStrength { get; set; } = 0;
         [DisplayName("Effect")]
         public RoomLightEffect LightEffect { get; set; } = RoomLightEffect.Default;
@@ -43,10 +43,6 @@ namespace TombLib.LevelData
         public byte LightEffectStrength { get; set; } = 1;
         [DisplayName("Portal shade")]
         public RoomLightInterpolationMode LightInterpolationMode { get; set; } = RoomLightInterpolationMode.Default;
-
-        // Tags
-        [DisplayName("Tags")]
-        public List<string> Tags { get; set; } = new List<string>();
 
         // Flags
         [DisplayName("Cold")]
@@ -67,6 +63,10 @@ namespace TombLib.LevelData
         public bool Locked { get; set; }
         [DisplayName("Hidden")]
         public bool Hidden { get; set; }
+
+        // Tags
+        [DisplayName("Tags")]
+        public List<string> Tags { get; set; } = new List<string>();
 
         object ICloneable.Clone() => Clone();
 
