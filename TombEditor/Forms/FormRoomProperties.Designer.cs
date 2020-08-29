@@ -240,7 +240,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Change room properties";
+            this.Text = "Apply room properties";
             this.ResumeLayout(false);
             this.PerformLayout();
 
