@@ -14,7 +14,7 @@ namespace TombEditor.Forms
             tbTagSearch.AutocompleteWords.Clear();
             foreach (var room in (editor.Level.Rooms))
                 if (room != null && room.ExistsInLevel)
-                    tbTagSearch.AutocompleteWords.AddRange(room.Tags.Except(tbTagSearch.AutocompleteWords));
+                    tbTagSearch.AutocompleteWords.AddRange(room.Properties.Tags.Except(tbTagSearch.AutocompleteWords));
         }
 
         private void ButOk_Click(object sender, EventArgs e)

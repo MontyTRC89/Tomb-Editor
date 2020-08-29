@@ -139,7 +139,7 @@ namespace TombLib.LevelData.Compilers
 
         private tr_room BuildRoom(Room room)
         {
-            tr_color roomAmbientColor = PackColorTo24Bit(room.AmbientLight);
+            tr_color roomAmbientColor = PackColorTo24Bit(room.Properties.AmbientLight);
 
             int maxDimensions = _limits[Limit.RoomDimensions];
             if (room.NumXSectors > maxDimensions || room.NumZSectors > maxDimensions)
@@ -165,7 +165,7 @@ namespace TombLib.LevelData.Compilers
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
-                ReverbInfo = (byte)room.Reverberation,
+                ReverbInfo = (byte)room.Properties.Reverberation,
                 Flags = 0x40
             };
 
@@ -178,7 +178,7 @@ namespace TombLib.LevelData.Compilers
 
             // Store ambient intensity
             if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.AmbientLight);
+                newRoom.AmbientIntensity = PackColorTo13BitGreyscale(room.Properties.AmbientLight);
             else
                 newRoom.AmbientIntensity = ((uint)roomAmbientColor.Red << 16) | 
                                            ((uint)roomAmbientColor.Green << 8) | 
@@ -191,21 +191,21 @@ namespace TombLib.LevelData.Compilers
             bool isNG   = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             // Room flags
-            if (room.FlagHorizon)
+            if (room.Properties.FlagHorizon)
                 newRoom.Flags |= 0x0008;
-            if (room.FlagOutside)
+            if (room.Properties.FlagOutside)
                 newRoom.Flags |= 0x0020;
 
             // TRNG-specific flags
-            if (isNG && room.FlagDamage)
+            if (isNG && room.Properties.FlagDamage)
                 newRoom.Flags |= 0x0010;
-            if (isNG && room.FlagCold)
+            if (isNG && room.Properties.FlagCold)
                 newRoom.Flags |= 0x1000;
-            if (isNL && room.FlagNoLensflare)
+            if (isNL && room.Properties.FlagNoLensflare)
                 newRoom.Flags |= 0x0080;
 
             // Room type
-            switch (room.Type)
+            switch (room.Properties.Type)
             {
                 case RoomType.Water:
                     newRoom.Flags |= 0x0001;
@@ -224,24 +224,24 @@ namespace TombLib.LevelData.Compilers
                     break;
             }
 
-            var lightEffect = room.LightEffect;
-            var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Type >= RoomType.Water).ToList();
+            var lightEffect = room.Properties.LightEffect;
+            var waterPortals = room.Portals.Where(p => p.Direction == PortalDirection.Floor && p.AdjoiningRoom.Properties.Type >= RoomType.Water).ToList();
 
             bool waterSchemeSet = false;
 
             // Calculate bottom room-based water scheme in advance, if mode is default, mist or reflection
-            if (waterPortals.Count > 0 && room.Type < RoomType.Water &&
+            if (waterPortals.Count > 0 && room.Properties.Type < RoomType.Water &&
                 (lightEffect == RoomLightEffect.Default || lightEffect == RoomLightEffect.Reflection || lightEffect == RoomLightEffect.Mist))
             {
                 var waterRoom = waterPortals.First().AdjoiningRoom;
-                newRoom.WaterScheme = (byte)((waterRoom.LightEffectStrength * 4) + room.LightEffectStrength);
+                newRoom.WaterScheme = (byte)((waterRoom.Properties.LightEffectStrength * 4) + room.Properties.LightEffectStrength);
                 waterSchemeSet = true;
             }
 
             // Force different effect type 
             if (lightEffect == RoomLightEffect.Default)
             {
-                switch (room.Type)
+                switch (room.Properties.Type)
                 {
                     case RoomType.Water:
                         if (!isTR2)
@@ -263,19 +263,19 @@ namespace TombLib.LevelData.Compilers
             switch (lightEffect)
             {
                 case RoomLightEffect.GlowAndMovement:
-                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
                     newRoom.LightMode = 3; // Used in TR2 only
                     newRoom.Flags |= 0x0100;
                     break;
 
                 case RoomLightEffect.Movement:
-                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
                     newRoom.LightMode = 1; // Used in TR2 only
                     break;
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
-                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.LightEffectStrength == 0 ? 0 : room.LightEffectStrength + 1);
+                    if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength == 0 ? 0 : room.Properties.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
                     newRoom.LightMode = 2; // Used in TR2 only
                     break;
@@ -287,15 +287,15 @@ namespace TombLib.LevelData.Compilers
 
                 case RoomLightEffect.None:
                     if (!waterSchemeSet)
-                        newRoom.WaterScheme = (byte)(room.LightEffectStrength * 5.0f);
+                        newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength * 5.0f);
                     break;
             }
 
             // Light interpolation mode
-            var interpMode = room.LightInterpolationMode;
+            var interpMode = room.Properties.LightInterpolationMode;
             if (interpMode == RoomLightInterpolationMode.Default)
             {
-                switch (room.Type)
+                switch (room.Properties.Type)
                 {
                     case RoomType.Water:
                         interpMode = RoomLightInterpolationMode.NoInterpolate;
@@ -322,7 +322,7 @@ namespace TombLib.LevelData.Compilers
 
                 // Add room's own geometry
 
-                if (!room.Hidden)
+                if (!room.Properties.Hidden)
                     for (int z = 0; z < room.NumZSectors; ++z)
                         for (int x = 0; x < room.NumXSectors; ++x)
                             for (BlockFace face = 0; face < BlockFace.Count; ++face)
@@ -463,7 +463,7 @@ namespace TombLib.LevelData.Compilers
                         Vector3 color;
                         if (!entry.TintAsAmbient)
                         {
-                            color = CalculateLightForCustomVertex(room, position, normal, false, room.AmbientLight * 128);
+                            color = CalculateLightForCustomVertex(room, position, normal, false, room.Properties.AmbientLight * 128);
                             // Apply Shade factor
                             color *= shade;
                             // Apply Instance Color
@@ -587,13 +587,13 @@ namespace TombLib.LevelData.Compilers
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.AmbientLight * 128), _level.Settings.GameVersion);
+                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128), _level.Settings.GameVersion);
                                 trVertex.Lighting1 = color;
                                 trVertex.Lighting2 = color;
                             }
                             else
                             {
-                                var color = PackLightColor(room.AmbientLight, _level.Settings.GameVersion);
+                                var color = PackLightColor(room.Properties.AmbientLight, _level.Settings.GameVersion);
                                 trVertex.Lighting1 = color;
                                 trVertex.Lighting2 = color;
                             }
@@ -686,10 +686,10 @@ namespace TombLib.LevelData.Compilers
                         var xv = trVertex.Position.X / 1024;
                         var zv = trVertex.Position.Z / 1024;
 
-                        var otherRoomLightEffect = portal.AdjoiningRoom.LightEffect;
+                        var otherRoomLightEffect = portal.AdjoiningRoom.Properties.LightEffect;
                         if (otherRoomLightEffect == RoomLightEffect.Default)
                         {
-                            switch (portal.AdjoiningRoom.Type)
+                            switch (portal.AdjoiningRoom.Properties.Type)
                             {
                                 case RoomType.Water:
                                     otherRoomLightEffect = RoomLightEffect.Glow;
@@ -764,7 +764,8 @@ namespace TombLib.LevelData.Compilers
                                     break;
                                 }
                             }
-                            else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor && ((room.Type == RoomType.Water || room.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Type == RoomType.Water || portal.AdjoiningRoom.Type == RoomType.Quicksand)))
+                            else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor && 
+                                ((room.Properties.Type == RoomType.Water || room.Properties.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Properties.Type == RoomType.Water || portal.AdjoiningRoom.Properties.Type == RoomType.Quicksand)))
                             {
                                 // Assign reflection, if set, for all enclosed portal faces
                                 if (portal.PositionOnPortal(new VectorInt3(trVertex.Position.X, trVertex.Position.Y, trVertex.Position.Z), false, false) ||
@@ -783,7 +784,7 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     // Still allow movement, if adjoining room has very same properties
                                     if (!(otherRoomLightEffect == lightEffect &&
-                                          portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                          portal.AdjoiningRoom.Properties.LightEffectStrength == room.Properties.LightEffectStrength))
                                         allowMovement = false;
                                 }
                             }
@@ -800,7 +801,7 @@ namespace TombLib.LevelData.Compilers
                                         // Still allow glow, if adjoining room has very same properties
                                         if (!((otherRoomLightEffect == RoomLightEffect.Glow ||
                                                otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
-                                               portal.AdjoiningRoom.LightEffectStrength == room.LightEffectStrength))
+                                               portal.AdjoiningRoom.Properties.LightEffectStrength == room.Properties.LightEffectStrength))
                                             allowGlow = false;
                                     }
                                 }
@@ -827,18 +828,18 @@ namespace TombLib.LevelData.Compilers
 
                         // Force remap if sunset effect is used.
                         // Also prevent hard edges on room transitions which was happening in original TR2 by checking allowMovement flag.
-                        if (room.LightEffect == RoomLightEffect.Sunset)
+                        if (room.Properties.LightEffect == RoomLightEffect.Sunset)
                         {
                             if (allowMovement)
-                                flags = (ushort)(17 + room.LightEffectStrength * 3.25f); // Closest to max. value of 30
+                                flags = (ushort)(17 + room.Properties.LightEffectStrength * 3.25f); // Closest to max. value of 30
                             else
                                 flags = (ushort)16;
                         }
-                        else if (room.LightEffect != RoomLightEffect.None)
+                        else if (room.Properties.LightEffect != RoomLightEffect.None)
                         {
                             // Remap TR3+ glow / movement to TR2 glow / flicker
                             if (glowMapped || moveMapped)
-                                flags = (ushort)(16 - room.LightEffectStrength * 3.0f); // Closest to max. value of 15
+                                flags = (ushort)(16 - room.Properties.LightEffectStrength * 3.0f); // Closest to max. value of 15
                             else
                                 flags = (ushort)16;
                         }
@@ -1156,12 +1157,12 @@ namespace TombLib.LevelData.Compilers
                         aux.Box = true;
                     if ((block.Flags & BlockFlags.NotWalkableFloor) != 0)
                         aux.NotWalkableFloor = true;
-                    if (room.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) == 1 ||
                                                         Math.Abs(block.Floor.IfQuadSlopeX) == 2 ||
                                                         Math.Abs(block.Floor.IfQuadSlopeZ) == 1 ||
                                                         Math.Abs(block.Floor.IfQuadSlopeZ) == 2))
                         aux.SoftSlope = true;
-                    if (room.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
+                    if (room.Properties.Type != RoomType.Water && (Math.Abs(block.Floor.IfQuadSlopeX) > 2 || Math.Abs(block.Floor.IfQuadSlopeZ) > 2))
                         aux.HardSlope = true;
                     if (block.Type == BlockType.Wall)
                         aux.Wall = true;
@@ -1561,7 +1562,7 @@ namespace TombLib.LevelData.Compilers
         private void MatchDoorShades(List<tr_room> roomList, tr_room room, bool grayscale, bool flipped)
         {
             // Do we want to interpolate?
-            if (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
+            if (room.OriginalRoom.Properties.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
                 return;
 
             foreach (var p in room.Portals)
@@ -1590,7 +1591,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 // Check if the other room must be interpolated
-                if (otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
+                if (otherRoom.OriginalRoom.Properties.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
                     continue;
 
                 // If we have a pair of water room and dry room, orginal behaviour of TRLE was to not interpolate,
@@ -1598,8 +1599,8 @@ namespace TombLib.LevelData.Compilers
                 bool isWaterAndDryPair = ((room.Flags & 1) == 1 ^ (otherRoom.Flags & 1) == 1);
 
                 if (!isWaterAndDryPair || (isWaterAndDryPair &&
-                    (room.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate ||
-                     otherRoom.OriginalRoom.LightInterpolationMode == RoomLightInterpolationMode.Interpolate)))
+                    (room.OriginalRoom.Properties.LightInterpolationMode == RoomLightInterpolationMode.Interpolate ||
+                     otherRoom.OriginalRoom.Properties.LightInterpolationMode == RoomLightInterpolationMode.Interpolate)))
                 {
                     int x1 = p.Vertices[0].X;
                     int y1 = p.Vertices[0].Y;

@@ -308,7 +308,7 @@ namespace TombEditor.Forms
                 {
                     var room = (entry.Value as Room);
                     e.Value = room.Name;
-                    if (room.Tags.Count > 0) e.Value += (" / " + string.Join(" ", room.Tags) + " /");
+                    if (room.Properties.Tags.Count > 0) e.Value += (" / " + string.Join(" ", room.Properties.Tags) + " /");
                 }
                 else
                 {

@@ -766,7 +766,7 @@ namespace TombEditor.Controls
                         brush = _roomsNormalAboveBrush;
                     using (var brush2 = GetRoomBrush(room, brush))
                         e.Graphics.FillRectangles(brush2, rectangles.ToArray());
-                    if(room.Locked)
+                    if(room.Properties.Locked)
                         e.Graphics.FillRectangles(_roomsLockedBrush, rectangles.ToArray());
 
                 }

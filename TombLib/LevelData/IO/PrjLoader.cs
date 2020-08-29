@@ -476,7 +476,7 @@ namespace TombLib.LevelData.IO
 
                     tempObjects.Add(i, objects);
 
-                    room.AmbientLight = new Vector3(reader.ReadByte(), reader.ReadByte(), reader.ReadByte())
+                    room.Properties.AmbientLight = new Vector3(reader.ReadByte(), reader.ReadByte(), reader.ReadByte())
                         / 128.0f - new Vector3(1.0f / 32.0f); // Adjust for different rounding in TE *.tr4 output
                     reader.ReadByte();
 
@@ -656,38 +656,38 @@ namespace TombLib.LevelData.IO
                     tempRoom._flipGroup = (short)(reader.ReadInt16() & 0xff);
 
                     if ((flags1 & 0x0001) != 0)
-                        room.Type = RoomType.Water;
+                        room.Properties.Type = RoomType.Water;
                     else if ((flags1 & 0x0004) != 0)
-                        room.Type = RoomType.Quicksand;
+                        room.Properties.Type = RoomType.Quicksand;
                     else if ((flags1 & 0x0400) != 0)
-                        room.Type = RoomType.Snow;
+                        room.Properties.Type = RoomType.Snow;
                     else if ((flags1 & 0x0800) != 0)
-                        room.Type = RoomType.Rain;
+                        room.Properties.Type = RoomType.Rain;
                     else
-                        room.Type = RoomType.Normal;
+                        room.Properties.Type = RoomType.Normal;
 
                     if ((flags1 & 0x0200) != 0)
-                        room.LightEffect = RoomLightEffect.Reflection;
+                        room.Properties.LightEffect = RoomLightEffect.Reflection;
                     else if ((flags1 & 0x0100) != 0)
-                        room.LightEffect = RoomLightEffect.Mist;
+                        room.Properties.LightEffect = RoomLightEffect.Mist;
                     else
-                        room.LightEffect = RoomLightEffect.Default;
+                        room.Properties.LightEffect = RoomLightEffect.Default;
 
-                    if (room.Type == RoomType.Water || room.Type == RoomType.Quicksand)
-                        room.LightEffectStrength = (byte)(waterLevel + 1);
+                    if (room.Properties.Type == RoomType.Water || room.Properties.Type == RoomType.Quicksand)
+                        room.Properties.LightEffectStrength = (byte)(waterLevel + 1);
                     else
-                        room.LightEffectStrength = (byte)(mistOrReflectionLevel + 1);
+                        room.Properties.LightEffectStrength = (byte)(mistOrReflectionLevel + 1);
 
-                    if (room.Type == RoomType.Snow || room.Type == RoomType.Rain)
-                        room.TypeStrength = waterLevel;
+                    if (room.Properties.Type == RoomType.Snow || room.Properties.Type == RoomType.Rain)
+                        room.Properties.TypeStrength = waterLevel;
                     else
-                        room.TypeStrength = 0;
+                        room.Properties.TypeStrength = 0;
 
-                    room.Reverberation = (Reverberation)reverb;
-                    room.FlagHorizon = (flags1 & 0x0008) != 0;
-                    room.FlagDamage = (flags1 & 0x0010) != 0;
-                    room.FlagOutside = (flags1 & 0x0020) != 0;
-                    room.FlagNoLensflare = (flags1 & 0x0080) != 0;
+                    room.Properties.Reverberation = (Reverberation)reverb;
+                    room.Properties.FlagHorizon = (flags1 & 0x0008) != 0;
+                    room.Properties.FlagDamage = (flags1 & 0x0010) != 0;
+                    room.Properties.FlagOutside = (flags1 & 0x0020) != 0;
+                    room.Properties.FlagNoLensflare = (flags1 & 0x0080) != 0;
 
                     // Read blocks
                     tempRoom._blocks = new PrjBlock[numXBlocks, numZBlocks];
@@ -1129,7 +1129,7 @@ namespace TombLib.LevelData.IO
                             {
                                 case PortalDirection.Ceiling:
                                 case PortalDirection.Floor:
-                                    if (room.Type == RoomType.Water != (portal.AdjoiningRoom.Type == RoomType.Water) && portal.Opacity == PortalOpacity.SolidFaces)
+                                    if (room.Properties.Type == RoomType.Water != (portal.AdjoiningRoom.Properties.Type == RoomType.Water) && portal.Opacity == PortalOpacity.SolidFaces)
                                         portal.Opacity = PortalOpacity.TraversableFaces;
                                     break;
                             }

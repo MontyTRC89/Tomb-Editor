@@ -27,48 +27,40 @@ namespace TombEditor.Forms
                 return;
             }
 
-            if (DarkMessageBox.Show(this, "Are you sure you want to apply selected properties to selected rooms rooms?\n" +
-                                          "This action can't be undone.",
-                                    "Apply room properties", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            var undoList = new List<UndoRedoInstance>();
+
+            var curr = _editor.SelectedRoom;
+            foreach (var r in _editor.SelectedRooms)
             {
-                var curr = _editor.SelectedRoom;
-                foreach (var r in _editor.SelectedRooms)
-                {
-                    // Apply selected attribs
+                undoList.Add(new RoomPropertyUndoInstance(_editor.UndoManager, r));
 
-                    if (cbAmbient.Checked)       r.AmbientLight = curr.AmbientLight;
-                    if (cbCold.Checked)          r.FlagCold = curr.FlagCold;
-                    if (cbDamage.Checked)        r.FlagDamage = curr.FlagDamage;
-                    if (cbLensflare.Checked)     r.FlagNoLensflare = curr.FlagCold;
-                    if (cbLightEffect.Checked)   r.LightEffect = curr.LightEffect;
-                    if (cbLightStrength.Checked) r.LightEffectStrength = curr.LightEffectStrength;
-                    if (cbPathfinding.Checked)   r.FlagExcludeFromPathFinding = curr.FlagExcludeFromPathFinding;
-                    if (cbPortalShade.Checked)   r.LightInterpolationMode = curr.LightInterpolationMode;
-                    if (cbReverb.Checked)        r.Reverberation = curr.Reverberation;
-                    if (cbRoomType.Checked)      r.Type = curr.Type;
-                    if (cbRoomType.Checked)      r.TypeStrength = curr.TypeStrength;
-                    if (cbSky.Checked)           r.FlagHorizon = curr.FlagHorizon;
-                    if (cbTags.Checked)          r.Tags = new List<string>(curr.Tags);
-                    if (cbVisible.Checked)       r.Hidden = curr.Hidden;
-                    if (cbWind.Checked)          r.FlagOutside = curr.FlagOutside;
+                // Apply selected attribs
 
-                    // Updating operations
+                if (cbAmbient.Checked)       r.Properties.AmbientLight = curr.Properties.AmbientLight;
+                if (cbCold.Checked)          r.Properties.FlagCold = curr.Properties.FlagCold;
+                if (cbDamage.Checked)        r.Properties.FlagDamage = curr.Properties.FlagDamage;
+                if (cbLensflare.Checked)     r.Properties.FlagNoLensflare = curr.Properties.FlagCold;
+                if (cbLightEffect.Checked)   r.Properties.LightEffect = curr.Properties.LightEffect;
+                if (cbLightStrength.Checked) r.Properties.LightEffectStrength = curr.Properties.LightEffectStrength;
+                if (cbPathfinding.Checked)   r.Properties.FlagExcludeFromPathFinding = curr.Properties.FlagExcludeFromPathFinding;
+                if (cbPortalShade.Checked)   r.Properties.LightInterpolationMode = curr.Properties.LightInterpolationMode;
+                if (cbReverb.Checked)        r.Properties.Reverberation = curr.Properties.Reverberation;
+                if (cbRoomType.Checked)      r.Properties.Type = curr.Properties.Type;
+                if (cbRoomType.Checked)      r.Properties.TypeStrength = curr.Properties.TypeStrength;
+                if (cbSky.Checked)           r.Properties.FlagHorizon = curr.Properties.FlagHorizon;
+                if (cbTags.Checked)          r.Properties.Tags = curr.Properties.Tags;
+                if (cbVisible.Checked)       r.Properties.Hidden = curr.Properties.Hidden;
+                if (cbWind.Checked)          r.Properties.FlagOutside = curr.Properties.FlagOutside;
 
-                    if (cbAmbient.Checked)
-                    {
-                        r.BuildGeometry();
-                        r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                    }
+                // Updating operations
 
-                    _editor.RoomPropertiesChange(r);
-                }
-
-                DialogResult = DialogResult.OK;
-            }
-            else
-                DialogResult = DialogResult.Cancel;
-
-            Close();
+                if (cbAmbient.Checked)
+                    r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+                _editor.RoomPropertiesChange(r);
+			}
+			
+            _editor.UndoManager.Push(undoList);
+            DialogResult = DialogResult.OK;
         }
 
         private void butCancel_Click(object sender, EventArgs e)

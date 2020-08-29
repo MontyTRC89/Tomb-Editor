@@ -10,8 +10,9 @@ Tomb Editor:
  * Added "Export as animcommand" button to trigger window.
  * Added ability to delete objects from search window.
  * Added ability to delete multiple objects at once from object list.
- * An option to apply chosen room properties to all selected rooms.
  * Added find & replace object context menu.
+ * An option to apply chosen room properties to all selected rooms.
+ * Allow undo for room ambient light changes.
  * Draw service objects as 2D icons by default.
  * Point to specific trigger area when "Find where is triggered" context menu was engaged.
  * Always resample sounds to proper format.
