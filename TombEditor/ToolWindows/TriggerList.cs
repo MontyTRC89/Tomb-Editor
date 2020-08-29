@@ -51,54 +51,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedSectorsChangedEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
                 obj is Editor.RoomSectorPropertiesChangedEvent)
-            {
-                lstTriggers.Items.Clear();
-                bool noSort = true;
-
-                if (_editor.Level != null && _editor.SelectedSectors.Valid)
-                {
-                    // Search for unique triggers inside the selected area
-                    var triggers = new List<TriggerInstance>();
-                    var area     = _editor.SelectedSectors.Area;
-                    var origin   = new VectorInt2(-1);
-
-                    for (int x = area.X0; x <= area.X1; x++)
-                        for (int z = area.Y0; z <= area.Y1; z++)
-                            foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
-                                if (!triggers.Contains(trigger))
-                                {
-                                    // Look if incoming trigger doesn't belong to first block in area.
-                                    // If that's the case, we're dealing with overlapping triggers and
-                                    // can't predict proper order for them, so we don't sort.
-
-                                    if (origin.X < 0) origin.X = x;
-                                    if (origin.Y < 0) origin.Y = z;
-                                    noSort = origin.X !=x  || origin.Y != z;
-                                    triggers.Add(trigger);
-                                }
-
-                    if (triggers.Count == 1)
-                        noSort = true; // Don't sort singular triggers
-
-                    if (triggers.Count > 0)
-                    {
-                        // Sort triggers in same order as in compiled level, if area
-                        if (!noSort)
-                            TriggerInstance.SortTriggerList(ref triggers);
-
-                        // Add triggers to listbox and highlight setup trigger if needed
-                        for (int i = 0; i < triggers.Count; i++)
-                        {
-                            var trigger = triggers[i];
-                            lstTriggers.Items.Add(new DarkListItem(trigger.ToShortString())
-                            {
-                                Tag = trigger,
-                                TextColor = (!noSort && i == 0) ? Colors.BlueHighlight.Multiply(1.2f) : Colors.LightText
-                            });
-                        }
-                    }
-                }
-            }
+                UpdateUI();
 
             // Update any modified trigger from area
             if (obj is Editor.ObjectChangedEvent)
@@ -107,11 +60,7 @@ namespace TombEditor.ToolWindows
 
                 if (changedObject.Room == _editor.SelectedRoom &&
                     changedObject is TriggerInstance)
-                {
-                    var item = lstTriggers.Items.FirstOrDefault(l => l.Tag == changedObject);
-                    if (item != null)
-                        item.Text = changedObject.ToShortString();
-                }
+                    UpdateUI();
             }
 
             // Update the trigger control selection
@@ -159,6 +108,55 @@ namespace TombEditor.ToolWindows
             EditorActions.DeleteObjects(triggersToRemove, FindForm());
         }
 
+        private void UpdateUI()
+        {
+            lstTriggers.Items.Clear();
+            bool noSort = true;
+
+            if (_editor.Level != null && _editor.SelectedSectors.Valid)
+            {
+                // Search for unique triggers inside the selected area
+                var triggers = new List<TriggerInstance>();
+                var area = _editor.SelectedSectors.Area;
+                var origin = new VectorInt2(-1);
+
+                for (int x = area.X0; x <= area.X1; x++)
+                    for (int z = area.Y0; z <= area.Y1; z++)
+                        foreach (var trigger in _editor.SelectedRoom.GetBlockTry(x, z)?.Triggers ?? new List<TriggerInstance>())
+                            if (!triggers.Contains(trigger))
+                            {
+                                // Look if incoming trigger doesn't belong to first block in area.
+                                // If that's the case, we're dealing with overlapping triggers and
+                                // can't predict proper order for them, so we don't sort.
+
+                                if (origin.X < 0) origin.X = x;
+                                if (origin.Y < 0) origin.Y = z;
+                                noSort = origin.X != x || origin.Y != z;
+                                triggers.Add(trigger);
+                            }
+
+                if (triggers.Count == 1)
+                    noSort = true; // Don't sort singular triggers
+
+                if (triggers.Count > 0)
+                {
+                    // Sort triggers in same order as in compiled level, if area
+                    if (!noSort)
+                        TriggerInstance.SortTriggerList(ref triggers);
+
+                    // Add triggers to listbox and highlight setup trigger if needed
+                    for (int i = 0; i < triggers.Count; i++)
+                    {
+                        var trigger = triggers[i];
+                        lstTriggers.Items.Add(new DarkListItem(trigger.ToShortString())
+                        {
+                            Tag = trigger,
+                            TextColor = (!noSort && i == 0) ? Colors.BlueHighlight.Multiply(1.2f) : Colors.LightText
+                        });
+                    }
+                }
+            }
+        }
 
         private void lstTriggers_KeyDown(object sender, KeyEventArgs e)
         {
