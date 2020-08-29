@@ -955,13 +955,13 @@ namespace TombEditor
 
             AddCommand("LockRoom", "Lock room position", CommandType.Rooms, delegate (CommandArgs args)
             {
-                args.Editor.SelectedRoom.Locked = !args.Editor.SelectedRoom.Locked;
+                args.Editor.SelectedRoom.Properties.Locked = !args.Editor.SelectedRoom.Properties.Locked;
                 args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
             });
 
             AddCommand("HideRoom", "Hide room", CommandType.Rooms, delegate (CommandArgs args)
             {
-                args.Editor.SelectedRoom.Hidden = !args.Editor.SelectedRoom.Hidden;
+                args.Editor.SelectedRoom.Properties.Hidden = !args.Editor.SelectedRoom.Properties.Hidden;
                 args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
             });
 
@@ -1023,19 +1023,20 @@ namespace TombEditor
 
             AddCommand("EditAmbientLight", "Edit ambient light...", CommandType.Rooms, delegate (CommandArgs args)
             {
-                Room room = args.Editor.SelectedRoom;
+                var room = args.Editor.SelectedRoom;
+                var undo = new RoomPropertyUndoInstance(args.Editor.UndoManager, room);
 
                 using (var colorDialog = new RealtimeColorDialog(
                     args.Editor.Configuration.ColorDialog_Position.X,
                     args.Editor.Configuration.ColorDialog_Position.Y,
                     c =>
                     {
-                        room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                        room.Properties.AmbientLight = c.ToFloat3Color() * 2.0f;
                         args.Editor.SelectedRoom.BuildGeometry();
                         args.Editor.RoomPropertiesChange(room);
                     }, args.Editor.Configuration.UI_ColorScheme))
                 {
-                    colorDialog.Color = (room.AmbientLight * 0.5f).ToWinFormsColor();
+                    colorDialog.Color = (room.Properties.AmbientLight * 0.5f).ToWinFormsColor();
                     var oldLightColor = colorDialog.Color;
 
                     if (colorDialog.ShowDialog(args.Window) != DialogResult.OK)
@@ -1048,11 +1049,12 @@ namespace TombEditor
                             args.Editor.SendMessage("Only grayscale lighting is possible for this game version.", PopupType.Info);
                         newColor = Vector3.Clamp(new Vector3(newColor.GetLuma()), Vector3.Zero, Vector3.One);
                     }
-                    room.AmbientLight = newColor;
+                    room.Properties.AmbientLight = newColor;
 
                     args.Editor.Configuration.ColorDialog_Position = colorDialog.Position;
                 }
 
+                args.Editor.UndoManager.Push(undo);
                 args.Editor.SelectedRoom.BuildGeometry();
                 args.Editor.RoomPropertiesChange(room);
             });
@@ -1886,7 +1888,7 @@ namespace TombEditor
             {
                 if(args.Editor.SelectedRoom != null )
                 {
-                    args.Editor.SelectedRoom.FlagOutside = !args.Editor.SelectedRoom.FlagOutside;
+                    args.Editor.SelectedRoom.Properties.FlagOutside = !args.Editor.SelectedRoom.Properties.FlagOutside;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
             });
@@ -1895,7 +1897,7 @@ namespace TombEditor
             {
                 if (args.Editor.SelectedRoom != null)
                 {
-                    args.Editor.SelectedRoom.FlagHorizon = !args.Editor.SelectedRoom.FlagHorizon;
+                    args.Editor.SelectedRoom.Properties.FlagHorizon = !args.Editor.SelectedRoom.Properties.FlagHorizon;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
             });
@@ -1906,7 +1908,7 @@ namespace TombEditor
                     return;
                 if (args.Editor.SelectedRoom != null)
                 {
-                    args.Editor.SelectedRoom.FlagNoLensflare = !args.Editor.SelectedRoom.FlagNoLensflare;
+                    args.Editor.SelectedRoom.Properties.FlagNoLensflare = !args.Editor.SelectedRoom.Properties.FlagNoLensflare;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
             });
@@ -1915,7 +1917,7 @@ namespace TombEditor
             {
                 if (args.Editor.SelectedRoom != null)
                 {
-                    args.Editor.SelectedRoom.FlagExcludeFromPathFinding = !args.Editor.SelectedRoom.FlagExcludeFromPathFinding;
+                    args.Editor.SelectedRoom.Properties.FlagExcludeFromPathFinding = !args.Editor.SelectedRoom.Properties.FlagExcludeFromPathFinding;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
             });
@@ -1926,7 +1928,7 @@ namespace TombEditor
                     return;
                 if (args.Editor.SelectedRoom != null)
                 {
-                    args.Editor.SelectedRoom.FlagCold = !args.Editor.SelectedRoom.FlagCold;
+                    args.Editor.SelectedRoom.Properties.FlagCold = !args.Editor.SelectedRoom.Properties.FlagCold;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
             });
@@ -1937,7 +1939,7 @@ namespace TombEditor
                     return;
                 if (args.Editor.SelectedRoom != null)
                 {
-                    args.Editor.SelectedRoom.FlagDamage = !args.Editor.SelectedRoom.FlagDamage;
+                    args.Editor.SelectedRoom.Properties.FlagDamage = !args.Editor.SelectedRoom.Properties.FlagDamage;
                     args.Editor.RoomPropertiesChange(args.Editor.SelectedRoom);
                 }
             });

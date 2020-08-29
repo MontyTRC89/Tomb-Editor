@@ -654,9 +654,9 @@ namespace TombLib.LevelData.IO
                     {
                         var tags = System.Text.Encoding.UTF8.GetString(chunkIO.ReadChunkArrayOfBytes(chunkSize2)).Split(' ');
                         if (tags.Count() == 1 && string.IsNullOrEmpty(tags[0]))
-                            room.Tags = new List<string>();
+                            room.Properties.Tags = new List<string>();
                         else
-                            room.Tags = tags.ToList();
+                            room.Properties.Tags = tags.ToList();
                     }
 
 
@@ -741,30 +741,30 @@ namespace TombLib.LevelData.IO
                     // Read room properties
                     else if (id2 == Prj2Chunks.RoomAmbientLight)
                     {
-                        room.AmbientLight = chunkIO.ReadChunkVector3(chunkSize2);
+                        room.Properties.AmbientLight = chunkIO.ReadChunkVector3(chunkSize2);
                     }
                     else if (id2 == Prj2Chunks.RoomFlagCold)
-                        room.FlagCold = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.FlagCold = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagDamage)
-                        room.FlagDamage = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.FlagDamage = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagHorizon)
-                        room.FlagHorizon = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.FlagHorizon = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagOutside)
-                        room.FlagOutside = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.FlagOutside = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagNoLensflare)
-                        room.FlagNoLensflare = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.FlagNoLensflare = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomFlagExcludeFromPathFinding)
-                        room.FlagExcludeFromPathFinding = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.FlagExcludeFromPathFinding = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLightInterpolationMode)
-                        room.LightInterpolationMode = (RoomLightInterpolationMode)chunkIO.ReadChunkInt(chunkSize2);
+                        room.Properties.LightInterpolationMode = (RoomLightInterpolationMode)chunkIO.ReadChunkInt(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomWaterLevel) // DEPRECATED
                     {
                         var val = chunkIO.ReadChunkByte(chunkSize2);
                         if(val > 0)
                         {
-                            room.Type = RoomType.Water;
-                            room.LightEffect = RoomLightEffect.Default;
-                            room.LightEffectStrength = val;
+                            room.Properties.Type = RoomType.Water;
+                            room.Properties.LightEffect = RoomLightEffect.Default;
+                            room.Properties.LightEffectStrength = val;
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomRainLevel) // DEPRECATED
@@ -772,9 +772,9 @@ namespace TombLib.LevelData.IO
                         var val = chunkIO.ReadChunkByte(chunkSize2);
                         if (val > 0)
                         {
-                            room.Type = RoomType.Rain;
-                            room.LightEffect = RoomLightEffect.Default;
-                            room.TypeStrength = (byte)(val - 1);
+                            room.Properties.Type = RoomType.Rain;
+                            room.Properties.LightEffect = RoomLightEffect.Default;
+                            room.Properties.TypeStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomSnowLevel) // DEPRECATED
@@ -782,9 +782,9 @@ namespace TombLib.LevelData.IO
                         var val = chunkIO.ReadChunkByte(chunkSize2);
                         if (val > 0)
                         {
-                            room.Type = RoomType.Snow;
-                            room.LightEffect = RoomLightEffect.Default;
-                            room.TypeStrength = (byte)(val - 1);
+                            room.Properties.Type = RoomType.Snow;
+                            room.Properties.LightEffect = RoomLightEffect.Default;
+                            room.Properties.TypeStrength = (byte)(val - 1);
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomQuickSandLevel) // DEPRECATED
@@ -792,9 +792,9 @@ namespace TombLib.LevelData.IO
                         var val = chunkIO.ReadChunkByte(chunkSize2);
                         if (val > 0)
                         {
-                            room.Type = RoomType.Quicksand;
-                            room.LightEffect = RoomLightEffect.Default;
-                            room.LightEffectStrength = val;
+                            room.Properties.Type = RoomType.Quicksand;
+                            room.Properties.LightEffect = RoomLightEffect.Default;
+                            room.Properties.LightEffectStrength = val;
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomMistLevel) // DEPRECATED
@@ -802,8 +802,8 @@ namespace TombLib.LevelData.IO
                         var val = chunkIO.ReadChunkByte(chunkSize2);
                         if (val > 0)
                         {
-                            room.LightEffect = RoomLightEffect.Mist;
-                            room.LightEffectStrength = val;
+                            room.Properties.LightEffect = RoomLightEffect.Mist;
+                            room.Properties.LightEffectStrength = val;
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomReflectionLevel) // DEPRECATED
@@ -814,34 +814,34 @@ namespace TombLib.LevelData.IO
                         // Comment: this was VERY bad design choice to keep MistLevel/ReflectionLevel separately.
                         // Let's hope people won't be confused on opening their old prj2s.
 
-                        if (val > 0 && room.LightEffect != RoomLightEffect.Glow)
+                        if (val > 0 && room.Properties.LightEffect != RoomLightEffect.Glow)
                         {
-                            room.LightEffect = RoomLightEffect.Reflection;
-                            room.LightEffectStrength = val;
+                            room.Properties.LightEffect = RoomLightEffect.Reflection;
+                            room.Properties.LightEffectStrength = val;
                         }
                     }
                     else if (id2 == Prj2Chunks.RoomType)
-                        room.Type = (RoomType)chunkIO.ReadChunkByte(chunkSize2);
+                        room.Properties.Type = (RoomType)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomTypeStrength)
-                        room.TypeStrength = chunkIO.ReadChunkByte(chunkSize2);
+                        room.Properties.TypeStrength = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLightEffect)
-                        room.LightEffect = (RoomLightEffect)chunkIO.ReadChunkByte(chunkSize2);
+                        room.Properties.LightEffect = (RoomLightEffect)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLightEffectStrength)
                     {
-                        room.LightEffectStrength = (byte)(chunkIO.ReadChunkByte(chunkSize2) + 1);
-                        if (room.LightEffectStrength > 4) room.LightEffectStrength = 4;
+                        room.Properties.LightEffectStrength = (byte)(chunkIO.ReadChunkByte(chunkSize2) + 1);
+                        if (room.Properties.LightEffectStrength > 4) room.Properties.LightEffectStrength = 4;
                     }
                     else if (id2 == Prj2Chunks.RoomLightEffectStrength2)
                     {
-                        room.LightEffectStrength = chunkIO.ReadChunkByte(chunkSize2);
-                        if (room.LightEffectStrength > 4) room.LightEffectStrength = 4;
+                        room.Properties.LightEffectStrength = chunkIO.ReadChunkByte(chunkSize2);
+                        if (room.Properties.LightEffectStrength > 4) room.Properties.LightEffectStrength = 4;
                     }
                     else if (id2 == Prj2Chunks.RoomReverberation)
-                        room.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
+                        room.Properties.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLocked)
-                        room.Locked = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.Locked = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomHidden)
-                        room.Hidden = chunkIO.ReadChunkBool(chunkSize2);
+                        room.Properties.Hidden = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomAlternate)
                     {
                         short alternateGroup = 1;

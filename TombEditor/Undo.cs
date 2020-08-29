@@ -72,7 +72,7 @@ namespace TombEditor
             Rooms = rooms;
             Rooms.ForEach(room => Sizes.Add(room, room.SectorSize));
 
-            Valid = () => Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Locked) &&
+            Valid = () => Rooms != null && Rooms.All(room => room != null && room.ExistsInLevel && !room.Properties.Locked) &&
                                            Rooms.All(room => !Parent.Editor.Level.GetConnectedRooms(room).Except(Rooms).Any()) &&
                                            Rooms.All(room => Sizes.ContainsKey(room) && room.SectorSize == Sizes[room]);
             UndoAction = () => EditorActions.MoveRooms(Delta, Rooms, true);
@@ -322,6 +322,28 @@ namespace TombEditor
                 Parent.Editor.ObjectChange(UndoObject, ObjectChangeType.Change);
             };
             RedoInstance = () => new TransformGhostBlockUndoInstance(Parent, UndoObject);
+        }
+    }
+
+    public class RoomPropertyUndoInstance : EditorUndoRedoInstance
+    {
+        private RoomProperties Properties;
+
+        public RoomPropertyUndoInstance(EditorUndoManager parent, Room room) : base(parent, room)
+        {
+            Properties = room.Properties.Clone();
+
+            Valid = () => Room != null && Room.ExistsInLevel;
+
+            UndoAction = () =>
+            {
+                var relight = Room.Properties.AmbientLight != Properties.AmbientLight;
+                Room.Properties = Properties;
+                if (relight)
+                    Room.RebuildLighting(parent.Editor.Configuration.Rendering3D_HighQualityLightPreview);
+                Parent.Editor.RoomPropertiesChange(Room);
+            };
+            RedoInstance = () => new RoomPropertyUndoInstance(Parent, Room);
         }
     }
 

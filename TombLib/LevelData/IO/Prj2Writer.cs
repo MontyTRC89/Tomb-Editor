@@ -329,7 +329,7 @@ namespace TombLib.LevelData.IO
                         chunkIO.WriteChunkInt(Prj2Chunks.RoomIndex, rooms.TryGetOrDefault(room, -1));
                         chunkIO.WriteChunkString(Prj2Chunks.RoomName, room.Name);
                         chunkIO.WriteChunkVector3(Prj2Chunks.RoomPosition, room.Position);
-                        chunkIO.WriteChunkArrayOfBytes(Prj2Chunks.RoomTags, System.Text.Encoding.UTF8.GetBytes(string.Join(" ", room.Tags)));
+                        chunkIO.WriteChunkArrayOfBytes(Prj2Chunks.RoomTags, System.Text.Encoding.UTF8.GetBytes(string.Join(" ", room.Properties.Tags)));
 
                         // Write sectors
                         using (var chunkRoomSectors = chunkIO.WriteChunk(Prj2Chunks.RoomSectors))
@@ -393,21 +393,21 @@ namespace TombLib.LevelData.IO
                         }
 
                         // Write room properties
-                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomAmbientLight, room.AmbientLight);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagCold, room.FlagCold);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagDamage, room.FlagDamage);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagHorizon, room.FlagHorizon);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagOutside, room.FlagOutside);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagNoLensflare, room.FlagNoLensflare);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagExcludeFromPathFinding, room.FlagExcludeFromPathFinding);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomType, (int)room.Type);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomTypeStrength, room.TypeStrength);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffect, (int)room.LightEffect);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffectStrength2, room.LightEffectStrength);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Reverberation);
-                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightInterpolationMode, (int)room.LightInterpolationMode);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Locked);
-                        chunkIO.WriteChunkBool(Prj2Chunks.RoomHidden, room.Hidden);
+                        chunkIO.WriteChunkVector3(Prj2Chunks.RoomAmbientLight, room.Properties.AmbientLight);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagCold, room.Properties.FlagCold);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagDamage, room.Properties.FlagDamage);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagHorizon, room.Properties.FlagHorizon);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagOutside, room.Properties.FlagOutside);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagNoLensflare, room.Properties.FlagNoLensflare);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomFlagExcludeFromPathFinding, room.Properties.FlagExcludeFromPathFinding);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomType, (int)room.Properties.Type);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomTypeStrength, room.Properties.TypeStrength);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffect, (int)room.Properties.LightEffect);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightEffectStrength2, room.Properties.LightEffectStrength);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomReverberation, (int)room.Properties.Reverberation);
+                        chunkIO.WriteChunkInt(Prj2Chunks.RoomLightInterpolationMode, (int)room.Properties.LightInterpolationMode);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomLocked, room.Properties.Locked);
+                        chunkIO.WriteChunkBool(Prj2Chunks.RoomHidden, room.Properties.Hidden);
                         if (room.AlternateRoom != null && rooms.ContainsKey(room.AlternateRoom))
                             using (var chunkRoomAlternate = chunkIO.WriteChunk(Prj2Chunks.RoomAlternate, LEB128.MaximumSize1Byte))
                             {

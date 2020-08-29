@@ -164,7 +164,7 @@ namespace TombLib.LevelData.Compilers
             for (var i = 0; i < _roomsUnmapping.Count; i++)
             {
                 Room room = _roomsUnmapping[i];
-                var buffer = new byte[] { room.TypeStrength, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+                var buffer = new byte[] { room.Properties.TypeStrength, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
                 writer.Write(buffer);
             }
         }

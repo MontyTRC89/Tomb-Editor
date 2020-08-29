@@ -1223,9 +1223,9 @@ namespace TombEditor
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
-                !room.FlagHorizon && texture.TextureIsInvisible)
+                !room.Properties.FlagHorizon && texture.TextureIsInvisible)
             {
-                room.FlagHorizon = true;
+                room.Properties.FlagHorizon = true;
                 _editor.RoomPropertiesChange(room);
             }
 
@@ -2551,7 +2551,7 @@ namespace TombEditor
             var newRoom = room.Clone(_editor.Level, instance => instance.CopyToAlternateRooms);
 
             // Disable lock flag to prevent deadlocks
-            newRoom.Locked = false;
+            newRoom.Properties.Locked = false;
 
             newRoom.Name = "Flipped of " + room;
             newRoom.BuildGeometry();
@@ -3353,9 +3353,9 @@ namespace TombEditor
 
         public static bool CheckForLockedRooms(IWin32Window owner, IEnumerable<Room> rooms)
         {
-            if (rooms.All(room => !room.Locked))
+            if (rooms.All(room => !room.Properties.Locked))
                 return false;
-            string lockedRoomList = "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Locked).Select(s => s.Name));
+            string lockedRoomList = "Locked rooms: " + string.Join(" ,", rooms.Where(room => room.Properties.Locked).Select(s => s.Name));
 
             if (_editor.Configuration.UI_OnlyShowSmallMessageWhenRoomIsLocked)
             {
@@ -3370,9 +3370,9 @@ namespace TombEditor
 
             // Unlock rooms
             foreach (Room room in rooms)
-                if (room.Locked)
+                if (room.Properties.Locked)
                 {
-                    room.Locked = false;
+                    room.Properties.Locked = false;
                     _editor.RoomPropertiesChange(room);
                 }
             return true;
@@ -3382,7 +3382,7 @@ namespace TombEditor
         {
             var oldColours = new List<Vector3>();
             foreach (var room in _editor.SelectedRooms)
-                oldColours.Add(room.AmbientLight);
+                oldColours.Add(room.Properties.AmbientLight);
 
             var applied = false;
 
@@ -3393,7 +3393,7 @@ namespace TombEditor
                 {
                     foreach (Room room in _editor.SelectedRooms)
                     {
-                        room.AmbientLight = c.ToFloat3Color() * 2.0f;
+                        room.Properties.AmbientLight = c.ToFloat3Color() * 2.0f;
                         room.BuildGeometry();
                         room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         _editor.RoomPropertiesChange(room);
@@ -3403,12 +3403,12 @@ namespace TombEditor
                 if (colorDialog.ShowDialog(owner) == DialogResult.OK)
                 {
                     foreach (Room room in _editor.SelectedRooms)
-                        room.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
+                        room.Properties.AmbientLight = colorDialog.Color.ToFloat3Color() * 2.0f;
                     applied = true;
                 }
                 else
                     foreach (var pair in _editor.SelectedRooms.Zip(oldColours, Tuple.Create))
-                        pair.Item1.AmbientLight = pair.Item2;
+                        pair.Item1.Properties.AmbientLight = pair.Item2;
 
                 _editor.Configuration.ColorDialog_Position = colorDialog.Position;
             }
@@ -3426,7 +3426,7 @@ namespace TombEditor
         public static void ApplyCurrentAmbientLightToAllRooms()
         {
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
-                room.AmbientLight = _editor.SelectedRoom.AmbientLight;
+                room.Properties.AmbientLight = _editor.SelectedRoom.Properties.AmbientLight;
             Parallel.ForEach(_editor.Level.Rooms.Where(room => room != null), room => { room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview); });
             foreach (var room in _editor.Level.Rooms.Where(room => room != null))
                 Editor.Instance.RaiseEvent(new Editor.RoomPropertiesChangedEvent { Room = room });
@@ -4779,27 +4779,27 @@ namespace TombEditor
         public static void SelectWaterRooms()
         {
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> waterRooms = allRooms.Where((r, b) => { return r != null && r.Type == RoomType.Water; });
+            IEnumerable<Room> waterRooms = allRooms.Where((r, b) => { return r != null && r.Properties.Type == RoomType.Water; });
             TrySelectRooms(waterRooms);
         }
 
         public static void SelectSkyRooms()
         {
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> skyRooms = allRooms.Where((r, b) => { return r != null && r.FlagHorizon; });
+            IEnumerable<Room> skyRooms = allRooms.Where((r, b) => { return r != null && r.Properties.FlagHorizon; });
             TrySelectRooms(skyRooms);
         }
 
         public static void SelectQuicksandRooms()
         {
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> quicksandRooms = allRooms.Where((r, b) => { return r != null && r.Type == RoomType.Quicksand; });
+            IEnumerable<Room> quicksandRooms = allRooms.Where((r, b) => { return r != null && r.Properties.Type == RoomType.Quicksand; });
             TrySelectRooms(quicksandRooms);
         }
         public static void SelectOutsideRooms()
         {
             IEnumerable<Room> allRooms = _editor.Level.Rooms;
-            IEnumerable<Room> outsideRooms = allRooms.Where((r, b) => { return r != null && r.FlagOutside; });
+            IEnumerable<Room> outsideRooms = allRooms.Where((r, b) => { return r != null && r.Properties.FlagOutside; });
             TrySelectRooms(outsideRooms);
         }
 
@@ -4818,9 +4818,9 @@ namespace TombEditor
                 IEnumerable<Room> allRooms = _editor.Level.Rooms;
                 IEnumerable<Room> matchingRooms = allRooms.Where((r, b) => {
                     if (findAllTags)
-                        return r != null && r.Tags.Intersect(tags).Count() == tags.Count();
+                        return r != null && r.Properties.Tags.Intersect(tags).Count() == tags.Count();
                     else
-                        return r != null && r.Tags.Intersect(tags).Any();
+                        return r != null && r.Properties.Tags.Intersect(tags).Any();
                 });
                 TrySelectRooms(matchingRooms);
             }
@@ -4840,7 +4840,7 @@ namespace TombEditor
                 IEnumerable<StaticInstance> staticMeshes = room.Objects.OfType<StaticInstance>();
                 foreach (StaticInstance staticMesh in staticMeshes)
                 {
-                    staticMesh.Color = room.AmbientLight;
+                    staticMesh.Color = room.Properties.AmbientLight;
                     _editor.ObjectChange(staticMesh, ObjectChangeType.Change);
                 }
             }

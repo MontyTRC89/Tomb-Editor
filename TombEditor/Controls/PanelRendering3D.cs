@@ -1771,7 +1771,7 @@ namespace TombEditor.Controls
                 // Pick hidden rooms only for place action, if they are not selected or if global picking setting is off.
 
                 if (!DisablePickingForHiddenRooms || 
-                    (!room.Hidden || room != _editor.SelectedRoom || _editor.Action is IEditorActionPlace))
+                    (!room.Properties.Hidden || room != _editor.SelectedRoom || _editor.Action is IEditorActionPlace))
                 {
                     // Check room geometry
                     var roomIntersectInfo = room.RoomGeometry?.RayIntersectsGeometry(new Ray(ray.Position - room.WorldPos, ray.Direction));
@@ -2870,7 +2870,7 @@ namespace TombEditor.Controls
                             else
                             {
                                 if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                                    skinnedModelEffect.Parameters["Color"].SetValue(mov.Color * mov.Room.AmbientLight);
+                                    skinnedModelEffect.Parameters["Color"].SetValue(mov.Color * mov.Room.Properties.AmbientLight);
                                 else
                                     skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
                             }
@@ -2982,7 +2982,7 @@ namespace TombEditor.Controls
 
                                 if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
                                     geo.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                                    geometryEffect.Parameters["Color"].SetValue(geo.Room.AmbientLight);
+                                    geometryEffect.Parameters["Color"].SetValue(geo.Room.Properties.AmbientLight);
                                 else
                                     geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                             }
@@ -3087,7 +3087,7 @@ namespace TombEditor.Controls
                                     if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
                                         staticMeshEffect.Parameters["Color"].SetValue(st.Color);
                                     else
-                                        staticMeshEffect.Parameters["Color"].SetValue(st.Color * st.Room.AmbientLight);
+                                        staticMeshEffect.Parameters["Color"].SetValue(st.Color * st.Room.Properties.AmbientLight);
                                 }
                                 else
                                     staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
@@ -3432,7 +3432,7 @@ namespace TombEditor.Controls
 
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
-            foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Hidden))
+            foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden))
                 _renderingCachedRooms[room].Render(renderArgs);
 
             // Determine if selection should be visible or not.
@@ -3496,7 +3496,7 @@ namespace TombEditor.Controls
                 DrawGhostBlockBodies(viewProjection, effect, ghostBlocksToDraw);
 
             // Draw disabled rooms, so they don't conceal all geometry behind
-            var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Hidden).ToList();
+            var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Properties.Hidden).ToList();
             if (hiddenRooms.Count > 0)
             {
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
