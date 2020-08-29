@@ -207,10 +207,13 @@ namespace TombEditor
         public bool Window_FormSprite_Maximized { get; set; } = false;
         public Point Window_FormReplaceObject_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormReplaceObject_Size { get; set; } = new Size(600, 264);
-        public bool  Window_FormTextureRemap_Maximized { get; set; } = false;
+        public bool Window_FormReplaceObject_Maximized { get; set; } = false;
+        public Point Window_FormRoomProperties_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormRoomProperties_Size { get; set; } = new Size(280, 450);
+        public bool Window_FormRoomProperties_Maximized { get; set; } = false;
         public Point Window_FormTextureRemap_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormTextureRemap_Size { get; set; } = new Size(710, 730);
-        public bool Window_FormReplaceObject_Maximized { get; set; } = false;
+        public bool Window_FormTextureRemap_Maximized { get; set; } = false;
         public Point Window_FormTrigger_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormTrigger_Size { get; set; } = new Size(); // Depends on target
         public bool  Window_FormTrigger_Maximized { get; set; } = false;
