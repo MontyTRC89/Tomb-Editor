@@ -192,21 +192,23 @@ namespace TombLib.LevelData.Compilers
                 byte[] geometryData = geometryDataBuffer;
                 int geometryDataUncompressedSize = geometryData.Length;
 
+                int ratio = _level.Settings.FastMode ? 1 : 10;
+
                 using (Task Texture32task = Task.Factory.StartNew(() =>
                 {
-                    texture32 = ZLib.CompressData(_texture32Data);
+                    texture32 = ZLib.CompressData(_texture32Data, ratio);
                     texture32UncompressedSize = _texture32Data.Length;
                 }))
                 using (Task Texture16task = Task.Factory.StartNew(() =>
                 {
                     byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
-                    texture16 = ZLib.CompressData(texture16Data);
+                    texture16 = ZLib.CompressData(texture16Data, ratio);
                     texture16UncompressedSize = texture16Data.Length;
                 }))
                 using (Task textureMiscTask = Task.Factory.StartNew(() =>
                 {
                     Stream textureMiscData = PrepareFontAndSkyTexture();
-                    textureMisc = ZLib.CompressData(textureMiscData);
+                    textureMisc = ZLib.CompressData(textureMiscData, ratio);
                     textureMiscUncompressedSize = (int)textureMiscData.Length;
                 }))
 
