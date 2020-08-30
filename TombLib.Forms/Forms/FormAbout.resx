@@ -117,4 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="darkLabel3.Text" xml:space="preserve">
+    <value>MontyTRC
+MontyTRC, TRTombLevBauer, stohrendorf, Banderi, Lwmte, Nickelony, Raildex,
+ChocolateFan, sapper
+teme9, Lwmte, Nickelony, Dominik
+Dustie, Titak, Gemini, Caesum, Lore, JMN, Joey79100, 1mustard</value>
+  </data>
 </root>

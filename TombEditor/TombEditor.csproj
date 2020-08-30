@@ -695,8 +695,9 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy  /s /y /i /q "$(ProjectDir)Resources\assets" "$(TargetDir)Assets\"
+rmdir /s /q "$(TargetDir)Runtimes\linux-x64"
+rmdir /s /q "$(TargetDir)Runtimes\osx-x64"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

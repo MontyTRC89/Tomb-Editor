@@ -3535,8 +3535,8 @@ namespace TombEditor
 
             if (level.Settings.SoundsCatalogs.Count == 0)
             {
-                AutoLoadSoundCatalog(level.Settings);
-                whatLoaded += "Default sound catalog was preloaded automatically.";
+                if (AutoLoadSoundCatalog(level.Settings))
+                    whatLoaded += "Default sound catalog was preloaded automatically.";
             }
 
             if (level.Settings.SelectedSounds.Count == 0 && level.Settings.AutoAssignSoundsIfNoSelection)
@@ -3544,6 +3544,9 @@ namespace TombEditor
                 AutodetectAndAssignSounds(level.Settings);
                 whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Sounds" : "\nAlso sounds") + " were auto-assigned because none were selected.";
             }
+
+            if (AutoLoadSamplePath(level.Settings))
+                whatLoaded += (string.IsNullOrEmpty(whatLoaded) ? "Stock samples" : "\nAlso stock samples") + " were assigned because some samples were missing.";
 
             if (!string.IsNullOrEmpty(whatLoaded))
                 _editor.SendMessage(whatLoaded, PopupType.Info);
@@ -4908,30 +4911,70 @@ namespace TombEditor
             } ;
         }
 
-        public static void AutoLoadSoundCatalog(LevelSettings settings)
+        public static bool AutoLoadSamplePath(LevelSettings settings)
+        {
+            if (settings.GameVersion.UsesMainSfx())
+                return false;
+
+            var samplePath = Application.StartupPath + "\\Assets\\Samples\\";
+
+            switch (settings.GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                    samplePath = samplePath + "TR1";
+                    break;
+
+                case TRVersion.Game.TR4:
+                    samplePath = samplePath + "TR4";
+                    break;
+
+                case TRVersion.Game.TR5:
+                    samplePath = samplePath + "TR5";
+                    break;
+
+                default:
+                    return false;
+            }
+
+            if (!settings.AllSoundSamplesAvailable && Directory.Exists(samplePath))
+                settings.WadSoundPaths.Add(new WadSoundPath(settings.MakeRelative(samplePath, VariableType.EditorDirectory)));
+            else
+                return false;
+
+
+            if (!settings.AllSoundSamplesAvailable)
+            {
+                settings.WadSoundPaths.RemoveAt(settings.WadSoundPaths.Count - 1);
+                return false;
+            }
+            else
+                return true;
+        }
+
+        public static bool AutoLoadSoundCatalog(LevelSettings settings)
         {
             var catalogName = string.Empty;
 
             switch (settings.GameVersion)
             {
                 case TRVersion.Game.TR1:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr1.xml";
+                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr1.xml";
                     break;
 
                 case TRVersion.Game.TR2:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr2.xml";
+                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr2.xml";
                     break;
 
                 case TRVersion.Game.TR3:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr3.xml";
+                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr3.xml";
                     break;
 
                 case TRVersion.Game.TR4:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr4.xml";
+                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr4.xml";
                     break;
 
                 case TRVersion.Game.TR5:
-                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr5.xml";
+                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr5.xml";
                     break;
             }
 
@@ -4940,12 +4983,15 @@ namespace TombEditor
                 try
                 {
                     settings.SoundsCatalogs.Add(new ReferencedSoundsCatalog(settings, settings.MakeRelative(catalogName, VariableType.EditorDirectory)));
+                    return true;
                 }
                 catch (Exception ex)
                 {
                     logger.Error("Unable to load default sound catalog! Exception: " + ex);
                 }
             }
+
+            return false;
         }
 
         public static void AutodetectAndAssignSounds(LevelSettings settings, IWin32Window owner = null) // No owner - no confirmation

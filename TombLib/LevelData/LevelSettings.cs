@@ -562,5 +562,7 @@ namespace TombLib.LevelData
 
         public List<int> SelectedAndMissingSounds
         { get { return SelectedSounds.Where(item => !GlobalSoundMap.Any(entry => entry.Id == item)).ToList(); } }
+
+        public bool AllSoundSamplesAvailable => GlobalSoundMap.All(s => s.Samples.Count == s.SampleCount(this));
     }
 }

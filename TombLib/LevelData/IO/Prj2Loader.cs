@@ -253,11 +253,16 @@ namespace TombLib.LevelData.IO
                         chunkIO.ReadChunks((id3, chunkSize3) =>
                         {
                             if (id3 == Prj2Chunks.SoundsCatalogPath)
-                                path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away, to not load the texture until all information is available.
+                                path = chunkIO.ReadChunkString(chunkSize3); // Don't set the path right away until all information is available.
                             else
                                 return false;
                             return true;
                         });
+
+                        // Remap stock catalogs to new location (since version 1.3.6)
+                        var oldPrefix = "$(EditorDirectory)\\Catalogs\\";
+                        if (path.StartsWith(oldPrefix))
+                            path = path.Replace(oldPrefix, "$(EditorDirectory)\\Assets\\SoundCatalogs\\");
 
                         // Add catalog
                         list.Add(newSounds);
