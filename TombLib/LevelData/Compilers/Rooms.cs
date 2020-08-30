@@ -1006,8 +1006,7 @@ namespace TombLib.LevelData.Compilers
                     (light.Type == LightType.Spot || light.Type == LightType.Shadow || light.Type == LightType.FogBulb))
                     continue;
 
-                // FIXME: For now sun type is blocked for TR3 because normal format is yet to be figured out
-                // Change to TRVersion.Game.TR3 when fixed.
+                // Sun type is present in TR3
                 if (_level.Settings.GameVersion < TRVersion.Game.TR3 && light.Type == LightType.Sun)
                     continue;
 
