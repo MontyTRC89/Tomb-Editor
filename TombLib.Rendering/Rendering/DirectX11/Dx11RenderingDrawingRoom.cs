@@ -257,7 +257,7 @@ namespace TombLib.Rendering.DirectX11
                     {
                         if (uvwAndBlendModesPtr[i] < 0x1000000) // Very small coordinates make no sense, they are used as a placeholder
                             continue;
-                        var texture = map.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
+                        var texture = map2.Lookup(Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], textureScaling));
                         Vector2 uv;
                         uint highestBits;
                         Dx11RenderingDevice.UncompressUvw(uvwAndBlendModesPtr[i], texture.Pos, textureScaling, out uv, out highestBits);
@@ -272,7 +272,7 @@ namespace TombLib.Rendering.DirectX11
                     VertexBuffer = new Buffer(Device.Device, new IntPtr(dataPtr),
                         new BufferDescription(VertexBufferSize, ResourceUsage.Immutable, BindFlags.VertexBuffer,
                         CpuAccessFlags.None, ResourceOptionFlags.None, 0));
-                    oldVertexBuffer.Dispose();
+                    oldVertexBuffer?.Dispose();
                 }
                 for (int i = 0; i < VertexBufferBindings.Length; ++i)
                     if (VertexBufferBindings[i].Buffer == oldVertexBuffer)
