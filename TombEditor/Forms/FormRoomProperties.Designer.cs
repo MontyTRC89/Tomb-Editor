@@ -46,7 +46,7 @@
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 14;
-            this.butCancel.Text = "Cancel";
+            this.butCancel.Text = "Close";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
             // 
@@ -58,7 +58,7 @@
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 13;
-            this.butOk.Text = "OK";
+            this.butOk.Text = "Apply";
             this.butOk.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOk.Click += new System.EventHandler(this.butOk_Click);
             // 
@@ -95,6 +95,7 @@
             this.dgvPropertyList.Size = new System.Drawing.Size(244, 331);
             this.dgvPropertyList.TabIndex = 26;
             this.dgvPropertyList.ToggleCheckBoxOnClick = true;
+            this.dgvPropertyList.Click += new System.EventHandler(this.dgvPropertyList_Click);
             // 
             // colSelected
             // 
@@ -115,10 +116,8 @@
             // 
             // FormRoomProperties
             // 
-            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(264, 412);
             this.Controls.Add(this.dgvPropertyList);
             this.Controls.Add(this.darkLabel1);
