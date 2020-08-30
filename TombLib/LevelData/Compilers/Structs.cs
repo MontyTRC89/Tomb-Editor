@@ -521,7 +521,7 @@ namespace TombLib.LevelData.Compilers
                     else
                     {
                         writer.Write((uint)light.Intensity);
-                        writer.Write((uint)light.Out);
+                        writer.Write((uint)(light.Out / 2));
                     }
                 }
             }
