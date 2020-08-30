@@ -6,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using TombLib.Utils;
-using NAudio.Wave.SampleProviders;
 using System.Xml.Serialization;
-using System.Threading.Tasks;
 using TombLib.LevelData;
 using TombLib.Wad.Catalog;
 
@@ -138,7 +136,8 @@ namespace TombLib.Wad
             using (var anyWaveStream = CreateReader(inStream, data))
             {
                 var targetFormat = new WaveFormat(sampleRate, bitsPerSample, 1);
-                var pcmStream = CreateWaveConverter(targetFormat, anyWaveStream);
+                var pcmStream = new MediaFoundationResampler(anyWaveStream, targetFormat) { ResamplerQuality = 60 };
+
                 try // The pcm stream may need to get disposed.
                 {
                     using (var outStream = new MemoryStream())
@@ -185,29 +184,6 @@ namespace TombLib.Wad
                     (pcmStream as IDisposable)?.Dispose();
                 }
             }
-        }
-
-        private static IWaveProvider CreateWaveConverter(WaveFormat format, WaveStream stream)
-        {
-            if (stream.WaveFormat.Encoding != WaveFormatEncoding.IeeeFloat)
-            {
-                try
-                {
-                    return new WaveFormatConversionStream(format, stream);
-                }
-                catch (Exception exc)
-                { // This happens for example with floating point wave files.
-                    logger.Warn(exc, "'WaveFormatConversionStream' failed. Attempting to use sample provider conversion now.");
-                }
-            }
-
-            // Try going through the sample provider and then remix/resample manually if necessary...
-            ISampleProvider sampleProvider = stream.ToSampleProvider();
-            if (sampleProvider.WaveFormat.Channels > 1)
-                sampleProvider = new StereoToMonoSampleProvider(sampleProvider);
-            if (sampleProvider.WaveFormat.SampleRate != format.SampleRate)
-                sampleProvider = new WdlResamplingSampleProvider(sampleProvider, format.SampleRate);
-            return sampleProvider.ToWaveProvider16();
         }
 
         private static WaveStream CreateReader(MemoryStream dataStream, byte[] data)
