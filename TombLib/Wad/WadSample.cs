@@ -398,7 +398,7 @@ namespace TombLib.Wad
             int supportedBitness    = TrCatalog.GetLimit(settings.GameVersion, Limit.SoundBitsPerSample);
 
             var missing = false;
-            Parallel.For(0, samples.Count, i =>
+            for (int i = 0; i < samples.Count; i++)
             {
                 WadSample currentSample = NullSample;
                 try
@@ -442,9 +442,8 @@ namespace TombLib.Wad
                     logger.Warn(exc, "Unable to read file '" + samples[i].FileName + "' from provided location.");
                 }
 
-                lock (loadedSamples)
-                    loadedSamples.Add(i, currentSample);
-            });
+                loadedSamples.Add(i, currentSample);
+            }
 
             if (missing)
                 reporter?.ReportWarn("Some samples are missing. Make sure sample paths are specified correctly. Check level settings for details.");
