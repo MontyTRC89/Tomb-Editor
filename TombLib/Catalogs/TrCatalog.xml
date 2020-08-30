@@ -2,7 +2,7 @@
 <xml>
   <game id="TR1">
     <limits>
-	  <limit name="TexPages" value="32" />
+	  <limit name="TexPages" value="16" />
 	  <limit name="TexInfos" value="1800" />
 	  <limit name="SoundBitsPerSample" value="8" />
 	  <limit name="SoundSampleRate" value="22050" />
