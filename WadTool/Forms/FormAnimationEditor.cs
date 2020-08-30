@@ -1573,7 +1573,8 @@ namespace WadTool
             {
                 var acEditor = new FormAnimCommandsEditor(_editor, _editor.CurrentAnim);
                 acEditor.Show(this);
-                acEditor.SelectCommand(cmd);
+                if (cmd != null)
+                    acEditor.SelectCommand(cmd);
             }
             else
             {
