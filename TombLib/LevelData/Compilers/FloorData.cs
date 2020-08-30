@@ -359,9 +359,17 @@ namespace TombLib.LevelData.Compilers
                 outFloorData.Add(0x15);
             }
 
-            // Triggers
+            // Collect all valid triggers
             var triggers = block.Triggers.Where(t => NgParameterInfo.TriggerIsValid(_level.Settings, t)).ToList();
-            if (triggers.Count > 0)
+
+            // Filter out singular key/switch triggers, as they are technically invalid in engine
+            if (triggers.Count == 1 && (triggers[0].TriggerType == TriggerType.Key || 
+                                        triggers[0].TriggerType == TriggerType.Switch))
+            {
+                _progressReporter.ReportWarn("Key or switch trigger in room " + room + " at sector (" + pos.X + "," + pos.Y + 
+                                             ") has no additional actions and will be ignored.");
+            }
+            else if (triggers.Count > 0)
             {
                 if (triggers.Count > 1) TriggerInstance.SortTriggerList(ref triggers);
                 var setupTrigger = triggers[0];
