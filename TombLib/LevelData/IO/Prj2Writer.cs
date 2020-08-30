@@ -484,7 +484,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.SpriteID);
                         }
                     else if (o is FlybyCameraInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectFlyBy, () =>
+                        chunkIO.WriteChunk(Prj2Chunks.ObjectFlyBy, () =>
                         {
                             var instance = (FlybyCameraInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -492,7 +492,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.RotationY);
                             chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write(instance.Roll);
-                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                            LEB128.Write(chunkIO.Raw, ((long?)instance.ScriptId ?? -1));
                             chunkIO.Raw.Write(instance.Speed);
                             chunkIO.Raw.Write(instance.Fov);
                             LEB128.Write(chunkIO.Raw, instance.Flags);
@@ -510,14 +510,13 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Strength);
                         }
                     else if (o is SoundSourceInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSourceFinal, LEB128.MaximumSize1Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, LEB128.MaximumSize1Byte))
                         {
                             var instance = (SoundSourceInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.Write(instance.SoundId);
                             chunkIO.Raw.Write((int)instance.PlayMode);
-                            LEB128.Write(chunkIO.Raw, -1);
                         }
                     else if (o is LightInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight4, LEB128.MaximumSize2Byte))

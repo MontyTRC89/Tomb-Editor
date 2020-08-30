@@ -1110,7 +1110,7 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectSoundSource  ||
+                else if (id3 == Prj2Chunks.ObjectSoundSource1 ||
                          id3 == Prj2Chunks.ObjectSoundSource2 ||
                          id3 == Prj2Chunks.ObjectSoundSource3 ||
                          id3 == Prj2Chunks.ObjectSoundSource4 ||
@@ -1154,6 +1154,15 @@ namespace TombLib.LevelData.IO
                             instance.EmbeddedSoundInfo = embeddedSoundInfoWad.FixedSoundInfosObsolete[new WadFixedSoundInfoId((uint)soundInfoId)].SoundInfo;
                     }
 
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectSoundSource)
+                {
+                    var instance = new SoundSourceInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SoundId  = chunkIO.Raw.ReadInt32();
+                    instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
