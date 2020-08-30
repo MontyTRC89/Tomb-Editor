@@ -1008,7 +1008,7 @@ namespace TombLib.LevelData.Compilers
 
                 // FIXME: For now sun type is blocked for TR3 because normal format is yet to be figured out
                 // Change to TRVersion.Game.TR3 when fixed.
-                if (_level.Settings.GameVersion < TRVersion.Game.TR4 && light.Type == LightType.Sun)
+                if (_level.Settings.GameVersion < TRVersion.Game.TR3 && light.Type == LightType.Sun)
                     continue;
 
                 if (!light.Enabled || !light.IsDynamicallyUsed)
