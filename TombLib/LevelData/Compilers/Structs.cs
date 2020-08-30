@@ -507,19 +507,21 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(light.Color.Red);
                     writer.Write(light.Color.Green);
                     writer.Write(light.Color.Blue);
-                    writer.Write(light.LightType);
 
-                    if (light.LightType == 0) // FIXME: TR3 sun type - UNKNOWN NORMALS FORMAT!
+                    // Sun type is 1 and point light is 0 in TR3
+                    writer.Write((byte)(light.LightType == 0 ? 1 : 0));
+
+                    if (light.LightType == 0) // TR3 sun type
                     {
-                        writer.Write((ushort)(light.X + (light.DirectionX * 1024.0f)));
-                        writer.Write((ushort)(light.Y + (light.DirectionY * 1024.0f)));
-                        writer.Write((ushort)(light.Z + (light.DirectionZ * 1024.0f)));
+                        writer.Write((ushort)(light.DirectionX * 1024.0f));
+                        writer.Write((ushort)(light.DirectionY * 1024.0f));
+                        writer.Write((ushort)(light.DirectionZ * 1024.0f));
                         writer.Write((ushort)0x0000); // Padding
                     }
                     else
                     {
                         writer.Write((uint)light.Intensity);
-                        writer.Write((uint)light.Out / 2);
+                        writer.Write((uint)light.Out);
                     }
                 }
             }
