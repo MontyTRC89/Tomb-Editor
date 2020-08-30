@@ -635,7 +635,7 @@
   <game id="TR2">
     <limits>
 	  <limit name="TexPages" value="32" />
-	  <limit name="TexInfos" value="4000" />
+	  <limit name="TexInfos" value="2000" />
 	  <limit name="SoundBitsPerSample" value="8" />
 	  <limit name="SoundSampleRate" value="11025" />
 	  <limit name="SoundSampleSize" value="256" />
