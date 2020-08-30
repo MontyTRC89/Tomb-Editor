@@ -864,7 +864,7 @@ namespace TombEditor
 
             AddCommand("Search", "Search...", CommandType.Edit, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms["FormSearch"];
+                var existingWindow = Application.OpenForms[nameof(FormSearch)];
                 if (existingWindow == null)
                 {
                     var searchForm = new FormSearch(args.Editor);
@@ -876,7 +876,7 @@ namespace TombEditor
 
             AddCommand("SearchAndReplaceObjects", "Search and replace objects...", CommandType.Edit, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms["FormReplaceObject"];
+                var existingWindow = Application.OpenForms[nameof(FormReplaceObject)];
                 if (existingWindow == null)
                 {
                     var searchAndReplaceForm = new FormReplaceObject(args.Editor);
@@ -1061,13 +1061,14 @@ namespace TombEditor
 
             AddCommand("ApplyRoomProperties", "Apply room properties...", CommandType.Rooms, delegate (CommandArgs args)
             {
-                using (var form = new FormRoomProperties(args.Editor))
+                var existingWindow = Application.OpenForms[nameof(FormRoomProperties)];
+                if (existingWindow == null)
                 {
-                    if (form.ShowDialog(args.Window) == DialogResult.OK)
-                        args.Editor.SendMessage("Chosen room attributes were applied to selected rooms.", PopupType.Info);
-                    else
-                        args.Editor.SendMessage("No rooms or properties were selected. Nothing was changed.", PopupType.Warning);
+                    var propForm = new FormRoomProperties(args.Editor);
+                    propForm.Show(args.Window);
                 }
+                else
+                    existingWindow.Focus();
             });
 
             AddCommand("AddWad", "Add wad...", CommandType.Objects, delegate (CommandArgs args)
@@ -1272,7 +1273,7 @@ namespace TombEditor
 
             AddCommand("FindUntextured", "Find untextured faces...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms["FormFindUntextured"];
+                var existingWindow = Application.OpenForms[nameof(FormFindUntextured)];
                 if (existingWindow == null)
                 {
                     var findUntexturedForm = new FormFindUntextured(args.Editor);
@@ -1312,7 +1313,7 @@ namespace TombEditor
 
             AddCommand("EditAnimationRanges", "Edit animation ranges...", CommandType.Textures, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms["FormAnimatedTextures"];
+                var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
                 if (existingWindow == null)
                 {
                     FormAnimatedTextures form = new FormAnimatedTextures(args.Editor);

@@ -50,28 +50,28 @@ namespace TombLib.Forms
         // Generic function to call popup from any window
         public static void Show(PopUpInfo popup, IWin32Window owner, Control parent, string message, PopupType type)
         {
-            var form = owner.Handle == IntPtr.Zero ? null : Control.FromHandle(owner.Handle) as Form;
-            if (form == null) return;
-
-            if (ActiveForm == form)
+            if (owner != null)
             {
-                switch (type)
-                {
-                    case PopupType.None:
-                        popup.ShowSimple(parent, message);
-                        break;
-                    case PopupType.Info:
-                        popup.ShowInfo(parent, message);
-                        break;
-                    case PopupType.Warning:
-                        popup.ShowWarning(parent, message);
-                        break;
-                    case PopupType.Error:
-                        popup.ShowError(parent, message);
-                        break;
-                }
+                var form = owner.Handle == IntPtr.Zero ? null : Control.FromHandle(owner.Handle) as Form;
+                if (form == null || ActiveForm != form) return;
             }
-        }
+
+            switch (type)
+            {
+                case PopupType.None:
+                    popup.ShowSimple(parent, message);
+                    break;
+                case PopupType.Info:
+                    popup.ShowInfo(parent, message);
+                    break;
+                case PopupType.Warning:
+                    popup.ShowWarning(parent, message);
+                    break;
+                case PopupType.Error:
+                    popup.ShowError(parent, message);
+                    break;
+            }
+    }
 
         // Common message helpers
         public void ShowInfo(Control parent, string message, string title = "Information")

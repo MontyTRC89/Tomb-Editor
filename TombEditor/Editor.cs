@@ -710,12 +710,13 @@ namespace TombEditor
         // Send message
         public class MessageEvent : IEditorEvent
         {
+            public bool ForceInMainWindow { get; internal set; }
             public string Message { get; internal set; }
             public PopupType Type { get; internal set; }
         }
-        public void SendMessage(string message = "", PopupType type = PopupType.None)
+        public void SendMessage(string message = "", PopupType type = PopupType.None, bool force = false)
         {
-            RaiseEvent(new MessageEvent { Message = message, Type = type });
+            RaiseEvent(new MessageEvent { Message = message, Type = type, ForceInMainWindow = force });
         }
 
         // Init / quit editor events

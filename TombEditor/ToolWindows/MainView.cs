@@ -184,7 +184,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
-                PopUpInfo.Show(popup, FindForm(), this, msg.Message, msg.Type);
+                PopUpInfo.Show(popup, msg.ForceInMainWindow ? null : FindForm(), this, msg.Message, msg.Type);
             }
 
             if (obj is Editor.UndoStackChangedEvent)

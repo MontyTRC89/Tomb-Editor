@@ -6,6 +6,7 @@ using System.Linq;
 using TombLib.Utils;
 using System.ComponentModel;
 using TombLib.LevelData;
+using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
@@ -25,6 +26,7 @@ namespace TombEditor.Forms
         {
             InitializeComponent();
             _editor = editor;
+            _editor.EditorEventRaised += EditorEventRaised;
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Configuration);
@@ -40,14 +42,25 @@ namespace TombEditor.Forms
                      _rows.Add(new RoomPropertyRow() { Replace = false, Name = n.Key, DisplayName = n.Value });
 
             dgvPropertyList.DataSource = new BindingList<RoomPropertyRow>(_rows);
+            UpdateUI();
         }
+
+        private void EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is Editor.SelectedRoomChangedEvent ||
+                obj is Editor.SelectedRoomsChangedEvent ||
+                obj is Editor.RoomListChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                UpdateUI();
+        }
+
+        private void UpdateUI() => butOk.Enabled = (_rows.Any(r => r.Replace) && _editor.SelectedRooms.Count > 1);
 
         private void butOk_Click(object sender, EventArgs e)
         {
-            if (_rows.All(r => !r.Replace) || _editor.SelectedRooms.Count <= 1)
+            if (_rows.All(r => !r.Replace))
             {
-                DialogResult = DialogResult.Cancel;
-                Close();
+                _editor.SendMessage("No properties were selected. Nothing was changed.", PopupType.Warning, true);
                 return;
             }
 
@@ -70,31 +83,26 @@ namespace TombEditor.Forms
                     foreach (var prop in propInfo)
                     {
                         var attribValue = prop.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault();
-                        if (attribValue is DisplayNameAttribute)
+                        if (attribValue is DisplayNameAttribute &&
+                          ((attribValue as DisplayNameAttribute).DisplayName == row.DisplayName))
                         {
-                            var displayName = (attribValue as DisplayNameAttribute).DisplayName;
-                            if (row.DisplayName == displayName)
-                            {
-                                prop.SetValue(r.Properties, prop.GetValue(newProp));
+                            prop.SetValue(r.Properties, prop.GetValue(newProp));
 
-                                // HACK: We need to rebuild lighting for rooms with changed AmbientLight property.
-                                if (prop.Name == "AmbientLight")
-                                    r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                            }
+                            // HACK: We need to rebuild lighting for rooms with changed AmbientLight property.
+                            if (prop.Name == nameof(r.Properties.AmbientLight))
+                                r.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                         }
                     }
                 }
                 _editor.RoomPropertiesChange(r);
 			}
-			
+
             _editor.UndoManager.Push(undoList);
-            DialogResult = DialogResult.OK;
+            _editor.SendMessage("Chosen room attributes were applied to selected rooms.", PopupType.Info, true);
         }
 
-        private void butCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
+        private void dgvPropertyList_Click(object sender, EventArgs e) => UpdateUI();
+        private void butCancel_Click(object sender, EventArgs e) => Close();
+
     }
 }
