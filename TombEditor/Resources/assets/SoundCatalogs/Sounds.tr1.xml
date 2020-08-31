@@ -4,7 +4,7 @@
     <WadSoundInfo>
       <Id>0</Id>
       <Name>LARA_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>40</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -32,14 +32,14 @@
     <WadSoundInfo>
       <Id>1</Id>
       <Name>LARA_CLIMB2</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>clim_up2.wav</FileName>
@@ -51,14 +51,14 @@
     <WadSoundInfo>
       <Id>2</Id>
       <Name>LARA_NO</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lara_no.wav</FileName>
@@ -70,7 +70,7 @@
     <WadSoundInfo>
       <Id>3</Id>
       <Name>LARA_SLIPPING</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -89,14 +89,14 @@
     <WadSoundInfo>
       <Id>4</Id>
       <Name>LARA_LAND</Name>
-      <Volume>50</Volume>
+      <Volume>40</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>landing.wav</FileName>
@@ -108,14 +108,14 @@
     <WadSoundInfo>
       <Id>5</Id>
       <Name>LARA_CLIMB1</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>clim_up1.wav</FileName>
@@ -127,14 +127,14 @@
     <WadSoundInfo>
       <Id>6</Id>
       <Name>LARA_DRAW</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>hols_out.wav</FileName>
@@ -146,14 +146,14 @@
     <WadSoundInfo>
       <Id>7</Id>
       <Name>LARA_HOLSTER</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>hols_in.wav</FileName>
@@ -165,7 +165,7 @@
     <WadSoundInfo>
       <Id>8</Id>
       <Name>LARA_FIRE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -184,14 +184,14 @@
     <WadSoundInfo>
       <Id>9</Id>
       <Name>LARA_RELOAD</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>reload.wav</FileName>
@@ -203,14 +203,14 @@
     <WadSoundInfo>
       <Id>10</Id>
       <Name>LARA_RICOCHET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>10</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rico_01.wav</FileName>
@@ -451,9 +451,9 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>clim_up3.wav</FileName>
@@ -465,13 +465,13 @@
     <WadSoundInfo>
       <Id>27</Id>
       <Name>LARA_BODYSL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -487,7 +487,7 @@
     <WadSoundInfo>
       <Id>28</Id>
       <Name>LARA_SHIMMY2</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -509,12 +509,12 @@
     <WadSoundInfo>
       <Id>29</Id>
       <Name>LARA_JUMP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>50</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -528,7 +528,7 @@
     <WadSoundInfo>
       <Id>30</Id>
       <Name>LARA_FALL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -547,14 +547,14 @@
     <WadSoundInfo>
       <Id>31</Id>
       <Name>LARA_INJURY</Name>
-      <Volume>50</Volume>
+      <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>40</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>takehit1.wav</FileName>
@@ -569,7 +569,7 @@
     <WadSoundInfo>
       <Id>32</Id>
       <Name>LARA_ROLL</Name>
-      <Volume>50</Volume>
+      <Volume>70</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -588,7 +588,7 @@
     <WadSoundInfo>
       <Id>33</Id>
       <Name>LARA_SPLASH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -607,7 +607,7 @@
     <WadSoundInfo>
       <Id>34</Id>
       <Name>LARA_GETOUT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -626,7 +626,7 @@
     <WadSoundInfo>
       <Id>35</Id>
       <Name>LARA_SWIM</Name>
-      <Volume>50</Volume>
+      <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -664,7 +664,7 @@
     <WadSoundInfo>
       <Id>37</Id>
       <Name>LARA_BUBBLES</Name>
-      <Volume>50</Volume>
+      <Volume>60</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>70</Chance>
       <PitchFactor>0</PitchFactor>
@@ -683,7 +683,7 @@
     <WadSoundInfo>
       <Id>38</Id>
       <Name>SWITCH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -702,7 +702,7 @@
     <WadSoundInfo>
       <Id>39</Id>
       <Name>LARA_KEY</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -721,7 +721,7 @@
     <WadSoundInfo>
       <Id>40</Id>
       <Name>LARA_OBJECT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -740,7 +740,7 @@
     <WadSoundInfo>
       <Id>41</Id>
       <Name>LARA_GENERAL_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -759,7 +759,7 @@
     <WadSoundInfo>
       <Id>42</Id>
       <Name>LARA_KNEES_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -778,7 +778,7 @@
     <WadSoundInfo>
       <Id>43</Id>
       <Name>LARA_UZI_FIRE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -797,7 +797,7 @@
     <WadSoundInfo>
       <Id>44</Id>
       <Name>LARA_MAGNUMS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -816,7 +816,7 @@
     <WadSoundInfo>
       <Id>45</Id>
       <Name>LARA_SHOTGUN</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -835,14 +835,14 @@
     <WadSoundInfo>
       <Id>46</Id>
       <Name>LARA_BLOCK_PUSH1</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>OneShotRewound</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>p&amp;p01.wav</FileName>
@@ -854,14 +854,14 @@
     <WadSoundInfo>
       <Id>47</Id>
       <Name>LARA_BLOCK_PUSH2</Name>
-      <Volume>50</Volume>
+      <Volume>80</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>50</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>OneShotRewound</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>p&amp;p02.wav</FileName>
@@ -879,7 +879,7 @@
     <WadSoundInfo>
       <Id>48</Id>
       <Name>CLICK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -898,7 +898,7 @@
     <WadSoundInfo>
       <Id>50</Id>
       <Name>LARA_BULLETHIT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>50</Chance>
       <PitchFactor>0</PitchFactor>
@@ -917,7 +917,7 @@
     <WadSoundInfo>
       <Id>51</Id>
       <Name>LARA_BLKPULL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -936,7 +936,7 @@
     <WadSoundInfo>
       <Id>52</Id>
       <Name>LARA_FLOATING</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -955,7 +955,7 @@
     <WadSoundInfo>
       <Id>53</Id>
       <Name>LARA_FALLDETH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -974,7 +974,7 @@
     <WadSoundInfo>
       <Id>54</Id>
       <Name>LARA_GRABHAND</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -993,7 +993,7 @@
     <WadSoundInfo>
       <Id>55</Id>
       <Name>LARA_GRABBODY</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1012,7 +1012,7 @@
     <WadSoundInfo>
       <Id>56</Id>
       <Name>LARA_GRABFEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1031,7 +1031,7 @@
     <WadSoundInfo>
       <Id>57</Id>
       <Name>LARA_SWITCHUP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1088,7 +1088,7 @@
     <WadSoundInfo>
       <Id>60</Id>
       <Name>UNDERWATER</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1126,14 +1126,14 @@
     <WadSoundInfo>
       <Id>63</Id>
       <Name>BLOCK_SOUND</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>OneShotRewound</LoopBehaviour>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>push_blk.wav</FileName>
@@ -1145,7 +1145,7 @@
     <WadSoundInfo>
       <Id>64</Id>
       <Name>DOOR</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1164,7 +1164,7 @@
     <WadSoundInfo>
       <Id>65</Id>
       <Name>PENDULUM_BLADES</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1183,7 +1183,7 @@
     <WadSoundInfo>
       <Id>66</Id>
       <Name>ROCK_FALL_CRUMBLE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1202,7 +1202,7 @@
     <WadSoundInfo>
       <Id>67</Id>
       <Name>ROCK_FALL_FALL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1221,7 +1221,7 @@
     <WadSoundInfo>
       <Id>68</Id>
       <Name>ROCK_FALL_LAND</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1246,7 +1246,7 @@
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -1259,12 +1259,12 @@
     <WadSoundInfo>
       <Id>70</Id>
       <Name>T-REX_FOOTSTOMP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -1376,7 +1376,7 @@
     <WadSoundInfo>
       <Id>76</Id>
       <Name>MUMMY_GROWL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1800,7 +1800,7 @@
     <WadSoundInfo>
       <Id>98</Id>
       <Name>THUNDER</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1819,7 +1819,7 @@
     <WadSoundInfo>
       <Id>99</Id>
       <Name>EXPLOSION_TNT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1923,7 +1923,7 @@
     <WadSoundInfo>
       <Id>104</Id>
       <Name>EXPLOSION</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1942,7 +1942,7 @@
     <WadSoundInfo>
       <Id>108</Id>
       <Name>MENU_ROTATE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1961,7 +1961,7 @@
     <WadSoundInfo>
       <Id>109</Id>
       <Name>MENU_CHOOSE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1980,7 +1980,7 @@
     <WadSoundInfo>
       <Id>110</Id>
       <Name>MENU_GAMEBOY</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1999,7 +1999,7 @@
     <WadSoundInfo>
       <Id>111</Id>
       <Name>MENU_SPININ</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2018,7 +2018,7 @@
     <WadSoundInfo>
       <Id>112</Id>
       <Name>MENU_SPINOUT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2037,7 +2037,7 @@
     <WadSoundInfo>
       <Id>113</Id>
       <Name>MENU_COMPASS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2056,7 +2056,7 @@
     <WadSoundInfo>
       <Id>114</Id>
       <Name>MENU_GUNS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2075,7 +2075,7 @@
     <WadSoundInfo>
       <Id>115</Id>
       <Name>MENU_PASSPORT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2094,7 +2094,7 @@
     <WadSoundInfo>
       <Id>116</Id>
       <Name>MENU_MEDI</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2170,7 +2170,7 @@
     <WadSoundInfo>
       <Id>120</Id>
       <Name>ATLANTEAN_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2192,7 +2192,7 @@
     <WadSoundInfo>
       <Id>121</Id>
       <Name>ATLANTEAN_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2211,7 +2211,7 @@
     <WadSoundInfo>
       <Id>122</Id>
       <Name>ATLANTEAN_JUMP_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2230,7 +2230,7 @@
     <WadSoundInfo>
       <Id>123</Id>
       <Name>ATLANTEAN_NEEDLE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2249,7 +2249,7 @@
     <WadSoundInfo>
       <Id>124</Id>
       <Name>ATLANTEAN_BALL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2268,7 +2268,7 @@
     <WadSoundInfo>
       <Id>125</Id>
       <Name>ATLANTEAN_WINGS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2287,7 +2287,7 @@
     <WadSoundInfo>
       <Id>126</Id>
       <Name>ATLANTEAN_WING_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2315,7 +2315,7 @@
     <WadSoundInfo>
       <Id>127</Id>
       <Name>SLAMDOOR_CLOSE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2334,7 +2334,7 @@
     <WadSoundInfo>
       <Id>128</Id>
       <Name>SLAMDOOR_OPEN</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2486,7 +2486,7 @@
     <WadSoundInfo>
       <Id>136</Id>
       <Name>TORSO_HIT_GROUND</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2505,7 +2505,7 @@
     <WadSoundInfo>
       <Id>137</Id>
       <Name>TORSO_ATTACK1</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2524,7 +2524,7 @@
     <WadSoundInfo>
       <Id>138</Id>
       <Name>TORSO_ATTACK2</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2543,12 +2543,12 @@
     <WadSoundInfo>
       <Id>139</Id>
       <Name>TORSO_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -2562,7 +2562,7 @@
     <WadSoundInfo>
       <Id>140</Id>
       <Name>TORSO_ARM_SWING</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2581,7 +2581,7 @@
     <WadSoundInfo>
       <Id>141</Id>
       <Name>TORSO_MOVE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2600,13 +2600,13 @@
     <WadSoundInfo>
       <Id>142</Id>
       <Name>TORSO_HIT</Name>
-      <Volume>50</Volume>
+      <Volume>97</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -2619,7 +2619,7 @@
     <WadSoundInfo>
       <Id>143</Id>
       <Name>CENTAUR_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2647,7 +2647,7 @@
     <WadSoundInfo>
       <Id>144</Id>
       <Name>CENTAUR_ROAR</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2685,7 +2685,7 @@
     <WadSoundInfo>
       <Id>146</Id>
       <Name>LARA_DEATH3</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2704,7 +2704,7 @@
     <WadSoundInfo>
       <Id>147</Id>
       <Name>ROLLING_BALL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2723,7 +2723,7 @@
     <WadSoundInfo>
       <Id>148</Id>
       <Name>LAVA_LOOP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2742,14 +2742,14 @@
     <WadSoundInfo>
       <Id>149</Id>
       <Name>LAVA_FOUNTAIN</Name>
-      <Volume>50</Volume>
+      <Volume>30</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lava_fountain.wav</FileName>
@@ -2761,7 +2761,7 @@
     <WadSoundInfo>
       <Id>150</Id>
       <Name>FIRE</Name>
-      <Volume>50</Volume>
+      <Volume>70</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2780,13 +2780,13 @@
     <WadSoundInfo>
       <Id>151</Id>
       <Name>DARTS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -2799,7 +2799,7 @@
     <WadSoundInfo>
       <Id>152</Id>
       <Name>METAL_DOOR_CLOSE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2818,7 +2818,7 @@
     <WadSoundInfo>
       <Id>153</Id>
       <Name>METAL_DOOR_OPEN</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2837,7 +2837,7 @@
     <WadSoundInfo>
       <Id>154</Id>
       <Name>ALTAR_LOOP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2856,14 +2856,14 @@
     <WadSoundInfo>
       <Id>155</Id>
       <Name>LOW_HUM</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>low_hum.wav</FileName>
@@ -2875,7 +2875,7 @@
     <WadSoundInfo>
       <Id>156</Id>
       <Name>COWBOY_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2894,7 +2894,7 @@
     <WadSoundInfo>
       <Id>157</Id>
       <Name>BLACK_GOON_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2913,7 +2913,7 @@
     <WadSoundInfo>
       <Id>158</Id>
       <Name>LARSON_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2932,7 +2932,7 @@
     <WadSoundInfo>
       <Id>159</Id>
       <Name>PIERRE_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2951,7 +2951,7 @@
     <WadSoundInfo>
       <Id>160</Id>
       <Name>NATLA_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2970,7 +2970,7 @@
     <WadSoundInfo>
       <Id>161</Id>
       <Name>TRAPDOOR_OPEN</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2989,7 +2989,7 @@
     <WadSoundInfo>
       <Id>162</Id>
       <Name>TRAPDOOR_CLOSE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3008,7 +3008,7 @@
     <WadSoundInfo>
       <Id>163</Id>
       <Name>ATLANTEAN_EGG</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3027,7 +3027,7 @@
     <WadSoundInfo>
       <Id>164</Id>
       <Name>ATLANTEAN_EGG_HATCH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3046,7 +3046,7 @@
     <WadSoundInfo>
       <Id>165</Id>
       <Name>DRILL_ENGINE_START</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3065,7 +3065,7 @@
     <WadSoundInfo>
       <Id>166</Id>
       <Name>DRILL_ENGINE_LOOP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3084,7 +3084,7 @@
     <WadSoundInfo>
       <Id>167</Id>
       <Name>CONVEYOR_BELT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3103,7 +3103,7 @@
     <WadSoundInfo>
       <Id>168</Id>
       <Name>HUT_LOWERED</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3122,7 +3122,7 @@
     <WadSoundInfo>
       <Id>169</Id>
       <Name>HUT_HIT_GROUND</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3141,7 +3141,7 @@
     <WadSoundInfo>
       <Id>170</Id>
       <Name>TNT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3160,7 +3160,7 @@
     <WadSoundInfo>
       <Id>171</Id>
       <Name>ATLANTEAN_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3179,7 +3179,7 @@
     <WadSoundInfo>
       <Id>172</Id>
       <Name>BRIDGE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -3198,7 +3198,7 @@
     <WadSoundInfo>
       <Id>173</Id>
       <Name>SECRET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
