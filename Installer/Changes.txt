@@ -4,8 +4,8 @@ Tomb Editor:
  * Added TR1 support.
  * Added room sprites support for TR1-2.
  * Added fog bulb support for TR5.
- * Added 8-bit texture support for TR2/TR3.
- * Added move timer customization for TR1-TR2 cameras.
+ * Added 8-bit texture support for TR2-3.
+ * Added move timer customization for TR1-2 cameras.
  * Added ability to copy and paste triggers.
  * Added "Export as animcommand" button to trigger window.
  * Added ability to delete objects from search window.
@@ -25,7 +25,7 @@ Tomb Editor:
  * Show warning if orphaned switch/key triggers were found in level.
  * Optimize level compilation speed.
  * Fix incorrect animation transitions in TR2-3.
- * Fix light radius calculation in TR2/TR3.
+ * Fix light radius calculation in TR2-3.
  * Fix drag-n-drop in find & replace objects dialog.
  * Fix incorrect TR1-3 item names in find & replace objects dialog.
  * Fix exception when Lara skin mesh count doesn't correspond to Lara mesh count.

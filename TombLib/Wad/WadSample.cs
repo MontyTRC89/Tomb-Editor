@@ -421,7 +421,9 @@ namespace TombLib.Wad
                 loadedSamples.Add(i, currentSample);
             }
 
-            if (missing)
+            if (samples.Count == 0)
+                reporter?.ReportWarn("All samples are missing. This may cause crashes. Make sure you have specified correct sample path.");
+            else if (missing)
                 reporter?.ReportWarn("Some samples are missing. Make sure sample paths are specified correctly. Check level settings for details.");
 
             samplesMissing = missing;
