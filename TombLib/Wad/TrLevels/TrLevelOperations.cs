@@ -530,7 +530,7 @@ namespace TombLib.Wad.TrLevels
                 if (animation.KeyFrames.Count == 0)
                     animation.EndFrame = 0;
 
-                // HACK: this fixes some invalid NextAnimations values
+                // HACK: this fixes some invalid NextAnimation values
                 animation.NextAnimation %= (ushort)newMoveable.Animations.Count;
 
                 newMoveable.Animations[i] = animation;
@@ -540,9 +540,12 @@ namespace TombLib.Wad.TrLevels
             {
                 var animation = newMoveable.Animations[i];
 
-                // HACK: this fixes some invalid NextFrame values.
                 if (frameBases[newMoveable.Animations[animation.NextAnimation]] != 0)
-                    animation.NextFrame %= frameBases[newMoveable.Animations[animation.NextAnimation]];
+                {
+                    animation.NextFrame -= frameBases[newMoveable.Animations[animation.NextAnimation]];
+                    if (animation.NextFrame > newMoveable.Animations[animation.NextAnimation].EndFrame)
+                        animation.NextFrame = 0;
+                }
 
                 foreach (var stateChange in animation.StateChanges)
                 {
@@ -551,7 +554,7 @@ namespace TombLib.Wad.TrLevels
                         WadAnimDispatch animDispatch = stateChange.Dispatches[J];
                         if (frameBases[newMoveable.Animations[animDispatch.NextAnimation]] != 0)
                         {
-                            ushort newFrame = (ushort)(animDispatch.NextFrame % frameBases[newMoveable.Animations[animDispatch.NextAnimation]]);
+                            ushort newFrame = (ushort)(animDispatch.NextFrame - frameBases[newMoveable.Animations[animDispatch.NextAnimation]]);
 
                             // In some cases dispatches have invalid NextFrame.
                             // From tests it seems that's ok to delete the dispatch or put the NextFrame equal to zero.
