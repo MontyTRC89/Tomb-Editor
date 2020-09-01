@@ -1316,7 +1316,7 @@ namespace TombEditor
                 var existingWindow = Application.OpenForms[nameof(FormAnimatedTextures)];
                 if (existingWindow == null)
                 {
-                    FormAnimatedTextures form = new FormAnimatedTextures(args.Editor);
+                    var form = new FormAnimatedTextures(args.Editor);
                     form.Show(args.Window);
                 }
                 else
@@ -1419,13 +1419,13 @@ namespace TombEditor
 
             AddCommand("EditLevelSettings", "Level settings...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (FormLevelSettings form = new FormLevelSettings(args.Editor))
+                using (var form = new FormLevelSettings(args.Editor))
                     form.ShowDialog(args.Window);
             });
 
             AddCommand("EditOptions", "Editor options...", CommandType.Settings, delegate (CommandArgs args)
             {
-                using (FormOptions form = new FormOptions(args.Editor))
+                using (var form = new FormOptions(args.Editor))
                     form.ShowDialog(args.Window);
             });
 
