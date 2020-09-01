@@ -49,6 +49,7 @@
             // 
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOk.Checked = false;
+            this.btOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btOk.Location = new System.Drawing.Point(73, 194);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(80, 23);
@@ -134,10 +135,8 @@
             // 
             // FormAnimationFixer
             // 
-            this.AcceptButton = this.btOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btCancel;
             this.ClientSize = new System.Drawing.Size(244, 222);
             this.Controls.Add(this.cbSchNextFrame);
             this.Controls.Add(this.cbSchNextAnim);

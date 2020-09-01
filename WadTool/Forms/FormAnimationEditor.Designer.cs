@@ -334,8 +334,8 @@ namespace WadTool
             this.mirrorAnimationToolStripMenuItem,
             this.reverseAnimationToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.fixAllAnimationsToolStripMenuItem,
             this.fixCurrentAnimationToolStripMenuItem,
+            this.fixAllAnimationsToolStripMenuItem,
             this.findReplaceAnimcommandsToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";

@@ -13,14 +13,16 @@ namespace WadTool
     {
         private readonly AnimationEditor _editor;
         private List<AnimationNode> _animations;
-        private BindingList<WadAnimCommand> _animCommands = new BindingList<WadAnimCommand>();
-        private List<WadAnimCommand> _backupCommands;
+
+        public string ChangedAnimations { get; private set; }
 
         public FormAnimationFixer(AnimationEditor editor, List<AnimationNode> animations)
         {
             InitializeComponent();
             _editor = editor;
             _animations = animations;
+
+            ChangedAnimations = string.Empty;
 
             // Set window property handlers
             Configuration.LoadWindowProperties(this, _editor.Tool.Configuration);
@@ -88,13 +90,22 @@ namespace WadTool
                     }
                 }
 
+            if (anyChange)
+            {
+                if (string.IsNullOrEmpty(ChangedAnimations))
+                    ChangedAnimations = animation.Index.ToString();
+                else
+                    ChangedAnimations += ", " + animation.Index.ToString();
+            }
+            
             return anyChange;
         }
 
         private void btOk_Click(object sender, EventArgs e)
         {
             if (_animations != null && _animations.Count > 0 &&
-                DarkMessageBox.Show(this, "Are you sure you want to proceed? This may break compatibility with legacy engines!", "Warning", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                DarkMessageBox.Show(this, "Make sure you know what you are doing.\nThis action may break compatibility with legacy engines!", 
+                                    "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.OK)
             {
                 var undoList = new List<UndoRedoInstance>();
 
@@ -114,7 +125,7 @@ namespace WadTool
                     DialogResult = DialogResult.OK;
                 }
                 else
-                    DialogResult = DialogResult.Cancel;
+                    DialogResult = DialogResult.None;
             }
             else
                 DialogResult = DialogResult.Cancel;
