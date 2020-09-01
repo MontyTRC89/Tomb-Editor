@@ -399,8 +399,23 @@ namespace TombLib.LevelData.Compilers
                                         vertex2Index = GetOrAddVertex(room, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
                                     
                                         var result = _textureInfoManager.AddTexture(texture, true, true);
-                                        roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
-                                                        doubleSided, 0));
+
+                                        switch (result.ConvertToQuad)
+                                        {
+                                            case 0:
+                                                roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
+                                                                doubleSided, 0));
+                                                break;
+                                            case 1:
+                                                roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex0Index },
+                                                                doubleSided, 0));
+                                                break;
+                                            case 2: // broken!
+                                                roomQuads.Add(result.CreateFace4(new ushort[] { vertex2Index, vertex0Index, vertex1Index, vertex2Index },
+                                                                doubleSided, 0));
+                                                break;
+                                        }
+
                                         if (copyFace)
                                         {
                                             texture.Mirror();

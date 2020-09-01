@@ -607,6 +607,12 @@ namespace TombLib.LevelData.Compilers.Util
             // As result, CreateFace3/4 should return a face with changed index order.
             public byte Rotation;
 
+            // If not 0, this value indicates that if used on triangle, it must be converted to
+            // fake quad. It's needed to fake UVRotate application to triangular areas. Value 1 or 2
+            // specify the orientation of degenerate quad which is needed to be different for various
+            // renderer cases.
+            public int ConvertToQuad;
+
             public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
             {
                 if (indices.Length != 3)
@@ -757,13 +763,22 @@ namespace TombLib.LevelData.Compilers.Util
             // Only try to remap animated textures if fast mode is disabled
             bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
 
+            // Quad reference texture is needed for UVRotate animations scanning, which are existing only since TR4
+            var uvRotateSupported = _level.Settings.GameVersion > TRVersion.Game.TR3;
+            var refQuad = uvRotateSupported ? texture.RestoreQuadWithRotation() : texture;
+
             // Try to compare incoming texture with existing anims and return animation frame
             if (_actualAnimTextures.Count > 0)
                 foreach (var actualTex in _actualAnimTextures)
                 {
-                    var existing = GetTexInfo(texture, actualTex.CompiledAnimation, isForRoom, isForTriangle, false, true, _animTextureLookupMargin, remapAnimatedTextures);
+                    var asTriangle = actualTex.Origin.IsUvRotate && uvRotateSupported ? false : isForTriangle;
+                    var existing = GetTexInfo((actualTex.Origin.IsUvRotate ? refQuad : texture), actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, _animTextureLookupMargin, remapAnimatedTextures);
                     if (existing.HasValue)
-                        return existing.Value;
+                    {
+                        var quadType = !actualTex.Origin.IsUvRotate ? 0 : (existing.Value.Rotation % 2 != 0 ? 2 : 1);
+                        return (actualTex.Origin.IsUvRotate ? new Result() { ConvertToQuad = quadType, Rotation =  existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex } : existing.Value);
+                    }
+
                 }
 
             // Now try to compare incoming texture with lookup anim seq table
@@ -771,10 +786,13 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var refTex in _referenceAnimTextures)
                 {
                     // If reference set found, generate actual one and immediately return fresh result
-                    if (GetTexInfo(texture, refTex.CompiledAnimation, isForRoom, isForTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
+                    var asTriangle = refTex.Origin.IsUvRotate && uvRotateSupported ? false : isForTriangle;
+                    if (GetTexInfo((refTex.Origin.IsUvRotate ? refQuad : texture), refTex.CompiledAnimation, isForRoom, asTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
                     {
-                        GenerateAnimTexture(refTex, texture, isForRoom, isForTriangle);
-                        return AddTexture(texture, isForRoom, isForTriangle);
+                        GenerateAnimTexture(refTex, refQuad, isForRoom, isForTriangle);
+                        var result = AddTexture(texture, isForRoom, isForTriangle);
+                        var quadType = !refTex.Origin.IsUvRotate ? 0 : (result.Rotation % 2 != 0 ? 2 : 1);
+                        return (refTex.Origin.IsUvRotate ? new Result() { ConvertToQuad = quadType, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex } : result);
                     }
                 }
 
