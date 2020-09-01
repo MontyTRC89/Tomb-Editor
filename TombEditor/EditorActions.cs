@@ -4958,23 +4958,23 @@ namespace TombEditor
             switch (settings.GameVersion)
             {
                 case TRVersion.Game.TR1:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr1.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr1.xml";
                     break;
 
                 case TRVersion.Game.TR2:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr2.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr2.xml";
                     break;
 
                 case TRVersion.Game.TR3:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr3.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr3.xml";
                     break;
 
                 case TRVersion.Game.TR4:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr4.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr4.xml";
                     break;
 
                 case TRVersion.Game.TR5:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr5.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr5.xml";
                     break;
             }
 
