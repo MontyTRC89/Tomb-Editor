@@ -53,11 +53,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     GroundZone2_Normal = int.MaxValue,
                     GroundZone3_Normal = int.MaxValue,
                     GroundZone4_Normal = int.MaxValue,
+                    GroundZone5_Normal = int.MaxValue,
                     FlyZone_Normal = int.MaxValue,
                     GroundZone1_Alternate = int.MaxValue,
                     GroundZone2_Alternate = int.MaxValue,
                     GroundZone3_Alternate = int.MaxValue,
                     GroundZone4_Alternate = int.MaxValue,
+                    GroundZone5_Alternate = int.MaxValue,
                     FlyZone_Alternate = int.MaxValue
                 };
                 _zones.Add(zone);
