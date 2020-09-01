@@ -401,11 +401,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public int GroundZone2_Normal;
         public int GroundZone3_Normal;
         public int GroundZone4_Normal;
+        public int GroundZone5_Normal;
         public int FlyZone_Normal;
         public int GroundZone1_Alternate;
         public int GroundZone2_Alternate;
         public int GroundZone3_Alternate;
         public int GroundZone4_Alternate;
+        public int GroundZone5_Alternate;
         public int FlyZone_Alternate;
     }
 

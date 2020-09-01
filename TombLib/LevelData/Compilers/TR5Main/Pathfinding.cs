@@ -68,6 +68,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             int groundZone2 = 1;
             int groundZone3 = 1;
             int groundZone4 = 1;
+            int groundZone5 = 1;
             int flyZone = 1;
             for (var i = 0; i < _zones.Count; i++)
             {
@@ -123,12 +124,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     groundZone4++;
                 }
 
+                // Von Croy like enemis: they can jump, grab and monkey and long jump
+                if (_zones[i].GroundZone5_Normal == int.MaxValue)
+                {
+                    _zones[i].GroundZone5_Normal = groundZone5;
+
+                    foreach (var box in GetAllReachableBoxes(i, 5, false))
+                    {
+                        if (_zones[box].GroundZone5_Normal == int.MaxValue) _zones[box].GroundZone5_Normal = groundZone5;
+                    }
+
+                    groundZone5++;
+                }
+
                 // Bat like enemis: they can fly everywhere, except into the water
                 if (_zones[i].FlyZone_Normal == int.MaxValue)
                 {
                     _zones[i].FlyZone_Normal = flyZone;
 
-                    foreach (var box in GetAllReachableBoxes(i, 5, false))
+                    foreach (var box in GetAllReachableBoxes(i, 6, false))
                     {
                         if (_zones[box].FlyZone_Normal == int.MaxValue) _zones[box].FlyZone_Normal = flyZone;
                     }
@@ -142,6 +156,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             int aGroundZone2 = 1;
             int aGroundZone3 = 1;
             int aGroundZone4 = 1;
+            int aGroundZone5 = 1;
             int aFlyZone = 1;
             for (var i = 0; i < _zones.Count; i++)
             {
@@ -197,12 +212,25 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     aGroundZone4++;
                 }
 
+                // Von Croy like enemis: they can jump, grab and monkey and long jump
+                if (_zones[i].GroundZone5_Alternate == int.MaxValue)
+                {
+                    _zones[i].GroundZone5_Alternate = aGroundZone5;
+
+                    foreach (var box in GetAllReachableBoxes(i, 5, true))
+                    {
+                        if (_zones[box].GroundZone5_Alternate == int.MaxValue) _zones[box].GroundZone5_Alternate = aGroundZone5;
+                    }
+
+                    aGroundZone5++;
+                }
+
                 // Bat like enemis: they can fly everywhere, except into the water
                 if (_zones[i].FlyZone_Alternate == int.MaxValue)
                 {
                     _zones[i].FlyZone_Alternate = aFlyZone;
 
-                    foreach (var box in GetAllReachableBoxes(i, 5, true))
+                    foreach (var box in GetAllReachableBoxes(i, 6, true))
                     {
                         if (_zones[box].FlyZone_Alternate == int.MaxValue) _zones[box].FlyZone_Alternate = aFlyZone;
                     }
@@ -241,6 +269,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     int overlapIndex = i;
                     last = (_overlaps[overlapIndex].Flags & 0x8000) != 0;
 
+                    bool canJump = (_overlaps[overlapIndex].Flags & 0x800) != 0;
+                    bool canMonkey = (_overlaps[overlapIndex].Flags & 0x2000) != 0;
+                    bool canLongJump = (_overlaps[overlapIndex].Flags & 0x400) != 0;
+
                     var boxIndex = _overlaps[overlapIndex].Box;
 
                     var add = false;
@@ -250,7 +282,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        var canJump = dec_boxes[boxIndex].Jump;
 
                         if (water == isWater && (canJump || step <= 256) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
@@ -287,18 +318,26 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor);
 
-                        // Check all possibilities
-                        var canJump = dec_boxes[boxIndex].Jump;
-                        var canMonkey = dec_boxes[boxIndex].Monkey;
+                        if (water == isWater && (canJump || step <= 1024 || canMonkey) && !canLongJump &&
+                            (!flipped && dec_boxes[boxIndex].Flag0x04 ||
+                            flipped && dec_boxes[boxIndex].Flag0x02))
+                            add = true;
+                    }
 
-                        if (water == isWater && (canJump || step <= 1024 || canMonkey) &&
+                    // Enemies like Von Croy. They can go only on land, and climb 7 clicks step. They can also jump 3 blocks and monkey.
+                    if (zoneType == 5)
+                    {
+                        var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
+                        var step = Math.Abs(_boxes[boxIndex].TrueFloor - _boxes[next].TrueFloor);
+
+                        if (water == isWater && (canJump || step <= 1792 || canMonkey || canLongJump) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
                     }
 
                     // Flying enemies. Here we just check if the water flag is the same.
-                    if (zoneType == 5)
+                    if (zoneType == 6)
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         if ((!flipped && dec_boxes[boxIndex].Flag0x04 ||

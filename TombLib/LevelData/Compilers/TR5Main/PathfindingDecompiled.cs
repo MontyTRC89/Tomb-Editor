@@ -30,6 +30,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private bool dec_monkey;
         private bool dec_flipped;
         private bool dec_jump;
+        private bool dec_longJump;
         private Room dec_currentRoom;
         private short dec_q0 = -1;
         private short dec_q1 = -1;
@@ -166,6 +167,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                                     if (dec_jump)
                                         overlap.Flags |= 0x800;
+                                    if (dec_longJump)
+                                        overlap.Flags |= 0x400;
                                     if (dec_monkey)
                                         overlap.Flags |= 0x2000;
 
@@ -209,6 +212,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
                                         if (dec_jump)
                                             overlap.Flags |= 0x800;
+                                        if (dec_longJump)
+                                            overlap.Flags |= 0x400;
                                         if (dec_monkey)
                                             overlap.Flags |= 0x2000;
 
@@ -912,8 +917,10 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
         }
 
-        private bool Dec_CheckIfCanJumpX(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
+        private bool Dec_CheckIfCanJumpX(dec_tr5main_box_aux a, dec_tr5main_box_aux b, out bool longJump)
         {
+            longJump = false;
+
             // Boxes must have the same height for jump
             if (a.TrueFloor != b.TrueFloor) return false;
 
@@ -932,39 +939,152 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             int floor = 0;
 
+            // 1 block jump
             if (zMax == zMin - 1)
             {
                 dec_currentRoom = b.Room;
 
-                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1)) return false;
-
-                if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
-                {
-                    floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                    if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
-
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
                     return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                    return true;
+
+                return false;
+            }
+
+            // 2 blocks jump
+            if (zMax == zMin - 2)
+            {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                {
+                    if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
+                    {
+                        floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
+                        if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                            return true;
+                    }
                 }
 
                 return false;
             }
 
+            // 3 blocks jump
+            if (zMax == zMin - 3)
+            {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 2))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                {
+                    if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
+                    {
+                        floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
+                        if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                        {
+                            longJump = true;
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+            
+            // Swap cases
+
+            zMin = b.Zmin;
+            zMax = a.Zmax;
+
+            // 1 block jump
+            if (zMax == zMin - 1)
+            {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                    return true;
+
+                return false;
+            }
+
+            // 2 blocks jump
             if (zMax == zMin - 2)
             {
                 dec_currentRoom = b.Room;
 
-                if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
                 {
-                    if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
                     {
-                        floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                        floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
+                        if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+
+            // 3 blocks jump
+            if (zMax == zMin - 3)
+            {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 2))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(currentX, zMax);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                {
+                    if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
+                    {
+                        floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
                         if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
                         {
-                            if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
-                            {
-                                floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
-                                if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
-                            }
+                            longJump = true;
+                            return true;
                         }
                     }
                 }
@@ -972,48 +1092,13 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 return false;
             }
 
-            zMin = b.Zmin;
-            zMax = a.Zmax;
-
-            if (zMin != zMax + 1)
-            {
-                if (zMin != zMax + 2) return false;
-
-                dec_currentRoom = a.Room;
-
-                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1)) return false;
-
-                if (!Dec_CanSectorBeReachedAndIsSolid(currentX, zMax)) return false;
-
-                floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor > b.TrueFloor - 2 || floor == 0x7fff) return false;
-
-                if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax + 1))
-                {
-                    floor = Dec_GetBoxFloorHeight(currentX, zMax + 1);
-                    if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
-
-                    return false;
-                }
-
-                return false;
-            }
-
-            dec_currentRoom = a.Room;
-
-            if (Dec_CanSectorBeReachedAndIsSolid(currentX, zMax - 1) && Dec_CanSectorBeReachedAndIsSolid(currentX, zMax))
-            {
-                floor = Dec_GetBoxFloorHeight(currentX, zMax);
-                if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
-
-                return false;
-            }
-
             return false;
         }
 
-        private bool Dec_CheckIfCanJumpZ(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
+        private bool Dec_CheckIfCanJumpZ(dec_tr5main_box_aux a, dec_tr5main_box_aux b, out bool longJump)
         {
+            longJump = false;
+
             // Boxes must have the same height for jump
             if (a.TrueFloor != b.TrueFloor) return false;
 
@@ -1032,39 +1117,73 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             int floor = 0;
 
+            // 1 block jump
             if (xMax == xMin - 1)
             {
                 dec_currentRoom = b.Room;
 
-                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ)) return false;
-
-                if (Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
-                {
-                    floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                    if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
-
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
                     return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(xMax, currentZ);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                    return true;
+
+                return false;
+            }
+
+            // 2 blocks jump
+            if (xMax == xMin - 2)
+            {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(xMax, currentZ);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                {
+                    if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
+                    {
+                        floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
+                        if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                            return true;
+                    }
                 }
 
                 return false;
             }
 
-            if (xMax == xMin - 2)
+            // 3 blocks jump
+            if (xMax == xMin - 3)
             {
                 dec_currentRoom = b.Room;
 
-                if (Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 2, currentZ))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(xMax, currentZ);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
                 {
-                    if (Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
                     {
-                        floor = Dec_GetBoxFloorHeight(xMax, currentZ);
+                        floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
                         if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
                         {
-                            if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
-                            {
-                                floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
-                                if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
-                            }
+                            longJump = true;
+                            return true;
                         }
                     }
                 }
@@ -1072,39 +1191,80 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 return false;
             }
 
+            // Swap cases
             xMin = b.Xmin;
             xMax = a.Xmax;
 
-            if (xMin != xMax + 1)
+            // 1 block jump
+            if (xMax == xMin - 1)
             {
-                if (xMin != xMax + 2) return false;
+                dec_currentRoom = b.Room;
 
-                dec_currentRoom = a.Room;
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
+                    return false;
 
-                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ)) return false;
-
-                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ)) return false;
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    return false;
 
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor > b.TrueFloor - 2 || floor == 0x7fff) return false;
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                    return true;
 
-                if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
-                {
-                    floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
-                    if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
+                return false;
+            }
 
+            // 2 blocks jump
+            if (xMax == xMin - 2)
+            {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
                     return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    return false;
+
+                floor = Dec_GetBoxFloorHeight(xMax, currentZ);
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                {
+                    if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
+                    {
+                        floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
+                        if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                            return true;
+                    }
                 }
 
                 return false;
             }
 
-            dec_currentRoom = a.Room;
-
-            if (Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ) && Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+            // 3 blocks jump
+            if (xMax == xMin - 3)
             {
+                dec_currentRoom = b.Room;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 2, currentZ))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax - 1, currentZ))
+                    return false;
+
+                if (!Dec_CanSectorBeReachedAndIsSolid(xMax, currentZ))
+                    return false;
+
                 floor = Dec_GetBoxFloorHeight(xMax, currentZ);
-                if (floor <= b.TrueFloor - 2 && floor != 0x7fff) return true;
+                if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                {
+                    if (Dec_CanSectorBeReachedAndIsSolid(xMax + 1, currentZ))
+                    {
+                        floor = Dec_GetBoxFloorHeight(xMax + 1, currentZ);
+                        if (floor <= b.TrueFloor - 2 && floor != 0x7fff)
+                        {
+                            longJump = true;
+                            return true;
+                        }
+                    }
+                }
 
                 return false;
             }
@@ -1259,6 +1419,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private bool Dec_BoxesOverlap(dec_tr5main_box_aux a, dec_tr5main_box_aux b)
         {
             dec_jump = false;
+            dec_longJump = false;
             dec_monkey = false;
 
             dec_tr5main_box_aux box1 = a;
@@ -1272,8 +1433,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
             if (box1.Xmax <= box2.Xmin || box1.Xmin >= box2.Xmax)
             {
-                if (box1.Zmax > box2.Zmin && box1.Zmin < box2.Zmax && Dec_CheckIfCanJumpZ(box1, box2))
+                if (box1.Zmax > box2.Zmin && box1.Zmin < box2.Zmax && Dec_CheckIfCanJumpZ(box1, box2, out bool longjmp))
                 {
+                    dec_longJump = longjmp;
                     dec_jump = true;
                     return true;
                 }
@@ -1288,7 +1450,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     return false;
                 }
 
-                if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && box1.Monkey && box2.Monkey) dec_monkey = true;
+                if (box1.Monkey && box2.Monkey) dec_monkey = true;
                 return true;
             }
 
@@ -1300,8 +1462,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 return true;
             }
 
-            if (Dec_CheckIfCanJumpX(box2, box1))
+            if (Dec_CheckIfCanJumpX(box2, box1, out bool longJump))
             {
+                dec_longJump = longJump;
                 dec_jump = true;
                 return true;
             }
