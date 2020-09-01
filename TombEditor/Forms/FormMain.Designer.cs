@@ -1018,7 +1018,6 @@ namespace TombEditor.Forms
             // 
             this.toolStripMenuItem9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripMenuItem9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuItem9.Image = global::TombEditor.Properties.Resources.objects_LightPoint_16;
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
             this.toolStripMenuItem9.Size = new System.Drawing.Size(181, 22);
             this.toolStripMenuItem9.Tag = "ApplyRoomProperties";
