@@ -763,20 +763,27 @@ namespace TombLib.LevelData.Compilers.Util
             // Only try to remap animated textures if fast mode is disabled
             bool remapAnimatedTextures = _level.Settings.RemapAnimatedTextures && !_level.Settings.FastMode;
 
-            // Quad reference texture is needed for UVRotate animations scanning, which are existing only since TR4
-            var uvRotateSupported = _level.Settings.GameVersion > TRVersion.Game.TR3;
-            var refQuad = uvRotateSupported ? texture.RestoreQuadWithRotation() : texture;
+            // UVRotate hack is needed for TR4-5, because we couldn't figure real Core's UVRotate approach. 
+            // For TR5Main, hopefully no such hack will be needed.
+            var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3 && _level.Settings.GameVersion != TRVersion.Game.TR5Main;
+
+            // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
+            var refQuad = texture.RestoreQuadWithRotation();
 
             // Try to compare incoming texture with existing anims and return animation frame
             if (_actualAnimTextures.Count > 0)
                 foreach (var actualTex in _actualAnimTextures)
                 {
-                    var asTriangle = actualTex.Origin.IsUvRotate && uvRotateSupported ? false : isForTriangle;
-                    var existing = GetTexInfo((actualTex.Origin.IsUvRotate ? refQuad : texture), actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, _animTextureLookupMargin, remapAnimatedTextures);
+                    // If current animation set is UVRotate set and UVRotate hack is needed, pass the texture as quad
+                    var asTriangle = actualTex.Origin.IsUvRotate && uvRotateHack ? false : isForTriangle;
+                    var reference  = actualTex.Origin.IsUvRotate && uvRotateHack ? refQuad : texture;
+
+                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, _animTextureLookupMargin, remapAnimatedTextures);
                     if (existing.HasValue)
                     {
-                        var quadType = !actualTex.Origin.IsUvRotate ? 0 : (existing.Value.Rotation % 2 != 0 ? 2 : 1);
-                        return (actualTex.Origin.IsUvRotate ? new Result() { ConvertToQuad = quadType, Rotation =  existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex } : existing.Value);
+                        // Define triangle-to-quad conversion type, if UVRotate hack is used
+                        var quadType = !uvRotateHack || !actualTex.Origin.IsUvRotate ? 0 : (existing.Value.Rotation % 2 != 0 ? 2 : 1);
+                        return new Result() { ConvertToQuad = quadType, Rotation =  existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex };
                     }
 
                 }
@@ -785,14 +792,19 @@ namespace TombLib.LevelData.Compilers.Util
             if (_referenceAnimTextures.Count > 0)
                 foreach (var refTex in _referenceAnimTextures)
                 {
+                    // If current animation set is UVRotate set and UVRotate hack is needed, pass the texture as quad
+                    var asTriangle = refTex.Origin.IsUvRotate && uvRotateHack ? false : isForTriangle;
+                    var reference  = refTex.Origin.IsUvRotate && uvRotateHack ? refQuad : texture;
+
                     // If reference set found, generate actual one and immediately return fresh result
-                    var asTriangle = refTex.Origin.IsUvRotate && uvRotateSupported ? false : isForTriangle;
-                    if (GetTexInfo((refTex.Origin.IsUvRotate ? refQuad : texture), refTex.CompiledAnimation, isForRoom, asTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
+                    if (GetTexInfo(reference, refTex.CompiledAnimation, isForRoom, asTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
                     {
                         GenerateAnimTexture(refTex, refQuad, isForRoom, isForTriangle);
                         var result = AddTexture(texture, isForRoom, isForTriangle);
-                        var quadType = !refTex.Origin.IsUvRotate ? 0 : (result.Rotation % 2 != 0 ? 2 : 1);
-                        return (refTex.Origin.IsUvRotate ? new Result() { ConvertToQuad = quadType, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex } : result);
+
+                        // Define triangle-to-quad conversion type, if UVRotate hack is used
+                        var quadType = !uvRotateHack || !refTex.Origin.IsUvRotate ? 0 : (result.Rotation % 2 != 0 ? 2 : 1);
+                        return new Result() { ConvertToQuad = quadType, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex };
                     }
                 }
 

@@ -24,6 +24,7 @@ Tomb Editor:
  * Better trigger sorting to avoid issues with specific trigger setups.
  * Show warning if orphaned switch/key triggers were found in level.
  * Optimize level compilation speed.
+ * Partially fix UVRotate textures on triangles.
  * Fix incorrect animation transitions in TR2-3.
  * Fix light radius calculation in TR2-3.
  * Fix drag-n-drop in find & replace objects dialog.
