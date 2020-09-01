@@ -5,6 +5,7 @@ using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.NG;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad.TrLevels
 {
@@ -858,6 +859,79 @@ namespace TombLib.Wad.TrLevels
                             }
                             SoundDetails.Add(soundDetails);
                         }
+
+#if DUMP_SOUND_INFOS
+                        using (var writer = new StreamWriter(File.OpenWrite("sounds_" + Path.GetFileName(fileName) + ".txt")))
+                        {
+                            writer.WriteLine("");
+                            writer.WriteLine("-------------------" + Path.GetFileName(fileName) + "-------------------");
+                            writer.WriteLine("");
+
+                            var index = 0;
+                            for (int r = 0; r < SoundMap.Count; r++)
+                            {
+                                if (SoundMap[r] == -1)
+                                {
+                                    writer.WriteLine("Empty:");
+                                    continue;
+                                }
+
+                                var sd = SoundDetails[index];
+
+                                float divider = (Version < TRVersion.Game.TR3 ? 32767.0f : 255.0f);
+                                var vol = (int)Math.Round(((float)sd.Volume / divider) * 99.0f);
+                                var rad = sd.Range;
+                                var ch  = (int)Math.Round(((float)sd.Chance / divider) * 99.0f);
+
+                                var RandomizePitch =  ((sd.Characteristics & 0x2000) != 0)  ? "P" : " ";
+                                var RandomizeVolume = ((sd.Characteristics & 0x4000) != 0)  ? "V" : " ";
+                                var DisablePanning =  ((sd.Characteristics & 0x1000) != 0)  ? "N" : " ";
+
+                                string loop;
+                                var LoopBehaviour = (sd.Characteristics & 0x03);
+
+                                if (Version == TRVersion.Game.TR1)
+                                {
+                                    switch(LoopBehaviour)
+                                    {
+                                        case 0:
+                                            loop = "W";
+                                            break;
+                                        case 1:
+                                        default:
+                                            loop = " ";
+                                            break;
+                                        case 2:
+                                            loop = "L";
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    switch (LoopBehaviour)
+                                    {
+                                        case 0:
+                                        default:
+                                            loop = " ";
+                                            break;
+                                        case 1:
+                                            loop = "w";
+                                            break;
+                                        case 2:
+                                            loop = "R";
+                                            break;
+                                        case 3:
+                                            loop = "L";
+                                            break;
+                                    }
+                                }
+
+                                writer.WriteLine((TrCatalog.GetOriginalSoundName(Version, (uint)r) + ":").PadRight(24) + "sample  " + "VOL" + vol.ToString("D2") + "   " + 
+                                                 RandomizePitch + " " + RandomizeVolume + " " + DisablePanning + " " + loop + (ch == 0 ? "      " : "  CH" + ch.ToString("D2")) + "  RAD" + rad.ToString("D2"));
+                                index++;
+                            }
+                        }
+#endif
 
                         // In TR1 waves are here
                         if (Version == TRVersion.Game.TR1)
