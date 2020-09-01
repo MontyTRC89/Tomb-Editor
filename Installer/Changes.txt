@@ -32,6 +32,7 @@ Tomb Editor:
  
 WadTool:
  * Add recent wads list.
+ * Add animation fixer menu entry in animation editor.
  * Add alignment controls in sprite editor (for TR1-3 room and UI sprites).
  
 General:
