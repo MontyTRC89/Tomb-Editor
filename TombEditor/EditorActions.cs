@@ -940,7 +940,7 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Trigger volume"))
                     return;
 
-                var existingWindow = Application.OpenForms["FormVolume"];
+                var existingWindow = Application.OpenForms[nameof(FormVolume)];
                 if (existingWindow == null)
                 {
                     var volForm = new FormVolume((VolumeInstance)instance);

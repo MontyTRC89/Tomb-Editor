@@ -195,6 +195,8 @@ namespace WadTool
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.cmCreateAnimCommandMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cmCreateStateChangeMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixCurrentAnimationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fixAllAnimationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.topMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.topBar.SuspendLayout();
@@ -332,6 +334,8 @@ namespace WadTool
             this.mirrorAnimationToolStripMenuItem,
             this.reverseAnimationToolStripMenuItem,
             this.toolStripMenuItem2,
+            this.fixAllAnimationsToolStripMenuItem,
+            this.fixCurrentAnimationToolStripMenuItem,
             this.findReplaceAnimcommandsToolStripMenuItem});
             this.animationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.animationToolStripMenuItem.Name = "animationToolStripMenuItem";
@@ -2475,6 +2479,24 @@ namespace WadTool
             this.cmCreateStateChangeMenuItem.Text = "Create state change...";
             this.cmCreateStateChangeMenuItem.Click += new System.EventHandler(this.cmCreateStateChangeMenuItem_Click);
             // 
+            // fixCurrentAnimationToolStripMenuItem
+            // 
+            this.fixCurrentAnimationToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.fixCurrentAnimationToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.fixCurrentAnimationToolStripMenuItem.Name = "fixCurrentAnimationToolStripMenuItem";
+            this.fixCurrentAnimationToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.fixCurrentAnimationToolStripMenuItem.Text = "Fix current animation...";
+            this.fixCurrentAnimationToolStripMenuItem.Click += new System.EventHandler(this.fixCurrentAnimationToolStripMenuItem_Click);
+            // 
+            // fixAllAnimationsToolStripMenuItem
+            // 
+            this.fixAllAnimationsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.fixAllAnimationsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.fixAllAnimationsToolStripMenuItem.Name = "fixAllAnimationsToolStripMenuItem";
+            this.fixAllAnimationsToolStripMenuItem.Size = new System.Drawing.Size(215, 22);
+            this.fixAllAnimationsToolStripMenuItem.Text = "Fix all animations...";
+            this.fixAllAnimationsToolStripMenuItem.Click += new System.EventHandler(this.fixAllAnimationsToolStripMenuItem_Click);
+            // 
             // FormAnimationEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2720,5 +2742,7 @@ namespace WadTool
         private System.Windows.Forms.ToolStripMenuItem restoreGridHeightToolStripMenuItem;
         private DarkUI.Controls.DarkNumericUpDown nudEndFrame;
         private DarkUI.Controls.DarkLabel darkLabel2;
+        private System.Windows.Forms.ToolStripMenuItem fixCurrentAnimationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fixAllAnimationsToolStripMenuItem;
     }
 }
