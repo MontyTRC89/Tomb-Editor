@@ -190,7 +190,7 @@ namespace TombEditor
                     }
             });
 
-            AddCommand("EditObject", "Edit object properties", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("EditObject", "Edit object properties...", CommandType.Objects, delegate (CommandArgs args)
             {
                 if (args.Editor.SelectedObject != null)
                     EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
