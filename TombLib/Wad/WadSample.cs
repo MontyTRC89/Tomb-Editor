@@ -58,7 +58,7 @@ namespace TombLib.Wad
             FileName = filename;
         }
 
-        public static int CheckSampleDataForFormat(byte[] data)
+        public static int CheckSampleDataForFormat(byte[] data, WaveFormat format = null)
         {
             // Based on: https://de.wikipedia.org/wiki/RIFF_WAVE
             // Just a very simple, cheap but strict checking routine to make sure
@@ -84,18 +84,27 @@ namespace TombLib.Wad
                 uint bytesPerSecond = BitConverter.ToUInt32(data, SampleBytesPerSecondOffset);
                 ushort blockAlign = BitConverter.ToUInt16(data, 32);
                 ushort bitsPerSample = BitConverter.ToUInt16(data, BitsPerSampleOffset);
+
                 if (fmt_Signature != 0x20746D66)
                     return -1;
                 if (fmtLength != 16) // File generated with NAudio have a 18 bit header. Tomb Raider does not support this!
                     return -1;
                 if (formatTag != 1) // We want default PCM
                     return -1;
-                if (channelCount != 1) // We want mono audio
-                    return -1;
                 if (bytesPerSecond != (sampleRate * blockAlign))
                     return -1;
                 if (blockAlign != ((bitsPerSample * channelCount) / 8))
                     return -1;
+
+                if (format != null)
+                {
+                    if (channelCount != format.Channels)
+                        return -1;
+                    if (sampleRate != format.SampleRate)
+                        return -1;
+                    if (bitsPerSample != format.BitsPerSample)
+                        return -1;
+                }
 
                 uint dataSignature = BitConverter.ToUInt32(data, 20 + (int)fmtLength);
                 uint dataLength = BitConverter.ToUInt32(data, 24 + (int)fmtLength);
@@ -131,11 +140,14 @@ namespace TombLib.Wad
 
         public static byte[] ConvertSampleFormat(byte[] data, int sampleRate, int bitsPerSample)
         {
+            var targetFormat = new WaveFormat(sampleRate, bitsPerSample, 1);
+            if (CheckSampleDataForFormat(data, targetFormat) > 0)
+                return data;
+
             // Use NAudio now to convert the audio data
             using (var inStream = new MemoryStream(data, false))
             using (var anyWaveStream = CreateReader(inStream, data))
             {
-                var targetFormat = new WaveFormat(sampleRate, bitsPerSample, 1);
                 var pcmStream = new MediaFoundationResampler(anyWaveStream, targetFormat) { ResamplerQuality = 60 };
 
                 try // The pcm stream may need to get disposed.
