@@ -259,11 +259,6 @@ namespace TombLib.LevelData.IO
                             return true;
                         });
 
-                        // Remap stock catalogs to new location (since version 1.3.6)
-                        var oldPrefix = "$(EditorDirectory)\\Catalogs\\";
-                        if (path.StartsWith(oldPrefix))
-                            path = path.Replace(oldPrefix, "$(EditorDirectory)\\Assets\\SoundCatalogs\\");
-
                         // Add catalog
                         list.Add(newSounds);
                         toLoad.Add(newSounds, path);
