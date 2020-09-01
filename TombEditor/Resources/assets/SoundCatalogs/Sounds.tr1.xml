@@ -75,7 +75,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -170,8 +170,8 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -205,7 +205,7 @@
       <Name>LARA_RICOCHET</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>10</Chance>
+      <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
@@ -225,14 +225,14 @@
     <WadSoundInfo>
       <Id>11</Id>
       <Name>BEAR_GROWL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bear_grwl.wav</FileName>
@@ -244,14 +244,14 @@
     <WadSoundInfo>
       <Id>12</Id>
       <Name>BEAR_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bear_feet.wav</FileName>
@@ -263,14 +263,14 @@
     <WadSoundInfo>
       <Id>13</Id>
       <Name>BEAR_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bear_atk.wav</FileName>
@@ -282,14 +282,14 @@
     <WadSoundInfo>
       <Id>14</Id>
       <Name>BEAR_SNARL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bear_snrl1.wav</FileName>
@@ -304,14 +304,14 @@
     <WadSoundInfo>
       <Id>16</Id>
       <Name>BEAR_HURT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bear_hit.wav</FileName>
@@ -323,17 +323,17 @@
     <WadSoundInfo>
       <Id>18</Id>
       <Name>BEAR_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bear_death.wav</FileName>
+          <FileName>bear_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -342,14 +342,14 @@
     <WadSoundInfo>
       <Id>19</Id>
       <Name>WOLF_JUMP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>dog_jat1.wav</FileName>
@@ -364,14 +364,14 @@
     <WadSoundInfo>
       <Id>20</Id>
       <Name>WOLF_HURT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>dog_hit.wav</FileName>
@@ -383,14 +383,14 @@
     <WadSoundInfo>
       <Id>22</Id>
       <Name>WOLF_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>dog_d1.wav</FileName>
@@ -405,14 +405,14 @@
     <WadSoundInfo>
       <Id>24</Id>
       <Name>WOLF_HOWL</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>dog_hwl.wav</FileName>
@@ -424,14 +424,14 @@
     <WadSoundInfo>
       <Id>25</Id>
       <Name>WOLF_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>dog_at1.wav</FileName>
@@ -446,7 +446,7 @@
     <WadSoundInfo>
       <Id>26</Id>
       <Name>LARA_CLIMB3</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -472,7 +472,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>body_sl1.wav</FileName>
@@ -494,7 +494,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>clsl_01.wav</FileName>
@@ -511,12 +511,12 @@
       <Name>LARA_JUMP</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>50</Chance>
+      <Chance>49</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lar_jmp.wav</FileName>
@@ -547,9 +547,9 @@
     <WadSoundInfo>
       <Id>31</Id>
       <Name>LARA_INJURY</Name>
-      <Volume>80</Volume>
+      <Volume>79</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>40</Chance>
+      <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
@@ -569,14 +569,14 @@
     <WadSoundInfo>
       <Id>32</Id>
       <Name>LARA_ROLL</Name>
-      <Volume>70</Volume>
+      <Volume>69</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rolling.wav</FileName>
@@ -595,7 +595,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>splash.wav</FileName>
@@ -614,7 +614,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>go_watr.wav</FileName>
@@ -626,14 +626,14 @@
     <WadSoundInfo>
       <Id>35</Id>
       <Name>LARA_SWIM</Name>
-      <Volume>80</Volume>
+      <Volume>79</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>swim.wav</FileName>
@@ -645,14 +645,14 @@
     <WadSoundInfo>
       <Id>36</Id>
       <Name>LARA_BREATH</Name>
-      <Volume>50</Volume>
+      <Volume>49</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>breath.wav</FileName>
@@ -664,14 +664,14 @@
     <WadSoundInfo>
       <Id>37</Id>
       <Name>LARA_BUBBLES</Name>
-      <Volume>60</Volume>
+      <Volume>59</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>70</Chance>
+      <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bubbles.wav</FileName>
@@ -682,15 +682,15 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>38</Id>
-      <Name>SWITCH</Name>
+      <Name>LARA_SWITCH</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>switch.wav</FileName>
@@ -709,7 +709,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>usekey.wav</FileName>
@@ -728,7 +728,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>useitem.wav</FileName>
@@ -745,9 +745,9 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lar_die2.wav</FileName>
@@ -764,9 +764,9 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lar_die1.wav</FileName>
@@ -822,7 +822,7 @@
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
+      <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -840,7 +840,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -854,12 +854,12 @@
     <WadSoundInfo>
       <Id>47</Id>
       <Name>LARA_BLOCK_PUSH2</Name>
-      <Volume>80</Volume>
+      <Volume>79</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>50</Chance>
+      <Chance>49</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -878,18 +878,18 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>48</Id>
-      <Name>CLICK</Name>
+      <Name>LARA_EMPTY</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>click.wav</FileName>
+          <FileName>emp_gun.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -900,12 +900,12 @@
       <Name>LARA_BULLETHIT</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>50</Chance>
+      <Chance>49</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>bul_flsh.wav</FileName>
@@ -922,9 +922,9 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>OneShotRewound</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>p&amp;p05.wav</FileName>
@@ -962,7 +962,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>f2f_hitg.wav</FileName>
@@ -981,7 +981,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>back_jm1.wav</FileName>
@@ -1000,7 +1000,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>back_jm3.wav</FileName>
@@ -1019,7 +1019,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>back_jm2.wav</FileName>
@@ -1036,9 +1036,9 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>swch_up.wav</FileName>
@@ -1050,17 +1050,17 @@
     <WadSoundInfo>
       <Id>58</Id>
       <Name>BAT_SQK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>98</Chance>
+      <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>b2.wav</FileName>
+          <FileName>bat_sqk.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1069,7 +1069,7 @@
     <WadSoundInfo>
       <Id>59</Id>
       <Name>BAT_FLAP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1079,7 +1079,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bat3.wav</FileName>
+          <FileName>bat_flp.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1095,7 +1095,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>undwatr.wav</FileName>
@@ -1107,14 +1107,14 @@
     <WadSoundInfo>
       <Id>61</Id>
       <Name>UNDERWATER_SWITCH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>uw_swt.wav</FileName>
@@ -1131,7 +1131,7 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
@@ -1152,7 +1152,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gen_door.wav</FileName>
@@ -1170,8 +1170,8 @@
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>pendulum.wav</FileName>
@@ -1190,7 +1190,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rokfall1.wav</FileName>
@@ -1209,7 +1209,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rokfall2.wav</FileName>
@@ -1228,7 +1228,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rokfall3.wav</FileName>
@@ -1240,17 +1240,17 @@
     <WadSoundInfo>
       <Id>69</Id>
       <Name>T-REX_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
+      <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>trx_d.wav</FileName>
+          <FileName>trx_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1278,14 +1278,14 @@
     <WadSoundInfo>
       <Id>71</Id>
       <Name>T-REX_ROAR</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>trx_roar.wav</FileName>
@@ -1297,14 +1297,14 @@
     <WadSoundInfo>
       <Id>72</Id>
       <Name>T-REX_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>trx_atk.wav</FileName>
@@ -1316,14 +1316,14 @@
     <WadSoundInfo>
       <Id>73</Id>
       <Name>RAPTOR_ROAR</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rapt_roar.wav</FileName>
@@ -1335,14 +1335,14 @@
     <WadSoundInfo>
       <Id>74</Id>
       <Name>RAPTOR_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
+      <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rapt_atk.wav</FileName>
@@ -1354,7 +1354,7 @@
     <WadSoundInfo>
       <Id>75</Id>
       <Name>RAPTOR_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1378,12 +1378,12 @@
       <Name>MUMMY_GROWL</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
+      <Chance>49</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>mum_grwl.wav</FileName>
@@ -1395,14 +1395,14 @@
     <WadSoundInfo>
       <Id>77</Id>
       <Name>LARSON_FIRE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>OneShotRewound</LoopBehaviour>
+      <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lars_fire.wav</FileName>
@@ -1414,14 +1414,14 @@
     <WadSoundInfo>
       <Id>78</Id>
       <Name>LARSON_RICOCHET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>10</Chance>
+      <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lars_rico.wav</FileName>
@@ -1433,7 +1433,7 @@
     <WadSoundInfo>
       <Id>79</Id>
       <Name>WATERFALL_LOOP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1452,11 +1452,11 @@
     <WadSoundInfo>
       <Id>80</Id>
       <Name>WATER_LOOP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
+      <DisablePanning>true</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>Looped</LoopBehaviour>
@@ -1471,17 +1471,17 @@
     <WadSoundInfo>
       <Id>81</Id>
       <Name>WATERFALL_BIG</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
+      <DisablePanning>true</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_wfall.wav</FileName>
+          <FileName>l_wtfall_b.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1490,14 +1490,14 @@
     <WadSoundInfo>
       <Id>82</Id>
       <Name>CHAINDOOR_UP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>chn_up.wav</FileName>
@@ -1509,14 +1509,14 @@
     <WadSoundInfo>
       <Id>83</Id>
       <Name>CHAINDOOR_DOWN</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>chn_down.wav</FileName>
@@ -1528,7 +1528,7 @@
     <WadSoundInfo>
       <Id>84</Id>
       <Name>COGS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -1547,14 +1547,14 @@
     <WadSoundInfo>
       <Id>85</Id>
       <Name>LION_HURT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lion_hurt.wav</FileName>
@@ -1566,14 +1566,14 @@
     <WadSoundInfo>
       <Id>86</Id>
       <Name>LION_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lion_atk1.wav</FileName>
@@ -1588,14 +1588,14 @@
     <WadSoundInfo>
       <Id>87</Id>
       <Name>LION_ROAR</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lion_roar.wav</FileName>
@@ -1607,14 +1607,14 @@
     <WadSoundInfo>
       <Id>88</Id>
       <Name>LION_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lion_death.wav</FileName>
@@ -1626,14 +1626,14 @@
     <WadSoundInfo>
       <Id>89</Id>
       <Name>GORILLA_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gorl_foot.wav</FileName>
@@ -1645,14 +1645,14 @@
     <WadSoundInfo>
       <Id>90</Id>
       <Name>GORILLA_PANT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gorl_pant.wav</FileName>
@@ -1664,17 +1664,17 @@
     <WadSoundInfo>
       <Id>91</Id>
       <Name>GORILLA_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>gorl_death.wav</FileName>
+          <FileName>gorl_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1683,13 +1683,13 @@
     <WadSoundInfo>
       <Id>92</Id>
       <Name>CROC_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
@@ -1702,14 +1702,14 @@
     <WadSoundInfo>
       <Id>93</Id>
       <Name>CROC_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
+      <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>croc_at1.wav</FileName>
@@ -1724,14 +1724,14 @@
     <WadSoundInfo>
       <Id>94</Id>
       <Name>RAT_FEET</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rat_foot.wav</FileName>
@@ -1743,14 +1743,14 @@
     <WadSoundInfo>
       <Id>95</Id>
       <Name>RAT_CHIRP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rat_chirp.wav</FileName>
@@ -1762,14 +1762,14 @@
     <WadSoundInfo>
       <Id>96</Id>
       <Name>RAT_ATTACK</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>50</Chance>
+      <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rat_atk.wav</FileName>
@@ -1781,14 +1781,14 @@
     <WadSoundInfo>
       <Id>97</Id>
       <Name>RAT_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>rat_die.wav</FileName>
@@ -1818,7 +1818,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>99</Id>
-      <Name>EXPLOSION_TNT</Name>
+      <Name>EXPLOSION</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -1826,7 +1826,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>explode.wav</FileName>
@@ -1838,14 +1838,14 @@
     <WadSoundInfo>
       <Id>100</Id>
       <Name>GORILLA_GRUNT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gorl_grnt.wav</FileName>
@@ -1857,14 +1857,14 @@
     <WadSoundInfo>
       <Id>101</Id>
       <Name>GORILLA_GRUNTS</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gr_gr1.wav</FileName>
@@ -1885,17 +1885,17 @@
     <WadSoundInfo>
       <Id>102</Id>
       <Name>CROC_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>croc_death.wav</FileName>
+          <FileName>croc_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -1904,14 +1904,14 @@
     <WadSoundInfo>
       <Id>103</Id>
       <Name>DAMOCLES_SWORD</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>damocles.wav</FileName>
@@ -1922,22 +1922,22 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>104</Id>
-      <Name>EXPLOSION</Name>
+      <Name>ATLANTEAN_EXPLODE</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>true</RandomizePitch>
-      <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>explos1.wav</FileName>
+          <FileName>atlan_expld.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>108</Id>
@@ -2112,64 +2112,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>117</Id>
-      <Name>EGYPT_BLOCK</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>block.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>118</Id>
-      <Name>SAND</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>sand.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>119</Id>
-      <Name>EGYPT_SLIDE</Name>
-      <Volume>50</Volume>
-      <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
-      <PitchFactor>0</PitchFactor>
-      <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
-      <Samples>
-        <WadSample>
-          <FileName>slide.wav</FileName>
-        </WadSample>
-      </Samples>
-      <Global>false</Global>
-      <Indexed>false</Indexed>
-    </WadSoundInfo>
-    <WadSoundInfo>
-      <Id>120</Id>
-      <Name>ATLANTEAN_FEET</Name>
+      <Name>RAISINGBLOCK_FX</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -2177,13 +2120,70 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>atlan_foot1.wav</FileName>
+          <FileName>block_fx.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>118</Id>
+      <Name>SAND_FX</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>true</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>Looped</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>sand_fx.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>119</Id>
+      <Name>STAIRS2SLOPE_FX</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>slide_fx.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>120</Id>
+      <Name>ATLANTEAN_WALK</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>atlan_sneak1.wav</FileName>
         </WadSample>
         <WadSample>
-          <FileName>atlan_foot2.wav</FileName>
+          <FileName>atlan_sneak2.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2199,7 +2199,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>atlan_atk.wav</FileName>
@@ -2218,7 +2218,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>atlan_jatk.wav</FileName>
@@ -2286,7 +2286,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>126</Id>
-      <Name>ATLANTEAN_WING_FEET</Name>
+      <Name>ATLANTEAN_RUN</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -2341,7 +2341,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>slam_open.wav</FileName>
@@ -2353,14 +2353,14 @@
     <WadSoundInfo>
       <Id>129</Id>
       <Name>SKATEBOARD_MOVE</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_move.wav</FileName>
@@ -2372,14 +2372,14 @@
     <WadSoundInfo>
       <Id>130</Id>
       <Name>SKATEBOARD_STOP</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_stop.wav</FileName>
@@ -2391,14 +2391,14 @@
     <WadSoundInfo>
       <Id>131</Id>
       <Name>SKATEBOARD_SHOOT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_shoot.wav</FileName>
@@ -2410,14 +2410,14 @@
     <WadSoundInfo>
       <Id>132</Id>
       <Name>SKATEBOARD_HIT</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_hit.wav</FileName>
@@ -2429,14 +2429,14 @@
     <WadSoundInfo>
       <Id>133</Id>
       <Name>SKATEBOARD_START</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_start.wav</FileName>
@@ -2448,14 +2448,14 @@
     <WadSoundInfo>
       <Id>134</Id>
       <Name>SKATEBOARD_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_die.wav</FileName>
@@ -2467,14 +2467,14 @@
     <WadSoundInfo>
       <Id>135</Id>
       <Name>SKATEBOART_HIT_GROUND</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_ground.wav</FileName>
@@ -2493,7 +2493,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_ground.wav</FileName>
@@ -2512,7 +2512,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_atk1.wav</FileName>
@@ -2531,7 +2531,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_atk2.wav</FileName>
@@ -2550,7 +2550,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_die.wav</FileName>
@@ -2569,7 +2569,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_arm.wav</FileName>
@@ -2588,7 +2588,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_move.wav</FileName>
@@ -2600,14 +2600,14 @@
     <WadSoundInfo>
       <Id>142</Id>
       <Name>TORSO_HIT</Name>
-      <Volume>97</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
-      <Chance>100</Chance>
+      <Chance>30</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>torso_hit.wav</FileName>
@@ -2652,9 +2652,9 @@
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
-      <RandomizePitch>false</RandomizePitch>
-      <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <RandomizePitch>true</RandomizePitch>
+      <RandomizeVolume>true</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>cent_roar.wav</FileName>
@@ -2666,14 +2666,14 @@
     <WadSoundInfo>
       <Id>145</Id>
       <Name>LARA_SPIKE_DEATH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lar_spks.wav</FileName>
@@ -2692,14 +2692,14 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lar_die3.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>147</Id>
@@ -2717,8 +2717,8 @@
           <FileName>l_rumb.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>148</Id>
@@ -2761,7 +2761,7 @@
     <WadSoundInfo>
       <Id>150</Id>
       <Name>FIRE</Name>
-      <Volume>70</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
@@ -2774,8 +2774,8 @@
           <FileName>l_fire.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>151</Id>
@@ -2787,14 +2787,14 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>true</RandomizePitch>
       <RandomizeVolume>true</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>dart.wav</FileName>
         </WadSample>
       </Samples>
-      <Global>true</Global>
-      <Indexed>true</Indexed>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>152</Id>
@@ -2825,7 +2825,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>metald_open.wav</FileName>
@@ -2855,7 +2855,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>155</Id>
-      <Name>LOW_HUM</Name>
+      <Name>POWERUP_FX</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -2866,7 +2866,7 @@
       <LoopBehaviour>Looped</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>low_hum.wav</FileName>
+          <FileName>powerup_fx.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2882,7 +2882,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>cowboy_die.wav</FileName>
@@ -2901,10 +2901,10 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>black_death.wav</FileName>
+          <FileName>black_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2920,7 +2920,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lars_die.wav</FileName>
@@ -2939,10 +2939,10 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>pierre_death.wav</FileName>
+          <FileName>pierre_die.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -2958,7 +2958,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>natla_die.wav</FileName>
@@ -2977,7 +2977,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>trapd_op.wav</FileName>
@@ -2996,7 +2996,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>trapd_cl.wav</FileName>
@@ -3007,7 +3007,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>163</Id>
-      <Name>ATLANTEAN_EGG</Name>
+      <Name>ATLANTEAN_EGG_LOOP</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -3034,7 +3034,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>atlan_hatch.wav</FileName>
@@ -3053,7 +3053,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>drill_start.wav</FileName>
@@ -3075,7 +3075,7 @@
       <LoopBehaviour>None</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>l_drill.wav</FileName>
+          <FileName>drill.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3091,7 +3091,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>Looped</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>l_conveyor.wav</FileName>
@@ -3110,7 +3110,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>hut_lower.wav</FileName>
@@ -3129,7 +3129,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>hut_ground.wav</FileName>
@@ -3140,7 +3140,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>170</Id>
-      <Name>TNT</Name>
+      <Name>EXPLOSION_FX</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -3148,10 +3148,10 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>tnt.wav</FileName>
+          <FileName>explos_fx.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3167,7 +3167,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>atlan_die.wav</FileName>
@@ -3178,7 +3178,7 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>172</Id>
-      <Name>BRIDGE</Name>
+      <Name>CHAINBLOCK_FX</Name>
       <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
@@ -3186,10 +3186,10 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>bridge.wav</FileName>
+          <FileName>chain_fx.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
@@ -3205,7 +3205,7 @@
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>secret.wav</FileName>
@@ -3217,14 +3217,14 @@
     <WadSoundInfo>
       <Id>174</Id>
       <Name>GYM_HINT_01</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_01.wav</FileName>
@@ -3236,14 +3236,14 @@
     <WadSoundInfo>
       <Id>175</Id>
       <Name>GYM_HINT_02</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_02.wav</FileName>
@@ -3255,14 +3255,14 @@
     <WadSoundInfo>
       <Id>176</Id>
       <Name>GYM_HINT_03</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_03.wav</FileName>
@@ -3274,14 +3274,14 @@
     <WadSoundInfo>
       <Id>177</Id>
       <Name>GYM_HINT_04</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_04.wav</FileName>
@@ -3293,14 +3293,14 @@
     <WadSoundInfo>
       <Id>178</Id>
       <Name>GYM_HINT_05</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_05.wav</FileName>
@@ -3312,14 +3312,14 @@
     <WadSoundInfo>
       <Id>179</Id>
       <Name>GYM_HINT_06</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_06.wav</FileName>
@@ -3331,14 +3331,14 @@
     <WadSoundInfo>
       <Id>180</Id>
       <Name>GYM_HINT_07</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_07.wav</FileName>
@@ -3350,14 +3350,14 @@
     <WadSoundInfo>
       <Id>181</Id>
       <Name>GYM_HINT_08</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_08.wav</FileName>
@@ -3369,14 +3369,14 @@
     <WadSoundInfo>
       <Id>182</Id>
       <Name>GYM_HINT_09</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_09.wav</FileName>
@@ -3388,14 +3388,14 @@
     <WadSoundInfo>
       <Id>183</Id>
       <Name>GYM_HINT_10</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_10.wav</FileName>
@@ -3407,14 +3407,14 @@
     <WadSoundInfo>
       <Id>184</Id>
       <Name>GYM_HINT_11</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_11.wav</FileName>
@@ -3426,14 +3426,14 @@
     <WadSoundInfo>
       <Id>185</Id>
       <Name>GYM_HINT_12</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_12.wav</FileName>
@@ -3445,14 +3445,14 @@
     <WadSoundInfo>
       <Id>186</Id>
       <Name>GYM_HINT_13</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_13.wav</FileName>
@@ -3464,14 +3464,14 @@
     <WadSoundInfo>
       <Id>187</Id>
       <Name>GYM_HINT_14</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_14.wav</FileName>
@@ -3483,14 +3483,14 @@
     <WadSoundInfo>
       <Id>188</Id>
       <Name>GYM_HINT_15</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_15.wav</FileName>
@@ -3502,14 +3502,14 @@
     <WadSoundInfo>
       <Id>189</Id>
       <Name>GYM_HINT_16</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_16.wav</FileName>
@@ -3521,14 +3521,14 @@
     <WadSoundInfo>
       <Id>190</Id>
       <Name>GYM_HINT_17</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_17.wav</FileName>
@@ -3540,14 +3540,14 @@
     <WadSoundInfo>
       <Id>191</Id>
       <Name>GYM_HINT_18</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_18.wav</FileName>
@@ -3559,14 +3559,14 @@
     <WadSoundInfo>
       <Id>192</Id>
       <Name>GYM_HINT_19</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_19.wav</FileName>
@@ -3578,14 +3578,14 @@
     <WadSoundInfo>
       <Id>193</Id>
       <Name>GYM_HINT_20</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_20.wav</FileName>
@@ -3597,14 +3597,14 @@
     <WadSoundInfo>
       <Id>194</Id>
       <Name>GYM_HINT_21</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_21.wav</FileName>
@@ -3616,14 +3616,14 @@
     <WadSoundInfo>
       <Id>195</Id>
       <Name>GYM_HINT_22</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_22.wav</FileName>
@@ -3635,14 +3635,14 @@
     <WadSoundInfo>
       <Id>196</Id>
       <Name>GYM_HINT_23</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_23.wav</FileName>
@@ -3654,14 +3654,14 @@
     <WadSoundInfo>
       <Id>197</Id>
       <Name>GYM_HINT_24</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_24.wav</FileName>
@@ -3673,14 +3673,14 @@
     <WadSoundInfo>
       <Id>198</Id>
       <Name>GYM_HINT_25</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>gym_25.wav</FileName>
@@ -3691,15 +3691,34 @@
     </WadSoundInfo>
     <WadSoundInfo>
       <Id>199</Id>
-      <Name>COWBOY_SPEECH</Name>
-      <Volume>50</Volume>
+      <Name>BLK_GOON_SPEECH</Name>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
+      <Samples>
+        <WadSample>
+          <FileName>black_spch.wav</FileName>
+        </WadSample>
+      </Samples>
+      <Global>false</Global>
+      <Indexed>false</Indexed>
+    </WadSoundInfo>
+    <WadSoundInfo>
+      <Id>200</Id>
+      <Name>COWBOY_SPEECH</Name>
+      <Volume>100</Volume>
+      <RangeInSectors>8</RangeInSectors>
+      <Chance>100</Chance>
+      <PitchFactor>0</PitchFactor>
+      <DisablePanning>false</DisablePanning>
+      <RandomizePitch>false</RandomizePitch>
+      <RandomizeVolume>false</RandomizeVolume>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>cowboy_spch.wav</FileName>
@@ -3709,16 +3728,16 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>200</Id>
+      <Id>201</Id>
       <Name>LARSON_SPEECH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>lars_spch.wav</FileName>
@@ -3728,16 +3747,16 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>201</Id>
+      <Id>202</Id>
       <Name>NATLA_SPEECH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>natla_spch.wav</FileName>
@@ -3747,16 +3766,16 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>202</Id>
+      <Id>203</Id>
       <Name>PIERRE_SPEECH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>pierre_spch.wav</FileName>
@@ -3766,16 +3785,16 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>203</Id>
+      <Id>204</Id>
       <Name>SKATE_SPEECH</Name>
-      <Volume>50</Volume>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
           <FileName>skate_spch.wav</FileName>
@@ -3785,19 +3804,19 @@
       <Indexed>false</Indexed>
     </WadSoundInfo>
     <WadSoundInfo>
-      <Id>204</Id>
-      <Name>GYM_HINT_26</Name>
-      <Volume>50</Volume>
+      <Id>205</Id>
+      <Name>LARA_SETUP</Name>
+      <Volume>100</Volume>
       <RangeInSectors>8</RangeInSectors>
       <Chance>100</Chance>
       <PitchFactor>0</PitchFactor>
       <DisablePanning>false</DisablePanning>
       <RandomizePitch>false</RandomizePitch>
       <RandomizeVolume>false</RandomizeVolume>
-      <LoopBehaviour>None</LoopBehaviour>
+      <LoopBehaviour>OneShotWait</LoopBehaviour>
       <Samples>
         <WadSample>
-          <FileName>gym_26.wav</FileName>
+          <FileName>setup.wav</FileName>
         </WadSample>
       </Samples>
       <Global>false</Global>
