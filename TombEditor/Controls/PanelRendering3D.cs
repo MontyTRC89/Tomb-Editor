@@ -91,10 +91,6 @@ namespace TombEditor.Controls
         }
         private bool _disablePickingForHiddenRooms = false;
 
-
-        private Camera _oldCamera;
-        private Frustum _frustum;
-
         // Overall state
         private readonly Editor _editor;
         private Vector3? _currentRoomLastPos;
@@ -107,6 +103,9 @@ namespace TombEditor.Controls
         private float _lastCameraDist;
         private float _nextCameraDist;
         private readonly Timer _flyModeTimer;
+        private Camera _oldCamera;
+        private Frustum _frustum;
+        private Matrix4x4 _viewProjection;
 
         // Mouse interaction state
         private Point _lastMousePosition;
@@ -192,6 +191,7 @@ namespace TombEditor.Controls
                 _editor.EditorEventRaised += EditorEventRaised;
 
                 _frustum = new Frustum();
+                _viewProjection = Matrix4x4.Identity;
 
                 _toolHandler = new ToolHandler(this);
                 _movementTimer = new MovementTimer(MoveTimer_Tick);
@@ -950,12 +950,12 @@ namespace TombEditor.Controls
                             -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
                     }
 
-                    _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)); // Update gizmo
+                    _gizmo.MouseMoved(_viewProjection, GetRay(e.X, e.Y)); // Update gizmo
                     redrawWindow = true;
                     break;
 
                 case MouseButtons.Left:
-                    if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
+                    if (_gizmo.MouseMoved(_viewProjection, GetRay(e.X, e.Y)))
                     {
                         // Process gizmo
                         redrawWindow = true;
@@ -1556,7 +1556,7 @@ namespace TombEditor.Controls
                 relativeDeltaX * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate,
                 -relativeDeltaY * _editor.Configuration.Rendering3D_NavigationSpeedMouseRotate);
 
-            _gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(cursorPos.X, cursorPos.Y));
+            _gizmo.MouseMoved(_viewProjection, GetRay(cursorPos.X, cursorPos.Y));
 
             Invalidate();
 
@@ -1800,11 +1800,11 @@ namespace TombEditor.Controls
                 else
                     bounds = ServiceObjectTextures.GetBounds(instance);
 
-                var matrix = Matrix4x4.CreateTranslation(ray.Position) * Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+                var matrix = Matrix4x4.CreateTranslation(ray.Position) * _viewProjection;
                 var rayPos = matrix.TransformPerspectively(new Vector3()).To2();
 
                 float dist;
-                var rect = instance.GetViewportRect(bounds, ClientSize, Camera, out dist);
+                var rect = instance.GetViewportRect(bounds, Camera.GetPosition(), _viewProjection, ClientSize, out dist);
                 distance = Vector3.Distance(Camera.GetPosition(), instance.Position + instance.Room.WorldPos);
 
                 // dist < 1.0f discards offscreen sprites which may occasionally pop up from other side
@@ -1834,7 +1834,7 @@ namespace TombEditor.Controls
 
         private Ray GetRay(float x, float y)
         {
-            return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
+            return Ray.GetPickRay(new Vector2(x, y), _viewProjection, ClientSize.Width, ClientSize.Height);
         }
 
         private void DrawDebugLines(Matrix4x4 viewProjection, Effect effect)
@@ -2455,7 +2455,7 @@ namespace TombEditor.Controls
                     {
                         float depth;
                         var sprite = _spriteList[instance.SpriteID];
-                        var pos = instance.GetViewportRect(sprite.Alignment, ClientSize, Camera, out depth);
+                        var pos = instance.GetViewportRect(sprite.Alignment, Camera.GetPosition(), viewProjection, ClientSize, out depth);
 
                         if (depth < 1.0f) // Discard offscreen sprites
                         {
@@ -2754,7 +2754,7 @@ namespace TombEditor.Controls
         {
             if (_editor.Configuration.Rendering3D_UseSpritesForServiceObjects)
             {
-                var newSprite = ServiceObjectTextures.GetSprite(instance, Camera, ClientSize, color, _editor.SelectedObject == instance);
+                var newSprite = ServiceObjectTextures.GetSprite(instance, Camera.GetPosition(), _viewProjection, ClientSize, color, _editor.SelectedObject == instance);
                 if (newSprite != null)
                     sprites.Add(newSprite);
                 return;
@@ -3349,14 +3349,14 @@ namespace TombEditor.Controls
             watch.Start();
 
             // New rendering setup
-            Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            _viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             _renderingStateBuffer.Set(new RenderingState
             {
                 ShowExtraBlendingModes = ShowExtraBlendingModes,
                 RoomGridForce = _editor.Mode == EditorMode.Geometry,
                 RoomDisableVertexColors = _editor.Mode == EditorMode.FaceEdit,
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
-                TransformMatrix = viewProjection,
+                TransformMatrix = _viewProjection,
                 ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly
             });
             var renderArgs = new RenderingDrawingRoom.RenderArgs
@@ -3391,7 +3391,7 @@ namespace TombEditor.Controls
                     textToDraw.Add(new Text
                     {
                         Font = _fontDefault,
-                        Pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter()).To2(),
+                        Pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * _viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter()).To2(),
                         Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                         String = roomsToDraw[i].Name
                     });
@@ -3415,7 +3415,7 @@ namespace TombEditor.Controls
                      };
 
                 Vector3 center = _editor.SelectedRoom.GetLocalCenter();
-                Matrix4x4 matrix = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos) * viewProjection;
+                Matrix4x4 matrix = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos) * _viewProjection;
                 for (int i = 0; i < 4; i++)
                     textToDraw.Add(new Text
                     {
@@ -3428,7 +3428,7 @@ namespace TombEditor.Controls
 
             // Draw skybox
             if (ShowHorizon)
-                DrawSkybox(viewProjection);
+                DrawSkybox(_viewProjection);
 
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -3443,16 +3443,16 @@ namespace TombEditor.Controls
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
 
                 if (ShowMoveables)
-                    DrawMoveables(viewProjection, moveablesToDraw, textToDraw, hiddenSelection);
+                    DrawMoveables(_viewProjection, moveablesToDraw, textToDraw, hiddenSelection);
                 if (ShowStatics)
-                    DrawStatics(viewProjection, staticsToDraw, textToDraw, hiddenSelection);
+                    DrawStatics(_viewProjection, staticsToDraw, textToDraw, hiddenSelection);
 
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
 
             // Draw room imported geometry
             if (importedGeometryToDraw.Count != 0 && ShowImportedGeometry)
-                DrawImportedGeometry(viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
+                DrawImportedGeometry(_viewProjection, importedGeometryToDraw, textToDraw, hiddenSelection);
 
             // Get common effect for service objects
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
@@ -3462,23 +3462,23 @@ namespace TombEditor.Controls
 
             // Draw volumes
             if (ShowVolumes)
-                DrawVolumes(viewProjection, effect, volumesToDraw, textToDraw, sprites);
+                DrawVolumes(_viewProjection, effect, volumesToDraw, textToDraw, sprites);
 
             if (ShowOtherObjects)
             {
                 // Draw sprites
-                DrawSprites(viewProjection, roomsToDraw, sprites);
+                DrawSprites(_viewProjection, roomsToDraw, sprites);
                 // Draw objects (sinks, cameras, fly-by cameras and sound sources) only for current room
-                DrawObjects(viewProjection, effect, roomsToDraw, textToDraw, sprites);
+                DrawObjects(_viewProjection, effect, roomsToDraw, textToDraw, sprites);
                 // Draw light objects and bounding volumes
-                DrawLights(viewProjection, effect, roomsToDraw, textToDraw, sprites);
+                DrawLights(_viewProjection, effect, roomsToDraw, textToDraw, sprites);
                 // Draw flyby path
-                DrawFlybyPath(viewProjection, effect);
+                DrawFlybyPath(_viewProjection, effect);
             }
 
             // Draw ghost block cubes
             if (ShowGhostBlocks)
-                DrawGhostBlocks(viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
+                DrawGhostBlocks(_viewProjection, effect, ghostBlocksToDraw, textToDraw, sprites);
 
             // Depth-sort sprites
             sprites = sprites.OrderByDescending(s => s.Depth).ToList();
@@ -3493,7 +3493,7 @@ namespace TombEditor.Controls
 
             // Draw ghost block bodies
             if (ShowGhostBlocks)
-                DrawGhostBlockBodies(viewProjection, effect, ghostBlocksToDraw);
+                DrawGhostBlockBodies(_viewProjection, effect, ghostBlocksToDraw);
 
             // Draw disabled rooms, so they don't conceal all geometry behind
             var hiddenRooms = roomsToDraw.Where(r => DisablePickingForHiddenRooms && r.Properties.Hidden).ToList();
@@ -3507,13 +3507,13 @@ namespace TombEditor.Controls
             }
 
             // Draw the height of the object and room bounding box
-            DrawDebugLines(viewProjection, effect);
+            DrawDebugLines(_viewProjection, effect);
 
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
             // Draw the gizmo
             SwapChain.ClearDepth();
-            _gizmo.Draw(viewProjection);
+            _gizmo.Draw(_viewProjection);
 
             // Draw depth-independent sprites
             var flatSprites = sprites.Where(s => !s.Depth.HasValue).ToList();
