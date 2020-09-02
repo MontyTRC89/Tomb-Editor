@@ -1518,7 +1518,7 @@ namespace TombEditor.Forms
             {
                 var cell = soundsCatalogsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] as DarkDataGridViewButtonCell;
 
-                if (_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                if (_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path?.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase) ?? false)
                 {
                     cell.Hidden = false;
                     soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.general_edit_16);
