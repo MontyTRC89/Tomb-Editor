@@ -1988,7 +1988,7 @@ namespace TombEditor
             // Select last room, if available. Else select first existing room.
             if (rooms.Contains(_editor.SelectedRoom))
             {
-                if (rooms.Contains(_editor.PreviousRoom))
+                if (_editor.PreviousRoom == null || rooms.Contains(_editor.PreviousRoom))
                     _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
                 else
                     _editor.SelectRoom(_editor.PreviousRoom);
