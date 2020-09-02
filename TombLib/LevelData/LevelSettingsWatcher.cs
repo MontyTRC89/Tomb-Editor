@@ -111,7 +111,7 @@ namespace TombEditor
             {
                 var result = new List<string>() { Parent.Settings?.MakeAbsolute(Wad.Path) };
 
-                if (result[0].EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
+                if (result[0] != null && result[0].EndsWith(".wad", StringComparison.InvariantCultureIgnoreCase))
                 {
                     var wasPath = Path.ChangeExtension(result[0], ".was");
                     var swdPath = Path.ChangeExtension(result[0], ".swd");
