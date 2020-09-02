@@ -21,13 +21,13 @@ namespace TombLib.LevelData.Compilers
         private void BuildRooms()
         {
             ReportProgress(5, "Lighting Rooms");
-            Parallel.ForEach<Room>(_level.Rooms.Where(r => r != null), (room) => {
+            Parallel.ForEach<Room>(_sortedRooms.Where(r => r != null), (room) => {
                 room.RebuildLighting(!_level.Settings.FastMode);
             });
 
             ReportProgress(15, "Building rooms");
 
-            foreach (var room in _level.Rooms.Where(r => r != null))
+            foreach (var room in _sortedRooms.Where(r => r != null))
             {
                 _roomsRemappingDictionary.Add(room, _roomsUnmapping.Count);
                 _roomsUnmapping.Add(room);

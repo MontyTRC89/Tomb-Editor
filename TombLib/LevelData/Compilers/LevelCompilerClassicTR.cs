@@ -23,6 +23,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
+        private Room[] _sortedRooms;
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
@@ -97,8 +98,11 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
-        
-            // Prepare level data in parallel to the sounds
+
+            // Try to shuffle rooms to accomodate for more vertically connected ones
+            _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
+
+            // Prepare level data
             ConvertWad2DataToTrData();
             BuildRooms();
 
@@ -175,7 +179,7 @@ namespace TombLib.LevelData.Compilers
 
             _soundSourcesTable = new Dictionary<SoundSourceInstance, int>(new ReferenceEqualityComparer<SoundSourceInstance>());
 
-            foreach (var room in _level.Rooms.Where(room => room != null))
+            foreach (var room in _sortedRooms.Where(room => room != null))
                 foreach (var obj in room.Objects.OfType<SoundSourceInstance>())
                     _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
 
@@ -234,14 +238,14 @@ namespace TombLib.LevelData.Compilers
                 _cameraTable = new Dictionary<CameraInstance, int>(new ReferenceEqualityComparer<CameraInstance>());
                 _sinkTable = new Dictionary<SinkInstance, int>(new ReferenceEqualityComparer<SinkInstance>());
                 _flybyTable = new Dictionary<FlybyCameraInstance, int>(new ReferenceEqualityComparer<FlybyCameraInstance>());
-                foreach (var room in _level.Rooms.Where(room => room != null))
+                foreach (var room in _sortedRooms.Where(room => room != null))
                 {
                     foreach (var obj in room.Objects.OfType<CameraInstance>())
                         _cameraTable.Add(obj, cameraSinkID++);
                     foreach (var obj in room.Objects.OfType<FlybyCameraInstance>())
                         _flybyTable.Add(obj, flybyID++);
                 }
-                foreach (var room in _level.Rooms.Where(room => room != null))
+                foreach (var room in _sortedRooms.Where(room => room != null))
                 {
                     foreach (var obj in room.Objects.OfType<SinkInstance>())
                         _sinkTable.Add(obj, cameraSinkID++);
@@ -345,10 +349,10 @@ namespace TombLib.LevelData.Compilers
 
         private void GetAllReachableRooms()
         {
-            foreach (var room in _level.Rooms.Where(r => r != null))
+            foreach (var room in _sortedRooms.Where(r => r != null))
                 _tempRooms[room].ReachableRooms = new List<Room>();
 
-            foreach (var room in _level.Rooms.Where(r => r != null))
+            foreach (var room in _sortedRooms.Where(r => r != null))
             {
                 GetAllReachableRoomsUp(room, room);
                 GetAllReachableRoomsDown(room, room);
@@ -444,7 +448,7 @@ namespace TombLib.LevelData.Compilers
 
             _luaIdToItems = new Dictionary<int, int>();
 
-            foreach (Room room in _level.Rooms.Where(room => room != null))
+            foreach (var room in _sortedRooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
                     WadMoveable wadMoveable = _level.Settings.WadTryGetMoveable(instance.WadObjectId);

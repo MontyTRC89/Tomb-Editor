@@ -620,6 +620,7 @@ namespace TombEditor.Forms
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
+            cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 
             // Lock settings dependent on preview mode
             cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
@@ -1282,6 +1283,12 @@ namespace TombEditor.Forms
         private void cbRemapAnimTextures_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.RemapAnimatedTextures = cbRemapAnimTextures.Checked;
+            UpdateDialog();
+        }
+
+        private void cbRearrangeRooms_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.RearrangeVerticalRooms = cbRearrangeRooms.Checked;
             UpdateDialog();
         }
 
