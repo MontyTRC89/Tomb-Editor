@@ -400,21 +400,12 @@ namespace TombLib.LevelData.Compilers
                                     
                                         var result = _textureInfoManager.AddTexture(texture, true, true);
 
-                                        switch (result.ConvertToQuad)
-                                        {
-                                            case 0:
-                                                roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
-                                                                doubleSided, 0));
-                                                break;
-                                            case 1:
-                                                roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex0Index },
-                                                                doubleSided, 0));
-                                                break;
-                                            case 2: // broken!
-                                                roomQuads.Add(result.CreateFace4(new ushort[] { vertex2Index, vertex0Index, vertex1Index, vertex2Index },
-                                                                doubleSided, 0));
-                                                break;
-                                        }
+                                        if (result.ConvertToQuad)
+                                            roomQuads.Add(result.CreateFace4(new ushort[] { vertex0Index, vertex1Index, vertex2Index, vertex2Index },
+                                                            doubleSided, 0));
+                                        else
+                                            roomTriangles.Add(result.CreateFace3(new ushort[] { vertex0Index, vertex1Index, vertex2Index },
+                                                            doubleSided, 0));
 
                                         if (copyFace)
                                         {

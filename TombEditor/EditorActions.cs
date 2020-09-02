@@ -1985,8 +1985,14 @@ namespace TombEditor
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
 
+            // Select last room, if available. Else select first existing room.
             if (rooms.Contains(_editor.SelectedRoom))
-                _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+            {
+                if (rooms.Contains(_editor.PreviousRoom))
+                    _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+                else
+                    _editor.SelectRoom(_editor.PreviousRoom);
+            }
 
             _editor.RoomListChange();
             _editor.RoomGeometryChange(_editor.SelectedRoom);

@@ -28,6 +28,7 @@ Tomb Editor:
  * Fix incorrect animation transitions in TR2-3.
  * Fix light radius calculation in TR2-3.
  * Fix drag-n-drop in find & replace objects dialog.
+ * Fix incorrect rendering of last imported geometry in a room.
  * Fix incorrect TR1-3 item names in find & replace objects dialog.
  * Fix exception when Lara skin mesh count doesn't correspond to Lara mesh count.
  

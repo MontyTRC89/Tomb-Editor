@@ -2947,9 +2947,6 @@ namespace TombEditor.Controls
                     var model = currentInstance.Model.DirectXModel;
                     var meshes = model.Meshes;
 
-                    if (instance.Hidden)
-                        continue;
-
                     for (var i = 0; i < meshes.Count; i++)
                     {
                         var mesh = meshes[i];
@@ -2962,6 +2959,9 @@ namespace TombEditor.Controls
 
                         foreach (var geo in geoGroup)
                         {
+                            if (geo.Hidden)
+                                continue;
+
                             geometryEffect.Parameters["ModelViewProjection"].SetValue((geo.ObjectMatrix * viewProjection).ToSharpDX());
 
                             // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
