@@ -80,9 +80,9 @@ namespace TombLib.LevelData.Compilers
             else
                 _floorData.Add(0x0000);
 
-            for (var i = 0; i < _level.Rooms.Length; i++)
+            for (var i = 0; i < _sortedRooms.Length; i++)
             {
-                var room = _level.Rooms[i];
+                var room = _sortedRooms[i];
                 if (room == null)
                     continue;
                 var tempRoom = _tempRooms[room];

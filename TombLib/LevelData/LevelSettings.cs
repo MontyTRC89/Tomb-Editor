@@ -193,6 +193,7 @@ namespace TombLib.LevelData
         public bool OverrideIndividualLightQualitySettings { get; set; } = false;
 
         // Compiler options
+        public bool RearrangeVerticalRooms { get; set; } = false;
         public bool AgressiveFloordataPacking { get; set; } = false;
         public bool AgressiveTexturePacking { get; set; } = false;
         public bool Dither16BitTextures { get; set; } = true;

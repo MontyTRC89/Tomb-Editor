@@ -324,7 +324,7 @@ namespace TombLib.NG
                 return checked((ushort)Id);
             }
             else if (parameter is Room)
-                return (ushort)level.Rooms.ReferenceIndexOf(parameter);
+                return (ushort)level.GetRearrangedRooms().ReferenceIndexOf(parameter);
             else
                 throw new Exception("Trigger parameter of invalid type!");
         }
