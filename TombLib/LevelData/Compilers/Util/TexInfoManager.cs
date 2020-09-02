@@ -766,7 +766,7 @@ namespace TombLib.LevelData.Compilers.Util
             var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3 && _level.Settings.GameVersion != TRVersion.Game.TR5Main;
 
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
-            var refQuad = texture.RestoreQuadWithRotation();
+            var refQuad = uvRotateHack && isForTriangle ? texture.RestoreQuadWithRotation() : texture;
 
             // Try to compare incoming texture with existing anims and return animation frame
             if (_actualAnimTextures.Count > 0)
