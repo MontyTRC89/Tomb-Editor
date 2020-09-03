@@ -107,5 +107,11 @@ namespace TombEditor.ToolWindows
             if (comboItems.Items.Count > 0 && comboItems.SelectedIndex != comboItems.Items.Count - 1)
                 comboItems.SelectedIndex++;
         }
+
+        private void butFindItem_Click(object sender, EventArgs e)
+        {
+            if (comboItems.SelectedItem is ImportedGeometry)
+                EditorActions.FindImportedGeometry((ImportedGeometry)comboItems.SelectedItem);
+        }
     }
 }
