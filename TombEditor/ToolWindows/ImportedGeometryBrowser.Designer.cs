@@ -26,6 +26,7 @@
             this.butItemUp = new DarkUI.Controls.DarkButton();
             this.panelRight = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butFindItem = new DarkUI.Controls.DarkButton();
             this.panelHeader.SuspendLayout();
             this.panelRightBottom.SuspendLayout();
             this.panelRight.SuspendLayout();
@@ -95,6 +96,7 @@
             // 
             // panelRightBottom
             // 
+            this.panelRightBottom.Controls.Add(this.butFindItem);
             this.panelRightBottom.Controls.Add(this.butItemDown);
             this.panelRightBottom.Controls.Add(this.butItemUp);
             this.panelRightBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -145,6 +147,22 @@
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
+            // butFindItem
+            // 
+            this.butFindItem.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butFindItem.Checked = false;
+            this.butFindItem.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butFindItem.Image = global::TombEditor.Properties.Resources.general_target_16;
+            this.butFindItem.Location = new System.Drawing.Point(133, 6);
+            this.butFindItem.Name = "butFindItem";
+            this.butFindItem.Size = new System.Drawing.Size(92, 23);
+            this.butFindItem.TabIndex = 8;
+            this.butFindItem.Tag = "";
+            this.butFindItem.Text = "Locate item";
+            this.butFindItem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butFindItem, "Locate item");
+            this.butFindItem.Click += new System.EventHandler(this.butFindItem_Click);
+            // 
             // ImportedGeometryBrowser
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -177,5 +195,6 @@
         private DarkUI.Controls.DarkButton butItemDown;
         private DarkUI.Controls.DarkButton butItemUp;
         private DarkUI.Controls.DarkButton butAddItem;
+        private DarkUI.Controls.DarkButton butFindItem;
     }
 }

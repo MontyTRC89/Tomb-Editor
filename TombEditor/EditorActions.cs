@@ -4269,6 +4269,27 @@ namespace TombEditor
                 _editor.ShowObject(instance);
         }
 
+        public static void FindImportedGeometry(ImportedGeometry item)
+        {
+            if (item == null)
+                return;
+
+            // Search for matching objects after the previous one
+            ObjectInstance previousFind = _editor.SelectedObject;
+            ObjectInstance instance = _editor.Level.Rooms
+                .Where(room => room != null)
+                .SelectMany(room => room.Objects)
+                .FindFirstAfterWithWrapAround(
+                obj => previousFind == obj,
+                obj => obj is ImportedGeometryInstance && ((ImportedGeometryInstance)obj).Model.UniqueID == item.UniqueID);
+
+            // Show result
+            if (instance == null)
+                _editor.SendMessage("No such imported geometry found.", PopupType.Info);
+            else
+                _editor.ShowObject(instance);
+        }
+
         public static void ExportCurrentRoom(IWin32Window owner)
         {
             ExportRooms(new[] { _editor.SelectedRoom }, owner);

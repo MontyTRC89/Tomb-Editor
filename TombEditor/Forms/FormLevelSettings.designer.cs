@@ -35,6 +35,7 @@
             this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
             this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
+            this.cbRearrangeRooms = new DarkUI.Controls.DarkCheckBox();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -181,7 +182,6 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbRearrangeRooms = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
@@ -357,7 +357,7 @@
             this.cbRemapAnimTextures.Tag = "";
             this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
             this.pathToolTip.SetToolTip(this.cbRemapAnimTextures, "Scan all objects for textures which are similar to any animated frame and apply a" +
-        "nimations to them");
+        "nimations to them.");
             this.cbRemapAnimTextures.CheckedChanged += new System.EventHandler(this.cbRemapAnimTextures_CheckedChanged);
             // 
             // cbDither16BitTextures
@@ -369,7 +369,7 @@
             this.cbDither16BitTextures.TabIndex = 109;
             this.cbDither16BitTextures.Tag = "";
             this.cbDither16BitTextures.Text = "Dither 16-bit textures";
-            this.pathToolTip.SetToolTip(this.cbDither16BitTextures, "Apply dithering and premultiply alpha channel to brightness for 16-bit textures");
+            this.pathToolTip.SetToolTip(this.cbDither16BitTextures, "Apply dithering and premultiply alpha channel to brightness for 16-bit textures.");
             this.cbDither16BitTextures.CheckedChanged += new System.EventHandler(this.cbDither16BitTextures_CheckedChanged);
             // 
             // cbOverrideAllLightQuality
@@ -407,7 +407,7 @@
             this.cbAgressiveFloordataPacking.TabIndex = 105;
             this.cbAgressiveFloordataPacking.Tag = "";
             this.cbAgressiveFloordataPacking.Text = "Aggressive floordata packing";
-            this.pathToolTip.SetToolTip(this.cbAgressiveFloordataPacking, "Scan and merge similar floordata sequences");
+            this.pathToolTip.SetToolTip(this.cbAgressiveFloordataPacking, "Scan and merge similar floordata sequences.\r\nRecommended mode for TR1-3 targets.");
             this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
             // 
             // cbAgressiveTexturePacking
@@ -420,7 +420,7 @@
             this.cbAgressiveTexturePacking.Tag = "";
             this.cbAgressiveTexturePacking.Text = "Aggressive texture packing (merge object and room textures)";
             this.pathToolTip.SetToolTip(this.cbAgressiveTexturePacking, "Pack both object and room textures in same texture pages.\r\nRecommended mode for T" +
-        "R2/3 targets.");
+        "R1-3 targets.");
             this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // numPadding
@@ -438,6 +438,20 @@
             this.pathToolTip.SetToolTip(this.numPadding, "Edge pixel padding to prevent texture border bleeding.\r\nIf set to 0, seams betwee" +
         "n textures may become visible.");
             this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
+            // 
+            // cbRearrangeRooms
+            // 
+            this.cbRearrangeRooms.AutoSize = true;
+            this.cbRearrangeRooms.Location = new System.Drawing.Point(3, 189);
+            this.cbRearrangeRooms.Name = "cbRearrangeRooms";
+            this.cbRearrangeRooms.Size = new System.Drawing.Size(280, 17);
+            this.cbRearrangeRooms.TabIndex = 111;
+            this.cbRearrangeRooms.Tag = "";
+            this.cbRearrangeRooms.Text = "Rearrange vertically connected rooms if necessary";
+            this.pathToolTip.SetToolTip(this.cbRearrangeRooms, "Prioritize vertically connected rooms during compilation.\r\nAllows to safely make " +
+        "more rooms until overall amount of vertically connected ones won\'t hit absolute " +
+        "limit.");
+            this.cbRearrangeRooms.CheckedChanged += new System.EventHandler(this.cbRearrangeRooms_CheckedChanged);
             // 
             // optionsList
             // 
@@ -2088,20 +2102,6 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // cbRearrangeRooms
-            // 
-            this.cbRearrangeRooms.AutoSize = true;
-            this.cbRearrangeRooms.Location = new System.Drawing.Point(3, 189);
-            this.cbRearrangeRooms.Name = "cbRearrangeRooms";
-            this.cbRearrangeRooms.Size = new System.Drawing.Size(218, 17);
-            this.cbRearrangeRooms.TabIndex = 111;
-            this.cbRearrangeRooms.Tag = "";
-            this.cbRearrangeRooms.Text = "Rearrange vertically connected rooms";
-            this.pathToolTip.SetToolTip(this.cbRearrangeRooms, "Prioritize vertically connected rooms during compilation.\r\nAllows to safely make " +
-        "more rooms until overall amount of vertically connected ones won\'t hit absolute " +
-        "limit.");
-            this.cbRearrangeRooms.CheckedChanged += new System.EventHandler(this.cbRearrangeRooms_CheckedChanged);
             // 
             // FormLevelSettings
             // 
