@@ -109,10 +109,10 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return "Unknown #" + id;
+                return "Moveable #" + id;
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "Moveable #" + id;
             return game.Moveables[id].Names.LastOrDefault();
         }
 
@@ -198,10 +198,10 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return "Unknown #" + id;
+                return "Static #" + id;
             Item entry;
             if (!game.Statics.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "Static #" + id;
             return game.Statics[id].Names.LastOrDefault();
         }
 
@@ -275,10 +275,10 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return "Unknown #" + id;
+                return "Sprite sequence #" + id;
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "Sprite sequence #" + id;
             return game.SpriteSequences[id].Names.LastOrDefault();
         }
 
