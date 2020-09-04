@@ -112,12 +112,6 @@ namespace TombIDE
 			}
 		}
 
-		private static bool IsUnicodePath(string path)
-		{
-			int asciiByteCount = Encoding.ASCII.GetByteCount(path);
-			int utf8ByteCount = Encoding.UTF8.GetByteCount(path);
-
-			return asciiByteCount != utf8ByteCount;
-		}
-	}
+		private static bool IsUnicodePath(string path) => path.Any(c => c > byte.MaxValue);
+    }
 }
