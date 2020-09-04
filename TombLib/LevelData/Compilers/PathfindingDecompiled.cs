@@ -615,6 +615,8 @@ namespace TombLib.LevelData.Compilers
 
             if (borderOrOutside)
             {
+                Room lastRoom = null;
+
                 while (true)
                 {
                     room = theRoom;
@@ -658,6 +660,11 @@ namespace TombLib.LevelData.Compilers
                         break;
 
                     Room adjoiningRoom = block.WallPortal.AdjoiningRoom;
+
+                    // This should avoid endless loops due to bad portal setup
+                    if (adjoiningRoom == lastRoom)
+                        return false;
+                    lastRoom = room;
                     
                     dec_currentRoom = adjoiningRoom;
                     theRoom = adjoiningRoom;
