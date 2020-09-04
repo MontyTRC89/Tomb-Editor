@@ -125,7 +125,7 @@ namespace WadTool
                     DialogResult = DialogResult.OK;
                 }
                 else
-                    DialogResult = DialogResult.None;
+                    DialogResult = DialogResult.Ignore;
             }
             else
                 DialogResult = DialogResult.Cancel;

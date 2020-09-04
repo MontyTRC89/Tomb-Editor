@@ -806,7 +806,8 @@ namespace TombEditor
         // Select last used room or first available room if not available
         private void SelectLastOrDefaultRoom()
         {
-            if (_level.Rooms[_level.Settings.LastSelectedRoom] != null)
+            if (_level.Settings.LastSelectedRoom >= 0 &&
+                _level.Rooms[_level.Settings.LastSelectedRoom] != null)
                 SelectedRooms = new[] { _level.Rooms[_level.Settings.LastSelectedRoom] };
             else
                 SelectedRooms = new[] { _level.Rooms.First(room => room != null) };

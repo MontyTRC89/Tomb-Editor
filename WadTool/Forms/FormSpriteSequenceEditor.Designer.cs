@@ -235,7 +235,7 @@
             0,
             0,
             65536});
-            this.nudB.Location = new System.Drawing.Point(250, 22);
+            this.nudB.Location = new System.Drawing.Point(253, 22);
             this.nudB.LoopValues = false;
             this.nudB.Maximum = new decimal(new int[] {
             32767,
@@ -248,7 +248,7 @@
             0,
             -2147483648});
             this.nudB.Name = "nudB";
-            this.nudB.Size = new System.Drawing.Size(55, 22);
+            this.nudB.Size = new System.Drawing.Size(52, 22);
             this.nudB.TabIndex = 9;
             this.nudB.ValueChanged += new System.EventHandler(this.nudAlignment_ValueChanged);
             // 
@@ -280,7 +280,7 @@
             this.darkLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel6.Location = new System.Drawing.Point(83, 51);
             this.darkLabel6.Name = "darkLabel6";
-            this.darkLabel6.Size = new System.Drawing.Size(64, 13);
+            this.darkLabel6.Size = new System.Drawing.Size(63, 13);
             this.darkLabel6.TabIndex = 15;
             this.darkLabel6.Text = "Vertical adj";
             // 
@@ -291,7 +291,7 @@
             0,
             0,
             65536});
-            this.nudR.Location = new System.Drawing.Point(173, 22);
+            this.nudR.Location = new System.Drawing.Point(176, 22);
             this.nudR.LoopValues = false;
             this.nudR.Maximum = new decimal(new int[] {
             32767,
@@ -304,7 +304,7 @@
             0,
             -2147483648});
             this.nudR.Name = "nudR";
-            this.nudR.Size = new System.Drawing.Size(55, 22);
+            this.nudR.Size = new System.Drawing.Size(52, 22);
             this.nudR.TabIndex = 7;
             this.nudR.ValueChanged += new System.EventHandler(this.nudAlignment_ValueChanged);
             // 
@@ -359,7 +359,7 @@
             0,
             0,
             65536});
-            this.nudT.Location = new System.Drawing.Point(96, 22);
+            this.nudT.Location = new System.Drawing.Point(99, 22);
             this.nudT.LoopValues = false;
             this.nudT.Maximum = new decimal(new int[] {
             32767,
@@ -372,7 +372,7 @@
             0,
             -2147483648});
             this.nudT.Name = "nudT";
-            this.nudT.Size = new System.Drawing.Size(55, 22);
+            this.nudT.Size = new System.Drawing.Size(52, 22);
             this.nudT.TabIndex = 5;
             this.nudT.ValueChanged += new System.EventHandler(this.nudAlignment_ValueChanged);
             // 
@@ -393,7 +393,7 @@
             0,
             0,
             65536});
-            this.nudL.Location = new System.Drawing.Point(20, 22);
+            this.nudL.Location = new System.Drawing.Point(23, 22);
             this.nudL.LoopValues = false;
             this.nudL.Maximum = new decimal(new int[] {
             32767,
@@ -406,7 +406,7 @@
             0,
             -2147483648});
             this.nudL.Name = "nudL";
-            this.nudL.Size = new System.Drawing.Size(55, 22);
+            this.nudL.Size = new System.Drawing.Size(52, 22);
             this.nudL.TabIndex = 3;
             this.nudL.ValueChanged += new System.EventHandler(this.nudAlignment_ValueChanged);
             // 

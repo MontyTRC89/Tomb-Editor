@@ -1607,7 +1607,7 @@ namespace WadTool
             using (var form = new FormAnimationFixer(_editor, anims))
             {
                 var result = form.ShowDialog();
-                if (result == DialogResult.None)
+                if (result == DialogResult.Ignore)
                     popup.ShowInfo(panelRendering, "No properties were selected or there was nothing to fix.\nNo changes were made.");
                 else if (result == DialogResult.OK)
                     popup.ShowWarning(panelRendering, "Animations (" + form.ChangedAnimations + ") were fixed.\nPlease save your wad under new name and thoroughly test it.");

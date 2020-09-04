@@ -153,7 +153,7 @@ namespace TombLib.Rendering
         // Gets sprite for specified instance type, if such sprite exists.
         // If no specific sprite for this type exists, returns default image with [?] mark.
 
-        public static Sprite GetSprite(ISpatial instance, Camera camera, Size viewportSize, Vector4 color, bool noZ = false)
+        public static Sprite GetSprite(ISpatial instance, Vector3 camPos, Matrix4x4 camViewProjection, Size viewportSize, Vector4 color, bool noZ = false)
         {
             Vector3 absPos;
             Matrix4x4 posMatrix;
@@ -174,7 +174,7 @@ namespace TombLib.Rendering
                 return null; // Unknown non-position-based instance!
 
             // Determine MIP level
-            var distance = Vector3.Distance(absPos, camera.GetPosition());
+            var distance = Vector3.Distance(absPos, camPos);
             var resolution = viewportSize.Height / 480.0f;
             var index = (int)Math.Min(Math.Max(Math.Round(distance / _mipStep / resolution), 0), _mipLevels);
 
@@ -189,7 +189,7 @@ namespace TombLib.Rendering
             // Calculate screen-space position
             var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * 1024.0f;
             var scale = 2048.0f / (distance != 0 ? distance : 1.0f);
-            var pos = (posMatrix * camera.GetViewProjectionMatrix(viewportSize.Width, viewportSize.Height)).TransformPerspectively(new Vector3());
+            var pos = (posMatrix * camViewProjection).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
 
             // Do fadeout if sprite is too near

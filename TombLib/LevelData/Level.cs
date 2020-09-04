@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData
 {
@@ -306,6 +307,40 @@ namespace TombLib.LevelData
             foreach (Room room in rooms)
                 coveredArea = coveredArea.Union(room.WorldArea);
             return TransformRooms(rooms, transformation, new VectorInt2((coveredArea.X0 + coveredArea.X1) / 2, (coveredArea.Y0 + coveredArea.Y1) / 2));
+        }
+
+        public Room[] GetRearrangedRooms(IProgressReporter progressReporter = null)
+        {
+            var limit = TrCatalog.GetLimit(Settings.GameVersion, Limit.RoomSafeCount);
+            var existingRooms = Rooms.Where(r => r != null).ToList();
+
+            // Don't sort anything if option is disabled or room count is less than limit
+            if (!Settings.RearrangeVerticalRooms || existingRooms.Count < limit)
+                return Rooms;
+
+            // Count last index of vertically connected room and sort only if it goes beyond limit
+            var lastIndex = existingRooms.IndexOf(r => r == existingRooms.LastOrDefault(rm => rm.Portals.Any(p => p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)));
+            if (lastIndex < limit)
+            {
+                // If no any room gets beyond the limit, don't sort anything
+                return Rooms;
+            }
+            else
+            {
+                // Warn user if last vertically connected room index is beyond limit
+                progressReporter?.ReportWarn("Level has " + existingRooms.Count + " rooms, which is more than a limit of " + limit +
+                                             ". Vertically connected rooms will be sorted. Test the level and make sure all doors and portals are working correctly.");
+            }
+
+            // Collect all rooms with portals
+            var portalRoomList = existingRooms.Where(r => r.Portals.Any(p => p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)).ToList();
+
+            // Warn user if portal count is beyond absolute limit
+            if (portalRoomList.Count > limit)
+                progressReporter?.ReportWarn("Level contains " + portalRoomList.Count + " vertically connected rooms, while maximum is " + limit + ". Some vertical portals won't be added.");
+
+            // Put all vertically connected rooms to the beginning of the list
+            return Rooms.OrderBy(r => !portalRoomList.Contains(r)).ToArray();
         }
 
         public void RemoveTextures(Predicate<LevelTexture> askIfTextureToRemove)

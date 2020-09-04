@@ -620,6 +620,7 @@ namespace TombEditor.Forms
             cbAgressiveTexturePacking.Checked = _levelSettings.AgressiveTexturePacking;
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
+            cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 
             // Lock settings dependent on preview mode
             cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
@@ -1285,6 +1286,12 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
+        private void cbRearrangeRooms_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.RearrangeVerticalRooms = cbRearrangeRooms.Checked;
+            UpdateDialog();
+        }
+
         private void cbAutodetectIfNoneSelected_CheckedChanged(object sender, EventArgs e)
         {
             _levelSettings.AutoAssignSoundsIfNoSelection = cbAutodetectIfNoneSelected.Checked;
@@ -1511,7 +1518,7 @@ namespace TombEditor.Forms
             {
                 var cell = soundsCatalogsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] as DarkDataGridViewButtonCell;
 
-                if (_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                if (_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path?.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase) ?? false)
                 {
                     cell.Hidden = false;
                     soundsCatalogsDataGridView.PaintCell(e, Properties.Resources.general_edit_16);

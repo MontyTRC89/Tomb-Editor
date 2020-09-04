@@ -143,15 +143,15 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteNgChunkRemapRooms(BinaryWriter writer)
         {
-            writer.Write((ushort)(2 + _level.Rooms.Length));
+            writer.Write((ushort)(2 + _sortedRooms.Length));
             writer.Write((ushort)0x8037);
 
-            for (var i = 0; i < _level.Rooms.Length; i++)
+            for (var i = 0; i < _sortedRooms.Length; i++)
             {
-                if (_level.Rooms[i] == null)
+                if (_sortedRooms[i] == null)
                     writer.Write((short)-1);
                 else
-                    writer.Write((short)_roomsRemappingDictionary[_level.Rooms[i]]);
+                    writer.Write((short)_roomsRemappingDictionary[_sortedRooms[i]]);
             }
         }
 
@@ -284,7 +284,7 @@ namespace TombLib.LevelData.Compilers
                     if (instance is StaticInstance)
                     {
                         var staticMesh = instance as StaticInstance;
-                        writer.Write((short)_level.Rooms.ReferenceIndexOf(staticMesh.Room));
+                        writer.Write((short)_sortedRooms.ReferenceIndexOf(staticMesh.Room));
                         writer.Write((short)_staticsTable[staticMesh]);
                     }
                     else

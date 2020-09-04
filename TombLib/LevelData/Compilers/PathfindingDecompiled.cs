@@ -42,7 +42,7 @@ namespace TombLib.LevelData.Compilers
 
         private void Dec_BuildBoxesAndOverlaps()
         {
-            dec_currentRoom = _level.Rooms[0];
+            dec_currentRoom = _sortedRooms[0];
             dec_boxes = new dec_tr_box_aux[2048];
 
             Stopwatch watch = new Stopwatch();
@@ -50,9 +50,9 @@ namespace TombLib.LevelData.Compilers
 
             for (int flipped = 0; flipped < 2; flipped++)
             {
-                for (int i = 0; i < _level.Rooms.Length; i++)
+                for (int i = 0; i < _sortedRooms.Length; i++)
                 {
-                    Room room = _level.Rooms[i];
+                    Room room = _sortedRooms[i];
 
                     // Room must be defined and also must be base room or the flipped version
                     if (room != null && (flipped == 0 && room.AlternateBaseRoom == null || flipped == 1 && room.AlternateBaseRoom != null))
