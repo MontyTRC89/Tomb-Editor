@@ -1985,8 +1985,14 @@ namespace TombEditor
                 adjoiningRoom?.AlternateOpposite?.BuildGeometry();
             }
 
+            // Select last room, if available. Else select first existing room.
             if (rooms.Contains(_editor.SelectedRoom))
-                _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+            {
+                if (_editor.PreviousRoom == null || rooms.Contains(_editor.PreviousRoom))
+                    _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+                else
+                    _editor.SelectRoom(_editor.PreviousRoom);
+            }
 
             _editor.RoomListChange();
             _editor.RoomGeometryChange(_editor.SelectedRoom);
@@ -4263,6 +4269,27 @@ namespace TombEditor
                 _editor.ShowObject(instance);
         }
 
+        public static void FindImportedGeometry(ImportedGeometry item)
+        {
+            if (item == null)
+                return;
+
+            // Search for matching objects after the previous one
+            ObjectInstance previousFind = _editor.SelectedObject;
+            ObjectInstance instance = _editor.Level.Rooms
+                .Where(room => room != null)
+                .SelectMany(room => room.Objects)
+                .FindFirstAfterWithWrapAround(
+                obj => previousFind == obj,
+                obj => obj is ImportedGeometryInstance && ((ImportedGeometryInstance)obj).Model.UniqueID == item.UniqueID);
+
+            // Show result
+            if (instance == null)
+                _editor.SendMessage("No such imported geometry found.", PopupType.Info);
+            else
+                _editor.ShowObject(instance);
+        }
+
         public static void ExportCurrentRoom(IWin32Window owner)
         {
             ExportRooms(new[] { _editor.SelectedRoom }, owner);
@@ -4958,23 +4985,23 @@ namespace TombEditor
             switch (settings.GameVersion)
             {
                 case TRVersion.Game.TR1:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr1.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr1.xml";
                     break;
 
                 case TRVersion.Game.TR2:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr2.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr2.xml";
                     break;
 
                 case TRVersion.Game.TR3:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr3.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr3.xml";
                     break;
 
                 case TRVersion.Game.TR4:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr4.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr4.xml";
                     break;
 
                 case TRVersion.Game.TR5:
-                    catalogName = Application.StartupPath + "\\Assets\\SoundCatalogs\\Sounds.tr5.xml";
+                    catalogName = Application.StartupPath + "\\Catalogs\\Sounds.tr5.xml";
                     break;
             }
 

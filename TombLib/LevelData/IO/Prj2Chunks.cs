@@ -41,6 +41,7 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId AgressiveTexturePacking = ChunkId.FromString("TeAgressiveTexturePacking");
         /**/public static readonly ChunkId AgressiveFloordataPacking = ChunkId.FromString("TeAgressiveFloordataPacking");
         /**/public static readonly ChunkId RemapAnimatedTextures = ChunkId.FromString("TeRemapAnimTextures");
+        /**/public static readonly ChunkId RearrangeRooms = ChunkId.FromString("TeRearrangeRooms");
         /**/public static readonly ChunkId Wads = ChunkId.FromString("TeWads");
         /****/public static readonly ChunkId Wad = ChunkId.FromString("TeWad");
         /**/public static readonly ChunkId SelectedSounds = ChunkId.FromString("TeSelectedSounds");

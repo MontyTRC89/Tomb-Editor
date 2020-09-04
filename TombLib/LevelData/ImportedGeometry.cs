@@ -28,7 +28,10 @@ namespace TombLib.LevelData
             // Replace magenta with transparent color
             Image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
-            SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
+            if (SynchronizationContext.Current == null)
+                DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image);
+            else
+                SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
                 DirectXTexture = TextureLoad.Load(ImportedGeometry.Device, Image), null);
         }
 

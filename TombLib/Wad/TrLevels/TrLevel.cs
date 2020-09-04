@@ -830,7 +830,7 @@ namespace TombLib.Wad.TrLevels
                             levelReader.ReadBytes(numDemoData);
 
                         // Sound map
-                        var soundMapSize = Catalog.TrCatalog.PredictSoundMapSize(Version, IsNg, numDemoData);
+                        var soundMapSize = TrCatalog.PredictSoundMapSize(Version, IsNg, numDemoData);
                         for (var i = 0; i < soundMapSize; i++)
                             SoundMap.Add(levelReader.ReadInt16());
 

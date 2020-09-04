@@ -88,31 +88,20 @@ namespace TombLib.Wad.Catalog
 
         public static int PredictSoundMapSize(TRVersion.Game version, bool IsNg, int numDemoData)
         {
-            switch (version.Native())
-            {
-                case TRVersion.Game.TR1:
-                    return 256;
-                case TRVersion.Game.TR2:
-                case TRVersion.Game.TR3:
-                    return 370;
-                case TRVersion.Game.TR4:
-                    return IsNg && numDemoData != 0 ? numDemoData : 370;
-                case TRVersion.Game.TR5:
-                case TRVersion.Game.TR5Main:
-                    return 450;
-                default:
-                    throw new ArgumentOutOfRangeException("Unknown game version.");
-            }
+            if (version == TRVersion.Game.TR4 && IsNg && numDemoData != 0)
+                return numDemoData;
+            else
+                return GetLimit(version.Native(), Limit.SoundMapSize);
         }
 
         public static string GetMoveableName(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return "Unknown #" + id;
+                return "Moveable #" + id;
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "Moveable #" + id;
             return game.Moveables[id].Names.LastOrDefault();
         }
 
@@ -198,10 +187,10 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return "Unknown #" + id;
+                return "Static #" + id;
             Item entry;
             if (!game.Statics.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "Static #" + id;
             return game.Statics[id].Names.LastOrDefault();
         }
 
@@ -275,10 +264,10 @@ namespace TombLib.Wad.Catalog
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
-                return "Unknown #" + id;
+                return "Sprite sequence #" + id;
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
-                return "Unknown #" + id;
+                return "Sprite sequence #" + id;
             return game.SpriteSequences[id].Names.LastOrDefault();
         }
 

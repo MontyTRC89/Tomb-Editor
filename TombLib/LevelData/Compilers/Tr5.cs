@@ -22,13 +22,11 @@ namespace TombLib.LevelData.Compilers
                 const int filler = 0;
                 writer.Write(filler);
 
-                var numRooms = (uint)_level.Rooms.Count(r => r != null);
+                var numRooms = (uint)_sortedRooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                foreach (var r in _level.Rooms.Where(r => r != null))
-                {
+                foreach (var r in _sortedRooms.Where(r => r != null))
                     _tempRooms[r].WriteTr5(writer);
-                }
 
                 // Write floordata
                 var numFloorData = (uint)_floorData.Count;

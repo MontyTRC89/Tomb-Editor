@@ -58,7 +58,7 @@
             // 
             this.cbNoPathfinding.AutoCheck = false;
             this.cbNoPathfinding.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbNoPathfinding.Location = new System.Drawing.Point(129, 130);
+            this.cbNoPathfinding.Location = new System.Drawing.Point(129, 134);
             this.cbNoPathfinding.Name = "cbNoPathfinding";
             this.cbNoPathfinding.Size = new System.Drawing.Size(96, 17);
             this.cbNoPathfinding.TabIndex = 8;
@@ -69,7 +69,7 @@
             // 
             this.cbHorizon.AutoCheck = false;
             this.cbHorizon.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbHorizon.Location = new System.Drawing.Point(3, 130);
+            this.cbHorizon.Location = new System.Drawing.Point(3, 134);
             this.cbHorizon.Name = "cbHorizon";
             this.cbHorizon.Size = new System.Drawing.Size(58, 17);
             this.cbHorizon.TabIndex = 6;
@@ -114,7 +114,7 @@
             // 
             this.cbFlagOutside.AutoCheck = false;
             this.cbFlagOutside.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagOutside.Location = new System.Drawing.Point(3, 151);
+            this.cbFlagOutside.Location = new System.Drawing.Point(3, 155);
             this.cbFlagOutside.Name = "cbFlagOutside";
             this.cbFlagOutside.Size = new System.Drawing.Size(50, 17);
             this.cbFlagOutside.TabIndex = 9;
@@ -126,7 +126,7 @@
             this.cbFlagCold.AutoCheck = false;
             this.cbFlagCold.AutoSize = true;
             this.cbFlagCold.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagCold.Location = new System.Drawing.Point(64, 151);
+            this.cbFlagCold.Location = new System.Drawing.Point(64, 155);
             this.cbFlagCold.Name = "cbFlagCold";
             this.cbFlagCold.Size = new System.Drawing.Size(50, 17);
             this.cbFlagCold.TabIndex = 10;
@@ -137,7 +137,7 @@
             // 
             this.cbFlagDamage.AutoCheck = false;
             this.cbFlagDamage.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbFlagDamage.Location = new System.Drawing.Point(64, 130);
+            this.cbFlagDamage.Location = new System.Drawing.Point(64, 134);
             this.cbFlagDamage.Name = "cbFlagDamage";
             this.cbFlagDamage.Size = new System.Drawing.Size(64, 17);
             this.cbFlagDamage.TabIndex = 7;
@@ -182,7 +182,7 @@
             // 
             this.cbNoLensflare.AutoCheck = false;
             this.cbNoLensflare.AutoSize = true;
-            this.cbNoLensflare.Location = new System.Drawing.Point(129, 151);
+            this.cbNoLensflare.Location = new System.Drawing.Point(129, 155);
             this.cbNoLensflare.Name = "cbNoLensflare";
             this.cbNoLensflare.Size = new System.Drawing.Size(88, 17);
             this.cbNoLensflare.TabIndex = 11;

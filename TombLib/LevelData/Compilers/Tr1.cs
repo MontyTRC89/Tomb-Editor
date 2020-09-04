@@ -90,10 +90,10 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(85, "Writing geometry data");
 
                 // Write rooms
-                var numRooms = (ushort)_level.Rooms.Count(r => r != null);
+                var numRooms = (ushort)_sortedRooms.Count(r => r != null);
                 writer.Write(numRooms);
 
-                foreach (var r in _level.Rooms.Where(r => r != null))
+                foreach (var r in _sortedRooms.Where(r => r != null))
                     _tempRooms[r].WriteTr1(writer);
 
                 // Write floordata

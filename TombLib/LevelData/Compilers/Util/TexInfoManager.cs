@@ -607,11 +607,9 @@ namespace TombLib.LevelData.Compilers.Util
             // As result, CreateFace3/4 should return a face with changed index order.
             public byte Rotation;
 
-            // If not 0, this value indicates that if used on triangle, it must be converted to
-            // fake quad. It's needed to fake UVRotate application to triangular areas. Value 1 or 2
-            // specify the orientation of degenerate quad which is needed to be different for various
-            // renderer cases.
-            public int ConvertToQuad;
+            // This value indicates that if used on triangle, it must be converted to
+            // degenerate quad. It's needed to fake UVRotate application to triangular areas.
+            public bool ConvertToQuad;
 
             public tr_face3 CreateFace3(ushort[] indices, bool doubleSided, ushort lightingEffect)
             {
@@ -661,7 +659,7 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, float lookupMargin = 0.0f, bool scanOtherSets = false)
+        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, bool scanOtherSets = false)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -692,7 +690,7 @@ namespace TombLib.LevelData.Compilers.Util
                         continue;
 
                     // Test if coordinates are mutually equal and return resulting rotation if they are
-                    var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
+                    var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, _animTextureLookupMargin);
                     if (result != _noTexInfo)
                     {
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
@@ -768,23 +766,20 @@ namespace TombLib.LevelData.Compilers.Util
             var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3 && _level.Settings.GameVersion != TRVersion.Game.TR5Main;
 
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
-            var refQuad = texture.RestoreQuadWithRotation();
+            var refQuad = uvRotateHack && isForTriangle ? texture.RestoreQuadWithRotation() : texture;
 
             // Try to compare incoming texture with existing anims and return animation frame
             if (_actualAnimTextures.Count > 0)
                 foreach (var actualTex in _actualAnimTextures)
                 {
                     // If current animation set is UVRotate set and UVRotate hack is needed, pass the texture as quad
-                    var asTriangle = actualTex.Origin.IsUvRotate && uvRotateHack ? false : isForTriangle;
-                    var reference  = actualTex.Origin.IsUvRotate && uvRotateHack ? refQuad : texture;
+                    var toQuad     = actualTex.Origin.IsUvRotate && uvRotateHack;
+                    var asTriangle = toQuad ? false : isForTriangle;
+                    var reference  = toQuad ? refQuad : texture;
 
-                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, _animTextureLookupMargin, remapAnimatedTextures);
+                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, remapAnimatedTextures);
                     if (existing.HasValue)
-                    {
-                        // Define triangle-to-quad conversion type, if UVRotate hack is used
-                        var quadType = !uvRotateHack || !actualTex.Origin.IsUvRotate ? 0 : (existing.Value.Rotation % 2 != 0 ? 2 : 1);
-                        return new Result() { ConvertToQuad = quadType, Rotation =  existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex };
-                    }
+                        return new Result() { ConvertToQuad = toQuad, Rotation = existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex };
 
                 }
 
@@ -793,18 +788,16 @@ namespace TombLib.LevelData.Compilers.Util
                 foreach (var refTex in _referenceAnimTextures)
                 {
                     // If current animation set is UVRotate set and UVRotate hack is needed, pass the texture as quad
-                    var asTriangle = refTex.Origin.IsUvRotate && uvRotateHack ? false : isForTriangle;
-                    var reference  = refTex.Origin.IsUvRotate && uvRotateHack ? refQuad : texture;
+                    var toQuad     = refTex.Origin.IsUvRotate && uvRotateHack;
+                    var asTriangle = toQuad ? false : isForTriangle;
+                    var reference  = toQuad ? refQuad : texture;
 
                     // If reference set found, generate actual one and immediately return fresh result
-                    if (GetTexInfo(reference, refTex.CompiledAnimation, isForRoom, asTriangle, false, false, _animTextureLookupMargin, remapAnimatedTextures).HasValue)
+                    if (GetTexInfo(reference, refTex.CompiledAnimation, isForRoom, asTriangle, false, false, remapAnimatedTextures).HasValue)
                     {
                         GenerateAnimTexture(refTex, refQuad, isForRoom, isForTriangle);
                         var result = AddTexture(texture, isForRoom, isForTriangle);
-
-                        // Define triangle-to-quad conversion type, if UVRotate hack is used
-                        var quadType = !uvRotateHack || !refTex.Origin.IsUvRotate ? 0 : (result.Rotation % 2 != 0 ? 2 : 1);
-                        return new Result() { ConvertToQuad = quadType, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex };
+                        return new Result() { ConvertToQuad = toQuad, Rotation = result.Rotation, TexInfoIndex = result.TexInfoIndex };
                     }
                 }
 

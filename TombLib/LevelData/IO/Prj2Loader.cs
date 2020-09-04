@@ -259,11 +259,6 @@ namespace TombLib.LevelData.IO
                             return true;
                         });
 
-                        // Remap stock catalogs to new location (since version 1.3.6)
-                        var oldPrefix = "$(EditorDirectory)\\Catalogs\\";
-                        if (path.StartsWith(oldPrefix))
-                            path = path.Replace(oldPrefix, "$(EditorDirectory)\\Assets\\SoundCatalogs\\");
-
                         // Add catalog
                         list.Add(newSounds);
                         toLoad.Add(newSounds, path);
@@ -296,6 +291,8 @@ namespace TombLib.LevelData.IO
                     settings.RemapAnimatedTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.RearrangeRooms)
+                    settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveFloordataPacking)
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)

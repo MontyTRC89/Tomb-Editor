@@ -80,9 +80,9 @@ namespace TombLib.LevelData.Compilers
             else
                 _floorData.Add(0x0000);
 
-            for (var i = 0; i < _level.Rooms.Length; i++)
+            for (var i = 0; i < _sortedRooms.Length; i++)
             {
-                var room = _level.Rooms[i];
+                var room = _sortedRooms[i];
                 if (room == null)
                     continue;
                 var tempRoom = _tempRooms[room];
@@ -239,7 +239,7 @@ namespace TombLib.LevelData.Compilers
                                 var portal = block.FloorPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
                                 if (roomIndex > roomLimit)
-                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
                                     sector.RoomBelow = (byte)roomIndex;
                             }
@@ -257,7 +257,7 @@ namespace TombLib.LevelData.Compilers
                                 var portal = block.CeilingPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
                                 if (roomIndex > roomLimit)
-                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are unfortunately only possible in the first 255 rooms. Portal " + portal + " can't be added.");
+                                    _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
                                     sector.RoomAbove = (byte)roomIndex;
                             }
