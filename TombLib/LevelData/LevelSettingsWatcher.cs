@@ -36,6 +36,7 @@ namespace TombEditor
             WadChanged = wadChanged;
             SoundsCatalogChanged = soundsCatalogChanged;
             ImportedGeometryChanged = importedGeometryChanged;
+            ImportedGeometryTexturesChanged = (sender, e) => importedGeometryChanged(sender, new ChangedEventArgs<ImportedGeometry>());
             SynchronizationContext = synchronizationContext ?? new NullSynchronizationContext();
         }
 
