@@ -29,8 +29,11 @@ Tomb Editor:
  * Fix incorrect animation transitions in TR2-3.
  * Fix light radius calculation in TR2-3.
  * Fix drag-n-drop in find & replace objects dialog.
- * Fix incorrect rendering of last imported geometry in a room.
  * Fix incorrect TR1-3 item names in find & replace objects dialog.
+ * Fix incorrect rendering of last imported geometry in a room.
+ * Fix infinite loop while compiling pathfinding data for incorrect portal setups.
+ * Fix several issues with auto-reloading textures for imported geometry.
+ * Fix multiple exceptions when prj import with missing resources is aborted.
  * Fix exception when Lara skin mesh count doesn't correspond to Lara mesh count.
  
 WadTool:
