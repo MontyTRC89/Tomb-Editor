@@ -26,6 +26,7 @@ Tomb Editor:
  * Show warning if orphaned switch/key triggers were found in level.
  * Optimize level compilation speed.
  * Partially fix UVRotate textures on triangles.
+ * Fix incorrect pathfinding generation for TR1-2 which caused crashes and weird NPC behaviour.
  * Fix incorrect animation transitions in TR2-3.
  * Fix light radius calculation in TR2-3.
  * Fix drag-n-drop in find & replace objects dialog.
