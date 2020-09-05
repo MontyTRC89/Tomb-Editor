@@ -35,6 +35,7 @@ Tomb Editor:
  * Fix several issues with auto-reloading textures for imported geometry.
  * Fix multiple exceptions when prj import with missing resources is aborted.
  * Fix exception when Lara skin mesh count doesn't correspond to Lara mesh count.
+ * Fix epic memory leak which caused abnormally high CPU usage and aburpt crashes over time.
  
 WadTool:
  * Add recent wads list.
