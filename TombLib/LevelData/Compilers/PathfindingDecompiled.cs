@@ -44,7 +44,7 @@ namespace TombLib.LevelData.Compilers
         private void Dec_BuildBoxesAndOverlaps()
         {
             dec_currentRoom = _sortedRooms[0];
-            dec_boxes = new dec_tr_box_aux[2048];
+            dec_boxes = new dec_tr_box_aux[_limits[Wad.Catalog.Limit.BoxLimit] + 1];
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -244,7 +244,7 @@ namespace TombLib.LevelData.Compilers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Dec_AddBox(ref dec_tr_box_aux box)
         {
-            if (dec_numBoxes == 2048) return -1;
+            if (dec_numBoxes > _limits[Wad.Catalog.Limit.BoxLimit]) return -1;
 
             int boxIndex = -1;
 
