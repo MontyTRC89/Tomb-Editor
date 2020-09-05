@@ -281,7 +281,7 @@ namespace TombLib.LevelData
             // Copy most variables
             var result = (Room)MemberwiseClone();
 
-            if(!fullCopy)
+            if (!fullCopy)
             {
                 result.AlternateBaseRoom = null;
                 result.AlternateRoom = null;
@@ -289,6 +289,9 @@ namespace TombLib.LevelData
             }
 
             result.RoomGeometry = null;
+
+            // Copy properties
+            result.Properties = Properties.Clone();
 
             // Copy blocks
             result.Blocks = new Block[NumXSectors, NumZSectors];
