@@ -310,7 +310,8 @@ namespace TombLib.LevelData.Compilers
             dec_water = true;
             dec_monkey = false;
 
-            short floor = (short)Dec_GetBoxFloorHeight(currentX, currentZ, out bool slope);
+            bool slope;
+            short floor = (short)Dec_GetBoxFloorHeight(currentX, currentZ, out slope);
             box.TrueFloor = floor;
             box.Slope = slope;
 
@@ -719,7 +720,8 @@ namespace TombLib.LevelData.Compilers
 
         private int Dec_GetBoxFloorHeight(int x, int z)
         {
-            return Dec_GetBoxFloorHeight(x, z, out bool slope);
+            bool slope;
+            return Dec_GetBoxFloorHeight(x, z, out slope);
         }
 
         private int Dec_GetBoxFloorHeight(int x, int z, out bool slope)
