@@ -446,26 +446,18 @@ namespace TombEditor.Forms
             configuration.Rendering3D_ToolboxPosition = ToolBox.Location;
         }
 
-        protected override void OnKeyUp(KeyEventArgs e)
+        protected override bool ProcessDialogKey(Keys keyData)
         {
-            base.OnKeyUp(e);
-
-            if (_editor.FlyMode && e.KeyCode == Keys.Menu)
-                e.Handled = true;
-
-            var timer = new Timer { Interval = 1 };
-            timer.Tick += CheckFlyModeStateTimer_Tick; // We must delay this event, otherwise it won't work
-            timer.Start();
-        }
-
-        private void CheckFlyModeStateTimer_Tick(object sender, EventArgs e)
-        {
-            // We must disable the menuStrip in Fly Mode because the menu items are reacting to the ALT key
-            menuStrip.Enabled = !_editor.FlyMode;
+            // Snatch ALT key processing for the fly mode to disable menus
+            if (_editor.FlyMode && keyData.HasFlag(Keys.Alt))
+                return true;
+            else
+                return base.ProcessDialogKey(keyData);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Disable all hotkeys in fly mode except ToggleFlyMode
             if (_editor.FlyMode && !_editor.Configuration.UI_Hotkeys["ToggleFlyMode"].Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
 
