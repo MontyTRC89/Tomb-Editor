@@ -20,6 +20,7 @@ namespace TombLib.LevelData.Compilers
         public bool Water;
         public bool Flag0x04;
         public bool Flag0x02;
+        public bool Slope;
     }
 
     public sealed partial class LevelCompilerClassicTR
@@ -309,8 +310,9 @@ namespace TombLib.LevelData.Compilers
             dec_water = true;
             dec_monkey = false;
 
-            short floor = (short)Dec_GetBoxFloorHeight(currentX, currentZ);
+            short floor = (short)Dec_GetBoxFloorHeight(currentX, currentZ, out bool slope);
             box.TrueFloor = floor;
+            box.Slope = slope;
 
             if (floor == 0x7fff) return false;
 
@@ -717,6 +719,13 @@ namespace TombLib.LevelData.Compilers
 
         private int Dec_GetBoxFloorHeight(int x, int z)
         {
+            return Dec_GetBoxFloorHeight(x, z, out bool slope);
+        }
+
+        private int Dec_GetBoxFloorHeight(int x, int z, out bool slope)
+        {
+            slope = false;
+
             Room adjoiningRoom = dec_currentRoom;
             Room room = dec_currentRoom;
 
@@ -882,7 +891,10 @@ namespace TombLib.LevelData.Compilers
 
             if (slope1 + slope2 + slope4 + slope3 >= 3 || slope1 + slope3 == 2 || slope2 + slope4 == 2)
             {
-                if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
+                if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+                    slope = true;
+                else if (dec_water && room.Properties.Type != RoomType.Water)
+                    return 0x7fff;
             }
             else
             {
@@ -894,14 +906,20 @@ namespace TombLib.LevelData.Compilers
                     }
                     else
                     {
-                        if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
+                        if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+                            slope = true;
+                        else if (dec_water && room.Properties.Type != RoomType.Water)
+                            return 0x7fff;
                     }
                 }
                 else
                 {
                     if (slope1 + slope4 == 2 || slope2 + slope3 == 2)
                     {
-                        if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
+                        if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+                            slope = true;
+                        else if (dec_water && room.Properties.Type != RoomType.Water)
+                            return 0x7fff;
                     }
                 }
             }
