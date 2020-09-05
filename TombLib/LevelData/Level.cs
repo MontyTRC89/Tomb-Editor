@@ -336,7 +336,7 @@ namespace TombLib.LevelData
             var portalRoomList = existingRooms.Where(r => r.Portals.Any(p => p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)).ToList();
 
             // Warn user if portal count is beyond absolute limit
-            if (portalRoomList.Count > limit)
+            if (portalRoomList.Count >= limit)
                 progressReporter?.ReportWarn("Level contains " + portalRoomList.Count + " vertically connected rooms, while maximum is " + limit + ". Some vertical portals won't be added.");
 
             // Put all vertically connected rooms to the beginning of the list
