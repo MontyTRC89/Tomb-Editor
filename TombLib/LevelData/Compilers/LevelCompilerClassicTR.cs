@@ -518,10 +518,10 @@ namespace TombLib.LevelData.Compilers
             int maxSafeItemCount = _limits[Limit.ItemSafeCount];
             int maxItemCount     = _limits[Limit.ItemMaxCount];
 
-            if (_items.Count > maxItemCount)
+            if (_items.Count >= maxItemCount)
                 _progressReporter.ReportWarn("Level has more than " + maxItemCount + " moveables. This may lead to crash.");
 
-            if (_items.Count > maxSafeItemCount)
+            if (_items.Count >= maxSafeItemCount)
                 _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
         }
 

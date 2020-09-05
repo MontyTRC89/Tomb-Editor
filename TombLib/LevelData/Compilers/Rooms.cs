@@ -142,7 +142,7 @@ namespace TombLib.LevelData.Compilers
             tr_color roomAmbientColor = PackColorTo24Bit(room.Properties.AmbientLight);
 
             int maxDimensions = _limits[Limit.RoomDimensions];
-            if (room.NumXSectors > maxDimensions || room.NumZSectors > maxDimensions)
+            if (room.NumXSectors >= maxDimensions || room.NumZSectors >= maxDimensions)
                 _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
 
             var newRoom = new tr_room
