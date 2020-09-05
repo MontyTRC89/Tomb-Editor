@@ -69,7 +69,7 @@ namespace TombEditor.Forms
 
                 gridControl.Invalidate();
 
-                if (cbAllowOversizedRooms.Checked && (NewArea.Width > recommendedDimensions || NewArea.Height > recommendedDimensions))
+                if (cbAllowOversizedRooms.Checked && (NewArea.Width >= recommendedDimensions || NewArea.Height >= recommendedDimensions))
                 {
                     roomIcon.BackColor = Color.Firebrick;
                     toolTip.SetToolTip(roomIcon, "Room bigger than 32x32 will have in-game rendering issues!");

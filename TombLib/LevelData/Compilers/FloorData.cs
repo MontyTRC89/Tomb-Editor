@@ -238,7 +238,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 var portal = block.FloorPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                if (roomIndex > roomLimit)
+                                if (roomIndex >= roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
                                     sector.RoomBelow = (byte)roomIndex;
@@ -256,7 +256,7 @@ namespace TombLib.LevelData.Compilers
                             {
                                 var portal = block.CeilingPortal;
                                 int roomIndex = _roomsRemappingDictionary[portal.AdjoiningRoom];
-                                if (roomIndex > roomLimit)
+                                if (roomIndex >= roomLimit)
                                     _progressReporter.ReportWarn("Passable floor and ceiling portals are only possible in the first " + roomLimit + " rooms. Portal " + portal + " can't be added.");
                                 else
                                     sector.RoomAbove = (byte)roomIndex;
