@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
 {
@@ -20,6 +21,7 @@ namespace TombLib.LevelData.Compilers
         public bool Water;
         public bool Flag0x04;
         public bool Flag0x02;
+        public bool Slope;
     }
 
     public sealed partial class LevelCompilerClassicTR
@@ -43,7 +45,7 @@ namespace TombLib.LevelData.Compilers
         private void Dec_BuildBoxesAndOverlaps()
         {
             dec_currentRoom = _sortedRooms[0];
-            dec_boxes = new dec_tr_box_aux[2048];
+            dec_boxes = new dec_tr_box_aux[_limits[Limit.BoxLimit]];
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -117,7 +119,8 @@ namespace TombLib.LevelData.Compilers
         private bool Dec_BuildOverlaps()
         {
             dec_numOverlaps = 0;
-            dec_overlaps = new ushort[16384];
+            dec_overlaps = new ushort[_limits[Limit.OverlapLimit]];
+            var noOverlap = (short)(_limits[Limit.OverlapLimit] - 1);
 
             int i = 0;
             int j = 0;
@@ -144,7 +147,7 @@ namespace TombLib.LevelData.Compilers
             do
             {
                 dec_tr_box_aux box1 = dec_boxes[i];
-                dec_boxes[i].OverlapIndex = 0x3FFF;  
+                dec_boxes[i].OverlapIndex = noOverlap;  
 
                 int numOverlapsAdded = 0;
 
@@ -166,8 +169,8 @@ namespace TombLib.LevelData.Compilers
                             {
                                 if (Dec_BoxesOverlap(ref box1, ref box2))
                                 {
-                                    if (dec_numOverlaps == 16382) return false;
-                                    if (dec_boxes[i].OverlapIndex == 0x3FFF) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                    if (dec_numOverlaps >= (_limits[Limit.OverlapLimit] - 2)) return false;
+                                    if (dec_boxes[i].OverlapIndex == noOverlap) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                     dec_overlaps[dec_numOverlaps] = (ushort)j;
 
@@ -207,8 +210,8 @@ namespace TombLib.LevelData.Compilers
                                 {
                                     if (Dec_BoxesOverlap(ref box1, ref box2))
                                     {
-                                        if (dec_numOverlaps == 16382) return false;
-                                        if (dec_boxes[i].OverlapIndex == 0x3FFF) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
+                                        if (dec_numOverlaps >= (_limits[Limit.OverlapLimit] - 2)) return false;
+                                        if (dec_boxes[i].OverlapIndex == noOverlap) dec_boxes[i].OverlapIndex = (short)dec_numOverlaps;
 
                                         dec_overlaps[dec_numOverlaps] = (ushort)j;
 
@@ -243,7 +246,7 @@ namespace TombLib.LevelData.Compilers
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int Dec_AddBox(ref dec_tr_box_aux box)
         {
-            if (dec_numBoxes == 2048) return -1;
+            if (dec_numBoxes >= _limits[Limit.BoxLimit]) return -1;
 
             int boxIndex = -1;
 
@@ -264,7 +267,7 @@ namespace TombLib.LevelData.Compilers
             if (boxIndex == -1)
             {
                 boxIndex = dec_numBoxes;
-                box.OverlapIndex = 0x3FFF;
+                box.OverlapIndex = (short)(_limits[Limit.OverlapLimit] - 1);
                 dec_boxes[dec_numBoxes] = box;
                 dec_numBoxes++;
             }
@@ -309,8 +312,10 @@ namespace TombLib.LevelData.Compilers
             dec_water = true;
             dec_monkey = false;
 
-            short floor = (short)Dec_GetBoxFloorHeight(currentX, currentZ);
+            bool slope;
+            short floor = (short)Dec_GetBoxFloorHeight(currentX, currentZ, out slope);
             box.TrueFloor = floor;
+            box.Slope = slope;
 
             if (floor == 0x7fff) return false;
 
@@ -717,6 +722,14 @@ namespace TombLib.LevelData.Compilers
 
         private int Dec_GetBoxFloorHeight(int x, int z)
         {
+            bool slope;
+            return Dec_GetBoxFloorHeight(x, z, out slope);
+        }
+
+        private int Dec_GetBoxFloorHeight(int x, int z, out bool slope)
+        {
+            slope = false;
+
             Room adjoiningRoom = dec_currentRoom;
             Room room = dec_currentRoom;
 
@@ -882,7 +895,10 @@ namespace TombLib.LevelData.Compilers
 
             if (slope1 + slope2 + slope4 + slope3 >= 3 || slope1 + slope3 == 2 || slope2 + slope4 == 2)
             {
-                if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
+                if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+                    slope = true;
+                else if (dec_water && room.Properties.Type != RoomType.Water)
+                    return 0x7fff;
             }
             else
             {
@@ -894,14 +910,20 @@ namespace TombLib.LevelData.Compilers
                     }
                     else
                     {
-                        if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
+                        if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+                            slope = true;
+                        else if (dec_water && room.Properties.Type != RoomType.Water)
+                            return 0x7fff;
                     }
                 }
                 else
                 {
                     if (slope1 + slope4 == 2 || slope2 + slope3 == 2)
                     {
-                        if (dec_water && room.Properties.Type != RoomType.Water) return 0x7fff;
+                        if (_level.Settings.GameVersion < TRVersion.Game.TR3)
+                            slope = true;
+                        else if (dec_water && room.Properties.Type != RoomType.Water)
+                            return 0x7fff;
                     }
                 }
             }

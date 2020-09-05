@@ -9,17 +9,17 @@
 	  <limit name="SoundSampleSize" value="256" />
 	  <limit name="SoundSampleCount" value="256" />
 	  <limit name="SoundMapSize" value="256" />
-	  <limit name="ItemMaxCount" value="255" />
-	  <limit name="ItemSafeCount" value="255" />
-	  <limit name="BoxLimit" value="32767" />
+	  <limit name="ItemMaxCount" value="256" />
+	  <limit name="ItemSafeCount" value="256" />
+	  <limit name="BoxLimit" value="32768" />
 	  <limit name="BoxMinCount" value="2" />
-	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="OverlapLimit" value="16384" />
 	  <limit name="RoomVertexCount" value="65536" />
 	  <limit name="RoomFaceCount" value="2800" />
 	  <limit name="RoomLightCount" value="20" />
-	  <limit name="RoomDimensions" value="31" />
-	  <limit name="RoomMaxCount" value="1023" />
-	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="RoomDimensions" value="32" />
+	  <limit name="RoomMaxCount" value="1024" />
+	  <limit name="RoomSafeCount" value="255" />
 	  <limit name="FloorHeight" value="127" />
 	</limits>
     <moveables>
@@ -640,15 +640,15 @@
 	  <limit name="SoundSampleSize" value="256" />
 	  <limit name="SoundSampleCount" value="256" />
 	  <limit name="SoundMapSize" value="370" />
-	  <limit name="ItemMaxCount" value="255" />
-	  <limit name="ItemSafeCount" value="255" />
-	  <limit name="BoxLimit" value="32767" />
+	  <limit name="ItemMaxCount" value="256" />
+	  <limit name="ItemSafeCount" value="256" />
+	  <limit name="BoxLimit" value="32768" />
 	  <limit name="BoxMinCount" value="1" />
-	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="OverlapLimit" value="16384" />
 	  <limit name="RoomVertexCount" value="65536" />
 	  <limit name="RoomFaceCount" value="2800" />
 	  <limit name="RoomLightCount" value="20" />
-	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
 	  <limit name="RoomSafeCount" value="253" />
 	  <limit name="FloorHeight" value="127" />
@@ -1326,15 +1326,15 @@
 	  <limit name="SoundSampleSize" value="256" />
 	  <limit name="SoundSampleCount" value="256" />
 	  <limit name="SoundMapSize" value="370" />
-	  <limit name="ItemMaxCount" value="255" />
-	  <limit name="ItemSafeCount" value="255" />
-	  <limit name="BoxLimit" value="2047" />
+	  <limit name="ItemMaxCount" value="256" />
+	  <limit name="ItemSafeCount" value="256" />
+	  <limit name="BoxLimit" value="2048" />
 	  <limit name="BoxMinCount" value="1" />
-	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="OverlapLimit" value="16384" />
 	  <limit name="RoomVertexCount" value="65536" />
 	  <limit name="RoomFaceCount" value="2800" />
 	  <limit name="RoomLightCount" value="20" />
-	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
 	  <limit name="RoomSafeCount" value="253" />
 	  <limit name="FloorHeight" value="127" />
@@ -2096,15 +2096,15 @@
 	  <limit name="SoundSampleSize" value="256" />
 	  <limit name="SoundSampleCount" value="256" />
 	  <limit name="SoundMapSize" value="370" />
-	  <limit name="ItemMaxCount" value="1023" />
-	  <limit name="ItemSafeCount" value="255" />
-	  <limit name="BoxLimit" value="2047" />
+	  <limit name="ItemMaxCount" value="1024" />
+	  <limit name="ItemSafeCount" value="256" />
+	  <limit name="BoxLimit" value="2048" />
 	  <limit name="BoxMinCount" value="1" />
-	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="OverlapLimit" value="16384" />
 	  <limit name="RoomVertexCount" value="65536" />
 	  <limit name="RoomFaceCount" value="2800" />
 	  <limit name="RoomLightCount" value="20" />
-	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
 	  <limit name="RoomSafeCount" value="253" />
 	  <limit name="FloorHeight" value="127" />
@@ -3677,15 +3677,15 @@
 	  <limit name="SoundSampleSize" value="256" />
 	  <limit name="SoundSampleCount" value="256" />
 	  <limit name="SoundMapSize" value="450" />
-	  <limit name="ItemMaxCount" value="255" />
-	  <limit name="ItemSafeCount" value="255" />
-	  <limit name="BoxLimit" value="2047" />
+	  <limit name="ItemMaxCount" value="256" />
+	  <limit name="ItemSafeCount" value="256" />
+	  <limit name="BoxLimit" value="2048" />
 	  <limit name="BoxMinCount" value="1" />
-	  <limit name="OverlapLimit" value="16382" />
+	  <limit name="OverlapLimit" value="16384" />
 	  <limit name="RoomVertexCount" value="65536" />
 	  <limit name="RoomFaceCount" value="2800" />
 	  <limit name="RoomLightCount" value="20" />
-	  <limit name="RoomDimensions" value="31" />
+	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
 	  <limit name="RoomSafeCount" value="253" />
 	  <limit name="FloorHeight" value="127" />
@@ -4624,24 +4624,24 @@
   </game>
   <game id="TR5Main">
     <limits>
-	  <limit name="TexPages" value="32767" />
-	  <limit name="TexInfos" value="2147483647" />
+	  <limit name="TexPages" value="32768" />
+	  <limit name="TexInfos" value="2147483648" />
 	  <limit name="SoundBitsPerSample" value="16" />
 	  <limit name="SoundSampleRate" value="22050" />
 	  <limit name="SoundSampleSize" value="32768" />
 	  <limit name="SoundSampleCount" value="32768" />
 	  <limit name="SoundMapSize" value="4096" />
-	  <limit name="ItemMaxCount" value="2147483647" />
-	  <limit name="ItemSafeCount" value="2147483647" />
-	  <limit name="BoxLimit" value="2147483647" />
+	  <limit name="ItemMaxCount" value="2147483648" />
+	  <limit name="ItemSafeCount" value="2147483648" />
+	  <limit name="BoxLimit" value="2147483648" />
 	  <limit name="BoxMinCount" value="1" />
-	  <limit name="OverlapLimit" value="2147483647" />
-	  <limit name="RoomVertexCount" value="2147483647" />
-	  <limit name="RoomFaceCount" value="2147483647" />
-	  <limit name="RoomLightCount" value="2147483647" />
-	  <limit name="RoomDimensions" value="2147483647" />
-	  <limit name="RoomMaxCount" value="2147483647" />
-	  <limit name="RoomSafeCount" value="2147483647" />
+	  <limit name="OverlapLimit" value="2147483648" />
+	  <limit name="RoomVertexCount" value="2147483648" />
+	  <limit name="RoomFaceCount" value="2147483648" />
+	  <limit name="RoomLightCount" value="2147483648" />
+	  <limit name="RoomDimensions" value="2147483648" />
+	  <limit name="RoomMaxCount" value="2147483648" />
+	  <limit name="RoomSafeCount" value="2147483648" />
 	  <limit name="FloorHeight" value="127" />
 	</limits>
     <moveables>

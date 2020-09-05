@@ -218,11 +218,11 @@ namespace TombLib.LevelData.Compilers
                     _progressReporter.ReportWarn("Level has too few boxes. Add some room geometry or game may crash.");
 
                 var boxLimit = _limits[Limit.BoxLimit];
-                if (_boxes.Length > boxLimit)
+                if (_boxes.Length >= boxLimit)
                     _progressReporter.ReportWarn("Box limit is reached. Maximum is " + boxLimit + ", you have " + _boxes.Length + ". Game may crash. Reduce level size or split it.");
 
                 var overlapLimit = _limits[Limit.OverlapLimit];
-                if (_overlaps.Length > overlapLimit)
+                if (_overlaps.Length >= overlapLimit)
                     _progressReporter.ReportWarn("Overlap limit is reached. Maximum is " + overlapLimit + ", you have " + _overlaps.Length + ". Game may crash. Reduce level size or split it.");
             }
         }
@@ -259,8 +259,8 @@ namespace TombLib.LevelData.Compilers
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
                         var canJump = dec_boxes[boxIndex].Jump;
-
-                        if (water == isWater && (canJump || step <= 256) &&
+                        
+                        if (!dec_boxes[boxIndex].Slope && water == isWater && (canJump || step <= 256) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
@@ -271,7 +271,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        if (water == isWater && step <= 256 &&
+
+                        if (!dec_boxes[boxIndex].Slope && water == isWater && step <= 256 &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
@@ -283,7 +284,8 @@ namespace TombLib.LevelData.Compilers
                     {
                         var water = (_tempRooms[dec_boxes[boxIndex].Room].Flags & 0x01) != 0;
                         var step = Math.Abs(_boxes[next].TrueFloor - _boxes[boxIndex].TrueFloor);
-                        if ((water == isWater && step <= 256 || water) &&
+
+                        if (!dec_boxes[boxIndex].Slope && (water == isWater && step <= 256 || water) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02)) 
                             add = true;
@@ -299,7 +301,7 @@ namespace TombLib.LevelData.Compilers
                         var canJump = dec_boxes[boxIndex].Jump;
                         var canMonkey = dec_boxes[boxIndex].Monkey;
 
-                        if (water == isWater && (canJump || step <= 1024 || canMonkey) &&
+                        if (!dec_boxes[boxIndex].Slope && water == isWater && (canJump || step <= 1024 || canMonkey) &&
                             (!flipped && dec_boxes[boxIndex].Flag0x04 ||
                             flipped && dec_boxes[boxIndex].Flag0x02))
                             add = true;
