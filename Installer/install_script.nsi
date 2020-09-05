@@ -121,7 +121,7 @@ SectionEnd
 
 Section "Stock Assets" Section3
 
-  SectionIn 1 2
+  SectionIn 1
 
   SetOutPath $INSTDIR
   File /r "Assets"
