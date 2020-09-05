@@ -569,7 +569,7 @@
             // 
             this.lblGameEnableQuickStartFeature2.AutoSize = true;
             this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 137);
+            this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 141);
             this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
             this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(698, 13);
             this.lblGameEnableQuickStartFeature2.TabIndex = 5;
@@ -580,7 +580,7 @@
             // 
             this.lblGameEnableQuickStartFeature1.AutoSize = true;
             this.lblGameEnableQuickStartFeature1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblGameEnableQuickStartFeature1.Location = new System.Drawing.Point(42, 65);
+            this.lblGameEnableQuickStartFeature1.Location = new System.Drawing.Point(42, 70);
             this.lblGameEnableQuickStartFeature1.Name = "lblGameEnableQuickStartFeature1";
             this.lblGameEnableQuickStartFeature1.Size = new System.Drawing.Size(268, 65);
             this.lblGameEnableQuickStartFeature1.TabIndex = 5;
@@ -591,7 +591,7 @@
             // GameEnableQuickStartFeatureCheckBox
             // 
             this.GameEnableQuickStartFeatureCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableQuickStartFeatureCheckBox.Location = new System.Drawing.Point(19, 46);
+            this.GameEnableQuickStartFeatureCheckBox.Location = new System.Drawing.Point(19, 51);
             this.GameEnableQuickStartFeatureCheckBox.Name = "GameEnableQuickStartFeatureCheckBox";
             this.GameEnableQuickStartFeatureCheckBox.Size = new System.Drawing.Size(420, 16);
             this.GameEnableQuickStartFeatureCheckBox.TabIndex = 4;
@@ -602,7 +602,7 @@
             // 
             this.gameExecutableFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gameExecutableFilePathBut.Checked = false;
-            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(677, 20);
+            this.gameExecutableFilePathBut.Location = new System.Drawing.Point(677, 25);
             this.gameExecutableFilePathBut.Name = "gameExecutableFilePathBut";
             this.gameExecutableFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameExecutableFilePathBut.TabIndex = 3;
@@ -612,7 +612,7 @@
             // darkLabel3
             // 
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(0, 0);
+            this.darkLabel3.Location = new System.Drawing.Point(0, 5);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(439, 17);
             this.darkLabel3.TabIndex = 1;
@@ -622,7 +622,7 @@
             // 
             this.gameExecutableFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 20);
+            this.gameExecutableFilePathTxt.Location = new System.Drawing.Point(19, 25);
             this.gameExecutableFilePathTxt.Name = "gameExecutableFilePathTxt";
             this.gameExecutableFilePathTxt.Size = new System.Drawing.Size(652, 22);
             this.gameExecutableFilePathTxt.TabIndex = 2;
@@ -643,7 +643,7 @@
             // 
             this.gameLevelFilePathBut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gameLevelFilePathBut.Checked = false;
-            this.gameLevelFilePathBut.Location = new System.Drawing.Point(677, 25);
+            this.gameLevelFilePathBut.Location = new System.Drawing.Point(677, 23);
             this.gameLevelFilePathBut.Name = "gameLevelFilePathBut";
             this.gameLevelFilePathBut.Size = new System.Drawing.Size(92, 22);
             this.gameLevelFilePathBut.TabIndex = 3;
@@ -654,7 +654,7 @@
             // 
             this.gameLevelFilePathTxt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gameLevelFilePathTxt.Location = new System.Drawing.Point(19, 25);
+            this.gameLevelFilePathTxt.Location = new System.Drawing.Point(19, 23);
             this.gameLevelFilePathTxt.Name = "gameLevelFilePathTxt";
             this.gameLevelFilePathTxt.Size = new System.Drawing.Size(652, 22);
             this.gameLevelFilePathTxt.TabIndex = 2;
@@ -663,7 +663,7 @@
             // darkLabel2
             // 
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(0, 5);
+            this.darkLabel2.Location = new System.Drawing.Point(0, 3);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(439, 17);
             this.darkLabel2.TabIndex = 1;
