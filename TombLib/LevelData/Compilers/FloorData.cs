@@ -133,6 +133,15 @@ namespace TombLib.LevelData.Compilers
                                     {
                                         Room adjoiningRoom = block.CeilingPortal.AdjoiningRoom;
                                         VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
+
+                                        // FIXME: Integrity check for broken portals which can be present if room was split or merged.
+                                        if (adjoiningRoom.CoordinateInvalid(adjoiningPos))
+                                        {
+                                            _progressReporter.ReportWarn("Disjointed portal found in room " + room + " at block (" + 
+                                                x + "," + z + "). Try to find and remove it.");
+                                            continue;
+                                        }
+
                                         if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
                                             continue;
                                     }
@@ -140,6 +149,15 @@ namespace TombLib.LevelData.Compilers
                                     {
                                         Room adjoiningRoom = portal.AdjoiningRoom;
                                         VectorInt2 adjoiningPos = new VectorInt2(x, z) + (room.SectorPos - adjoiningRoom.SectorPos);
+
+                                        // FIXME: Integrity check for broken portals which can be present if room was split or merged.
+                                        if (adjoiningRoom.CoordinateInvalid(adjoiningPos))
+                                        {
+                                            _progressReporter.ReportWarn("Disjointed portal found in room " + room + " at block (" +
+                                                x + "," + z + "). Try to find and remove it.");
+                                            continue;
+                                        }
+
                                         if (adjoiningRoom.Blocks[adjoiningPos.X, adjoiningPos.Y].IsAnyWall)
                                             continue;
                                     };

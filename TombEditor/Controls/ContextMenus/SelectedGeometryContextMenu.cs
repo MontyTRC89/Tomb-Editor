@@ -24,12 +24,12 @@ namespace TombEditor.Controls.ContextMenus
 
             Items.Add(new ToolStripMenuItem("Add trigger", null, (o, e) =>
             {
-                EditorActions.AddTrigger(targetRoom, targetArea, this);
+                CommandHandler.GetCommand("AddTrigger").Execute(new CommandArgs { Editor = editor, Window = owner });
             }));
 
             Items.Add(new ToolStripMenuItem("Add portal", null, (o, e) =>
             {
-                EditorActions.AddPortal(targetRoom, targetArea, this);
+                CommandHandler.GetCommand("AddPortal").Execute(new CommandArgs { Editor = editor, Window = owner });
             }));
             Items.Add(new ToolStripSeparator());
 
