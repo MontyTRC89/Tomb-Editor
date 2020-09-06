@@ -4621,6 +4621,26 @@ namespace TombEditor
             }
         }
 
+        public static void MoveSelectedRooms(VectorInt3 positionDelta)
+        {
+            if (_editor.SelectedRooms == null)
+                return;
+
+            // Collect all rooms at once
+            var allRooms = _editor.SelectedRooms.SelectMany(r => r.Versions).Distinct().ToList();
+
+            // Check if any selected rooms are connected to non-selected. If this is the case, a potential
+            // portal disjointment situation is in effect, and foolproof action must be taken.
+            if (allRooms.Any(r => r.Portals.Any(p => !allRooms.Contains(p.AdjoiningRoom))))
+            {
+                _editor.SendMessage("Can't perform room movement because there are other rooms\nconnected to selected. Remove portals and try again.", PopupType.Warning);
+                return;
+            }
+
+            _editor.UndoManager.PushRoomsMoved(allRooms, positionDelta);
+            MoveRooms(positionDelta, allRooms);
+        }
+
         public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms, bool disableUndo = false)
         {
             if (!disableUndo)
