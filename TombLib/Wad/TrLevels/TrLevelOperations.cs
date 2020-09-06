@@ -530,6 +530,9 @@ namespace TombLib.Wad.TrLevels
                 if (animation.KeyFrames.Count == 0)
                     animation.EndFrame = 0;
 
+                // HACK: this fixes some invalid NextAnimation values
+                animation.NextAnimation %= (ushort)newMoveable.Animations.Count;
+
                 newMoveable.Animations[i] = animation;
             }
 
