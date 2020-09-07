@@ -830,7 +830,9 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     var sector = new tr5main_room_sector();
                     var aux = new TrSectorAux();
 
+                    sector.FloorCollision = new tr5main_collision_info();
                     sector.FloorCollision.Planes = new Vector3[2];
+                    sector.CeilingCollision = new tr5main_collision_info();
                     sector.CeilingCollision.Planes = new Vector3[2];
                     sector.StepSound = (int)GetTextureSound(room, x, z);
                     sector.BoxIndex = -1;

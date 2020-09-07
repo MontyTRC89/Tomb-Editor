@@ -55,7 +55,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct tr5main_collision_info
+    public class tr5main_collision_info
     {
         public tr5main_split_type Split;
         public tr5main_nocollision_type NoCollision;
