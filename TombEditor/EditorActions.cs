@@ -4629,6 +4629,10 @@ namespace TombEditor
             // Collect all rooms at once
             var allRooms = _editor.SelectedRooms.SelectMany(r => r.Versions).Distinct().ToList();
 
+            // Don't move rooms if any of the selected rooms is locked
+            if (CheckForLockedRooms(null, allRooms))
+                return;
+
             // Check if any selected rooms are connected to non-selected. If this is the case, a potential
             // portal disjointment situation is in effect, and foolproof action must be taken.
             if (allRooms.Any(r => r.Portals.Any(p => !allRooms.Contains(p.AdjoiningRoom))))
@@ -4638,7 +4642,7 @@ namespace TombEditor
             }
 
             _editor.UndoManager.PushRoomsMoved(allRooms, positionDelta);
-            MoveRooms(positionDelta, allRooms);
+            MoveRooms(positionDelta, allRooms, true);
         }
 
         public static void MoveRooms(VectorInt3 positionDelta, IEnumerable<Room> rooms, bool disableUndo = false)
