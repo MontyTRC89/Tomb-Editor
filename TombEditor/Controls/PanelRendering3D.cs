@@ -2633,7 +2633,7 @@ namespace TombEditor.Controls
                             // Add text message
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * viewProjection,
-                                instance + "\nUnavailable " + instance.ItemType +
+                                instance.ShortName() + "\nUnavailable " + instance.ItemType +
                                     "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
@@ -2660,7 +2660,7 @@ namespace TombEditor.Controls
                             // Add text message
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * viewProjection,
-                                instance + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
+                                instance.ShortName() + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
                             AddObjectHeightLine(room, instance.Position);
@@ -2825,96 +2825,79 @@ namespace TombEditor.Controls
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
-            var movGroup = new List<MoveableInstance>();
-            MoveableInstance _lastObject = null;
-
-            for (int j = 0; j <= moveablesToDraw.Count; j++)
+            var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
+            foreach (var group in groups)
             {
-                var lastPass = j == moveablesToDraw.Count;
-                var instance = moveablesToDraw[lastPass ? j - 1 : j];
-                var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId);
-                if (moveable == null)
+                var movID = _editor?.Level?.Settings?.WadTryGetMoveable(group.Key);
+                if (movID == null)
                     continue;
 
-                if (j != 0 && _lastObject != null && (lastPass || _lastObject.WadObjectId != instance.WadObjectId))
+                var model = _wadRenderer.GetMoveable(movID);
+                var skin = model;
+                var version = _editor.Level.Settings.GameVersion;
+
+                if (group.Key == WadMoveableId.Lara) // Show Lara
                 {
-                    var currentInstance = movGroup.Last();
-                    var model = _wadRenderer.GetMoveable(_editor?.Level?.Settings?.WadTryGetMoveable(currentInstance.WadObjectId));
-                    var skin = model;
-                    var version = _editor.Level.Settings.GameVersion;
+                    var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, group.Key.TypeId));
+                    var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
+                    if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
+                        skin = _wadRenderer.GetMoveable(moveableSkin);
+                }
 
-                    if (currentInstance.WadObjectId == WadMoveableId.Lara) // Show Lara
+                skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+
+                for (int i = 0; i < skin.Meshes.Count; i++)
+                {
+                    var mesh = skin.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
+
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    foreach (var mov in group)
                     {
-                        var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, currentInstance.WadObjectId.TypeId));
-                        var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
-                        if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
-                            skin = _wadRenderer.GetMoveable(moveableSkin);
-                    }
-
-                    skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-
-                    for (int i = 0; i < skin.Meshes.Count; i++)
-                    {
-                        var mesh = skin.Meshes[i];
-                        if (mesh.Vertices.Count == 0)
-                            continue;
-
-                        _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                        _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                        _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-
-                        foreach (var mov in movGroup)
+                        if (!disableSelection && _editor.SelectedObject == mov) // Selection
+                            skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        else
                         {
-                            if (!disableSelection && _editor.SelectedObject == mov) // Selection
-                                skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                                skinnedModelEffect.Parameters["Color"].SetValue(mov.Color * mov.Room.Properties.AmbientLight);
                             else
-                            {
-                                if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                                    skinnedModelEffect.Parameters["Color"].SetValue(mov.Color * mov.Room.Properties.AmbientLight);
-                                else
-                                    skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
-                            }
-
-                            Matrix4x4 world = model.AnimationTransforms[i] * mov.ObjectMatrix;
-                            skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                            skinnedModelEffect.Techniques[0].Passes[0].Apply();
-
-                            foreach (var submesh in mesh.Submeshes)
-                                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                                skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
                         }
+
+                        Matrix4x4 world = model.AnimationTransforms[i] * mov.ObjectMatrix;
+                        skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                        skinnedModelEffect.Techniques[0].Passes[0].Apply();
+
+                        foreach (var submesh in mesh.Submeshes)
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
-
-                    // Reset list and start collecting next group
-                    movGroup.Clear();
                 }
+            }
 
-                if (!lastPass)
-                    movGroup.Add(instance);
+            // Add text message
+            if (_editor.SelectedObject is MoveableInstance)
+            {
+                var instance = (MoveableInstance)_editor.SelectedObject;
+                textToDraw.Add(CreateTextTagForObject(
+                    instance.RotationPositionMatrix * viewProjection,
+                    instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
+                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
+                    "" :
+                    " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
+                    "" :
+                    " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
+                        "\n" + GetObjectPositionString(instance.Room, instance) +
+                        "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
+                        (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
+                        BuildTriggeredByMessage(instance)));
 
-                if (_editor.SelectedObject == instance)
-                {
-                    var room = instance.Room;
-
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        moveable.ToString(_editor.Level.Settings.GameVersion) +
-                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
-                        "" :
-                        " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
-                        "" :
-                        " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
-                            "\n" + GetObjectPositionString(room, instance) +
-                            "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
-                            (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
-                            BuildTriggeredByMessage(instance)));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(room, instance.Position);
-                }
-
-                _lastObject = instance;
+                // Add the line height of the object
+                AddObjectHeightLine(instance.Room, instance.Position);
             }
         }
 
@@ -2933,99 +2916,85 @@ namespace TombEditor.Controls
             if (DisablePickingForImportedGeometry)
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
 
-            var geoGroup = new List<ImportedGeometryInstance>();
-            ImportedGeometryInstance _lastObject = null;
-
-            for (var k = 0; k <= importedGeometryToDraw.Count; k++)
+            var groups = importedGeometryToDraw.GroupBy(g => g.Model.UniqueID);
+            foreach (var group in groups)
             {
-                var lastPass = k == importedGeometryToDraw.Count;
-                var instance = importedGeometryToDraw[lastPass ? k - 1 : k];
+                var model = group.First().Model.DirectXModel;
+                if (model == null || model.Meshes == null || model.Meshes.Count == 0)
+                    continue;
 
-                if (k != 0 && _lastObject != null && (lastPass || _lastObject.Model.UniqueID != instance.Model.UniqueID))
+                var meshes = model.Meshes;
+                for (var i = 0; i < meshes.Count; i++)
                 {
-                    var currentInstance = geoGroup.Last();
-                    var model = currentInstance.Model.DirectXModel;
-                    var meshes = model.Meshes;
+                    var mesh = meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
 
-                    for (var i = 0; i < meshes.Count; i++)
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+
+                    foreach (var geo in group)
                     {
-                        var mesh = meshes[i];
-                        if (mesh.Vertices.Count == 0)
+                        if (geo.Hidden)
                             continue;
 
-                        _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-                        _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                        _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+                        geometryEffect.Parameters["ModelViewProjection"].SetValue((geo.ObjectMatrix * viewProjection).ToSharpDX());
 
-                        foreach (var geo in geoGroup)
+                        // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
+                        if (!disableSelection && _editor.SelectedObject == geo)
                         {
-                            if (geo.Hidden)
-                                continue;
+                            geometryEffect.Parameters["UseVertexColors"].SetValue(false);
+                            geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        }
+                        else if (DisablePickingForImportedGeometry)
+                        {
+                            geometryEffect.Parameters["UseVertexColors"].SetValue(false);
+                            geometryEffect.Parameters["Color"].SetValue(new Vector4(0.4f, 0.4f, 1.0f, 1.0f));
+                        }
+                        else
+                        {
+                            var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && geo.LightingModel == ImportedGeometryLightingModel.VertexColors;
+                            geometryEffect.Parameters["UseVertexColors"].SetValue(useVertexColors);
 
-                            geometryEffect.Parameters["ModelViewProjection"].SetValue((geo.ObjectMatrix * viewProjection).ToSharpDX());
+                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
+                                geo.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
+                                geometryEffect.Parameters["Color"].SetValue(geo.Room.Properties.AmbientLight);
+                            else
+                                geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+                        }
 
-                            // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
-                            if (!disableSelection && _editor.SelectedObject == geo)
+                        foreach (var submesh in mesh.Submeshes)
+                        {
+                            var texture = submesh.Value.Material.Texture;
+                            if (texture != null && texture is ImportedGeometryTexture)
                             {
-                                geometryEffect.Parameters["UseVertexColors"].SetValue(false);
-                                geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
-                            }
-                            else if (DisablePickingForImportedGeometry)
-                            {
-                                geometryEffect.Parameters["UseVertexColors"].SetValue(false);
-                                geometryEffect.Parameters["Color"].SetValue(new Vector4(0.4f, 0.4f, 1.0f, 1.0f));
+                                geometryEffect.Parameters["TextureEnabled"].SetValue(true);
+                                geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
+                                geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
+                                geometryEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
                             }
                             else
-                            {
-                                var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && geo.LightingModel == ImportedGeometryLightingModel.VertexColors;
-                                geometryEffect.Parameters["UseVertexColors"].SetValue(useVertexColors);
+                                geometryEffect.Parameters["TextureEnabled"].SetValue(false);
 
-                                if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
-                                    geo.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                                    geometryEffect.Parameters["Color"].SetValue(geo.Room.Properties.AmbientLight);
-                                else
-                                    geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
-                            }
-
-                            foreach (var submesh in mesh.Submeshes)
-                            {
-                                var texture = submesh.Value.Material.Texture;
-                                if (texture != null && texture is ImportedGeometryTexture)
-                                {
-                                    geometryEffect.Parameters["TextureEnabled"].SetValue(true);
-                                    geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
-                                    geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
-                                    geometryEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
-                                }
-                                else
-                                    geometryEffect.Parameters["TextureEnabled"].SetValue(false);
-
-                                geometryEffect.Techniques[0].Passes[0].Apply();
-                                _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                            }
+                            geometryEffect.Techniques[0].Passes[0].Apply();
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
                     }
-
-                    // Reset list and start collecting next group
-                    geoGroup.Clear();
                 }
+            }
 
-                if (!lastPass)
-                    geoGroup.Add(instance);
+            // Add text message
+            if (_editor.SelectedObject is ImportedGeometryInstance)
+            {
+                var instance = (ImportedGeometryInstance)_editor.SelectedObject;
+                textToDraw.Add(CreateTextTagForObject(
+                    instance.RotationPositionMatrix * viewProjection,
+                    instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
+                    "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
 
-                if (_editor.SelectedObject == instance)
-                {
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
-                        "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
-                }
-
-                _lastObject = instance;
+                // Add the line height of the object
+                AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
             }
 
             // Reset GPU states
@@ -3045,90 +3014,73 @@ namespace TombEditor.Controls
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
-            var stGroup = new List<StaticInstance>();
-            StaticInstance _lastObject = null;
-
-            for (int j = 0; j <= staticsToDraw.Count; j++)
+            var groups = staticsToDraw.GroupBy(s => s.WadObjectId);
+            foreach (var group in groups)
             {
-                var lastPass = j == staticsToDraw.Count;
-                var instance = staticsToDraw[lastPass ? j - 1 : j];
-
-                var stat = _editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId);
-                if (stat == null)
+                var statID = _editor?.Level?.Settings?.WadTryGetStatic(group.Key);
+                if (statID == null)
                     continue;
 
-                if (j != 0 && _lastObject != null && (lastPass || _lastObject.WadObjectId != instance.WadObjectId))
+                var model = _wadRenderer.GetStatic(statID);
+                staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+
+                for (int i = 0; i < model.Meshes.Count; i++)
                 {
-                    var currentInstance = stGroup.Last();
-                    var model = _wadRenderer.GetStatic(_editor?.Level?.Settings?.WadTryGetStatic(currentInstance.WadObjectId));
+                    var mesh = model.Meshes[i];
+                    if (mesh.Vertices.Count == 0)
+                        continue;
 
-                    staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
-                    for (int i = 0; i < model.Meshes.Count; i++)
+                    foreach (var instance in group)
                     {
-                        var mesh = model.Meshes[i];
-                        if (mesh.Vertices.Count == 0)
-                            continue;
-
-                        _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
-                        _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
-                        _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-
-                        foreach (var st in stGroup)
+                        if (!disableSelection && _editor.SelectedObject == instance)
+                            staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
+                        else
                         {
-                            if (!disableSelection && _editor.SelectedObject == st)
-                                staticMeshEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
-                            else
+                            if (_editor.Mode == EditorMode.Lighting)
                             {
-                                if (_editor.Mode == EditorMode.Lighting)
-                                {
-                                    var entry = _editor.Level.Settings.GetStaticMergeEntry(st.WadObjectId);
+                                var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
 
-                                    if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
-                                        staticMeshEffect.Parameters["Color"].SetValue(st.Color);
-                                    else
-                                        staticMeshEffect.Parameters["Color"].SetValue(st.Color * st.Room.Properties.AmbientLight);
-                                }
+                                if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
+                                    staticMeshEffect.Parameters["Color"].SetValue(instance.Color);
                                 else
-                                    staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
+                                    staticMeshEffect.Parameters["Color"].SetValue(instance.Color * instance.Room.Properties.AmbientLight);
                             }
+                            else
+                                staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
+                        }
 
-                            staticMeshEffect.Parameters["ModelViewProjection"].SetValue((st.ObjectMatrix * viewProjection).ToSharpDX());
-                            staticMeshEffect.Techniques[0].Passes[0].Apply();
+                        staticMeshEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
+                        staticMeshEffect.Techniques[0].Passes[0].Apply();
 
-                            foreach (var submesh in mesh.Submeshes)
-                                _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                        foreach (var submesh in mesh.Submeshes)
+                            _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+
+
+                        // Add text message
+                        if (_editor.SelectedObject == instance)
+                        {
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * viewProjection,
+                                instance.ItemType.StaticId.ToString(_editor.Level.Settings.GameVersion) +
+                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
+                                "" :
+                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
+                                "" :
+                                " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
+                                    "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
+                                    "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
+                                    BuildTriggeredByMessage(instance)));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
                         }
                     }
-
-                    // Reset list and start collecting next group
-                    stGroup.Clear();
                 }
-
-                if (!lastPass)
-                    stGroup.Add(instance);
-
-                if (_editor.SelectedObject == instance)
-                {
-                    // Add text message
-                    textToDraw.Add(CreateTextTagForObject(
-                        instance.RotationPositionMatrix * viewProjection,
-                        stat.ToString(_editor.Level.Settings.GameVersion) +
-                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
-                        "" :
-                        " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                        (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
-                        "" :
-                        " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
-                            "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
-                            "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
-                            BuildTriggeredByMessage(instance)));
-
-                    // Add the line height of the object
-                    AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
-                }
-
-                _lastObject = instance;
             }
         }
 
@@ -3299,7 +3251,6 @@ namespace TombEditor.Controls
             var moveablesToDraw = new List<MoveableInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
                 moveablesToDraw.AddRange(roomsToDraw[i].Objects.OfType<MoveableInstance>());
-            moveablesToDraw.Sort(new Comparer());
             return moveablesToDraw;
         }
 
@@ -3308,7 +3259,6 @@ namespace TombEditor.Controls
             var staticsToDraw = new List<StaticInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
                 staticsToDraw.AddRange(roomsToDraw[i].Objects.OfType<StaticInstance>());
-            staticsToDraw.Sort(new Comparer());
             return staticsToDraw;
         }
 
@@ -3317,7 +3267,6 @@ namespace TombEditor.Controls
             var importedGeometryToDraw = new List<ImportedGeometryInstance>();
             for (int i = 0; i < roomsToDraw.Length; i++)
                 importedGeometryToDraw.AddRange(roomsToDraw[i].Objects.OfType<ImportedGeometryInstance>().Where(ig => ig.Model?.DirectXModel != null));
-            importedGeometryToDraw.Sort(new Comparer());
             return importedGeometryToDraw;
         }
 
