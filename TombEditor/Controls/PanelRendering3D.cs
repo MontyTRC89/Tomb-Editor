@@ -1508,7 +1508,7 @@ namespace TombEditor.Controls
 
             if (ModifierKeys.HasFlag(Keys.Shift))
                 cameraMoveSpeed *= 2;
-            else if (ModifierKeys.HasFlag(Keys.Alt))
+            else if (ModifierKeys.HasFlag(Keys.Control))
                 cameraMoveSpeed /= 2;
 
             if (filter.IsKeyPressed(Keys.W))
@@ -3235,10 +3235,12 @@ namespace TombEditor.Controls
         Room[] CollectRoomsToDraw()
         {
             // Collect rooms to draw
-            Room[] roomsToDraw = CollectRoomsToDraw(_editor.SelectedRoom).ToArray();
-            float[] roomsToDrawDistanceSquared = new float[roomsToDraw.Length];
+            var camPos = Camera.GetPosition();
+            var roomsToDraw = CollectRoomsToDraw(_editor.SelectedRoom).ToArray();
+            var roomsToDrawDistanceSquared = new float[roomsToDraw.Length];
+
             for (int i = 0; i < roomsToDraw.Length; ++i)
-                roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(Camera.GetPosition(), roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
+                roomsToDrawDistanceSquared[i] = Vector3.DistanceSquared(camPos, roomsToDraw[i].WorldPos + roomsToDraw[i].GetLocalCenter());
 
             Array.Sort(roomsToDrawDistanceSquared, roomsToDraw);
             Array.Reverse(roomsToDraw);
