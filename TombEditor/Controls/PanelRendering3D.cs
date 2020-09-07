@@ -2856,48 +2856,47 @@ namespace TombEditor.Controls
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
                     _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
 
-                    foreach (var mov in group)
+                    foreach (var instance in group)
                     {
-                        if (!disableSelection && _editor.SelectedObject == mov) // Selection
+                        if (!disableSelection && _editor.SelectedObject == instance) // Selection
                             skinnedModelEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
                         else
                         {
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                                skinnedModelEffect.Parameters["Color"].SetValue(mov.Color * mov.Room.Properties.AmbientLight);
+                                skinnedModelEffect.Parameters["Color"].SetValue(instance.Color * instance.Room.Properties.AmbientLight);
                             else
                                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
                         }
 
-                        Matrix4x4 world = model.AnimationTransforms[i] * mov.ObjectMatrix;
+                        Matrix4x4 world = model.AnimationTransforms[i] * instance.ObjectMatrix;
                         skinnedModelEffect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                         skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+
+                        // Add text message
+                        if (i == 0 && _editor.SelectedObject == instance)
+                        {
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * viewProjection,
+                                instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
+                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
+                                "" :
+                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
+                                "" :
+                                " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
+                                    "\n" + GetObjectPositionString(instance.Room, instance) +
+                                    "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
+                                    (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
+                                    BuildTriggeredByMessage(instance)));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
+                        }
                     }
                 }
-            }
-
-            // Add text message
-            if (_editor.SelectedObject is MoveableInstance)
-            {
-                var instance = (MoveableInstance)_editor.SelectedObject;
-                textToDraw.Add(CreateTextTagForObject(
-                    instance.RotationPositionMatrix * viewProjection,
-                    instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
-                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
-                    "" :
-                    " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
-                    "" :
-                    " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
-                        "\n" + GetObjectPositionString(instance.Room, instance) +
-                        "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
-                        (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
-                        BuildTriggeredByMessage(instance)));
-
-                // Add the line height of the object
-                AddObjectHeightLine(instance.Room, instance.Position);
             }
         }
 
@@ -2934,15 +2933,15 @@ namespace TombEditor.Controls
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
 
-                    foreach (var geo in group)
+                    foreach (var instance in group)
                     {
-                        if (geo.Hidden)
+                        if (instance.Hidden)
                             continue;
 
-                        geometryEffect.Parameters["ModelViewProjection"].SetValue((geo.ObjectMatrix * viewProjection).ToSharpDX());
+                        geometryEffect.Parameters["ModelViewProjection"].SetValue((instance.ObjectMatrix * viewProjection).ToSharpDX());
 
                         // Tint unselected geometry in blue if it's not pickable, otherwise use normal or selection color
-                        if (!disableSelection && _editor.SelectedObject == geo)
+                        if (!disableSelection && _editor.SelectedObject == instance)
                         {
                             geometryEffect.Parameters["UseVertexColors"].SetValue(false);
                             geometryEffect.Parameters["Color"].SetValue(_editor.Configuration.UI_ColorScheme.ColorSelection);
@@ -2954,12 +2953,12 @@ namespace TombEditor.Controls
                         }
                         else
                         {
-                            var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && geo.LightingModel == ImportedGeometryLightingModel.VertexColors;
+                            var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && instance.LightingModel == ImportedGeometryLightingModel.VertexColors;
                             geometryEffect.Parameters["UseVertexColors"].SetValue(useVertexColors);
 
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
-                                geo.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                                geometryEffect.Parameters["Color"].SetValue(geo.Room.Properties.AmbientLight);
+                                instance.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
+                                geometryEffect.Parameters["Color"].SetValue(instance.Room.Properties.AmbientLight);
                             else
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                         }
@@ -2980,21 +2979,20 @@ namespace TombEditor.Controls
                             geometryEffect.Techniques[0].Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
+
+                        // Add text message
+                        if (i == 0 && _editor.SelectedObject == instance)
+                        {
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * viewProjection,
+                                instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
+                                "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
+                        }
                     }
                 }
-            }
-
-            // Add text message
-            if (_editor.SelectedObject is ImportedGeometryInstance)
-            {
-                var instance = (ImportedGeometryInstance)_editor.SelectedObject;
-                textToDraw.Add(CreateTextTagForObject(
-                    instance.RotationPositionMatrix * viewProjection,
-                    instance + "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) + "\n" +
-                    "Triangles: " + instance.Model.DirectXModel.TotalTriangles));
-
-                // Add the line height of the object
-                AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
             }
 
             // Reset GPU states
@@ -3061,7 +3059,7 @@ namespace TombEditor.Controls
 
 
                         // Add text message
-                        if (_editor.SelectedObject == instance)
+                        if (i == 0 && _editor.SelectedObject == instance)
                         {
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * viewProjection,
