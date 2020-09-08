@@ -216,6 +216,11 @@ namespace TombEditor
                 Base = uo.Model;
                 Properties = new List<object> { uo.Scale };
             }
+            else if (UndoObject is SpriteInstance)
+            {
+                var uo = (SpriteInstance)UndoObject;
+                Properties = new List<object> { uo.Sequence, uo.Frame };
+            }
             else if (UndoObject is LightInstance)
                 Properties = new List<object> { ((LightInstance)UndoObject).Color };
             else if (UndoObject is SinkInstance)
@@ -249,6 +254,12 @@ namespace TombEditor
                     var uo = ((ImportedGeometryInstance)UndoObject);
                     uo.Model = (ImportedGeometry)Base;
                     uo.Scale = (float)Properties[0];
+                }
+                else if (UndoObject is SpriteInstance)
+                {
+                    var uo = ((SpriteInstance)UndoObject);
+                    uo.Sequence = (int)Properties[0];
+                    uo.Frame    = (int)Properties[1];
                 }
                 else if (UndoObject is LightInstance)
                 {

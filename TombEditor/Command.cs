@@ -844,14 +844,7 @@ namespace TombEditor
 
             AddCommand("SearchAndReplaceObjects", "Search and replace objects...", CommandType.Edit, delegate (CommandArgs args)
             {
-                var existingWindow = Application.OpenForms[nameof(FormReplaceObject)];
-                if (existingWindow == null)
-                {
-                    var searchAndReplaceForm = new FormReplaceObject(args.Editor);
-                    searchAndReplaceForm.Show(args.Window);
-                }
-                else
-                    existingWindow.Focus();
+                EditorActions.ReplaceObject(args.Window);
             });
 
             AddCommand("AddNewRoom", "Add new room", CommandType.Rooms, delegate (CommandArgs args)

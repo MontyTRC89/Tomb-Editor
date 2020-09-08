@@ -49,7 +49,7 @@ namespace TombEditor.Controls.ContextMenus
                 Items.Add(new ToolStripMenuItem("Replace object...", null, (o, e) =>
                 {
                     _editor.SelectedObject = targetObject;
-                    CommandHandler.GetCommand("SearchAndReplaceObjects").Execute(new CommandArgs { Editor = editor, Window = owner });
+                    EditorActions.ReplaceObject(owner, true);
                 }));
 
             if (Items.Count > 2 && !(Items[Items.Count - 2] is ToolStripSeparator))

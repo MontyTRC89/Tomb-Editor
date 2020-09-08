@@ -2,7 +2,7 @@
 
 namespace TombLib.LevelData
 {
-    public class SpriteInstance : PositionBasedObjectInstance
+    public class SpriteInstance : PositionBasedObjectInstance, IReplaceable
     {
         public int Sequence { get; set; }
         public int Frame { get; set; }
@@ -25,6 +25,34 @@ namespace TombLib.LevelData
         }
 
         public bool SpriteIsValid => SpriteID != ushort.MaxValue;
+
+        public string PrimaryAttribDesc => "Sequence and Frame";
+
+        public string SecondaryAttribDesc => string.Empty;
+
+        public bool ReplaceableEquals(IReplaceable other, bool withProperties = false)
+        {
+            if (other is SpriteInstance)
+            {
+                var otherSprite = other as SpriteInstance;
+                return (otherSprite.Frame == Frame && otherSprite.Sequence == Sequence);
+            }
+            else
+                return false;                    
+        }
+
+        public bool Replace(IReplaceable other, bool withProperties)
+        {
+            var thatSprite = (SpriteInstance)other;
+            if (!ReplaceableEquals(other))
+            {
+                Sequence = thatSprite.Sequence;
+                Frame = thatSprite.Frame;
+                return true;
+            }
+            else
+                return false;
+        }
 
         public bool SetSequenceAndFrame(int absIndex)
         {
@@ -53,6 +81,10 @@ namespace TombLib.LevelData
 
         private string GetSequenceName()
         {
+            // Cases for out-of room entities, e.g. in find-and-replace dialog
+            if (Room == null)
+                return "Sequence " + Sequence.ToString();
+
             foreach (var seq in Room.Level.Settings.WadGetAllSpriteSequences())
                 if (Sequence == seq.Key.TypeId)
                     return TrCatalog.GetSpriteSequenceName(Room.Level.Settings.GameVersion, seq.Value.Id.TypeId);
