@@ -124,6 +124,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectCamera = ChunkId.FromString("TeCam");
         /**********/public static readonly ChunkId ObjectCamera2 = ChunkId.FromString("TeCam2");
         /**********/public static readonly ChunkId ObjectSprite = ChunkId.FromString("TeSpr");
+        /**********/public static readonly ChunkId ObjectSprite2 = ChunkId.FromString("TeSpr2");
         /**********/public static readonly ChunkId ObjectFlyBy = ChunkId.FromString("TeFly");
         /**********/public static readonly ChunkId ObjectFlyBy2 = ChunkId.FromString("TeFly2");
         /**********/public static readonly ChunkId ObjectFlyBy2LuaScript = ChunkId.FromString("TeFly2Lua");

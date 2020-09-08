@@ -232,7 +232,7 @@ namespace TombLib.Wad.TrLevels
             textureArea.TexCoord0 = new Vector2(margin, margin);
             textureArea.TexCoord1 = new Vector2(image.Width - margin, margin);
             textureArea.TexCoord2 = new Vector2(image.Width - margin, image.Height - margin);
-            textureArea.TexCoord3 = new Vector2(2, image.Height - margin);
+            textureArea.TexCoord3 = new Vector2(margin, image.Height - margin);
             textureArea.BlendMode = BlendMode.Normal;
             textureArea.DoubleSided = false;
             return textureArea;

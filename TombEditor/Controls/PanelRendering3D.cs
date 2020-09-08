@@ -136,7 +136,6 @@ namespace TombEditor.Controls
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
         private Buffer<SolidVertex> _prismVertexBuffer;
-        private List<WadSprite> _spriteList;
 
         // Flyby stuff
         private const float _flybyPathThickness = 32.0f;
@@ -410,12 +409,6 @@ namespace TombEditor.Controls
                 obj is Editor.ConfigurationChangedEvent ||
                 obj is SectorColoringManager.ChangeSectorColoringInfoEvent)
                 _renderingCachedRooms.Clear();
-
-            // Reset sprite render cache
-            if (obj is Editor.LoadedWadsChangedEvent ||
-                obj is Editor.LevelChangedEvent ||
-                obj is Editor.EditorFocusedEvent)
-                _spriteList = _editor.Level.Settings.WadGetAllSprites();
 
             // Update drawing
             if (_editor.Mode != EditorMode.Map2D)
@@ -1792,8 +1785,10 @@ namespace TombEditor.Controls
                 if (instance is SpriteInstance && _editor.Level.Settings.GameVersion < TRVersion.Game.TR3)
                 {
                     var sprite = instance as SpriteInstance;
-                    if (_spriteList.Count > sprite.SpriteID)
-                        bounds = _spriteList[sprite.SpriteID].Alignment;
+                    var sequence = _editor.Level.Settings.WadGetAllSpriteSequences()
+                        .FirstOrDefault(s => s.Key.TypeId == sprite.Sequence && s.Value.Sprites.Count > sprite.Frame).Value;
+                    if (sequence != null)
+                        bounds = sequence.Sprites[sprite.Frame].Alignment;
                     else
                         bounds = ServiceObjectTextures.GetBounds(instance);
                 }
@@ -2449,12 +2444,16 @@ namespace TombEditor.Controls
             if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2)
                 return;
 
+            var sequences = _editor.Level.Settings.WadGetAllSpriteSequences();
+
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
-                    if (_spriteList.Count > instance.SpriteID)
+                {
+                    var sequence = sequences.FirstOrDefault(s => s.Key.TypeId == instance.Sequence && s.Value.Sprites.Count > instance.Frame).Value;
+                    if (sequence != null)
                     {
                         float depth;
-                        var sprite = _spriteList[instance.SpriteID];
+                        var sprite = sequence.Sprites[instance.Frame];
                         var pos = instance.GetViewportRect(sprite.Alignment, Camera.GetPosition(), viewProjection, ClientSize, out depth);
 
                         if (depth < 1.0f) // Discard offscreen sprites
@@ -2471,6 +2470,7 @@ namespace TombEditor.Controls
                             sprites.Add(newSprite);
                         }
                     }
+                }
         }
 
         private void DrawObjects(Matrix4x4 viewProjection, Effect effect, Room[] roomsWhoseObjectsToDraw, List<Text> textToDraw, List<Sprite> sprites)
@@ -2488,15 +2488,14 @@ namespace TombEditor.Controls
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.WorldPositionMatrix * viewProjection,
-                            "Sprite ID = " + instance.SpriteID +
+                            instance.ShortName() +
                             "\n" + GetObjectPositionString(room, instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(room, instance.Position);
                     }
 
-                    if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2 ||
-                        _spriteList.Count <= instance.SpriteID)
+                    if (_editor.Level.Settings.GameVersion > TRVersion.Game.TR2 || !instance.SpriteIsValid)
                     {
                         Vector4 color;
                         if (_editor.SelectedObject == instance)

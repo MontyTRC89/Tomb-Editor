@@ -73,7 +73,7 @@ namespace TombEditor.Forms
         private void butOk_Click(object sender, EventArgs e)
         {
             if (cmbSprites.SelectedIndex >= 0)
-                _instance.SpriteID = (ushort)cmbSprites.SelectedIndex;
+                _instance.SetSequenceAndFrame(cmbSprites.SelectedIndex);
 
             DialogResult = DialogResult.OK;
             Close();
