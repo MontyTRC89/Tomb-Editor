@@ -1,3 +1,15 @@
+Version 1.3.7
+=============
+Tomb Editor:
+ * Prevent TR1-2 room sprite shuffling when adding new sprite sequences.
+ * Don't move locked rooms with movement hotkeys.
+ * Don't move connected rooms with movement hotkeys if not all connected rooms are selected.
+ * Small renderer optimizations and bugfixes.
+ * Fix exception on compilation if disjointed portals were found.
+ 
+WadTool:
+ * Fix empty sprite sequence preview.
+
 Version 1.3.6
 =============
 Tomb Editor:
