@@ -2449,8 +2449,8 @@ namespace TombEditor.Controls
             foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
                 {
-                    var sequence = sequences.FirstOrDefault(s => s.Key.TypeId == instance.Sequence && s.Value.Sprites.Count > instance.Frame).Value;
-                    if (sequence != null)
+                    var sequence = sequences.FirstOrDefault(s => s.Key.TypeId == instance.Sequence).Value;
+                    if (sequence != null && sequence.Sprites.Count > instance.Frame)
                     {
                         float depth;
                         var sprite = sequence.Sprites[instance.Frame];
