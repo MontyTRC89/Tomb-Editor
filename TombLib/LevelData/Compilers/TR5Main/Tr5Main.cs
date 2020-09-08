@@ -200,11 +200,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 PrepareSoundsData();
                 WriteSoundMetadata(writer);
 
-                // Finish it
-                writer.Write((ushort)0xcdcd);
-                writer.Write((ushort)0xcdcd);
-                writer.Write((ushort)0xcdcd);
-
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 

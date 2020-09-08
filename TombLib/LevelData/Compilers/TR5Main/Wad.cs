@@ -795,27 +795,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
             }
 
             // Step 3: create the sound map
-            switch (_level.Settings.GameVersion)
-            {
-                case TRVersion.Game.TRNG:
-                    _soundMapSize = 2048;
-                    break;
-                case TRVersion.Game.TR2:
-                case TRVersion.Game.TR3:
-                case TRVersion.Game.TR4:
-                    _soundMapSize = 370;
-                    break;
-                case TRVersion.Game.TR5:
-                    _soundMapSize = 450;
-                    break;
-                case TRVersion.Game.TR5Main:
-                    _soundMapSize = 4096;
-                    break;
-
-                default:
-                    throw new Exception("Unknown game version " + _level.Settings.GameVersion);
-            }
-
+             _soundMapSize = 4096;
             _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
             foreach (var sound in _finalSoundInfosList)
             {
@@ -827,15 +807,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
             }
 
-            // Samples aren't needed for TR2-3, skip next step
-            if (_level.Settings.GameVersion.UsesMainSfx())
-            {
-                // Additionally warn user if he uses several sound catalogs which is incompatible with MAIN.SFX workflow.
-                if (_level.Settings.SoundsCatalogs.Count > 1)
-                    _progressReporter.ReportWarn("Multiple sound catalogs can't be used with TR2 and TR3. Results are unpredictable. Remove all sound catalogs but one.");
-                return;
-            }
-
             // Step 4: load samples
             var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, _progressReporter);
             _finalSamplesList = loadedSamples.Values.ToList();
@@ -843,12 +814,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
 
         private void WriteSoundMetadata(BinaryWriter writer)
         {
-            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-            {
-                // In TRNG and TR5Main NumDemoData is used as sound map size
-                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                      _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
-            }
+            writer.Write((ushort)_soundMapSize);
 
             using (var ms = new MemoryStream())
             {
@@ -864,7 +830,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     for (int i = 0; i < _finalSoundInfosList.Count; i++)
                     {
                         var soundDetail = _finalSoundInfosList[i];
-                        
+
                         if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
 
@@ -877,37 +843,16 @@ namespace TombLib.LevelData.Compilers.TR5Main
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
-                        if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
-                        {
-                            var newSoundDetail = new tr_sound_details();
-                            newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (ushort)Math.Round(soundDetail.Volume / 100.0f * 32767.0f);
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 32767.0f);
-                            newSoundDetail.Characteristics = characteristics;
-                            bw.WriteBlock(newSoundDetail);
-                        }
-                        else
-                        {
-                            var newSoundDetail = new tr3_sound_details();
-                            newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
-                            newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
-                            newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
-                            newSoundDetail.Characteristics = characteristics;
-                            bw.WriteBlock(newSoundDetail);
-                        }
+                        var newSoundDetail = new tr3_sound_details();
+                        newSoundDetail.Sample = (ushort)lastSampleIndex;
+                        newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
+                        newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
+                        newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
+                        newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
+                        newSoundDetail.Characteristics = characteristics;
+                        bw.WriteBlock(newSoundDetail);
                         lastSampleIndex += soundDetail.Samples.Count;
                     }
-
-                    if (_level.Settings.GameVersion < TRVersion.Game.TR5Main && lastSampleIndex > 255)
-                        _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
-                            " samples, while maximum is 256. Level will crash. Turn off some sounds to prevent that.");
-
-                    // Write sample indices (not used but parsed in TR4-5)
-                    bw.Write((uint)_finalSoundIndicesList.Count);
-                    for (int i = 0; i < _finalSoundIndicesList.Count; i++)
-                        bw.Write((uint)_finalSoundIndicesList[i]);
                 }
 
                 writer.Write(ms.ToArray());
@@ -917,33 +862,20 @@ namespace TombLib.LevelData.Compilers.TR5Main
         private void WriteSoundData(BinaryWriter writer)
         {
             writer.Write((uint)_finalSamplesList.Count); // Write sample count
-            if (_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main)
-            { // We have to compress the samples first
-              // TR5 uses compressed MS-ADPCM samples
-                byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
-                int[] uncompressedSizes = new int[_finalSamplesList.Count];
-                Parallel.For(0, _finalSamplesList.Count, delegate (int i)
-                {
-                    compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
-                });
-                for (int i = 0; i < _finalSamplesList.Count; ++i)
-                {
-                    writer.Write((uint)uncompressedSizes[i]);
-                    writer.Write((uint)compressedSamples[i].Length);
-                    writer.Write(compressedSamples[i]);
-                }
-            }
-            else
-            { // Uncompressed samples
-                foreach (WadSample sample in _finalSamplesList)
-                {
-                    writer.Write((uint)sample.Data.Length);
-                    writer.Write((uint)sample.Data.Length);
-                    writer.Write(sample.Data, 0, 24);
-                    writer.Write((uint)WadSample.GameSupportedSampleRate); // Overwrite sample rate because the engine actually doens't read this and assumes 22050 anyway. Anything else than 22050 would just be a lie.
-                    writer.Write((uint)(WadSample.GameSupportedSampleRate * 2));
-                    writer.Write(sample.Data, 32, sample.Data.Length - 32);
-                }
+
+            // We have to compress the samples first
+            // TR5 uses compressed MS-ADPCM samples
+            byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
+            int[] uncompressedSizes = new int[_finalSamplesList.Count];
+            Parallel.For(0, _finalSamplesList.Count, delegate (int i)
+            {
+                compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm(WadSample.GameSupportedSampleRate, out uncompressedSizes[i]);
+            });
+            for (int i = 0; i < _finalSamplesList.Count; ++i)
+            {
+                writer.Write((uint)uncompressedSizes[i]);
+                writer.Write((uint)compressedSamples[i].Length);
+                writer.Write(compressedSamples[i]);
             }
         }
 
