@@ -937,28 +937,31 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     }
                 }
             }
-            else if (!shape.IsFlat)
-            { 
-                // Build a quad slope
-                int heightDiffX = shape.HeightXnZp - shape.HeightXnZn;
-                int heightDiffY = shape.HeightXpZn - shape.HeightXnZn;
-                if (isCeiling)
-                    heightDiffX = -heightDiffX;
-
-                if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
+            else
+            {
+                if (!shape.IsFlat)
                 {
-                    _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The quad is too steep, the collision is inaccurate.");
-                    heightDiffX = Math.Min(Math.Max(heightDiffX, -127), 127);
-                    heightDiffY = Math.Min(Math.Max(heightDiffY, -127), 127);
+                    // Build a quad slope
+                    int heightDiffX = shape.HeightXnZp - shape.HeightXnZn;
+                    int heightDiffY = shape.HeightXpZn - shape.HeightXnZn;
+                    if (isCeiling)
+                        heightDiffX = -heightDiffX;
+
+                    if (Math.Abs(heightDiffX) > 127 || Math.Abs(heightDiffY) > 127)
+                    {
+                        _progressReporter.ReportWarn("Quad slope collision value outside range in room '" + reportRoom + "' at " + reportPos + ". The quad is too steep, the collision is inaccurate.");
+                        heightDiffX = Math.Min(Math.Max(heightDiffX, -127), 127);
+                        heightDiffY = Math.Min(Math.Max(heightDiffY, -127), 127);
+                    }
+
+                    ushort result = 0;
+                    result |= (ushort)((ushort)heightDiffY & 0xff);
+                    result |= (ushort)(((ushort)heightDiffX & 0xff) << 8);
+
+                    lastFloorDataFunction = outFloorData.Count;
+                    outFloorData.Add((ushort)(isCeiling ? 0x03 : 0x02));
+                    outFloorData.Add(result);
                 }
-
-                ushort result = 0;
-                result |= (ushort)((ushort)heightDiffY & 0xff);
-                result |= (ushort)(((ushort)heightDiffX & 0xff) << 8);
-
-                lastFloorDataFunction = outFloorData.Count;
-                outFloorData.Add((ushort)(isCeiling ? 0x03 : 0x02));
-                outFloorData.Add(result);
 
                 // New TR5Main sector data
                 if (!isCeiling)
@@ -984,8 +987,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
                     newSector.CeilingCollision.Planes[1] = newSector.CeilingCollision.Planes[0];
                 }
             }
-
-            newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y] = newSector;
         }
 
         private Vector3 GetPlane(Vector3 p1, Vector3 p2, Vector3 p3)
