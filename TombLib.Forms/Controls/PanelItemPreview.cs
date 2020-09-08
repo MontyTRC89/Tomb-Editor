@@ -20,7 +20,8 @@ namespace TombLib.Controls
             get { return _currentObject; }
             set
             {
-                if (value is WadSpriteSequence)
+                if (value is WadSpriteSequence &&
+                   ((WadSpriteSequence)value).Sprites.Count > 0)
                 {
                     if (!_animTimer.Enabled) _animTimer.Enabled = true;
                     if (_currentObject != value) _currentFrame = 0;
