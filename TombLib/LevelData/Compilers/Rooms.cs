@@ -878,6 +878,11 @@ namespace TombLib.LevelData.Compilers
                 if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
                     foreach (var sprite in room.Objects.OfType<SpriteInstance>())
                     {
+                        if (!sprite.SpriteIsValid)
+                        {
+                            _progressReporter.ReportWarn(sprite.ToShortString() + " is not present in any of wads and won't be included.");
+                            continue;
+                        }
                         newRoom.Sprites.Add(new tr_room_sprite() { SpriteID = sprite.SpriteID, Vertex = roomVertices.Count });
                         roomVertices.Add(new tr_room_vertex() { Position = new tr_vertex((short)sprite.Position.X, (short)-sprite.Position.Y, (short)sprite.Position.Z) });
                     }

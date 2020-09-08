@@ -1052,7 +1052,17 @@ namespace TombLib.LevelData.IO
                 {
                     var instance = new SpriteInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.SpriteID = chunkIO.Raw.ReadUInt16();
+                    var absIndex = chunkIO.Raw.ReadUInt16();
+                    objectLinkActions.Add(new KeyValuePair<long, Action<ObjectInstance>>(-1, o => instance.SetSequenceAndFrame(absIndex)));
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectSprite2)
+                {
+                    var instance = new SpriteInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.Sequence = chunkIO.Raw.ReadInt32();
+                    instance.Frame    = chunkIO.Raw.ReadInt32();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
