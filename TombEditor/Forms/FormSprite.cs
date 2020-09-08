@@ -59,7 +59,7 @@ namespace TombEditor.Forms
                 foreach (var spriteSeq in sprites.Values)
                     for (int i = 0; i < spriteSeq.Sprites.Count; i++)
                     {
-                        cmbSprites.Items.Add("(" + num + ") " + TrCatalog.GetSpriteSequenceName(_editor.Level.Settings.GameVersion, spriteSeq.Id.TypeId) + ", sprite #" + i);
+                        cmbSprites.Items.Add(TrCatalog.GetSpriteSequenceName(_editor.Level.Settings.GameVersion, spriteSeq.Id.TypeId) + ", Frame " + i);
                         num++;
                     }
 

@@ -15,7 +15,12 @@ namespace TombLib.LevelData
                 foreach (var seq in Room.Level.Settings.WadGetAllSpriteSequences())
                 {
                     if (seq.Key.TypeId == Sequence)
-                        return (ushort)(id + Frame);
+                    {
+                        if (seq.Value.Sprites.Count > Frame)
+                            return (ushort)(id + Frame);
+                        else
+                            break; // No suitable frame found
+                    }
                     else
                         id += (ushort)seq.Value.Sprites.Count;
                 }
@@ -83,23 +88,33 @@ namespace TombLib.LevelData
         {
             // Cases for out-of room entities, e.g. in find-and-replace dialog
             if (Room == null)
-                return "Sequence " + Sequence.ToString();
+                return "Sequence " + Sequence.ToString() + ", Frame " + Frame;
+
+            var result = "Missing sequence";
 
             foreach (var seq in Room.Level.Settings.WadGetAllSpriteSequences())
                 if (Sequence == seq.Key.TypeId)
-                    return TrCatalog.GetSpriteSequenceName(Room.Level.Settings.GameVersion, seq.Value.Id.TypeId);
+                {
+                    result = TrCatalog.GetSpriteSequenceName(Room.Level.Settings.GameVersion, seq.Value.Id.TypeId);
+                    if (seq.Value.Sprites.Count > Frame)
+                        result += ", Frame " + Frame;
+                    else
+                        result += ", Missing frame";
 
-            return "Missing sequence";
+                    return result;
+                }
+
+            return result;
         }
 
         public override string ToString()
         {
-            return "Sprite '" + GetSequenceName() + "', Frame " + Frame +
+            return "Sprite '" + GetSequenceName() + "'" +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
                 ", Z = " + SectorPosition.Y;
         }
 
-        public string ShortName() => "Sprite '" + GetSequenceName() + "', Frame " + Frame;
+        public string ShortName() => "Sprite '" + GetSequenceName() + "'";
     }
 }
