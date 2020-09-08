@@ -4290,6 +4290,18 @@ namespace TombEditor
                 _editor.ShowObject(instance);
         }
 
+        public static void ReplaceObject(IWin32Window owner, bool fromContext = false)
+        {
+            var existingWindow = Application.OpenForms[nameof(FormReplaceObject)];
+            if (existingWindow == null)
+            {
+                var searchAndReplaceForm = new FormReplaceObject(_editor, fromContext);
+                searchAndReplaceForm.Show(owner);
+            }
+            else
+                existingWindow.Focus();
+        }
+
         public static void ExportCurrentRoom(IWin32Window owner)
         {
             ExportRooms(new[] { _editor.SelectedRoom }, owner);

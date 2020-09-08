@@ -75,7 +75,7 @@ namespace TombEditor.Forms
 
         private readonly Editor _editor;
 
-        public FormReplaceObject(Editor editor)
+        public FormReplaceObject(Editor editor, bool fromContext = false)
         {
             _editor = editor;
             _editor.EditorEventRaised += _editor_EditorEventRaised;
@@ -87,6 +87,13 @@ namespace TombEditor.Forms
 
             // Init UI
             InitializeNewSearch();
+
+            // Switch to destination if we're in context mode
+            if (fromContext)
+            {
+                _editor.SelectedObject = null;
+                SelectionType = ObjectSelectionType.Destination;
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -235,12 +242,14 @@ namespace TombEditor.Forms
             // Sinks and sound sources have no additional parameters, therefore we block search type choice.
             cmbSearchType.Enabled  = !(Source == null ||
                                        Source is SinkInstance ||
+                                       Source is SpriteInstance ||
                                        Source is SoundSourceInstance ||
                                        Source is StaticInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG);
 
             // Additionally, light type can't be changed in runtime (thanks TRTomb?), so we block it as well for replace type choice.
             cmbReplaceType.Enabled = !(Source == null ||
                                        Source is SinkInstance ||
+                                       Source is SpriteInstance ||
                                        Source is SoundSourceInstance ||
                                        Source is LightInstance ||
                                        Source is StaticInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG);
