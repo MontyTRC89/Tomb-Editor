@@ -7,6 +7,7 @@ namespace TombLib.Graphics
     public abstract class Mesh<T> : GraphicsResource, IRenderableObject where T : struct, IVertex
     {
         public Buffer<T> VertexBuffer { get; set; }
+        public VertexInputLayout VertexLayout { get; set; }
         public Buffer IndexBuffer { get; set; }
         public List<Material> Materials { get; set; }
         public List<T> Vertices { get; set; } = new List<T>();
