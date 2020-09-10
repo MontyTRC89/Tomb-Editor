@@ -42,14 +42,14 @@ namespace TombLib.Graphics.Primitives
         public Buffer<T> VertexBuffer { get; private set; }
 
         /// <summary>
+        /// The input layout used by this geometric primitive.
+        /// </summary>
+        public VertexInputLayout InputLayout { get; private set; }
+
+        /// <summary>
         /// The default graphics device.
         /// </summary>
         protected readonly GraphicsDevice GraphicsDevice;
-
-        /// <summary>
-        /// The input layout used by this geometric primitive (shared for all geometric primitive).
-        /// </summary>
-        private static readonly VertexInputLayout InputLayout = VertexInputLayout.New<T>(0);
 
         /// <summary>
         /// True if the index buffer is a 32 bit index buffer.
@@ -76,8 +76,9 @@ namespace TombLib.Graphics.Primitives
             if (toLeftHanded)
                 ReverseWinding(vertices, indices);
 
-            IndexBuffer = ToDispose(Buffer.Index.New(graphicsDevice, indices));
+            IndexBuffer  = ToDispose(Buffer.Index.New(graphicsDevice, indices));
             VertexBuffer = ToDispose(Buffer.Vertex.New(graphicsDevice, vertices));
+            InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
         }
 
         /// <summary>
@@ -116,6 +117,7 @@ namespace TombLib.Graphics.Primitives
             }
 
             VertexBuffer = ToDispose(Buffer.Vertex.New(graphicsDevice, vertices));
+            InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
         }
 
         /// <summary>
@@ -199,7 +201,7 @@ namespace TombLib.Graphics.Primitives
         public void SetupForRendering(GraphicsDevice graphicsDevice)
         {
             graphicsDevice.SetVertexBuffer(VertexBuffer);
-            graphicsDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, VertexBuffer));
+            graphicsDevice.SetVertexInputLayout(InputLayout);
             graphicsDevice.SetIndexBuffer(IndexBuffer, IsIndex32Bits);
         }
 
