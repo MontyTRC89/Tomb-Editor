@@ -2785,6 +2785,8 @@ namespace TombEditor.Controls
 
             if (moveable == null)
                 return;
+
+            VertexInputLayout layout = null;
             AnimatedModel model = _wadRenderer.GetMoveable(moveable);
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
@@ -2798,7 +2800,12 @@ namespace TombEditor.Controls
 
                 _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                 _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                if (layout == null)
+                {
+                    layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetVertexInputLayout(layout);
+                }
 
                 Matrix4x4 world = Matrix4x4.CreateScale(128.0f) *
                                   model.AnimationTransforms[i] *
@@ -2824,6 +2831,7 @@ namespace TombEditor.Controls
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
+            VertexInputLayout layout = null;
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
             foreach (var group in groups)
             {
@@ -2853,7 +2861,12 @@ namespace TombEditor.Controls
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+
+                    if (layout == null)
+                    {
+                        layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
+                        _legacyDevice.SetVertexInputLayout(layout);
+                    }
 
                     foreach (var instance in group)
                     {
@@ -2914,6 +2927,7 @@ namespace TombEditor.Controls
             if (DisablePickingForImportedGeometry)
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
 
+            VertexInputLayout layout = null;
             var groups = importedGeometryToDraw.GroupBy(g => g.Model.UniqueID);
             foreach (var group in groups)
             {
@@ -2928,9 +2942,14 @@ namespace TombEditor.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+
+                    if (layout == null)
+                    {
+                        layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
+                        _legacyDevice.SetVertexInputLayout(layout);
+                    }
 
                     foreach (var instance in group)
                     {
@@ -3011,6 +3030,7 @@ namespace TombEditor.Controls
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
+            VertexInputLayout layout = null;
             var groups = staticsToDraw.GroupBy(s => s.WadObjectId);
             foreach (var group in groups)
             {
@@ -3027,9 +3047,14 @@ namespace TombEditor.Controls
                     if (mesh.Vertices.Count == 0)
                         continue;
 
-                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
+
+                    if (layout == null)
+                    {
+                        layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
+                        _legacyDevice.SetVertexInputLayout(layout);
+                    }
 
                     foreach (var instance in group)
                     {
