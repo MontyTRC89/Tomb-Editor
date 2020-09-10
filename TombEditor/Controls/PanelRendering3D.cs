@@ -2481,6 +2481,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
 
             foreach (Room room in roomsWhoseObjectsToDraw)
+            {
                 foreach (var instance in room.Objects.OfType<SpriteInstance>())
                 {
                     if (_editor.SelectedObject == instance)
@@ -2513,7 +2514,6 @@ namespace TombEditor.Controls
                     }
                 }
 
-            foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<CameraInstance>())
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -2538,7 +2538,6 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
                 }
 
-            foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<FlybyCameraInstance>())
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -2563,8 +2562,6 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
                 }
 
-
-            foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SinkInstance>())
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -2588,8 +2585,6 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
                 }
 
-
-            foreach (Room room in roomsWhoseObjectsToDraw)
                 foreach (var instance in room.Objects.OfType<SoundSourceInstance>())
                 {
                     _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
@@ -2613,17 +2608,61 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
                 }
 
-            if (_editor.SelectedRoom != null)
-            {
-                foreach (Room room in roomsWhoseObjectsToDraw)
-                    foreach (var instance in room.Objects.OfType<MoveableInstance>())
+                foreach (var instance in room.Objects.OfType<MoveableInstance>())
+                {
+                    if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
+                        continue;
+
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
                     {
-                        if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
-                            continue;
+                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            instance.ShortName() + "\nUnavailable " + instance.ItemType +
+                                "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
 
-                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                        // Add the line height of the object
+                        AddObjectHeightLine(room, instance.Position);
+                    }
+
+                    RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
+                }
+
+                foreach (var instance in room.Objects.OfType<StaticInstance>())
+                {
+                    if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
+                        continue;
+
+                    _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                    Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
+                    if (_editor.SelectedObject == instance)
+                    {
+                        color = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                        _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                        // Add text message
+                        textToDraw.Add(CreateTextTagForObject(
+                            instance.RotationPositionMatrix * viewProjection,
+                            instance.ShortName() + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
+
+                        // Add the line height of the object
+                        AddObjectHeightLine(room, instance.Position);
+                    }
+
+                    RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
+                }
+
+                foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
+                    if (instance.Model?.DirectXModel == null || instance.Hidden)
+                    {
+                        Vector4 color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
                         if (_editor.SelectedObject == instance)
                         {
                             color = _editor.Configuration.UI_ColorScheme.ColorSelection;
@@ -2632,8 +2671,7 @@ namespace TombEditor.Controls
                             // Add text message
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * viewProjection,
-                                instance.ShortName() + "\nUnavailable " + instance.ItemType +
-                                    "\n" + GetObjectPositionString(room, instance) + BuildTriggeredByMessage(instance)));
+                                instance.ToString()));
 
                             // Add the line height of the object
                             AddObjectHeightLine(room, instance.Position);
@@ -2641,54 +2679,6 @@ namespace TombEditor.Controls
 
                         RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
                     }
-
-                foreach (Room room in roomsWhoseObjectsToDraw)
-                    foreach (var instance in room.Objects.OfType<StaticInstance>())
-                    {
-                        if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
-                            continue;
-
-                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                        Vector4 color = new Vector4(0.4f, 0.4f, 1.0f, 1.0f);
-                        if (_editor.SelectedObject == instance)
-                        {
-                            color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                            // Add text message
-                            textToDraw.Add(CreateTextTagForObject(
-                                instance.RotationPositionMatrix * viewProjection,
-                                instance.ShortName() + "\nUnavailable " + instance.ItemType + BuildTriggeredByMessage(instance)));
-
-                            // Add the line height of the object
-                            AddObjectHeightLine(room, instance.Position);
-                        }
-
-                        RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
-                    }
-
-                foreach (Room room in roomsWhoseObjectsToDraw)
-                    foreach (var instance in room.Objects.OfType<ImportedGeometryInstance>())
-                        if (instance.Model?.DirectXModel == null || instance.Hidden)
-                        {
-                            Vector4 color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
-                            if (_editor.SelectedObject == instance)
-                            {
-                                color = _editor.Configuration.UI_ColorScheme.ColorSelection;
-                                _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-
-                                // Add text message
-                                textToDraw.Add(CreateTextTagForObject(
-                                    instance.RotationPositionMatrix * viewProjection,
-                                    instance.ToString()));
-
-                                // Add the line height of the object
-                                AddObjectHeightLine(room, instance.Position);
-                            }
-
-                            RenderOrQueueServiceObject(instance, _littleCube, color, effect, viewProjection, sprites);
-                        }
             }
 
             // Draw extra flyby cones
