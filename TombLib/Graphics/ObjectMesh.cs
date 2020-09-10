@@ -39,8 +39,8 @@ namespace TombLib.Graphics
                 IndexBuffer.Dispose();
 
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
-            VertexLayout = VertexInputLayout.FromBuffer(0, VertexBuffer);
-            IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
+            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
         protected override void Dispose(bool disposeManagedResources)
