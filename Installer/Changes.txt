@@ -1,11 +1,11 @@
 Version 1.3.7
 =============
 Tomb Editor:
+ * Renderer bugfixes and optimizations (up to 4 times faster with full world view).
  * Prevent room sprite shuffling when adding new sprite sequences.
  * Make room sprites replaceable through "Find & Replace" dialog.
  * Don't move locked rooms with movement hotkeys.
  * Don't move connected rooms with movement hotkeys if not all connected rooms are selected.
- * Small renderer optimizations and bugfixes.
  * Fix exception on compilation if disjointed portals were found.
  
 WadTool:
