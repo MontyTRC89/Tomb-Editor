@@ -2799,13 +2799,8 @@ namespace TombEditor.Controls
                     continue;
 
                 _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                _legacyDevice.SetVertexInputLayout(mesh.VertexLayout);
                 _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-
-                if (layout == null)
-                {
-                    layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(layout);
-                }
 
                 Matrix4x4 world = Matrix4x4.CreateScale(128.0f) *
                                   model.AnimationTransforms[i] *
@@ -2858,15 +2853,10 @@ namespace TombEditor.Controls
                     var mesh = skin.Meshes[i];
                     if (mesh.Vertices.Count == 0)
                         continue;
-
+                    
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetVertexInputLayout(mesh.VertexLayout);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-
-                    if (layout == null)
-                    {
-                        layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
-                        _legacyDevice.SetVertexInputLayout(layout);
-                    }
 
                     foreach (var instance in group)
                     {
@@ -2927,7 +2917,6 @@ namespace TombEditor.Controls
             if (DisablePickingForImportedGeometry)
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
 
-            VertexInputLayout layout = null;
             var groups = importedGeometryToDraw.GroupBy(g => g.Model.UniqueID);
             foreach (var group in groups)
             {
@@ -2943,13 +2932,8 @@ namespace TombEditor.Controls
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetVertexInputLayout(mesh.VertexLayout);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-
-                    if (layout == null)
-                    {
-                        layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
-                        _legacyDevice.SetVertexInputLayout(layout);
-                    }
 
                     foreach (var instance in group)
                     {
@@ -3048,13 +3032,8 @@ namespace TombEditor.Controls
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
+                    _legacyDevice.SetVertexInputLayout(mesh.VertexLayout);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-
-                    if (layout == null)
-                    {
-                        layout = VertexInputLayout.FromBuffer(0, mesh.VertexBuffer);
-                        _legacyDevice.SetVertexInputLayout(layout);
-                    }
 
                     foreach (var instance in group)
                     {

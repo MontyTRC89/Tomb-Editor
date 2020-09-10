@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 using Buffer = SharpDX.Toolkit.Graphics.Buffer;
@@ -41,6 +39,7 @@ namespace TombLib.Graphics
                 IndexBuffer.Dispose();
 
             VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexLayout = VertexInputLayout.FromBuffer(0, VertexBuffer);
             IndexBuffer = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
         }
 
