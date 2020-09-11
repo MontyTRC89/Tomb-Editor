@@ -7267,7 +7267,7 @@
       <Extra>
         <FixedEnumeration>
           <Enum K="0" V="Silent way" />
-          <Enum K="1" V="If item si missing play LARA_SAY_NO sound" />
+          <Enum K="1" V="If item is missing play LARA_SAY_NO sound" />
         </FixedEnumeration>
       </Extra>
     </Subtrigger>
