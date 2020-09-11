@@ -4556,24 +4556,26 @@
 		<moveable id="35" name="LARA_CROWBAR_ANIM" use_body_from="12" />
 		<moveable id="36" name="LARA_TORCH_ANIM" use_body_from="12" />
 		<moveable id="37" name="LARA_HAIR" />
-		<moveable id="50" name="SNOWMOBILE_LARA_ANIMS" />
+		<moveable id="50" name="SNOWMOBILE_LARA_ANIMS" use_body_from="12" />
 		<moveable id="51" name="SNOWMOBILE" />
-		<moveable id="52" name="QUAD_LARA_ANIMS" />
+		<moveable id="52" name="QUAD_LARA_ANIMS" use_body_from="12" />
 		<moveable id="53" name="QUAD" />
-		<moveable id="54" name="SPEEDBOAT_LARA_ANIMS" />
+		<moveable id="54" name="SPEEDBOAT_LARA_ANIMS" use_body_from="12" />
 		<moveable id="55" name="SPEEDBOAT" />
-		<moveable id="56" name="KAYAK_LARA_ANIMS" />
+		<moveable id="56" name="KAYAK_LARA_ANIMS" use_body_from="12" />
 		<moveable id="57" name="KAYAK" />
-		<moveable id="58" name="UPV_LARA_ANIMS" />
+		<moveable id="58" name="UPV_LARA_ANIMS" use_body_from="12" />
 		<moveable id="59" name="UPV" />
-		<moveable id="60" name="MINECART_LARA_ANIMS" />
+		<moveable id="60" name="MINECART_LARA_ANIMS" use_body_from="12" />
 		<moveable id="61" name="MINECART" />
-		<moveable id="62" name="JEEP_LARA_ANIMS" />
+		<moveable id="62" name="JEEP_LARA_ANIMS" use_body_from="12" />
 		<moveable id="63" name="JEEP" />
-		<moveable id="64" name="MOTORBIKE_LARA_ANIMS" />
+		<moveable id="64" name="MOTORBIKE_LARA_ANIMS" use_body_from="12" />
 		<moveable id="65" name="MOTORBIKE" />
-		<moveable id="66" name="RUBBER_BOAT_LARA_ANIMS" />
+		<moveable id="66" name="RUBBER_BOAT_LARA_ANIMS" use_body_from="12" />
 		<moveable id="67" name="RUBBER_BOAT" />
+		<moveable id="68" name="LARA_BIGGUN_ANIM" use_body_from="12" />
+		<moveable id="69" name="BIGGUN" />
 		<moveable id="90" name="VEHICLE_SMASHABLE_FLOOR" />
 		<moveable id="91" name="VEHICLE_SMASHABLE_WALL" />		
 		<moveable id="100" name="WOLF" />
