@@ -1445,61 +1445,15 @@ namespace TombLib.LevelData.IO
                         .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
 
                     // Lookup objects from IDs for all triggers
-                    List<FlybyCameraInstance> flyByLookup = null;
                     foreach (Room room in level.Rooms.Where(room => room != null))
                         foreach (var instance in room.Triggers.ToList())
                         {
-                            Func<ITriggerParameter, NG.NgParameterRange, ITriggerParameter> FixTriggerParameter = (ITriggerParameter parameter, NG.NgParameterRange range) =>
-                            {
-                                if (!(parameter is TriggerParameterUshort))
-                                    return parameter;
-                                ushort index = ((TriggerParameterUshort)parameter).Key;
-                                if (range.IsObject)
-                                {
-                                    // Special lookup for flybys.
-                                    // Triggers marked as flyby can point to a sequence directly instead an object ID
-                                    if (instance.TargetType == TriggerTargetType.FlyByCamera)
-                                    {
-                                        if (flyByLookup == null)
-                                            flyByLookup = objectLookup.Values
-                                                .OfType<FlybyCameraInstance>()
-                                                .GroupBy(flyBy => flyBy.Sequence)
-                                                .Select(flyByGroup => flyByGroup.OrderBy(flyBy => flyBy.Number).First())
-                                                .ToList();
-                                        FlybyCameraInstance foundFlyBy = flyByLookup.FirstOrDefault(flyBy => flyBy.Sequence == index);
-                                        if (foundFlyBy != null)
-                                            return foundFlyBy;
-                                    }
-
-                                    // Undo object indexing
-                                    PositionBasedObjectInstance @object;
-                                    if (!objectLookup.TryGetValue(index, out @object))
-                                    {
-                                        progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + index + " that is unavailable.");
-                                        return null;
-                                    }
-                                    return @object;
-                                }
-                                else if (range.IsRoom)
-                                {
-                                    // Undo room indexing
-                                    Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
-                                    if (room3 == null)
-                                    {
-                                        progressReporter.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
-                                        return parameter;
-                                    }
-                                    return room3;
-                                }
-                                else
-                                    return parameter;
-                            };
-                            instance.Target = FixTriggerParameter(instance.Target,
-                                NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer));
-                            instance.Timer = FixTriggerParameter(instance.Timer,
-                                NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target));
-                            instance.Target = FixTriggerParameter(instance.Target,
-                                NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer));
+                            instance.Target = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Target,
+                                NG.NgParameterInfo.GetTargetRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Timer), objectLookup, progressReporter);
+                            instance.Timer  = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Timer,
+                                NG.NgParameterInfo.GetTimerRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target), objectLookup, progressReporter);
+                            instance.Extra = NG.NgParameterInfo.FixTriggerParameter(level, instance, instance.Extra,
+                                NG.NgParameterInfo.GetExtraRange(level.Settings, instance.TriggerType, instance.TargetType, instance.Target, instance.Timer), objectLookup, progressReporter);
 
                             // Sinks and cameras are classified as 'object's most of time for some reason.
                             // We have to fix that.

@@ -54,33 +54,38 @@ namespace TombEditor.Forms
             Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
             FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
 
+            Initialize(_trigger);
+        }
+
+        public void Initialize(TriggerInstance trigger)
+        {
             // Update the dialog
             UpdateDialog();
 
             // Set values
-            cbBit1.Checked = (_trigger.CodeBits & (1 << 0)) != 0;
-            cbBit2.Checked = (_trigger.CodeBits & (1 << 1)) != 0;
-            cbBit3.Checked = (_trigger.CodeBits & (1 << 2)) != 0;
-            cbBit4.Checked = (_trigger.CodeBits & (1 << 3)) != 0;
-            cbBit5.Checked = (_trigger.CodeBits & (1 << 4)) != 0;
-            cbOneShot.Checked = _trigger.OneShot;
+            cbBit1.Checked = (trigger.CodeBits & (1 << 0)) != 0;
+            cbBit2.Checked = (trigger.CodeBits & (1 << 1)) != 0;
+            cbBit3.Checked = (trigger.CodeBits & (1 << 2)) != 0;
+            cbBit4.Checked = (trigger.CodeBits & (1 << 3)) != 0;
+            cbBit5.Checked = (trigger.CodeBits & (1 << 4)) != 0;
+            cbOneShot.Checked = trigger.OneShot;
 
-            paramTriggerType.Parameter = new TriggerParameterUshort((ushort)_trigger.TriggerType);
-            paramTargetType.Parameter = new TriggerParameterUshort((ushort)_trigger.TargetType);
+            paramTriggerType.Parameter = new TriggerParameterUshort((ushort)trigger.TriggerType);
+            paramTargetType.Parameter = new TriggerParameterUshort((ushort)trigger.TargetType);
 
             // HACK: Change order of population based on target type.
-            if (_trigger.TriggerType == TriggerType.ConditionNg)
+            if (trigger.TriggerType == TriggerType.ConditionNg)
             {
-                paramTimer.Parameter = _trigger.Timer;
-                paramTarget.Parameter = _trigger.Target;
+                paramTimer.Parameter = trigger.Timer;
+                paramTarget.Parameter = trigger.Target;
             }
             else
             {
-                paramTarget.Parameter = _trigger.Target;
-                paramTimer.Parameter = _trigger.Timer;
+                paramTarget.Parameter = trigger.Target;
+                paramTimer.Parameter = trigger.Timer;
             }
 
-            paramExtra.Parameter = _trigger.Extra;
+            paramExtra.Parameter = trigger.Extra;
         }
 
         public void UpdateDialog()
@@ -311,6 +316,24 @@ namespace TombEditor.Forms
         {
             foreach (var control in panelClassicTriggerControls.Controls.OfType<TriggerParameterControl>())
                 control.RawMode = cbRawMode.Checked;
+        }
+
+        private void butSearchTrigger_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormInputBox("Find and restore trigger from script", "Enter a script command:"))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    var result = NgParameterInfo.ImportFromScriptTrigger(_level, form.Result);
+                    if (result == null)
+                    {
+                        DarkMessageBox.Show(this, "Script entry is invalid. Trigger can't be restored.", "Error", MessageBoxIcon.Error);
+                        return;
+                    }
+                    else
+                        Initialize(result);
+                }
+            }
         }
     }
 }

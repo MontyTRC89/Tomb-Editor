@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using TombLib.LevelData;
 using TombLib.Utils;
@@ -327,6 +328,134 @@ namespace TombLib.NG
                 return (ushort)level.GetRearrangedRooms().ReferenceIndexOf(parameter);
             else
                 throw new Exception("Trigger parameter of invalid type!");
+        }
+
+        public static ITriggerParameter FixTriggerParameter(Level level, TriggerInstance instance, ITriggerParameter parameter, NgParameterRange range, Dictionary<uint, PositionBasedObjectInstance> objectLookup, IProgressReporter progressReporter = null)
+        {
+            List<FlybyCameraInstance> flyByLookup = null;
+
+            if (!(parameter is TriggerParameterUshort))
+                return parameter;
+            ushort index = ((TriggerParameterUshort)parameter).Key;
+            if (range.IsObject)
+            {
+                // Special lookup for flybys.
+                // Triggers marked as flyby can point to a sequence directly instead an object ID
+                if (instance.TargetType == TriggerTargetType.FlyByCamera)
+                {
+                    if (flyByLookup == null)
+                        flyByLookup = objectLookup.Values
+                            .OfType<FlybyCameraInstance>()
+                            .GroupBy(flyBy => flyBy.Sequence)
+                            .Select(flyByGroup => flyByGroup.OrderBy(flyBy => flyBy.Number).First())
+                            .ToList();
+                    FlybyCameraInstance foundFlyBy = flyByLookup.FirstOrDefault(flyBy => flyBy.Sequence == index);
+                    if (foundFlyBy != null)
+                        return foundFlyBy;
+                }
+
+                // Undo object indexing
+                PositionBasedObjectInstance @object;
+                if (!objectLookup.TryGetValue(index, out @object))
+                {
+                    progressReporter?.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to an object with ID " + index + " that is unavailable.");
+                    return null;
+                }
+                return @object;
+            }
+            else if (range.IsRoom)
+            {
+                // Undo room indexing
+                Room room3 = level.Rooms.Where(room2 => room2 != null).ElementAtOrDefault(index);
+                if (room3 == null)
+                {
+                    progressReporter?.ReportWarn("Trigger '" + instance + "' in '" + instance.Room + "' refers to a room with ID " + index + " that is unavailable.");
+                    return parameter;
+                }
+                return room3;
+            }
+            else
+                return parameter;
+        }
+
+        public static TriggerInstance ImportFromScriptTrigger(Level level, string script)
+        {
+            // Build object lookup table
+            var objectLookup = level.Rooms.Where(room => room != null)
+                                          .SelectMany(room => room.Objects)
+                                          .Where(instance => instance is IHasScriptID)
+                                          .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
+
+            // Make dummy trigger
+            var result = new TriggerInstance(RectangleInt2.Zero) { TriggerType = TriggerType.Trigger };
+
+            // Split script string into tokens and clear spaces
+            var tokens = script.Split(',').Select(s => s.Trim(' ')).ToList();
+
+            if (tokens.Count != 3)
+                return null; // Incorrect amount of operands!
+
+            ushort[] operands = new ushort[tokens.Count];
+
+            // Parse tokens
+            for (int i = 0; i < tokens.Count; i++)
+            {
+                var token = tokens[i];
+                if (token.StartsWith("$") && ushort.TryParse(token.Trim('$'), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out operands[i]))
+                    continue;
+                if (ushort.TryParse(token, out operands[i]))
+                    continue;
+                return null;  // Incorrect operand!
+            }
+
+            // Should we splice timer into extra?
+            bool decode = false;
+
+            switch (operands[0])
+            {
+                case 0x8000:
+                case 0x9000:
+                    result.TriggerType = TriggerType.ConditionNg;
+                    result.TargetType = TriggerTargetType.ParameterNg;
+                    decode = !NgCatalog.ConditionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
+                    break;
+
+                case 0x2000:
+                    result.TargetType = TriggerTargetType.FlipEffect;
+                    decode = !NgCatalog.FlipEffectTrigger.MainList[operands[1]].Extra.IsEmpty;
+                    break;
+
+                case 0x4000:
+                case 0x5000:
+                    result.TargetType = TriggerTargetType.ActionNg;
+                    decode = !NgCatalog.ActionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
+                    break;
+
+                default:
+                    return null; // Incorrect first operand!
+            }
+
+            // Target is always raw
+            result.Target = new TriggerParameterUshort(operands[1]);
+
+            // Splice timer into extra if needed
+            if (decode)
+            {
+                result.Timer = new TriggerParameterUshort((ushort)(operands[2] & 0xFF));
+                result.Extra = new TriggerParameterUshort((ushort)(operands[2] >> 8));
+            }
+            else
+                result.Timer = new TriggerParameterUshort(operands[2]);
+
+            // Link actual objects
+            result.Target = FixTriggerParameter(level, result, result.Target,
+                GetTargetRange(level.Settings, result.TriggerType, result.TargetType, result.Timer), objectLookup);
+            result.Timer = FixTriggerParameter(level, result, result.Timer,
+                GetTimerRange(level.Settings, result.TriggerType, result.TargetType, result.Target), objectLookup);
+            result.Extra = FixTriggerParameter(level, result, result.Extra,
+                GetExtraRange(level.Settings, result.TriggerType, result.TargetType, result.Target, result.Timer), objectLookup);
+
+            return result;
         }
 
         public static string ExportToScriptTrigger(Level level, TriggerInstance trigger, int? animCommandNumber, bool withComment = false)

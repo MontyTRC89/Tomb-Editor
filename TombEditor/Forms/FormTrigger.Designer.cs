@@ -51,6 +51,7 @@ namespace TombEditor.Forms
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.butCopyWithComments = new DarkUI.Controls.DarkButton();
             this.butCopyToClipboard = new DarkUI.Controls.DarkButton();
+            this.butSearchTrigger = new DarkUI.Controls.DarkButton();
             this.butCopyAsAnimcommand = new DarkUI.Controls.DarkButton();
             this.scriptExportPanel = new System.Windows.Forms.Panel();
             this.cbRawMode = new DarkUI.Controls.DarkCheckBox();
@@ -200,10 +201,10 @@ namespace TombEditor.Forms
             // tbScript
             // 
             this.tbScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScript.Location = new System.Drawing.Point(48, 0);
+            this.tbScript.Location = new System.Drawing.Point(45, 0);
             this.tbScript.Name = "tbScript";
             this.tbScript.ReadOnly = true;
-            this.tbScript.Size = new System.Drawing.Size(159, 22);
+            this.tbScript.Size = new System.Drawing.Size(158, 22);
             this.tbScript.TabIndex = 13;
             // 
             // labelScript
@@ -221,7 +222,7 @@ namespace TombEditor.Forms
             this.butCopyWithComments.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyWithComments.Checked = false;
             this.butCopyWithComments.Image = global::TombEditor.Properties.Resources.general_copy_comments_16;
-            this.butCopyWithComments.Location = new System.Drawing.Point(241, 1);
+            this.butCopyWithComments.Location = new System.Drawing.Point(237, 0);
             this.butCopyWithComments.Name = "butCopyWithComments";
             this.butCopyWithComments.Size = new System.Drawing.Size(22, 22);
             this.butCopyWithComments.TabIndex = 76;
@@ -233,22 +234,34 @@ namespace TombEditor.Forms
             this.butCopyToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyToClipboard.Checked = false;
             this.butCopyToClipboard.Image = global::TombEditor.Properties.Resources.general_copy_16;
-            this.butCopyToClipboard.Location = new System.Drawing.Point(213, 1);
+            this.butCopyToClipboard.Location = new System.Drawing.Point(209, 0);
             this.butCopyToClipboard.Name = "butCopyToClipboard";
             this.butCopyToClipboard.Size = new System.Drawing.Size(22, 22);
             this.butCopyToClipboard.TabIndex = 12;
             this.toolTip.SetToolTip(this.butCopyToClipboard, "Copy to clipboard");
             this.butCopyToClipboard.Click += new System.EventHandler(this.butCopyToClipboard_Click);
             // 
+            // butSearchTrigger
+            // 
+            this.butSearchTrigger.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearchTrigger.Checked = false;
+            this.butSearchTrigger.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearchTrigger.Location = new System.Drawing.Point(265, 0);
+            this.butSearchTrigger.Name = "butSearchTrigger";
+            this.butSearchTrigger.Size = new System.Drawing.Size(22, 22);
+            this.butSearchTrigger.TabIndex = 77;
+            this.toolTip.SetToolTip(this.butSearchTrigger, "Find and restore trigger");
+            this.butSearchTrigger.Click += new System.EventHandler(this.butSearchTrigger_Click);
+            // 
             // butCopyAsAnimcommand
             // 
             this.butCopyAsAnimcommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butCopyAsAnimcommand.Checked = false;
             this.butCopyAsAnimcommand.Image = global::TombEditor.Properties.Resources.general_animcommand_16;
-            this.butCopyAsAnimcommand.Location = new System.Drawing.Point(269, 1);
+            this.butCopyAsAnimcommand.Location = new System.Drawing.Point(293, 0);
             this.butCopyAsAnimcommand.Name = "butCopyAsAnimcommand";
             this.butCopyAsAnimcommand.Size = new System.Drawing.Size(22, 22);
-            this.butCopyAsAnimcommand.TabIndex = 77;
+            this.butCopyAsAnimcommand.TabIndex = 78;
             this.toolTip.SetToolTip(this.butCopyAsAnimcommand, "Export as animcommand");
             this.butCopyAsAnimcommand.Click += new System.EventHandler(this.butCopyAsAnimcommand_Click);
             // 
@@ -256,13 +269,14 @@ namespace TombEditor.Forms
             // 
             this.scriptExportPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.scriptExportPanel.Controls.Add(this.butCopyAsAnimcommand);
+            this.scriptExportPanel.Controls.Add(this.butSearchTrigger);
             this.scriptExportPanel.Controls.Add(this.butCopyWithComments);
             this.scriptExportPanel.Controls.Add(this.tbScript);
             this.scriptExportPanel.Controls.Add(this.labelScript);
             this.scriptExportPanel.Controls.Add(this.butCopyToClipboard);
-            this.scriptExportPanel.Location = new System.Drawing.Point(395, 133);
+            this.scriptExportPanel.Location = new System.Drawing.Point(371, 133);
             this.scriptExportPanel.Name = "scriptExportPanel";
-            this.scriptExportPanel.Size = new System.Drawing.Size(291, 23);
+            this.scriptExportPanel.Size = new System.Drawing.Size(315, 23);
             this.scriptExportPanel.TabIndex = 78;
             // 
             // cbRawMode
@@ -441,6 +455,7 @@ namespace TombEditor.Forms
         private Panel panelButtons;
         private Panel panelClassicTriggerControls;
         private TriggerParameterControl paramExtra;
+        private DarkButton butSearchTrigger;
         private DarkButton butCopyAsAnimcommand;
     }
 }
