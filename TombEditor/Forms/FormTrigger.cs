@@ -226,7 +226,9 @@ namespace TombEditor.Forms
                 tbScript.Enabled = true;
                 butCopyToClipboard.Enabled = true;
                 butCopyWithComments.Enabled = true;
-                butCopyAsAnimcommand.Enabled = true;
+
+                // Disable animcommand export for action/condition triggers because only god and Paolone knows how it is encoded. 
+                butCopyAsAnimcommand.Enabled = !(TargetType == TriggerTargetType.ParameterNg || TargetType == TriggerTargetType.ActionNg);
             }
             catch (NgParameterInfo.ExceptionScriptNotSupported)
             {
