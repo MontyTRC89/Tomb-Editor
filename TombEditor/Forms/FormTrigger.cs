@@ -322,14 +322,14 @@ namespace TombEditor.Forms
 
         private void butSearchTrigger_Click(object sender, EventArgs e)
         {
-            using (var form = new FormInputBox("Find and restore trigger from script", "Enter a script command:"))
+            using (var form = new FormInputBox("Import trigger from script", "Enter a script command:"))
             {
                 if (form.ShowDialog(this) == DialogResult.OK)
                 {
                     var result = NgParameterInfo.ImportFromScriptTrigger(_level, form.Result);
                     if (result == null)
                     {
-                        DarkMessageBox.Show(this, "Script entry is invalid. Trigger can't be restored.", "Error", MessageBoxIcon.Error);
+                        DarkMessageBox.Show(this, "Script entry is invalid. Trigger can't be imported.", "Error", MessageBoxIcon.Error);
                         return;
                     }
                     else
