@@ -245,12 +245,12 @@ namespace TombEditor.Forms
             // 
             this.butSearchTrigger.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butSearchTrigger.Checked = false;
-            this.butSearchTrigger.Image = global::TombEditor.Properties.Resources.general_search_16;
+            this.butSearchTrigger.Image = global::TombEditor.Properties.Resources.general_Import_16;
             this.butSearchTrigger.Location = new System.Drawing.Point(265, 0);
             this.butSearchTrigger.Name = "butSearchTrigger";
             this.butSearchTrigger.Size = new System.Drawing.Size(22, 22);
             this.butSearchTrigger.TabIndex = 77;
-            this.toolTip.SetToolTip(this.butSearchTrigger, "Find and restore trigger");
+            this.toolTip.SetToolTip(this.butSearchTrigger, "Import trigger");
             this.butSearchTrigger.Click += new System.EventHandler(this.butSearchTrigger_Click);
             // 
             // butCopyAsAnimcommand
