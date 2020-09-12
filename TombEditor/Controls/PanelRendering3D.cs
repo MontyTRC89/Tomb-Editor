@@ -2832,6 +2832,7 @@ namespace TombEditor.Controls
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+            skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
             foreach (var group in groups)
@@ -2851,8 +2852,6 @@ namespace TombEditor.Controls
                     if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
                         skin = _wadRenderer.GetMoveable(moveableSkin);
                 }
-
-                skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
@@ -3019,6 +3018,7 @@ namespace TombEditor.Controls
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+            staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
             var groups = staticsToDraw.GroupBy(s => s.WadObjectId);
             foreach (var group in groups)
@@ -3028,7 +3028,6 @@ namespace TombEditor.Controls
                     continue;
 
                 var model = _wadRenderer.GetStatic(statID);
-                staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
