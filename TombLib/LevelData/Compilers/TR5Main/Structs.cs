@@ -25,20 +25,6 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public float Y4;
     }
 
-    public enum tr5main_split_type : int
-    {
-        None,
-        Split1,
-        Split2
-    }
-
-    public enum tr5main_nocollision_type : int
-    {
-        None,
-        Triangle1,
-        Triangle2
-    }
-
     public enum tr5main_polygon_shape : int
     {
         Quad,
@@ -57,8 +43,8 @@ namespace TombLib.LevelData.Compilers.TR5Main
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public class tr5main_collision_info
     {
-        public tr5main_split_type Split;
-        public tr5main_nocollision_type NoCollision;
+        public float SplitAngle;
+        public int[] Portals;
         public Vector3[] Planes;
     }
 
@@ -75,6 +61,7 @@ namespace TombLib.LevelData.Compilers.TR5Main
         public int Ceiling;
         public tr5main_collision_info FloorCollision;
         public tr5main_collision_info CeilingCollision;
+        public int WallPortal;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -296,14 +283,17 @@ namespace TombLib.LevelData.Compilers.TR5Main
                 writer.Write(s.Floor);
                 writer.Write(s.RoomAbove);
                 writer.Write(s.Ceiling);
-                writer.Write((int)s.FloorCollision.Split);
-                writer.Write((int)s.FloorCollision.NoCollision);
+                writer.Write(s.FloorCollision.SplitAngle);
+                writer.Write(s.FloorCollision.Portals[0]);
+                writer.Write(s.FloorCollision.Portals[1]);
                 writer.Write(s.FloorCollision.Planes[0]);
                 writer.Write(s.FloorCollision.Planes[1]);
-                writer.Write((int)s.CeilingCollision.Split);
-                writer.Write((int)s.CeilingCollision.NoCollision);
+                writer.Write(s.CeilingCollision.SplitAngle);
+                writer.Write(s.CeilingCollision.Portals[0]);
+                writer.Write(s.CeilingCollision.Portals[1]);
                 writer.Write(s.CeilingCollision.Planes[0]);
                 writer.Write(s.CeilingCollision.Planes[1]);
+                writer.Write(s.WallPortal);
             }
 
             // Write room color
