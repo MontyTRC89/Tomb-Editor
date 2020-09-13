@@ -125,8 +125,8 @@ namespace TombEditor.Forms
                 else if (obj is Editor.SelectedRoomChangedEvent && scope == ScopeMode.ObjectsInSelectedRooms)
                     ResetCompletely();
                 else if (obj is IEditorObjectChangedEvent && (scope == ScopeMode.AllObjects || scope == ScopeMode.Everything ||
-                    scope == ScopeMode.ObjectsInSelectedRooms && ((IEditorObjectChangedEvent)obj).Room == _editor.SelectedRoom ||
-                    scope == ScopeMode.Triggers && ((IEditorObjectChangedEvent)obj).Object is TriggerInstance))
+                    (scope == ScopeMode.ObjectsInSelectedRooms && _editor.SelectedRooms.Contains(((IEditorObjectChangedEvent)obj).Room)) ||
+                    (scope == ScopeMode.Triggers && ((IEditorObjectChangedEvent)obj).Object is TriggerInstance)))
                 {
                     var @event = (IEditorObjectChangedEvent)obj;
                     switch (@event.ChangeType)
@@ -229,6 +229,9 @@ namespace TombEditor.Forms
 
             _cachedRelevantObjects.Remove(obj);
             _cachedSortedObjects?.Remove(rate);
+
+            CleanUp();
+
             foreach (DataGridViewColumn column in objectList.Columns)
                 objectList.InvalidateColumn(column.Index);
             CurrentlyChangingRowCount(() => objectList.RowCount -= 1);
@@ -238,6 +241,20 @@ namespace TombEditor.Forms
         {
             RemoveObject(obj);
             AddObject(obj);
+        }
+
+        private void CleanUp()
+        {
+            var deletedObjects = _cachedRelevantObjects.Keys.Where(o => o is ObjectInstance && ((ObjectInstance)o).Room == null).ToList();
+
+            foreach (var obj in deletedObjects)
+            {
+                RateType rate;
+                if (!_cachedRelevantObjects.TryGetValue(obj, out rate))
+                    continue;
+                _cachedRelevantObjects.Remove(obj);
+                _cachedSortedObjects?.Remove(rate);
+            }
         }
 
         private void ResetCompletely()
@@ -429,7 +446,7 @@ namespace TombEditor.Forms
 
                 if (entry is Room)
                     roomsToDelete.Add((Room)entry);
-                else if (entry is ISpatial)
+                else if (entry is ISpatial || entry is TriggerInstance)
                     objectsToDelete.Add((ObjectInstance)entry);
                 else
                     illegalOperation = true;
@@ -439,14 +456,15 @@ namespace TombEditor.Forms
                 DarkMessageBox.Show(this, "Do you want to delete all selected entries? This action can't be undone.",
                                     "Delete selected entries", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                EditorActions.DeleteObjects(objectsToDelete, null, false); // Delete objects first to avoid clashes later
+                objectsToDelete = objectsToDelete.OrderBy(o => !(o is TriggerInstance)).ToList(); // Delete triggers first to avoid clashes
+                EditorActions.DeleteObjects(objectsToDelete, null, false); // Delete objects first to avoid clashes
                 EditorActions.DeleteRooms(roomsToDelete, null);
 
                 objectList.ClearSelection();
             }
 
             if (illegalOperation)
-                popup.ShowWarning(objectList, "Some objects weren't deleted because it's impossible to do in batch.");
+                popup.ShowWarning(objectList, "Some objects weren't deleted because it's possible only from the map.");
         }
 
         private IEnumerable<ObjectType> GetRelevantObjects(ScopeMode scope)
