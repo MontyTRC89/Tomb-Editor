@@ -668,7 +668,11 @@ namespace TombLib.LevelData.Compilers
 
                     // This should avoid endless loops due to bad portal setup
                     if (adjoiningRoom == lastRoom)
+                    {
+                        _progressReporter.ReportWarn("Recursive portal setup found in room " + room + 
+                            " at block (" + xInRoom + "," + zInRoom + "). Remove invalid portal.");
                         return false;
+                    }
                     lastRoom = room;
                     
                     dec_currentRoom = adjoiningRoom;
