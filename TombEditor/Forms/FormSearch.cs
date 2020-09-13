@@ -31,8 +31,8 @@ namespace TombEditor.Forms
         private const int _trueRateBitCount = 16;
         private const int _matchBitShift = 64 - _trueRateBitCount;
         private static readonly Color _noTypoColor = Colors.LightText;
-        private static readonly Color _smallTypoColor = Colors.LightText.Multiply(0.7f);
-        private static readonly Color _bigTypoColor = Colors.LightText.Multiply(0.45f);
+        private static readonly Color _smallTypoColor = Colors.LightText.Multiply(0.8f);
+        private static readonly Color _bigTypoColor = Colors.LightText.Multiply(0.6f);
         private static readonly RateType _smallTypoThreshold = ((RateType)1 * 256) << _matchBitShift;
         private static readonly RateType _bigTypoThreshold = ((RateType)3 * 256) << _matchBitShift;
 
