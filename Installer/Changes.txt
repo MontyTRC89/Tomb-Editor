@@ -9,6 +9,7 @@ Tomb Editor:
  * Don't move connected rooms with movement hotkeys if not all connected rooms are selected.
  * Fix EXTRA field not importing correctly from NGLE prj files in some cases.
  * Fix exception on compilation if disjointed portals were found.
+ * Fix exceptions after deleting certain objects in find window.
  
 WadTool:
  * Fix empty sprite sequence preview.
