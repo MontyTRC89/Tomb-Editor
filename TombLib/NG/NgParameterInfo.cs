@@ -540,7 +540,8 @@ namespace TombLib.NG
                         break;
                 }
 
-                result = animCommandNumber.HasValue ? unchecked((short)mask) + " ," + firstValue + " ," + secondValue :
+                if (mask != 0)
+                    result = animCommandNumber.HasValue ? unchecked((short)mask) + " ," + firstValue + " ," + secondValue :
                                                       "$" + mask.ToString("X4") + "," + firstValue + ",$" + secondValue.ToString("X4");
 
                 if (!string.IsNullOrEmpty(result))
