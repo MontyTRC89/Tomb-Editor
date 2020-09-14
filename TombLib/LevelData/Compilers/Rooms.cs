@@ -884,7 +884,10 @@ namespace TombLib.LevelData.Compilers
                             continue;
                         }
                         newRoom.Sprites.Add(new tr_room_sprite() { SpriteID = sprite.SpriteID, Vertex = roomVertices.Count });
-                        roomVertices.Add(new tr_room_vertex() { Position = new tr_vertex((short)sprite.Position.X, (short)-sprite.Position.Y, (short)sprite.Position.Z) });
+                        roomVertices.Add(new tr_room_vertex()
+                        { Position = new tr_vertex((short) (sprite.Position.X), 
+                                                   (short)-(room.WorldPos.Y + sprite.Position.Y), 
+                                                   (short) (sprite.Position.Z)) });
                     }
 
                 newRoom.Vertices = roomVertices;
