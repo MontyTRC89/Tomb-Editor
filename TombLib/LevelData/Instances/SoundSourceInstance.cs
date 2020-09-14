@@ -10,7 +10,7 @@ namespace TombLib.LevelData
         Automatic = 3
     }
 
-    public class SoundSourceInstance : PositionAndScriptBasedObjectInstance, IReplaceable
+    public class SoundSourceInstance : PositionBasedObjectInstance, IReplaceable
     {
         public int SoundId { get; set; } = -1;
         public SoundSourcePlayMode PlayMode { get; set; } = SoundSourcePlayMode.Automatic;
@@ -70,8 +70,7 @@ namespace TombLib.LevelData
             return "Sound source " + SoundNameToDisplay +
                 ", Room = " + (Room?.ToString() ?? "NULL") +
                 ", X = " + SectorPosition.X +
-                ", Z = " + SectorPosition.Y +
-                (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
+                ", Z = " + SectorPosition.Y;
         }
 
         public override string ToShortString() => ShortName;
@@ -96,6 +95,6 @@ namespace TombLib.LevelData
                 return false;
         }
 
-        public string ShortName => "Sound source (ID = " + SoundId + ")" + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
+        public string ShortName => "Sound source (ID = " + SoundId + ")";
     }
 }

@@ -383,9 +383,8 @@ namespace TombLib.NG
             // Build object lookup table
             var objectLookup = level.Rooms.Where(room => room != null)
                                           .SelectMany(room => room.Objects)
-                                          .Where(instance => instance is IHasScriptID)
+                                          .Where(instance => instance is IHasScriptID && ((IHasScriptID)instance).ScriptId.HasValue)
                                           .ToDictionary(instance => ((IHasScriptID)instance).ScriptId.Value);
-
             // Make dummy trigger
             var result = new TriggerInstance(RectangleInt2.Zero) { TriggerType = TriggerType.Trigger };
 
