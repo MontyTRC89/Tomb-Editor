@@ -182,9 +182,11 @@ namespace WadTool
             }
 
             if (obj is WadToolClass.UnsavedChangesEvent)
-            {
                 UpdateSaveUI(((WadToolClass.UnsavedChangesEvent)obj).UnsavedChanges);
-            }
+
+            if (obj is WadToolClass.SourceWadChangedEvent ||
+                obj is WadToolClass.DestinationWadChangedEvent)
+                panel3D.GarbageCollect();
         }
 
         private void UpdateSaveUI(bool hasUnsavedChanges)
