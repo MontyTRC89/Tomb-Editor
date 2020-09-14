@@ -53,6 +53,10 @@ namespace TombEditor.Controls
             if (obj is Editor.LoadedWadsChangedEvent ||
                 obj is Editor.EditorFocusedEvent)
                 Invalidate();
+
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                GarbageCollect();
         }
 
         protected override void OnPaint(PaintEventArgs e)
