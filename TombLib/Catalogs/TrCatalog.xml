@@ -5451,7 +5451,10 @@
       <sprite_sequence id="1361" name="SMOKE_SPRITES" />
       <sprite_sequence id="1362" name="SPARK_SPRITE" />
       <sprite_sequence id="1363" name="DRIP_SPRITE" />
-      <sprite_sequence id="1364" name="EXPLOSION_SPRITES" />
+		<sprite_sequence id="1364" name="EXPLOSION_SPRITES" />
+		<sprite_sequence id="1365" name="MOTORBOAT_FOAM_SPRITES" />
+		<sprite_sequence id="1366" name="RUBBER_BOAT_WAVE_SPRITES" />
+		<sprite_sequence id="1367" name="SKIDOO_SNOW_TRAIL_SPRITES" />
     </sprite_sequences>
     <sounds max="450">
       <sound id="0" name="LARA_FEET" description="Lara feet" />
