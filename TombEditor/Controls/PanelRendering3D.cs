@@ -430,6 +430,11 @@ namespace TombEditor.Controls
                     obj is Editor.EditorFocusedEvent)
                     Invalidate(false);
 
+            // Clean up wad renderer
+            if (obj is Editor.LoadedWadsChangedEvent ||
+                obj is Editor.LevelChangedEvent)
+                _wadRenderer?.Dispose();
+
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
             {
