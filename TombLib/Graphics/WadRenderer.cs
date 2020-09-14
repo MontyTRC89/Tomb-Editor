@@ -1,10 +1,7 @@
 ﻿using NLog;
 using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -23,6 +20,8 @@ namespace TombLib.Graphics
         private RectPacker TexturePacker { get; set; }
         private Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; }
         private bool _compactTexture;
+
+        private bool _disposing = false;
 
         public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture = false)
         {
@@ -46,6 +45,12 @@ namespace TombLib.Graphics
 
         public void Dispose()
         {
+            // Avoid multiple attempts at cleanup
+            if (_disposing)
+                return;
+
+            _disposing = true;
+
             Texture?.Dispose();
             Texture = null;
             CreateTexturePacker();
@@ -57,6 +62,8 @@ namespace TombLib.Graphics
             foreach (var obj in Statics.Values)
                 obj.Dispose();
             Statics.Clear();
+
+            _disposing = false;
         }
 
         private void ReclaimTextureSpace<T, U>(Model<T, U> model) where U : struct
@@ -232,7 +239,7 @@ namespace TombLib.Graphics
         public class TextureAtlasFullException : Exception
         {
             public TextureAtlasFullException()
-                : base("Texture atlas is full. Unable to add a wad texture..")
+                : base("Texture atlas is full. Unable to add a wad texture.")
             { }
         }
     }
