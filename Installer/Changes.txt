@@ -7,6 +7,7 @@ Tomb Editor:
  * Make room sprites replaceable through "Find & Replace" dialog.
  * Don't move locked rooms with movement hotkeys.
  * Don't move connected rooms with movement hotkeys if not all connected rooms are selected.
+ * Fix room sprite position in TR1-2.
  * Fix EXTRA field not importing correctly from NGLE prj files in some cases.
  * Fix exception on compilation if disjointed portals were found.
  * Fix exceptions after deleting certain objects in find window.
