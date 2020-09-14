@@ -1054,7 +1054,7 @@
             0,
             0,
             65536});
-            this.nudPosX.Location = new System.Drawing.Point(6, 21);
+            this.nudPosX.Location = new System.Drawing.Point(6, 20);
             this.nudPosX.LoopValues = false;
             this.nudPosX.Maximum = new decimal(new int[] {
             65535,

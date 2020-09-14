@@ -844,7 +844,7 @@ namespace TombLib.LevelData.Compilers.Util
             
             if (!result.HasValue)
             {
-                logger.Error("Texture info manager couldn't fit texture into parent list. Please send your project to developers.");
+                _progressReporter.ReportWarn("Texture info manager couldn't fit texture into parent list. Please send your project to developers.");
                 return new Result() { TexInfoIndex = _dummyTexInfo, Rotation = 0 };
             }
             else
