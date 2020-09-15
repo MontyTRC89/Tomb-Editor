@@ -2691,7 +2691,7 @@ namespace TombEditor.Controls
                 if (group.Key == typeof(ImportedGeometryInstance))
                 foreach (ImportedGeometryInstance instance in group)
                 {
-                    if (instance.Model?.DirectXModel == null || instance.Hidden)
+                    if (instance.Model?.DirectXModel == null || instance.Model?.DirectXModel.Meshes.Count == 0 || instance.Hidden)
                     {
                         Vector4 color = new Vector4(0.5f, 0.3f, 1.0f, 1.0f);
                         if (_editor.SelectedObject == instance)
