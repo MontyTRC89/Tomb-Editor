@@ -1681,15 +1681,25 @@ namespace TombEditor.Controls
                 foreach (var instance in room.Objects)
                     if (instance is MoveableInstance && ShowMoveables)
                     {
-                        MoveableInstance modelInfo = (MoveableInstance)instance;
-                        WadMoveable moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
+                        var modelInfo = (MoveableInstance)instance;
+                        var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
                         if (moveable != null)
                         {
                             // TODO Make picking independent of the rendering data.
-                            AnimatedModel model = _wadRenderer.GetMoveable(moveable);
+
+                            var model = _wadRenderer.GetMoveable(moveable);
+                            var skin = model;
+                            if (moveable.Id == WadMoveableId.Lara) 
+                            {
+                                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, moveable.Id.TypeId));
+                                var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
+                                if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
+                                    skin = _wadRenderer.GetMoveable(moveableSkin);
+                            }
+
                             for (int j = 0; j < model.Meshes.Count; j++)
                             {
-                                var mesh = model.Meshes[j];
+                                var mesh = skin.Meshes[j];
                                 DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
                             }
                         }
