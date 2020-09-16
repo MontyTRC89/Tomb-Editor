@@ -37,6 +37,14 @@ namespace TombLib.IO
             Write(value.W);
         }
 
+        public void Write(Quaternion value)
+        {
+            Write(value.X);
+            Write(value.Y);
+            Write(value.Z);
+            Write(value.W);
+        }
+
         public void Write(Hash hash)
         {
             Write(hash.HashLow);

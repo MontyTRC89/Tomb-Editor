@@ -23,6 +23,7 @@ using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.LevelData.Compilers.TR5Main;
 
 namespace TombEditor
 {
@@ -3560,15 +3561,31 @@ namespace TombEditor
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
-                    using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
+                    if (level.Settings.GameVersion != TRVersion.Game.TR5Main)
                     {
-                        var watch = new Stopwatch();
-                        watch.Start();
-                        var statistics = compiler.CompileLevel();
-                        watch.Stop();
-                        progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
-                        // Raise an event for statistics update
-                        Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
+                        {
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel();
+                            watch.Stop();
+                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                            // Raise an event for statistics update
+                            Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        }
+                    }
+                    else
+                    {
+                        using (var compiler = new LevelCompilerTR5Main(level, fileName, progressReporter))
+                        {
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel();
+                            watch.Stop();
+                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                            // Raise an event for statistics update
+                            Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        }
                     }
 
                     // Force garbage collector to compact memory
@@ -4519,24 +4536,12 @@ namespace TombEditor
 
                     bool hasUnsavedChanges = false;
 
-                    // SOUND_SYSTEM_XML: Check if the level needs to be converted to new Xml sound system
                     if (newLevel.Settings.SoundSystem != SoundSystem.Xml)
                     {
-                        // Convert the level
-                        if (!FileFormatConversions.ConvertPrj2ToNewSoundFormat(newLevel, fileName, fileName,
-                                                                     "Sounds\\TR4\\Sounds.txt", false))
-                        {
-                            DarkMessageBox.Show(owner, "There was an error while converting your project to the new " +
-                                            "Xml sound system", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            newLevel = null;
-                            return false;
-                        }
-                        else
-                        {
-                            DarkMessageBox.Show(owner, "Your level was converted to the new Xml sound system. Please save it.",
-                                            "Informations", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            hasUnsavedChanges = true;
-                        }
+                        DarkMessageBox.Show(owner, "This project uses old sound system and is not supported anymore." +
+                            "Use Tomb Editor 1.3.4 or earlier to load and re-save this project.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        newLevel = null;
+                        return false;
                     }
 
                     if (!silent)

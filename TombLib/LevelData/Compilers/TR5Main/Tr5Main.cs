@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
 
-namespace TombLib.LevelData.Compilers
+namespace TombLib.LevelData.Compilers.TR5Main
 {
-    public partial class LevelCompilerClassicTR
+    public sealed partial class LevelCompilerTR5Main
     {
         private const string _indent = "    ";
 
@@ -34,15 +34,12 @@ namespace TombLib.LevelData.Compilers
                 var writer = new BinaryWriterEx(geometryDataStream); // Don't dispose
                 ReportProgress(80, "Writing geometry data to memory buffer");
 
-                const int filler = 0;
-                writer.Write(filler);
-
                 var numRooms = (uint)_level.Rooms.Count(r => r != null);
                 writer.Write(numRooms);
 
                 foreach (var r in _level.Rooms.Where(r => r != null))
                 {
-                    _tempRooms[r].WriteTr5(writer);
+                    _tempRooms[r].Write(writer);
                 }
 
                 // Write floordata
@@ -51,35 +48,47 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_floorData);
 
                 // Write meshes
-                var offset = writer.BaseStream.Position;
-
-                const int numMeshData = 0;
-                writer.Write(numMeshData);
-                var totalMeshSize = 0;
-
-                for (var i = 0; i < _meshes.Count; i++)
+                writer.Write(_meshes.Count);
+                foreach (var mesh in _meshes)
                 {
-                    var meshSize = _meshes[i].WriteTr4AndTr5(writer);
-                    totalMeshSize += (int)meshSize;
+                    writer.Write(mesh.Sphere.Center);
+                    writer.Write(mesh.Sphere.Radius);
+
+                    writer.Write(mesh.Positions.Count);
+                    foreach (var p in mesh.Positions)
+                        writer.Write(p);
+                    foreach (var c in mesh.Colors)
+                        writer.Write(c);
+                    foreach (var b in mesh.Bones)
+                        writer.Write(b);
+
+                    writer.Write(mesh.Buckets.Count);
+                    foreach (var bucket in mesh.Buckets.Values)
+                    {
+                        writer.Write(bucket.Material.Texture);
+                        writer.Write(bucket.Material.BlendMode);
+                        writer.Write(bucket.Material.Animated);
+                        writer.Write(bucket.Polygons.Count);
+                        foreach (var poly in bucket.Polygons)
+                        {
+                            writer.Write((int)poly.Shape);
+                            foreach (int index in poly.Indices)
+                                writer.Write(index);
+                            foreach (var uv in poly.TextureCoordinates)
+                                writer.Write(uv);
+                            foreach (var n in poly.Normals)
+                                writer.Write(n);
+                            foreach (var t in poly.Tangents)
+                                writer.Write(t);
+                            foreach (var bt in poly.Bitangents)
+                                writer.Write(bt);
+                        }
+                    }
                 }
-
-                var offset2 = writer.BaseStream.Position;
-                // ReSharper disable once SuggestVarOrType_BuiltInTypes
-                uint meshDataSize = (uint)((offset2 - offset - 4) / 2);
-
-                // Save the size of the meshes
-                writer.BaseStream.Seek(offset, SeekOrigin.Begin);
-                writer.Write(meshDataSize);
-                writer.BaseStream.Seek(offset2, SeekOrigin.Begin);
-
-                // Write mesh pointers
-                writer.Write((uint)_meshPointers.Count);
-                writer.WriteBlockArray(_meshPointers);
 
                 // Write animations' data
                 writer.Write((uint)_animations.Count);
-                foreach (var anim in _animations)
-                    anim.Write(writer, _level);
+                writer.WriteBlockArray(_animations);
 
                 writer.Write((uint)_stateChanges.Count);
                 writer.WriteBlockArray(_stateChanges);
@@ -94,7 +103,21 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_meshTrees);
 
                 writer.Write((uint)_frames.Count);
-                writer.WriteBlockArray(_frames);
+                foreach (var frame in _frames)
+                {
+                    writer.Write((short)frame.BoundingBox.X1);
+                    writer.Write((short)frame.BoundingBox.X2);
+                    writer.Write((short)frame.BoundingBox.Y1);
+                    writer.Write((short)frame.BoundingBox.Y2);
+                    writer.Write((short)frame.BoundingBox.Z1);
+                    writer.Write((short)frame.BoundingBox.Z2);
+                    writer.Write((short)frame.Offset.X);
+                    writer.Write((short)frame.Offset.Y);
+                    writer.Write((short)frame.Offset.Z);
+                    writer.Write((short)frame.Angles.Count);
+                    foreach (var angle in frame.Angles)
+                        writer.Write(angle);
+                }
 
                 writer.Write((uint)_moveables.Count);
                 for (var k = 0; k < _moveables.Count; k++)
@@ -126,31 +149,35 @@ namespace TombLib.LevelData.Compilers
                 writer.WriteBlockArray(_soundSources);
 
                 // Write pathfinding data
-                writer.Write((uint)_boxes.Length);
+                writer.Write((uint)_boxes.Count);
                 writer.WriteBlockArray(_boxes);
 
-                writer.Write((uint)_overlaps.Length);
+                writer.Write((uint)_overlaps.Count);
                 writer.WriteBlockArray(_overlaps);
 
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone1_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone2_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone3_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone4_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
+                    writer.Write(_zones[i].GroundZone5_Normal);
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].FlyZone_Normal);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone1_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone2_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone3_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].GroundZone4_Alternate);
-                for (var i = 0; i < _boxes.Length; i++)
+                for (var i = 0; i < _boxes.Count; i++)
+                    writer.Write(_zones[i].GroundZone5_Alternate);
+                for (var i = 0; i < _boxes.Count; i++)
                     writer.Write(_zones[i].FlyZone_Alternate);
 
                 // Write animated textures
@@ -160,7 +187,7 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(checked((byte)_textureInfoManager.UvRotateCount));
                 writer.Write(new byte[] { 0x54, 0x45, 0x58, 0x00 });
 
-                _textureInfoManager.WriteTextureInfos(writer, _level);
+                _textureInfoManager.WriteTextureInfosTR5Main(writer, _level);
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
@@ -173,86 +200,130 @@ namespace TombLib.LevelData.Compilers
                 PrepareSoundsData();
                 WriteSoundMetadata(writer);
 
-                // Finish it
-                writer.Write((ushort)0xcdcd);
-                writer.Write((ushort)0xcdcd);
-                writer.Write((ushort)0xcdcd);
-
                 geometryDataBuffer = geometryDataStream.ToArray();
             }
 
-            using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+            //using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var inStream = new MemoryStream())
             {
-                using (var writer = new BinaryWriterEx(fs))
+                using (var writer = new BinaryWriterEx(inStream, true))
                 {
                     ReportProgress(90, "Writing final level");
-                    writer.WriteBlockArray(new byte[] { 0x54, 0x52, 0x34, 0x00 });
-
-                    ReportProgress(91, "Writing textures");
-
-                    // The room texture tile count currently also currently contains the wad textures
-                    // But lets not bother with those fields too much since they only matter when bump maps are used and we don't use them.
-                    writer.Write((ushort)_textureInfoManager.NumRoomPages);
-                    writer.Write((ushort)_textureInfoManager.NumObjectsPages);
-                    // Bump map pages must be multiplied by 2 or tile index will be wrong
-                    writer.Write((ushort)(_textureInfoManager.NumBumpPages * 2));
-
-                    // Compress data
-                    ReportProgress(95, "Compressing data");
-
-                    byte[] texture32 = null;
-                    int texture32UncompressedSize = -1;
-                    byte[] texture16 = null;
-                    int texture16UncompressedSize = -1;
-                    byte[] textureMisc = null;
-                    int textureMiscUncompressedSize = -1;
-                    byte[] geometryData = geometryDataBuffer;
-                    int geometryDataUncompressedSize = geometryData.Length;
-
-                    using (Task Texture32task = Task.Factory.StartNew(() =>
+                   
+                    // Rooms atlas
+                    writer.Write(_textureInfoManager.RoomsAtlas.Count);
+                    foreach (var atlas in _textureInfoManager.RoomsAtlas)
                     {
-                        texture32 = ZLib.CompressData(_texture32Data);
-                        texture32UncompressedSize = _texture32Data.Length;
-                    }))
-                    using (Task Texture16task = Task.Factory.StartNew(() =>
-                    {
-                        byte[] texture16Data = PackTextureMap32To16Bit(_texture32Data, _level.Settings);
-                        texture16 = ZLib.CompressData(texture16Data);
-                        texture16UncompressedSize = texture16Data.Length;
-                    }))
-                    using (Task textureMiscTask = Task.Factory.StartNew(() =>
-                    {
-                        Stream textureMiscData = PrepareFontAndSkyTexture();
-                        textureMisc = ZLib.CompressData(textureMiscData);
-                        textureMiscUncompressedSize = (int)textureMiscData.Length;
-                    }))
+                        writer.Write(atlas.ColorMap.Width);
+                        writer.Write(atlas.ColorMap.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ColorMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                        writer.Write(atlas.HasNormalMap);
+                        if (atlas.HasNormalMap)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                atlas.NormalMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                var output = RemoveColorChunks(ms);
+                                writer.Write((int)output.Length);
+                                writer.Write(output.ToArray());
+                            }
+                        }
+                    }
 
-                        Task.WaitAll(Texture32task, Texture16task, textureMiscTask);
+                    // Moveables atlas
+                    writer.Write(_textureInfoManager.MoveablesAtlas.Count);
+                    foreach (var atlas in _textureInfoManager.MoveablesAtlas)
+                    {
+                        writer.Write(atlas.ColorMap.Width);
+                        writer.Write(atlas.ColorMap.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ColorMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                        writer.Write(atlas.HasNormalMap);
+                        if (atlas.HasNormalMap)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                atlas.NormalMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                var output = RemoveColorChunks(ms);
+                                writer.Write((int)output.Length);
+                                writer.Write(output.ToArray());
+                            }
+                        }
+                    }
+
+                    // Statics atlas
+                    writer.Write(_textureInfoManager.StaticsAtlas.Count);
+                    foreach (var atlas in _textureInfoManager.StaticsAtlas)
+                    {
+                        writer.Write(atlas.ColorMap.Width);
+                        writer.Write(atlas.ColorMap.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ColorMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                        writer.Write(atlas.HasNormalMap);
+                        if (atlas.HasNormalMap)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                atlas.NormalMap.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                                var output = RemoveColorChunks(ms);
+                                writer.Write((int)output.Length);
+                                writer.Write(output.ToArray());
+                            }
+                        }
+                    }
+
+                    // Sprites textures
+                    writer.Write(_spritesTexturesPages.Count);
+                    foreach (var atlas in _spritesTexturesPages)
+                    {
+                        writer.Write(atlas.Width);
+                        writer.Write(atlas.Height);
+                        using (var ms = new MemoryStream())
+                        {
+                            atlas.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                            var output = RemoveColorChunks(ms);
+                            writer.Write((int)output.Length);
+                            writer.Write(output.ToArray());
+                        }
+                    }
+
+                    // Font and sky textures
+                    Stream textureMiscData = PrepareFontAndSkyTexture();
+                    ImageC misc = ImageC.FromStreamRaw(textureMiscData, 256, 512);
+                    using (var ms = new MemoryStream())
+                    {
+                        misc.ToBitmap().Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                        writer.Write(256);
+                        writer.Write(512);
+                        var output = RemoveColorChunks(ms);
+                        writer.Write((int)output.Length);
+                        writer.Write(output.ToArray());
+                    }
 
                     // Write data
-                    ReportProgress(97, "Writing compressed data to file.");
+                    ReportProgress(97, "Writing level data to file.");
 
-                    writer.Write(texture32UncompressedSize);
-                    writer.Write(texture32.Length);
-                    writer.Write(texture32);
-
-                    writer.Write(texture16UncompressedSize);
-                    writer.Write(texture16.Length);
-                    writer.Write(texture16);
-
-                    writer.Write(textureMiscUncompressedSize);
-                    writer.Write(textureMisc.Length);
-                    writer.Write(textureMisc);
-
-                    writer.Write((ushort)_level.Settings.Tr5LaraType);
-                    writer.Write((ushort)_level.Settings.Tr5WeatherType);
-
-                    for (var i = 0; i < 28; i++)
-                        writer.Write((byte)0);
+                    writer.Write((byte)_level.Settings.Tr5LaraType);
+                    writer.Write((byte)_level.Settings.Tr5WeatherType);
 
                     // In TR5 geometry data is not compressed
-                    writer.Write(geometryDataUncompressedSize);
-                    writer.Write(geometryDataUncompressedSize);
+                    byte[] geometryData = geometryDataBuffer;
                     writer.Write(geometryData);
 
                     ReportProgress(98, "Writing WAVE sounds");
@@ -261,7 +332,7 @@ namespace TombLib.LevelData.Compilers
                     // Write extra data
                     _volumeScripts = new List<VolumeScriptInstance>();
 
-                    using (var ms = new MemoryStream())
+                    /*using (var ms = new MemoryStream())
                     {
                         var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(ms));
 
@@ -304,7 +375,7 @@ namespace TombLib.LevelData.Compilers
                                                 add = (int)((vol as BoxVolumeInstance).Size.Y / 2.0f);
 
                                             var X = (int)Math.Round(trRoom.Info.X + vol.Position.X);
-                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add); 
+                                            var Y = (int)-Math.Round(r.WorldPos.Y + vol.Position.Y + add);
                                             var Z = (int)Math.Round(trRoom.Info.Z + vol.Position.Z);
 
                                             if (vol is BoxVolumeInstance)
@@ -352,69 +423,33 @@ namespace TombLib.LevelData.Compilers
                             }
                         }
 
-                        /*
-                        using (var extraDataChunk = chunkIO.WriteChunk(Tr5MainExtraData))
-                        {
-                            using (var volScriptListChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScriptList))
-                            {
-                                for (int i = 0; i < _volumeScripts.Count; i++)
-                                {
-                                    var script = _volumeScripts[i];
-                                    using (var volScriptChunk = chunkIO.WriteChunk(Tr5MainChunkVolumeScript))
-                                    {
-                                        chunkIO.Raw.WriteStringUTF8(script.Name);
-
-                                        string onEnter = string.Empty;
-                                        string onInside = string.Empty;
-                                        string onLeave = string.Empty;
-
-                                        if (script.OnEnter.Trim().Length > 0)
-                                            onEnter = "volscripts[" + i + "].OnEnter  = function(activator) \n" +
-                                                        _indent + script.OnEnter.Replace("\n", "\n" + _indent) + "\n" + "end;";
-
-                                        if (script.OnInside.Trim().Length > 0)
-                                            onInside = "volscripts[" + i + "].OnInside = function(activator) \n" +
-                                                        _indent + script.OnInside.Replace("\n", "\n" + _indent) + "\n" + "end;";
-
-                                        if (script.OnLeave.Trim().Length > 0)
-                                            onLeave  = "volscripts[" + i + "].OnLeave = function(activator) \n" +
-                                                        _indent + script.OnLeave.Replace("\n", "\n" + _indent) + "\n" + "end;";
-
-                                        string functionCode =
-                                            onEnter  + (string.IsNullOrEmpty(onEnter)  ? string.Empty : "\n\n") +
-                                            onInside + (string.IsNullOrEmpty(onInside) ? string.Empty : "\n\n") +
-                                            onLeave  + (string.IsNullOrEmpty(onLeave)  ? string.Empty : "\n\n") ;
-
-                                        chunkIO.Raw.WriteStringUTF8(functionCode);
-                                    }
-                                }
-                            }
-
-                            using (var chunkLuaIds = chunkIO.WriteChunk(Tr5MainChunkLuaIds))
-                            {
-                                for (int i = 0; i < _luaIdToItems.Count; i++)
-                                {
-                                    chunkIO.WriteChunk(Tr5MainChunkLuaId, () =>
-                                    {
-                                        chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Key);
-                                        chunkIO.Raw.Write(_luaIdToItems.ElementAt(i).Value);
-                                    });
-                                }
-                            }
-                        }
-                        */
-
                         chunkIO.Raw.Flush();
 
                         writer.Write((int)(ms.Length + 4));
                         writer.Write((int)(ms.Length + 4));
                         writer.Write(ms.ToArray(), 0, (int)ms.Length);
                         writer.Write((int)0);
-                    }
-
-                    ReportProgress(99, "Done");   
+                    }*/
                 }
-            }
+
+                ReportProgress(90, "Compressing level...");
+
+                inStream.Seek(0, SeekOrigin.Begin);
+
+                var data = ZLib.CompressData(inStream);
+                using (var fs = new FileStream(_dest, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    using (var writer = new BinaryWriter(fs))
+                    {
+                        writer.Write(new byte[] { 0x54, 0x52, 0x34, 0x00 });
+                        writer.Write((int)inStream.Length);
+                        writer.Write((int)data.Length);
+                        writer.Write(data, 0, data.Length);
+                    }
+                }
+            }           
+
+            ReportProgress(99, "Done");
         }
     }
 }
