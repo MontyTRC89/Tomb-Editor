@@ -4,13 +4,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace TombLib.LevelData.Compilers
+namespace TombLib.LevelData.Compilers.TR5Main
 {
-    public sealed partial class LevelCompilerClassicTR : LevelCompiler
+    public sealed partial class LevelCompilerTR5Main : LevelCompiler
     {
         public class CompilerStatistics
         {
@@ -23,8 +24,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private Room[] _sortedRooms;
-        private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
+        private readonly Dictionary<Room, tr5main_room> _tempRooms = new Dictionary<Room, tr5main_room>(new ReferenceEqualityComparer<Room>());
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -41,27 +41,26 @@ namespace TombLib.LevelData.Compilers
         }
 
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
-        private byte[] _texture32Data;
         private readonly List<ushort> _floorData = new List<ushort>();
-        private readonly List<tr_mesh> _meshes = new List<tr_mesh>();
+        private readonly List<tr5main_mesh> _meshes = new List<tr5main_mesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
-        private readonly List<tr_animation> _animations = new List<tr_animation>();
+        private readonly List<tr5main_animation> _animations = new List<tr5main_animation>();
         private readonly List<tr_state_change> _stateChanges = new List<tr_state_change>();
         private readonly List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
         private readonly List<short> _animCommands = new List<short>();
         private readonly List<int> _meshTrees = new List<int>();
-        private readonly List<short> _frames = new List<short>();
-        private List<tr_moveable> _moveables = new List<tr_moveable>();
-        private readonly List<tr_staticmesh> _staticMeshes = new List<tr_staticmesh>();
+        private readonly List<tr5main_keyframe> _frames = new List<tr5main_keyframe>();
+        private List<tr5main_moveable> _moveables = new List<tr5main_moveable>();
+        private readonly List<tr5main_staticmesh> _staticMeshes = new List<tr5main_staticmesh>();
 
-        private List<tr_sprite_texture> _spriteTextures = new List<tr_sprite_texture>();
+        private List<tr5main_sprite_texture> _spriteTextures = new List<tr5main_sprite_texture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();
-        private readonly List<tr_camera> _cameras = new List<tr_camera>();
+        private readonly List<tr5main_camera> _cameras = new List<tr5main_camera>();
         private readonly List<tr4_flyby_camera> _flyByCameras = new List<tr4_flyby_camera>();
-        private readonly List<tr_sound_source> _soundSources = new List<tr_sound_source>();
-        private tr_box[] _boxes = new tr_box[0];
-        private ushort[] _overlaps = new ushort[0];
-        private tr_zone[] _zones = new tr_zone[0];
+        private readonly List<tr5main_sound_source> _soundSources = new List<tr5main_sound_source>();
+        private List<tr5main_box> _boxes = new List<tr5main_box>();
+        private List<tr5main_overlap> _overlaps = new List<tr5main_overlap>();
+        private List<tr5main_zone> _zones = new List<tr5main_zone>();
 
         private readonly List<tr_item> _items = new List<tr_item>();
         private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
@@ -77,17 +76,10 @@ namespace TombLib.LevelData.Compilers
         private Dictionary<FlybyCameraInstance, int> _flybyTable;
         private Dictionary<StaticInstance, int> _staticsTable;
 
-        // Collected game limits
-        private Dictionary<Limit, int> _limits;
-
-        public LevelCompilerClassicTR(Level level, string dest, IProgressReporter progressReporter)
+        public LevelCompilerTR5Main(Level level, string dest, IProgressReporter progressReporter)
             : base(level, dest, progressReporter)
         {
             _scriptingIdsTable = level.GlobalScriptingIdsTable.Clone();
-
-            _limits = new Dictionary<Limit, int>();
-            foreach (Limit limit in Enum.GetValues(typeof(Limit)))
-                _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
         public CompilerStatistics CompileLevel()
@@ -98,12 +90,9 @@ namespace TombLib.LevelData.Compilers
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _textureInfoManager = new Util.TexInfoManager(_level, _progressReporter);
-
-            // Try to shuffle rooms to accomodate for more vertically connected ones
-            _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
-
-            // Prepare level data
-            ConvertWad2DataToTrData();
+        
+            // Prepare level data in parallel to the sounds
+            ConvertWad2DataToTr4();
             BuildRooms();
 
             // Compile textures
@@ -112,10 +101,8 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(35, "   Number of TexInfos: " + _textureInfoManager.TexInfoCount);
             ReportProgress(35, "   Number of anim texture sequences: " + _textureInfoManager.AnimatedTextures.Count);
-
-            int texInfoLimit = _limits[Limit.TexInfos];
-            if (_textureInfoManager.TexInfoCount > texInfoLimit)
-                _progressReporter.ReportWarn("TexInfo number overflow, maximum is " + texInfoLimit + ". Please reduce level complexity.");
+            if (_textureInfoManager.TexInfoCount > 32767)
+                _progressReporter.ReportWarn("TexInfo number overflow, maximum is 32767. Please reduce level complexity.");
             
             GetAllReachableRooms();
             BuildPathFindingData();
@@ -123,40 +110,14 @@ namespace TombLib.LevelData.Compilers
             PrepareItems();
             BuildCamerasAndSinks();
             BuildFloorData();
+            BuildSprites();
 
-            // Combine the texture data collected
-            var pageCount = PrepareTextures();
-
-            int texPageLimit = _limits[Limit.TexPages];
-            if (pageCount > texPageLimit)
-                _progressReporter.ReportWarn("Level has " + pageCount + " texture pages, while limit is " + texPageLimit + ". Use less textures, reduce padding or turn on aggressive texture packing in level settings.");
+            PrepareRoomsBuckets();
+            PrepareMeshBuckets();
 
             _progressReporter.ReportInfo("\nWriting level file...\n");
 
-            //Write the level
-            switch (_level.Settings.GameVersion)
-            {
-                case TRVersion.Game.TR1:
-                     WriteLevelTr1();
-                     break;
-                case TRVersion.Game.TR2:
-                     WriteLevelTr2();
-                     break;
-                 case TRVersion.Game.TR3:
-                     WriteLevelTr3();
-                     break;
-                case TRVersion.Game.TR4:
-                    WriteLevelTr4();
-                    break;
-                case TRVersion.Game.TRNG:
-                    WriteLevelTr4(GetTRNGVersion());
-                    break;
-                case TRVersion.Game.TR5:
-                    WriteLevelTr5();
-                    break;
-                default:
-                    throw new NotImplementedException("The selected game engine is not supported yet");
-            }
+            WriteLevelTr5Main();
             
             // Needed to make decision about backup (delete or restore)
             _compiledSuccessfully = true;
@@ -164,8 +125,8 @@ namespace TombLib.LevelData.Compilers
             // Return statistics
             return new CompilerStatistics
             {
-                BoxCount = _boxes.Length,
-                OverlapCount = _overlaps.Length,
+                BoxCount = _boxes.Count,
+                OverlapCount = _overlaps.Count,
                 ObjectTextureCount = _textureInfoManager.TexInfoCount,
             };
         }
@@ -176,7 +137,7 @@ namespace TombLib.LevelData.Compilers
 
             _soundSourcesTable = new Dictionary<SoundSourceInstance, int>(new ReferenceEqualityComparer<SoundSourceInstance>());
 
-            foreach (var room in _sortedRooms.Where(room => room != null))
+            foreach (var room in _level.Rooms.Where(room => room != null))
                 foreach (var obj in room.Objects.OfType<SoundSourceInstance>())
                     _soundSourcesTable.Add(obj, _soundSourcesTable.Count);
 
@@ -212,7 +173,7 @@ namespace TombLib.LevelData.Compilers
                 }
 
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                _soundSources.Add(new tr_sound_source
+                _soundSources.Add(new tr5main_sound_source
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
@@ -235,14 +196,14 @@ namespace TombLib.LevelData.Compilers
                 _cameraTable = new Dictionary<CameraInstance, int>(new ReferenceEqualityComparer<CameraInstance>());
                 _sinkTable = new Dictionary<SinkInstance, int>(new ReferenceEqualityComparer<SinkInstance>());
                 _flybyTable = new Dictionary<FlybyCameraInstance, int>(new ReferenceEqualityComparer<FlybyCameraInstance>());
-                foreach (var room in _sortedRooms.Where(room => room != null))
+                foreach (var room in _level.Rooms.Where(room => room != null))
                 {
                     foreach (var obj in room.Objects.OfType<CameraInstance>())
                         _cameraTable.Add(obj, cameraSinkID++);
                     foreach (var obj in room.Objects.OfType<FlybyCameraInstance>())
                         _flybyTable.Add(obj, flybyID++);
                 }
-                foreach (var room in _sortedRooms.Where(room => room != null))
+                foreach (var room in _level.Rooms.Where(room => room != null))
                 {
                     foreach (var obj in room.Objects.OfType<SinkInstance>())
                         _sinkTable.Add(obj, cameraSinkID++);
@@ -252,13 +213,13 @@ namespace TombLib.LevelData.Compilers
             foreach (var instance in _cameraTable.Keys)
             {
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                _cameras.Add(new tr_camera
+                _cameras.Add(new tr5main_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
-                    Flags = instance.Fixed ? (ushort)1 : (ushort)0
+                    Flags = instance.Fixed ? 1 : 0
                 });
             }
 
@@ -271,13 +232,9 @@ namespace TombLib.LevelData.Compilers
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
 
-                ushort boxIndex;
-                if (_level.Settings.GameVersion >= TRVersion.Game.TR3)
-                    boxIndex = (ushort)((tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex & 0x7FF0) >> 4);
-                else
-                    boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
-
-                _cameras.Add(new tr_camera
+                int boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
+                
+                _cameras.Add(new tr5main_camera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
@@ -334,22 +291,22 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(47, "    Number of sinks: " + _sinkTable.Count);
         }
 
-        private static tr_room_sector GetSector(tr_room room, int x, int z)
+        private static tr5main_room_sector GetSector(tr5main_room room, int x, int z)
         {
             return room.Sectors[room.NumZSectors * x + z];
         }
 
-        private static void SaveSector(tr_room room, int x, int z, tr_room_sector sector)
+        private static void SaveSector(tr5main_room room, int x, int z, tr5main_room_sector sector)
         {
             room.Sectors[room.NumZSectors * x + z] = sector;
         }
 
         private void GetAllReachableRooms()
         {
-            foreach (var room in _sortedRooms.Where(r => r != null))
+            foreach (var room in _level.Rooms.Where(r => r != null))
                 _tempRooms[room].ReachableRooms = new List<Room>();
 
-            foreach (var room in _sortedRooms.Where(r => r != null))
+            foreach (var room in _level.Rooms.Where(r => r != null))
             {
                 GetAllReachableRoomsUp(room, room);
                 GetAllReachableRoomsDown(room, room);
@@ -443,7 +400,9 @@ namespace TombLib.LevelData.Compilers
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
             _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
 
-            foreach (var room in _sortedRooms.Where(room => room != null))
+            _luaIdToItems = new Dictionary<int, int>();
+
+            foreach (Room room in _level.Rooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
                     WadMoveable wadMoveable = _level.Settings.WadTryGetMoveable(instance.WadObjectId);
@@ -494,6 +453,10 @@ namespace TombLib.LevelData.Compilers
                             Flags = unchecked((ushort)flags)
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
+
+                        if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                            if (!_luaIdToItems.ContainsKey(instance.LuaId))
+                                _luaIdToItems.Add(instance.LuaId, _items.Count - 1);
                     }
                 }
 
@@ -506,13 +469,31 @@ namespace TombLib.LevelData.Compilers
 
             ReportProgress(45, "    Number of items: " + _items.Count);
 
-            int maxSafeItemCount = _limits[Limit.ItemSafeCount];
-            int maxItemCount     = _limits[Limit.ItemMaxCount];
+            int maxSafeItemCount, maxItemCount;
+            switch(_level.Settings.GameVersion)
+            {
+                case TRVersion.Game.TRNG:
+                    maxSafeItemCount = 255;
+                    maxItemCount = 1023;
+                    break;
+                case TRVersion.Game.TR5Main:
+                    maxSafeItemCount = 1023;
+                    maxItemCount = 32767;
+                    break;
+                default:
+                    maxSafeItemCount = 255;
+                    maxItemCount = 255;
+                    break;
+            }
 
-            if (_items.Count >= maxItemCount)
-                _progressReporter.ReportWarn("Level has more than " + maxItemCount + " moveables. This may lead to crash.");
+            if (_items.Count > maxItemCount)
+            {
+                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash" +
+                                 (_level.Settings.GameVersion == TRVersion.Game.TR4 ? ", unless you're using TREP." : ".");
+                _progressReporter.ReportWarn(warnString);
+            }
 
-            if (_items.Count >= maxSafeItemCount)
+            if (_items.Count > maxSafeItemCount)
                 _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
         }
 

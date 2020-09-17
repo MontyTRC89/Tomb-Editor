@@ -140,6 +140,16 @@
     <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
     <Compile Include="Graphics\Frustum.cs" />
     <Compile Include="LevelData\Compilers\Tr1.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\FloorData.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\LevelCompilerTR5Main.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Ng.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Pathfinding.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\PathfindingDecompiled.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Rooms.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Structs.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Textures.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Tr5Main.cs" />
+    <Compile Include="LevelData\Compilers\TR5Main\Wad.cs" />
     <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
     <Compile Include="LevelData\Instances\SpriteInstance.cs" />
     <Compile Include="LevelData\Instances\ScriptInstance.cs" />
@@ -150,18 +160,6 @@
     <Compile Include="Utils\ImageQuantizer.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
     <Compile Include="Utils\Configuration.cs" />
-    <Compile Include="Forms\Prj2SoundsConversionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Prj2SoundsConversionDialog.Designer.cs">
-      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Wad2SoundsConversionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Wad2SoundsConversionDialog.Designer.cs">
-      <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
     <Compile Include="GeometryIO\Exporters\Assimp.cs" />
@@ -206,7 +204,6 @@
     <Compile Include="LevelData\Compilers\Tr3.cs" />
     <Compile Include="LevelData\Compilers\Tr4.cs" />
     <Compile Include="LevelData\Compilers\Tr5.cs" />
-    <Compile Include="LevelData\Compilers\Tr5Main.cs" />
     <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
     <Compile Include="LevelData\Compilers\Util\SpriteAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />
@@ -266,7 +263,6 @@
     <Compile Include="Script\ScriptCompilerTR5Main.cs" />
     <Compile Include="Script\ScriptCompilerTRNG.cs" />
     <Compile Include="Utils\BrowseFolderDialog.cs" />
-    <Compile Include="Utils\FileFormatConversions.cs" />
     <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="Utils\MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />
@@ -311,6 +307,7 @@
     <Compile Include="Utils\NegativeIndexArray.cs" />
     <Compile Include="Utils\PathC.cs" />
     <Compile Include="Utils\PolygonFunctions.cs" />
+    <Compile Include="Utils\ProjectConverter.cs" />
     <Compile Include="Utils\RectTransformation.cs" />
     <Compile Include="Utils\RectPacker.cs" />
     <Compile Include="Utils\ReferenceEqualityComparer.cs" />
@@ -370,12 +367,6 @@
     <None Include="ResourcesC\pcsky.raw.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\Prj2SoundsConversionDialog.resx">
-      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Wad2SoundsConversionDialog.resx">
-      <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ResourcesC\ResourcesC.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>

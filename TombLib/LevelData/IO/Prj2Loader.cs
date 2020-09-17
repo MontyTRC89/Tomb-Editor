@@ -1119,7 +1119,6 @@ namespace TombLib.LevelData.IO
                 }
                 else if (id3 == Prj2Chunks.ObjectSoundSource1 ||
                          id3 == Prj2Chunks.ObjectSoundSource2 ||
-                         id3 == Prj2Chunks.ObjectSoundSource3 ||
                          id3 == Prj2Chunks.ObjectSoundSource4 ||
                          id3 == Prj2Chunks.ObjectSoundSourceFinal)
                 {
@@ -1128,13 +1127,12 @@ namespace TombLib.LevelData.IO
 
                     if (id3 == Prj2Chunks.ObjectSoundSource)
                     {
-                        instance.WadReferencedSoundName = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, chunkIO.Raw.ReadUInt16());
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
                     else if (id3 == Prj2Chunks.ObjectSoundSource2)
                     {
-                        instance.WadReferencedSoundName = chunkIO.Raw.ReadString(); // Used wrong string type
+                        chunkIO.Raw.ReadString(); // DEPRECATED: Sound info string ID
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
@@ -1150,15 +1148,6 @@ namespace TombLib.LevelData.IO
                         instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
-                    }
-                    else
-                    {
-                        instance.WadReferencedSoundName = chunkIO.Raw.ReadStringUTF8();
-
-                        // Use an embedded sound info
-                        long soundInfoId = LEB128.ReadLong(chunkIO.Raw);
-                        if (soundInfoId >= 0)
-                            instance.EmbeddedSoundInfo = embeddedSoundInfoWad.FixedSoundInfosObsolete[new WadFixedSoundInfoId((uint)soundInfoId)].SoundInfo;
                     }
 
                     addObject(instance);

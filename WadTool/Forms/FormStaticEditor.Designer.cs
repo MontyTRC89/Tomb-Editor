@@ -68,7 +68,6 @@
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
             this.nudColBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
@@ -92,10 +91,18 @@
             this.nudPosX = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelShatter = new DarkUI.Controls.DarkGroupBox();
+            this.numShatterDamage = new DarkUI.Controls.DarkNumericUpDown();
+            this.comboShatterSound = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel14 = new DarkUI.Controls.DarkLabel();
+            this.darkLabel23 = new DarkUI.Controls.DarkLabel();
+            this.comboShatterType = new DarkUI.Controls.DarkComboBox();
+            this.darkLabel22 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox5 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -119,6 +126,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudPosY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPosX)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
+            this.panelShatter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numShatterDamage)).BeginInit();
             this.darkGroupBox5.SuspendLayout();
             this.darkSectionPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -127,7 +136,7 @@
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 610);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 705);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
             this.darkStatusStrip1.Size = new System.Drawing.Size(1068, 24);
@@ -139,7 +148,7 @@
             this.cbVisibilityBox.AutoSize = true;
             this.cbVisibilityBox.Location = new System.Drawing.Point(6, 11);
             this.cbVisibilityBox.Name = "cbVisibilityBox";
-            this.cbVisibilityBox.Size = new System.Drawing.Size(91, 17);
+            this.cbVisibilityBox.Size = new System.Drawing.Size(90, 17);
             this.cbVisibilityBox.TabIndex = 50;
             this.cbVisibilityBox.Text = "Visibility Box";
             this.cbVisibilityBox.CheckedChanged += new System.EventHandler(this.cbVisibilityBox_CheckedChanged);
@@ -269,7 +278,7 @@
             this.cbCollisionBox.AutoSize = true;
             this.cbCollisionBox.Location = new System.Drawing.Point(6, 11);
             this.cbCollisionBox.Name = "cbCollisionBox";
-            this.cbCollisionBox.Size = new System.Drawing.Size(93, 17);
+            this.cbCollisionBox.Size = new System.Drawing.Size(92, 17);
             this.cbCollisionBox.TabIndex = 64;
             this.cbCollisionBox.Text = "Collision Box";
             this.cbCollisionBox.CheckedChanged += new System.EventHandler(this.cbCollisionBox_CheckedChanged);
@@ -324,7 +333,7 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Checked = false;
-            this.butSaveChanges.Location = new System.Drawing.Point(896, 583);
+            this.butSaveChanges.Location = new System.Drawing.Point(896, 678);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(80, 23);
             this.butSaveChanges.TabIndex = 46;
@@ -527,7 +536,7 @@
             // 
             this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butImportMeshFromFile.Checked = false;
-            this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 583);
+            this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 678);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
             this.butImportMeshFromFile.Size = new System.Drawing.Size(81, 23);
             this.butImportMeshFromFile.TabIndex = 98;
@@ -597,14 +606,6 @@
             this.darkLabel20.Size = new System.Drawing.Size(37, 13);
             this.darkLabel20.TabIndex = 103;
             this.darkLabel20.Text = "Pos X:";
-            // 
-            // panelRendering
-            // 
-            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(1, 1);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(797, 599);
-            this.panelRendering.TabIndex = 109;
             // 
             // darkGroupBox4
             // 
@@ -1085,6 +1086,7 @@
             // 
             this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkSectionPanel1.Controls.Add(this.panelShatter);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox5);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox2);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox4);
@@ -1094,8 +1096,102 @@
             this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(252, 569);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 569);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 664);
             this.darkSectionPanel1.TabIndex = 110;
+            // 
+            // panelShatter
+            // 
+            this.panelShatter.Controls.Add(this.numShatterDamage);
+            this.panelShatter.Controls.Add(this.comboShatterSound);
+            this.panelShatter.Controls.Add(this.darkLabel14);
+            this.panelShatter.Controls.Add(this.darkLabel23);
+            this.panelShatter.Controls.Add(this.comboShatterType);
+            this.panelShatter.Controls.Add(this.darkLabel22);
+            this.panelShatter.Location = new System.Drawing.Point(6, 569);
+            this.panelShatter.Name = "panelShatter";
+            this.panelShatter.Size = new System.Drawing.Size(242, 91);
+            this.panelShatter.TabIndex = 113;
+            this.panelShatter.TabStop = false;
+            // 
+            // numShatterDamage
+            // 
+            this.numShatterDamage.DecimalPlaces = 2;
+            this.numShatterDamage.Enabled = false;
+            this.numShatterDamage.Increment = new decimal(new int[] {
+            3,
+            0,
+            0,
+            131072});
+            this.numShatterDamage.IncrementAlternate = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numShatterDamage.Location = new System.Drawing.Point(98, 35);
+            this.numShatterDamage.LoopValues = false;
+            this.numShatterDamage.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.numShatterDamage.Name = "numShatterDamage";
+            this.numShatterDamage.Size = new System.Drawing.Size(73, 22);
+            this.numShatterDamage.TabIndex = 101;
+            this.numShatterDamage.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numShatterDamage.ValueChanged += new System.EventHandler(this.NumShatterDamage_ValueChanged);
+            // 
+            // comboShatterSound
+            // 
+            this.comboShatterSound.Enabled = false;
+            this.comboShatterSound.FormattingEnabled = true;
+            this.comboShatterSound.Location = new System.Drawing.Point(98, 63);
+            this.comboShatterSound.Name = "comboShatterSound";
+            this.comboShatterSound.Size = new System.Drawing.Size(137, 23);
+            this.comboShatterSound.TabIndex = 100;
+            this.comboShatterSound.SelectedIndexChanged += new System.EventHandler(this.ComboShatterSound_SelectedIndexChanged);
+            // 
+            // darkLabel14
+            // 
+            this.darkLabel14.AutoSize = true;
+            this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel14.Location = new System.Drawing.Point(2, 66);
+            this.darkLabel14.Name = "darkLabel14";
+            this.darkLabel14.Size = new System.Drawing.Size(83, 13);
+            this.darkLabel14.TabIndex = 99;
+            this.darkLabel14.Text = "Shatter sound:";
+            // 
+            // darkLabel23
+            // 
+            this.darkLabel23.AutoSize = true;
+            this.darkLabel23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel23.Location = new System.Drawing.Point(2, 37);
+            this.darkLabel23.Name = "darkLabel23";
+            this.darkLabel23.Size = new System.Drawing.Size(91, 13);
+            this.darkLabel23.TabIndex = 97;
+            this.darkLabel23.Text = "Shatter damage:";
+            // 
+            // comboShatterType
+            // 
+            this.comboShatterType.FormattingEnabled = true;
+            this.comboShatterType.Items.AddRange(new object[] {
+            "None",
+            "Explosion",
+            "Fragment"});
+            this.comboShatterType.Location = new System.Drawing.Point(98, 6);
+            this.comboShatterType.Name = "comboShatterType";
+            this.comboShatterType.Size = new System.Drawing.Size(137, 23);
+            this.comboShatterType.TabIndex = 96;
+            this.comboShatterType.SelectedIndexChanged += new System.EventHandler(this.ComboShatterType_SelectedIndexChanged);
+            // 
+            // darkLabel22
+            // 
+            this.darkLabel22.AutoSize = true;
+            this.darkLabel22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel22.Location = new System.Drawing.Point(2, 9);
+            this.darkLabel22.Name = "darkLabel22";
+            this.darkLabel22.Size = new System.Drawing.Size(72, 13);
+            this.darkLabel22.TabIndex = 95;
+            this.darkLabel22.Text = "Shatter type:";
             // 
             // darkGroupBox5
             // 
@@ -1125,7 +1221,7 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
-            this.butCancel.Location = new System.Drawing.Point(981, 583);
+            this.butCancel.Location = new System.Drawing.Point(981, 678);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(81, 23);
             this.butCancel.TabIndex = 111;
@@ -1142,14 +1238,22 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(5, 5);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(799, 601);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(799, 696);
             this.darkSectionPanel2.TabIndex = 112;
+            // 
+            // panelRendering
+            // 
+            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelRendering.Location = new System.Drawing.Point(1, 1);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(797, 694);
+            this.panelRendering.TabIndex = 0;
             // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1068, 634);
+            this.ClientSize = new System.Drawing.Size(1068, 729);
             this.Controls.Add(this.darkSectionPanel2);
             this.Controls.Add(this.butImportMeshFromFile);
             this.Controls.Add(this.butCancel);
@@ -1191,6 +1295,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudPosY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPosX)).EndInit();
             this.darkSectionPanel1.ResumeLayout(false);
+            this.panelShatter.ResumeLayout(false);
+            this.panelShatter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numShatterDamage)).EndInit();
             this.darkGroupBox5.ResumeLayout(false);
             this.darkGroupBox5.PerformLayout();
             this.darkSectionPanel2.ResumeLayout(false);
@@ -1240,7 +1347,6 @@
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkLabel darkLabel20;
-        private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkGroupBox darkGroupBox3;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox2;
@@ -1268,5 +1374,13 @@
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxZ;
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxY;
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxX;
+        private DarkUI.Controls.DarkGroupBox panelShatter;
+        private DarkUI.Controls.DarkComboBox comboShatterSound;
+        private DarkUI.Controls.DarkLabel darkLabel14;
+        private DarkUI.Controls.DarkLabel darkLabel23;
+        private DarkUI.Controls.DarkComboBox comboShatterType;
+        private DarkUI.Controls.DarkLabel darkLabel22;
+        private DarkUI.Controls.DarkNumericUpDown numShatterDamage;
+        private Controls.PanelRenderingStaticEditor panelRendering;
     }
 }

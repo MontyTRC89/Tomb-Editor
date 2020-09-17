@@ -29,4 +29,11 @@
         Push = 2,
         Read = 3
     }
+
+    public enum WadShatterType : int
+    {
+        None,
+        Explosion,
+        Fragment
+    }
 }

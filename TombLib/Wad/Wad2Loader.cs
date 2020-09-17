@@ -1,35 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Reflection;
 using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad.Catalog;
 
 namespace TombLib.Wad
 {
     public static class Wad2Loader
     {
-        public static Wad2 LoadFromFile(string fileName, bool withSounds)
+        public static Wad2 LoadFromFile(string fileName)
         {
             Wad2 result;
             using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
                 result = LoadFromStream(fileStream);
             result.FileName = fileName;
-
-            // Load additional XML file if it exists
-            if (withSounds)
-            {
-                var xmlFile = Path.ChangeExtension(fileName, "xml");
-                if (File.Exists(xmlFile))
-                {
-                    result.Sounds = WadSounds.ReadFromFile(xmlFile);
-                }
-            }
-
             return result;
         }
 
@@ -40,29 +26,21 @@ namespace TombLib.Wad
             stream.Seek(-4, SeekOrigin.Current);
             if (magicNumber.SequenceEqual(Wad2Chunks.MagicNumberObsolete))
             {
-                // TODO In the long term it would be good to get rid of this obsolete code.
-                using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumberObsolete, stream, Wad2Chunks.ChunkList))
-                    return LoadWad2(chunkIO, true);
+                return null; // Deprecated wad2 with sounds isn't supported anymore.
             }
             else
             {
                 using (var chunkIO = new ChunkReader(Wad2Chunks.MagicNumber, stream, Wad2Chunks.ChunkList))
-                    return LoadWad2(chunkIO, false);
+                    return LoadWad2(chunkIO);
             }
         }
 
-        private static Wad2 LoadWad2(ChunkReader chunkIO, bool obsolete)
+        private static Wad2 LoadWad2(ChunkReader chunkIO)
         {
-            if (obsolete)
-                LEB128.ReadUInt(chunkIO.Raw);
             var wad = new Wad2();
 
             Dictionary<long, WadTexture> textures = null;
-            Dictionary<long, WadSample> samples = null;
-            Dictionary<long, WadSoundInfo> soundInfos = null;
             Dictionary<long, WadSprite> sprites = null;
-
-            wad.SoundSystem = SoundSystem.Dynamic;
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -78,39 +56,16 @@ namespace TombLib.Wad
                 }
                 else if (LoadTextures(chunkIO, id, wad, ref textures))
                     return true;
-                else if (LoadSamples(chunkIO, id, wad, ref samples, obsolete))
-                    return true;
-                else if (LoadSoundInfos(chunkIO, id, wad, ref soundInfos, samples))
-                    return true;
-                else if (LoadFixedSoundInfos(chunkIO, id, wad, soundInfos))
-                    return true;
-                else if (LoadAdditionalSoundInfos(chunkIO, id, wad, soundInfos, samples))
-                    return true;
                 else if (LoadSprites(chunkIO, id, wad, ref sprites))
                     return true;
                 else if (LoadSpriteSequences(chunkIO, id, wad, sprites))
                     return true;
-                else if (LoadMoveables(chunkIO, id, wad, soundInfos, textures))
+                else if (LoadMoveables(chunkIO, id, wad, textures))
                     return true;
                 else if (LoadStatics(chunkIO, id, wad, textures))
                     return true;
                 return false;
             });
-
-            if (obsolete)
-                foreach (KeyValuePair<long, WadSoundInfo> soundInfo in soundInfos)
-                    if (TrCatalog.IsSoundFixedByDefault(TRVersion.Game.TR4, checked((uint)soundInfo.Key)))
-                    {
-                        var Id = new WadFixedSoundInfoId(checked((uint)soundInfo.Key));
-                        wad.FixedSoundInfosObsolete.Add(Id, new WadFixedSoundInfo(Id) { SoundInfo = soundInfo.Value });
-                    }
-
-            // XML_SOUND_SYSTEM: Used for conversion of Wad2 to new sound system
-            wad.AllLoadedSoundInfos = soundInfos;
-
-            // Force wad to be xml wad in case there's no sound infos at all
-            if (wad.SoundSystem != SoundSystem.Xml && wad.AllLoadedSoundInfos?.Count == 0)
-                wad.SoundSystem = SoundSystem.Xml;
 
             return wad;
         }
@@ -627,7 +582,6 @@ namespace TombLib.Wad
         }
 
         private static bool LoadMoveables(ChunkReader chunkIO, ChunkId idOuter, Wad2 wad,
-                                          Dictionary<long, WadSoundInfo> soundInfos, 
                                           Dictionary<long, WadTexture> textures)
         {
             if (idOuter != Wad2Chunks.Moveables)
@@ -816,9 +770,7 @@ namespace TombLib.Wad
                                 {
                                     if (id4 == Wad2Chunks.AnimCommandSoundInfo)
                                     {
-                                        var info = chunkIO.ReadChunkInt(chunkSize4);
-                                        if (info != -1)
-                                            command.SoundInfoObsolete = soundInfos[info];
+                                        chunkIO.ReadChunkInt(chunkSize4); // DEPRECATED: WadSoundInfo
                                         return true;
                                     }
                                     else
@@ -935,6 +887,12 @@ namespace TombLib.Wad
                             return true;
                         });
                         s.Lights.Add(light);
+                    }
+                    else if (id2 == Wad2Chunks.StaticShatter)
+                    {
+                        s.ShatterType = (WadShatterType)chunkIO.Raw.ReadInt32();
+                        s.HitPoints = chunkIO.Raw.ReadInt32();
+                        s.ShatterSound = chunkIO.Raw.ReadInt32();
                     }
                     else
                     {

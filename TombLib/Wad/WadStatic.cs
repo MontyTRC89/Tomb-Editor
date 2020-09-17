@@ -53,6 +53,9 @@ namespace TombLib.Wad
         public List<WadLight> Lights { get; set; } = new List<WadLight>();
         public WadMeshLightingType LightingType { get; set; } = WadMeshLightingType.PrecalculatedGrayShades;
         public short AmbientLight { get; set; } = 128;
+        public WadShatterType ShatterType { get; set; }
+        public int HitPoints { get; set; } = 1;
+        public int ShatterSound { get; set; } = 168;
 
         public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());
         public override string ToString() => Id.ToString();
