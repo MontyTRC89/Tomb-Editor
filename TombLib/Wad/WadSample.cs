@@ -148,7 +148,22 @@ namespace TombLib.Wad
             using (var inStream = new MemoryStream(data, false))
             using (var anyWaveStream = CreateReader(inStream, data))
             {
-                var pcmStream = new MediaFoundationResampler(anyWaveStream, targetFormat) { ResamplerQuality = 60 };
+                // If loaded file is already in PCM or IEEE format, use it.
+                // Otherwise, run a conversion through ACM because media foundation resampler can't convert
+                // the file automatically for whatever reason.
+
+                WaveStream sourceStream;
+                if (anyWaveStream.WaveFormat.Encoding == WaveFormatEncoding.IeeeFloat ||
+                    anyWaveStream.WaveFormat.Encoding == WaveFormatEncoding.Pcm)
+                    sourceStream = anyWaveStream;
+                else
+                {
+                    var resampleFormat = new WaveFormat(anyWaveStream.WaveFormat.SampleRate, 16, 
+                                                        anyWaveStream.WaveFormat.Channels);
+                    sourceStream = new WaveFormatConversionStream(resampleFormat, anyWaveStream);
+                }
+
+                var resampler = new MediaFoundationResampler(sourceStream, targetFormat) { ResamplerQuality = 60 };
 
                 try // The pcm stream may need to get disposed.
                 {
@@ -178,7 +193,7 @@ namespace TombLib.Wad
                         {
                             byte[] buffer = new byte[8192];
                             int bytesRead;
-                            while ((bytesRead = pcmStream.Read(buffer, 0, buffer.Length)) != 0)
+                            while ((bytesRead = resampler.Read(buffer, 0, buffer.Length)) != 0)
                                 outStream.Write(buffer, 0, bytesRead);
                         }
 
@@ -193,7 +208,8 @@ namespace TombLib.Wad
                 }
                 finally
                 {
-                    (pcmStream as IDisposable)?.Dispose();
+                    (resampler as IDisposable)?.Dispose();
+                    (sourceStream as IDisposable)?.Dispose();
                 }
             }
         }
