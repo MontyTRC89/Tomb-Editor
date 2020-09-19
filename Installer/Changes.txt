@@ -1,3 +1,11 @@
+Version 1.3.8
+=============
+Tomb Editor:
+ * Allow usage of wav samples with different codecs (not recommended to use).
+ 
+Wad Tool:
+ * Fix exceptions when any Lara-related object was deleted from wad.
+
 Version 1.3.7
 =============
 Tomb Editor:
