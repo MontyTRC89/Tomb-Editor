@@ -136,10 +136,10 @@ namespace WadTool
                     // Display the object (or set it to Lara's skin instead if it's Lara)
                     if (mainSelection.Value.Id is WadMoveableId)
                     {
-                        IWadObject skin = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.GameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
-                        IWadObject msh = wad.TryGet(mainSelection.Value.Id);
+                        var skin = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.GameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
+                        var msh  = wad.TryGet(mainSelection.Value.Id);
                         if (skin != null && mainSelection.Value.Id != skin.Id)
-                            panel3D.CurrentObject = (IWadObject)((WadMoveable)msh).ReplaceDummyMeshes((WadMoveable)skin);
+                            panel3D.CurrentObject = ((WadMoveable)msh)?.ReplaceDummyMeshes((WadMoveable)skin);
                         else
                             panel3D.CurrentObject = msh;
                     }
