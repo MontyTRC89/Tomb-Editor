@@ -185,9 +185,9 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_items.Count);
                 writer.WriteBlockArray(_items);
 
-                // TODO Figure out light map
-                var lightmap = new byte[8192];
-                writer.Write(lightmap);
+                // Calculate and write lightmap
+                ReportProgress(97, "Calculating lightmap");
+                writer.Write(CalculateLightmap(palette));
 
                 const ushort numDemo = 0;
                 const ushort numCinematicFrames = 0;

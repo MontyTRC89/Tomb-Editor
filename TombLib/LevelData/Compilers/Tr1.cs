@@ -214,9 +214,9 @@ namespace TombLib.LevelData.Compilers
                     writer.Write(item.Flags);
                 }
 
-                // TODO Figure out light map
-                var lightmap = new byte[8192];
-                writer.Write(lightmap);
+                // Calculate and write lightmap
+                ReportProgress(97, "Calculating lightmap");
+                writer.Write(CalculateLightmap(palette));
 
                 // Write palette
                 foreach (var c in palette)

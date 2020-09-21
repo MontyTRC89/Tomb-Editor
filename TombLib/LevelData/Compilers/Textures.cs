@@ -421,5 +421,51 @@ namespace TombLib.LevelData.Compilers
 
             return result;
         }
+
+        private byte[] CalculateLightmap(tr_color[] palette)
+        {
+            var result = new byte[palette.Length * 32];
+            for (int k = 0; k < 32; k++)
+            {
+                var bias  = _level.Settings.GameVersion == TRVersion.Game.TR1 ? k + 1 : k;
+                var coeff = Math.Max(2.0f - bias / 16.0f, 0);
+
+                for (int i = 0; i < palette.Length; i++)
+                {
+                    if (_level.Settings.FastMode)
+                        result[palette.Length * k + i] = (byte)i;
+                    else
+                    {
+                        var newR = (byte)Math.Min(palette[i].Red * coeff, byte.MaxValue);
+                        var newG = (byte)Math.Min(palette[i].Green * coeff, byte.MaxValue);
+                        var newB = (byte)Math.Min(palette[i].Blue * coeff, byte.MaxValue);
+                        var candidate = new tr_color() { Red = newR, Green = newG, Blue = newB };
+                        result[palette.Length * k + i] = (byte)FindClosestColor(candidate, palette);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static int FindClosestColor(tr_color color, tr_color[] palette)
+        {
+            int colorReturn = 0;
+
+            int biggestDifference = 1000;
+            for (int i = 0; i < palette.Length; i++)
+            {
+                var match = Math.Sqrt(Math.Pow(color.Red   - palette[i].Red,   2) + 
+                                      Math.Pow(color.Green - palette[i].Green, 2) + 
+                                      Math.Pow(color.Blue  - palette[i].Blue,  2));
+
+                if (match < biggestDifference)
+                {
+                    colorReturn = i;
+                    biggestDifference = (int)match;
+                }
+            }
+
+            return colorReturn;
+        }
     }
 }
