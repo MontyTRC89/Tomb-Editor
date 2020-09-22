@@ -3885,13 +3885,45 @@ namespace TombEditor
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
 
-            if (results.Any(result => result?.Wad.HasUnknownData ?? false))
-                _editor.SendMessage("Loaded wad2 is of newer version than your editor.\nSome data was lost. Please use newer version of Tomb Editor.", PopupType.Warning);
+            var loadedWads = results.Where(result => result != null);
 
+            // Don't do anything if there's nothing to load
+            if (loadedWads.Count() == 0)
+                return loadedWads; 
+
+            // Check if there's unknown chunks present
+            if (loadedWads.Any(result => result?.Wad.HasUnknownData ?? false))
+                _editor.SendMessage("Loaded wad2 is of newer version than your editor.\n" + 
+                    "Some data was lost. Please use newer version of Tomb Editor.", PopupType.Warning);
+            
             // Update level
             _editor.Level.Settings.Wads.InsertRange(0, results.Where(result => result != null));
             _editor.Level.Settings.SoundsCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
             _editor.LoadedWadsChange();
+
+            // Check version integrity
+            var incomingVersion = loadedWads.First().Wad.GameVersion.Native();
+            var message = "Loaded wad" + (loadedWads.Count() > 1 ? "s " : " ");
+            if (loadedWads.All(w => w.Wad.GameVersion.Native() == incomingVersion))
+            {
+                if (incomingVersion != _editor.Level.Settings.GameVersion.Native())
+                {
+                    if (_editor.Level.Settings.Wads.Count == 0 ||
+                        _editor.Level.Settings.Wads.All(w => w.Wad.GameVersion == incomingVersion))
+                    {
+                        _editor.Level.Settings.GameVersion = incomingVersion;
+                        _editor.GameVersionChange();
+                        _editor.SendMessage("Game version was changed to " + incomingVersion + " to match loaded wads version.", PopupType.Info);
+                    }
+                    else
+                        _editor.SendMessage(message + "version doesn't match wads already in the project.\n" + 
+                            "Remove wrong wads or use WadTool to fix the problem.", PopupType.Warning);
+                }
+            }
+            else
+                _editor.SendMessage(message + "have different game version.\n" +
+                    "Remove wrong wads or use WadTool to fix the problem.", PopupType.Warning);
+
             return results.Where(result => result != null);
         }
 

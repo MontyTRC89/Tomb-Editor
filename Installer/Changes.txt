@@ -2,6 +2,7 @@ Version 1.3.8
 =============
 Tomb Editor:
  * Properly calculate lightmap for TR1-3 software rendering.
+ * Automatically change level version according to loaded wads version.
  * Allow usage of wav samples with different codecs (not recommended to use).
  
 Wad Tool:
