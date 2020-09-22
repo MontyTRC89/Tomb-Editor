@@ -219,7 +219,7 @@ namespace TombLib.LevelData.Compilers
 
                 var boxLimit = _limits[Limit.BoxLimit];
                 if (_boxes.Length >= boxLimit)
-                    _progressReporter.ReportWarn("Box limit is reached. Maximum is " + boxLimit + ", you have " + _boxes.Length + ". Game may crash. Reduce level size or split it.");
+                    _progressReporter.ReportWarn("Box limit is reached, maximum is " + boxLimit + ". Game may crash. Reduce level size or split it.");
 
                 var overlapLimit = _limits[Limit.OverlapLimit];
                 if (_overlaps.Length >= overlapLimit)
