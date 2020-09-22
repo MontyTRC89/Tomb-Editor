@@ -650,7 +650,7 @@
 	  <limit name="RoomLightCount" value="20" />
 	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
-	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="RoomSafeCount" value="255" />
 	  <limit name="FloorHeight" value="127" />
 	</limits>
     <moveables>
@@ -1336,7 +1336,7 @@
 	  <limit name="RoomLightCount" value="20" />
 	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
-	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="RoomSafeCount" value="255" />
 	  <limit name="FloorHeight" value="127" />
 	</limits>
     <moveables>
@@ -2106,7 +2106,7 @@
 	  <limit name="RoomLightCount" value="20" />
 	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
-	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="RoomSafeCount" value="255" />
 	  <limit name="FloorHeight" value="127" />
 	  
 	  <limit name="NG_SoundMapSize" value="2048" />
@@ -3687,7 +3687,7 @@
 	  <limit name="RoomLightCount" value="20" />
 	  <limit name="RoomDimensions" value="32" />
 	  <limit name="RoomMaxCount" value="1023" />
-	  <limit name="RoomSafeCount" value="253" />
+	  <limit name="RoomSafeCount" value="255" />
 	  <limit name="FloorHeight" value="127" />
 	</limits>
     <moveables>
