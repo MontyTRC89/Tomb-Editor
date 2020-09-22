@@ -112,6 +112,7 @@ namespace TombLib.Wad
             if (wad.SoundSystem != SoundSystem.Xml && wad.AllLoadedSoundInfos?.Count == 0)
                 wad.SoundSystem = SoundSystem.Xml;
 
+            wad.HasUnknownData = chunkIO.UnknownChunksFound;
             return wad;
         }
 
