@@ -428,7 +428,7 @@ namespace TombLib.LevelData.Compilers
             for (int k = 0; k < 32; k++)
             {
                 var bias  = _level.Settings.GameVersion == TRVersion.Game.TR1 ? k + 1 : k;
-                var coeff = Math.Max(2.0f - bias / 16.0f, 0);
+                var coeff = Math.Min(Math.Max(2.0f - bias / 16.0f, 0), 1.5f);
 
                 for (int i = 0; i < palette.Length; i++)
                 {
