@@ -159,6 +159,8 @@ namespace TombEditor.Forms
             {
                 get
                 {
+                    if (Wad.Wad.GameVersion.Native() != _parent._levelSettings.GameVersion.Native())
+                        return "Game version mismatch";
                     if (Wad.LoadException == null)
                         return "Successfully loaded";
                     return Wad.LoadException.Message + " (" + Wad.LoadException.GetType().Name + ")";
@@ -1044,10 +1046,6 @@ namespace TombEditor.Forms
                     Application.DoEvents(); // Keep dialog handler responsive, otherwise wad loading can deadlock waiting on GUI thread, while GUI thread is waiting for Parallel.For.
                 }
 
-            /*foreach (var wrapper in results)
-                if (wrapper != null)
-                    AssignAllSounds(wrapper.Sounds.Sounds);*/
-
             return results;
         }
 
@@ -1059,7 +1057,8 @@ namespace TombEditor.Forms
 
             if (objectFileDataGridView.Columns[e.ColumnIndex].Name == objectFileDataGridViewMessageColumn.Name)
             {
-                if (wad.LoadException == null)
+                if (wad.LoadException == null &&
+                    wad.Wad.GameVersion.Native() == _levelSettings.GameVersion.Native())
                 {
                     e.CellStyle.BackColor = _columnMessageCorrectColor;
                     e.CellStyle.SelectionBackColor = e.CellStyle.SelectionBackColor.MixWith(_columnMessageCorrectColor, 0.4);
