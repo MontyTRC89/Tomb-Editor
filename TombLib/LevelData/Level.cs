@@ -328,8 +328,7 @@ namespace TombLib.LevelData
             else
             {
                 // Warn user if last vertically connected room index is beyond limit
-                progressReporter?.ReportWarn("Level has " + existingRooms.Count + " rooms, which is more than a limit of " + limit +
-                                             ". Vertically connected rooms will be sorted. Test the level and make sure all doors and portals are working correctly.");
+                progressReporter?.ReportInfo("Level has " + existingRooms.Count + " rooms. Vertically connected rooms were sorted.");
             }
 
             // Collect all rooms with portals
