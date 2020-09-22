@@ -5,7 +5,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Numerics;
 using System.Reflection;
-using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
 
