@@ -223,7 +223,7 @@ namespace TombLib.LevelData.Compilers
 
                 var overlapLimit = _limits[Limit.OverlapLimit];
                 if (_overlaps.Length >= overlapLimit)
-                    _progressReporter.ReportWarn("Overlap limit is reached. Maximum is " + overlapLimit + ", you have " + _overlaps.Length + ". Game may crash. Reduce level size or split it.");
+                    _progressReporter.ReportWarn("Overlap limit is reached, maximum is " + overlapLimit + ". Game may crash. Reduce level size or split it.");
             }
         }
 
