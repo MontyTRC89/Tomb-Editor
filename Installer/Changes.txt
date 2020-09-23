@@ -13,6 +13,9 @@ Wad Tool:
  
 Sound Tool:
  * Properly preview sounds with different sample rates.
+ 
+TombIDE:
+ * Increase compile timeout for very large script files.
 
 Version 1.3.7
 =============

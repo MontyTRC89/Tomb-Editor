@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Automation;
 using TestStack.White;
+using TestStack.White.Configuration;
 using TestStack.White.UIItems;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.WindowsAPI;
@@ -15,6 +16,9 @@ namespace TombLib.Scripting.Compilers
 {
 	public static class NGCompiler
 	{
+        // Increase timeout for really long scripts compilation
+        static NGCompiler() { CoreAppXmlConfiguration.Instance.BusyTimeout = 20000; }
+
 		public static async Task<bool> Compile(
 			string projectScriptPath, string projectEnginePath, string ngcPath, string vgePath, bool newIncludeMethod = true)
 		{
