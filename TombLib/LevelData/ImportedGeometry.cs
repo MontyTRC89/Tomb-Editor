@@ -226,6 +226,12 @@ namespace TombLib.LevelData
                 });
                 var tmpModel = importer.ImportFromFile(importedGeometryPath);
 
+                // Integrity checks
+                if (tmpModel.Materials.Count == 0)
+                    throw new Exception("No valid materials found");
+                if (tmpModel.Meshes.Count == 0)
+                    throw new Exception("No valid mesh data found");
+
                 SynchronizationContext.Current.Post(unused => // Synchronize DirectX, we can't 'send' because that may deadlock with the level settings reloader
                    {
                        if (Device == null)
