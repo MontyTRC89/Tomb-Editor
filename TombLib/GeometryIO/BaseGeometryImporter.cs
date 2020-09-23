@@ -36,7 +36,14 @@ namespace TombLib.GeometryIO
             // Try to get texture from absolute file path first, then try to locate texture in same dir as model.
             // If both approaches fail, return null and eventually don't import model.
 
-            string absoluteTextureFilePath = File.Exists(textureFilePath) ? textureFilePath : Path.Combine(baseDirectory, Path.GetFileName(textureFilePath));
+            string absoluteTextureFilePath;
+
+            if (File.Exists(textureFilePath))
+                absoluteTextureFilePath = textureFilePath;
+            else if (File.Exists(Path.Combine(baseDirectory, textureFilePath)))
+                absoluteTextureFilePath = Path.Combine(baseDirectory, textureFilePath);
+            else
+                absoluteTextureFilePath = Path.Combine(baseDirectory, Path.GetFileName(textureFilePath));
 
             if (!File.Exists(absoluteTextureFilePath))
                 return null;
