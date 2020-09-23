@@ -5,7 +5,7 @@ Tomb Editor:
  * Automatically change level version according to loaded wads version.
  * Indicate wad version mismatch in level settings.
  * Allow usage of wav samples with different codecs (not recommended to use).
- 
+
 Wad Tool:
  * Fix exceptions when any Lara-related object was deleted from wad.
  
@@ -25,6 +25,7 @@ Tomb Editor:
  * Fix EXTRA field not importing correctly from NGLE prj files in some cases.
  * Fix exception on compilation if disjointed portals were found.
  * Fix exceptions after deleting certain objects in find window.
+ * Fix another serious memory leak which was happening on project or wad reloading.
  
 WadTool:
  * Fix empty sprite sequence preview.
