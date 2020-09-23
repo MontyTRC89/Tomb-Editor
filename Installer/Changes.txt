@@ -6,6 +6,7 @@ Tomb Editor:
  * Indicate wad version mismatch in level settings.
  * Indicate imported geometry with missing textures in level settings properly.
  * Allow usage of wav samples with different codecs (not recommended to use).
+ * Fix imported geometry textures not reconnecting if project directory was moved.
 
 Wad Tool:
  * Fix exceptions when any Lara-related object was deleted from wad.
