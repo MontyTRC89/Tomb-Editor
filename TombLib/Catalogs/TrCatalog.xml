@@ -43,9 +43,9 @@
       <moveable id="17" name="Giant Rat (in water)" />
       <moveable id="18" name="Tyrannosaur" />
       <moveable id="19" name="Raptor" />
-      <moveable id="20" name="Winged mummy / Winged mutant" />
-      <moveable id="21" name="Respawn point" />
-      <moveable id="22" name="AI target" />
+      <moveable id="20" name="Winged mutant" />
+      <moveable id="21" name="Mutant with gun spawn point" />
+      <moveable id="22" name="Mutant spawn point" />
       <moveable id="23" name="Centaur mutant" />
       <moveable id="24" name="Mummy" />
       <moveable id="25" name="DinoWarrior" />

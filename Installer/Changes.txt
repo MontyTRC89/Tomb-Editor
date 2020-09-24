@@ -8,6 +8,7 @@ Tomb Editor:
  * Indicate imported geometry with missing textures in level settings properly.
  * Allow usage of wav samples with different codecs (not recommended to use).
  * Fix imported geometry textures not reconnecting if project directory was moved.
+ * Fix some TR1 entity names.
 
 Wad Tool:
  * Internally import actual vertex colors when importing static meshes and models.
