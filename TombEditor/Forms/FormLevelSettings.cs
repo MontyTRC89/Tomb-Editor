@@ -1027,6 +1027,11 @@ namespace TombEditor.Forms
                     AssignAllSounds(soundRef.Sounds);
                 }
 
+            // Autoswitch game version if necessary
+            if (results.Count() > 0 &&
+                EditorActions.AutoswitchGameVersion(_levelSettings, results.Select(w => w.Wad.Wad)))
+                UpdateDialog();
+
             return results;
         }
 
