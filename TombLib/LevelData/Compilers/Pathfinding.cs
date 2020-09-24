@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TombLib.Wad.Catalog;
 
 namespace TombLib.LevelData.Compilers
@@ -9,6 +10,11 @@ namespace TombLib.LevelData.Compilers
         private void BuildPathFindingData()
         {
             ReportProgress(48, "Building pathfinding data");
+
+            // Check for any rooms outside of map bounds
+            if (_sortedRooms.Any(r => r != null && (r.Position.X < 0 || r.Position.Z < 0)))
+                _progressReporter.ReportWarn("Some rooms are out of map bounds. This will cause pathfinding issues. " +
+                    "Place all rooms within 2D map bounds.");
 
             // Fix monkey on portals
             foreach (var fixRoom in _tempRooms.Values)

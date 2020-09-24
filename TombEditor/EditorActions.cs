@@ -3908,30 +3908,51 @@ namespace TombEditor
             _editor.Level.Settings.SoundsCatalogs.InsertRange(0, soundsResults.Where(result => result != null));
             _editor.LoadedWadsChange();
 
-            // Check version integrity
-            var incomingVersion = loadedWads.First().Wad.GameVersion.Native();
-            var message = "Loaded wad" + (loadedWads.Count() > 1 ? "s " : " ");
-            if (loadedWads.All(w => w.Wad.GameVersion.Native() == incomingVersion))
+            // Autoswitch game version if necessary
+            if (AutoswitchGameVersion(_editor.Level.Settings))
             {
-                if (incomingVersion != _editor.Level.Settings.GameVersion.Native())
-                {
-                    if (_editor.Level.Settings.Wads.Count == 0 ||
-                        _editor.Level.Settings.Wads.All(w => w.Wad.GameVersion == incomingVersion))
-                    {
-                        _editor.Level.Settings.GameVersion = incomingVersion;
-                        _editor.GameVersionChange();
-                        _editor.SendMessage("Game version was changed to " + incomingVersion + " to match loaded wads version.", PopupType.Info);
-                    }
-                    else
-                        _editor.SendMessage(message + "version doesn't match wads already in the project.\n" + 
-                            "Remove wrong wads or use WadTool to fix the problem.", PopupType.Warning);
-                }
+                _editor.GameVersionChange();
+                _editor.SendMessage("Game version was changed to " + _editor.Level.Settings.GameVersion + " to match loaded wads version.", PopupType.Info);
             }
-            else
+
+            return results.Where(result => result != null);
+        }
+
+        public static bool AutoswitchGameVersion(LevelSettings settings, IEnumerable<Wad2> wads = null)
+        {
+            if (settings.Wads.Count != 0)
+            {
+                if (wads == null)
+                    // If no wads specified, use only existing wads
+                    wads = settings.Wads.Select(w => w.Wad).ToList();
+                else
+                    // Compare with already existing wads
+                    wads = wads.Concat(settings.Wads.Select(w => w.Wad));
+            }
+
+            // No wads specified, no wads loaded, nothing to do
+            if (wads.Count() == 0)
+                return false;
+
+            var incomingVersion = wads.First().GameVersion.Native();
+            var message = "Loaded wad" + (wads.Count() > 1 ? "s " : " ");
+            if (wads.All(w => w.GameVersion.Native() == incomingVersion) &&
+                incomingVersion != settings.GameVersion.Native())
+            {
+                // HACK: We can't tell the difference between TR4 and TRNG wads for sure. Hence, if incoming
+                // version is TR4 and default game version is TRNG, we force incoming version as TRNG as well.
+                if (incomingVersion == TRVersion.Game.TR4 && 
+                    _editor.Configuration.Editor_DefaultProjectGameVersion == TRVersion.Game.TRNG)
+                    incomingVersion = TRVersion.Game.TRNG;
+
+                settings.GameVersion = incomingVersion;
+                return true;
+            }
+            else if (wads.Any(w => w.GameVersion.Native() != incomingVersion))
                 _editor.SendMessage(message + "have different game version.\n" +
                     "Remove wrong wads or use WadTool to fix the problem.", PopupType.Warning);
 
-            return results.Where(result => result != null);
+            return false;
         }
 
         public static void UpdateWadFilepath(IWin32Window owner, ReferencedWad toReplace, bool searchForOthers = true)
