@@ -18,7 +18,7 @@ namespace TombLib.Wad
         public string Name { get; set; }
         public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
         public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
-        public List<short> VerticesShades { get; set; } = new List<short>();
+        public List<Vector3> VerticesColors { get; set; } = new List<Vector3>();
         public List<WadPolygon> Polys { get; set; } = new List<WadPolygon>();
         public Hash Hash { get; private set; }
         public BoundingSphere BoundingSphere { get; set; }
@@ -72,7 +72,7 @@ namespace TombLib.Wad
             var mesh = (WadMesh)MemberwiseClone();
             mesh.VerticesPositions = new List<Vector3>(VerticesPositions);
             mesh.VerticesNormals = new List<Vector3>(VerticesNormals);
-            mesh.VerticesShades = new List<short>(VerticesShades);
+            mesh.VerticesColors = new List<Vector3>(VerticesColors);
             mesh.Polys = new List<WadPolygon>(Polys);
             return mesh;
         }
@@ -98,9 +98,9 @@ namespace TombLib.Wad
                     for (int i = 0; i < VerticesNormals.Count; i++)
                         writer.Write(VerticesNormals[i]);
 
-                if (VerticesShades.Count > 0)
-                    for (int i = 0; i < VerticesShades.Count; i++)
-                        writer.Write(VerticesShades[i]);
+                if (VerticesColors.Count > 0)
+                    for (int i = 0; i < VerticesColors.Count; i++)
+                        writer.Write(VerticesColors[i]);
 
                 int numPolygons = Polys.Count;
                 writer.Write(numPolygons);
@@ -225,10 +225,10 @@ namespace TombLib.Wad
                 // Copy normals as well, if they are consistent
                 if (tmpMesh.Normals.Count == tmpMesh.Positions.Count)
                     mesh.VerticesNormals.AddRange(tmpMesh.Normals);
-
-                // FIXME: Why do we keep white intensity shades for wad2 meshes internally, and not vertex colors?
+                
+                // Copy vertex colors, if they are consistent
                 if (tmpMesh.Colors.Count == tmpMesh.Positions.Count)
-                    mesh.VerticesShades.AddRange(tmpMesh.Colors.Select(v => (short)(8191.0f - (v.To3().GetLuma() * 8191.0f))));
+                    mesh.VerticesColors.AddRange(tmpMesh.Colors.Select(v => v.To3()));
 
                 foreach (var tmpSubmesh in tmpMesh.Submeshes)
                     foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
@@ -284,8 +284,8 @@ namespace TombLib.Wad
                     if (mesh.VerticesNormals.Count == 0 || calculateNormals)
                         mesh.CalculateNormals(); // MQO files rarely have normals
                     
-                    if (mesh.VerticesPositions.Count != mesh.VerticesShades.Count)
-                        mesh.VerticesShades.Clear(); // Reset vertex shades in case they got desynced from vertex count
+                    if (mesh.VerticesPositions.Count != mesh.VerticesColors.Count)
+                        mesh.VerticesColors.Clear(); // Reset vertex colors in case they got desynced from vertex count
 
                     lastBaseVertex = 0;
                     meshList.Add(mesh);

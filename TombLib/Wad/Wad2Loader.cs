@@ -434,7 +434,9 @@ namespace TombLib.Wad
                     chunkIO.ReadChunks((id3, chunkSize3) =>
                     {
                         if (id3 == Wad2Chunks.MeshVertexShade)
-                            mesh.VerticesShades.Add(chunkIO.ReadChunkShort(chunkSize3));
+                            mesh.VerticesColors.Add(new Vector3((8191.0f - chunkIO.ReadChunkShort(chunkSize3)) / 8191.0f));
+                        else if (id3 == Wad2Chunks.MeshVertexColor)
+                            mesh.VerticesColors.Add(chunkIO.ReadChunkVector3(chunkSize3));
                         else
                             return false;
                         return true;

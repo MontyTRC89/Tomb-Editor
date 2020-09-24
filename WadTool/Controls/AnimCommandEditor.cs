@@ -290,7 +290,7 @@ namespace WadTool
             var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == (int)nudSoundId.Value);
             if (soundInfo != null)
                 try { WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo); }
-                catch (Exception exc) { } // FIXME: do something!
+                catch (Exception ex) { } // FIXME: do something!
         }
 
         private void nudSoundId_ValueChanged(object sender, EventArgs e)

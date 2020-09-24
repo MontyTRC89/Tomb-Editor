@@ -557,7 +557,7 @@ namespace WadTool.Controls
 
         public void UpdateLights()
         {
-            Static.Mesh.VerticesShades.Clear();
+            Static.Mesh.VerticesColors.Clear();
 
             Matrix4x4 world = Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *  
                               Matrix4x4.CreateTranslation(StaticPosition);
@@ -587,9 +587,7 @@ namespace WadTool.Controls
                                 (light.Radius * 1024.0f));
                 }
 
-                newShade = Math.Min(newShade, 1.0f);
-
-                Static.Mesh.VerticesShades.Add((short)((255.0f - newShade * 255.0f) * 8191 / 255));
+                Static.Mesh.VerticesColors.Add(new Vector3(Math.Min(newShade, 1.0f)));
             }
 
             _tool.StaticLightsChanged();

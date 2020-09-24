@@ -257,7 +257,7 @@ namespace TombLib.GeometryIO.Exporters
                     writer.WriteLine("    Ka 1.000000 1.000000 1.000000");
                     writer.WriteLine("    Kd 1.000000 1.000000 1.000000");
                     writer.WriteLine("    Ni 1.000000");
-                    writer.WriteLine("    Ns 10.000000");
+                    writer.WriteLine("    Ns 0.000000");
                     writer.WriteLine("    d " + (material.AdditiveBlending ? "0.500000" : "1.000000"));
                     writer.WriteLine("    illum 2");
                     writer.WriteLine("    map_Ka " + material.TexturePath);
