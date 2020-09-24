@@ -155,6 +155,12 @@
     <Compile Include="Forms\FormBumpMaps.Designer.cs">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormMemo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormMemo.Designer.cs">
+      <DependentUpon>FormMemo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FormRoomProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -483,6 +489,9 @@
     <EmbeddedResource Include="Forms\FormBumpMaps.resx">
       <DependentUpon>FormBumpMaps.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormMemo.resx">
+      <DependentUpon>FormMemo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRoomProperties.resx">
       <DependentUpon>FormRoomProperties.cs</DependentUpon>
     </EmbeddedResource>
@@ -655,6 +664,7 @@
     <None Include="Resources\icons_actions\actions_play_fast-16.png" />
     <None Include="Resources\icons_objects\objects_Sprite-16.png" />
     <None Include="Resources\icons_general\general_animcommand-16.png" />
+    <None Include="Resources\icons_objects\objects_Memo-16.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
   </ItemGroup>

@@ -129,11 +129,11 @@
             // 
             // butDelete
             // 
-            this.butDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.butDelete.Checked = false;
             this.butDelete.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butDelete.Image = global::TombEditor.Properties.Resources.general_trash_16;
-            this.butDelete.Location = new System.Drawing.Point(517, 282);
+            this.butDelete.Location = new System.Drawing.Point(7, 282);
             this.butDelete.Name = "butDelete";
             this.butDelete.Size = new System.Drawing.Size(23, 23);
             this.butDelete.TabIndex = 80;

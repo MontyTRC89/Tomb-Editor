@@ -208,6 +208,7 @@ namespace TombEditor.Forms
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.assToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addMemoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -662,7 +663,7 @@ namespace TombEditor.Forms
             this.newRoomUpToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomUpToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newRoomUpToolStripMenuItem.Name = "newRoomUpToolStripMenuItem";
-            this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newRoomUpToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.newRoomUpToolStripMenuItem.Tag = "NewRoomUp";
             this.newRoomUpToolStripMenuItem.Text = "NewRoomUp";
             // 
@@ -671,7 +672,7 @@ namespace TombEditor.Forms
             this.newRoomDownToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomDownToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newRoomDownToolStripMenuItem.Name = "newRoomDownToolStripMenuItem";
-            this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newRoomDownToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.newRoomDownToolStripMenuItem.Tag = "NewRoomDown";
             this.newRoomDownToolStripMenuItem.Text = "NewRoomDown";
             // 
@@ -680,7 +681,7 @@ namespace TombEditor.Forms
             this.newRoomLeftToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomLeftToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newRoomLeftToolStripMenuItem.Name = "newRoomLeftToolStripMenuItem";
-            this.newRoomLeftToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newRoomLeftToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.newRoomLeftToolStripMenuItem.Tag = "NewRoomLeft";
             this.newRoomLeftToolStripMenuItem.Text = "NewRoomLeft";
             // 
@@ -689,7 +690,7 @@ namespace TombEditor.Forms
             this.newRoomRightToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomRightToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newRoomRightToolStripMenuItem.Name = "newRoomRightToolStripMenuItem";
-            this.newRoomRightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newRoomRightToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.newRoomRightToolStripMenuItem.Tag = "NewRoomRight";
             this.newRoomRightToolStripMenuItem.Text = "NewRoomRight";
             // 
@@ -698,7 +699,7 @@ namespace TombEditor.Forms
             this.newRoomFrontToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomFrontToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newRoomFrontToolStripMenuItem.Name = "newRoomFrontToolStripMenuItem";
-            this.newRoomFrontToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newRoomFrontToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.newRoomFrontToolStripMenuItem.Tag = "NewRoomFront";
             this.newRoomFrontToolStripMenuItem.Text = "NewRoomFront";
             // 
@@ -707,7 +708,7 @@ namespace TombEditor.Forms
             this.newRoomBackToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.newRoomBackToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.newRoomBackToolStripMenuItem.Name = "newRoomBackToolStripMenuItem";
-            this.newRoomBackToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newRoomBackToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.newRoomBackToolStripMenuItem.Tag = "NewRoomBack";
             this.newRoomBackToolStripMenuItem.Text = "NewRoomBack";
             // 
@@ -1114,7 +1115,8 @@ namespace TombEditor.Forms
             this.addSinkToolStripMenuItem,
             this.addSoundSourceToolStripMenuItem,
             this.addImportedGeometryToolStripMenuItem,
-            this.addGhostBlockToolStripMenuItem});
+            this.addGhostBlockToolStripMenuItem,
+            this.addMemoToolStripMenuItem});
             this.toolStripMenuItem8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
             this.toolStripMenuItem8.Size = new System.Drawing.Size(222, 22);
@@ -2174,6 +2176,16 @@ namespace TombEditor.Forms
             this.assToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assToolStripMenuItem.Text = "ass";
             // 
+            // addMemoToolStripMenuItem
+            // 
+            this.addMemoToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.addMemoToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.addMemoToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_Memo_16;
+            this.addMemoToolStripMenuItem.Name = "addMemoToolStripMenuItem";
+            this.addMemoToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.addMemoToolStripMenuItem.Tag = "AddMemo";
+            this.addMemoToolStripMenuItem.Text = "AddMemo";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -2391,5 +2403,6 @@ namespace TombEditor.Forms
         private ToolStripMenuItem importedGeometryBrowserToolstripMenuItem;
         private ToolStripMenuItem addSpriteToolStripMenuItem;
         private ToolStripMenuItem toolStripMenuItem9;
+        private ToolStripMenuItem addMemoToolStripMenuItem;
     }
 }

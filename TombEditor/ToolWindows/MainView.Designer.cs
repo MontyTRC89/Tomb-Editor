@@ -52,6 +52,7 @@
             this.butOpacitySolidFaces = new System.Windows.Forms.ToolStripButton();
             this.butOpacityTraversableFaces = new System.Windows.Forms.ToolStripButton();
             this.butAddCamera = new System.Windows.Forms.ToolStripButton();
+            this.butAddSprite = new System.Windows.Forms.ToolStripButton();
             this.butAddFlybyCamera = new System.Windows.Forms.ToolStripButton();
             this.butAddSink = new System.Windows.Forms.ToolStripButton();
             this.butAddSoundSource = new System.Windows.Forms.ToolStripButton();
@@ -72,7 +73,7 @@
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.butAddSprite = new System.Windows.Forms.ToolStripButton();
+            this.butAddMemo = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,6 +119,7 @@
             this.butAddSoundSource,
             this.butAddImportedGeometry,
             this.butAddGhostBlock,
+            this.butAddMemo,
             this.butCompileLevel,
             this.butCompileLevelAndPlay,
             this.butCompileAndPlayPreview,
@@ -390,7 +392,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -402,7 +404,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -414,7 +416,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -426,7 +428,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -437,7 +439,7 @@
             this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawVolumes.Name = "butDrawVolumes";
-            this.butDrawVolumes.Size = new System.Drawing.Size(202, 22);
+            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
             this.butDrawVolumes.Tag = "DrawVolumes";
             this.butDrawVolumes.Text = "DrawVolumes";
             // 
@@ -449,7 +451,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -461,7 +463,7 @@
             this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
+            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
             this.butDrawLightRadius.Tag = "DrawLightRadius";
             this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
@@ -563,6 +565,17 @@
             this.butAddCamera.Size = new System.Drawing.Size(23, 25);
             this.butAddCamera.Tag = "AddCamera";
             // 
+            // butAddSprite
+            // 
+            this.butAddSprite.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddSprite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddSprite.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddSprite.Image = global::TombEditor.Properties.Resources.objects_Sprite_16;
+            this.butAddSprite.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddSprite.Name = "butAddSprite";
+            this.butAddSprite.Size = new System.Drawing.Size(23, 25);
+            this.butAddSprite.Tag = "AddSprite";
+            // 
             // butAddFlybyCamera
             // 
             this.butAddFlybyCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -626,7 +639,7 @@
             this.butCompileLevel.Image = global::TombEditor.Properties.Resources.actions_compile_16;
             this.butCompileLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileLevel.Name = "butCompileLevel";
-            this.butCompileLevel.Size = new System.Drawing.Size(23, 20);
+            this.butCompileLevel.Size = new System.Drawing.Size(24, 24);
             this.butCompileLevel.Tag = "BuildLevel";
             // 
             // butCompileLevelAndPlay
@@ -787,16 +800,16 @@
             this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
             this.panel2DMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragEnter);
             // 
-            // butAddSprite
+            // butAddMemo
             // 
-            this.butAddSprite.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butAddSprite.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butAddSprite.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butAddSprite.Image = global::TombEditor.Properties.Resources.objects_Sprite_16;
-            this.butAddSprite.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butAddSprite.Name = "butAddSprite";
-            this.butAddSprite.Size = new System.Drawing.Size(23, 25);
-            this.butAddSprite.Tag = "AddSprite";
+            this.butAddMemo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddMemo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddMemo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddMemo.Image = global::TombEditor.Properties.Resources.objects_Memo_16;
+            this.butAddMemo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddMemo.Name = "butAddMemo";
+            this.butAddMemo.Size = new System.Drawing.Size(23, 20);
+            this.butAddMemo.Tag = "AddMemo";
             // 
             // MainView
             // 
@@ -875,5 +888,6 @@
         private System.Windows.Forms.ToolStripButton butHideTransparentFaces;
         private System.Windows.Forms.ToolStripButton butCompileAndPlayPreview;
         private System.Windows.Forms.ToolStripButton butAddSprite;
+        private System.Windows.Forms.ToolStripButton butAddMemo;
     }
 }

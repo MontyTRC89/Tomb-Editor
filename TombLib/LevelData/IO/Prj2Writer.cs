@@ -450,7 +450,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.CodeBits);
                             chunkIO.Raw.Write(instance.Color);
                             chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
-                            
+
                         });
                     else if (o is StaticInstance)
                         chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectStatic2, () =>
@@ -501,6 +501,14 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Number);
                             LEB128.Write(chunkIO.Raw, instance.Sequence);
                             LEB128.Write(chunkIO.Raw, instance.Timer);
+                        });
+                    else if (o is MemoInstance)
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMemo, () =>
+                        {
+                            var instance = (MemoInstance)o;
+                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                            chunkIO.Raw.Write(instance.Position);
+                            chunkIO.Raw.WriteStringUTF8(instance.Text);
                         });
                     else if (o is SinkInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))

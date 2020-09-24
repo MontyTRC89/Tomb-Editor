@@ -952,6 +952,13 @@ namespace TombEditor
                     existingWindow.Focus();
                 }
             }
+            else if (instance is MemoInstance)
+            {
+                using (var formMemo = new FormMemo((MemoInstance)instance))
+                    if (formMemo.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
+            }
         }
 
         public static void PasteObject(VectorInt2 pos, Room room)
