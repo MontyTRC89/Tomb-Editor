@@ -2600,9 +2600,10 @@ namespace TombEditor.Controls
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
 
                             // Add text message
-                            textToDraw.Add(CreateTextTagForObject(
-                                instance.RotationPositionMatrix * _viewProjection,
-                                instance.Text));
+                            textToDraw.Add(CreateTextTagForObject(instance.RotationPositionMatrix * _viewProjection, instance.Text));
+
+                            // Add the line height of the object
+                            AddObjectHeightLine(instance.Room, instance.Position);
                         }
 
                         RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);

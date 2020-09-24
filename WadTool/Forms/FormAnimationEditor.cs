@@ -605,7 +605,7 @@ namespace WadTool
                 UpdateStatusLabel();
             }
             else
-                statusFrame.Text = "";
+                statusFrame.Text = string.Empty;
         }
 
         private void CalculateAnimationBoundingBox(bool clear = false)
@@ -876,7 +876,7 @@ namespace WadTool
             else
             {
                 timeline.Value = 0;
-                statusFrame.Text = "";
+                statusFrame.Text = string.Empty;
             }
             panelRendering.Invalidate();
         }
@@ -1760,15 +1760,15 @@ namespace WadTool
 
         private void UpdateStatusLabel()
         {
-            if (_editor.CurrentAnim == null)
+            if (_editor.CurrentAnim == null || _editor.CurrentAnim.DirectXAnimation.KeyFrames.Count == 0)
             {
-                statusFrame.Text = "No current animation!";
+                statusFrame.Text = string.Empty;
                 return;
             }
 
             string newLabel =
-                "Frame: " + (_frameCount) + " / " + (_editor.GetRealNumberOfFrames()) + "   " +
-                "Keyframe: " + timeline.Value + " / " + (_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count);
+                "Frame: " + _frameCount + " / " + Math.Max(_editor.GetRealNumberOfFrames() - 1, 0) + "   " +
+                "Keyframe: " + timeline.Value + " / " + Math.Max(_editor.CurrentAnim.DirectXAnimation.KeyFrames.Count - 1, 0);
 
             if (!timeline.SelectionIsEmpty)
             {
