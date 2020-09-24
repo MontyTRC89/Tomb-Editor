@@ -95,7 +95,7 @@ namespace TombLib.LevelData.Compilers
                 }
                 else
                 {
-                    if (oldMesh.VerticesShades.Count == 0)
+                    if (oldMesh.VerticesColors.Count == 0)
                     {
                         if (oldMesh.VerticesNormals.Count == 0)
                         {
@@ -122,7 +122,7 @@ namespace TombLib.LevelData.Compilers
                 useShades = false;
             }
 
-            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesShades.Count : oldMesh.VerticesNormals.Count);
+            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesColors.Count : oldMesh.VerticesNormals.Count);
             currentMeshSize += 2;
 
             if (!useShades)
@@ -141,12 +141,13 @@ namespace TombLib.LevelData.Compilers
             }
             else
             {
-                newMesh.Lights = new short[oldMesh.VerticesShades.Count];
+                newMesh.Lights = new short[oldMesh.VerticesColors.Count];
 
-                for (int j = 0; j < oldMesh.VerticesShades.Count; j++)
+                for (int j = 0; j < oldMesh.VerticesColors.Count; j++)
                 {
-                    newMesh.Lights[j] = oldMesh.VerticesShades[j];
-
+                    // HACK: Because of inconsistent TE light model (0.0f-2.0f), clamp luma to 1.0f to avoid issues with
+                    // incorrect shade translations in room meshes reimported as statics.
+                    newMesh.Lights[j] = (short)(8191.0f - Math.Min(oldMesh.VerticesColors[j].GetLuma(), 1.0f) * 8191.0f);
                     currentMeshSize += 2;
                 }
             }
@@ -990,11 +991,9 @@ namespace TombLib.LevelData.Compilers
                 },
                 Radius = (short)oldMesh.BoundingSphere.Radius
             };
-            int numShades = 0;
             currentMeshSize += 10;
             newMesh.NumVertices = 0;
             currentMeshSize += 2;
-            int numNormals = 0;
             newMesh.Vertices = new tr_vertex[0];
 
             newMesh.NumNormals = 0;
@@ -1007,9 +1006,6 @@ namespace TombLib.LevelData.Compilers
 
             newMesh.NumTexturedTriangles = numTriangles;
             currentMeshSize += 2;
-
-            int lastQuad = 0;
-            int lastTriangle = 0;
 
             newMesh.TexturedQuads = new tr_face4[numQuads];
             newMesh.TexturedTriangles = new tr_face3[numTriangles];

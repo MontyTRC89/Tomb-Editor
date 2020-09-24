@@ -133,7 +133,7 @@ namespace TombLib.Wad.TrLevels
             // Add shades
             foreach (var oldShade in oldMesh.Lights)
             {
-                mesh.VerticesShades.Add(oldShade);
+                mesh.VerticesColors.Add(new Vector3((8191.0f - oldShade) / 8191.0f));
             }
 
             // Add polygons

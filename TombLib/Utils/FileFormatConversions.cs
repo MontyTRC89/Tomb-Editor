@@ -184,7 +184,7 @@ namespace TombLib.Utils
                 // Finished!
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 return false;
             }

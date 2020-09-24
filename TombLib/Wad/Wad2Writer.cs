@@ -173,9 +173,9 @@ namespace TombLib.Wad
                 // Write shades
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexShades, () =>
                 {
-                    foreach (var shade in mesh.VerticesShades)
+                    foreach (var color in mesh.VerticesColors)
                     {
-                        chunkIO.WriteChunkInt(Wad2Chunks.MeshVertexShade, shade);
+                        chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexColor, color);
                     }
                 });
 

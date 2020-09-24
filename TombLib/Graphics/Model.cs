@@ -36,16 +36,14 @@ namespace TombLib.Graphics
         public abstract void UpdateBuffers();
 
         protected static void PutObjectVertexAndIndex(Vector3 v, ObjectMesh mesh, Submesh submesh, Vector2 uv, int submeshIndex,
-                                                      short color, Vector2 positionInAtlas)
+                                                      Vector3 color, Vector2 positionInAtlas)
         {
             var newVertex = new ObjectVertex();
 
             newVertex.Position = new Vector3(v.X, v.Y, v.Z);
             newVertex.UV = new Vector2((positionInAtlas.X + uv.X) / WadRenderer.TextureAtlasSize,
                                        (positionInAtlas.Y + uv.Y) / WadRenderer.TextureAtlasSize);
-
-            var shade = 1.0f - color / 8191.0f;
-            newVertex.Shade = new Vector2(shade, 0.0f);
+            newVertex.Color = color;
 
             mesh.Vertices.Add(newVertex);
             submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));

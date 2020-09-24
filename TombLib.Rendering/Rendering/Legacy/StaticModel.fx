@@ -3,7 +3,7 @@
     float3 Position : POSITION0;
     float2 UV : TEXCOORD0;
     float3 Normal : NORMAL0;
-    float2 Shade : TEXCOORD1;
+    float3 Color : COLOR0;
 };
 
 struct PixelInputType
@@ -28,7 +28,7 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
     output.UV = input.UV;
-    output.Color = float4(Color.xyz * input.Shade.x, 1.0);
+    output.Color = float4(Color.xyz * input.Color.xyz, 1.0);
     return output;
 }
 
