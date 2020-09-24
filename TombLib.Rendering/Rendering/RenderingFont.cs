@@ -269,7 +269,7 @@ namespace TombLib.Rendering
                 gcp.MaxFit = int.MaxValue;
                 uint dimensions = GDI.GetCharacterPlacementW(_gdiHdc, lines[i], lines[i].Length, int.MaxValue, ref gcp, GDI.GCPFlags.GCP_LIGATE | GDI.GCPFlags.GCP_REORDER | GDI.GCPFlags.GCP_DIACRITIC | GDI.GCPFlags.GCP_USEKERNING);
                 if (dimensions == 0)
-                    throw new GDI.GDIException("GetCharacterPlacementW");
+                    continue;
                 int width = (int)(dimensions & 0xffff);
                 int height = (int)(dimensions >> 16);
 

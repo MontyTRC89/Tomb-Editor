@@ -1078,6 +1078,11 @@ namespace TombEditor
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new SinkInstance());
             });
 
+            AddCommand("AddMemo", "Add memo", CommandType.Objects, delegate (CommandArgs args)
+            {
+                args.Editor.Action = new EditorActionPlace(false, (l, r) => new MemoInstance());
+            });
+
             AddCommand("AddGhostBlock", "Add ghost block", CommandType.Objects, delegate (CommandArgs args)
             {
                 args.Editor.Action = new EditorActionPlace(false, (l, r) => new GhostBlockInstance());

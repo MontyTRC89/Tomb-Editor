@@ -59,6 +59,11 @@ namespace TombEditor.Controls.ContextMenus
             {
                 EditorActions.PlaceObject(targetRoom, targetBlock, new ImportedGeometryInstance());
             }));
+
+            Items.Add(new ToolStripMenuItem("Add memo", Properties.Resources.objects_Memo_16, (o, e) =>
+            {
+                EditorActions.PlaceObject(targetRoom, targetBlock, new MemoInstance());
+            }));
         }
     }
 }

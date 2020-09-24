@@ -2586,7 +2586,27 @@ namespace TombEditor.Controls
                     }
 
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
-                }
+                    }
+
+                if (group.Key == typeof(MemoInstance))
+                    foreach (MemoInstance instance in group)
+                    {
+                        _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
+                        Vector4 color = Vector4.One;
+                        if (_editor.SelectedObject == instance)
+                        {
+                            color = _editor.Configuration.UI_ColorScheme.ColorSelection;
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+
+                            // Add text message
+                            textToDraw.Add(CreateTextTagForObject(
+                                instance.RotationPositionMatrix * _viewProjection,
+                                instance.Text));
+                        }
+
+                        RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
+                    }
 
                 if (group.Key == typeof(SinkInstance))
                 foreach (SinkInstance instance in group)

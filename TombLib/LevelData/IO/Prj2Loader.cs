@@ -1,7 +1,6 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -1105,6 +1104,14 @@ namespace TombLib.LevelData.IO
                         return false;
                     });
 
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectMemo)
+                {
+                    var instance = new MemoInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.Text = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

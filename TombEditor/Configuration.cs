@@ -169,7 +169,7 @@ namespace TombEditor
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",
             "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
-            "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "|",
+            "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "AddMemo", "|",
             "CompileLevel", "CompileLevelAndPlay", "CompileLevelAndPlay", "CompileAndPlayPreview"
         };
 
@@ -220,6 +220,9 @@ namespace TombEditor
         public Point Window_FormFindUntextured_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormFindUntextured_Size { get; set; } = new Size(330, 400);
         public bool Window_FormFindUntextured_Maximized { get; set; } = false;
+        public Point Window_FormMemo_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormMemo_Size { get; set; } = new Size(350, 200);
+        public bool Window_FormMemo_Maximized { get; set; } = false;
 
         public DockPanelState Window_Layout { get; set; } = Window_LayoutDefault;
 

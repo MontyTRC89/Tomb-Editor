@@ -20,6 +20,7 @@ namespace TombLib.Rendering
         sprite,
         ghost_block,
         volume,
+        memo,
         light_effect,
         light_fog,
         light_point,
@@ -124,6 +125,7 @@ namespace TombLib.Rendering
                         break;
                 }
             }
+            else if (instance is MemoInstance) type = ServiceObjectTexture.memo;
             else if (instance is SinkInstance) type = ServiceObjectTexture.sink;
             else if (instance is SpriteInstance) type = ServiceObjectTexture.sprite;
             else if (instance is CameraInstance) type = ServiceObjectTexture.camera;

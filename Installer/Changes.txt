@@ -1,6 +1,7 @@
 Version 1.3.8
 =============
 Tomb Editor:
+ * Add Memo object type to store annotations right inside the project.
  * Properly calculate lightmap for TR1-3 software rendering.
  * Automatically change level version according to loaded wads version.
  * Indicate wad version mismatch in level settings.
@@ -9,6 +10,7 @@ Tomb Editor:
  * Fix imported geometry textures not reconnecting if project directory was moved.
 
 Wad Tool:
+ * Internally import actual vertex colors when importing static meshes and models.
  * Fix exceptions when any Lara-related object was deleted from wad.
  
 Sound Tool:
