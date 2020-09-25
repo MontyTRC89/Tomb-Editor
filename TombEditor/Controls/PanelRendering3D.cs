@@ -2831,13 +2831,17 @@ namespace TombEditor.Controls
             var center = _editor.SelectedRoom.GetLocalCenter();
             var matrix = Matrix4x4.CreateTranslation(_editor.SelectedRoom.WorldPos) * _viewProjection;
             for (int i = 0; i < 4; i++)
-                textToDraw.Add(new Text
-                {
-                    Font = _fontDefault,
-                    Pos = matrix.TransformPerspectively(center + positions[i]).To2(),
-                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                    String = messages[i]
-                });
+            {
+                var pos = matrix.TransformPerspectively(center + positions[i]);
+                if (pos.Z <= 1.0f)
+                    textToDraw.Add(new Text
+                    {
+                        Font = _fontDefault,
+                        Pos = pos.To2(),
+                        Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                        String = messages[i]
+                    });
+            }
         }
 
         private void DrawSkybox()
@@ -3153,6 +3157,9 @@ namespace TombEditor.Controls
 
         private Text CreateTextTagForObject(Matrix4x4 matrix, string message)
         {
+            if (matrix.TransformPerspectively(new Vector3()).Z > 1.0f)
+                return null; // Discard text on the back
+
             return new Text
             {
                 Font = _fontDefault,
@@ -3409,13 +3416,17 @@ namespace TombEditor.Controls
             {
                 Size size = ClientSize;
                 for (int i = 0; i < roomsToDraw.Length; i++)
-                    textToDraw.Add(new Text
-                    {
-                        Font = _fontDefault,
-                        Pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * _viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter()).To2(),
-                        Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                        String = roomsToDraw[i].Name
-                    });
+                {
+                    var pos = (Matrix4x4.CreateTranslation(roomsToDraw[i].WorldPos) * _viewProjection).TransformPerspectively(roomsToDraw[i].GetLocalCenter());
+                    if (pos.Z <= 1.0f)
+                        textToDraw.Add(new Text
+                        {
+                            Font = _fontDefault,
+                            Pos = pos.To2(),
+                            Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                            String = roomsToDraw[i].Name
+                        });
+                }
             }
 
             // Draw North, South, East and West
