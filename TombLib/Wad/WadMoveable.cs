@@ -100,13 +100,17 @@ namespace TombLib.Wad
             if (skin.Meshes.Count != Meshes.Count) return this;
             if (Meshes.Count != Bones.Count) return this;
 
+            // Identify mesh ID which occurs several times in a model which possibly indicates
+            // that used mesh is a dummy mesh.
+            var dummyMeshName = Meshes.GroupBy(m => m.Name).Where(g => g.Count() > 1).FirstOrDefault()?.Key ?? string.Empty;
+
             var mov = new WadMoveable(Id);
             for (int i = 0; i < Meshes.Count; i++)
             {
                 WadMesh msh = Meshes[i].Clone();
                 WadMesh msh2 = skin.Meshes[i].Clone();
                 WadBone bone = Bones[i].Clone();
-                if (!msh.Name.EndsWith("-0") && !msh.Name.Equals("Mesh_0", StringComparison.InvariantCultureIgnoreCase))
+                if (string.IsNullOrEmpty(dummyMeshName) || msh.Name != dummyMeshName)
                 {
                     mov.Bones.Add(bone);
                     continue;
