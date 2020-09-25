@@ -3946,6 +3946,7 @@ namespace TombEditor
                     incomingVersion = TRVersion.Game.TRNG;
 
                 settings.GameVersion = incomingVersion;
+                settings.ConvertLevelExtension();
                 return true;
             }
             else if (wads.Any(w => w.GameVersion.Native() != incomingVersion))
