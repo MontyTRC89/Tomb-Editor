@@ -284,8 +284,8 @@ namespace TombLib.LevelData.IO
                 }
                 using (var chunkAutoMergeStatics = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshes, UInt16.MaxValue))
                 {
-                    foreach(var entry in settings.AutoStaticMeshMerges)
-                        using  (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry3))
+                    foreach (var entry in settings.AutoStaticMeshMerges)
+                        using (var chunkAutoMergeEntry = chunkIO.WriteChunk(Prj2Chunks.AutoMergeStaticMeshEntry3))
                         {
                             chunkIO.Raw.Write(entry.meshId);
                             chunkIO.Raw.Write(entry.InterpretShadesAsEffect);
@@ -303,7 +303,6 @@ namespace TombLib.LevelData.IO
                         chunkIO.Raw.Write(color.G);
                         chunkIO.Raw.Write(color.B);
                     }
-                    chunkIO.WriteChunkEnd();
                 }
                 chunkIO.WriteChunkEnd();
             };
@@ -503,13 +502,13 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, instance.Timer);
                         });
                     else if (o is MemoInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectMemo, () =>
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMemo, LEB128.MaximumSize3Byte))
                         {
                             var instance = (MemoInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                             chunkIO.Raw.Write(instance.Position);
                             chunkIO.Raw.WriteStringUTF8(instance.Text);
-                        });
+                        }
                     else if (o is SinkInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))
                         {
