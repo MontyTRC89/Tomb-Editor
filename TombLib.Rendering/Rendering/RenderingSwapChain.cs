@@ -57,6 +57,10 @@ namespace TombLib.Rendering
 
             foreach (Text text in texts)
             {
+                // Discard empty texts
+                if (text == null || string.IsNullOrEmpty(text.String))
+                    continue;
+
                 // Build glyphs using the right font
                 Vector2 pixelPos = text.PixelPos + text.Pos * Size * 0.5f;
                 pixelPos += (text.ScreenAlignment * 2 - new Vector2(1)) * Size * new Vector2(0.5f, -0.5f);

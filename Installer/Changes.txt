@@ -9,6 +9,7 @@ Tomb Editor:
  * Allow usage of wav samples with different codecs (not recommended to use).
  * Warn if any rooms are outside of map bounds, which may cause pathfinding issues.
  * Fix imported geometry textures not reconnecting if project directory was moved.
+ * Fix text labels occasionally rendered in wrong places in 3D window.
  * Fix some TR1 entity names.
 
 Wad Tool:
