@@ -280,6 +280,7 @@ namespace TombLib.LevelData
 
             triggers = triggers.OrderBy(t => t != found)
                                .ThenBy(t => t.TargetType == TriggerTargetType.Camera)
+                               .ThenBy(t => t.TargetType == TriggerTargetType.Target)
                                .ToList();
         }
     }
