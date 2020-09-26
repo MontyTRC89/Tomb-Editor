@@ -512,6 +512,9 @@ namespace TombLib.LevelData.Compilers
                 _animDispatches[i] = dispatch;
             }
 
+            _progressReporter.ReportInfo("    Number of model mesh references: " + _meshPointers.Count);
+            _progressReporter.ReportInfo("    Number of unique model meshes: " + _meshPointerLookup.Count);
+
             // Convert static meshes
             int convertedStaticsCount = 0;
             ReportProgress(10, "Converting static meshes");
@@ -566,9 +569,6 @@ namespace TombLib.LevelData.Compilers
                 _progressReporter.ReportInfo("    Number of statics merged with room geometry: " + convertedStaticsCount);
             else
                 _progressReporter.ReportInfo("    No statics to merge into room geometry.");
-
-            _progressReporter.ReportInfo("    Number of mesh references: " + _meshPointers.Count);
-            _progressReporter.ReportInfo("    Number of unique meshes: " + _meshPointerLookup.Count);
 
             if (_writeDbgWadTxt)
                 using (var fileStream = new FileStream("Wad.txt", FileMode.Create, FileAccess.Write, FileShare.None))
