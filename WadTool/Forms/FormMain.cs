@@ -138,7 +138,7 @@ namespace WadTool
                     {
                         var skin = wad.TryGet(new WadMoveableId(TrCatalog.GetMoveableSkin(wad.GameVersion, ((WadMoveableId)mainSelection.Value.Id).TypeId)));
                         var msh  = wad.TryGet(mainSelection.Value.Id);
-                        if (skin != null && mainSelection.Value.Id != skin.Id)
+                        if (skin != null && skin != msh)
                             panel3D.CurrentObject = ((WadMoveable)msh)?.ReplaceDummyMeshes((WadMoveable)skin);
                         else
                             panel3D.CurrentObject = msh;
