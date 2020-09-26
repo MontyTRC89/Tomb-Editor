@@ -20,7 +20,6 @@ namespace TombLib.Wad
         public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
         public List<Vector3> VerticesColors { get; set; } = new List<Vector3>();
         public List<WadPolygon> Polys { get; set; } = new List<WadPolygon>();
-        public Hash Hash { get; private set; }
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
         public WadMeshLightingType LightingType { get; set; }
@@ -296,12 +295,6 @@ namespace TombLib.Wad
 
             return meshList;
         }
-
-        public static bool operator ==(WadMesh first, WadMesh second) => ReferenceEquals(first, null) ? ReferenceEquals(second, null) : (ReferenceEquals(second, null) ? false : first.Hash == second.Hash);
-        public static bool operator !=(WadMesh first, WadMesh second) => !(first == second);
-        public bool Equals(WadMesh other) => Hash == other.Hash;
-        public override bool Equals(object other) => other is WadMesh && Hash == ((WadMesh)other).Hash;
-        public override int GetHashCode() => Hash.GetHashCode();
 
         public static WadMesh Empty { get; } = new WadMesh();
     }

@@ -14,7 +14,7 @@ namespace TombLib.LevelData.Compilers
     public partial class LevelCompilerClassicTR
     {
         private static readonly bool _writeDbgWadTxt = false;
-        private readonly Dictionary<WadMesh, int> __meshPointers = new Dictionary<WadMesh, int>(new ReferenceEqualityComparer<WadMesh>());
+        private readonly Dictionary<Hash, int> _meshPointerLookup = new Dictionary<Hash, int>();
         private int _totalMeshSize = 0;
         private List<int> _finalSelectedSoundsList;
         private List<int> _finalSoundIndicesList;
@@ -47,10 +47,18 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private tr_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId,int meshIndex,
+        private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, int meshIndex,
                                        bool isWaterfall = false, bool isOptics = false,
                                        WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
+            // Don't add already existing meshes
+            var hash = Hash.FromByteArray(oldMesh.ToByteArray());
+            if (_meshPointerLookup.ContainsKey(hash))
+            {
+                _meshPointers.Add((uint)_meshPointerLookup[hash]);
+                return;
+            }
+
             int currentMeshSize = 0;
 
             var newMesh = new tr_mesh
@@ -232,12 +240,11 @@ namespace TombLib.LevelData.Compilers
             newMesh.MeshSize = currentMeshSize;
             newMesh.MeshPointer = _totalMeshSize;
             _meshPointers.Add((uint)_totalMeshSize);
+            _meshPointerLookup.Add(hash, _totalMeshSize);
 
             _totalMeshSize += currentMeshSize;
 
             _meshes.Add(newMesh);
-
-            return newMesh;
         }
 
         private class AnimationTr4HelperData
@@ -254,7 +261,7 @@ namespace TombLib.LevelData.Compilers
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
             // First thing build frames
-            ReportProgress(1, "Building animations");
+            ReportProgress(1, "Building meshes and animations");
             var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
@@ -455,9 +462,10 @@ namespace TombLib.LevelData.Compilers
                 newMoveable.MeshTree = (uint)_meshTrees.Count;
                 newMoveable.StartingMesh = (ushort)_meshPointers.Count;
 
-                for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
+                for (int i = 0; i < oldMoveable.Meshes.Count; i++)
+                {
                     var wadMesh = oldMoveable.Meshes[i];
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId,i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
+                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
                 var meshTrees = new List<tr_meshtree>();
@@ -549,7 +557,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     convertedStaticsCount++;
                     logger.Info("Creating Dummy Mesh for automatically Merged Mesh: " + oldStaticMesh.ToString(_level.Settings.GameVersion));
-                    CreateDummyWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId, false, false, oldStaticMesh.LightingType);
+                    CreateDummyWadMesh(oldStaticMesh.Mesh);
                 }
                 _staticMeshes.Add(newStaticMesh);
             }
@@ -558,6 +566,9 @@ namespace TombLib.LevelData.Compilers
                 _progressReporter.ReportInfo("    Number of statics merged with room geometry: " + convertedStaticsCount);
             else
                 _progressReporter.ReportInfo("    No statics to merge into room geometry.");
+
+            _progressReporter.ReportInfo("    Number of mesh references: " + _meshPointers.Count);
+            _progressReporter.ReportInfo("    Number of unique meshes: " + _meshPointerLookup.Count);
 
             if (_writeDbgWadTxt)
                 using (var fileStream = new FileStream("Wad.txt", FileMode.Create, FileAccess.Write, FileShare.None))
@@ -976,9 +987,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private tr_mesh CreateDummyWadMesh(WadMesh oldMesh, bool isStatic, int objectId,
-                                       bool isWaterfall = false, bool isOptics = false,
-                                       WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
+        private tr_mesh CreateDummyWadMesh(WadMesh oldMesh)
         {
             int currentMeshSize = 0;
             var newMesh = new tr_mesh
