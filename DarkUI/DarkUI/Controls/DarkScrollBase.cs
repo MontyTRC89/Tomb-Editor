@@ -275,6 +275,14 @@ namespace DarkUI.Controls
             UpdateScrollBars();
         }
 
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+
+            if (Visible)
+                UpdateScrollBars();
+        }
+
         protected override void OnGotFocus(EventArgs e)
         {
             base.OnGotFocus(e);
