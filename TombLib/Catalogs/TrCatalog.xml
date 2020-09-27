@@ -2129,10 +2129,10 @@
       <moveable id="14" name="LARA_HOLSTERS_PISTOLS" description="Lara Holsters Pistols" t5m="LARA_HOLSTERS_PISTOLS"  />
       <moveable id="15" name="LARA_HOLSTERS_UZIS" description="Lara Holsters Uzis" t5m="LARA_HOLSTERS_UZIS" />
       <moveable id="16" name="LARA_HOLSTERS_SIXSHOOTER" description="Lara Holsters Sixshooter" t5m="LARA_HOLSTERS_REVOLVER" />
-      <moveable id="17" name="LARA_SPEECH_HEAD1" description="Lara Speech Head1" t5m="LARA_SPEECH_HEAD1" />
-      <moveable id="18" name="LARA_SPEECH_HEAD2" description="Lara Speech Head2" t5m="LARA_SPEECH_HEAD2" />
-      <moveable id="19" name="LARA_SPEECH_HEAD3" description="Lara Speech Head3" t5m="LARA_SPEECH_HEAD3" />
-      <moveable id="20" name="LARA_SPEECH_HEAD4" description="Lara Speech Head4" t5m="LARA_SPEECH_HEAD4" />
+      <moveable id="17" name="LARA_SPEECH_HEAD1" description="Lara Speech Head1" use_body_from="8" t5m="LARA_SPEECH_HEAD1" />
+      <moveable id="18" name="LARA_SPEECH_HEAD2" description="Lara Speech Head2" use_body_from="8" t5m="LARA_SPEECH_HEAD2" />
+      <moveable id="19" name="LARA_SPEECH_HEAD3" description="Lara Speech Head3" use_body_from="8" t5m="LARA_SPEECH_HEAD3" />
+      <moveable id="20" name="LARA_SPEECH_HEAD4" description="Lara Speech Head4" use_body_from="8" t5m="LARA_SPEECH_HEAD4" />
       <moveable id="21" name="ACTOR1_SPEECH_HEAD1" description="Actor1 Speech Head1" t5m="ACTOR1_SPEECH_HEAD1" />
       <moveable id="22" name="ACTOR1_SPEECH_HEAD2" description="Actor1 Speech Head2" t5m="ACTOR1_SPEECH_HEAD2" />
       <moveable id="23" name="ACTOR2_SPEECH_HEAD1" description="Actor2 Speech Head1" t5m="ACTOR2_SPEECH_HEAD1" />
@@ -3708,10 +3708,10 @@
       <moveable id="14" name="Lara holsters pistols" t5m="LARA_HOLSTERS_PISTOLS" />
       <moveable id="15" name="Lara holsters uzis" t5m="LARA_HOLSTERS_UZIS" />
       <moveable id="16" name="Lara holsters revolver" t5m="LARA_HOLSTERS_REVOLVER" />
-      <moveable id="17" name="Lara head1" t5m="LARA_SPEECH_HEAD1" />
-      <moveable id="18" name="Lara head2" t5m="LARA_SPEECH_HEAD2" />
-      <moveable id="19" name="Lara head3" t5m="LARA_SPEECH_HEAD3" />
-      <moveable id="20" name="Lara head4" t5m="LARA_SPEECH_HEAD4" />
+      <moveable id="17" name="Lara head1" use_body_from="8" t5m="LARA_SPEECH_HEAD1" />
+      <moveable id="18" name="Lara head2" use_body_from="8" t5m="LARA_SPEECH_HEAD2" />
+      <moveable id="19" name="Lara head3" use_body_from="8" t5m="LARA_SPEECH_HEAD3" />
+      <moveable id="20" name="Lara head4" use_body_from="8" t5m="LARA_SPEECH_HEAD4" />
       <moveable id="21" name="Actor1 head1" t5m="ACTOR1_SPEECH_HEAD1" />
       <moveable id="22" name="Actor1 head2" t5m="ACTOR1_SPEECH_HEAD2" />
       <moveable id="23" name="Actor2 head1" t5m="ACTOR2_SPEECH_HEAD1" />
@@ -4666,10 +4666,10 @@
 		<moveable id="18" name="LARA_HOLSTERS_PISTOLS" />
 		<moveable id="19" name="LARA_HOLSTERS_UZIS" />
 		<moveable id="20" name="LARA_HOLSTERS_REVOLVER" />
-		<moveable id="21" name="LARA_SPEECH_HEAD1" />
-		<moveable id="22" name="LARA_SPEECH_HEAD2" />
-		<moveable id="23" name="LARA_SPEECH_HEAD3" />
-		<moveable id="24" name="LARA_SPEECH_HEAD4" />
+		<moveable id="21" name="LARA_SPEECH_HEAD1" use_body_from="12" />
+		<moveable id="22" name="LARA_SPEECH_HEAD2" use_body_from="12" />
+		<moveable id="23" name="LARA_SPEECH_HEAD3" use_body_from="12" />
+		<moveable id="24" name="LARA_SPEECH_HEAD4" use_body_from="12" />
 		<moveable id="25" name="ACTOR1_SPEECH_HEAD1" />
 		<moveable id="26" name="ACTOR1_SPEECH_HEAD2" />
 		<moveable id="27" name="ACTOR2_SPEECH_HEAD1" />
