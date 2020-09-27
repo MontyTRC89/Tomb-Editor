@@ -52,7 +52,7 @@ namespace TombLib.LevelData.Compilers
                                        WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
             // Don't add already existing meshes
-            var hash = Hash.FromByteArray(oldMesh.ToByteArray());
+            var hash = oldMesh.Hash;
             if (_meshPointerLookup.ContainsKey(hash))
             {
                 _meshPointers.Add((uint)_meshPointerLookup[hash]);

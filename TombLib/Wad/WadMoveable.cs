@@ -102,8 +102,8 @@ namespace TombLib.Wad
 
             // Identify mesh ID which occurs several times in a model which possibly indicates
             // that used mesh is a dummy mesh. If there is no such mesh, return original model.
-            var dummyMeshName = Meshes.GroupBy(m => m.Name).Where(g => g.Count() > 1).FirstOrDefault()?.Key ?? string.Empty;
-            if (string.IsNullOrEmpty(dummyMeshName))
+            var dummyHash = Meshes.GroupBy(m => m.Hash).Where(g => g.Count() > 1).FirstOrDefault()?.Key ?? Hash.Zero;
+            if (dummyHash == Hash.Zero)
                 return this;
 
             var mov = new WadMoveable(Id);
@@ -112,7 +112,7 @@ namespace TombLib.Wad
                 WadMesh msh = Meshes[i].Clone();
                 WadMesh msh2 = skin.Meshes[i].Clone();
                 WadBone bone = Bones[i].Clone();
-                if (msh.Name != dummyMeshName)
+                if (msh.Hash != dummyHash)
                 {
                     mov.Bones.Add(bone);
                     continue;

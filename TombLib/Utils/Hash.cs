@@ -24,5 +24,7 @@ namespace TombLib.Utils
             // Seems a little bit risky.
             return new Hash { HashLow = result, HashHigh = 0 };
         }
+
+        public static Hash Zero => new Hash() { HashHigh = 0, HashLow = 0 };
     }
 }
