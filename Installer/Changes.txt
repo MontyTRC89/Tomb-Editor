@@ -17,6 +17,7 @@ Tomb Editor:
 Wad Tool:
  * Internally import actual vertex colors when importing static meshes and models.
  * Fix exceptions when any Lara-related object was deleted from wad.
+ * Fix last entry in animation list not showing properly.
  * Fix frame number labels in animation editor.
  
 Sound Tool:
