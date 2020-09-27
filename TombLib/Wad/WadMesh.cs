@@ -24,6 +24,8 @@ namespace TombLib.Wad
         public BoundingBox BoundingBox { get; set; }
         public WadMeshLightingType LightingType { get; set; }
 
+        public Hash Hash => Hash.FromByteArray(ToByteArray());
+
         public void CalculateNormals()
         {
             VerticesNormals.Clear();
