@@ -9,7 +9,7 @@ Tomb Editor:
  * Allow usage of wav samples with different codecs (not recommended to use).
  * Warn if any rooms are outside of map bounds, which may cause pathfinding issues.
  * Remove duplicated meshes on compilation.
- * Possibly fix camera target trigger not working correctly in some cases.
+ * Fix camera target trigger not working correctly in some cases.
  * Fix imported geometry textures not reconnecting if project directory was moved.
  * Fix text labels occasionally rendered in wrong places in 3D window.
  * Fix some TR1 entity names.
