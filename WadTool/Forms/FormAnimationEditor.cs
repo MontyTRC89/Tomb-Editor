@@ -1610,7 +1610,10 @@ namespace WadTool
                 if (result == DialogResult.Ignore)
                     popup.ShowInfo(panelRendering, "No properties were selected or there was nothing to fix.\nNo changes were made.");
                 else if (result == DialogResult.OK)
-                    popup.ShowWarning(panelRendering, "Animations (" + form.ChangedAnimations + ") were fixed.\nPlease save your wad under new name and thoroughly test it.");
+                {
+                    var startMessage = (form.ChangedAnimations.Length < 50) ? "Animations (" + form.ChangedAnimations + ")" : "Multiple animations";
+                    popup.ShowWarning(panelRendering, startMessage + " were fixed.\nPlease save your wad under new name and thoroughly test it.");
+                }
             }
         }
 
