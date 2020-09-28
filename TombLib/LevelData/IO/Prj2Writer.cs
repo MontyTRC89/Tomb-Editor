@@ -435,7 +435,7 @@ namespace TombLib.LevelData.IO
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovable3, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovable4, LEB128.MaximumSize2Byte))
                         {
                             var instance = (MoveableInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -450,7 +450,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Color);
                         }
                     else if (o is StaticInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic2, LEB128.MaximumSize2Byte))
+                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic3, LEB128.MaximumSize2Byte))
                         {
                             var instance = (StaticInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -459,7 +459,6 @@ namespace TombLib.LevelData.IO
                             LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
                             chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                             chunkIO.Raw.Write(instance.Color);
-                            chunkIO.Raw.Write((int)0); // Unused 32 bit value
                             chunkIO.Raw.Write(instance.Ocb);
                         }
                     else if (o is CameraInstance)
