@@ -940,7 +940,7 @@ namespace TombLib.LevelData.IO
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = new Wad.WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
                     instance.Ocb = chunkIO.Raw.ReadInt16();
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
@@ -948,13 +948,14 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectMovable3)
+                else if (id3 == Prj2Chunks.ObjectMovable3 ||
+                         id3 == Prj2Chunks.ObjectMovable4)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = new Wad.WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
                     instance.Ocb = chunkIO.Raw.ReadInt16();
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
@@ -971,9 +972,21 @@ namespace TombLib.LevelData.IO
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
+                    instance.WadObjectId = new WadStaticId(chunkIO.Raw.ReadUInt32());
                     instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.Raw.ReadSingle(); // Unused 32 bit value
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    addObject(instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectStatic3)
+                {
+                    var instance = new StaticInstance();
+                    newObjects.TryAdd(objectID, instance);
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new WadStaticId(chunkIO.Raw.ReadUInt32());
+                    instance.Color = chunkIO.Raw.ReadVector3();
                     instance.Ocb = chunkIO.Raw.ReadInt16();
                     addObject(instance);
                 }
