@@ -141,12 +141,24 @@ namespace TombLib.Wad
                         waveStream = disposables.AddAndReturn(new WaveFileReader(path));
                 }
 
+                // Resample if necessary
+                WaveStream sourceStream;
+                if (waveStream.WaveFormat.Encoding == WaveFormatEncoding.IeeeFloat ||
+                    waveStream.WaveFormat.Encoding == WaveFormatEncoding.Pcm)
+                    sourceStream = waveStream;
+                else
+                {
+                    var resampleFormat = new WaveFormat(waveStream.WaveFormat.SampleRate, 16,
+                                                        waveStream.WaveFormat.Channels);
+                    sourceStream = new WaveFormatConversionStream(resampleFormat, waveStream);
+                }
+
                 // Apply looping
                 ISampleProvider sampleStream;
                 if (loopCount <= 1)
-                    sampleStream = waveStream.ToSampleProvider();
+                    sampleStream = sourceStream.ToSampleProvider();
                 else
-                    sampleStream = new RepeatedStream(waveStream) { LoopCount = loopCount };
+                    sampleStream = new RepeatedStream(sourceStream) { LoopCount = loopCount };
 
                 // Apply pitch
                 if (pitch != 1.0f)
