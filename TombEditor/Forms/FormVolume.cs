@@ -199,13 +199,13 @@ namespace TombEditor.Forms
             {
                 prefix = "GetItemByID(";
                 postfix = ")";
-                data = ((MoveableInstance)e.Data.GetData(typeof(MoveableInstance))).LuaId.ToString();
+                data = ((MoveableInstance)e.Data.GetData(typeof(MoveableInstance))).ScriptId.ToString();
             }
             else if (e.Data.GetDataPresent(typeof(StaticInstance)))
             {
                 prefix = "GetStaticByID(";
                 postfix = ")";
-                data = ((StaticInstance)e.Data.GetData(typeof(StaticInstance))).LuaId.ToString();
+                data = ((StaticInstance)e.Data.GetData(typeof(StaticInstance))).ScriptId.ToString();
             }
 
             var finalResult = (prefix + data + postfix).Trim();

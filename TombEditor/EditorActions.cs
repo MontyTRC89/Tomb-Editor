@@ -1862,14 +1862,9 @@ namespace TombEditor
         {
             if (instance is IHasScriptID &&
                 (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                 _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG))
+                 _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG))
             {
                 (instance as IHasScriptID).AllocateNewScriptId();
-            }
-
-            if (instance is ItemInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
-            {
-                (instance as ItemInstance).LuaId = _editor.Level.AllocNewLuaId();
             }
         }
 

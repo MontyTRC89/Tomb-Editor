@@ -933,7 +933,8 @@ namespace TombLib.LevelData.IO
             chunkIO.ReadChunks((id3, chunkSize3) =>
             {
                 long objectID = LEB128.ReadLong(chunkIO.Raw);
-                if (id3 == Prj2Chunks.ObjectMovable)
+                if (id3 == Prj2Chunks.ObjectMovable ||
+                    id3 == Prj2Chunks.ObjectMovable2)
                 {
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
@@ -944,29 +945,6 @@ namespace TombLib.LevelData.IO
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
-                    addObject(instance);
-                    newObjects.TryAdd(objectID, instance);
-                }
-                else if (id3 == Prj2Chunks.ObjectMovable2)
-                {
-                    var instance = new MoveableInstance();
-                    instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.RotationY = chunkIO.Raw.ReadSingle();
-                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = new Wad.WadMoveableId(chunkIO.Raw.ReadUInt32());
-                    instance.Ocb = chunkIO.Raw.ReadInt16();
-                    instance.Invisible = chunkIO.Raw.ReadBoolean();
-                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
-                    instance.CodeBits = chunkIO.Raw.ReadByte();
-                    chunkIO.ReadChunks((id4, chunkSize4) =>
-                    {
-                        if (id4 == Prj2Chunks.ObjectItemLuaId)
-                        {
-                            instance.LuaId = chunkIO.ReadChunkInt(chunkSize4);
-                            return true;
-                        }
-                        return false;
-                    });
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -982,19 +960,11 @@ namespace TombLib.LevelData.IO
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
                     instance.Color = chunkIO.Raw.ReadVector3();
-                    chunkIO.ReadChunks((id4, chunkSize4) =>
-                    {
-                        if (id4 == Prj2Chunks.ObjectItemLuaId)
-                        {
-                            instance.LuaId = chunkIO.ReadChunkInt(chunkSize4);
-                            return true;
-                        }
-                        return false;
-                    });
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectStatic)
+                else if (id3 == Prj2Chunks.ObjectStatic ||
+                         id3 == Prj2Chunks.ObjectStatic2)
                 {
                     var instance = new StaticInstance();
                     newObjects.TryAdd(objectID, instance);
@@ -1005,27 +975,6 @@ namespace TombLib.LevelData.IO
                     instance.Color = chunkIO.Raw.ReadVector3();
                     chunkIO.Raw.ReadSingle(); // Unused 32 bit value
                     instance.Ocb = chunkIO.Raw.ReadInt16();
-                    addObject(instance);
-                }
-                else if (id3 == Prj2Chunks.ObjectStatic2)
-                {
-                    var instance = new StaticInstance();
-                    newObjects.TryAdd(objectID, instance);
-                    instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.RotationY = chunkIO.Raw.ReadSingle();
-                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
-                    instance.WadObjectId = new Wad.WadStaticId(chunkIO.Raw.ReadUInt32());
-                    instance.Color = chunkIO.Raw.ReadVector3();
-                    chunkIO.Raw.ReadSingle(); // Unused 32 bit value
-                    instance.Ocb = chunkIO.Raw.ReadInt16(); chunkIO.ReadChunks((id4, chunkSize4) =>
-                    {
-                        if (id4 == Prj2Chunks.ObjectItemLuaId)
-                        {
-                            instance.LuaId = chunkIO.ReadChunkInt(chunkSize4);
-                            return true;
-                        }
-                        return false;
-                    });
                     addObject(instance);
                 }
                 else if (id3 == Prj2Chunks.ObjectCamera)
