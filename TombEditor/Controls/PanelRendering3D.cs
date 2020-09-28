@@ -433,7 +433,7 @@ namespace TombEditor.Controls
             // Clean up wad renderer
             if (obj is Editor.LoadedWadsChangedEvent ||
                 obj is Editor.LevelChangedEvent)
-                _wadRenderer?.Dispose();
+                _wadRenderer?.GarbageCollect();
 
             // Update cursor
             if (obj is Editor.ActionChangedEvent)
