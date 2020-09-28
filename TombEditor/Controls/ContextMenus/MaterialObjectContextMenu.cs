@@ -8,12 +8,16 @@ namespace TombEditor.Controls.ContextMenus
         public MaterialObjectContextMenu(Editor editor, IWin32Window owner, ObjectInstance targetObject)
             : base(editor, owner)
         {
-            if (targetObject is IHasScriptID)
+            if (targetObject == editor.SelectedObject && targetObject is IHasScriptID)
             {
-                Items.Add(new ToolStripMenuItem("(ScriptID = " + ((targetObject as IHasScriptID).ScriptId?.ToString() ?? "<None>") + ") Copy the NG ID to clipboard", null, (o, e) =>
-                    {
-                        CommandHandler.GetCommand("AssignAndClipboardNgId").Execute(new CommandArgs { Editor = editor, Window = owner });
-                    }));
+                var obj = (targetObject as IHasScriptID);
+                var startString = obj.ScriptId.HasValue ?
+                    "(ScriptID = " + obj.ScriptId.ToString() + ") Copy " : "Assign and copy ";
+
+                Items.Add(new ToolStripMenuItem(startString + "script ID to clipboard", null, (o, e) =>
+                {
+                    CommandHandler.GetCommand("AssignAndClipboardScriptId").Execute(new CommandArgs { Editor = editor, Window = owner });
+                }));
                 Items.Add(new ToolStripSeparator());
             }
 

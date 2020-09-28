@@ -1147,9 +1147,9 @@ namespace TombEditor
                 EditorActions.MoveLara(args.Window, args.Editor.SelectedRoom, args.Editor.SelectedSectors.Start);
             });
 
-            AddCommand("AssignAndClipboardNgId", "Assign and copy the NG ID to clipboard", CommandType.Objects, delegate (CommandArgs args)
+            AddCommand("AssignAndClipboardScriptId", "Assign and copy script ID to clipboard", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TRNG, "This feature"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG, "This feature"))
                     return;
 
                 if (args.Editor.SelectedObject == null)

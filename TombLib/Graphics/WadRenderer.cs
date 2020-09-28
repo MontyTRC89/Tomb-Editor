@@ -66,6 +66,12 @@ namespace TombLib.Graphics
             _disposing = false;
         }
 
+        public void GarbageCollect()
+        {
+            Dispose();
+            InitializeTexture();
+        }
+
         private void ReclaimTextureSpace<T, U>(Model<T, U> model) where U : struct
         {
             // TODO Some mechanism to reclaim texture space without rebuilding the atlas would be good.
@@ -159,12 +165,17 @@ namespace TombLib.Graphics
                     throw new TextureAtlasFullException();
 
                 // Upload texture
-                if (Texture == null)
-                    Texture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, 1, SharpDX.Direct3D11.ResourceUsage.Default);
+                InitializeTexture();
                 TextureLoad.Update(GraphicsDevice, Texture, texture.Image, position.Value);
                 PackedTextures.Add(texture, position.Value);
                 return position.Value;
             }
+        }
+
+        private void InitializeTexture()
+        {
+            if (Texture == null)
+                Texture = Texture2D.New(GraphicsDevice, TextureAtlasSize, TextureAtlasSize, SharpDX.DXGI.Format.B8G8R8A8_UNorm, TextureFlags.ShaderResource, 1, SharpDX.Direct3D11.ResourceUsage.Default);
         }
 
         private void PreloadReplaceTextures(IEnumerable<WadMoveable> newMoveables, IEnumerable<WadStatic> newStatics)

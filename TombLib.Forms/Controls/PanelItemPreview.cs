@@ -122,7 +122,7 @@ namespace TombLib.Controls
 
         public void GarbageCollect()
         {
-            _wadRenderer?.Dispose();
+            _wadRenderer?.GarbageCollect();
         }
 
         protected override void Dispose(bool disposing)
