@@ -448,7 +448,6 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.ClearBody);
                             chunkIO.Raw.Write(instance.CodeBits);
                             chunkIO.Raw.Write(instance.Color);
-                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
 
                         });
                     else if (o is StaticInstance)
@@ -463,7 +462,6 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Color);
                             chunkIO.Raw.Write((int)0); // Unused 32 bit value
                             chunkIO.Raw.Write(instance.Ocb);
-                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectItemLuaId, instance.LuaId);
                         });
                     else if (o is CameraInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera2, LEB128.MaximumSize1Byte))

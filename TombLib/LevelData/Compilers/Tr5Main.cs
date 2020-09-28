@@ -14,7 +14,6 @@ namespace TombLib.LevelData.Compilers
 
         // Collections for volumes
         private List<VolumeScriptInstance> _volumeScripts;
-        private Dictionary<int, int> _luaIdToItems;
 
         /**/ private static readonly ChunkId Tr5MainExtraRoomData = ChunkId.FromString("Tr5ExtraRoomData");
         /***/ private static readonly ChunkId Tr5MainChunkVolumeList = ChunkId.FromString("Tr5Volumes");

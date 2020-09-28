@@ -446,8 +446,6 @@ namespace TombLib.LevelData.Compilers
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
             _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
 
-            _luaIdToItems = new Dictionary<int, int>();
-
             foreach (var room in _sortedRooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
@@ -499,10 +497,6 @@ namespace TombLib.LevelData.Compilers
                             Flags = unchecked((ushort)flags)
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
-
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
-                            if (!_luaIdToItems.ContainsKey(instance.LuaId))
-                                _luaIdToItems.Add(instance.LuaId, _items.Count - 1);
                     }
                 }
 

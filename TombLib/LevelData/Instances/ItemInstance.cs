@@ -5,7 +5,6 @@ namespace TombLib.LevelData
 {
     public abstract class ItemInstance : PositionAndScriptBasedObjectInstance, IReplaceable, IRotateableY
     {
-        public int LuaId { get; set; }
         public short Ocb { get; set; } = 0;
 
         private float _rotation;

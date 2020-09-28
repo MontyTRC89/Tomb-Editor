@@ -2955,16 +2955,12 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
-                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
-                                "" :
-                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
-                                "" :
-                                " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
-                                    "\n" + GetObjectPositionString(instance.Room, instance) +
-                                    "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
-                                    (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
-                                    BuildTriggeredByMessage(instance)));
+                                (_editor.Level.Settings.GameVersion < TRVersion.Game.TRNG ?
+                                "" : " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                                "\n" + GetObjectPositionString(instance.Room, instance) +
+                                "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
+                                (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
+                                BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
                             AddObjectHeightLine(instance.Room, instance.Position);
@@ -3137,15 +3133,11 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.StaticId.ToString(_editor.Level.Settings.GameVersion) +
-                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ?
-                                "" :
-                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
-                                (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main ?
-                                "" :
-                                " [LUA ID = " + (instance.LuaId.ToString()) + "]") +
-                                    "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
-                                    "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
-                                    BuildTriggeredByMessage(instance)));
+                                (_editor.Level.Settings.GameVersion < TRVersion.Game.TRNG ?
+                                "" : " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                                "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
+                                "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
+                                BuildTriggeredByMessage(instance)));
 
                             // Add the line height of the object
                             AddObjectHeightLine(_editor.SelectedRoom, instance.Position);
