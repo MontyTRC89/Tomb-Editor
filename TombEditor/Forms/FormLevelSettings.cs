@@ -159,9 +159,9 @@ namespace TombEditor.Forms
             {
                 get
                 {
-                    if (Wad.Wad.GameVersion.Native() != _parent._levelSettings.GameVersion.Native())
+                    if (Wad.Wad != null && Wad.Wad.GameVersion.Native() != _parent._levelSettings.GameVersion.Native())
                         return "Game version mismatch";
-                    if (Wad.Wad.HasUnknownData)
+                    if (Wad.Wad != null && Wad.Wad.HasUnknownData)
                         return "Wad has unknown data";
                     if (Wad.LoadException == null)
                         return "Successfully loaded";
