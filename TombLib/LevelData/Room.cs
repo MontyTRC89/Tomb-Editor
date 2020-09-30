@@ -1221,12 +1221,20 @@ namespace TombLib.LevelData
                 foreach (PortalInstance portal in room.Portals)
                     if (!newRooms.Contains(portal.AdjoiningRoom))
                     {
-                        relevantRooms.Add(portal.AdjoiningRoom);
-                        portal.AdjoiningRoom.AddObjectAndSingularPortal(level, findBestMatch(room, portal.AdjoiningRoom, portal));
+                        var newPortal = findBestMatch(room, portal.AdjoiningRoom, portal);
+                        if (newPortal.IsValid(portal.AdjoiningRoom))
+                        {
+                            portal.AdjoiningRoom.AddObjectAndSingularPortal(level, newPortal);
+                            relevantRooms.Add(portal.AdjoiningRoom);
+                        }
                         if (portal.AdjoiningRoom.AlternateOpposite != null)
                         {
-                            relevantRooms.Add(portal.AdjoiningRoom.AlternateOpposite);
-                            portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, findBestMatch(room, portal.AdjoiningRoom.AlternateOpposite, portal));
+                            newPortal = findBestMatch(room, portal.AdjoiningRoom.AlternateOpposite, portal);
+                            if (newPortal.IsValid(portal.AdjoiningRoom.AlternateOpposite))
+                            {
+                                portal.AdjoiningRoom.AlternateOpposite.AddObjectAndSingularPortal(level, newPortal);
+                                relevantRooms.Add(portal.AdjoiningRoom.AlternateOpposite);
+                            }
                         }
                     }
 
