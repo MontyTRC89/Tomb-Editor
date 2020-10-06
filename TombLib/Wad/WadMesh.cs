@@ -217,8 +217,7 @@ namespace TombLib.Wad
                 {
                     mesh = new WadMesh();
                     mesh.Name = string.IsNullOrEmpty(tmpMesh.Name) ? "ImportedMesh" + i : tmpMesh.Name;
-
-                    if (mergeIntoOne) lastBaseVertex = 0; // Reset if we're doing multi-mesh import
+                    lastBaseVertex = 0;
                 }
 
                 mesh.VerticesPositions.AddRange(tmpMesh.Positions);
@@ -249,6 +248,7 @@ namespace TombLib.Wad
                             area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
                             area.Texture = tmpSubmesh.Value.Material.Texture;
                             area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
+                            area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
 
                             poly.Texture = area;
                             poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
