@@ -269,6 +269,7 @@ namespace TombLib.Wad
                             area.TexCoord3 = area.TexCoord2;
                             area.Texture = tmpSubmesh.Value.Material.Texture;
                             area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
+                            area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
 
                             poly.Texture = area;
                             poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
