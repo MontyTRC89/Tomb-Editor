@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Numerics;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace TombLib.Utils
 {
@@ -355,30 +357,28 @@ namespace TombLib.Utils
             if (!TextureIsTriangle)
                 return this;
 
-            var area = GetRect(true);
-            var triangleCoords = TexCoords;
-            var corners = new bool[4];
-            var restoredTexture = this;
-            var shape = (int)TextureExtensions.GetTextureShapeType(triangleCoords, true);
-
-            restoredTexture.TexCoord3 = restoredTexture.TexCoord2; // Just in case...
-            var coords = new Vector2[4]
+            try
             {
-                area.Start,
-                new Vector2(area.X1, area.Y0),
-                new Vector2(area.X0, area.Y1),
-                area.End
-            };
+                var area = GetRect(true);
+                var triangleCoords = TexCoords.ToList();
+                var coords = new List<Vector2>
+                {
+                    area.Start,
+                    new Vector2(area.X1, area.Y0),
+                    new Vector2(area.X0, area.Y1),
+                    area.End
+                };
 
-            for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 3; j++)
-                    if (triangleCoords[j] == coords[i])
-                        corners[i] = true;
+                var newCoord = coords.First(c => !triangleCoords.Contains(c));
+                var newTexture = this;
+                newTexture.TexCoord3 = newCoord;
 
-            int coord = Array.FindIndex(corners, corner => !corner);
-            if (coord == -1) return this;
-            restoredTexture.TexCoord3 = coords[coord];
-            return restoredTexture;
+                return newTexture;
+            }
+            catch
+            {
+                return RestoreQuad();
+            }
         }
 
         // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?

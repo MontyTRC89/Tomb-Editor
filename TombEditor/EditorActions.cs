@@ -1181,7 +1181,7 @@ namespace TombEditor
                 }
 
                 if (face >= BlockFace.Ceiling) area.Mirror(area.TextureIsTriangle);
-                _editor.SelectTextureAndCenterView(area.RestoreQuad());
+                _editor.SelectTextureAndCenterView(area.RestoreQuadWithRotation());
             }
         }
 
