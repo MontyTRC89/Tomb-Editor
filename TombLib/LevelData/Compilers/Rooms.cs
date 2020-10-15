@@ -410,7 +410,7 @@ namespace TombLib.LevelData.Compilers
                                         if (copyFace)
                                         {
                                             texture.Mirror();
-                                            result = _textureInfoManager.AddTexture(texture, true, false);
+                                            result = _textureInfoManager.AddTexture(texture, true, true);
                                             roomTriangles.Add(result.CreateFace3(new ushort[] { vertex2Index, vertex1Index, vertex0Index },
                                                             doubleSided, 0));
                                         }
@@ -635,7 +635,7 @@ namespace TombLib.LevelData.Compilers
 
                                 // TODO Move texture area into the mesh
                                 TextureArea texture = new TextureArea();
-                                texture.DoubleSided = false;
+                                texture.DoubleSided = submesh.Key.DoubleSided;
                                 texture.BlendMode = submesh.Key.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
                                 texture.Texture = submesh.Value.Material.Texture;
                                 texture.TexCoord0 = mesh.Vertices[submesh.Value.Indices[j + 0]].UV;
@@ -653,8 +653,18 @@ namespace TombLib.LevelData.Compilers
                                 if (texture.TexCoord3.X < 0.0f) texture.TexCoord3.X = 0.0f;
                                 if (texture.TexCoord3.Y < 0.0f) texture.TexCoord3.Y = 0.0f;
 
+                                var doubleSided = _level.Settings.GameVersion >  TRVersion.Game.TR2 && texture.DoubleSided;
+                                var copyFace    = _level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+
                                 var result = _textureInfoManager.AddTexture(texture, true, true);
-                                roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0));
+                                roomTriangles.Add(result.CreateFace3(new ushort[] { index0, index1, index2 }, doubleSided, 0));
+
+                                if (copyFace)
+                                {
+                                    texture.Mirror();
+                                    result = _textureInfoManager.AddTexture(texture, true, true);
+                                    roomTriangles.Add(result.CreateFace3(new ushort[] { index2, index1, index0 }, doubleSided, 0));
+                                }
                             }
                         }
 
