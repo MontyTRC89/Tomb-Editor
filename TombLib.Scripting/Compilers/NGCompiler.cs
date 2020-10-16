@@ -17,7 +17,7 @@ namespace TombLib.Scripting.Compilers
 	public static class NGCompiler
 	{
         // Increase timeout for really long scripts compilation
-        static NGCompiler() { CoreAppXmlConfiguration.Instance.BusyTimeout = 20000; }
+        static NGCompiler() { CoreAppXmlConfiguration.Instance.BusyTimeout = 40000; }
 
 		public static async Task<bool> Compile(
 			string projectScriptPath, string projectEnginePath, string ngcPath, string vgePath, bool newIncludeMethod = true)
