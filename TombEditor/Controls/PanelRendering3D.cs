@@ -2947,19 +2947,7 @@ namespace TombEditor.Controls
                         skinnedModelEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)
-                        {
-                            if (submesh.Key.DoubleSided)
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                            else
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                            if (submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                            else
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
 
                         // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
@@ -3058,19 +3046,6 @@ namespace TombEditor.Controls
                             else
                                 geometryEffect.Parameters["TextureEnabled"].SetValue(false);
 
-                            if (submesh.Key.DoubleSided)
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                            else
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                            if (!DisablePickingForImportedGeometry)
-                            {
-                                if (submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
-                                    _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                                else
-                                    _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-                            }
-
                             geometryEffect.Techniques[0].Passes[0].Apply();
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
@@ -3150,19 +3125,7 @@ namespace TombEditor.Controls
                         staticMeshEffect.Techniques[0].Passes[0].Apply();
 
                         foreach (var submesh in mesh.Submeshes)
-                        {
-                            if (submesh.Key.DoubleSided)
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
-                            else
-                                _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
-
-                            if (submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
-                            else
-                                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
                             _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
 
                         // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
@@ -3483,7 +3446,6 @@ namespace TombEditor.Controls
                 if (ShowStatics)
                     DrawStatics(staticsToDraw, textToDraw, hiddenSelection);
 
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
 
