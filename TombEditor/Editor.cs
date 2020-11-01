@@ -10,6 +10,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -947,9 +948,24 @@ namespace TombEditor
                     Tool = Configuration.UI_LastGeometryTool;
                 else
                     Tool = Configuration.UI_LastTexturingTool;
+
             }
-            if(obj is IEditorObjectChangedEvent) {
+            if (obj is IEditorObjectChangedEvent) {
                 UpdateLevelStatistics();
+            }
+
+            if(obj is LevelChangedEvent) {
+                var evnt = obj as LevelChangedEvent;
+                LevelSettings settings = evnt.Current.Settings;
+                Stats.TextureLimit = TrCatalog.GetLimit(settings.GameVersion, Limit.TexInfos);
+                Stats.BoxLimit = TrCatalog.GetLimit(settings.GameVersion, Limit.BoxLimit);
+                Stats.OverlapLimit = TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit);
+                Stats.LevelStats.ItemLimit = TrCatalog.GetLimit(settings.GameVersion, Limit.ItemMaxCount);
+                Stats.RoomStats.ItemLimit = int.MaxValue;
+                Stats.RoomStats.LightLimit = TrCatalog.GetLimit(settings.GameVersion, Limit.RoomLightCount);
+                Stats.LevelStats.LightLimit = int.MaxValue;
+                UpdateLevelStatistics();
+
             }
             // Reset notifications, when changeing between 2D and 3D mode
             // Also reset selected sectors if wanted and restore last tool for desired mode
@@ -991,6 +1007,7 @@ namespace TombEditor
             // Update room selection so that no deleted rooms are selected
             if (obj is RoomListChangedEvent)
             {
+                if (SelectedRooms == null) return;
                 List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
                 if (newSelection.FirstOrDefault() == null)
                     SelectLastOrDefaultRoom();
@@ -1036,8 +1053,21 @@ namespace TombEditor
         }
 
         private void UpdateLevelStatistics() {
-            Stats.LevelStats = new Statistics{ };
-            Stats.RoomStats = new Statistics { };
+            Stats.LevelStats.MoveableCount = 0;
+            Stats.LevelStats.StaticCount = 0;
+            Stats.LevelStats.LightCount = 0;
+            Stats.LevelStats.LightCount = 0;
+            Stats.LevelStats.TriggerCount = 0;
+            Stats.LevelStats.FlybyCount = 0;
+            Stats.LevelStats.CameraCount = 0;
+
+            Stats.RoomStats.MoveableCount = 0;
+            Stats.RoomStats.StaticCount = 0;
+            Stats.RoomStats.LightCount = 0;
+            Stats.RoomStats.DynLightCount = 0;
+            Stats.RoomStats.TriggerCount = 0;
+            Stats.RoomStats.FlybyCount = 0;
+            Stats.RoomStats.CameraCount = 0;
             foreach(var r in Level.Rooms) {
                 if (r == null) continue;
 
@@ -1185,21 +1215,26 @@ namespace TombEditor
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
+            
             if (synchronizationContext == null)
                 throw new ArgumentNullException(nameof(synchronizationContext));
+            Editor.Instance = this;
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             SectorColoringManager = new SectorColoringManager(this);
             UndoManager = new EditorUndoManager(this, configuration.Editor_UndoDepth);
-            Level = level;
+            EditorEventRaised += Editor_EditorEventRaised;
+
+
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();
 
-            EditorEventRaised += Editor_EditorEventRaised;
             _configurationIsLoadedFromFile = true;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { UpdateKeyboardShortcuts = true });
             _configurationIsLoadedFromFile = false;
+            Level = level;
+
         }
 
         public void Dispose()
