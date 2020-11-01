@@ -2869,7 +2869,7 @@ namespace TombEditor.Controls
             for (int i = 0; i < model.Meshes.Count; i++)
             {
                 var mesh = model.Meshes[i];
-                if (mesh.Vertices.Count == 0)
+                if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
                     continue;
 
                 _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -2923,7 +2923,7 @@ namespace TombEditor.Controls
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     var mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
                         continue;
                     
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -3008,7 +3008,7 @@ namespace TombEditor.Controls
                 for (var i = 0; i < meshes.Count; i++)
                 {
                     var mesh = meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (mesh.Vertices.Count == 0 || mesh.InputLayout == null || mesh.IndexBuffer == null || mesh.VertexBuffer == null)
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -3114,13 +3114,12 @@ namespace TombEditor.Controls
                 var statID = _editor?.Level?.Settings?.WadTryGetStatic(group.Key);
                 if (statID == null)
                     continue;
-
                 var model = _wadRenderer.GetStatic(statID);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer != null || mesh.IndexBuffer != null || mesh.InputLayout != null)
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);

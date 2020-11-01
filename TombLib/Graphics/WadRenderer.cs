@@ -135,7 +135,7 @@ namespace TombLib.Graphics
             }
             catch (TextureAtlasFullException exc)
             {
-                logger.Info(exc.Message);
+                logger.Error(exc.Message);
 
                 if (maybeRebuildAll)
                 {
