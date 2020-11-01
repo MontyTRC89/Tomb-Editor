@@ -178,6 +178,9 @@ namespace TombEditor.Forms
             {
                 var evt = obj as Editor.LevelCompilationCompletedEvent;
                 statusLastCompilation.Text = "Last level output { " + evt.InfoString + " }";
+                Editor.Instance.Stats.BoxCount = evt.BoxCount;
+                Editor.Instance.Stats.OverlapCount = evt.OverlapCount;
+                Editor.Instance.Stats.TextureCount = evt.TextureCount;
             }
 
             // Update autosave status

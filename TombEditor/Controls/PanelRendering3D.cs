@@ -3576,9 +3576,72 @@ namespace TombEditor.Controls
                 Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = DebugString
             });
+            if(_editor.Configuration.Rendering3D_ShowStats) {
+
+                StatisticSummary summary = Editor.Instance.Stats;
+                Statistics stats = summary.LevelStats;
+                int BoxLimit = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.BoxLimit);
+                int OverlapLimit = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.OverlapLimit);
+                int TextureLimit = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.TexInfos);
+                int ItemLimit = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.ItemMaxCount);
+                int LightLimit = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.RoomLightCount);
+                const string statsFormat = "{0} Statistic : Items: {1} Moveables: {2}, Statics: {3}, Triggers: {4}, DynLights: {5}, All Lights: {6}, Cameras: {7}, Flybys:{8}";
+                const string compileStatsFormat = "Boxes: {0}, Overlaps: {1}, Textures: {2}";
+                string levelStats = string.Format(statsFormat, "Level", GetItemCountString(stats, ItemLimit), stats.MoveableCount, stats.StaticCount, stats.TriggerCount, stats.DynLightCount, stats.LightCount, stats.CameraCount, stats.FlybyCount);
+                stats = summary.RoomStats;
+                string roomStats = string.Format(statsFormat, "Room", stats.MoveableCount+stats.StaticCount, stats.MoveableCount, stats.StaticCount, stats.TriggerCount, GetDynLightCount(stats,LightLimit), stats.LightCount, stats.CameraCount, stats.FlybyCount);
+                string compileStats = string.Format(compileStatsFormat, GetBoxCountString(summary, BoxLimit), GetOverlapCountString(summary, OverlapLimit), GetTextureInfoString(summary, TextureLimit));
+                textToDraw.Add(new TombLib.Rendering.Text() {
+                    Font = _fontDefault,
+                    PixelPos = new Vector2(10, -Height + 10 + _editor.Configuration.Rendering3D_FontSize),
+                    Alignment = new Vector2(0, 0),
+                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                    String = levelStats
+                });
+                textToDraw.Add(new TombLib.Rendering.Text() {
+                    Font = _fontDefault,
+                    PixelPos = new Vector2(10, -Height + 10 + _editor.Configuration.Rendering3D_FontSize * 2),
+                    Alignment = new Vector2(0, 0),
+                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                    String = roomStats
+                });
+                textToDraw.Add(new TombLib.Rendering.Text() {
+                    Font = _fontDefault,
+                    PixelPos = new Vector2(10, -Height + 10 + _editor.Configuration.Rendering3D_FontSize * 3),
+                    Alignment = new Vector2(0, 0),
+                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
+                    String = compileStats
+                });
+            }
 
             // Finish strings
             SwapChain.RenderText(textToDraw);
+        }
+
+        private string GetDynLightCount(Statistics stats, int lightLimit) {
+            return stats.DynLightCount >= lightLimit ? stats.DynLightCount.ToString()+"!!" : stats.DynLightCount.ToString();
+        }
+
+        private string GetItemCountString(Statistics stats, int limit) {
+            return stats.MoveableCount + stats.StaticCount >= limit ? (stats.MoveableCount + stats.StaticCount).ToString() + "!!" : (stats.MoveableCount + stats.StaticCount).ToString();
+        }
+
+        private string GetTextureInfoString(StatisticSummary summary, int limit) {
+            if (summary.TextureCount.HasValue)
+                return summary.TextureCount >= limit ? summary.TextureCount.ToString() + "!!" : summary.TextureCount.ToString();
+            return "?";
+        }
+
+        private string GetOverlapCountString(StatisticSummary summary,int limit) {
+            if (summary.OverlapCount.HasValue)
+                return summary.OverlapCount >= limit ? summary.OverlapCount.ToString() + "!!" : summary.OverlapCount.ToString();
+            return "?";
+        }
+
+        private string GetBoxCountString(StatisticSummary summary, int limit) {
+            if(summary.BoxCount.HasValue)
+                return summary.BoxCount >= limit ? summary.BoxCount.ToString() + "!!" : summary.BoxCount.ToString();
+            return "?";
         }
 
         private static float GetFloorHeight(Room room, Vector3 position)

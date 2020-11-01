@@ -385,6 +385,7 @@
     <Compile Include="ObjectClipboardData.cs" />
     <Compile Include="RoomClipboardData.cs" />
     <Compile Include="SectorsClipboardData.cs" />
+    <Compile Include="Statistics.cs" />
     <Compile Include="ToolWindows\ImportedGeometryBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
