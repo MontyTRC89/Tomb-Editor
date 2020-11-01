@@ -3570,7 +3570,11 @@ namespace TombEditor
                         watch.Stop();
                         progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
                         // Raise an event for statistics update
-                        Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent {
+                            BoxCount = statistics.BoxCount,
+                            OverlapCount = statistics.OverlapCount,
+                            TextureCount = statistics.ObjectTextureCount,
+                            InfoString = statistics.ToString() });
                     }
 
                     // Force garbage collector to compact memory
@@ -4609,7 +4613,6 @@ namespace TombEditor
 
                     if (!silent && _editor.Level.Settings.HasUnknownData)
                         _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
-
                     return true;
                 }
             }

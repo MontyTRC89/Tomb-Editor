@@ -53,6 +53,7 @@ namespace TombEditor
 
         public event Action<IEditorEvent> EditorEventRaised;
 
+        public StatisticSummary Stats = new StatisticSummary();
         public void RaiseEvent(IEditorEvent eventObj)
         {
             SynchronizationContext.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
@@ -947,7 +948,9 @@ namespace TombEditor
                 else
                     Tool = Configuration.UI_LastTexturingTool;
             }
-
+            if(obj is IEditorObjectChangedEvent) {
+                UpdateLevelStatistics();
+            }
             // Reset notifications, when changeing between 2D and 3D mode
             // Also reset selected sectors if wanted and restore last tool for desired mode
             if (obj is ModeChangedEvent)
@@ -998,6 +1001,8 @@ namespace TombEditor
 
                 if (SelectedObject != null && !newSelection.Contains(SelectedObject.Room))
                     SelectedObject = null;
+                UpdateLevelStatistics();
+
             }
 
             // Update unsaved changes state
@@ -1012,6 +1017,8 @@ namespace TombEditor
             {
                 if (((IEditorObjectChangedEvent)obj).Object == SelectedObject)
                     SelectedObject = null;
+                UpdateLevelStatistics();
+
             }
 
             // Update level settings watcher
@@ -1028,9 +1035,69 @@ namespace TombEditor
             }
         }
 
+        private void UpdateLevelStatistics() {
+            Stats.LevelStats = new Statistics{ };
+            Stats.RoomStats = new Statistics { };
+            foreach(var r in Level.Rooms) {
+                if (r == null) continue;
+
+                foreach(var obj in r.Objects) {
+                    if (obj is MoveableInstance) {
+                        Stats.LevelStats.MoveableCount++;
+                        if (r == SelectedRoom) {
+                            Stats.RoomStats.MoveableCount++;
+                        }
+                    }
+                    if (obj is StaticInstance) {
+                        Stats.LevelStats.StaticCount++;
+                        if (r == SelectedRoom) {
+                            Stats.RoomStats.StaticCount++;
+                        }
+                    }
+                    if (obj is LightInstance) {
+                        Stats.LevelStats.LightCount++;
+                        if (r == SelectedRoom) {
+                            Stats.RoomStats.LightCount++;
+                        }
+                        if((obj as LightInstance).IsDynamicallyUsed) {
+                            Stats.LevelStats.DynLightCount++;
+                            if (r == SelectedRoom) {
+                                Stats.RoomStats.DynLightCount++;
+                            }
+                        }
+                    }
+                    if (obj is CameraInstance) {
+                        Stats.LevelStats.CameraCount++;
+                        if (r == SelectedRoom) {
+                            Stats.RoomStats.CameraCount++;
+                        }
+                    }
+
+                    if (obj is FlybyCameraInstance) {
+                        Stats.LevelStats.FlybyCount++;
+                        if (r == SelectedRoom) {
+                            Stats.RoomStats.FlybyCount++;
+                        }
+                    }
+                }
+                foreach(var obj in r.SectorObjects) {
+                    if(obj is TriggerInstance) {
+                        Stats.LevelStats.TriggerCount++;
+                        if (r == SelectedRoom) {
+                            Stats.RoomStats.TriggerCount++;
+                        }
+                    }
+
+                }
+            }
+        }
+
         public class LevelCompilationCompletedEvent : IEditorEvent
         {
-            public string InfoString { get; set; }
+            public int BoxCount { get; internal set; }
+            public int OverlapCount { get; internal set; }
+            public int TextureCount { get; internal set; }
+            public String InfoString { get;internal set; }
         }
 
         // Auto saving
