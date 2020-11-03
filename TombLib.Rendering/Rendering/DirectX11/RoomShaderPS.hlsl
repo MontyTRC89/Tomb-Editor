@@ -1,11 +1,12 @@
 cbuffer WorldData
 {
-    matrix TransformMatrix;
-    float RoomGridLineWidth;
+	matrix TransformMatrix;
+	float RoomGridLineWidth;
 	bool RoomGridForce;
 	bool RoomDisableVertexColors;
 	bool ShowExtraBlendingModes;
 	bool ShowLightingWhiteTextureOnly;
+	bool Show15BitLighting;
 };
 
 struct PixelInputType

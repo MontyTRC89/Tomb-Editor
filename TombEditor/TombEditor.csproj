@@ -666,6 +666,7 @@
     <None Include="Resources\icons_objects\objects_Sprite-16.png" />
     <None Include="Resources\icons_general\general_animcommand-16.png" />
     <None Include="Resources\icons_objects\objects_Memo-16.png" />
+    <None Include="Resources\icons_actions\actions_DrawUntexturedLights-161.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
   </ItemGroup>

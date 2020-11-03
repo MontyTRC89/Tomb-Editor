@@ -11,6 +11,8 @@ namespace TombLib.Rendering
         public bool RoomDisableVertexColors = false;
         public bool ShowExtraBlendingModes = true;
         public bool ShowLightingWhiteTextureOnly = true;
+        public bool Show15BitLighting = false;
+
     }
     public abstract class RenderingStateBuffer : IDisposable
     {
