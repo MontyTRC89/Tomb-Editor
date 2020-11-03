@@ -24,6 +24,8 @@ namespace TombLib.Rendering.DirectX11
             public int ShowExtraBlendingModes;
             [FieldOffset(80)]
             public int ShowLightingWhiteTextureOnly;
+            [FieldOffset(84)]
+            public int Show15BitLighting;
         };
         public static readonly int Size = ((Marshal.SizeOf(typeof(ConstantBufferLayout)) + 15) / 16) * 16;
 
@@ -51,6 +53,7 @@ namespace TombLib.Rendering.DirectX11
             Buffer.RoomDisableVertexColors = State.RoomDisableVertexColors ? 1 : 0;
             Buffer.ShowExtraBlendingModes = State.ShowExtraBlendingModes ? 1 : 0;
             Buffer.ShowLightingWhiteTextureOnly = State.ShowLightingWhiteTextureOnly ? 1 : 0;
+            Buffer.Show15BitLighting = State.Show15BitLighting ? 1 : 0;
             Context.UpdateSubresource(ref Buffer, ConstantBuffer);
         }
     }

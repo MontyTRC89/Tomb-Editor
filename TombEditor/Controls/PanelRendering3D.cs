@@ -64,6 +64,8 @@ namespace TombEditor.Controls
         public bool ShowRealTintForObjects { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HideTransparentFaces { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool Show15BitLighting { get; set; }
 
         // These options require explicit setters because they probe into room cache.
 
@@ -180,6 +182,7 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
+            
             Application.AddMessageFilter(filter);
 
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -226,6 +229,7 @@ namespace TombEditor.Controls
                              });
                     });
             }
+            
         }
 
         private Room GetCurrentRoom()
@@ -3410,7 +3414,8 @@ namespace TombEditor.Controls
                 RoomDisableVertexColors = _editor.Mode == EditorMode.FaceEdit,
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
                 TransformMatrix = _viewProjection,
-                ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly
+                ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly,
+                Show15BitLighting = Show15BitLighting
             });
             var renderArgs = new RenderingDrawingRoom.RenderArgs
             {

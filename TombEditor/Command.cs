@@ -1592,9 +1592,13 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
-            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args)
-            {
+            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args) {
                 args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly = !args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
+                args.Editor.ConfigurationChange();
+            });
+
+            AddCommand("Draw15BitLighting", "Draw Lighting in 15 Bit", CommandType.View, delegate (CommandArgs args) {
+                args.Editor.Configuration.Rendering3D_Show15BitLighting = !args.Editor.Configuration.Rendering3D_Show15BitLighting;
                 args.Editor.ConfigurationChange();
             });
 
