@@ -6,7 +6,8 @@ Tomb Editor:
  * Fix ctrl + shift + click triangulated block texture rotation.
  * Fix occasional exceptions while using "split sector-based object" function.
  * Added Statistics to 3D Rendering Settings. A double exclamation mark ("!!") signals a limit exceed.
- * Fixed Rendering crashes with invalid Vertex buffers
+ * Fixed Rendering crashes with invalid Vertex buffers.
+ * Added 15 Bit Lighting Mode.
  
 WadTool:
  * Fix additive blending attribute not being imported correctly.
