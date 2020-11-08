@@ -3123,7 +3123,7 @@ namespace TombEditor.Controls
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
-                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer != null || mesh.IndexBuffer != null || mesh.InputLayout != null)
+                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.IndexBuffer == null || mesh.InputLayout == null)
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
