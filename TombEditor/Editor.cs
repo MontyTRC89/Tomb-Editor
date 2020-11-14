@@ -1056,7 +1056,7 @@ namespace TombEditor
             Stats.LevelStats.MoveableCount = 0;
             Stats.LevelStats.StaticCount = 0;
             Stats.LevelStats.LightCount = 0;
-            Stats.LevelStats.LightCount = 0;
+            Stats.LevelStats.DynLightCount = 0;
             Stats.LevelStats.TriggerCount = 0;
             Stats.LevelStats.FlybyCount = 0;
             Stats.LevelStats.CameraCount = 0;
