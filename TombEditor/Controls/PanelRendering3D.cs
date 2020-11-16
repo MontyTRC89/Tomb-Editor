@@ -64,8 +64,6 @@ namespace TombEditor.Controls
         public bool ShowRealTintForObjects { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HideTransparentFaces { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool Show15BitLighting { get; set; }
 
         // These options require explicit setters because they probe into room cache.
 
@@ -3415,7 +3413,8 @@ namespace TombEditor.Controls
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
                 TransformMatrix = _viewProjection,
                 ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly,
-                Show15BitLighting = Show15BitLighting
+                Show15BitLighting = _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 &&
+                                    _editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR5
             });
             var renderArgs = new RenderingDrawingRoom.RenderArgs
             {
