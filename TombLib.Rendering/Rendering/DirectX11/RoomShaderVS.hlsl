@@ -48,7 +48,8 @@ PixelInputType main(VertexInputType input)
     input.Position.w = 1.0f;
     output.Position = mul(TransformMatrix, input.Position);
     output.Color = RoomDisableVertexColors ? float4(1.0f, 1.0f, 1.0f, 1.0f) : (input.Color * float4(2.0f, 2.0f, 2.0f, 1.0f));
-	if(Show15BitLighting) {
+	if (Show15BitLighting) 
+	{
 		int r = output.Color.r * 32.0f;
 		int g = output.Color.g * 32.0f;
 		int b = output.Color.b * 32.0f;

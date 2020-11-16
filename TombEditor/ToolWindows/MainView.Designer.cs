@@ -31,7 +31,6 @@
             this.butDrawExtraBlendingModes = new System.Windows.Forms.ToolStripButton();
             this.butHideTransparentFaces = new System.Windows.Forms.ToolStripButton();
             this.butDrawWhiteLighting = new System.Windows.Forms.ToolStripButton();
-            this.butDraw15BitLighting = new System.Windows.Forms.ToolStripButton();
             this.butDrawStaticTint = new System.Windows.Forms.ToolStripButton();
             this.butDrawIllegalSlopes = new System.Windows.Forms.ToolStripButton();
             this.butDrawSlideDirections = new System.Windows.Forms.ToolStripButton();
@@ -100,7 +99,6 @@
             this.butDrawExtraBlendingModes,
             this.butHideTransparentFaces,
             this.butDrawWhiteLighting,
-            this.butDraw15BitLighting,
             this.butDrawStaticTint,
             this.butDrawIllegalSlopes,
             this.butDrawSlideDirections,
@@ -311,17 +309,6 @@
             this.butDrawWhiteLighting.Name = "butDrawWhiteLighting";
             this.butDrawWhiteLighting.Size = new System.Drawing.Size(23, 25);
             this.butDrawWhiteLighting.Tag = "DrawWhiteTextureLightingOnly";
-            // 
-            // butDraw15BitLighting
-            // 
-            this.butDraw15BitLighting.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butDraw15BitLighting.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butDraw15BitLighting.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butDraw15BitLighting.Image = global::TombEditor.Properties.Resources.actions_Draw15BitLights_161;
-            this.butDraw15BitLighting.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butDraw15BitLighting.Name = "butDraw15BitLighting";
-            this.butDraw15BitLighting.Size = new System.Drawing.Size(23, 25);
-            this.butDraw15BitLighting.Tag = "Draw15BitLighting";
             // 
             // butDrawStaticTint
             // 
