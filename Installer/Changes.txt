@@ -3,11 +3,10 @@ Version 1.3.9
 Tomb Editor:
  * Apply double-sided attribute for imported geometry, if any.
  * Properly show double-sided and blending mode attributes for objects.
- * Fix ctrl + shift + click triangulated block texture rotation.
  * Fix occasional exceptions while using "split sector-based object" function.
- * Added Statistics to 3D Rendering Settings. A double exclamation mark ("!!") signals a limit exceed.
- * Fixed Rendering crashes with invalid Vertex buffers.
- * Added 15 Bit Lighting Mode.
+ * Added statistics to 3D Rendering settings. A double exclamation mark ("!!") signals a limit exceed.
+ * Fixed rendering crashes with invalid vertex buffers.
+ * Use 15-bit lighting mode for TR3-4 targets.
  
 WadTool:
  * Fix additive blending attribute not being imported correctly.

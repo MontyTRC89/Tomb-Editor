@@ -1086,7 +1086,7 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face, bool fullFace = false)
+        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -1094,41 +1094,8 @@ namespace TombEditor
             TextureArea newTexture = block.GetFaceTexture(face);
             bool isTriangle = room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle;
         
-            if(fullFace && isTriangle && face >= BlockFace.Floor)
-            {
-                if(newTexture.TextureIsTriangle) newTexture = newTexture.RestoreQuadWithRotation();
-                BlockFace opposite = BlockFace.Floor;
-                int rotation = 1;
-
-                switch (face)
-                {
-                    case BlockFace.Floor:
-                        opposite = BlockFace.FloorTriangle2;
-                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 2 : 1;
-                        break;
-                    case BlockFace.FloorTriangle2:
-                        opposite = BlockFace.Floor;
-                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 0 : 3;
-                        break;
-                    case BlockFace.Ceiling:
-                        opposite = BlockFace.CeilingTriangle2;
-                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 2 : 1;
-                        break;
-                    case BlockFace.CeilingTriangle2:
-                        opposite = BlockFace.Ceiling;
-                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 0 : 3;
-                        break;
-                }
-
-                newTexture.Rotate(rotation, false);
-                if (!block.GetFaceTexture(face).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, face, newTexture);
-                if (!block.GetFaceTexture(opposite).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, opposite, newTexture);
-            }
-            else
-            {
-                newTexture.Rotate(1, isTriangle);
-                block.SetFaceTexture(face, newTexture);
-            }
+            newTexture.Rotate(1, isTriangle);
+            block.SetFaceTexture(face, newTexture);
 
             // Update state
             room.BuildGeometry();

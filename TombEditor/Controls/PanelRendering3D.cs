@@ -733,7 +733,7 @@ namespace TombEditor.Controls
                             {
                                 if (ModifierKeys.HasFlag(Keys.Shift))
                                 {
-                                    EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control));
+                                    EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
                                 else if (ModifierKeys.HasFlag(Keys.Control))
