@@ -1681,59 +1681,69 @@ namespace TombEditor.Controls
             {
                 // First check for all objects in the room
                 foreach (var instance in room.Objects)
-                    if (instance is MoveableInstance && ShowMoveables)
+                    if (instance is MoveableInstance)
                     {
-                        var modelInfo = (MoveableInstance)instance;
-                        var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
-                        if (moveable != null)
+                        if (ShowMoveables)
                         {
-                            // TODO Make picking independent of the rendering data.
-
-                            var model = _wadRenderer.GetMoveable(moveable);
-                            var skin = model;
-                            if (moveable.Id == WadMoveableId.Lara) 
+                            var modelInfo = (MoveableInstance)instance;
+                            var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
+                            if (moveable != null)
                             {
-                                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, moveable.Id.TypeId));
-                                var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
-                                if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
-                                    skin = _wadRenderer.GetMoveable(moveableSkin);
-                            }
+                                // TODO Make picking independent of the rendering data.
+                                var model = _wadRenderer.GetMoveable(moveable);
+                                var skin = model;
+                                if (moveable.Id == WadMoveableId.Lara)
+                                {
+                                    var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, moveable.Id.TypeId));
+                                    var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
+                                    if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
+                                        skin = _wadRenderer.GetMoveable(moveableSkin);
+                                }
 
-                            for (int j = 0; j < model.Meshes.Count; j++)
-                            {
-                                var mesh = skin.Meshes[j];
-                                DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                                for (int j = 0; j < model.Meshes.Count; j++)
+                                {
+                                    var mesh = skin.Meshes[j];
+                                    DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                                }
                             }
+                            else
+                                result = TryPickServiceObject(instance, ray, result, out distance);
                         }
-                        else
-                            result = TryPickServiceObject(instance, ray, result, out distance);
                     }
-                    else if (instance is StaticInstance && ShowStatics)
+                    else if (instance is StaticInstance)
                     {
-                        StaticInstance modelInfo = (StaticInstance)instance;
-                        WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
-                        if (@static != null)
+                        if (ShowStatics)
                         {
-                            // TODO Make picking independent of the rendering data.
-                            StaticModel model = _wadRenderer.GetStatic(@static);
-                            var mesh = model.Meshes[0];
-                            DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                            StaticInstance modelInfo = (StaticInstance)instance;
+                            WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
+                            if (@static != null)
+                            {
+                                // TODO Make picking independent of the rendering data.
+                                StaticModel model = _wadRenderer.GetStatic(@static);
+                                var mesh = model.Meshes[0];
+                                DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                            }
+                            else
+                                result = TryPickServiceObject(instance, ray, result, out distance);
                         }
-                        else
-                            result = TryPickServiceObject(instance, ray, result, out distance);
                     }
-                    else if (instance is ImportedGeometryInstance && ShowImportedGeometry && 
-                             !DisablePickingForImportedGeometry)
+                    else if (instance is ImportedGeometryInstance)
                     {
-                        var geometry = (ImportedGeometryInstance)instance;
-                        if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
-                            result = TryPickServiceObject(instance, ray, result, out distance);
-                        else
-                            foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
-                                DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                        if (ShowImportedGeometry && !DisablePickingForImportedGeometry)
+                        {
+                            var geometry = (ImportedGeometryInstance)instance;
+                            if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
+                                result = TryPickServiceObject(instance, ray, result, out distance);
+                            else
+                                foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
+                                    DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                        }
                     }
-                    else if (instance is VolumeInstance && ShowVolumes)
-                        result = TryPickServiceObject(instance, ray, result, out distance);
+                    else if (instance is VolumeInstance)
+                    {
+                        if (ShowVolumes)
+                            result = TryPickServiceObject(instance, ray, result, out distance);
+                    }
                     else if (ShowOtherObjects)
                         result = TryPickServiceObject(instance, ray, result, out distance);
 
