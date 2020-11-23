@@ -141,7 +141,6 @@
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
             this.panel3 = new DarkUI.Controls.DarkPanel();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
-            this.darkCheckBox40 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox39 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox36 = new DarkUI.Controls.DarkCheckBox();
             this.cbGeometryLightPreview = new DarkUI.Controls.DarkCheckBox();
@@ -332,7 +331,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 484);
+            this.tabPage6.Size = new System.Drawing.Size(386, 511);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -343,7 +342,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -656,7 +655,7 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 640);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(121, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
@@ -796,7 +795,7 @@
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel52.Location = new System.Drawing.Point(12, 437);
             this.darkLabel52.Name = "darkLabel52";
-            this.darkLabel52.Size = new System.Drawing.Size(46, 13);
+            this.darkLabel52.Size = new System.Drawing.Size(45, 13);
             this.darkLabel52.TabIndex = 48;
             this.darkLabel52.Text = "Trigger:";
             // 
@@ -1540,9 +1539,9 @@
             this.darkGroupBox8.Controls.Add(this.cmbRendering3DFont);
             this.darkGroupBox8.Controls.Add(this.darkLabel16);
             this.darkGroupBox8.Dock = System.Windows.Forms.DockStyle.Top;
-            this.darkGroupBox8.Location = new System.Drawing.Point(0, 431);
+            this.darkGroupBox8.Location = new System.Drawing.Point(0, 410);
             this.darkGroupBox8.Name = "darkGroupBox8";
-            this.darkGroupBox8.Size = new System.Drawing.Size(363, 94);
+            this.darkGroupBox8.Size = new System.Drawing.Size(380, 94);
             this.darkGroupBox8.TabIndex = 22;
             this.darkGroupBox8.TabStop = false;
             this.darkGroupBox8.Text = "Text";
@@ -1619,12 +1618,11 @@
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
             this.panel3.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel3.Size = new System.Drawing.Size(363, 431);
+            this.panel3.Size = new System.Drawing.Size(380, 410);
             this.panel3.TabIndex = 21;
             // 
             // darkGroupBox4
             // 
-            this.darkGroupBox4.Controls.Add(this.darkCheckBox40);
             this.darkGroupBox4.Controls.Add(this.darkCheckBox39);
             this.darkGroupBox4.Controls.Add(this.darkCheckBox36);
             this.darkGroupBox4.Controls.Add(this.cbGeometryLightPreview);
@@ -1650,20 +1648,10 @@
             this.darkGroupBox4.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox4.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox4.Name = "darkGroupBox4";
-            this.darkGroupBox4.Size = new System.Drawing.Size(357, 428);
+            this.darkGroupBox4.Size = new System.Drawing.Size(374, 407);
             this.darkGroupBox4.TabIndex = 19;
             this.darkGroupBox4.TabStop = false;
             this.darkGroupBox4.Text = "Rendering";
-            // 
-            // darkCheckBox40
-            // 
-            this.darkCheckBox40.AutoSize = true;
-            this.darkCheckBox40.Location = new System.Drawing.Point(6, 251);
-            this.darkCheckBox40.Name = "darkCheckBox40";
-            this.darkCheckBox40.Size = new System.Drawing.Size(128, 17);
-            this.darkCheckBox40.TabIndex = 44;
-            this.darkCheckBox40.Tag = "Rendering3D_ShowStats";
-            this.darkCheckBox40.Text = "Show level statistics";
             // 
             // darkCheckBox39
             // 
@@ -1678,7 +1666,7 @@
             // darkCheckBox36
             // 
             this.darkCheckBox36.AutoSize = true;
-            this.darkCheckBox36.Location = new System.Drawing.Point(6, 297);
+            this.darkCheckBox36.Location = new System.Drawing.Point(6, 274);
             this.darkCheckBox36.Name = "darkCheckBox36";
             this.darkCheckBox36.Size = new System.Drawing.Size(187, 17);
             this.darkCheckBox36.TabIndex = 42;
@@ -1690,7 +1678,7 @@
             this.cbGeometryLightPreview.AutoSize = true;
             this.cbGeometryLightPreview.Location = new System.Drawing.Point(6, 44);
             this.cbGeometryLightPreview.Name = "cbGeometryLightPreview";
-            this.cbGeometryLightPreview.Size = new System.Drawing.Size(197, 17);
+            this.cbGeometryLightPreview.Size = new System.Drawing.Size(196, 17);
             this.cbGeometryLightPreview.TabIndex = 41;
             this.cbGeometryLightPreview.Tag = "Rendering3D_HighQualityLightPreview";
             this.cbGeometryLightPreview.Text = "Use real Light Quality for preview";
@@ -1719,7 +1707,7 @@
             // 
             this.darkLabel68.AutoSize = true;
             this.darkLabel68.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel68.Location = new System.Drawing.Point(3, 324);
+            this.darkLabel68.Location = new System.Drawing.Point(3, 301);
             this.darkLabel68.Name = "darkLabel68";
             this.darkLabel68.Size = new System.Drawing.Size(108, 13);
             this.darkLabel68.TabIndex = 37;
@@ -1738,7 +1726,7 @@
             // darkCheckBox21
             // 
             this.darkCheckBox21.AutoSize = true;
-            this.darkCheckBox21.Location = new System.Drawing.Point(291, 323);
+            this.darkCheckBox21.Location = new System.Drawing.Point(291, 300);
             this.darkCheckBox21.Name = "darkCheckBox21";
             this.darkCheckBox21.Size = new System.Drawing.Size(54, 17);
             this.darkCheckBox21.TabIndex = 35;
@@ -1768,7 +1756,7 @@
             // darkCheckBox18
             // 
             this.darkCheckBox18.AutoSize = true;
-            this.darkCheckBox18.Location = new System.Drawing.Point(210, 323);
+            this.darkCheckBox18.Location = new System.Drawing.Point(210, 300);
             this.darkCheckBox18.Name = "darkCheckBox18";
             this.darkCheckBox18.Size = new System.Drawing.Size(81, 17);
             this.darkCheckBox18.TabIndex = 32;
@@ -1778,7 +1766,7 @@
             // darkCheckBox17
             // 
             this.darkCheckBox17.AutoSize = true;
-            this.darkCheckBox17.Location = new System.Drawing.Point(117, 323);
+            this.darkCheckBox17.Location = new System.Drawing.Point(117, 300);
             this.darkCheckBox17.Name = "darkCheckBox17";
             this.darkCheckBox17.Size = new System.Drawing.Size(92, 17);
             this.darkCheckBox17.TabIndex = 31;
@@ -1808,7 +1796,7 @@
             // darkCheckBox6
             // 
             this.darkCheckBox6.AutoSize = true;
-            this.darkCheckBox6.Location = new System.Drawing.Point(6, 274);
+            this.darkCheckBox6.Location = new System.Drawing.Point(6, 251);
             this.darkCheckBox6.Name = "darkCheckBox6";
             this.darkCheckBox6.Size = new System.Drawing.Size(176, 17);
             this.darkCheckBox6.TabIndex = 23;
@@ -1832,7 +1820,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown13.Location = new System.Drawing.Point(291, 402);
+            this.darkNumericUpDown13.Location = new System.Drawing.Point(291, 379);
             this.darkNumericUpDown13.LoopValues = false;
             this.darkNumericUpDown13.Name = "darkNumericUpDown13";
             this.darkNumericUpDown13.Size = new System.Drawing.Size(64, 22);
@@ -1843,7 +1831,7 @@
             // 
             this.darkLabel14.AutoSize = true;
             this.darkLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel14.Location = new System.Drawing.Point(3, 404);
+            this.darkLabel14.Location = new System.Drawing.Point(3, 381);
             this.darkLabel14.Name = "darkLabel14";
             this.darkLabel14.Size = new System.Drawing.Size(111, 13);
             this.darkLabel14.TabIndex = 19;
@@ -1856,7 +1844,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown12.Location = new System.Drawing.Point(291, 374);
+            this.darkNumericUpDown12.Location = new System.Drawing.Point(291, 351);
             this.darkNumericUpDown12.LoopValues = false;
             this.darkNumericUpDown12.Name = "darkNumericUpDown12";
             this.darkNumericUpDown12.Size = new System.Drawing.Size(64, 22);
@@ -1867,7 +1855,7 @@
             // 
             this.darkLabel13.AutoSize = true;
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(3, 376);
+            this.darkLabel13.Location = new System.Drawing.Point(3, 353);
             this.darkLabel13.Name = "darkLabel13";
             this.darkLabel13.Size = new System.Drawing.Size(277, 13);
             this.darkLabel13.TabIndex = 17;
@@ -1880,7 +1868,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown7.Location = new System.Drawing.Point(291, 346);
+            this.darkNumericUpDown7.Location = new System.Drawing.Point(291, 323);
             this.darkNumericUpDown7.LoopValues = false;
             this.darkNumericUpDown7.Maximum = new decimal(new int[] {
             179,
@@ -1906,7 +1894,7 @@
             // 
             this.darkLabel8.AutoSize = true;
             this.darkLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel8.Location = new System.Drawing.Point(3, 348);
+            this.darkLabel8.Location = new System.Drawing.Point(3, 325);
             this.darkLabel8.Name = "darkLabel8";
             this.darkLabel8.Size = new System.Drawing.Size(75, 13);
             this.darkLabel8.TabIndex = 15;
@@ -2025,7 +2013,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
@@ -3418,6 +3406,5 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox11;
         private DarkUI.Controls.DarkCheckBox darkCheckBox38;
         private DarkUI.Controls.DarkCheckBox darkCheckBox39;
-        private DarkUI.Controls.DarkCheckBox darkCheckBox40;
     }
 }

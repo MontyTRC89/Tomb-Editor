@@ -143,6 +143,9 @@
     <Compile Include="Controls\PanelRenderingSprite.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\RichTextLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ToolBox.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -631,6 +631,9 @@ namespace TombEditor
                 ObjectChange(@object, changeType, room);
         }
 
+        // This is invoked when level statistics change.
+        public class StatisticsChangedEvent : IEditorEvent { }
+
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
         {
@@ -950,11 +953,14 @@ namespace TombEditor
                     Tool = Configuration.UI_LastTexturingTool;
 
             }
-            if (obj is IEditorObjectChangedEvent) {
+
+            if (obj is IEditorObjectChangedEvent) 
+            {
                 UpdateLevelStatistics();
             }
 
-            if(obj is LevelChangedEvent) {
+            if (obj is LevelChangedEvent) 
+            {
                 var evnt = obj as LevelChangedEvent;
                 LevelSettings settings = evnt.Current.Settings;
                 Stats.TextureLimit = TrCatalog.GetLimit(settings.GameVersion, Limit.TexInfos);
@@ -967,6 +973,7 @@ namespace TombEditor
                 UpdateLevelStatistics();
 
             }
+
             // Reset notifications, when changeing between 2D and 3D mode
             // Also reset selected sectors if wanted and restore last tool for desired mode
             if (obj is ModeChangedEvent)
@@ -1052,7 +1059,8 @@ namespace TombEditor
             }
         }
 
-        private void UpdateLevelStatistics() {
+        private void UpdateLevelStatistics() 
+        {
             Stats.LevelStats.MoveableCount = 0;
             Stats.LevelStats.StaticCount = 0;
             Stats.LevelStats.LightCount = 0;
@@ -1068,58 +1076,69 @@ namespace TombEditor
             Stats.RoomStats.TriggerCount = 0;
             Stats.RoomStats.FlybyCount = 0;
             Stats.RoomStats.CameraCount = 0;
-            foreach(var r in Level.Rooms) {
+
+            foreach (var r in Level.Rooms) 
+            {
                 if (r == null) continue;
 
-                foreach(var obj in r.Objects) {
-                    if (obj is MoveableInstance) {
+                Stats.RoomCount++;
+
+                foreach (var obj in r.Objects) 
+                {
+                    if (obj is MoveableInstance) 
+                    {
                         Stats.LevelStats.MoveableCount++;
-                        if (r == SelectedRoom) {
+                        if (r == SelectedRoom)
                             Stats.RoomStats.MoveableCount++;
-                        }
                     }
+
                     if (obj is StaticInstance) {
                         Stats.LevelStats.StaticCount++;
-                        if (r == SelectedRoom) {
+                        if (r == SelectedRoom)
                             Stats.RoomStats.StaticCount++;
-                        }
                     }
-                    if (obj is LightInstance) {
+
+                    if (obj is LightInstance) 
+                    {
                         Stats.LevelStats.LightCount++;
-                        if (r == SelectedRoom) {
+                        if (r == SelectedRoom)
                             Stats.RoomStats.LightCount++;
-                        }
-                        if((obj as LightInstance).IsDynamicallyUsed) {
+
+                        if ((obj as LightInstance).IsDynamicallyUsed)
+                        {
                             Stats.LevelStats.DynLightCount++;
-                            if (r == SelectedRoom) {
+                            if (r == SelectedRoom)
                                 Stats.RoomStats.DynLightCount++;
-                            }
-                        }
-                    }
-                    if (obj is CameraInstance) {
-                        Stats.LevelStats.CameraCount++;
-                        if (r == SelectedRoom) {
-                            Stats.RoomStats.CameraCount++;
                         }
                     }
 
-                    if (obj is FlybyCameraInstance) {
+                    if (obj is CameraInstance) 
+                    {
+                        Stats.LevelStats.CameraCount++;
+                        if (r == SelectedRoom)
+                            Stats.RoomStats.CameraCount++;
+                    }
+
+                    if (obj is FlybyCameraInstance) 
+                    {
                         Stats.LevelStats.FlybyCount++;
-                        if (r == SelectedRoom) {
+                        if (r == SelectedRoom)
                             Stats.RoomStats.FlybyCount++;
-                        }
                     }
                 }
-                foreach(var obj in r.SectorObjects) {
-                    if(obj is TriggerInstance) {
-                        Stats.LevelStats.TriggerCount++;
-                        if (r == SelectedRoom) {
-                            Stats.RoomStats.TriggerCount++;
-                        }
-                    }
 
+                foreach (var obj in r.SectorObjects) 
+                {
+                    if (obj is TriggerInstance) 
+                    {
+                        Stats.LevelStats.TriggerCount++;
+                        if (r == SelectedRoom)
+                            Stats.RoomStats.TriggerCount++;
+                    }
                 }
             }
+
+            RaiseEvent(new StatisticsChangedEvent());
         }
 
         public class LevelCompilationCompletedEvent : IEditorEvent
