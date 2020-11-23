@@ -11,6 +11,8 @@ using TombLib.Utils;
 using System.Linq;
 using System.Collections.Generic;
 using TombEditor.Forms;
+using DarkUI.Config;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor.ToolWindows
 {
@@ -36,6 +38,7 @@ namespace TombEditor.ToolWindows
             GenerateToolStripCommands(toolStrip.Items);
             UpdateToolStripLayout();
             RefreshControls(_editor.Configuration);
+            UpdateStatistics();
         }
 
         public void InitializeRendering(RenderingDevice device)
@@ -97,6 +100,9 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
+            if (obj is Editor.StatisticsChangedEvent)
+                UpdateStatistics();
+
             if (obj is Editor.ConfigurationChangedEvent)
             {
                 var o = (Editor.ConfigurationChangedEvent)obj;
@@ -247,6 +253,7 @@ namespace TombEditor.ToolWindows
             panel3D.ShowLightMeshes = butDrawLightRadius.Checked = settings.Rendering3D_ShowLightRadius;
             panel3D.ShowLightingWhiteTextureOnly = butDrawWhiteLighting.Checked = settings.Rendering3D_ShowLightingWhiteTextureOnly;
             panel3D.ShowRealTintForObjects = butDrawStaticTint.Checked = settings.Rendering3D_ShowRealTintForObjects;
+
             panel3D.Invalidate();
         }
 
@@ -326,6 +333,65 @@ namespace TombEditor.ToolWindows
         private void panel2DMap_DragDrop(object sender, DragEventArgs e)
         {
             EditorActions.DragDropCommonFiles(e, FindForm());
+        }
+
+        private void UpdateStatistics()
+        {
+            if (_editor == null || _editor.Level == null)
+            {
+                panelStats.Height = 0;
+                return;
+            }
+
+            var summary = _editor.Stats;
+            var stats   = summary.LevelStats;
+            var version = _editor.Level.Settings.GameVersion;
+
+            tbStats.BackColor = Colors.GreyBackground;
+            tbStats.Text = string.Empty;
+            tbStats.SelectionAlignment = HorizontalAlignment.Left;
+            tbStats.SelectionColor = Colors.DisabledText;
+
+            tbStats.SelectionColor = summary.BoxCount > TrCatalog.GetLimit(version, Limit.BoxLimit) ? Colors.BlueHighlight : Colors.DisabledText;
+            tbStats.AppendText("Boxes: ");
+            tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + "  ");
+
+            tbStats.SelectionColor = summary.OverlapCount > TrCatalog.GetLimit(version, Limit.OverlapLimit) ? Colors.BlueHighlight : Colors.DisabledText;
+            tbStats.AppendText("Overlaps: ");
+            tbStats.AppendText((summary.OverlapCount.HasValue ? summary.OverlapCount.Value.ToString() : "?") + "  ");
+
+            tbStats.SelectionColor = summary.TextureCount > TrCatalog.GetLimit(version, Limit.TexInfos) ? Colors.BlueHighlight : Colors.DisabledText;
+            tbStats.AppendText("Textures: ");
+            tbStats.AppendText((summary.TextureCount.HasValue ? summary.TextureCount.Value.ToString() : "?") + "  ");
+
+            tbStats.AppendText("\n");
+
+            var roomList = _editor.Level.Rooms.Where(r => r != null).ToList();
+            var portalRoomList = roomList.Where(r => r != null && r.Portals.Any(p => p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)).ToList();
+
+            tbStats.SelectionColor = portalRoomList.Count > TrCatalog.GetLimit(version, Limit.RoomSafeCount) ? Colors.BlueHighlight : Colors.DisabledText;
+            tbStats.AppendText("Rooms: ");
+            tbStats.AppendText(roomList.Count.ToString() + "  ");
+
+            tbStats.AppendText("Items: ");
+            tbStats.AppendText((stats.MoveableCount + stats.StaticCount).ToString() + "  ");
+
+            tbStats.SelectionColor = stats.MoveableCount > TrCatalog.GetLimit(version, Limit.ItemSafeCount) ? Colors.BlueHighlight : Colors.DisabledText;
+            tbStats.AppendText("Moveables: " + stats.MoveableCount + "  ");
+
+            tbStats.SelectionColor = Colors.DisabledText;
+            tbStats.AppendText("Statics: " + stats.StaticCount + "  ");
+            tbStats.AppendText("Triggers: " + stats.TriggerCount + "  ");
+            tbStats.AppendText("Lights: " + stats.LightCount + "  ");
+
+            tbStats.SelectionColor = stats.DynLightCount > TrCatalog.GetLimit(version, Limit.RoomLightCount) ? Colors.BlueHighlight : Colors.DisabledText;
+            tbStats.AppendText("Dynamic lights: " + stats.DynLightCount + "  ");
+
+            tbStats.SelectionColor = Colors.DisabledText;
+            tbStats.AppendText("Cameras: " + stats.CameraCount + "  ");
+            tbStats.AppendText("Flybys: " + stats.FlybyCount + "  ");
+
+            panelStats.Height = tbStats.Height;
         }
     }
 }

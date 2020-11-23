@@ -3590,35 +3590,6 @@ namespace TombEditor.Controls
                 Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = DebugString
             });
-            if(_editor.Configuration.Rendering3D_ShowStats) {
-
-                StatisticSummary summary = Editor.Instance.Stats;
-                Statistics stats = summary.LevelStats;
-                string levelStats = Editor.Instance.Stats.LevelStats.ToString();
-                string roomStats = Editor.Instance.Stats.RoomStats.ToString();
-                string compileStats = Editor.Instance.Stats.ToString();
-                textToDraw.Add(new TombLib.Rendering.Text() {
-                    Font = _fontDefault,
-                    PixelPos = new Vector2(10, -Height + 10 + _editor.Configuration.Rendering3D_FontSize),
-                    Alignment = new Vector2(0, 0),
-                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                    String = levelStats
-                });
-                textToDraw.Add(new TombLib.Rendering.Text() {
-                    Font = _fontDefault,
-                    PixelPos = new Vector2(10, -Height + 10 + _editor.Configuration.Rendering3D_FontSize * 2),
-                    Alignment = new Vector2(0, 0),
-                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                    String = roomStats
-                });
-                textToDraw.Add(new TombLib.Rendering.Text() {
-                    Font = _fontDefault,
-                    PixelPos = new Vector2(10, -Height + 10 + _editor.Configuration.Rendering3D_FontSize * 3),
-                    Alignment = new Vector2(0, 0),
-                    Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
-                    String = compileStats
-                });
-            }
 
             // Finish strings
             SwapChain.RenderText(textToDraw);

@@ -58,6 +58,7 @@
             this.butAddSoundSource = new System.Windows.Forms.ToolStripButton();
             this.butAddImportedGeometry = new System.Windows.Forms.ToolStripButton();
             this.butAddGhostBlock = new System.Windows.Forms.ToolStripButton();
+            this.butAddMemo = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevel = new System.Windows.Forms.ToolStripButton();
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.butCompileAndPlayPreview = new System.Windows.Forms.ToolStripButton();
@@ -73,8 +74,12 @@
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
             this.panel3D = new TombEditor.Controls.PanelRendering3D();
             this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.butAddMemo = new System.Windows.Forms.ToolStripButton();
+            this.panelStats = new System.Windows.Forms.Panel();
+            this.tbStats = new TombEditor.Controls.RichTextLabel();
+            this.panelMainView = new System.Windows.Forms.Panel();
             this.toolStrip.SuspendLayout();
+            this.panelStats.SuspendLayout();
+            this.panelMainView.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -392,7 +397,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -404,7 +409,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -416,7 +421,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -428,7 +433,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -439,7 +444,7 @@
             this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawVolumes.Name = "butDrawVolumes";
-            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
+            this.butDrawVolumes.Size = new System.Drawing.Size(202, 22);
             this.butDrawVolumes.Tag = "DrawVolumes";
             this.butDrawVolumes.Text = "DrawVolumes";
             // 
@@ -451,7 +456,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -463,7 +468,7 @@
             this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
+            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
             this.butDrawLightRadius.Tag = "DrawLightRadius";
             this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
@@ -631,6 +636,17 @@
             this.butAddGhostBlock.Size = new System.Drawing.Size(23, 25);
             this.butAddGhostBlock.Tag = "AddGhostBlock";
             // 
+            // butAddMemo
+            // 
+            this.butAddMemo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butAddMemo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butAddMemo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butAddMemo.Image = global::TombEditor.Properties.Resources.objects_Memo_16;
+            this.butAddMemo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butAddMemo.Name = "butAddMemo";
+            this.butAddMemo.Size = new System.Drawing.Size(24, 24);
+            this.butAddMemo.Tag = "AddMemo";
+            // 
             // butCompileLevel
             // 
             this.butCompileLevel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -777,46 +793,68 @@
             // panel3D
             // 
             this.panel3D.AllowDrop = true;
-            this.panel3D.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel3D.Location = new System.Drawing.Point(3, 31);
+            this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3D.Location = new System.Drawing.Point(0, 0);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(833, 255);
+            this.panel3D.Size = new System.Drawing.Size(839, 229);
             this.panel3D.TabIndex = 13;
             // 
             // panel2DMap
             // 
-            this.panel2DMap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2DMap.Location = new System.Drawing.Point(3, 31);
+            this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2DMap.Location = new System.Drawing.Point(0, 0);
             this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(833, 255);
+            this.panel2DMap.Size = new System.Drawing.Size(839, 229);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
             this.panel2DMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragEnter);
             // 
-            // butAddMemo
+            // panelStats
             // 
-            this.butAddMemo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butAddMemo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butAddMemo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butAddMemo.Image = global::TombEditor.Properties.Resources.objects_Memo_16;
-            this.butAddMemo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butAddMemo.Name = "butAddMemo";
-            this.butAddMemo.Size = new System.Drawing.Size(23, 20);
-            this.butAddMemo.Tag = "AddMemo";
+            this.panelStats.Controls.Add(this.tbStats);
+            this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelStats.Location = new System.Drawing.Point(0, 257);
+            this.panelStats.Name = "panelStats";
+            this.panelStats.Padding = new System.Windows.Forms.Padding(2);
+            this.panelStats.Size = new System.Drawing.Size(839, 32);
+            this.panelStats.TabIndex = 15;
+            // 
+            // tbStats
+            // 
+            this.tbStats.AutoSize = true;
+            this.tbStats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tbStats.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbStats.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tbStats.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tbStats.Location = new System.Drawing.Point(2, 2);
+            this.tbStats.Name = "tbStats";
+            this.tbStats.ReadOnly = true;
+            this.tbStats.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.tbStats.ShortcutsEnabled = false;
+            this.tbStats.Size = new System.Drawing.Size(835, 18);
+            this.tbStats.TabIndex = 0;
+            this.tbStats.TabStop = false;
+            this.tbStats.Text = "";
+            // 
+            // panelMainView
+            // 
+            this.panelMainView.Controls.Add(this.panel3D);
+            this.panelMainView.Controls.Add(this.panel2DMap);
+            this.panelMainView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMainView.Location = new System.Drawing.Point(0, 28);
+            this.panelMainView.Name = "panelMainView";
+            this.panelMainView.Size = new System.Drawing.Size(839, 229);
+            this.panelMainView.TabIndex = 16;
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel3D);
-            this.Controls.Add(this.panel2DMap);
+            this.Controls.Add(this.panelMainView);
+            this.Controls.Add(this.panelStats);
             this.Controls.Add(this.toolStrip);
             this.DockText = "";
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -825,6 +863,8 @@
             this.Size = new System.Drawing.Size(839, 289);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
+            this.panelStats.ResumeLayout(false);
+            this.panelMainView.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -890,5 +930,8 @@
         private System.Windows.Forms.ToolStripButton butCompileAndPlayPreview;
         private System.Windows.Forms.ToolStripButton butAddSprite;
         private System.Windows.Forms.ToolStripButton butAddMemo;
+        private System.Windows.Forms.Panel panelStats;
+        private System.Windows.Forms.Panel panelMainView;
+        private TombEditor.Controls.RichTextLabel tbStats;
     }
 }
