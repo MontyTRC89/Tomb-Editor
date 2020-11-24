@@ -356,6 +356,7 @@ namespace TombEditor.ToolWindows
 
             tbStats.BackColor = Colors.GreyBackground;
             tbStats.Text = string.Empty;
+            tbStats.SelectionAlignment = HorizontalAlignment.Center;
 
             // Room block
 
