@@ -100,8 +100,11 @@ namespace TombEditor.ToolWindows
 
         private void EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is Editor.StatisticsChangedEvent)
+            if (obj is Editor.StatisticsChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent)
+            {
                 UpdateStatistics();
+            }
 
             if (obj is Editor.ConfigurationChangedEvent)
             {
@@ -339,11 +342,8 @@ namespace TombEditor.ToolWindows
 
         private void UpdateStatistics()
         {
-            if (_editor == null || _editor.Level == null)
-            {
-                panelStats.Height = 0;
+            if (_editor == null || _editor.Level == null || !_editor.Configuration.UI_ShowStats)
                 return;
-            }
 
             tbStats.SuspendDraw();
 
