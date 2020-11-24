@@ -1,10 +1,10 @@
 Version 1.3.9
 =============
 Tomb Editor:
+ * Added level statistics in the bottom of main view. Blue highlight signals a limit exceed.
+ * Show actual 15-bit lighting for TR3-4 targets.
  * Apply double-sided attribute for imported geometry, if any.
  * Properly show double-sided and blending mode attributes for objects.
- * Added level statistics in the bottom of main view. Blue highlight signals a limit exceed.
- * Use 15-bit lighting mode for TR3-4 targets.
  * Fix occasional exceptions while using "split sector-based object" function.
  * Fix invalid hidden object picking.
  * Fix rendering crashes with invalid vertex buffers.
