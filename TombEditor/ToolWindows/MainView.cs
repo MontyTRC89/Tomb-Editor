@@ -190,7 +190,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
-                PopUpInfo.Show(popup, msg.ForceInMainWindow ? null : FindForm(), this, msg.Message, msg.Type);
+                PopUpInfo.Show(popup, msg.ForceInMainWindow ? null : FindForm(), _editor.Mode == EditorMode.Map2D ? panel2DMap as Control : panel3D as Control, msg.Message, msg.Type);
             }
 
             if (obj is Editor.UndoStackChangedEvent)
@@ -255,6 +255,8 @@ namespace TombEditor.ToolWindows
             panel3D.ShowRealTintForObjects = butDrawStaticTint.Checked = settings.Rendering3D_ShowRealTintForObjects;
 
             panel3D.Invalidate();
+
+            panelStats.Visible = settings.UI_ShowStats;
         }
 
         private void UpdateToolStripLayout()
@@ -343,55 +345,136 @@ namespace TombEditor.ToolWindows
                 return;
             }
 
+            tbStats.SuspendDraw();
+
             var summary = _editor.Stats;
-            var stats   = summary.LevelStats;
-            var version = _editor.Level.Settings.GameVersion;
+            var settings = _editor.Level.Settings;
+            var lStats = summary.LevelStats;
+            var rStats = summary.RoomStats;
+
+            var limitWarning = string.Empty;
 
             tbStats.BackColor = Colors.GreyBackground;
             tbStats.Text = string.Empty;
-            tbStats.SelectionAlignment = HorizontalAlignment.Left;
+
+            // Room block
+
             tbStats.SelectionColor = Colors.DisabledText;
-
-            tbStats.SelectionColor = summary.BoxCount > TrCatalog.GetLimit(version, Limit.BoxLimit) ? Colors.BlueHighlight : Colors.DisabledText;
-            tbStats.AppendText("Boxes: ");
-            tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + "  ");
-
-            tbStats.SelectionColor = summary.OverlapCount > TrCatalog.GetLimit(version, Limit.OverlapLimit) ? Colors.BlueHighlight : Colors.DisabledText;
-            tbStats.AppendText("Overlaps: ");
-            tbStats.AppendText((summary.OverlapCount.HasValue ? summary.OverlapCount.Value.ToString() : "?") + "  ");
-
-            tbStats.SelectionColor = summary.TextureCount > TrCatalog.GetLimit(version, Limit.TexInfos) ? Colors.BlueHighlight : Colors.DisabledText;
-            tbStats.AppendText("Textures: ");
-            tbStats.AppendText((summary.TextureCount.HasValue ? summary.TextureCount.Value.ToString() : "?") + "  ");
-
-            tbStats.AppendText("\n");
-
-            var roomList = _editor.Level.Rooms.Where(r => r != null).ToList();
-            var portalRoomList = roomList.Where(r => r != null && r.Portals.Any(p => p.Direction == PortalDirection.Floor || p.Direction == PortalDirection.Ceiling)).ToList();
-
-            tbStats.SelectionColor = portalRoomList.Count > TrCatalog.GetLimit(version, Limit.RoomSafeCount) ? Colors.BlueHighlight : Colors.DisabledText;
             tbStats.AppendText("Rooms: ");
-            tbStats.AppendText(roomList.Count.ToString() + "  ");
 
-            tbStats.AppendText("Items: ");
-            tbStats.AppendText((stats.MoveableCount + stats.StaticCount).ToString() + "  ");
+            if (_editor.Level.VerticallyConnectedRooms.Count > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomSafeCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning = "Vertically connected room count is exceeded.";
+            }
+            else if (_editor.Level.ExistingRooms.Count > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomMaxCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning = "Maximum room count is exceeded.";
+            }
+            else
+                tbStats.SelectionColor = Colors.DisabledText;
 
-            tbStats.SelectionColor = stats.MoveableCount > TrCatalog.GetLimit(version, Limit.ItemSafeCount) ? Colors.BlueHighlight : Colors.DisabledText;
-            tbStats.AppendText("Moveables: " + stats.MoveableCount + "  ");
+            tbStats.AppendText(summary.RoomCount + "  ");
+
+            // Object block
 
             tbStats.SelectionColor = Colors.DisabledText;
-            tbStats.AppendText("Statics: " + stats.StaticCount + "  ");
-            tbStats.AppendText("Triggers: " + stats.TriggerCount + "  ");
-            tbStats.AppendText("Lights: " + stats.LightCount + "  ");
+            tbStats.AppendText("Objects: " + rStats.MoveableCount + " / ");
 
-            tbStats.SelectionColor = stats.DynLightCount > TrCatalog.GetLimit(version, Limit.RoomLightCount) ? Colors.BlueHighlight : Colors.DisabledText;
-            tbStats.AppendText("Dynamic lights: " + stats.DynLightCount + "  ");
+            if (lStats.MoveableCount > TrCatalog.GetLimit(settings.GameVersion, Limit.ItemSafeCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Safe object count is exceeded.";
+            }
+            else if (lStats.MoveableCount > TrCatalog.GetLimit(settings.GameVersion, Limit.ItemMaxCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Maximum object count is exceeded.";
+            }
+            else
+                tbStats.SelectionColor = Colors.DisabledText;
+
+            tbStats.AppendText(lStats.MoveableCount + "  ");
+
+            // Statics / triggers block
 
             tbStats.SelectionColor = Colors.DisabledText;
-            tbStats.AppendText("Cameras: " + stats.CameraCount + "  ");
-            tbStats.AppendText("Flybys: " + stats.FlybyCount + "  ");
+            tbStats.AppendText("Statics: " + rStats.StaticCount + " / " + lStats.StaticCount + "  ");
+            tbStats.AppendText("Triggers: " + rStats.TriggerCount + " / " + lStats.TriggerCount + "  ");
 
+            // Lights block (we show only dynamic lights, because static lights are not in fact lights)
+
+            tbStats.AppendText("Lights: ");
+
+            if (rStats.DynLightCount > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomLightCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Maximum light count in current room is exceeded.";
+            }
+            else
+                tbStats.SelectionColor = Colors.DisabledText;
+
+            tbStats.AppendText(rStats.DynLightCount.ToString());
+            tbStats.SelectionColor = Colors.DisabledText;
+            tbStats.AppendText(" / " + lStats.DynLightCount + "  ");
+
+            // Misc block
+
+            tbStats.AppendText("Cams: " + rStats.CameraCount + " / " + lStats.CameraCount + "  ");
+            tbStats.AppendText("Flybys: " + rStats.FlybyCount + " / " + lStats.FlybyCount + "  ");
+
+
+            if (summary.BoxCount.HasValue) // Don't add boxes / overlaps / texinfos if level wasnt compiled yet
+            {
+                tbStats.AppendText("\n");
+
+                // Boxes block
+
+                tbStats.SelectionColor = Colors.DisabledText;
+                tbStats.AppendText("Boxes: ");
+                if (summary.BoxCount > TrCatalog.GetLimit(settings.GameVersion, Limit.BoxLimit))
+                {
+                    tbStats.SelectionColor = Colors.BlueHighlight;
+                    limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Box count is exceeded. Reduce level complexity.";
+                }
+                else
+                    tbStats.SelectionColor = Colors.DisabledText;
+
+                tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + "  ");
+
+                // Overlaps block
+
+                tbStats.SelectionColor = Colors.DisabledText;
+                tbStats.AppendText("Overlaps: ");
+                if (summary.OverlapCount > TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit))
+                {
+                    tbStats.SelectionColor = Colors.BlueHighlight;
+                    limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Overlap count is exceeded. Reduce level complexity.";
+                }
+                else
+                    tbStats.SelectionColor = Colors.DisabledText;
+
+                tbStats.AppendText((summary.OverlapCount.HasValue ? summary.OverlapCount.Value.ToString() : "?") + "  ");
+
+                // TexInfos block
+
+                tbStats.SelectionColor = Colors.DisabledText;
+                tbStats.AppendText("TexInfos: ");
+                if (summary.TextureCount > TrCatalog.GetLimit(settings.GameVersion, Limit.TexInfos))
+                {
+                    tbStats.SelectionColor = Colors.BlueHighlight;
+                    limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "TexInfo count is exceeded. Simplify level texturing.";
+                }
+                else
+                    tbStats.SelectionColor = Colors.DisabledText;
+
+                tbStats.AppendText((summary.TextureCount.HasValue ? summary.TextureCount.Value.ToString() : "?") + "  ");
+            }
+
+            tbStats.ResumeDraw();
             panelStats.Height = tbStats.Height;
+            toolTip.SetToolTip(tbStats, limitWarning);
         }
     }
 }

@@ -173,22 +173,12 @@ namespace TombEditor.Forms
                 makeQuickItemGroupToolStripMenuItem.Enabled = isNG;
             }
 
-            // Update compilation statistics
-            if (obj is Editor.LevelCompilationCompletedEvent)
-            {
-                var evt = obj as Editor.LevelCompilationCompletedEvent;
-                statusLastCompilation.Text = "Last level output { " + evt.InfoString + " }";
-                Editor.Instance.Stats.BoxCount = evt.BoxCount;
-                Editor.Instance.Stats.OverlapCount = evt.OverlapCount;
-                Editor.Instance.Stats.TextureCount = evt.TextureCount;
-            }
-
             // Update autosave status
             if (obj is Editor.AutosaveEvent)
             {
                 var evt = obj as Editor.AutosaveEvent;
                 statusAutosave.Text = evt.Exception == null ? "Autosave OK: " + evt.Time : "Autosave failed!";
-                statusAutosave.ForeColor = evt.Exception == null ? statusLastCompilation.ForeColor : Color.LightSalmon;
+                statusAutosave.ForeColor = evt.Exception == null ? Colors.LightText : Colors.BlueHighlight;
             }
 
             // Update room information on the status strip
@@ -309,7 +299,7 @@ namespace TombEditor.Forms
         {
             ShowRealTintForObjectsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForObjects;
             drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
-
+            statisticsToolStripMenuItem.Checked = _editor.Configuration.UI_ShowStats;
         }
 
         private void RefreshRecentProjectsList()

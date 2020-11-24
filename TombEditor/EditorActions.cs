@@ -1913,7 +1913,7 @@ namespace TombEditor
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
 
             // Check if is the last room
-            int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
+            int remainingRoomCount = _editor.Level.ExistingRooms.Count(r => !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
             if (remainingRoomCount <= 0)
             {
                 _editor.SendMessage("You must have at least one room in your level.", PopupType.Error);
@@ -1958,7 +1958,7 @@ namespace TombEditor
             if (rooms.Contains(_editor.SelectedRoom))
             {
                 if (_editor.PreviousRoom == null || rooms.Contains(_editor.PreviousRoom))
-                    _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+                    _editor.SelectRoom(_editor.Level.ExistingRooms.FirstOrDefault());
                 else
                     _editor.SelectRoom(_editor.PreviousRoom);
             }
@@ -3536,12 +3536,15 @@ namespace TombEditor
                         var statistics = compiler.CompileLevel();
                         watch.Stop();
                         progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
                         // Raise an event for statistics update
-                        Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent {
+                        _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent 
+                        {
                             BoxCount = statistics.BoxCount,
                             OverlapCount = statistics.OverlapCount,
                             TextureCount = statistics.ObjectTextureCount,
-                            InfoString = statistics.ToString() });
+                            InfoString = statistics.ToString() 
+                        });
                     }
 
                     // Force garbage collector to compact memory

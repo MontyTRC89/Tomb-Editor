@@ -15,6 +15,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
@@ -77,6 +78,7 @@
             this.panelStats = new System.Windows.Forms.Panel();
             this.tbStats = new TombEditor.Controls.RichTextLabel();
             this.panelMainView = new System.Windows.Forms.Panel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolStrip.SuspendLayout();
             this.panelStats.SuspendLayout();
             this.panelMainView.SuspendLayout();
@@ -838,6 +840,7 @@
             this.tbStats.TabIndex = 0;
             this.tbStats.TabStop = false;
             this.tbStats.Text = "";
+            this.tbStats.WordWrap = false;
             // 
             // panelMainView
             // 
@@ -933,5 +936,6 @@
         private System.Windows.Forms.Panel panelStats;
         private System.Windows.Forms.Panel panelMainView;
         private TombEditor.Controls.RichTextLabel tbStats;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
