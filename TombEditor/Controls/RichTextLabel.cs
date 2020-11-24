@@ -1,11 +1,22 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
     public class RichTextLabel : RichTextBox
     {
+        public void SuspendDraw()
+        {
+            WinFormsUtils.LockWindowUpdate(Handle);
+        }
+
+        public void ResumeDraw()
+        {
+            WinFormsUtils.LockWindowUpdate(IntPtr.Zero);
+        }
+
         public RichTextLabel()
         {
             ReadOnly = true;
