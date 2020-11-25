@@ -427,7 +427,7 @@ namespace TombEditor.ToolWindows
 
             if (summary.BoxCount.HasValue) // Don't add boxes / overlaps / texinfos if level wasnt compiled yet
             {
-                tbStats.AppendText("\n");
+                tbStats.AppendText("\nLast level output: ");
 
                 // Boxes block
 
