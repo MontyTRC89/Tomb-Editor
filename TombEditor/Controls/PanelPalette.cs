@@ -227,15 +227,21 @@ namespace TombEditor.Controls
 
             var rect = new Rectangle(startX, startY, PaletteSize.Width * (int)_paletteCellWidth, 
                                                      PaletteSize.Height * (int)_paletteCellHeight);
-            // Draw outline rect
-            e.Graphics.DrawRectangle(_gridPen, rect);
 
             // Draw grid
-            for (int y = 0; y < PaletteSize.Height; y++)
-                for (int x = 0; x < PaletteSize.Width; x++)
+            for (int y = 0; y <= PaletteSize.Height; y++)
+            {
+                int lineX = startX + (int)_paletteCellWidth;
+                int lineY = startY + y * (int)_paletteCellHeight;
+
+                e.Graphics.DrawLine(_gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
+                e.Graphics.DrawLine(_gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
+            }
+
+            for (int x = 0; x <= PaletteSize.Width; x++)
             {
                 int lineX = startX + x * (int)_paletteCellWidth;
-                int lineY = startY + y * (int)_paletteCellHeight;
+                int lineY = startY + (int)_paletteCellHeight;
 
                 e.Graphics.DrawLine(_gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
                 e.Graphics.DrawLine(_gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
