@@ -283,12 +283,9 @@ namespace TombEditor.Controls
 
                 // Draw black grid lines
                 for (int x = 0; x <= gridDimensions.X; ++x)
-                    e.Graphics.DrawLine(_gridPen, totalArea.X + x * gridStep, totalArea.Y, totalArea.X + x * gridStep, totalArea.Y + gridStep * gridDimensions.Y);
+                    e.Graphics.DrawLine(x == 0 || x == gridDimensions.X ? Pens.Black : _gridPen, totalArea.X + x * gridStep, totalArea.Y, totalArea.X + x * gridStep, totalArea.Y + gridStep * gridDimensions.Y);
                 for (int y = 0; y <= gridDimensions.Y; ++y)
-                    e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * gridStep, totalArea.X + gridStep * gridDimensions.X, totalArea.Y + y * gridStep);
-
-                // Draw outline rect
-                e.Graphics.DrawRectangle(_gridPen, totalArea);
+                    e.Graphics.DrawLine(y == 0 || y == gridDimensions.Y ? Pens.Black : _gridPen, totalArea.X, totalArea.Y + y * gridStep, totalArea.X + gridStep * gridDimensions.X, totalArea.Y + y * gridStep);
 
                 // Draw selection
                 if (DrawSelection)

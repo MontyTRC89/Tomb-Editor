@@ -232,17 +232,14 @@ namespace TombEditor.Controls
             for (int y = 0; y <= PaletteSize.Height; y++)
             {
                 int lineY = startY + y * (int)_paletteCellHeight;
-                e.Graphics.DrawLine(_gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
+                e.Graphics.DrawLine(y == 0 || y == PaletteSize.Height ? Pens.Black : _gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
             }
 
             for (int x = 0; x <= PaletteSize.Width; x++)
             {
                 int lineX = startX + x * (int)_paletteCellWidth;
-                e.Graphics.DrawLine(_gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
+                e.Graphics.DrawLine(x == 0 || x == PaletteSize.Width ? Pens.Black : _gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
             }
-            
-            // Draw outline rect
-            e.Graphics.DrawRectangle(_gridPen, rect);
 
             // Draw selection rect
             if (_selectedColorCoord.X >= 0 && _selectedColorCoord.Y >= 0 &&
