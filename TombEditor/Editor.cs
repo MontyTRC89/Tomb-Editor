@@ -1094,6 +1094,8 @@ namespace TombEditor
 
                     if (obj is LightInstance) 
                     {
+                        // Ignore disabled and effect lights since they never added
+
                         var light = obj as LightInstance;
                         if (!light.Enabled)
                             continue;
@@ -1102,7 +1104,9 @@ namespace TombEditor
                         if (r == SelectedRoom)
                             stats.RoomStats.LightCount++;
 
-                        if (light.IsDynamicallyUsed)
+                        // Additionally count dynamic lights separately
+
+                        if (light.Type != LightType.Effect && light.IsDynamicallyUsed)
                         {
                             stats.LevelStats.DynLightCount++;
                             if (r == SelectedRoom)
