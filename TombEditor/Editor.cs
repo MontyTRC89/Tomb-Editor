@@ -1074,7 +1074,8 @@ namespace TombEditor
 
                 foreach (var obj in r.Objects) 
                 {
-                    if (obj is MoveableInstance) 
+                    if (obj is MoveableInstance &&
+                        !TrCatalog.IsMoveableAI(Level.Settings.GameVersion, (obj as MoveableInstance).WadObjectId.TypeId)) 
                     {
                         stats.LevelStats.MoveableCount++;
                         if (r == SelectedRoom)
