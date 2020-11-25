@@ -193,7 +193,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.MessageEvent)
             {
                 var msg = (Editor.MessageEvent)obj;
-                PopUpInfo.Show(popup, msg.ForceInMainWindow ? null : FindForm(), _editor.Mode == EditorMode.Map2D ? panel2DMap as Control : panel3D as Control, msg.Message, msg.Type);
+                PopUpInfo.Show(popup, msg.ForceInMainWindow ? null : FindForm(), panel3D, msg.Message, msg.Type);
             }
 
             if (obj is Editor.UndoStackChangedEvent)
