@@ -90,7 +90,7 @@ namespace TombLib.Wad
             int loopCount = soundInfo.LoopBehaviour == WadSoundLoopBehaviour.Looped ? 3 : 1;
             float pan = 0.0f;
             float volume = soundInfo.Volume / 100.0f;
-            float pitch = (soundInfo.PitchFactor / 127.0f) + 1.0f;
+            float pitch = (soundInfo.PitchFactor / 100.0f) + 1.0f;
             float chance = soundInfo.Chance == 0 ? 1.0f : soundInfo.Chance / 100.0f;
 
             lock (_rng)
