@@ -421,7 +421,7 @@ namespace TombEditor.ToolWindows
 
             // Misc block
 
-            tbStats.AppendText("Cams: " + rStats.CameraCount + " / " + lStats.CameraCount + "  ");
+            tbStats.AppendText("Cameras: " + rStats.CameraCount + " / " + lStats.CameraCount + "  ");
             tbStats.AppendText("Flybys: " + rStats.FlybyCount + " / " + lStats.FlybyCount + "  ");
 
 
@@ -473,7 +473,7 @@ namespace TombEditor.ToolWindows
             }
 
             tbStats.ResumeDraw();
-            panelStats.Height = tbStats.Height;
+            panelStats.AutoSize = true;
             toolTip.SetToolTip(tbStats, limitWarning);
         }
     }

@@ -799,7 +799,7 @@
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3D.Location = new System.Drawing.Point(0, 0);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(839, 229);
+            this.panel3D.Size = new System.Drawing.Size(839, 239);
             this.panel3D.TabIndex = 13;
             // 
             // panel2DMap
@@ -808,7 +808,7 @@
             this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2DMap.Location = new System.Drawing.Point(0, 0);
             this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(839, 229);
+            this.panel2DMap.Size = new System.Drawing.Size(839, 239);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
@@ -816,12 +816,13 @@
             // 
             // panelStats
             // 
+            this.panelStats.AutoSize = true;
             this.panelStats.Controls.Add(this.tbStats);
             this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelStats.Location = new System.Drawing.Point(0, 257);
+            this.panelStats.Location = new System.Drawing.Point(0, 267);
             this.panelStats.Name = "panelStats";
-            this.panelStats.Padding = new System.Windows.Forms.Padding(2);
-            this.panelStats.Size = new System.Drawing.Size(839, 32);
+            this.panelStats.Padding = new System.Windows.Forms.Padding(4, 4, 4, 0);
+            this.panelStats.Size = new System.Drawing.Size(839, 22);
             this.panelStats.TabIndex = 15;
             // 
             // tbStats
@@ -831,12 +832,12 @@
             this.tbStats.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbStats.Cursor = System.Windows.Forms.Cursors.Default;
             this.tbStats.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tbStats.Location = new System.Drawing.Point(2, 2);
+            this.tbStats.Location = new System.Drawing.Point(4, 4);
             this.tbStats.Name = "tbStats";
             this.tbStats.ReadOnly = true;
             this.tbStats.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.tbStats.ShortcutsEnabled = false;
-            this.tbStats.Size = new System.Drawing.Size(835, 18);
+            this.tbStats.Size = new System.Drawing.Size(831, 18);
             this.tbStats.TabIndex = 0;
             this.tbStats.TabStop = false;
             this.tbStats.Text = "";
@@ -849,7 +850,7 @@
             this.panelMainView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMainView.Location = new System.Drawing.Point(0, 28);
             this.panelMainView.Name = "panelMainView";
-            this.panelMainView.Size = new System.Drawing.Size(839, 229);
+            this.panelMainView.Size = new System.Drawing.Size(839, 239);
             this.panelMainView.TabIndex = 16;
             // 
             // MainView
@@ -869,6 +870,7 @@
             this.panelStats.ResumeLayout(false);
             this.panelMainView.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
