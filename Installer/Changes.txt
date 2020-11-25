@@ -5,8 +5,8 @@ Tomb Editor:
  * Show actual 15-bit lighting for TR3-4 targets.
  * Apply double-sided attribute for imported geometry, if any.
  * Properly show double-sided and blending mode attributes for objects.
- * Fix occasional exceptions while using "split sector-based object" function.
  * Change default FPS for animated textures to 16 to comply with NGLE defaults.
+ * Fix occasional exceptions while using "split sector-based object" function.
  * Fix invalid hidden object picking.
  * Fix rendering crashes with invalid vertex buffers.
  
