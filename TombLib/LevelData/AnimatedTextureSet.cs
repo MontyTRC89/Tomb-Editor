@@ -61,7 +61,7 @@ namespace TombLib.LevelData
     {
         public AnimatedTextureAnimationType AnimationType { get; set; } = AnimatedTextureAnimationType.Frames;
         public string Name { get; set; } = null;
-        public float Fps { get; set; } = 15.0f;  // float is for FPS (frames per second) values. 0 is not a valid default for this!
+        public float Fps { get; set; } = 16.0f;  // float is for FPS (frames per second) values. 0 is not a valid default for this!
         public int UvRotate { get; set; } = 0;
 
         public List<AnimatedTextureFrame> Frames { get; set; } = new List<AnimatedTextureFrame>();
