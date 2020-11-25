@@ -24,7 +24,7 @@ namespace TombEditor.Controls
         private ToolTip _toolTip = new ToolTip();
 
         private static readonly float _outlineSectorColoringInfoWidth = 3;
-        private static readonly Pen _gridPen = Pens.Black;
+        private static readonly Pen _gridPen = new Pen(Color.FromArgb(140, 0, 0, 0), 1);
         private static readonly Pen _selectedPortalPen = new Pen(Color.YellowGreen, 2);
         private static readonly Pen _selectedTriggerPen = new Pen(Color.White, 2);
 
@@ -286,6 +286,9 @@ namespace TombEditor.Controls
                     e.Graphics.DrawLine(_gridPen, totalArea.X + x * gridStep, totalArea.Y, totalArea.X + x * gridStep, totalArea.Y + gridStep * gridDimensions.Y);
                 for (int y = 0; y <= gridDimensions.Y; ++y)
                     e.Graphics.DrawLine(_gridPen, totalArea.X, totalArea.Y + y * gridStep, totalArea.X + gridStep * gridDimensions.X, totalArea.Y + y * gridStep);
+
+                // Draw outline rect
+                e.Graphics.DrawRectangle(_gridPen, totalArea);
 
                 // Draw selection
                 if (DrawSelection)
