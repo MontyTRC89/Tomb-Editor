@@ -961,9 +961,6 @@ namespace TombEditor
             }
 
             if (obj is IEditorObjectChangedEvent ||
-                obj is RoomGeometryChangedEvent ||
-                obj is RoomPropertiesChangedEvent ||
-                obj is RoomTextureChangedEvent ||
                 obj is SelectedRoomsChangedEvent ||
                 obj is MergedStaticsChangedEvent ||
                 obj is LoadedImportedGeometriesChangedEvent ||
@@ -971,6 +968,12 @@ namespace TombEditor
                 obj is LoadedTexturesChangedEvent) 
             {
                 UpdateLevelStatistics();
+            }
+
+            if (obj is IEditorRoomChangedEvent)
+            {
+                if ((obj as IEditorRoomChangedEvent).Room == SelectedRoom)
+                    UpdateRoomStatistics();
             }
 
             if (obj is LevelCompilationCompletedEvent)
@@ -1070,6 +1073,13 @@ namespace TombEditor
             {
                 BookmarkedObject = null;
             }
+        }
+
+        private void UpdateRoomStatistics()
+        {
+            if (SelectedRoom != null)
+                SelectedRoom.GetGeometryStatistics(out Stats.RoomStats.VertexCount, out Stats.RoomStats.FaceCount);
+            RaiseEvent(new StatisticsChangedEvent());
         }
 
         private void UpdateLevelStatistics(bool resetCompilationStats = false, bool force = false)
