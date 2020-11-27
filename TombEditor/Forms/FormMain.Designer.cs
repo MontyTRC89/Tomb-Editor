@@ -2051,7 +2051,7 @@ namespace TombEditor.Forms
             this.dockableToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.dockableToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dockableToolStripMenuItem.Name = "dockableToolStripMenuItem";
-            this.dockableToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.dockableToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.dockableToolStripMenuItem.Text = "Dockable";
             this.dockableToolStripMenuItem.Click += new System.EventHandler(this.dockableToolStripMenuItem_Click);
             // 
@@ -2061,7 +2061,7 @@ namespace TombEditor.Forms
             this.floatingToolStripMenuItem.CheckOnClick = true;
             this.floatingToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.floatingToolStripMenuItem.Name = "floatingToolStripMenuItem";
-            this.floatingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.floatingToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.floatingToolStripMenuItem.Text = "Floating";
             this.floatingToolStripMenuItem.CheckedChanged += new System.EventHandler(this.floatingToolStripMenuItem_CheckedChanged);
             // 
@@ -2129,35 +2129,35 @@ namespace TombEditor.Forms
             // 
             this.statusStripSelectedRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStripSelectedRoom.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusStripSelectedRoom.Name = "statusStripSelectedRoom";
-            this.statusStripSelectedRoom.Size = new System.Drawing.Size(0, 16);
+            this.statusStripSelectedRoom.Size = new System.Drawing.Size(0, 21);
             this.statusStripSelectedRoom.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // statusStripGlobalSelectionArea
             // 
             this.statusStripGlobalSelectionArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStripGlobalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusStripGlobalSelectionArea.Name = "statusStripGlobalSelectionArea";
-            this.statusStripGlobalSelectionArea.Size = new System.Drawing.Size(0, 16);
+            this.statusStripGlobalSelectionArea.Size = new System.Drawing.Size(0, 21);
             this.statusStripGlobalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // statusStripLocalSelectionArea
             // 
             this.statusStripLocalSelectionArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStripLocalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
-            this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
-            this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(0, 16);
+            this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(0, 21);
             this.statusStripLocalSelectionArea.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // statusAutosave
             // 
             this.statusAutosave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.statusAutosave.Margin = new System.Windows.Forms.Padding(20, 3, 0, 2);
+            this.statusAutosave.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusAutosave.Name = "statusAutosave";
-            this.statusAutosave.Size = new System.Drawing.Size(0, 16);
+            this.statusAutosave.Size = new System.Drawing.Size(0, 21);
             // 
             // dockArea
             // 
