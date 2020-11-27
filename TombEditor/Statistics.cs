@@ -27,7 +27,7 @@ namespace TombEditor
 
     public class Statistics
     {
-        const string _statsFormat = "{0} Statistic : Items: {1} Moveables: {2}, Statics: {3}, Triggers: {4}, DynLights: {5}, All Lights: {6}, Cameras: {7}, Flybys:{8}";
+        const string _statsFormat = "{0} Statistic : Items: {1} Moveables: {2}, Statics: {3}, Triggers: {4}, DynLights: {5}, All Lights: {6}, Cameras: {7}, Flybys:{8}, Vertices:{9}, Faces:{10}";
 
         public string Name;
 
@@ -44,6 +44,6 @@ namespace TombEditor
         public string GetDynLightCount(int lightLimit) => DynLightCount >= lightLimit ? "!!" + DynLightCount.ToString() + "!!" : DynLightCount.ToString();
         public string GetMoveableCountString(int limit) => MoveableCount >= limit ? "!!" + MoveableCount.ToString() + "!!" : MoveableCount.ToString();
 
-        public override string ToString() => string.Format(_statsFormat, Name, MoveableCount + StaticCount, MoveableCount, StaticCount, TriggerCount, LightCount, DynLightCount, CameraCount, FlybyCount);
+        public override string ToString() => string.Format(_statsFormat, Name, MoveableCount + StaticCount, MoveableCount, StaticCount, TriggerCount, LightCount, DynLightCount, CameraCount, FlybyCount, VertexCount, FaceCount);
     }
 }
