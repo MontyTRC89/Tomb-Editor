@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using TombLib.LevelData.Compilers;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -1590,17 +1591,203 @@ namespace TombLib.LevelData
 
         bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
 
-        /* public bool HasExternalRoomGeometry
-         {
-            / get
-             {
-                 foreach (var obj in Objects)
-                     if (obj is ImportedGeometryInstance)
-                     {
-                         var imported = obj as ImportedGeometryInstance;
-                         if (imported.Model.)
-                     }
-             }
-         }*/
+        // This is simplified version of level compiler's room geometry generator which only roughly counts
+        // vertices and faces without generating actual geometry.
+
+        public void GetGeometryStatistics(out int vertices, out int faces)
+        {
+            // Add room geometry
+
+            var vertexPositions = RoomGeometry.VertexPositions;
+            var vertexColors = RoomGeometry.VertexColors;
+
+            var roomVerticesDictionary = new Dictionary<int, ushort>();
+            var roomVertices  = new List<tr_room_vertex>();
+
+            faces = 0;
+            vertices = 0;
+
+            // Add room's own geometry
+
+            if (!Properties.Hidden)
+                for (int z = 0; z < NumZSectors; ++z)
+                    for (int x = 0; x < NumXSectors; ++x)
+                        for (BlockFace face = 0; face < BlockFace.Count; ++face)
+                        {
+                            var range = RoomGeometry.VertexRangeLookup.TryGetOrDefault(new SectorInfo(x, z, face));
+                            var shape = GetFaceShape(x, z, face);
+
+                            if (range.Count == 0)
+                                continue;
+
+                            var texture = Blocks[x, z].GetFaceTexture(face);
+                            if (texture.TextureIsInvisible || texture.TextureIsUnavailable ||
+                                (shape == BlockFaceShape.Triangle && texture.TriangleCoordsOutOfBounds) || (shape == BlockFaceShape.Quad && texture.QuadCoordsOutOfBounds))
+                                continue;
+
+                            var doubleSided = Level.Settings.GameVersion > TRVersion.Game.TR2 && texture.DoubleSided;
+                            var copyFace = Level.Settings.GameVersion <= TRVersion.Game.TR2 && texture.DoubleSided;
+
+                            int rangeEnd = range.Start + range.Count;
+                            for (int i = range.Start; i < rangeEnd; i += 3)
+                            {
+                                ushort vertex0Index, vertex1Index, vertex2Index;
+
+                                if (shape == BlockFaceShape.Quad)
+                                {
+                                    if (face == BlockFace.Ceiling)
+                                    {
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 5], vertexColors[i + 5]);
+                                    }
+                                    else
+                                    {
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 3], vertexColors[i + 3]);
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                        LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                    }
+
+                                    faces++;
+
+                                    i += 3;
+                                }
+                                else
+                                {
+                                    vertex0Index = LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 0], vertexColors[i + 0]);
+                                    vertex1Index = LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 1], vertexColors[i + 1]);
+                                    vertex2Index = LevelCompilerClassicTR.GetOrAddVertex(this, roomVerticesDictionary, roomVertices, vertexPositions[i + 2], vertexColors[i + 2]);
+
+                                    faces++;
+                                }
+
+                                if (copyFace)
+                                    faces++;
+                            }
+                        }
+
+            // Merged static meshes
+
+            foreach (var staticMesh in Objects.OfType<StaticInstance>())
+            {
+                // Сheck if static Mesh is in the Auto Merge list
+                var entry = Level.Settings.AutoStaticMeshMerges.Find((mergeEntry) =>
+                    mergeEntry.meshId == staticMesh.WadObjectId.TypeId);
+
+                if (entry == null)
+                    continue;
+
+                var wadStatic = Level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
+
+                for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
+                {
+                    Vector3 position = wadStatic.Mesh.VerticesPositions[j];
+                    var trVertex = new tr_room_vertex
+                    {
+                        Position = new tr_vertex
+                        {
+                            X = (short)position.X,
+                            Y = (short)-(position.Y + WorldPos.Y),
+                            Z = (short)position.Z
+                        }
+                    };
+                    roomVertices.Add(trVertex);
+                }
+
+                faces += wadStatic.Mesh.Polys.Count;
+            }
+
+            // Add geometry imported objects
+
+            foreach (var geometry in Objects.OfType<ImportedGeometryInstance>())
+            {
+                if (geometry.Model?.DirectXModel == null)
+                    continue;
+
+                var meshes = geometry.Model.DirectXModel.Meshes;
+                var worldTransform = geometry.RotationMatrix *
+                                        Matrix4x4.CreateScale(geometry.Scale) *
+                                        Matrix4x4.CreateTranslation(geometry.Position);
+                var normalTransform = geometry.RotationMatrix;
+                var indexList = new List<int>();
+                int baseIndex = 0;
+
+                foreach (var mesh in meshes)
+                {
+                    int currentMeshIndexCount = 0;
+
+                    for (int j = 0; j < mesh.Vertices.Count; j++)
+                    {
+                        var vertex = mesh.Vertices[j];
+
+                        // Apply the transform to the vertex
+                        Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
+                        Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
+                        normal = Vector3.Normalize(normal);
+
+                        var trVertex = new tr_room_vertex
+                        {
+                            Position = new tr_vertex
+                            {
+                                X = (short)position.X,
+                                Y = (short)-(position.Y + WorldPos.Y),
+                                Z = (short)position.Z
+                            },
+                            Lighting1 = 0,
+                            Lighting2 = 0,
+                            Attributes = 0
+                        };
+
+                        // HACK: Find a vertex with same coordinates and merge with it.
+                        // This is needed to overcome disjointed vertices bug buried deep in geometry importer AND assimp's own
+                        // strange behaviour which splits imported geometry based on materials.
+                        // We still preserve sharp edges if explicitly specified by flag though.
+
+                        int existingIndex;
+                        if (geometry.SharpEdges)
+                        {
+                            existingIndex = roomVertices.Count;
+                            roomVertices.Add(trVertex);
+                        }
+                        else
+                        {
+                            existingIndex = roomVertices.IndexOf(v => v.Position == trVertex.Position && v.Color == trVertex.Color);
+                            if (existingIndex == -1)
+                            {
+                                existingIndex = roomVertices.Count;
+                                roomVertices.Add(trVertex);
+                            }
+                        }
+
+                        indexList.Add(existingIndex);
+                        currentMeshIndexCount++;
+                    }
+
+                    foreach (var submesh in mesh.Submeshes)
+                    {
+                        for (int j = 0; j < submesh.Value.Indices.Count; j += 3)
+                        {
+                            ushort index0 = (ushort)(indexList[j + baseIndex + 0]);
+                            ushort index1 = (ushort)(indexList[j + baseIndex + 1]);
+                            ushort index2 = (ushort)(indexList[j + baseIndex + 2]);
+
+                            var doubleSided = Level.Settings.GameVersion > TRVersion.Game.TR2 && submesh.Key.DoubleSided;
+                            var copyFace = Level.Settings.GameVersion <= TRVersion.Game.TR2 && submesh.Key.DoubleSided;
+
+                            faces++;
+
+                            if (copyFace)
+                                faces++;
+                        }
+                    }
+
+                    baseIndex += currentMeshIndexCount;
+                }
+            }
+
+            vertices = roomVertices.Count;
+        }
     }
 }

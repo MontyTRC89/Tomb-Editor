@@ -941,7 +941,7 @@ namespace TombLib.LevelData.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
+        public static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
         {
             tr_room_vertex trVertex;
             trVertex.Position = new tr_vertex

@@ -424,15 +424,36 @@ namespace TombEditor.ToolWindows
             tbStats.AppendText("Cameras: " + rStats.CameraCount + " / " + lStats.CameraCount + "  ");
             tbStats.AppendText("Flybys: " + rStats.FlybyCount + " / " + lStats.FlybyCount + "  ");
 
+            // Room geometry block
+
+            tbStats.AppendText("\nRoom vertices / faces: ");
+
+            if (rStats.VertexCount > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomVertexCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Room vertex count is exceeded.";
+            }
+            else
+                tbStats.SelectionColor = Colors.DisabledText;
+
+            tbStats.AppendText(rStats.VertexCount + " / ");
+
+            if (rStats.VertexCount > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomFaceCount))
+            {
+                tbStats.SelectionColor = Colors.BlueHighlight;
+                limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Room face count is exceeded.";
+            }
+            else
+                tbStats.SelectionColor = Colors.DisabledText;
+
+            tbStats.AppendText(rStats.FaceCount + "  ");
+
+            tbStats.SelectionColor = Colors.DisabledText;
+            tbStats.AppendText("Last level output: ");
 
             if (summary.BoxCount.HasValue) // Don't add boxes / overlaps / texinfos if level wasnt compiled yet
             {
-                tbStats.AppendText("\nLast level output: ");
-
                 // Boxes block
-
-                tbStats.SelectionColor = Colors.DisabledText;
-                tbStats.AppendText("Boxes: ");
                 if (summary.BoxCount > TrCatalog.GetLimit(settings.GameVersion, Limit.BoxLimit))
                 {
                     tbStats.SelectionColor = Colors.BlueHighlight;
@@ -441,12 +462,9 @@ namespace TombEditor.ToolWindows
                 else
                     tbStats.SelectionColor = Colors.DisabledText;
 
-                tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + "  ");
+                tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + " boxes, ");
 
                 // Overlaps block
-
-                tbStats.SelectionColor = Colors.DisabledText;
-                tbStats.AppendText("Overlaps: ");
                 if (summary.OverlapCount > TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit))
                 {
                     tbStats.SelectionColor = Colors.BlueHighlight;
@@ -455,12 +473,9 @@ namespace TombEditor.ToolWindows
                 else
                     tbStats.SelectionColor = Colors.DisabledText;
 
-                tbStats.AppendText((summary.OverlapCount.HasValue ? summary.OverlapCount.Value.ToString() : "?") + "  ");
+                tbStats.AppendText((summary.OverlapCount.HasValue ? summary.OverlapCount.Value.ToString() : "?") + " overlaps, ");
 
                 // TexInfos block
-
-                tbStats.SelectionColor = Colors.DisabledText;
-                tbStats.AppendText("TexInfos: ");
                 if (summary.TextureCount > TrCatalog.GetLimit(settings.GameVersion, Limit.TexInfos))
                 {
                     tbStats.SelectionColor = Colors.BlueHighlight;
@@ -469,11 +484,15 @@ namespace TombEditor.ToolWindows
                 else
                     tbStats.SelectionColor = Colors.DisabledText;
 
-                tbStats.AppendText((summary.TextureCount.HasValue ? summary.TextureCount.Value.ToString() : "?") + "  ");
+                tbStats.AppendText((summary.TextureCount.HasValue ? summary.TextureCount.Value.ToString() : "?") + " texinfos");
             }
+            else
+                tbStats.AppendText("compile level");
+
+            if (tbStats.AutoSize) 
+                tbStats.AutoSize = false; // HACK: prevent further size updates
 
             tbStats.ResumeDraw();
-            panelStats.AutoSize = true;
             toolTip.SetToolTip(tbStats, limitWarning);
         }
     }

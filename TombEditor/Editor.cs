@@ -281,7 +281,13 @@ namespace TombEditor
 
         public Room SelectedRoom
         {
-            get { return _selectedRooms[0]; }
+            get
+            {
+                if (_selectedRooms != null)
+                    return _selectedRooms[0];
+                else
+                    return null;
+            }
             set
             {
                 if (value == _selectedRooms[0])
@@ -676,7 +682,7 @@ namespace TombEditor
             RaiseEvent(new HideSelectionEvent { HideSelection = state });
         }
         public bool HiddenSelection { get; private set; } = false;
-        
+
         // Last used palette colour
         public class LastUsedPaletteColourChangedEvent : IEditorEvent
         {
@@ -955,7 +961,13 @@ namespace TombEditor
             }
 
             if (obj is IEditorObjectChangedEvent ||
-                obj is SelectedRoomsChangedEvent) 
+                obj is RoomGeometryChangedEvent ||
+                obj is RoomTextureChangedEvent ||
+                obj is SelectedRoomsChangedEvent ||
+                obj is MergedStaticsChangedEvent ||
+                obj is LoadedImportedGeometriesChangedEvent ||
+                obj is LoadedWadsChangedEvent ||
+                obj is LoadedTexturesChangedEvent) 
             {
                 UpdateLevelStatistics();
             }
@@ -1067,6 +1079,10 @@ namespace TombEditor
                 stats = new StatisticSummary();
             else
                 stats = new StatisticSummary() { BoxCount = Stats.BoxCount, OverlapCount = Stats.OverlapCount, TextureCount = Stats.TextureCount };
+
+            // Update geometry statistics for current room only
+            if (SelectedRoom != null)
+                SelectedRoom.GetGeometryStatistics(out stats.RoomStats.VertexCount, out stats.RoomStats.FaceCount);
 
             foreach (var r in Level.ExistingRooms) 
             {
