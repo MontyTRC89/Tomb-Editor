@@ -962,6 +962,7 @@ namespace TombEditor
 
             if (obj is IEditorObjectChangedEvent ||
                 obj is RoomGeometryChangedEvent ||
+                obj is RoomPropertiesChangedEvent ||
                 obj is RoomTextureChangedEvent ||
                 obj is SelectedRoomsChangedEvent ||
                 obj is MergedStaticsChangedEvent ||
