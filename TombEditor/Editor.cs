@@ -965,7 +965,8 @@ namespace TombEditor
                 obj is MergedStaticsChangedEvent ||
                 obj is LoadedImportedGeometriesChangedEvent ||
                 obj is LoadedWadsChangedEvent ||
-                obj is LoadedTexturesChangedEvent) 
+                obj is LoadedTexturesChangedEvent ||
+                obj is GameVersionChangedEvent) 
             {
                 UpdateLevelStatistics();
             }
