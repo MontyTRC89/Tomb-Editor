@@ -182,7 +182,9 @@ namespace TombEditor.Forms
             }
 
             // Update room information on the status strip
-            if (obj is Editor.SelectedRoomChangedEvent ||
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
                 obj is Editor.RoomPropertiesChangedEvent)
@@ -285,6 +287,8 @@ namespace TombEditor.Forms
 
         private void UpdateUIColours()
         {
+            statusStrip.ForeColor = Colors.DisabledText;
+
             // Refresh all forms if UI colours were changed
             var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
             if (Colors.HighlightBase != newButtonHighlightColour)
