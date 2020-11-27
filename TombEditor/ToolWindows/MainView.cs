@@ -438,7 +438,7 @@ namespace TombEditor.ToolWindows
 
             tbStats.AppendText(rStats.VertexCount + " / ");
 
-            if (rStats.VertexCount > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomFaceCount))
+            if (rStats.FaceCount > TrCatalog.GetLimit(settings.GameVersion, Limit.RoomFaceCount))
             {
                 tbStats.SelectionColor = Colors.BlueHighlight;
                 limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Room face count is exceeded.";
