@@ -1589,8 +1589,6 @@ namespace TombLib.LevelData
             return result;
         }
 
-        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
-
         // This is simplified version of level compiler's room geometry generator which only roughly counts
         // vertices and faces without generating actual geometry.
 
@@ -1723,10 +1721,7 @@ namespace TombLib.LevelData
                         var vertex = mesh.Vertices[j];
 
                         // Apply the transform to the vertex
-                        Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
-                        Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
-                        normal = Vector3.Normalize(normal);
-
+                        var position = MathC.HomogenousTransform(vertex.Position, worldTransform);
                         var trVertex = new tr_room_vertex
                         {
                             Position = new tr_vertex
@@ -1782,12 +1777,13 @@ namespace TombLib.LevelData
                                 faces++;
                         }
                     }
-
                     baseIndex += currentMeshIndexCount;
                 }
             }
 
             vertices = roomVertices.Count;
         }
+
+        bool IEquatable<ITriggerParameter>.Equals(ITriggerParameter other) => this == other;
     }
 }
