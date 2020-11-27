@@ -795,7 +795,6 @@
             // panel3D
             // 
             this.panel3D.AllowDrop = true;
-            this.panel3D.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3D.Location = new System.Drawing.Point(0, 0);
             this.panel3D.Name = "panel3D";
@@ -804,7 +803,6 @@
             // 
             // panel2DMap
             // 
-            this.panel2DMap.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2DMap.Location = new System.Drawing.Point(0, 0);
             this.panel2DMap.Name = "panel2DMap";
