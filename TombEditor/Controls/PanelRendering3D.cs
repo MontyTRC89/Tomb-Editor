@@ -3576,7 +3576,7 @@ namespace TombEditor.Controls
 
             string DebugString = "";
             if (_editor.Configuration.Rendering3D_ShowFPS)
-                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Room vertices: " + (roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count)) + "\n";
+                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + "\n";
 
             if (_editor.SelectedObject != null)
                 DebugString += "Selected Object: " + _editor.SelectedObject.ToShortString();
