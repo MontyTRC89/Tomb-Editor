@@ -379,7 +379,7 @@ namespace TombEditor.Controls
             // Update depth bar...
             _depthBar.MouseMove(e, Size);
             RectangleF area = _depthBar.groupGetArea(_depthBar.getBarArea(Size), _depthBar.DepthProbes.Count); // Only redraw the depth bar group for the cursor.
-            Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X) - 1, (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right) - 1, (int)Math.Ceiling(area.Bottom) - 1));
+            Invalidate(Rectangle.FromLTRB((int)Math.Floor(area.X), (int)Math.Floor(area.Y), (int)Math.Ceiling(area.Right), (int)Math.Ceiling(area.Bottom)));
 
             switch (e.Button)
             {
