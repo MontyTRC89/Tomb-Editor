@@ -186,6 +186,7 @@ namespace TombEditor.Forms
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPositionChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
                 obj is Editor.RoomPropertiesChangedEvent)
             {
@@ -203,6 +204,7 @@ namespace TombEditor.Forms
             // Update selection information of the status strip
             if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPositionChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
                 obj is Editor.SelectedSectorsChangedEvent)
             {

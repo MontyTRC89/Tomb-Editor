@@ -4723,7 +4723,7 @@ namespace TombEditor
             }
 
             foreach (Room room in roomsToMove)
-                _editor.RoomGeometryChange(room);
+                _editor.RoomPositionChange(room);
         }
 
         public static void SplitSectorObjectOnSelection(SectorBasedObjectInstance @object)

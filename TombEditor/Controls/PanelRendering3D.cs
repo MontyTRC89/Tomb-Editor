@@ -366,7 +366,7 @@ namespace TombEditor.Controls
                 Camera.FieldOfView = _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
             // Move camera position with room movements
-            if (obj is Editor.RoomGeometryChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)
+            if (obj is Editor.RoomPositionChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)
             {
                 Camera.MoveCameraLinear(_editor.SelectedRoom.WorldPos - _currentRoomLastPos.Value);
                 _currentRoomLastPos = _editor.SelectedRoom.WorldPos;
@@ -385,11 +385,14 @@ namespace TombEditor.Controls
             // Update rooms
             if (obj is IEditorRoomChangedEvent)
             {
-                _renderingCachedRooms.Remove(((IEditorRoomChangedEvent)obj).Room);
-                if (obj is Editor.RoomGeometryChangedEvent)
-                    foreach (var portal in ((Editor.RoomGeometryChangedEvent)obj).Room.Portals)
+                var room = ((IEditorRoomChangedEvent)obj).Room;
+
+                _renderingCachedRooms.Remove(room);
+                if (obj is Editor.RoomGeometryChangedEvent || obj is Editor.RoomPositionChangedEvent)
+                    foreach (var portal in room.Portals)
                         _renderingCachedRooms.Remove(portal.AdjoiningRoom);
             }
+
             if (obj is Editor.ObjectChangedEvent)
             {
                 var value = (Editor.ObjectChangedEvent)obj;

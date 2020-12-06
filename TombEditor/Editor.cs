@@ -567,6 +567,16 @@ namespace TombEditor
             RaiseEvent(new RoomGeometryChangedEvent { Room = room });
         }
 
+        // This is invoked when room pos is changed.
+        public class RoomPositionChangedEvent : IEditorRoomChangedEvent
+        {
+            public Room Room { get; internal set; }
+        }
+        public void RoomPositionChange(Room room)
+        {
+            RaiseEvent(new RoomPositionChangedEvent { Room = room });
+        }
+
         // This is invoked when the level is saved an the file name changed.
         public class LevelFileNameChangedEvent : IEditorEvent { }
         public void LevelFileNameChange()
@@ -966,12 +976,13 @@ namespace TombEditor
                 obj is LoadedImportedGeometriesChangedEvent ||
                 obj is LoadedWadsChangedEvent ||
                 obj is LoadedTexturesChangedEvent ||
-                obj is GameVersionChangedEvent) 
+                obj is GameVersionChangedEvent)
             {
                 UpdateLevelStatistics();
             }
 
-            if (obj is IEditorRoomChangedEvent)
+            if (obj is RoomGeometryChangedEvent ||
+                obj is RoomPropertiesChangedEvent)
             {
                 if ((obj as IEditorRoomChangedEvent).Room == SelectedRoom)
                     UpdateRoomStatistics();
