@@ -117,6 +117,7 @@ namespace TombEditor
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
         public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
+        public bool TextureMap_ResetAttributesOnNewSelection { get; set; } = true;
 
         // Palette options
 
