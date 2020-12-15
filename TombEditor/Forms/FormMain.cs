@@ -289,8 +289,6 @@ namespace TombEditor.Forms
 
         private void UpdateUIColours()
         {
-            statusStrip.ForeColor = Colors.DisabledText;
-
             // Refresh all forms if UI colours were changed
             var newButtonHighlightColour = ColorTranslator.FromHtml(_editor.Configuration.UI_FormColor_ButtonHighlight);
             if (Colors.HighlightBase != newButtonHighlightColour)
