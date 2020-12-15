@@ -1679,6 +1679,12 @@ namespace TombLib.LevelData
 
                 var wadStatic = Level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
 
+                // This null check prevents TE from crashing in case if user deleted a wad or legacy wad
+                // is currently locked and saving by utils such as strpix.
+
+                if (wadStatic == null) 
+                    continue;
+
                 for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
                 {
                     Vector3 position = wadStatic.Mesh.VerticesPositions[j];
