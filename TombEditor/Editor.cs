@@ -967,7 +967,6 @@ namespace TombEditor
                     Tool = Configuration.UI_LastGeometryTool;
                 else
                     Tool = Configuration.UI_LastTexturingTool;
-
             }
 
             if (obj is IEditorObjectChangedEvent ||
