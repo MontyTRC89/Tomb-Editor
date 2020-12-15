@@ -981,6 +981,7 @@ namespace TombEditor
             }
 
             if (obj is RoomGeometryChangedEvent ||
+                obj is RoomTextureChangedEvent ||
                 obj is RoomPropertiesChangedEvent)
             {
                 if ((obj as IEditorRoomChangedEvent).Room == SelectedRoom)

@@ -1237,7 +1237,7 @@ namespace TombEditor
                         surface.DiagonalSplit != DiagonalSplit.XpZp && 
                         surface.SplitDirectionIsXEqualsZ)
                     {
-                        if(surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
+                        if (surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
                         {
                             Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
                             processedTexture.TexCoord1 = processedTexture.TexCoord3;
