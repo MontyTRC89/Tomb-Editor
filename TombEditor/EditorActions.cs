@@ -1249,7 +1249,7 @@ namespace TombEditor
 
             // Identify if double-sided texture is applied to non-double-sided face
 
-            if (!FaceIsPortal(room, pos, face) && texture.DoubleSided)
+            if (texture.DoubleSided && !FaceIsPortal(room, pos, face))
             {
                 if (!_textureAtrributeMessageState)
                     _editor.SendMessage("Double-sided texture is applied to a single-sided face.\n" +
