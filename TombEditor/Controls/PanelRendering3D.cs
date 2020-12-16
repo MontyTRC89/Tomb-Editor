@@ -2952,7 +2952,7 @@ namespace TombEditor.Controls
                         else
                         {
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                                skinnedModelEffect.Parameters["Color"].SetValue(instance.Color * instance.Room.Properties.AmbientLight);
+                                skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
                             else
                                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
                         }
@@ -3055,7 +3055,7 @@ namespace TombEditor.Controls
 
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
                                 instance.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                                geometryEffect.Parameters["Color"].SetValue(instance.Room.Properties.AmbientLight);
+                                geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
                             else
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                         }
@@ -3152,9 +3152,9 @@ namespace TombEditor.Controls
                                 var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
 
                                 if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
-                                    staticMeshEffect.Parameters["Color"].SetValue(instance.Color);
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 else
-                                    staticMeshEffect.Parameters["Color"].SetValue(instance.Color * instance.Room.Properties.AmbientLight);
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
                             }
                             else
                                 staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
@@ -3709,6 +3709,29 @@ namespace TombEditor.Controls
             _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             return true;
+        }
+        
+        private Vector3 ConvertColor(Vector3 originalColor)
+        {
+            switch (_editor.Level.Settings.GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR2:
+                    return new Vector3(originalColor.GetLuma());
+
+                case TRVersion.Game.TR5Main:
+                    return originalColor;
+
+                // All engine versions up to TR5 use 15-bit color as static mesh tint
+
+                default:
+                {
+                    var R = (float)Math.Floor(originalColor.X * 32.0f);
+                    var G = (float)Math.Floor(originalColor.Y * 32.0f);
+                    var B = (float)Math.Floor(originalColor.Z * 32.0f);
+                    return new Vector3(R / 32.0f, G / 32.0f, B / 32.0f);
+                }
+            }
         }
 
         private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>, IComparer<ImportedGeometryInstance>
