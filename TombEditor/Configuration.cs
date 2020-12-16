@@ -73,7 +73,7 @@ namespace TombEditor
         public bool Rendering3D_HideTransparentFaces { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public bool Rendering3D_ShowLightingWhiteTextureOnly { get; set; } = false;
-        public int Rendering3D_FontSize { get; set; } = 20;
+        public int Rendering3D_FontSize { get; set; } = 16;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
