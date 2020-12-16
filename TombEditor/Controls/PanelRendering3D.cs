@@ -3426,9 +3426,10 @@ namespace TombEditor.Controls
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
                 TransformMatrix = _viewProjection,
                 ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly,
-                Show15BitLighting = _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 &&
-                                    _editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR5
+                LightMode =  _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 ?
+                            (_editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR5 ? 1 : 0) : 2
             });
+
             var renderArgs = new RenderingDrawingRoom.RenderArgs
             {
                 RenderTarget = SwapChain,
