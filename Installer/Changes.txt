@@ -2,7 +2,7 @@ Version 1.3.10
 ==============
 Tomb Editor:
  * Added level statistics in the bottom of main view. Blue highlight signals a limit exceed.
- * Show actual 15-bit lighting for TR3-4 targets.
+ * Show actual 15-bit lighting for TR3-4 targets and grayscale lighting for TR1-2 targets.
  * Apply double-sided attribute for imported geometry, if any.
  * Properly show double-sided and blending mode attributes for objects.
  * Change default FPS for animated textures to 16 to comply with NGLE defaults.
