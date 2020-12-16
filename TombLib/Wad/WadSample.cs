@@ -430,7 +430,7 @@ namespace TombLib.Wad
                                 reporter?.ReportWarn("Sample " + samplePath + " is not " + supportedBitness + "-bit sample and is not supported in this game version. Crashes may occur.");
 
                             if (buffer.Length > maxBufferLength)
-                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It is too big for this game version, crashes may occur.");
+                                reporter?.ReportWarn("Sample " + samplePath + " is more than " + maxBufferLength / 1024 + " kbytes long. It may be too big for this game version, crashes may occur.");
                         }
                     }
                     // ... otherwise output null sample
