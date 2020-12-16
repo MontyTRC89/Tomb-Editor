@@ -7,6 +7,7 @@ Tomb Editor:
  * Properly show double-sided and blending mode attributes for objects.
  * Change default FPS for animated textures to 16 to comply with NGLE defaults.
  * An option to reset texture attributes when new selection is done in texture map.
+ * An option to display warning if double-sided texture is applied to a single-sided face.
  * Fix occasional exceptions while using "split sector-based object" function.
  * Fix invalid hidden object picking.
  * Fix rendering crashes with invalid vertex buffers.
@@ -15,6 +16,7 @@ SoundTool:
  * Fix incorrect pitch preview.
  
 WadTool:
+ * Add alt + double click hotkey in source wad panel to copy object to different slot.
  * Fix additive blending attribute not being imported correctly.
 
 Version 1.3.8
