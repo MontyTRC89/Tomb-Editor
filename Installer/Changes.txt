@@ -8,6 +8,7 @@ Tomb Editor:
  * Change default FPS for animated textures to 16 to comply with NGLE defaults.
  * An option to reset texture attributes when new selection is done in texture map.
  * An option to display warning if double-sided texture is applied to a single-sided face.
+ * Cleaner font rendering in 3D window.
  * Fix occasional exceptions while using "split sector-based object" function.
  * Fix invalid hidden object picking.
  * Fix rendering crashes with invalid vertex buffers.

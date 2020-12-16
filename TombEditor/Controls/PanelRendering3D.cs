@@ -3588,7 +3588,7 @@ namespace TombEditor.Controls
             textToDraw.Add(new Text
             {
                 Font = _fontDefault,
-                PixelPos = new Vector2(10, -5),
+                PixelPos = new Vector2(10, -10),
                 Alignment = new Vector2(0.0f, 0.0f),
                 Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = DebugString
