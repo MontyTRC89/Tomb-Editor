@@ -130,6 +130,7 @@
             // labelStatistics
             // 
             this.labelStatistics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelStatistics.ForeColor = System.Drawing.Color.Silver;
             this.labelStatistics.Name = "labelStatistics";
             this.labelStatistics.Size = new System.Drawing.Size(68, 18);
             this.labelStatistics.Text = "                     ";
