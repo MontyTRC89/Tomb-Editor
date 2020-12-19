@@ -788,6 +788,7 @@ namespace TombEditor.Controls
                                     case EditorToolType.Brush:
                                     case EditorToolType.Pencil:
                                         EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                        _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
                                         break;
 
                                     default:
@@ -1176,13 +1177,13 @@ namespace TombEditor.Controls
                                     break;
                                 else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None && !_objectPlaced)
                                 {
-                                    if (_editor.Tool.Tool == EditorToolType.Brush)
+                                    if (_editor.Tool.Tool == EditorToolType.Brush && _toolHandler.Engaged)
                                     {
                                         if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                             _editor.SelectedSectors.Empty)
                                             redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
                                     }
-                                    else if (_editor.Tool.Tool == EditorToolType.GridPaint)
+                                    else if (_editor.Tool.Tool == EditorToolType.GridPaint && _toolHandler.Engaged)
                                     {
                                         int factor = 2;
                                         if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) factor = 3;
