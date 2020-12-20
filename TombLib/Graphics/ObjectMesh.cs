@@ -1,4 +1,5 @@
-﻿using SharpDX.Toolkit.Graphics;
+﻿using NLog;
+using SharpDX.Toolkit.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace TombLib.Graphics
 {
     public class ObjectMesh : Mesh<ObjectVertex>, IDisposable
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public ObjectMesh(GraphicsDevice device, string name)
             : base(device, name)
         { }
@@ -38,9 +41,15 @@ namespace TombLib.Graphics
             if (IndexBuffer != null)
                 IndexBuffer.Dispose();
 
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray<ObjectVertex>(), SharpDX.Direct3D11.ResourceUsage.Immutable);
             InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
-            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
+            if (VertexBuffer == null)
+                logger.Error("Vertex Buffer of Mesh " + Name + " could not be created!");
+            if (InputLayout == null)
+                logger.Error("Input Layout of Mesh " + Name + " could not be created!");
+            if (IndexBuffer == null)
+                logger.Error("Index Buffer of Mesh " + Name + " could not be created!");
         }
 
         protected override void Dispose(bool disposeManagedResources)
@@ -175,7 +184,7 @@ namespace TombLib.Graphics
             }
 
             mesh.UpdateBuffers();
-
+            
             return mesh;
         }
     }

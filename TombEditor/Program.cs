@@ -85,7 +85,6 @@ namespace TombEditor
 
                     // Run
                     Editor editor = new Editor(SynchronizationContext.Current, configuration);
-                    Editor.Instance = editor;
 
                     // Run editor normally if no batch compile is pending.
                     // Otherwise, don't load main form and jump straight to batch-compiling levels.

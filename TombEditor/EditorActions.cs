@@ -1086,7 +1086,7 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
-        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face, bool fullFace = false)
+        public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
         {
             _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
@@ -1094,41 +1094,8 @@ namespace TombEditor
             TextureArea newTexture = block.GetFaceTexture(face);
             bool isTriangle = room.GetFaceShape(pos.X, pos.Y, face) == BlockFaceShape.Triangle;
         
-            if(fullFace && isTriangle && face >= BlockFace.Floor)
-            {
-                if(newTexture.TextureIsTriangle) newTexture = newTexture.RestoreQuadWithRotation();
-                BlockFace opposite = BlockFace.Floor;
-                int rotation = 1;
-
-                switch (face)
-                {
-                    case BlockFace.Floor:
-                        opposite = BlockFace.FloorTriangle2;
-                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 2 : 1;
-                        break;
-                    case BlockFace.FloorTriangle2:
-                        opposite = BlockFace.Floor;
-                        rotation += block.Floor.SplitDirectionIsXEqualsZ ? 0 : 3;
-                        break;
-                    case BlockFace.Ceiling:
-                        opposite = BlockFace.CeilingTriangle2;
-                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 2 : 1;
-                        break;
-                    case BlockFace.CeilingTriangle2:
-                        opposite = BlockFace.Ceiling;
-                        rotation += block.Ceiling.SplitDirectionIsXEqualsZ ? 0 : 3;
-                        break;
-                }
-
-                newTexture.Rotate(rotation, false);
-                if (!block.GetFaceTexture(face).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, face, newTexture);
-                if (!block.GetFaceTexture(opposite).TextureIsInvisible) ApplyTextureWithoutUpdate(room, pos, opposite, newTexture);
-            }
-            else
-            {
-                newTexture.Rotate(1, isTriangle);
-                block.SetFaceTexture(face, newTexture);
-            }
+            newTexture.Rotate(1, isTriangle);
+            block.SetFaceTexture(face, newTexture);
 
             // Update state
             room.BuildGeometry();
@@ -1181,7 +1148,7 @@ namespace TombEditor
                 }
 
                 if (face >= BlockFace.Ceiling) area.Mirror(area.TextureIsTriangle);
-                _editor.SelectTextureAndCenterView(area.RestoreQuadWithRotation());
+                _editor.SelectTextureAndCenterView(area.RestoreQuad());
             }
         }
 
@@ -1227,6 +1194,85 @@ namespace TombEditor
             return result.Distinct().ToList();
         }
 
+        private static bool FaceIsPortal(Room room, VectorInt2 pos, BlockFace face)
+        {
+            switch (face)
+            {
+                case BlockFace.PositiveZ_QA:
+                case BlockFace.NegativeZ_QA:
+                case BlockFace.NegativeX_QA:
+                case BlockFace.PositiveX_QA:
+                case BlockFace.PositiveZ_ED:
+                case BlockFace.NegativeZ_ED:
+                case BlockFace.NegativeX_ED:
+                case BlockFace.PositiveX_ED:
+                case BlockFace.PositiveZ_Middle:
+                case BlockFace.NegativeZ_Middle:
+                case BlockFace.NegativeX_Middle:
+                case BlockFace.PositiveX_Middle:
+                case BlockFace.PositiveZ_WS:
+                case BlockFace.NegativeZ_WS:
+                case BlockFace.NegativeX_WS:
+                case BlockFace.PositiveX_WS:
+                case BlockFace.PositiveZ_RF:
+                case BlockFace.NegativeZ_RF:
+                case BlockFace.NegativeX_RF:
+                case BlockFace.PositiveX_RF:
+                    return room.Blocks[pos.X, pos.Y].WallPortal != null;
+
+                case BlockFace.Floor:
+                case BlockFace.FloorTriangle2:
+                    return room.Blocks[pos.X, pos.Y].FloorPortal != null;
+
+                case BlockFace.Ceiling:
+                case BlockFace.CeilingTriangle2:
+                    return room.Blocks[pos.X, pos.Y].CeilingPortal != null;
+
+                // TODO: In TR5Main, possibly diagonal portals can be implemented?
+
+                case BlockFace.DiagonalQA:
+                case BlockFace.DiagonalWS:
+                case BlockFace.DiagonalED:
+                case BlockFace.DiagonalRF:
+                case BlockFace.DiagonalMiddle:
+                    return false;
+
+                default:
+                    return false;
+            }
+        }
+
+        private static void CheckTextureAttributes(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
+        {
+            if (!_editor.Configuration.TextureMap_WarnAboutIncorrectAttributes)
+                return;
+
+            // Identify if double-sided texture is applied to non-double-sided face
+
+            if (texture.DoubleSided && !FaceIsPortal(room, pos, face))
+            {
+                if (!_textureAtrributeMessageState)
+                    _editor.SendMessage("Double-sided texture is applied to a single-sided face.\n" +
+                                        "Check if it's intentional.", PopupType.Warning);
+
+                // Increase message count and reset it every 20th time to make sure user is aware of the message.
+
+                _textureAttributeMessageCount++;
+
+                if (_textureAttributeMessageCount > 20)
+                {
+                    _textureAttributeMessageCount = 0;
+                    _textureAtrributeMessageState = false;
+                }
+                else
+                    _textureAtrributeMessageState = true;
+            }
+            else
+                _textureAtrributeMessageState = false;
+        }
+        private static bool _textureAtrributeMessageState = false;
+        private static int  _textureAttributeMessageCount = 0;
+
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
@@ -1270,7 +1316,7 @@ namespace TombEditor
                         surface.DiagonalSplit != DiagonalSplit.XpZp && 
                         surface.SplitDirectionIsXEqualsZ)
                     {
-                        if(surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
+                        if (surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
                         {
                             Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
                             processedTexture.TexCoord1 = processedTexture.TexCoord3;
@@ -1425,7 +1471,14 @@ namespace TombEditor
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
             processedTexture.ClampToBounds();
 
-            return block.SetFaceTexture(face, processedTexture);
+            // Try to apply texture (returns false if same texture is already applied)
+            var textureApplied = block.SetFaceTexture(face, processedTexture);
+
+            // Check if texture attributes are correct
+            if (textureApplied)
+                CheckTextureAttributes(room, pos, face, processedTexture);
+
+            return textureApplied;
         }
 
         public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool disableUndo = false)
@@ -1946,7 +1999,7 @@ namespace TombEditor
             HashSet<Room> rooms = new HashSet<Room>(rooms_);
 
             // Check if is the last room
-            int remainingRoomCount = _editor.Level.Rooms.Count(r => r != null && !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
+            int remainingRoomCount = _editor.Level.ExistingRooms.Count(r => !rooms.Contains(r) && !rooms.Contains(r.AlternateOpposite));
             if (remainingRoomCount <= 0)
             {
                 _editor.SendMessage("You must have at least one room in your level.", PopupType.Error);
@@ -1991,7 +2044,7 @@ namespace TombEditor
             if (rooms.Contains(_editor.SelectedRoom))
             {
                 if (_editor.PreviousRoom == null || rooms.Contains(_editor.PreviousRoom))
-                    _editor.SelectRoom(_editor.Level.Rooms.FirstOrDefault(r => r != null));
+                    _editor.SelectRoom(_editor.Level.ExistingRooms.FirstOrDefault());
                 else
                     _editor.SelectRoom(_editor.PreviousRoom);
             }
@@ -3569,8 +3622,15 @@ namespace TombEditor
                         var statistics = compiler.CompileLevel();
                         watch.Stop();
                         progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
                         // Raise an event for statistics update
-                        Editor.Instance.RaiseEvent(new Editor.LevelCompilationCompletedEvent { InfoString = statistics.ToString() });
+                        _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent 
+                        {
+                            BoxCount = statistics.BoxCount,
+                            OverlapCount = statistics.OverlapCount,
+                            TextureCount = statistics.ObjectTextureCount,
+                            InfoString = statistics.ToString() 
+                        });
                     }
 
                     // Force garbage collector to compact memory
@@ -4609,7 +4669,6 @@ namespace TombEditor
 
                     if (!silent && _editor.Level.Settings.HasUnknownData)
                         _editor.SendMessage("This project was created in newer version of Tomb Editor.\nSome data was lost. Project is in read-only mode.", PopupType.Warning);
-
                     return true;
                 }
             }
@@ -4750,7 +4809,7 @@ namespace TombEditor
             }
 
             foreach (Room room in roomsToMove)
-                _editor.RoomGeometryChange(room);
+                _editor.RoomPositionChange(room);
         }
 
         public static void SplitSectorObjectOnSelection(SectorBasedObjectInstance @object)

@@ -778,7 +778,7 @@ namespace TombEditor
                     var deleteLights = (DarkMessageBox.Show(args.Window, "Delete lights as well?",
                                          "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
 
-                    foreach (var room in args.Editor.Level.Rooms.Where(r => r != null))
+                    foreach (var room in args.Editor.Level.ExistingRooms)
                     {
                         var objects = room.Objects.Where(ob => ob is PositionBasedObjectInstance && (!(ob is LightInstance) || deleteLights)).ToList();
                         if (objects.Count > 0)
@@ -798,7 +798,7 @@ namespace TombEditor
                 if (DarkMessageBox.Show(args.Window, "Do you want to delete all triggers in level? This action can't be undone.",
                                        "Delete all triggers", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    foreach (var room in args.Editor.Level.Rooms.Where(r => r != null))
+                    foreach (var room in args.Editor.Level.ExistingRooms)
                     {
                         var triggers = room.Triggers.ToList();
                         if (triggers.Count > 0)
@@ -815,7 +815,7 @@ namespace TombEditor
             AddCommand("SelectAll", "Select all", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (args.Editor.Mode == EditorMode.Map2D)
-                    args.Editor.SelectRooms(args.Editor.Level.Rooms.Where(room => room != null), true);
+                    args.Editor.SelectRooms(args.Editor.Level.ExistingRooms, true);
                 else
                     args.Editor.SelectedSectors = new SectorSelection { Area = args.Editor.SelectedRoom.LocalArea };
             });
@@ -1508,6 +1508,12 @@ namespace TombEditor
                 args.Editor.Quit();
             });
 
+            AddCommand("ShowStatistics", "Statistics Display", CommandType.View, delegate (CommandArgs args)
+            {
+                args.Editor.Configuration.UI_ShowStats = !args.Editor.Configuration.UI_ShowStats;
+                args.Editor.ConfigurationChange();
+            });
+
             AddCommand("DrawPortals", "Draw portals", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_ShowPortals = !args.Editor.Configuration.Rendering3D_ShowPortals;
@@ -1592,7 +1598,7 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
-            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args)
+            AddCommand("DrawWhiteTextureLightingOnly", "Draw untextured in Lighting Mode", CommandType.View, delegate (CommandArgs args) 
             {
                 args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly = !args.Editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
                 args.Editor.ConfigurationChange();

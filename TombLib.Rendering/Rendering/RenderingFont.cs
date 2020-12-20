@@ -89,7 +89,7 @@ namespace TombLib.Rendering
             _gdiHdc = GDI.CreateCompatibleDC(IntPtr.Zero);
             if (_gdiHdc == IntPtr.Zero)
                 throw new GDI.GDIException("CreateCompatibleDC");
-            _gdiFont = GDI.CreateFontW((int)(description.FontSize + 0.5f), 0, 0, 0, description.FontIsBold ? 700 : 0,
+            _gdiFont = GDI.CreateFontW((int)description.FontSize, 0, 0, 0, description.FontIsBold ? 700 : 400,
                 description.FontIsItalic ? 1u : 0u, description.FontIsUnderline ? 1u : 0u, description.FontIsStrikeout ? 1u : 0u, 0, 0, 0,
                 GDI.FontQuality.CLEARTYPE_QUALITY, 0, description.FontName);
             if (_gdiFont == IntPtr.Zero)

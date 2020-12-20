@@ -72,6 +72,8 @@ namespace TombLib.LevelData
 
     public class ImportedGeometryMesh : Mesh<ImportedGeometryVertex>
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         public bool HasVertexColors { get; set; }
 
         public ImportedGeometryMesh(GraphicsDevice device, string name)
@@ -101,9 +103,15 @@ namespace TombLib.LevelData
             if (IndexBuffer != null)
                 IndexBuffer.Dispose();
 
-            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            VertexBuffer = Buffer.Vertex.New(GraphicsDevice, Vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
             InputLayout  = VertexInputLayout.FromBuffer(0, VertexBuffer);
-            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
+            IndexBuffer  = Buffer.Index.New(GraphicsDevice, Indices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Immutable);
+            if (VertexBuffer == null)
+                logger.Error("Vertex Buffer of Imported Geometry " + Name + " could not be created!");
+            if (InputLayout == null)
+                logger.Error("Input Layout of Imported Geometry " + Name + " could not be created!");
+            if (IndexBuffer == null)
+                logger.Error("Index Buffer of Imported Geometry " + Name + " could not be created!");
         }
     }
 

@@ -25,7 +25,7 @@ namespace TombEditor.Controls
         public bool Editable { get; set; } = true;
 
         private static readonly Pen _selectionPen = Pens.White;
-        private static readonly Pen _gridPen = Pens.Black;
+        private static readonly Pen _gridPen = new Pen(Color.FromArgb(140, 0, 0, 0), 1);
         private const float _paletteCellWidth = 10;
         private const float _paletteCellHeight = 10;
 
@@ -227,18 +227,18 @@ namespace TombEditor.Controls
 
             var rect = new Rectangle(startX, startY, PaletteSize.Width * (int)_paletteCellWidth, 
                                                      PaletteSize.Height * (int)_paletteCellHeight);
-            // Draw outline rect
-            e.Graphics.DrawRectangle(_gridPen, rect);
 
             // Draw grid
-            for (int y = 0; y < PaletteSize.Height; y++)
-                for (int x = 0; x < PaletteSize.Width; x++)
+            for (int y = 0; y <= PaletteSize.Height; y++)
+            {
+                int lineY = startY + y * (int)_paletteCellHeight;
+                e.Graphics.DrawLine(y == 0 || y == PaletteSize.Height ? Pens.Black : _gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
+            }
+
+            for (int x = 0; x <= PaletteSize.Width; x++)
             {
                 int lineX = startX + x * (int)_paletteCellWidth;
-                int lineY = startY + y * (int)_paletteCellHeight;
-
-                e.Graphics.DrawLine(_gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
-                e.Graphics.DrawLine(_gridPen, new Point(startX, lineY), new Point(rect.Right, lineY));
+                e.Graphics.DrawLine(x == 0 || x == PaletteSize.Width ? Pens.Black : _gridPen, new Point(lineX, startY), new Point(lineX, rect.Bottom));
             }
 
             // Draw selection rect

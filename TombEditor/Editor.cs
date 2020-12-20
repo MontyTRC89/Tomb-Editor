@@ -10,6 +10,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -53,6 +54,7 @@ namespace TombEditor
 
         public event Action<IEditorEvent> EditorEventRaised;
 
+        public StatisticSummary Stats = new StatisticSummary();
         public void RaiseEvent(IEditorEvent eventObj)
         {
             SynchronizationContext.Send(eventObj_ => EditorEventRaised?.Invoke((IEditorEvent)eventObj_), eventObj);
@@ -279,7 +281,13 @@ namespace TombEditor
 
         public Room SelectedRoom
         {
-            get { return _selectedRooms[0]; }
+            get
+            {
+                if (_selectedRooms != null)
+                    return _selectedRooms[0];
+                else
+                    return null;
+            }
             set
             {
                 if (value == _selectedRooms[0])
@@ -559,6 +567,16 @@ namespace TombEditor
             RaiseEvent(new RoomGeometryChangedEvent { Room = room });
         }
 
+        // This is invoked when room pos is changed.
+        public class RoomPositionChangedEvent : IEditorRoomChangedEvent
+        {
+            public Room Room { get; internal set; }
+        }
+        public void RoomPositionChange(Room room)
+        {
+            RaiseEvent(new RoomPositionChangedEvent { Room = room });
+        }
+
         // This is invoked when the level is saved an the file name changed.
         public class LevelFileNameChangedEvent : IEditorEvent { }
         public void LevelFileNameChange()
@@ -629,6 +647,9 @@ namespace TombEditor
                 ObjectChange(@object, changeType, room);
         }
 
+        // This is invoked when level statistics change.
+        public class StatisticsChangedEvent : IEditorEvent { }
+
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
         {
@@ -671,7 +692,7 @@ namespace TombEditor
             RaiseEvent(new HideSelectionEvent { HideSelection = state });
         }
         public bool HiddenSelection { get; private set; } = false;
-        
+
         // Last used palette colour
         public class LastUsedPaletteColourChangedEvent : IEditorEvent
         {
@@ -948,6 +969,41 @@ namespace TombEditor
                     Tool = Configuration.UI_LastTexturingTool;
             }
 
+            if (obj is IEditorObjectChangedEvent ||
+                obj is SelectedRoomsChangedEvent ||
+                obj is MergedStaticsChangedEvent ||
+                obj is LoadedImportedGeometriesChangedEvent ||
+                obj is LoadedWadsChangedEvent ||
+                obj is LoadedTexturesChangedEvent ||
+                obj is GameVersionChangedEvent)
+            {
+                UpdateLevelStatistics();
+            }
+
+            if (obj is RoomGeometryChangedEvent ||
+                obj is RoomTextureChangedEvent ||
+                obj is RoomPropertiesChangedEvent)
+            {
+                if ((obj as IEditorRoomChangedEvent).Room == SelectedRoom)
+                    UpdateRoomStatistics();
+            }
+
+            if (obj is LevelCompilationCompletedEvent)
+            {
+                var evt = obj as LevelCompilationCompletedEvent;
+                Stats.BoxCount = evt.BoxCount;
+                Stats.OverlapCount = evt.OverlapCount;
+                Stats.TextureCount = evt.TextureCount;
+                UpdateLevelStatistics(false, true);
+            }
+
+            if (obj is LevelChangedEvent) 
+            {
+                var evnt = obj as LevelChangedEvent;
+                var settings = evnt.Current.Settings;
+                UpdateLevelStatistics(true);
+            }
+
             // Reset notifications, when changeing between 2D and 3D mode
             // Also reset selected sectors if wanted and restore last tool for desired mode
             if (obj is ModeChangedEvent)
@@ -988,6 +1044,7 @@ namespace TombEditor
             // Update room selection so that no deleted rooms are selected
             if (obj is RoomListChangedEvent)
             {
+                if (SelectedRooms == null) return;
                 List<Room> newSelection = SelectedRooms.Intersect(_level.Rooms.Where(room => room != null)).ToList();
                 if (newSelection.FirstOrDefault() == null)
                     SelectLastOrDefaultRoom();
@@ -998,6 +1055,8 @@ namespace TombEditor
 
                 if (SelectedObject != null && !newSelection.Contains(SelectedObject.Room))
                     SelectedObject = null;
+
+                UpdateLevelStatistics();
             }
 
             // Update unsaved changes state
@@ -1028,9 +1087,111 @@ namespace TombEditor
             }
         }
 
+        private void UpdateRoomStatistics()
+        {
+            if (SelectedRoom != null)
+                SelectedRoom.GetGeometryStatistics(out Stats.RoomStats.VertexCount, out Stats.RoomStats.FaceCount);
+            RaiseEvent(new StatisticsChangedEvent());
+        }
+
+        private void UpdateLevelStatistics(bool resetCompilationStats = false, bool force = false)
+        {
+            StatisticSummary stats;
+
+            if (resetCompilationStats)
+                stats = new StatisticSummary();
+            else
+                stats = new StatisticSummary() { BoxCount = Stats.BoxCount, OverlapCount = Stats.OverlapCount, TextureCount = Stats.TextureCount };
+
+            // Update geometry statistics for current room only
+            if (SelectedRoom != null)
+                SelectedRoom.GetGeometryStatistics(out stats.RoomStats.VertexCount, out stats.RoomStats.FaceCount);
+
+            foreach (var r in Level.ExistingRooms) 
+            {
+                stats.RoomCount++;
+
+                foreach (var obj in r.Objects) 
+                {
+                    if (obj is MoveableInstance)
+                    {
+                        // Ignore AI objects since they don't count as moveables
+                        if (TrCatalog.IsMoveableAI(Level.Settings.GameVersion, (obj as MoveableInstance).WadObjectId.TypeId))
+                            continue;
+
+                        stats.LevelStats.MoveableCount++;
+                        if (r == SelectedRoom)
+                            stats.RoomStats.MoveableCount++;
+                    }
+
+                    if (obj is StaticInstance) 
+                    {
+                        stats.LevelStats.StaticCount++;
+                        if (r == SelectedRoom)
+                            stats.RoomStats.StaticCount++;
+                    }
+
+                    if (obj is LightInstance) 
+                    {
+                        // Ignore disabled and effect lights since they never added
+
+                        var light = obj as LightInstance;
+                        if (!light.Enabled)
+                            continue;
+
+                        stats.LevelStats.LightCount++;
+                        if (r == SelectedRoom)
+                            stats.RoomStats.LightCount++;
+
+                        // Additionally count dynamic lights separately
+
+                        if (light.Type != LightType.Effect && light.IsDynamicallyUsed)
+                        {
+                            stats.LevelStats.DynLightCount++;
+                            if (r == SelectedRoom)
+                                stats.RoomStats.DynLightCount++;
+                        }
+                    }
+
+                    if (obj is CameraInstance) 
+                    {
+                        stats.LevelStats.CameraCount++;
+                        if (r == SelectedRoom)
+                            stats.RoomStats.CameraCount++;
+                    }
+
+                    if (obj is FlybyCameraInstance) 
+                    {
+                        stats.LevelStats.FlybyCount++;
+                        if (r == SelectedRoom)
+                            stats.RoomStats.FlybyCount++;
+                    }
+                }
+
+                foreach (var obj in r.SectorObjects) 
+                {
+                    if (obj is TriggerInstance) 
+                    {
+                        stats.LevelStats.TriggerCount++;
+                        if (r == SelectedRoom)
+                            stats.RoomStats.TriggerCount++;
+                    }
+                }
+            }
+
+            if (force || stats != Stats)
+            {
+                Stats = stats;
+                RaiseEvent(new StatisticsChangedEvent());
+            }
+        }
+
         public class LevelCompilationCompletedEvent : IEditorEvent
         {
-            public string InfoString { get; set; }
+            public int BoxCount { get; internal set; }
+            public int OverlapCount { get; internal set; }
+            public int TextureCount { get; internal set; }
+            public String InfoString { get;internal set; }
         }
 
         // Auto saving
@@ -1118,21 +1279,26 @@ namespace TombEditor
 
         public Editor(SynchronizationContext synchronizationContext, Configuration configuration, Level level)
         {
+            
             if (synchronizationContext == null)
                 throw new ArgumentNullException(nameof(synchronizationContext));
+            Editor.Instance = this;
             SynchronizationContext = synchronizationContext;
             Configuration = configuration;
             SectorColoringManager = new SectorColoringManager(this);
             UndoManager = new EditorUndoManager(this, configuration.Editor_UndoDepth);
-            Level = level;
+            EditorEventRaised += Editor_EditorEventRaised;
+
+
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();
 
-            EditorEventRaised += Editor_EditorEventRaised;
             _configurationIsLoadedFromFile = true;
             Editor_EditorEventRaised(new ConfigurationChangedEvent { UpdateKeyboardShortcuts = true });
             _configurationIsLoadedFromFile = false;
+            Level = level;
+
         }
 
         public void Dispose()

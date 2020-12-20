@@ -180,6 +180,7 @@ namespace TombEditor.Controls
 
         public PanelRendering3D()
         {
+            
             Application.AddMessageFilter(filter);
 
             SetStyle(ControlStyles.Selectable | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
@@ -226,6 +227,7 @@ namespace TombEditor.Controls
                              });
                     });
             }
+            
         }
 
         private Room GetCurrentRoom()
@@ -364,7 +366,7 @@ namespace TombEditor.Controls
                 Camera.FieldOfView = _editor.Configuration.Rendering3D_FieldOfView * (float)(Math.PI / 180);
 
             // Move camera position with room movements
-            if (obj is Editor.RoomGeometryChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)
+            if (obj is Editor.RoomPositionChangedEvent && _editor.Mode == EditorMode.Map2D && _currentRoomLastPos.HasValue)
             {
                 Camera.MoveCameraLinear(_editor.SelectedRoom.WorldPos - _currentRoomLastPos.Value);
                 _currentRoomLastPos = _editor.SelectedRoom.WorldPos;
@@ -383,11 +385,14 @@ namespace TombEditor.Controls
             // Update rooms
             if (obj is IEditorRoomChangedEvent)
             {
-                _renderingCachedRooms.Remove(((IEditorRoomChangedEvent)obj).Room);
-                if (obj is Editor.RoomGeometryChangedEvent)
-                    foreach (var portal in ((Editor.RoomGeometryChangedEvent)obj).Room.Portals)
+                var room = ((IEditorRoomChangedEvent)obj).Room;
+
+                _renderingCachedRooms.Remove(room);
+                if (obj is Editor.RoomGeometryChangedEvent || obj is Editor.RoomPositionChangedEvent)
+                    foreach (var portal in room.Portals)
                         _renderingCachedRooms.Remove(portal.AdjoiningRoom);
             }
+
             if (obj is Editor.ObjectChangedEvent)
             {
                 var value = (Editor.ObjectChangedEvent)obj;
@@ -731,7 +736,7 @@ namespace TombEditor.Controls
                             {
                                 if (ModifierKeys.HasFlag(Keys.Shift))
                                 {
-                                    EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, ModifierKeys.HasFlag(Keys.Control));
+                                    EditorActions.RotateTexture(_editor.SelectedRoom, pos, newBlockPicking.Face);
                                     break;
                                 }
                                 else if (ModifierKeys.HasFlag(Keys.Control))
@@ -783,6 +788,7 @@ namespace TombEditor.Controls
                                     case EditorToolType.Brush:
                                     case EditorToolType.Pencil:
                                         EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture);
+                                        _toolHandler.Engage(e.X, e.Y, newBlockPicking, false);
                                         break;
 
                                     default:
@@ -1171,13 +1177,13 @@ namespace TombEditor.Controls
                                     break;
                                 else if ((_editor.Mode == EditorMode.FaceEdit || _editor.Mode == EditorMode.Lighting) && _editor.Action == null && ModifierKeys == Keys.None && !_objectPlaced)
                                 {
-                                    if (_editor.Tool.Tool == EditorToolType.Brush)
+                                    if (_editor.Tool.Tool == EditorToolType.Brush && _toolHandler.Engaged)
                                     {
                                         if (_editor.SelectedSectors.Valid && _editor.SelectedSectors.Area.Contains(pos) ||
                                             _editor.SelectedSectors.Empty)
                                             redrawWindow = EditorActions.ApplyTexture(_editor.SelectedRoom, pos, newBlockPicking.Face, _editor.SelectedTexture, true);
                                     }
-                                    else if (_editor.Tool.Tool == EditorToolType.GridPaint)
+                                    else if (_editor.Tool.Tool == EditorToolType.GridPaint && _toolHandler.Engaged)
                                     {
                                         int factor = 2;
                                         if (_editor.Tool.GridSize == PaintGridSize.Grid3x3) factor = 3;
@@ -1679,59 +1685,69 @@ namespace TombEditor.Controls
             {
                 // First check for all objects in the room
                 foreach (var instance in room.Objects)
-                    if (instance is MoveableInstance && ShowMoveables)
+                    if (instance is MoveableInstance)
                     {
-                        var modelInfo = (MoveableInstance)instance;
-                        var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
-                        if (moveable != null)
+                        if (ShowMoveables)
                         {
-                            // TODO Make picking independent of the rendering data.
-
-                            var model = _wadRenderer.GetMoveable(moveable);
-                            var skin = model;
-                            if (moveable.Id == WadMoveableId.Lara) 
+                            var modelInfo = (MoveableInstance)instance;
+                            var moveable = _editor?.Level?.Settings?.WadTryGetMoveable(modelInfo.WadObjectId);
+                            if (moveable != null)
                             {
-                                var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, moveable.Id.TypeId));
-                                var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
-                                if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
-                                    skin = _wadRenderer.GetMoveable(moveableSkin);
-                            }
+                                // TODO Make picking independent of the rendering data.
+                                var model = _wadRenderer.GetMoveable(moveable);
+                                var skin = model;
+                                if (moveable.Id == WadMoveableId.Lara)
+                                {
+                                    var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_editor.Level.Settings.GameVersion, moveable.Id.TypeId));
+                                    var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
+                                    if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
+                                        skin = _wadRenderer.GetMoveable(moveableSkin);
+                                }
 
-                            for (int j = 0; j < model.Meshes.Count; j++)
-                            {
-                                var mesh = skin.Meshes[j];
-                                DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                                for (int j = 0; j < model.Meshes.Count; j++)
+                                {
+                                    var mesh = skin.Meshes[j];
+                                    DoMeshPicking(ref result, ray, instance, mesh, model.AnimationTransforms[j] * instance.ObjectMatrix);
+                                }
                             }
+                            else
+                                result = TryPickServiceObject(instance, ray, result, out distance);
                         }
-                        else
-                            result = TryPickServiceObject(instance, ray, result, out distance);
                     }
-                    else if (instance is StaticInstance && ShowStatics)
+                    else if (instance is StaticInstance)
                     {
-                        StaticInstance modelInfo = (StaticInstance)instance;
-                        WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
-                        if (@static != null)
+                        if (ShowStatics)
                         {
-                            // TODO Make picking independent of the rendering data.
-                            StaticModel model = _wadRenderer.GetStatic(@static);
-                            var mesh = model.Meshes[0];
-                            DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                            StaticInstance modelInfo = (StaticInstance)instance;
+                            WadStatic @static = _editor?.Level?.Settings?.WadTryGetStatic(modelInfo.WadObjectId);
+                            if (@static != null)
+                            {
+                                // TODO Make picking independent of the rendering data.
+                                StaticModel model = _wadRenderer.GetStatic(@static);
+                                var mesh = model.Meshes[0];
+                                DoMeshPicking(ref result, ray, instance, mesh, instance.ObjectMatrix);
+                            }
+                            else
+                                result = TryPickServiceObject(instance, ray, result, out distance);
                         }
-                        else
-                            result = TryPickServiceObject(instance, ray, result, out distance);
                     }
-                    else if (instance is ImportedGeometryInstance && ShowImportedGeometry && 
-                             !DisablePickingForImportedGeometry)
+                    else if (instance is ImportedGeometryInstance)
                     {
-                        var geometry = (ImportedGeometryInstance)instance;
-                        if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
-                            result = TryPickServiceObject(instance, ray, result, out distance);
-                        else
-                            foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
-                                DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                        if (ShowImportedGeometry && !DisablePickingForImportedGeometry)
+                        {
+                            var geometry = (ImportedGeometryInstance)instance;
+                            if (geometry.Hidden || !(geometry?.Model?.DirectXModel?.Meshes.Count > 0))
+                                result = TryPickServiceObject(instance, ray, result, out distance);
+                            else
+                                foreach (ImportedGeometryMesh mesh in geometry?.Model?.DirectXModel?.Meshes ?? Enumerable.Empty<ImportedGeometryMesh>())
+                                    DoMeshPicking(ref result, ray, instance, mesh, geometry.ObjectMatrix);
+                        }
                     }
-                    else if (instance is VolumeInstance && ShowVolumes)
-                        result = TryPickServiceObject(instance, ray, result, out distance);
+                    else if (instance is VolumeInstance)
+                    {
+                        if (ShowVolumes)
+                            result = TryPickServiceObject(instance, ray, result, out distance);
+                    }
                     else if (ShowOtherObjects)
                         result = TryPickServiceObject(instance, ray, result, out distance);
 
@@ -2869,7 +2885,7 @@ namespace TombEditor.Controls
             for (int i = 0; i < model.Meshes.Count; i++)
             {
                 var mesh = model.Meshes[i];
-                if (mesh.Vertices.Count == 0)
+                if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
                     continue;
 
                 _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -2923,7 +2939,7 @@ namespace TombEditor.Controls
                 for (int i = 0; i < skin.Meshes.Count; i++)
                 {
                     var mesh = skin.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.InputLayout == null || mesh.IndexBuffer == null)
                         continue;
                     
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -2937,7 +2953,7 @@ namespace TombEditor.Controls
                         else
                         {
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                                skinnedModelEffect.Parameters["Color"].SetValue(instance.Color * instance.Room.Properties.AmbientLight);
+                                skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
                             else
                                 skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
                         }
@@ -2996,7 +3012,7 @@ namespace TombEditor.Controls
                 for (var i = 0; i < meshes.Count; i++)
                 {
                     var mesh = meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (mesh.Vertices.Count == 0 || mesh.InputLayout == null || mesh.IndexBuffer == null || mesh.VertexBuffer == null)
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -3028,7 +3044,7 @@ namespace TombEditor.Controls
 
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
                                 instance.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                                geometryEffect.Parameters["Color"].SetValue(instance.Room.Properties.AmbientLight);
+                                geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
                             else
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                         }
@@ -3089,13 +3105,12 @@ namespace TombEditor.Controls
                 var statID = _editor?.Level?.Settings?.WadTryGetStatic(group.Key);
                 if (statID == null)
                     continue;
-
                 var model = _wadRenderer.GetStatic(statID);
 
                 for (int i = 0; i < model.Meshes.Count; i++)
                 {
                     var mesh = model.Meshes[i];
-                    if (mesh.Vertices.Count == 0)
+                    if (mesh.Vertices.Count == 0 || mesh.VertexBuffer == null || mesh.IndexBuffer == null || mesh.InputLayout == null)
                         continue;
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
@@ -3113,9 +3128,9 @@ namespace TombEditor.Controls
                                 var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
 
                                 if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
-                                    staticMeshEffect.Parameters["Color"].SetValue(instance.Color);
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 else
-                                    staticMeshEffect.Parameters["Color"].SetValue(instance.Color * instance.Room.Properties.AmbientLight);
+                                    staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
                             }
                             else
                                 staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);
@@ -3374,8 +3389,11 @@ namespace TombEditor.Controls
                 RoomDisableVertexColors = _editor.Mode == EditorMode.FaceEdit,
                 RoomGridLineWidth = _editor.Configuration.Rendering3D_LineWidth,
                 TransformMatrix = _viewProjection,
-                ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly
+                ShowLightingWhiteTextureOnly = ShowLightingWhiteTextureOnly,
+                LightMode =  _editor.Level.Settings.GameVersion.Native() > TRVersion.Game.TR2 ?
+                            (_editor.Level.Settings.GameVersion.Native() < TRVersion.Game.TR5 ? 1 : 0) : 2
             });
+
             var renderArgs = new RenderingDrawingRoom.RenderArgs
             {
                 RenderTarget = SwapChain,
@@ -3525,7 +3543,7 @@ namespace TombEditor.Controls
 
             string DebugString = "";
             if (_editor.Configuration.Rendering3D_ShowFPS)
-                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + ", Room vertices: " + (roomsToDraw.Sum(room => room.RoomGeometry.VertexPositions.Count)) + "\n";
+                DebugString += "FPS: " + Math.Round(1.0f / watch.Elapsed.TotalSeconds, 2) + "\n";
 
             if (_editor.SelectedObject != null)
                 DebugString += "Selected Object: " + _editor.SelectedObject.ToShortString();
@@ -3534,7 +3552,7 @@ namespace TombEditor.Controls
             textToDraw.Add(new Text
             {
                 Font = _fontDefault,
-                PixelPos = new Vector2(10, -5),
+                PixelPos = new Vector2(10, -10),
                 Alignment = new Vector2(0.0f, 0.0f),
                 Overlay = _editor.Configuration.Rendering3D_DrawFontOverlays,
                 String = DebugString
@@ -3543,6 +3561,8 @@ namespace TombEditor.Controls
             // Finish strings
             SwapChain.RenderText(textToDraw);
         }
+
+
 
         private static float GetFloorHeight(Room room, Vector3 position)
         {
@@ -3652,6 +3672,29 @@ namespace TombEditor.Controls
             _flybyPathVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New(_legacyDevice, vertices.ToArray(), SharpDX.Direct3D11.ResourceUsage.Dynamic);
 
             return true;
+        }
+        
+        private Vector3 ConvertColor(Vector3 originalColor)
+        {
+            switch (_editor.Level.Settings.GameVersion)
+            {
+                case TRVersion.Game.TR1:
+                case TRVersion.Game.TR2:
+                    return new Vector3(originalColor.GetLuma());
+
+                case TRVersion.Game.TR5Main:
+                    return originalColor;
+
+                // All engine versions up to TR5 use 15-bit color as static mesh tint
+
+                default:
+                {
+                    var R = (float)Math.Floor(originalColor.X * 32.0f);
+                    var G = (float)Math.Floor(originalColor.Y * 32.0f);
+                    var B = (float)Math.Floor(originalColor.Z * 32.0f);
+                    return new Vector3(R / 32.0f, G / 32.0f, B / 32.0f);
+                }
+            }
         }
 
         private class Comparer : IComparer<StaticInstance>, IComparer<MoveableInstance>, IComparer<ImportedGeometryInstance>

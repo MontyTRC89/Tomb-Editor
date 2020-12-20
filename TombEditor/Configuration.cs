@@ -73,7 +73,7 @@ namespace TombEditor
         public bool Rendering3D_HideTransparentFaces { get; set; } = true;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public bool Rendering3D_ShowLightingWhiteTextureOnly { get; set; } = false;
-        public int Rendering3D_FontSize { get; set; } = 20;
+        public int Rendering3D_FontSize { get; set; } = 16;
         public bool Rendering3D_FontIsBold { get; set; } = true;
         public bool Rendering3D_DrawFontOverlays { get; set; } = true;
         public bool Rendering3D_Antialias { get; set; } = true;
@@ -117,6 +117,8 @@ namespace TombEditor
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
         public float TextureMap_TileSelectionSize { get; set; } = 64.0f;
+        public bool TextureMap_ResetAttributesOnNewSelection { get; set; } = false;
+        public bool TextureMap_WarnAboutIncorrectAttributes { get; set; } = true;
 
         // Palette options
 
@@ -142,6 +144,7 @@ namespace TombEditor
 
         // User interface options
 
+        public bool UI_ShowStats { get; set; } = true;
         public bool UI_AutoFillTriggerTypesForSwitchAndKey { get; set; } = true;
         public bool UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture { get; set; } = false;
         public bool UI_DiscardSelectionOnModeSwitch { get; set; } = false;

@@ -42,6 +42,7 @@ namespace TombEditor.Forms
             // butOk
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butOk.Checked = false;
             this.butOk.Location = new System.Drawing.Point(217, 39);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
@@ -52,6 +53,7 @@ namespace TombEditor.Forms
             // butCancel
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(303, 39);
             this.butCancel.Name = "butCancel";
@@ -108,6 +110,7 @@ namespace TombEditor.Forms
             this.MinimumSize = new System.Drawing.Size(409, 110);
             this.Name = "FormSelectRoomByTags";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select Rooms by Tags";
             this.ResumeLayout(false);
             this.PerformLayout();

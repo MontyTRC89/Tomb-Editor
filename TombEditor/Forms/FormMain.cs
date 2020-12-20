@@ -173,24 +173,20 @@ namespace TombEditor.Forms
                 makeQuickItemGroupToolStripMenuItem.Enabled = isNG;
             }
 
-            // Update compilation statistics
-            if (obj is Editor.LevelCompilationCompletedEvent)
-            {
-                var evt = obj as Editor.LevelCompilationCompletedEvent;
-                statusLastCompilation.Text = "Last level output { " + evt.InfoString + " }";
-            }
-
             // Update autosave status
             if (obj is Editor.AutosaveEvent)
             {
                 var evt = obj as Editor.AutosaveEvent;
                 statusAutosave.Text = evt.Exception == null ? "Autosave OK: " + evt.Time : "Autosave failed!";
-                statusAutosave.ForeColor = evt.Exception == null ? statusLastCompilation.ForeColor : Color.LightSalmon;
+                statusAutosave.ForeColor = evt.Exception == null ? Colors.LightText : Colors.BlueHighlight;
             }
 
             // Update room information on the status strip
-            if (obj is Editor.SelectedRoomChangedEvent ||
+            if (obj is Editor.InitEvent ||
+                obj is Editor.LevelChangedEvent ||
+                obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPositionChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
                 obj is Editor.RoomPropertiesChangedEvent)
             {
@@ -208,6 +204,7 @@ namespace TombEditor.Forms
             // Update selection information of the status strip
             if (obj is Editor.SelectedRoomChangedEvent ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomGeometryChangedEvent) ||
+                _editor.IsSelectedRoomEvent(obj as Editor.RoomPositionChangedEvent) ||
                 _editor.IsSelectedRoomEvent(obj as Editor.RoomSectorPropertiesChangedEvent) ||
                 obj is Editor.SelectedSectorsChangedEvent)
             {
@@ -306,6 +303,7 @@ namespace TombEditor.Forms
         {
             ShowRealTintForObjectsToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowRealTintForObjects;
             drawWhiteTextureLightingOnlyToolStripMenuItem.Checked = _editor.Configuration.Rendering3D_ShowLightingWhiteTextureOnly;
+            statisticsToolStripMenuItem.Checked = _editor.Configuration.UI_ShowStats;
         }
 
         private void RefreshRecentProjectsList()

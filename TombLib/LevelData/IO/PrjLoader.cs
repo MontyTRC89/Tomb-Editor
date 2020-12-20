@@ -1936,7 +1936,7 @@ namespace TombLib.LevelData.IO
 
             // Update level geometry
             progressReporter.ReportProgress(95, "Building rooms");
-            Parallel.ForEach(level.Rooms.Where(r => r != null), room => room.BuildGeometry());
+            Parallel.ForEach(level.ExistingRooms, room => room.BuildGeometry());
             progressReporter.ReportProgress(100, "Level loaded correctly!");
 
             return level;
@@ -1949,6 +1949,7 @@ namespace TombLib.LevelData.IO
             int edXpZp = block.GetHeight(BlockVertical.Ed, BlockEdge.XpZp);
             int edXpZn = block.GetHeight(BlockVertical.Ed, BlockEdge.XpZn);
             int edXnZn = block.GetHeight(BlockVertical.Ed, BlockEdge.XnZn);
+
             switch (face)
             {
                 case BlockFace.PositiveZ_QA:

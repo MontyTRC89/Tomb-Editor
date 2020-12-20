@@ -282,6 +282,7 @@
             // labelStatus
             // 
             this.labelStatus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.labelStatus.ForeColor = System.Drawing.Color.Silver;
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(0, 0);
             // 

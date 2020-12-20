@@ -1,10 +1,12 @@
 cbuffer WorldData
 {
-    matrix TransformMatrix;
-    float RoomGridLineWidth;
+	matrix TransformMatrix;
+	float RoomGridLineWidth;
 	bool RoomGridForce;
 	bool RoomDisableVertexColors;
 	bool ShowExtraBlendingModes;
+	bool ShowLightingWhiteTextureOnly;
+	int LightMode;
 };
 
 struct VertexInputType
@@ -46,6 +48,22 @@ PixelInputType main(VertexInputType input)
     input.Position.w = 1.0f;
     output.Position = mul(TransformMatrix, input.Position);
     output.Color = RoomDisableVertexColors ? float4(1.0f, 1.0f, 1.0f, 1.0f) : (input.Color * float4(2.0f, 2.0f, 2.0f, 1.0f));
+	if (LightMode == 1) 
+	{
+		int r = output.Color.r * 32.0f;
+		int g = output.Color.g * 32.0f;
+		int b = output.Color.b * 32.0f;
+		r = floor(r);
+		g = floor(g);
+		b = floor(b);
+		output.Color = float4(r / 32.0f, g / 32.0f, b / 32.0f, output.Color.a);
+	}
+	else if (LightMode == 2)
+	{
+		float luma = (output.Color.r * 0.2126f) + (output.Color.g * 0.7152f) + (output.Color.b * 0.0722f);
+		output.Color = float4(luma, luma, luma, output.Color.a);
+	}
+
     output.Uvw = float3( // Decompress UV coordinates
         (float)(input.UvwAndBlendMode.x & 0xffffff) / 16777216.0f,
         (float)((input.UvwAndBlendMode.x >> 24) | ((input.UvwAndBlendMode.y & 0xffff) << 8)) / 16777216.0f,

@@ -15,7 +15,6 @@ namespace TombLib.LevelData.Compilers
     {
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
-        private Dictionary<WadPolygon, Util.TexInfoManager.Result> _mergedStaticMeshTextureInfos = new Dictionary<WadPolygon, Util.TexInfoManager.Result>();
         private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
 
         private void BuildRooms()
@@ -501,42 +500,18 @@ namespace TombLib.LevelData.Compilers
                         ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
                         ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
 
-                        if (poly.Shape == WadPolygonShape.Triangle)
-                        {
-
-                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
-                            {
-                                var result = _mergedStaticMeshTextureInfos[poly];
-                                tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
-                                roomTriangles.Add(tri);
-                            }
-                            else
-                            {
+                            if (poly.Shape == WadPolygonShape.Triangle) {
                                 FixWadTextureCoordinates(ref poly.Texture);
                                 var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
                                 tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
                                 roomTriangles.Add(tri);
-                                _mergedStaticMeshTextureInfos.Add(poly, result);
-                            }
-                        }
-                        else
-                        {
-                            if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
-                            {
-                                var result = _mergedStaticMeshTextureInfos[poly];
-                                tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
-                                roomQuads.Add(quad);
-                            }
-                            else
-                            {
+                            } else {
                                 FixWadTextureCoordinates(ref poly.Texture);
                                 var result = _textureInfoManager.AddTexture(poly.Texture, true, false);
                                 tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
                                 roomQuads.Add(quad);
-                                _mergedStaticMeshTextureInfos.Add(poly, result);
                             }
                         }
-                    }
                 }
 
                 // Add geometry imported objects
@@ -966,7 +941,7 @@ namespace TombLib.LevelData.Compilers
             return newRoom;
         }
 
-        private static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
+        public static ushort GetOrAddVertex(Room room, Dictionary<int, ushort> roomVerticesDictionary, List<tr_room_vertex> roomVertices, Vector3 Position, Vector3 Color)
         {
             tr_room_vertex trVertex;
             trVertex.Position = new tr_vertex

@@ -143,6 +143,9 @@
     <Compile Include="Controls\PanelRenderingSprite.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\RichTextLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ToolBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -385,6 +388,7 @@
     <Compile Include="ObjectClipboardData.cs" />
     <Compile Include="RoomClipboardData.cs" />
     <Compile Include="SectorsClipboardData.cs" />
+    <Compile Include="Statistics.cs" />
     <Compile Include="ToolWindows\ImportedGeometryBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -665,6 +669,7 @@
     <None Include="Resources\icons_objects\objects_Sprite-16.png" />
     <None Include="Resources\icons_general\general_animcommand-16.png" />
     <None Include="Resources\icons_objects\objects_Memo-16.png" />
+    <None Include="Resources\icons_actions\actions_DrawUntexturedLights-161.png" />
     <Content Include="tomb_editor.ico" />
     <None Include="Resources\Misc\tomb_editor.ico" />
   </ItemGroup>
