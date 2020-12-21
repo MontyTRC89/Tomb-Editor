@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using TombLib;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -649,6 +650,8 @@ namespace TombEditor
 
         // This is invoked when level statistics change.
         public class StatisticsChangedEvent : IEditorEvent { }
+        private Task _roomStatsTask;
+        private Task _levelStatsTask;
 
         // Move the camera to the center of a specific sector.
         public class MoveCameraToSectorEvent : IEditorCameraEvent
@@ -1089,101 +1092,128 @@ namespace TombEditor
 
         private void UpdateRoomStatistics()
         {
-            if (SelectedRoom != null)
-                SelectedRoom.GetGeometryStatistics(out Stats.RoomStats.VertexCount, out Stats.RoomStats.FaceCount);
-            RaiseEvent(new StatisticsChangedEvent());
+            if (!Configuration.UI_ShowStats)
+                return;
+
+            if (_roomStatsTask != null &&
+               (_roomStatsTask.IsCompleted == false ||
+                _roomStatsTask.Status == TaskStatus.Running ||
+                _roomStatsTask.Status == TaskStatus.WaitingToRun ||
+                _roomStatsTask.Status == TaskStatus.WaitingForActivation))
+                return;
+
+                _roomStatsTask = Task.Factory.StartNew(() =>
+            {
+                if (SelectedRoom != null)
+                    SelectedRoom.GetGeometryStatistics(out Stats.RoomStats.VertexCount, out Stats.RoomStats.FaceCount);
+                RaiseEvent(new StatisticsChangedEvent());
+            });
+
         }
 
         private void UpdateLevelStatistics(bool resetCompilationStats = false, bool force = false)
         {
-            StatisticSummary stats;
+            if (!Configuration.UI_ShowStats)
+                return;
 
-            if (resetCompilationStats)
-                stats = new StatisticSummary();
-            else
-                stats = new StatisticSummary() { BoxCount = Stats.BoxCount, OverlapCount = Stats.OverlapCount, TextureCount = Stats.TextureCount };
+            if (_levelStatsTask != null &&
+               (_levelStatsTask.IsCompleted == false ||
+                _levelStatsTask.Status == TaskStatus.Running ||
+                _levelStatsTask.Status == TaskStatus.WaitingToRun ||
+                _levelStatsTask.Status == TaskStatus.WaitingForActivation))
+                return;
 
-            // Update geometry statistics for current room only
-            if (SelectedRoom != null)
-                SelectedRoom.GetGeometryStatistics(out stats.RoomStats.VertexCount, out stats.RoomStats.FaceCount);
-
-            foreach (var r in Level.ExistingRooms) 
+            _levelStatsTask = Task.Factory.StartNew(() =>
             {
-                stats.RoomCount++;
+                StatisticSummary stats;
 
-                foreach (var obj in r.Objects) 
+                if (resetCompilationStats)
+                    stats = new StatisticSummary();
+                else
+                    stats = new StatisticSummary() { BoxCount = Stats.BoxCount, OverlapCount = Stats.OverlapCount, TextureCount = Stats.TextureCount };
+
+                // Update geometry statistics for current room only
+                if (SelectedRoom != null)
+                    SelectedRoom.GetGeometryStatistics(out stats.RoomStats.VertexCount, out stats.RoomStats.FaceCount);
+
+                foreach (var r in Level.ExistingRooms)
                 {
-                    if (obj is MoveableInstance)
+                    stats.RoomCount++;
+
+                    foreach (var obj in r.Objects)
                     {
-                        // Ignore AI objects since they don't count as moveables
-                        if (TrCatalog.IsMoveableAI(Level.Settings.GameVersion, (obj as MoveableInstance).WadObjectId.TypeId))
-                            continue;
-
-                        stats.LevelStats.MoveableCount++;
-                        if (r == SelectedRoom)
-                            stats.RoomStats.MoveableCount++;
-                    }
-
-                    if (obj is StaticInstance) 
-                    {
-                        stats.LevelStats.StaticCount++;
-                        if (r == SelectedRoom)
-                            stats.RoomStats.StaticCount++;
-                    }
-
-                    if (obj is LightInstance) 
-                    {
-                        // Ignore disabled and effect lights since they never added
-
-                        var light = obj as LightInstance;
-                        if (!light.Enabled)
-                            continue;
-
-                        stats.LevelStats.LightCount++;
-                        if (r == SelectedRoom)
-                            stats.RoomStats.LightCount++;
-
-                        // Additionally count dynamic lights separately
-
-                        if (light.Type != LightType.Effect && light.IsDynamicallyUsed)
+                        if (obj is MoveableInstance)
                         {
-                            stats.LevelStats.DynLightCount++;
+                            // Ignore AI objects since they don't count as moveables
+                            if (TrCatalog.IsMoveableAI(Level.Settings.GameVersion, (obj as MoveableInstance).WadObjectId.TypeId))
+                                continue;
+
+                            stats.LevelStats.MoveableCount++;
                             if (r == SelectedRoom)
-                                stats.RoomStats.DynLightCount++;
+                                stats.RoomStats.MoveableCount++;
+                        }
+
+                        if (obj is StaticInstance)
+                        {
+                            stats.LevelStats.StaticCount++;
+                            if (r == SelectedRoom)
+                                stats.RoomStats.StaticCount++;
+                        }
+
+                        if (obj is LightInstance)
+                        {
+                            // Ignore disabled and effect lights since they never added
+
+                            var light = obj as LightInstance;
+                            if (!light.Enabled)
+                                continue;
+
+                            stats.LevelStats.LightCount++;
+                            if (r == SelectedRoom)
+                                stats.RoomStats.LightCount++;
+
+                            // Additionally count dynamic lights separately
+
+                            if (light.Type != LightType.Effect && light.IsDynamicallyUsed)
+                            {
+                                stats.LevelStats.DynLightCount++;
+                                if (r == SelectedRoom)
+                                    stats.RoomStats.DynLightCount++;
+                            }
+                        }
+
+                        if (obj is CameraInstance)
+                        {
+                            stats.LevelStats.CameraCount++;
+                            if (r == SelectedRoom)
+                                stats.RoomStats.CameraCount++;
+                        }
+
+                        if (obj is FlybyCameraInstance)
+                        {
+                            stats.LevelStats.FlybyCount++;
+                            if (r == SelectedRoom)
+                                stats.RoomStats.FlybyCount++;
                         }
                     }
 
-                    if (obj is CameraInstance) 
+                    foreach (var obj in r.SectorObjects)
                     {
-                        stats.LevelStats.CameraCount++;
-                        if (r == SelectedRoom)
-                            stats.RoomStats.CameraCount++;
-                    }
-
-                    if (obj is FlybyCameraInstance) 
-                    {
-                        stats.LevelStats.FlybyCount++;
-                        if (r == SelectedRoom)
-                            stats.RoomStats.FlybyCount++;
+                        if (obj is TriggerInstance)
+                        {
+                            stats.LevelStats.TriggerCount++;
+                            if (r == SelectedRoom)
+                                stats.RoomStats.TriggerCount++;
+                        }
                     }
                 }
 
-                foreach (var obj in r.SectorObjects) 
+                if (force || stats != Stats)
                 {
-                    if (obj is TriggerInstance) 
-                    {
-                        stats.LevelStats.TriggerCount++;
-                        if (r == SelectedRoom)
-                            stats.RoomStats.TriggerCount++;
-                    }
+                    Stats = stats;
+                    RaiseEvent(new StatisticsChangedEvent());
                 }
-            }
-
-            if (force || stats != Stats)
-            {
-                Stats = stats;
-                RaiseEvent(new StatisticsChangedEvent());
-            }
+            });
         }
 
         public class LevelCompilationCompletedEvent : IEditorEvent
