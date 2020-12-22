@@ -6,7 +6,7 @@ cbuffer WorldData
 	bool RoomDisableVertexColors;
 	bool ShowExtraBlendingModes;
 	bool ShowLightingWhiteTextureOnly;
-	bool Show15BitLighting;
+	int LightMode;
 };
 
 struct VertexInputType
@@ -48,7 +48,7 @@ PixelInputType main(VertexInputType input)
     input.Position.w = 1.0f;
     output.Position = mul(TransformMatrix, input.Position);
     output.Color = RoomDisableVertexColors ? float4(1.0f, 1.0f, 1.0f, 1.0f) : (input.Color * float4(2.0f, 2.0f, 2.0f, 1.0f));
-	if (Show15BitLighting) 
+	if (LightMode == 1) 
 	{
 		int r = output.Color.r * 32.0f;
 		int g = output.Color.g * 32.0f;
@@ -57,6 +57,11 @@ PixelInputType main(VertexInputType input)
 		g = floor(g);
 		b = floor(b);
 		output.Color = float4(r / 32.0f, g / 32.0f, b / 32.0f, output.Color.a);
+	}
+	else if (LightMode == 2)
+	{
+		float luma = (output.Color.r * 0.2126f) + (output.Color.g * 0.7152f) + (output.Color.b * 0.0722f);
+		output.Color = float4(luma, luma, luma, output.Color.a);
 	}
 
     output.Uvw = float3( // Decompress UV coordinates

@@ -223,7 +223,7 @@ namespace TombLib.Rendering.DirectX11
                 {
                     var overlay = overlays[i];
                     Vector2 posStart = overlay.Start * posScaling + posOffset;
-                    Vector2 posEnd = (overlay.End - new Vector2(1)) * posScaling + posOffset;
+                    Vector2 posEnd = (overlay.End + new Vector2(1)) * posScaling + posOffset;
 
                     positions[c * 6 + 0] = new Vector2(posStart.X, posStart.Y);
                     positions[c * 6 + 2] = positions[c * 6 + 3] = new Vector2(posEnd.X, posStart.Y);
@@ -246,10 +246,10 @@ namespace TombLib.Rendering.DirectX11
                     positions[c * 6 + 1] = positions[c * 6 + 4] = new Vector2(posStart.X, posEnd.Y);
                     positions[c * 6 + 5] = new Vector2(posEnd.X, posEnd.Y);
 
-                    uvws[c * 6 + 0] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, 0.5f));
-                    uvws[c * 6 + 2] = uvws[c * 6 + 3] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, 0.5f));
-                    uvws[c * 6 + 1] = uvws[c * 6 + 4] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0.5f, info.TexSize.Y - 0.5f));
-                    uvws[c * 6 + 5] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 0.5f, info.TexSize.Y - 0.5f));
+                    uvws[c * 6 + 0] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, Vector2.Zero);
+                    uvws[c * 6 + 2] = uvws[c * 6 + 3] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 1, 0));
+                    uvws[c * 6 + 1] = uvws[c * 6 + 4] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(0, info.TexSize.Y - 1));
+                    uvws[c * 6 + 5] = Dx11RenderingDevice.CompressUvw(info.TexStart, textureScaling, new Vector2(info.TexSize.X - 1, info.TexSize.Y - 1));
                 }
 
                 // Create GPU resources
@@ -264,7 +264,7 @@ namespace TombLib.Rendering.DirectX11
                     // Render
                     Bind();
                     Device.TextShader.Apply(Device.Context);
-                    Device.Context.PixelShader.SetSampler(0, Device.SamplerDefault);
+                    Device.Context.PixelShader.SetSampler(0, Device.SamplerRoundToNearest);
                     Device.Context.PixelShader.SetShaderResources(0, ((Dx11RenderingTextureAllocator)(textureAllocator)).TextureView);
                     Device.Context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
                     Device.Context.OutputMerger.SetDepthStencilState(Device.DepthStencilNoZBuffer);

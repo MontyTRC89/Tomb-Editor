@@ -1194,6 +1194,85 @@ namespace TombEditor
             return result.Distinct().ToList();
         }
 
+        private static bool FaceIsPortal(Room room, VectorInt2 pos, BlockFace face)
+        {
+            switch (face)
+            {
+                case BlockFace.PositiveZ_QA:
+                case BlockFace.NegativeZ_QA:
+                case BlockFace.NegativeX_QA:
+                case BlockFace.PositiveX_QA:
+                case BlockFace.PositiveZ_ED:
+                case BlockFace.NegativeZ_ED:
+                case BlockFace.NegativeX_ED:
+                case BlockFace.PositiveX_ED:
+                case BlockFace.PositiveZ_Middle:
+                case BlockFace.NegativeZ_Middle:
+                case BlockFace.NegativeX_Middle:
+                case BlockFace.PositiveX_Middle:
+                case BlockFace.PositiveZ_WS:
+                case BlockFace.NegativeZ_WS:
+                case BlockFace.NegativeX_WS:
+                case BlockFace.PositiveX_WS:
+                case BlockFace.PositiveZ_RF:
+                case BlockFace.NegativeZ_RF:
+                case BlockFace.NegativeX_RF:
+                case BlockFace.PositiveX_RF:
+                    return room.Blocks[pos.X, pos.Y].WallPortal != null;
+
+                case BlockFace.Floor:
+                case BlockFace.FloorTriangle2:
+                    return room.Blocks[pos.X, pos.Y].FloorPortal != null;
+
+                case BlockFace.Ceiling:
+                case BlockFace.CeilingTriangle2:
+                    return room.Blocks[pos.X, pos.Y].CeilingPortal != null;
+
+                // TODO: In TR5Main, possibly diagonal portals can be implemented?
+
+                case BlockFace.DiagonalQA:
+                case BlockFace.DiagonalWS:
+                case BlockFace.DiagonalED:
+                case BlockFace.DiagonalRF:
+                case BlockFace.DiagonalMiddle:
+                    return false;
+
+                default:
+                    return false;
+            }
+        }
+
+        private static void CheckTextureAttributes(Room room, VectorInt2 pos, BlockFace face, TextureArea texture)
+        {
+            if (!_editor.Configuration.TextureMap_WarnAboutIncorrectAttributes)
+                return;
+
+            // Identify if double-sided texture is applied to non-double-sided face
+
+            if (texture.DoubleSided && !FaceIsPortal(room, pos, face))
+            {
+                if (!_textureAtrributeMessageState)
+                    _editor.SendMessage("Double-sided texture is applied to a single-sided face.\n" +
+                                        "Check if it's intentional.", PopupType.Warning);
+
+                // Increase message count and reset it every 20th time to make sure user is aware of the message.
+
+                _textureAttributeMessageCount++;
+
+                if (_textureAttributeMessageCount > 20)
+                {
+                    _textureAttributeMessageCount = 0;
+                    _textureAtrributeMessageState = false;
+                }
+                else
+                    _textureAtrributeMessageState = true;
+            }
+            else
+                _textureAtrributeMessageState = false;
+        }
+        private static bool _textureAtrributeMessageState = false;
+        private static int  _textureAttributeMessageCount = 0;
+
         private static bool ApplyTextureWithoutUpdate(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool autocorrectCeiling = true)
         {
             if (_editor.Configuration.UI_AutoSwitchRoomToOutsideOnAppliedInvisibleTexture &&
@@ -1237,7 +1316,7 @@ namespace TombEditor
                         surface.DiagonalSplit != DiagonalSplit.XpZp && 
                         surface.SplitDirectionIsXEqualsZ)
                     {
-                        if(surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
+                        if (surface.DiagonalSplit != DiagonalSplit.XnZp && surface.DiagonalSplit != DiagonalSplit.XpZn)
                         {
                             Swap.Do(ref processedTexture.TexCoord0, ref processedTexture.TexCoord2);
                             processedTexture.TexCoord1 = processedTexture.TexCoord3;
@@ -1392,7 +1471,14 @@ namespace TombEditor
             // FIXME: Do we really need that now, when TextureOutOfBounds function was fixed?
             processedTexture.ClampToBounds();
 
-            return block.SetFaceTexture(face, processedTexture);
+            // Try to apply texture (returns false if same texture is already applied)
+            var textureApplied = block.SetFaceTexture(face, processedTexture);
+
+            // Check if texture attributes are correct
+            if (textureApplied)
+                CheckTextureAttributes(room, pos, face, processedTexture);
+
+            return textureApplied;
         }
 
         public static bool ApplyTexture(Room room, VectorInt2 pos, BlockFace face, TextureArea texture, bool disableUndo = false)

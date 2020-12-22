@@ -414,8 +414,8 @@ namespace WadTool
 
         private void treeSourceWad_DoubleClick(object sender, EventArgs e)
         {
-            if(treeSourceWad.SelectedWadObjectIds.Count() > 0)
-                CopyObject(false);
+            if (treeSourceWad.SelectedWadObjectIds.Count() > 0)
+                CopyObject(ModifierKeys.HasFlag(Keys.Alt));
         }
 
         private void treeDestWad_KeyDown(object sender, KeyEventArgs e)
