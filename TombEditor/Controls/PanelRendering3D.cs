@@ -2969,7 +2969,7 @@ namespace TombEditor.Controls
                             else
                                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                            if (submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
+                            if (_editor.Configuration.Rendering3D_HideTransparentFaces && submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
                             else
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
@@ -3081,7 +3081,7 @@ namespace TombEditor.Controls
 
                             if (!DisablePickingForImportedGeometry)
                             {
-                                if (submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
+                                if (_editor.Configuration.Rendering3D_HideTransparentFaces && submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
                                     _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
                                 else
                                     _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
@@ -3171,7 +3171,7 @@ namespace TombEditor.Controls
                             else
                                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
 
-                            if (submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
+                            if (_editor.Configuration.Rendering3D_HideTransparentFaces && submesh.Key.AdditiveBlending && _editor.SelectedObject != instance)
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
                             else
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);

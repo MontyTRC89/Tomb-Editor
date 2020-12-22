@@ -1592,7 +1592,7 @@ namespace TombEditor
                 args.Editor.ConfigurationChange();
             });
 
-            AddCommand("HideTransparentFaces", "Hide transparent faces", CommandType.View, delegate (CommandArgs args)
+            AddCommand("HideTransparentFaces", "Toggle in-editor transparency", CommandType.View, delegate (CommandArgs args)
             {
                 args.Editor.Configuration.Rendering3D_HideTransparentFaces = !args.Editor.Configuration.Rendering3D_HideTransparentFaces;
                 args.Editor.ConfigurationChange();
