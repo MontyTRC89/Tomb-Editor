@@ -6,7 +6,7 @@ cbuffer WorldData
 	bool RoomDisableVertexColors;
 	bool ShowExtraBlendingModes;
 	bool ShowLightingWhiteTextureOnly;
-	bool Show15BitLighting;
+	int LightMode;
 };
 
 struct PixelInputType

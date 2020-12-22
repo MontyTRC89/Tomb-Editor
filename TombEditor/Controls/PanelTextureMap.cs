@@ -224,6 +224,13 @@ namespace TombEditor.Controls
 
             selectedTexture.Texture = VisibleTexture;
 
+            // Reset double-sided and blending mode attrib on new picking, if needed
+            if (_editor.Configuration.TextureMap_ResetAttributesOnNewSelection)
+            {
+                selectedTexture.DoubleSided = false;
+                selectedTexture.BlendMode = BlendMode.Normal;
+            }
+
             if (selectedTexture.TriangleArea != 0 || selectedTexture.QuadArea != 0)
                 SelectedTexture = selectedTexture;
         }

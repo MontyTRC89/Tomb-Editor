@@ -2129,6 +2129,7 @@ namespace TombEditor.Forms
             // 
             this.statusStripSelectedRoom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStripSelectedRoom.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripSelectedRoom.ForeColor = System.Drawing.Color.Silver;
             this.statusStripSelectedRoom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusStripSelectedRoom.Name = "statusStripSelectedRoom";
             this.statusStripSelectedRoom.Size = new System.Drawing.Size(0, 21);
@@ -2138,6 +2139,7 @@ namespace TombEditor.Forms
             // 
             this.statusStripGlobalSelectionArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStripGlobalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripGlobalSelectionArea.ForeColor = System.Drawing.Color.Silver;
             this.statusStripGlobalSelectionArea.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusStripGlobalSelectionArea.Name = "statusStripGlobalSelectionArea";
             this.statusStripGlobalSelectionArea.Size = new System.Drawing.Size(0, 21);
@@ -2147,6 +2149,7 @@ namespace TombEditor.Forms
             // 
             this.statusStripLocalSelectionArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.statusStripLocalSelectionArea.BorderStyle = System.Windows.Forms.Border3DStyle.RaisedOuter;
+            this.statusStripLocalSelectionArea.ForeColor = System.Drawing.Color.Silver;
             this.statusStripLocalSelectionArea.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusStripLocalSelectionArea.Name = "statusStripLocalSelectionArea";
             this.statusStripLocalSelectionArea.Size = new System.Drawing.Size(0, 21);
@@ -2155,6 +2158,7 @@ namespace TombEditor.Forms
             // statusAutosave
             // 
             this.statusAutosave.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.statusAutosave.ForeColor = System.Drawing.Color.Silver;
             this.statusAutosave.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.statusAutosave.Name = "statusAutosave";
             this.statusAutosave.Size = new System.Drawing.Size(0, 21);
