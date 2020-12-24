@@ -1117,15 +1117,24 @@ namespace TombEditor
                 {
                     StatisticSummary stats;
 
-                    if (resetCompilationStats)
-                        stats = new StatisticSummary();
+                    if (onlyRoom)
+                    {
+                        stats = Stats;
+                        if (resetCompilationStats)
+                            stats.BoxCount = stats.OverlapCount = stats.TextureCount = 0;
+                    }
                     else
-                        stats = new StatisticSummary() { BoxCount = Stats.BoxCount, OverlapCount = Stats.OverlapCount, TextureCount = Stats.TextureCount };
+                    {
+                        if (resetCompilationStats)
+                            stats = new StatisticSummary();
+                        else
+                            stats = new StatisticSummary() { BoxCount = Stats.BoxCount, OverlapCount = Stats.OverlapCount, TextureCount = Stats.TextureCount };
+                    }
 
-                    // Update geometry statistics for current room only
                     if (SelectedRoom != null)
                         SelectedRoom.GetGeometryStatistics(out stats.RoomStats.VertexCount, out stats.RoomStats.FaceCount);
 
+                    // Ignore object stats if only room geometry is updated
                     if (!onlyRoom) foreach (var r in Level.ExistingRooms)
                     {
                         stats.RoomCount++;
@@ -1198,7 +1207,7 @@ namespace TombEditor
                         }
                     }
 
-                    if (force || stats != Stats)
+                    if (onlyRoom || force || stats != Stats)
                     {
                         Stats = stats;
                         RaiseEvent(new StatisticsChangedEvent());
