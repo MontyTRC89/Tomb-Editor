@@ -1048,15 +1048,19 @@ namespace TombEditor
             foreach (var r in affectedRooms)
                 _editor.RoomSectorPropertiesChange(r);
 
+            // Avoid having the removed object still selected
+            _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
+
             // Additional updates
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(room);
+
             if (instance is LightInstance)
             {
-
                 room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomGeometryChange(room);
             }
+
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
@@ -1081,9 +1085,6 @@ namespace TombEditor
                     _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
                 }
             }
-
-            // Avoid having the removed object still selected
-            _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
         public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
