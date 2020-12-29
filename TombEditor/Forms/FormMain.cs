@@ -132,6 +132,11 @@ namespace TombEditor.Forms
                 toolStripMenuSeparator7.Visible = addBoxVolumeToolStripMenuItem.Visible;
             }
 
+            // Clear autosave information
+            if (obj is Editor.LevelChangedEvent ||
+                obj is Editor.LevelFileNameChangedEvent)
+                statusAutosave.Text = string.Empty;
+
             if (obj is Editor.UndoStackChangedEvent)
             {
                 var stackEvent = (Editor.UndoStackChangedEvent)obj;
@@ -241,7 +246,8 @@ namespace TombEditor.Forms
             }
 
             // Update save button
-            if (obj is Editor.HasUnsavedChangesChangedEvent)
+            if (obj is Editor.InitEvent ||
+                obj is Editor.HasUnsavedChangesChangedEvent)
                 saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
             // Reload window layout and keyboard shortcuts if the configuration changed
