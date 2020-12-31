@@ -465,7 +465,7 @@ namespace TombEditor.ToolWindows
                 tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + " boxes, ");
 
                 // Overlaps block
-                if (summary.OverlapCount > TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit))
+                if (summary.OverlapCount > TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit) - 2)
                 {
                     tbStats.SelectionColor = Colors.BlueHighlight;
                     limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Overlap count is exceeded. Reduce level complexity.";
