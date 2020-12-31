@@ -454,7 +454,7 @@ namespace TombEditor.ToolWindows
             if (summary.BoxCount.HasValue) // Don't add boxes / overlaps / texinfos if level wasnt compiled yet
             {
                 // Boxes block
-                if (summary.BoxCount > TrCatalog.GetLimit(settings.GameVersion, Limit.BoxLimit))
+                if (summary.BoxCount >= TrCatalog.GetLimit(settings.GameVersion, Limit.BoxLimit))
                 {
                     tbStats.SelectionColor = Colors.BlueHighlight;
                     limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Box count is exceeded. Reduce level complexity.";
@@ -465,7 +465,7 @@ namespace TombEditor.ToolWindows
                 tbStats.AppendText((summary.BoxCount.HasValue ? summary.BoxCount.Value.ToString() : "?") + " boxes, ");
 
                 // Overlaps block
-                if (summary.OverlapCount > TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit) - 2)
+                if (summary.OverlapCount >= TrCatalog.GetLimit(settings.GameVersion, Limit.OverlapLimit) - 2)
                 {
                     tbStats.SelectionColor = Colors.BlueHighlight;
                     limitWarning += (string.IsNullOrEmpty(limitWarning) ? "" : "\n") + "Overlap count is exceeded. Reduce level complexity.";
