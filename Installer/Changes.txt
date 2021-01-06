@@ -3,6 +3,7 @@ Version 1.3.11
 Tomb Editor:
  * Import double-sided face attributes via material name prefix.
  * Export additive blending properly for MQO.
+ * Make "delete all objects" and "delete all triggers" functions aware of room selection.
  * Fix exception when find & replace objects dialog was opened with trigger selected.
  * Fix mousewheel zoom speed not being updated in options window.
 
