@@ -200,6 +200,7 @@
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown19 = new DarkUI.Controls.DarkNumericUpDown();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.darkCheckBox41 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox40 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox35 = new DarkUI.Controls.DarkCheckBox();
             this.darkCheckBox10 = new DarkUI.Controls.DarkCheckBox();
@@ -231,7 +232,6 @@
             this.darkLabel15 = new DarkUI.Controls.DarkLabel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
-            this.darkNumericUpDown11 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkNumericUpDown8 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkNumericUpDown10 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
@@ -242,7 +242,6 @@
             this.darkNumericUpDown20 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
-            this.darkCheckBox41 = new DarkUI.Controls.DarkCheckBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -305,7 +304,6 @@
             this.darkGroupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown22)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown14)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown11)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown10)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown9)).BeginInit();
@@ -2508,9 +2506,19 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(386, 511);
+            this.tabPage4.Size = new System.Drawing.Size(386, 484);
             this.tabPage4.TabIndex = 22;
             this.tabPage4.Text = "Texture map";
+            // 
+            // darkCheckBox41
+            // 
+            this.darkCheckBox41.AutoSize = true;
+            this.darkCheckBox41.Location = new System.Drawing.Point(10, 295);
+            this.darkCheckBox41.Name = "darkCheckBox41";
+            this.darkCheckBox41.Size = new System.Drawing.Size(332, 17);
+            this.darkCheckBox41.TabIndex = 48;
+            this.darkCheckBox41.Tag = "TextureMap_WarnAboutIncorrectAttributes";
+            this.darkCheckBox41.Text = "Warn if double-sided texture is applied to single-sided face";
             // 
             // darkCheckBox40
             // 
@@ -2778,7 +2786,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(386, 484);
+            this.tabPage7.Size = new System.Drawing.Size(386, 511);
             this.tabPage7.TabIndex = 23;
             this.tabPage7.Text = "3D controls";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -2829,7 +2837,6 @@
             this.darkGroupBox3.Controls.Add(this.darkLabel15);
             this.darkGroupBox3.Controls.Add(this.darkLabel12);
             this.darkGroupBox3.Controls.Add(this.darkLabel11);
-            this.darkGroupBox3.Controls.Add(this.darkNumericUpDown11);
             this.darkGroupBox3.Controls.Add(this.darkNumericUpDown8);
             this.darkGroupBox3.Controls.Add(this.darkNumericUpDown10);
             this.darkGroupBox3.Controls.Add(this.darkLabel9);
@@ -2941,20 +2948,6 @@
             this.darkLabel11.Size = new System.Drawing.Size(137, 13);
             this.darkLabel11.TabIndex = 19;
             this.darkLabel11.Text = "Mouse drag zoom speed:";
-            // 
-            // darkNumericUpDown11
-            // 
-            this.darkNumericUpDown11.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.darkNumericUpDown11.Location = new System.Drawing.Point(393, -29);
-            this.darkNumericUpDown11.LoopValues = false;
-            this.darkNumericUpDown11.Name = "darkNumericUpDown11";
-            this.darkNumericUpDown11.Size = new System.Drawing.Size(64, 22);
-            this.darkNumericUpDown11.TabIndex = 20;
-            this.darkNumericUpDown11.Tag = "Rendering3D_NavigationSpeedMouseWheelZoom";
             // 
             // darkNumericUpDown8
             // 
@@ -3106,16 +3099,6 @@
             this.darkNumericUpDown21.TabIndex = 27;
             this.darkNumericUpDown21.Tag = "Rendering3D_NavigationSpeedKeyRotate";
             // 
-            // darkCheckBox41
-            // 
-            this.darkCheckBox41.AutoSize = true;
-            this.darkCheckBox41.Location = new System.Drawing.Point(10, 295);
-            this.darkCheckBox41.Name = "darkCheckBox41";
-            this.darkCheckBox41.Size = new System.Drawing.Size(332, 17);
-            this.darkCheckBox41.TabIndex = 48;
-            this.darkCheckBox41.Tag = "TextureMap_WarnAboutIncorrectAttributes";
-            this.darkCheckBox41.Text = "Warn if double-sided texture is applied to single-sided face";
-            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3203,7 +3186,6 @@
             this.darkGroupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown22)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown14)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown11)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown10)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.darkNumericUpDown9)).EndInit();
@@ -3408,7 +3390,6 @@
         private DarkUI.Controls.DarkLabel darkLabel15;
         private DarkUI.Controls.DarkLabel darkLabel12;
         private DarkUI.Controls.DarkLabel darkLabel11;
-        private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown11;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown8;
         private DarkUI.Controls.DarkNumericUpDown darkNumericUpDown10;
         private DarkUI.Controls.DarkLabel darkLabel9;

@@ -41,7 +41,7 @@ namespace TombEditor.Forms
                 butSelectSourceObject.Enabled = value == ObjectSelectionType.None ||  selectDest;
 
                 _selectionType = value;
-                ToggleItem((PositionBasedObjectInstance)_editor.SelectedObject);
+                ToggleItem(_editor.SelectedObject as PositionBasedObjectInstance);
                 UpdateLabels();
             }
         }
