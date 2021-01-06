@@ -68,7 +68,6 @@
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
             this.nudColBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
@@ -96,6 +95,7 @@
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -139,7 +139,7 @@
             this.cbVisibilityBox.AutoSize = true;
             this.cbVisibilityBox.Location = new System.Drawing.Point(6, 11);
             this.cbVisibilityBox.Name = "cbVisibilityBox";
-            this.cbVisibilityBox.Size = new System.Drawing.Size(91, 17);
+            this.cbVisibilityBox.Size = new System.Drawing.Size(90, 17);
             this.cbVisibilityBox.TabIndex = 50;
             this.cbVisibilityBox.Text = "Visibility Box";
             this.cbVisibilityBox.CheckedChanged += new System.EventHandler(this.cbVisibilityBox_CheckedChanged);
@@ -269,7 +269,7 @@
             this.cbCollisionBox.AutoSize = true;
             this.cbCollisionBox.Location = new System.Drawing.Point(6, 11);
             this.cbCollisionBox.Name = "cbCollisionBox";
-            this.cbCollisionBox.Size = new System.Drawing.Size(93, 17);
+            this.cbCollisionBox.Size = new System.Drawing.Size(92, 17);
             this.cbCollisionBox.TabIndex = 64;
             this.cbCollisionBox.Text = "Collision Box";
             this.cbCollisionBox.CheckedChanged += new System.EventHandler(this.cbCollisionBox_CheckedChanged);
@@ -597,14 +597,6 @@
             this.darkLabel20.Size = new System.Drawing.Size(37, 13);
             this.darkLabel20.TabIndex = 103;
             this.darkLabel20.Text = "Pos X:";
-            // 
-            // panelRendering
-            // 
-            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(1, 1);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(797, 599);
-            this.panelRendering.TabIndex = 109;
             // 
             // darkGroupBox4
             // 
@@ -1145,6 +1137,14 @@
             this.darkSectionPanel2.Size = new System.Drawing.Size(799, 601);
             this.darkSectionPanel2.TabIndex = 112;
             // 
+            // panelRendering
+            // 
+            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelRendering.Location = new System.Drawing.Point(1, 1);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(797, 599);
+            this.panelRendering.TabIndex = 0;
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1240,7 +1240,6 @@
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkLabel darkLabel20;
-        private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkGroupBox darkGroupBox3;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox2;
@@ -1268,5 +1267,6 @@
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxZ;
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxY;
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxX;
+        private Controls.PanelRenderingStaticEditor panelRendering;
     }
 }

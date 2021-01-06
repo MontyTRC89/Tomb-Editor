@@ -63,6 +63,8 @@ namespace TombLib.GeometryIO.Importers
                             var materialString = reader.ReadLine().Trim();
                             var material = new IOMaterial(GetSubBlock(materialString, string.Empty, "\"", "\""));
                             var texturePath = GetSubBlock(materialString, "tex").Trim(new char[] { '\"' });
+                            var doubleSided = GetSubBlock(materialString, "dbls");
+                            var diffuseColor = GetSubBlock(materialString, "col");
 
                             if (texturePath != "")
                             {
@@ -73,6 +75,17 @@ namespace TombLib.GeometryIO.Importers
                                     throw new FileNotFoundException("Texture " + texturePath + " could not be found");
 
                                 textures.Add(i, GetTexture(basePath, texturePath));
+                            }
+
+                            material.DoubleSided = (doubleSided == "1");
+
+                            if (diffuseColor != "")
+                            {
+                                string[] tokens = diffuseColor.Split(' ');
+                                if (tokens.Length == 4 && float.TryParse(tokens[3], out float alpha))
+                                {
+                                    material.AdditiveBlending = (alpha < 1.0f);
+                                }
                             }
 
                             material.Texture = textures[i];
