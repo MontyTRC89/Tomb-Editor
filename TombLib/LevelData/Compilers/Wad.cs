@@ -297,8 +297,7 @@ namespace TombLib.LevelData.Compilers
                                 _level.Settings.GameVersion == TRVersion.Game.TR1,
                                 _level.Settings.GameVersion == TRVersion.Game.TR4 ||
                                 _level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5 ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5Main);
+                                _level.Settings.GameVersion == TRVersion.Game.TR5);
                     }
 
                     // Figure out padding of the frames
@@ -826,8 +825,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion > TRVersion.Game.TR3)
             {
                 // In TRNG and TR5Main NumDemoData is used as sound map size
-                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                      _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
+                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ? _soundMapSize : 0));
             }
 
             using (var ms = new MemoryStream())

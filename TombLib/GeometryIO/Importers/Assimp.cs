@@ -73,8 +73,12 @@ namespace TombLib.GeometryIO.Importers
 
                     // Create the new material
                     material.Texture = textures[i];
-                    material.AdditiveBlending = (mat.HasBlendMode && mat.BlendMode == Assimp.BlendMode.Additive) || mat.Opacity < 1.0f;
-                    material.DoubleSided = mat.HasTwoSided && mat.IsTwoSided;
+                    material.AdditiveBlending = (mat.HasBlendMode && mat.BlendMode == Assimp.BlendMode.Additive) || mat.Opacity < 1.0f 
+                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_AdditiveBlending)
+                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_AdditiveBlendingDoubleSided);
+                    material.DoubleSided = (mat.HasTwoSided && mat.IsTwoSided) 
+                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_OpaqueDoubleSided)
+                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_AdditiveBlendingDoubleSided);
                     material.Shininess = mat.HasShininess ? (int)mat.Shininess : 0;
                     newModel.Materials.Add(material);
                 }

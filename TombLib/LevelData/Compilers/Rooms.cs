@@ -914,7 +914,7 @@ namespace TombLib.LevelData.Compilers
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion),
-                    Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 || _level.Settings.GameVersion == TRVersion.Game.TR5Main ? 0x0001 : instance.Ocb)
+                    Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 ? 0x0001 : instance.Ocb)
                 });
             }
 
@@ -964,7 +964,7 @@ namespace TombLib.LevelData.Compilers
             };
 
             // Ignore this for TRNG ad TR4
-            if (room.Level.Settings.GameVersion == TRVersion.Game.TR5 || room.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            if (room.Level.Settings.GameVersion == TRVersion.Game.TR5)
                 trVertex.Color = PackColorTo32Bit(Color);
             else {
                 var color = PackLightColor(Color, room.Level.Settings.GameVersion);
