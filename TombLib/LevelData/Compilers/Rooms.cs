@@ -963,14 +963,14 @@ namespace TombLib.LevelData.Compilers
                 Z = 0
             };
 
-            // Ignore this for TRNG ad TR4
+            // Ignore this for TRNG and TR4
             if (room.Level.Settings.GameVersion == TRVersion.Game.TR5)
                 trVertex.Color = PackColorTo32Bit(Color);
-            else {
+            else
+            {
                 var color = PackLightColor(Color, room.Level.Settings.GameVersion);
                 trVertex.Lighting1 = color;
                 trVertex.Lighting2 = color;
-
             }
 
             return GetOrAddVertex(room, roomVerticesDictionary, roomVertices, trVertex);
