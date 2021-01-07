@@ -769,16 +769,15 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("DeleteAllObjects", "Delete all objects", CommandType.Edit, delegate (CommandArgs args)
+            AddCommand("DeleteAllObjects", "Delete objects in selected rooms", CommandType.Edit, delegate (CommandArgs args)
             {
-
-                if (DarkMessageBox.Show(args.Window, "Do you want to delete all objects in level? This action can't be undone.",
+                if (DarkMessageBox.Show(args.Window, "Do you want to delete all objects in selected rooms? This action can't be undone.",
                                        "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     var deleteLights = (DarkMessageBox.Show(args.Window, "Delete lights as well?",
                                          "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
 
-                    foreach (var room in args.Editor.Level.ExistingRooms)
+                    foreach (var room in args.Editor.SelectedRooms)
                     {
                         var objects = room.Objects.Where(ob => ob is PositionBasedObjectInstance && (!(ob is LightInstance) || deleteLights)).ToList();
                         if (objects.Count > 0)
@@ -792,13 +791,12 @@ namespace TombEditor
                 }
             });
 
-            AddCommand("DeleteAllTriggers", "Delete all triggers", CommandType.Edit, delegate (CommandArgs args)
+            AddCommand("DeleteAllTriggers", "Delete triggers in selected rooms", CommandType.Edit, delegate (CommandArgs args)
             {
-
-                if (DarkMessageBox.Show(args.Window, "Do you want to delete all triggers in level? This action can't be undone.",
+                if (DarkMessageBox.Show(args.Window, "Do you want to delete all triggers in selected rooms? This action can't be undone.",
                                        "Delete all triggers", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    foreach (var room in args.Editor.Level.ExistingRooms)
+                    foreach (var room in args.Editor.SelectedRooms)
                     {
                         var triggers = room.Triggers.ToList();
                         if (triggers.Count > 0)

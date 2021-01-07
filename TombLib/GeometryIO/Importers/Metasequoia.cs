@@ -82,7 +82,9 @@ namespace TombLib.GeometryIO.Importers
                             if (diffuseColor != "")
                             {
                                 string[] tokens = diffuseColor.Split(' ');
-                                if (tokens.Length == 4 && float.TryParse(tokens[3], out float alpha))
+                                float alpha;
+
+                                if (tokens.Length == 4 && float.TryParse(tokens[3], out alpha))
                                 {
                                     material.AdditiveBlending = (alpha < 1.0f);
                                 }
