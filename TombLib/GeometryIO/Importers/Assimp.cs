@@ -42,7 +42,9 @@ namespace TombLib.GeometryIO.Importers
             // Use Assimp.NET for importing model
             AssimpContext context = new AssimpContext();
             context.SetConfig(new NormalSmoothingAngleConfig(90.0f));
-            Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality);
+
+            // Disable merging similar materials because we encode double-sided attrib in the material name.
+            Scene scene = context.ImportFile(filename, PostProcessPreset.TargetRealTimeMaximumQuality ^ PostProcessSteps.RemoveRedundantMaterials);
 
             var newModel = new IOModel();
             var textures = new Dictionary<int, Texture>();
@@ -74,11 +76,11 @@ namespace TombLib.GeometryIO.Importers
                     // Create the new material
                     material.Texture = textures[i];
                     material.AdditiveBlending = (mat.HasBlendMode && mat.BlendMode == Assimp.BlendMode.Additive) || mat.Opacity < 1.0f 
-                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_AdditiveBlending)
-                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_AdditiveBlendingDoubleSided);
+                        || mat.Name.StartsWith(Graphics.Material.Material_AdditiveBlending)
+                        || mat.Name.StartsWith(Graphics.Material.Material_AdditiveBlendingDoubleSided);
                     material.DoubleSided = (mat.HasTwoSided && mat.IsTwoSided) 
-                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_OpaqueDoubleSided)
-                        || mat.Name.StartsWith(TombLib.Graphics.Material.Material_AdditiveBlendingDoubleSided);
+                        || mat.Name.StartsWith(Graphics.Material.Material_OpaqueDoubleSided)
+                        || mat.Name.StartsWith(Graphics.Material.Material_AdditiveBlendingDoubleSided);
                     material.Shininess = mat.HasShininess ? (int)mat.Shininess : 0;
                     newModel.Materials.Add(material);
                 }

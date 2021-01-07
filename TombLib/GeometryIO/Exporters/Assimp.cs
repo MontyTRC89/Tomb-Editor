@@ -61,7 +61,6 @@ namespace TombLib.GeometryIO.Exporters
                 case Exporter.X3d:
                     context.ExportFile(scene, filename, "x3d");
                     break;
-
             }
 
             File.Delete(tempFile);
