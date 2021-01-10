@@ -905,6 +905,33 @@ namespace TombLib.LevelData.Compilers
                 // For TRNG statics chunk
                 _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
 
+                // Calculate color / intensity
+                var intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion);
+
+                // Resolve intensity2. It is used for TR2 only, also TRNG reuses this field for static OCB.
+                // For TR5, intensity2 must be set to 1 or static mesh won't be drawn.
+                // For all other game versions, this field is either not used or not written.
+
+                ushort intensity2;
+                switch (_level.Settings.GameVersion)
+                {
+                    case TRVersion.Game.TR2:
+                        intensity2 = intensity1;
+                        break;
+
+                    case TRVersion.Game.TRNG:
+                        intensity2 = (ushort)instance.Ocb;
+                        break;
+
+                    case TRVersion.Game.TR5:
+                        intensity2 = 1;
+                        break;
+                        
+                    default:
+                        intensity2 = 0;
+                        break;
+                }
+
                 newRoom.StaticMeshes.Add(new tr_room_staticmesh
                 {
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
@@ -913,8 +940,8 @@ namespace TombLib.LevelData.Compilers
                     Rotation = (ushort)Math.Max(0, Math.Min(ushort.MaxValue,
                         Math.Round(instance.RotationY * (65536.0 / 360.0)))),
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
-                    Intensity1 = PackLightColor(new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X), _level.Settings.GameVersion),
-                    Intensity2 = (ushort)(_level.Settings.GameVersion == TRVersion.Game.TR5 ? 0x0001 : instance.Ocb)
+                    Intensity1 = intensity1,
+                    Intensity2 = intensity2
                 });
             }
 
