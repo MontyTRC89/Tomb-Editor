@@ -267,7 +267,7 @@ namespace TombEditor
             this["AddTriggerWithBookmark"] = new SortedSet<Hotkey> { Keys.T | Keys.Shift };
             this["AddPortal"] = new SortedSet<Hotkey> { Keys.P };
             this["EditObject"] = new SortedSet<Hotkey> { Keys.O };
-            this["SetTextureBlendMode"] = new SortedSet<Hotkey> { Keys.NumPad1 | Keys.Shift, Keys.D1 | Keys.Shift };
+            this["SwitchBlendMode"] = new SortedSet<Hotkey> { Keys.NumPad1 | Keys.Shift, Keys.D1 | Keys.Shift };
             this["SetTextureDoubleSided"] = new SortedSet<Hotkey> { Keys.NumPad2 | Keys.Shift, Keys.D2 | Keys.Shift };
             this["SetTextureInvisible"] = new SortedSet<Hotkey> { Keys.NumPad3 | Keys.Shift, Keys.D3 | Keys.Shift };
             this["RotateObjectLeft"] = new SortedSet<Hotkey> { Keys.Left | Keys.Shift };
