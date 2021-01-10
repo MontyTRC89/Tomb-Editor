@@ -7,6 +7,9 @@ Tomb Editor:
  * Fix incorrect default hotkey for switching blend mode.
  * Fix exception when find & replace objects dialog was opened with trigger selected.
  * Fix mousewheel zoom speed not being updated in options window.
+ 
+WadTool:
+ * Fix incorrect bounding sphere coordinates for objects imported from compiled levels.
 
 Version 1.3.10
 ==============
