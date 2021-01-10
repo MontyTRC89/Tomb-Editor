@@ -839,7 +839,7 @@ namespace TombEditor
         // Show an object by going to the room it, selecting it and centering the camera appropriately.
         public void ShowObject(ObjectInstance objectInstance)
         {
-            if (SelectedRoom != objectInstance.Room)
+            if (!SelectedRooms.Contains(objectInstance.Room))
                 SelectRoom(objectInstance.Room);
             SelectedObject = objectInstance;
         }
