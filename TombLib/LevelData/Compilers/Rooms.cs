@@ -536,6 +536,7 @@ namespace TombLib.LevelData.Compilers
                         for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
                             var vertex = mesh.Vertices[j];
+                            vertex.Position = MathC.Round(vertex.Position);
 
                             // Apply the transform to the vertex
                             Vector3 position = MathC.HomogenousTransform(vertex.Position, worldTransform);
