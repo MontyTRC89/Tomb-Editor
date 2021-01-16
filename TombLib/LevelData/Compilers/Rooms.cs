@@ -536,6 +536,12 @@ namespace TombLib.LevelData.Compilers
                         for (int j = 0; j < mesh.Vertices.Count; j++)
                         {
                             var vertex = mesh.Vertices[j];
+
+                            // Since imported geometry can be used as reimported room mesh, we need to make sure
+                            // coordinates are integer to comply with portal positions, so MatchDoorShades function
+                            // will later work correctly. While technically rounding vertex positions is incorrect,
+                            // thankfully TR engines use large-scale coordinate system, so we can ignore such precision loss.
+
                             vertex.Position = MathC.Round(vertex.Position);
 
                             // Apply the transform to the vertex
