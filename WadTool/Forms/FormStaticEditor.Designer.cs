@@ -140,7 +140,7 @@
             this.cbVisibilityBox.AutoSize = true;
             this.cbVisibilityBox.Location = new System.Drawing.Point(6, 11);
             this.cbVisibilityBox.Name = "cbVisibilityBox";
-            this.cbVisibilityBox.Size = new System.Drawing.Size(90, 17);
+            this.cbVisibilityBox.Size = new System.Drawing.Size(91, 17);
             this.cbVisibilityBox.TabIndex = 50;
             this.cbVisibilityBox.Text = "Visibility Box";
             this.cbVisibilityBox.CheckedChanged += new System.EventHandler(this.cbVisibilityBox_CheckedChanged);
@@ -270,7 +270,7 @@
             this.cbCollisionBox.AutoSize = true;
             this.cbCollisionBox.Location = new System.Drawing.Point(6, 11);
             this.cbCollisionBox.Name = "cbCollisionBox";
-            this.cbCollisionBox.Size = new System.Drawing.Size(92, 17);
+            this.cbCollisionBox.Size = new System.Drawing.Size(93, 17);
             this.cbCollisionBox.TabIndex = 64;
             this.cbCollisionBox.Text = "Collision Box";
             this.cbCollisionBox.CheckedChanged += new System.EventHandler(this.cbCollisionBox_CheckedChanged);
@@ -325,9 +325,9 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Checked = false;
-            this.butSaveChanges.Location = new System.Drawing.Point(946, 583);
+            this.butSaveChanges.Location = new System.Drawing.Point(939, 583);
             this.butSaveChanges.Name = "butSaveChanges";
-            this.butSaveChanges.Size = new System.Drawing.Size(55, 23);
+            this.butSaveChanges.Size = new System.Drawing.Size(59, 23);
             this.butSaveChanges.TabIndex = 46;
             this.butSaveChanges.Text = "OK";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -528,9 +528,9 @@
             // 
             this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butImportMeshFromFile.Checked = false;
-            this.butImportMeshFromFile.Location = new System.Drawing.Point(814, 583);
+            this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 583);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
-            this.butImportMeshFromFile.Size = new System.Drawing.Size(60, 23);
+            this.butImportMeshFromFile.Size = new System.Drawing.Size(59, 23);
             this.butImportMeshFromFile.TabIndex = 98;
             this.butImportMeshFromFile.Text = "Import";
             this.butImportMeshFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1118,9 +1118,9 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
-            this.butCancel.Location = new System.Drawing.Point(1007, 583);
+            this.butCancel.Location = new System.Drawing.Point(1003, 583);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(55, 23);
+            this.butCancel.Size = new System.Drawing.Size(59, 23);
             this.butCancel.TabIndex = 111;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1150,7 +1150,7 @@
             // 
             this.butExportMeshToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butExportMeshToFile.Checked = false;
-            this.butExportMeshToFile.Location = new System.Drawing.Point(880, 583);
+            this.butExportMeshToFile.Location = new System.Drawing.Point(874, 583);
             this.butExportMeshToFile.Name = "butExportMeshToFile";
             this.butExportMeshToFile.Size = new System.Drawing.Size(60, 23);
             this.butExportMeshToFile.TabIndex = 113;

@@ -708,11 +708,6 @@ namespace TombLib.Wad.Tr4Wad
                 }
             }
 
-            Console.WriteLine(textureArea.TexCoord0.ToString());
-            Console.WriteLine(textureArea.TexCoord1.ToString());
-            Console.WriteLine(textureArea.TexCoord2.ToString());
-            Console.WriteLine(textureArea.TexCoord3.ToString());
-
             return textureArea;
         }
     }

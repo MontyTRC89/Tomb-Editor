@@ -12,6 +12,7 @@ Tomb Editor:
  * Fix mousewheel zoom speed not being updated in options window.
  
 WadTool:
+ * Export static and moveable meshes with textures to all supported 3D formats.
  * Fix incorrect bounding sphere coordinates for objects imported from compiled levels.
 
 Version 1.3.10

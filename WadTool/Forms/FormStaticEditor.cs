@@ -1,8 +1,6 @@
 ﻿using DarkUI.Forms;
 using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;

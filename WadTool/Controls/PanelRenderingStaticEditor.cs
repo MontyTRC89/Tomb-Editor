@@ -100,7 +100,7 @@ namespace WadTool.Controls
 
             // Actual "InitializeRendering"
             _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = Device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 24, FontIsBold = true, TextureAllocator = _fontTexture });
+            _fontDefault = Device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 18, FontIsBold = true, TextureAllocator = _fontTexture });
 
             // Legacy rendering
             {
@@ -366,8 +366,9 @@ namespace WadTool.Controls
             SwapChain.RenderText(new Text
             {
                 Font = _fontDefault,
-                PixelPos = new Vector2(5, 5),
+                PixelPos = new Vector2(10, -10),
                 Alignment = new Vector2(0, 0),
+                Overlay = true,
                 String =
                     "Position: " + StaticPosition +
                     "\nRotation: " + StaticRotation.X * (180 / Math.PI) +
