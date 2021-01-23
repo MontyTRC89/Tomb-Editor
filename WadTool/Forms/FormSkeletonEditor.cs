@@ -736,11 +736,6 @@ namespace WadTool
         private void AddChildBoneFromFileToolStripMenuItem_Click(object sender, EventArgs e) => AddChildBoneFromFile();
         private void AddChildBoneToolStripMenuItem_Click(object sender, EventArgs e) => AddChildBoneFromWad2();
 
-        private void darkButton1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void butExportSelectedMesh_Click(object sender, EventArgs e)
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
