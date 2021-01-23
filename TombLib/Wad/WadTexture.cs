@@ -9,6 +9,10 @@ namespace TombLib.Wad
     {
         public Hash Hash { get; }
 
+        // Used only iin export
+        public VectorInt2 PositionInAtlas { get; set; }
+        public int Atlas { get; set; }
+
         public WadTexture(ImageC image)
         {
             Image = image;

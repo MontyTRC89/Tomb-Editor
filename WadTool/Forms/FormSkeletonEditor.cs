@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.GeometryIO;
@@ -255,6 +256,19 @@ namespace WadTool
 
         private void ReplaceExistingBone(WadMesh mesh, WadMeshBoneNode node)
         {
+            if (mesh.Name.StartsWith("TeMov_"))
+            {
+                string[] tokens = mesh.Name.Split('_');
+                Vector3 offset = new Vector3(
+                    float.Parse(tokens[2]),
+                    float.Parse(tokens[3]),
+                    float.Parse(tokens[4]));
+                for (int i = 0; i < mesh.VerticesPositions.Count; i++)
+                {
+                    mesh.VerticesPositions[i] -= offset;
+                }
+            }
+
             node.Bone.Mesh = mesh;
             node.WadMesh = mesh;
 
@@ -721,5 +735,62 @@ namespace WadTool
         private void DeleteToolStripMenuItem_Click(object sender, EventArgs e) => DeleteBone();
         private void AddChildBoneFromFileToolStripMenuItem_Click(object sender, EventArgs e) => AddChildBoneFromFile();
         private void AddChildBoneToolStripMenuItem_Click(object sender, EventArgs e) => AddChildBoneFromWad2();
+
+        private void darkButton1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void butExportSelectedMesh_Click(object sender, EventArgs e)
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "Export mesh";
+                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.DefaultExt = "mqo";
+                saveFileDialog.FileName = theNode.Bone.Mesh.Name;
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                    {
+                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                        settingsDialog.SelectPreset("Normal scale");
+
+                        if (settingsDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
+                            {
+                                return "";
+                            };
+
+                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
+                            new Thread(() =>
+                            {
+                                var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, theNode.Bone.Mesh);
+
+                                if (resultModel != null)
+                                {
+                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                    {
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    string errorMessage = "";
+                                    return;
+                                }
+                            }).Start();
+                        }
+                    }
+                }
+            }
+        }
     }
 }
