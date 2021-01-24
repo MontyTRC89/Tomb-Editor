@@ -5,7 +5,7 @@ Tomb Editor:
  * Export additive blending properly for MQO.
  * Make "delete all objects" and "delete all triggers" functions aware of room selection.
  * Don't reset room selection while switching between objects in search window.
- * Fix incorrect vertex positions for imported geometry.
+ * Address precision loss in vertex positions for reimported room geometry.
  * Fix static mesh intensity for TR2 target.
  * Fix incorrect default hotkey for switching blend mode.
  * Fix exception when find & replace objects dialog was opened with trigger selected.
