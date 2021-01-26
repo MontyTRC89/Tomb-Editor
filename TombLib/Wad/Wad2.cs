@@ -227,7 +227,7 @@ namespace TombLib.Wad
             new FileFormat("Tomb Raider Chronicles level", "trc")
         };
 
-        public static List<WadTexture> PackTexturesForExport(Dictionary<Hash, WadTexture> texturesToPack)
+        public static List<WadTexture> PackTexturesForExport(Dictionary<Hash, WadTexture.AtlasReference> texturesToPack)
         {
             var textures = new List<WadTexture>();
             var scale = 256;
@@ -239,16 +239,16 @@ namespace TombLib.Wad
 
             for (int i = 0; i < texturesToPack.Count; i++)
             {
-                var texture = texturesToPack.ElementAt(i).Value;
-                
-                int paddingX = 1;
-                if (texture.Image.Width + 2 * paddingX >= scale)
-                    paddingX = (int)Math.Floor((float)(scale - texture.Image.Width) / 2);
-                int paddingY = 1;
-                if (texture.Image.Height + 2 * paddingY >= scale)
-                    paddingY = (int)Math.Floor((float)(scale - texture.Image.Height) / 2);
+                var textureRef = texturesToPack.ElementAt(i).Value;
 
-                VectorInt2 size = texture.Image.Size + new VectorInt2(paddingX * 2, paddingY * 2);
+                int paddingX = 4;
+                if (textureRef.Texture.Image.Width + 2 * paddingX >= scale)
+                    paddingX = (int)Math.Floor((float)(scale - textureRef.Texture.Image.Width) / 2);
+                int paddingY = 4;
+                if (textureRef.Texture.Image.Height + 2 * paddingY >= scale)
+                    paddingY = (int)Math.Floor((float)(scale - textureRef.Texture.Image.Height) / 2);
+
+                VectorInt2 size = textureRef.Texture.Image.Size + new VectorInt2(paddingX * 2, paddingY * 2);
 
                 var result = packer.TryAdd(size);
 
@@ -262,29 +262,49 @@ namespace TombLib.Wad
                 }
 
                 // West
-                for (int p=0;p<paddingX;p++)
-                    atlas.Image.CopyFrom(result.Value.X + p, result.Value.Y + paddingY, texture.Image, 0, 0, 1, texture.Image.Height);
+                for (int p = 0; p < paddingX; p++)
+                    atlas.Image.CopyFrom(result.Value.X + p, result.Value.Y + paddingY, textureRef.Texture.Image, 0, 0, 1, textureRef.Texture.Image.Height);
 
                 // East
                 for (int p = 0; p < paddingX; p++)
-                    atlas.Image.CopyFrom(result.Value.X + paddingX + texture.Image.Width + p, result.Value.Y + paddingY, texture.Image, texture.Image.Width - 1, 0, 1, texture.Image.Height);
+                    atlas.Image.CopyFrom(result.Value.X + paddingX + textureRef.Texture.Image.Width + p, result.Value.Y + paddingY, textureRef.Texture.Image, textureRef.Texture.Image.Width - 1, 0, 1, textureRef.Texture.Image.Height);
 
                 // North
                 for (int p = 0; p < paddingY; p++)
-                    atlas.Image.CopyFrom(result.Value.X + paddingX, result.Value.Y + p, texture.Image, 0, 0, texture.Image.Width, 1);
+                    atlas.Image.CopyFrom(result.Value.X + paddingX, result.Value.Y + p, textureRef.Texture.Image, 0, 0, textureRef.Texture.Image.Width, 1);
 
                 // South
                 for (int p = 0; p < paddingY; p++)
-                    atlas.Image.CopyFrom(result.Value.X + paddingX, result.Value.Y + paddingY + texture.Image.Height + p, texture.Image, 0, texture.Image.Height - 1, texture.Image.Width, 1);
+                    atlas.Image.CopyFrom(result.Value.X + paddingX, result.Value.Y + paddingY + textureRef.Texture.Image.Height + p, textureRef.Texture.Image, 0, textureRef.Texture.Image.Height - 1, textureRef.Texture.Image.Width, 1);
 
-                atlas.Image.CopyFrom(result.Value.X + paddingX, result.Value.Y + paddingY, texture.Image);
+                // Corners
+                var color = textureRef.Texture.Image.GetPixel(0, 0);
+                for (int px = 0; px < paddingX; px++)
+                    for (int py = 0; py < paddingY; py++)
+                        atlas.Image.SetPixel(result.Value.X + px, result.Value.Y + py, color);
 
-                texture.PositionInAtlas = new TombLib.VectorInt2(result.Value.X + paddingX, result.Value.Y + paddingY);
-                texture.Atlas = textures.Count - 1;
+                color = textureRef.Texture.Image.GetPixel(textureRef.Texture.Image.Width - 1, 0);
+                for (int px = 0; px < paddingX; px++)
+                    for (int py = 0; py < paddingY; py++)
+                        atlas.Image.SetPixel(result.Value.X + textureRef.Texture.Image.Width + paddingX + px, result.Value.Y + py, color);
+
+                color = textureRef.Texture.Image.GetPixel(textureRef.Texture.Image.Width - 1, textureRef.Texture.Image.Height - 1);
+                for (int px = 0; px < paddingX; px++)
+                    for (int py = 0; py < paddingY; py++)
+                        atlas.Image.SetPixel(result.Value.X + textureRef.Texture.Image.Width + paddingX + px, result.Value.Y + textureRef.Texture.Image.Height + paddingY + py, color);
+
+                color = textureRef.Texture.Image.GetPixel(0, textureRef.Texture.Image.Height - 1);
+                for (int px = 0; px < paddingX; px++)
+                    for (int py = 0; py < paddingY; py++)
+                        atlas.Image.SetPixel(result.Value.X + px, result.Value.Y + textureRef.Texture.Image.Height + paddingY + py, color);
+
+                atlas.Image.CopyFrom(result.Value.X + paddingX, result.Value.Y + paddingY, textureRef.Texture.Image);
+
+                textureRef.Position = new TombLib.VectorInt2(result.Value.X + paddingX, result.Value.Y + paddingY);
+                textureRef.Atlas = textures.Count - 1;
             }
 
             return textures;
         }
-
     }
 }
