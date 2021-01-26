@@ -243,86 +243,7 @@ namespace WadTool
             return wadObject.Id;
         }
 
-        private static List<WadTexture> PackTexturesForExport(Dictionary<Hash, WadTexture> texturesToPack)
-        {
-            var textures = new List<WadTexture>();
-            var scale = 256;
-
-            var packer = new RectPackerTree(new TombLib.VectorInt2(scale, scale));
-            var atlas = new WadTexture(ImageC.CreateNew(scale, scale));
-            textures.Add(atlas);
-
-            for (int i = 0; i < texturesToPack.Count; i++)
-            {
-                var texture = texturesToPack.ElementAt(i).Value;
-                var result = packer.TryAdd(texture.Image.Size);
-
-                if (!result.HasValue)
-                {
-                    atlas = new WadTexture(ImageC.CreateNew(scale, scale));
-                    textures.Add(atlas);
-                    packer = new RectPackerTree(new TombLib.VectorInt2(scale, scale));
-                    result = packer.TryAdd(texture.Image.Size);
-                }
-
-                atlas.Image.CopyFrom(result.Value.X, result.Value.Y, texture.Image);
-
-                texture.PositionInAtlas = new TombLib.VectorInt2(result.Value.X, result.Value.Y);
-                texture.Atlas = textures.Count - 1;
-            }
-
-            return textures;
-        }
-
-        public static void ExportMesh(WadToolClass tool, IWin32Window owner, WadMesh m)
-        {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Title = "Export mesh";
-                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
-                saveFileDialog.AddExtension = true;
-                saveFileDialog.DefaultExt = "dae";
-                saveFileDialog.FileName = m.Name;
-
-                if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
-                {
-                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
-                    {
-                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
-                        settingsDialog.SelectPreset("Normal scale");
-
-                        if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
-                        {
-                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
-                            {
-                                return "";
-                            };
-
-                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                            new Thread(() =>
-                            {
-                                var resultModel = PrepareMeshForExport(saveFileDialog.FileName, m);
-
-                                if (resultModel != null)
-                                {
-                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
-                                    {
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    string errorMessage = "";
-                                    return;
-                                }
-                            }).Start();
-                        }
-                    }
-                }
-            }
-        }
-
-        public static void ExportMoveable(WadToolClass tool, IWin32Window owner, WadMoveable m)
+        /*public static void ExportMoveable(WadToolClass tool, IWin32Window owner, WadMoveable m)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
@@ -369,6 +290,7 @@ namespace WadTool
                 }
             }
         }
+        */
 
         private static void UpdateBoneAbsolutePositions(List<WadBone> bones)
         {
@@ -426,7 +348,7 @@ namespace WadTool
             }
         }
 
-        public static IOModel PrepareModelForExport(string filePath, WadMoveable m)
+        /*public static IOModel PrepareModelForExport(string filePath, WadMoveable m)
         {
             var model = new IOModel();
 
@@ -573,138 +495,7 @@ namespace WadTool
             }
 
             return model;
-        }
-
-
-        public static IOModel PrepareMeshForExport(string filePath, WadMesh m)
-        {
-            var model = new IOModel();
-            var mesh = new IOMesh(m.Name);
-            model.Meshes.Add(mesh);
-
-            // Collect all textures
-            var tempTextures = new Dictionary<Hash, WadTexture>();
-            for (int i = 0; i < m.Polys.Count; i++)
-            {
-                var poly = m.Polys[i];
-
-                //Add uniquely the texture to the dictionary
-                if (!tempTextures.ContainsKey(((WadTexture)poly.Texture.Texture).Hash))
-                    tempTextures.Add(((WadTexture)poly.Texture.Texture).Hash, ((WadTexture)poly.Texture.Texture));
-            }
-
-            List<WadTexture> textureList = tempTextures.Values.ToList();
-            textureList.Sort(delegate (WadTexture x, WadTexture y)
-            {
-                if (x.Image.Width > y.Image.Width)
-                    return -1;
-                else if (x.Image.Width < y.Image.Width)
-                    return 1;
-                return 0;
-            });
-
-            var texturePieces = new Dictionary<Hash, WadTexture>();
-            foreach (var texture in textureList)
-            {
-                texturePieces.Add(texture.Hash, texture);
-            }
-
-            var pages = PackTexturesForExport(texturePieces);
-
-            // Create the materials
-            for (int i = 0; i < pages.Count; i++)
-            {
-                var textureFileName = "Texture_" + i + ".png";
-                var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
-
-                var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + i, pages[i], path, false, false, 0, i);
-                var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + i, pages[i], path, false, true, 0, i);
-                var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + i, pages[i], path, true, false, 0, i);
-                var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + i, pages[i], path, true, true, 0, i);
-
-                model.Materials.Add(matOpaque);
-                model.Materials.Add(matOpaqueDoubleSided);
-                model.Materials.Add(matAdditiveBlending);
-                model.Materials.Add(matAdditiveBlendingDoubleSided);
-            }
-
-            int lastIndex = 0;
-
-            foreach (var p in m.Polys)
-            {
-                var poly = new IOPolygon(p.Shape == WadPolygonShape.Quad ? IOPolygonShape.Quad : IOPolygonShape.Triangle);
-
-                mesh.Positions.Add(m.VerticesPositions[p.Index0]);
-                mesh.Positions.Add(m.VerticesPositions[p.Index1]);
-                mesh.Positions.Add(m.VerticesPositions[p.Index2]);
-                if (p.Shape == WadPolygonShape.Quad)
-                {
-                    mesh.Positions.Add(m.VerticesPositions[p.Index3]);
-                }
-
-                mesh.Normals.Add(m.VerticesNormals[p.Index0]);
-                mesh.Normals.Add(m.VerticesNormals[p.Index1]);
-                mesh.Normals.Add(m.VerticesNormals[p.Index2]);
-                if (p.Shape == WadPolygonShape.Quad)
-                {
-                    mesh.Normals.Add(m.VerticesNormals[p.Index3]);
-                }
-
-                var texture = texturePieces[((WadTexture)p.Texture.Texture).Hash];
-
-                var offset = new Vector2
-                    (
-                        (texture.PositionInAtlas.X - 0.5f) / 256.0f,
-                        (texture.PositionInAtlas.Y - 0.5f) / 256.0f
-                    );
-                mesh.UV.Add(p.Texture.TexCoord0 / 256.0f + offset);
-                mesh.UV.Add(p.Texture.TexCoord1 / 256.0f + offset);
-                mesh.UV.Add(p.Texture.TexCoord2 / 256.0f + offset);
-                if (p.Shape == WadPolygonShape.Quad)
-                {
-                    mesh.UV.Add(p.Texture.TexCoord3 / 256.0f + offset);
-                }
-
-                mesh.Colors.Add(Vector4.One);
-                mesh.Colors.Add(Vector4.One);
-                mesh.Colors.Add(Vector4.One);
-                if (p.Shape == WadPolygonShape.Quad)
-                {
-                    mesh.Colors.Add(Vector4.One);
-                }
-
-                var mat = model.Materials[0];
-                foreach (var mt in model.Materials)
-                    if (mt.Page == texture.Atlas)
-                        if (mt.AdditiveBlending == (p.Texture.BlendMode >= BlendMode.Additive))
-                            if (mt.DoubleSided == p.Texture.DoubleSided)
-                                if (mt.Shininess == 0)
-                                    mat = mt;
-
-                poly.Indices.Add(lastIndex + 0);
-                poly.Indices.Add(lastIndex + 1);
-                poly.Indices.Add(lastIndex + 2);
-                if (p.Shape == WadPolygonShape.Quad)
-                {
-                    poly.Indices.Add(lastIndex + 3);
-                }
-
-                if (!mesh.Submeshes.ContainsKey(mat))
-                    mesh.Submeshes.Add(mat, new IOSubmesh(mat));
-
-                mesh.Submeshes[mat].Polygons.Add(poly);
-                lastIndex += (p.Shape == WadPolygonShape.Quad ? 4 : 3);
-            }
-
-            for (int i = 0; i < pages.Count; i++)
-            {
-                var textureFileName = "Texture_" + i + ".png";
-                var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
-                pages[i].Image.Save(path);
-            }
-
-            return model;
-        }
+        }*/
 
         public static void ImportModelAsStaticMesh(WadToolClass tool, IWin32Window owner)
         {

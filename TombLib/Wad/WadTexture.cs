@@ -7,11 +7,14 @@ namespace TombLib.Wad
 {
     public class WadTexture : Texture, IRenderableObject, IEquatable<WadTexture>, TextureHashed
     {
-        public Hash Hash { get; }
+        public class AtlasReference
+        {
+            public WadTexture Texture;
+            public int Atlas;
+            public VectorInt2 Position;
+        }
 
-        // Used only iin export
-        public VectorInt2 PositionInAtlas { get; set; }
-        public int Atlas { get; set; }
+        public Hash Hash { get; }
 
         public WadTexture(ImageC image)
         {

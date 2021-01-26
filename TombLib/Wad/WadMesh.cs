@@ -210,10 +210,13 @@ namespace TombLib.Wad
                 return 0;
             });
 
-            var texturePieces = new Dictionary<Hash, WadTexture>();
+            var texturePieces = new Dictionary<Hash, WadTexture.AtlasReference>();
             foreach (var texture in textureList)
             {
-                texturePieces.Add(texture.Hash, texture);
+                texturePieces.Add(texture.Hash, new WadTexture.AtlasReference
+                {
+                    Texture = texture
+                });
             }
 
             var pages = Wad2.PackTexturesForExport(texturePieces);
@@ -261,8 +264,8 @@ namespace TombLib.Wad
 
                 var offset = new Vector2
                     (
-                        Math.Max(0.0f, texture.PositionInAtlas.X),
-                        Math.Max(0.0f, texture.PositionInAtlas.Y)
+                        Math.Max(0.0f, texture.Position.X),
+                        Math.Max(0.0f, texture.Position.Y)
                     );
 
                 mesh.UV.Add((p.Texture.TexCoord0 + offset) / 256.0f);
