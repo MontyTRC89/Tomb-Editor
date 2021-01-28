@@ -276,12 +276,12 @@ namespace TombLib.Wad
                     mesh.UV.Add((p.Texture.TexCoord3 + offset) / 256.0f);
                 }
 
-                mesh.Colors.Add(Vector4.One);
-                mesh.Colors.Add(Vector4.One);
-                mesh.Colors.Add(Vector4.One);
+                mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index0], 1.0f));
+                mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index1], 1.0f));
+                mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index2], 1.0f));
                 if (p.Shape == WadPolygonShape.Quad)
                 {
-                    mesh.Colors.Add(Vector4.One);
+                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index3], 1.0f));
                 }
 
                 var mat = model.Materials[0];
