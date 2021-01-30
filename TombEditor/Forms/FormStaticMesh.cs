@@ -181,6 +181,11 @@ namespace TombEditor.Forms
             return true;
         }
 
-        private void panelColor_Click(object sender, EventArgs e) => EditorActions.EditStaticMeshColor(this, _staticMesh);
+        private void panelColor_Click(object sender, EventArgs e)
+        {
+            EditorActions.EditColor(this, _staticMesh, (Vector3 newColor) => { 
+                panelColor.BackColor = newColor.ToWinFormsColor(); 
+            });
+        }
     }
 }

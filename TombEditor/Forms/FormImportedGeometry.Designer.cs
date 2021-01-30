@@ -37,6 +37,7 @@
             this.comboLightingModel = new DarkUI.Controls.DarkComboBox();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
+            this.panelColor = new DarkUI.Controls.DarkPanel();
             this.cbHide = new DarkUI.Controls.DarkCheckBox();
             this.cbSharpEdges = new DarkUI.Controls.DarkCheckBox();
             this.importedGeometryManager = new TombEditor.Controls.ImportedGeometryManager();
@@ -118,10 +119,11 @@
             this.comboLightingModel.Items.AddRange(new object[] {
             "No lights",
             "Vertex colors",
-            "Calculate from lights in room"});
+            "Calculate from lights in room",
+            "Specified tint only"});
             this.comboLightingModel.Location = new System.Drawing.Point(128, 36);
             this.comboLightingModel.Name = "comboLightingModel";
-            this.comboLightingModel.Size = new System.Drawing.Size(373, 23);
+            this.comboLightingModel.Size = new System.Drawing.Size(309, 23);
             this.comboLightingModel.TabIndex = 3;
             // 
             // darkLabel4
@@ -138,6 +140,7 @@
             // 
             this.darkGroupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkGroupBox1.Controls.Add(this.panelColor);
             this.darkGroupBox1.Controls.Add(this.cbHide);
             this.darkGroupBox1.Controls.Add(this.cbSharpEdges);
             this.darkGroupBox1.Controls.Add(this.butAssign);
@@ -150,6 +153,18 @@
             this.darkGroupBox1.Size = new System.Drawing.Size(732, 65);
             this.darkGroupBox1.TabIndex = 7;
             this.darkGroupBox1.TabStop = false;
+            // 
+            // panelColor
+            // 
+            this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panelColor.Location = new System.Drawing.Point(443, 36);
+            this.panelColor.Name = "panelColor";
+            this.panelColor.Size = new System.Drawing.Size(59, 23);
+            this.panelColor.TabIndex = 13;
+            this.panelColor.Tag = "EditAmbientLight";
+            this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
             // 
             // cbHide
             // 
@@ -224,5 +239,6 @@
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkCheckBox cbSharpEdges;
         private DarkUI.Controls.DarkCheckBox cbHide;
+        private DarkUI.Controls.DarkPanel panelColor;
     }
 }

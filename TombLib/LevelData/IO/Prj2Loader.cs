@@ -1360,7 +1360,8 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectImportedGeometry3)
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry3 ||
+                         id3 == Prj2Chunks.ObjectImportedGeometry4)
                 {
                     var instance = new ImportedGeometryInstance();
 
@@ -1368,6 +1369,10 @@ namespace TombLib.LevelData.IO
                     instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
                     instance.Roll = chunkIO.Raw.ReadSingle();
                     instance.Scale = chunkIO.Raw.ReadSingle();
+
+                    if (id3 == Prj2Chunks.ObjectImportedGeometry4)
+                        instance.Color = chunkIO.Raw.ReadVector3();
+
                     instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
 
                     chunkIO.ReadChunks((id4, chunkSize4) =>

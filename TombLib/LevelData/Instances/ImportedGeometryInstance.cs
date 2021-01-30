@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace TombLib.LevelData
 {
@@ -6,15 +7,17 @@ namespace TombLib.LevelData
     {
         NoLighting,
         VertexColors,
-        CalculateFromLightsInRoom
+        CalculateFromLightsInRoom,
+        TintAsAmbient
     }
 
-    public class ImportedGeometryInstance : PositionBasedObjectInstance, IReplaceable, IScaleable, IRotateableYXRoll
+    public class ImportedGeometryInstance : PositionBasedObjectInstance, IReplaceable, IColorable, IScaleable, IRotateableYXRoll
     {
         public ImportedGeometry Model { get; set; }
         public float DefaultScale => 1.0f;
         public float Scale { get; set; } = 1.0f;
         public ImportedGeometryLightingModel LightingModel { get; set; } = ImportedGeometryLightingModel.CalculateFromLightsInRoom;
+        public Vector3 Color { get; set; } = Vector3.One;
         public bool SharpEdges { get; set; } = false;
         public bool Hidden { get; set; } = false;
 
