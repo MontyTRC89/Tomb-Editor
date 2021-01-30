@@ -655,7 +655,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry3, () =>
+                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry4, () =>
                         {
                             var instance = (ImportedGeometryInstance)o;
                             LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
@@ -664,6 +664,8 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.RotationX);
                             chunkIO.Raw.Write(instance.Roll);
                             chunkIO.Raw.Write(instance.Scale);
+                            chunkIO.Raw.Write(instance.Color);
+
                             LEB128.Write(chunkIO.Raw, instance.Model == null ?
                                 -1 :
                                 levelSettingIds.ImportedGeometries[instance.Model]);

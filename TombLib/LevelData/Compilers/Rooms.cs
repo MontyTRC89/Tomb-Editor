@@ -565,19 +565,25 @@ namespace TombLib.LevelData.Compilers
                             // Pack the light according to chosen lighting model
                             if (geometry.LightingModel == ImportedGeometryLightingModel.VertexColors)
                             {
-                                var color = PackLightColor(vertex.Color, _level.Settings.GameVersion);
+                                var color = PackLightColor(vertex.Color * geometry.Color, _level.Settings.GameVersion);
                                 trVertex.Lighting1 = color;
                                 trVertex.Lighting2 = color;
                             }
                             else if (geometry.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
                             {
-                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * 128), _level.Settings.GameVersion);
+                                var color = PackLightColor(CalculateLightForCustomVertex(room, position, normal, true, room.Properties.AmbientLight * geometry.Color * 128), _level.Settings.GameVersion);
+                                trVertex.Lighting1 = color;
+                                trVertex.Lighting2 = color;
+                            }
+                            else if (geometry.LightingModel == ImportedGeometryLightingModel.TintAsAmbient)
+                            {
+                                var color = PackLightColor(geometry.Color, _level.Settings.GameVersion);
                                 trVertex.Lighting1 = color;
                                 trVertex.Lighting2 = color;
                             }
                             else
                             {
-                                var color = PackLightColor(room.Properties.AmbientLight, _level.Settings.GameVersion);
+                                var color = PackLightColor(room.Properties.AmbientLight * geometry.Color, _level.Settings.GameVersion);
                                 trVertex.Lighting1 = color;
                                 trVertex.Lighting2 = color;
                             }

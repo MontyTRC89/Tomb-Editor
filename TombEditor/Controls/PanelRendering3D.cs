@@ -3054,9 +3054,21 @@ namespace TombEditor.Controls
                             var useVertexColors = _editor.Mode == EditorMode.Lighting && ShowRealTintForObjects && instance.LightingModel == ImportedGeometryLightingModel.VertexColors;
                             geometryEffect.Parameters["UseVertexColors"].SetValue(useVertexColors);
 
-                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting &&
-                                instance.LightingModel == ImportedGeometryLightingModel.CalculateFromLightsInRoom)
-                                geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
+                            if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
+                            {
+                                switch (instance.LightingModel)
+                                {
+                                    case ImportedGeometryLightingModel.NoLighting:
+                                    case ImportedGeometryLightingModel.CalculateFromLightsInRoom:
+                                        geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
+                                        break;
+
+                                    case ImportedGeometryLightingModel.VertexColors:
+                                    case ImportedGeometryLightingModel.TintAsAmbient:
+                                        geometryEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
+                                        break;
+                                }
+                            }
                             else
                                 geometryEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
                         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using TombLib.Graphics;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -19,6 +18,11 @@ namespace TombLib.LevelData
     public interface ISpatial
     {
         VectorInt2 SectorPosition { get; set; }
+    }
+
+    public interface IColorable
+    {
+        Vector3 Color { get; set; }
     }
 
     public interface IScaleable

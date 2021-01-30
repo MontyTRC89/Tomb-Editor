@@ -89,27 +89,24 @@ namespace TombEditor.Controls
                 _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1),
                                                 (int)MathC.Clamp((e.Y / _paletteCellHeight), 0, PaletteSize.Height - 1));
 
-                if (_editor.SelectedObject is LightInstance)
+                if (_editor.SelectedObject is IColorable)
                 {
-                    var light = _editor.SelectedObject as LightInstance;
-                    if (!(_editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4 && light.Type == LightType.FogBulb))
+                    // Discard moveable and fog bulb color editing if game version condition isnt met
+
+                    if (_editor.SelectedObject is MoveableInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
+                    { }
+                    else if (_editor.SelectedObject is LightInstance && (_editor.SelectedObject as LightInstance).Type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
+                    { }
+                    else
                     {
-                        light.Color = SelectedColor.ToFloat3Color() * 2.0f;
-                        light.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-                        _editor.ObjectChange(light, ObjectChangeType.Change);
+                        var instance = _editor.SelectedObject as IColorable;
+                        instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
+
+                        if (_editor.SelectedObject is LightInstance)
+                            _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
+
+                        _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
                     }
-                }
-                else if (_editor.SelectedObject is StaticInstance)
-                {
-                    var instance = _editor.SelectedObject as StaticInstance;
-                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.ObjectChange(instance, ObjectChangeType.Change);
-                }
-                else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main && _editor.SelectedObject is MoveableInstance)
-                {
-                    var instance = _editor.SelectedObject as MoveableInstance;
-                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
-                    _editor.ObjectChange(instance, ObjectChangeType.Change);
                 }
 
                 _editor.LastUsedPaletteColourChange(SelectedColor);

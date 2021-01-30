@@ -12,7 +12,7 @@ namespace TombLib.LevelData
         Point, Shadow, Spot, Effect, Sun, FogBulb
     }
 
-    public class LightInstance : PositionBasedObjectInstance, IReplaceable, IRotateableYX
+    public class LightInstance : PositionBasedObjectInstance, IColorable, IReplaceable, IRotateableYX
     {
         public LightQuality Quality { get; set; } = LightQuality.Default;
         public LightType Type { get; }

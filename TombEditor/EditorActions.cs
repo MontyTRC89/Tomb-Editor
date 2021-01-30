@@ -348,7 +348,7 @@ namespace TombEditor
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
-        public static void EditStaticMeshColor(IWin32Window owner, StaticInstance obj)
+        public static void EditColor(IWin32Window owner, IColorable obj, Action<Vector3> newColorCallback = null)
         {
             using (var colorDialog = new RealtimeColorDialog(
                 _editor.Configuration.ColorDialog_Position.X,
@@ -356,45 +356,10 @@ namespace TombEditor
                 c =>
                 {
                     obj.Color = c.ToFloat3Color() * 2.0f;
-                    _editor.ObjectChange(obj, ObjectChangeType.Change);
+                    _editor.ObjectChange(obj as ObjectInstance, ObjectChangeType.Change);
                 }, _editor.Configuration.UI_ColorScheme))
             {
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
-                var oldLightColor = colorDialog.Color;
-
-                // Temporarily hide selection
-                _editor.ToggleHiddenSelection(true);
-
-                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
-                {
-                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
-                    _editor.UndoManager.PushObjectPropertyChanged(obj);
-                }
-                else
-                    colorDialog.Color = oldLightColor;
-
-                // Unhide selection
-                _editor.ToggleHiddenSelection(false);
-
-                obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
-                _editor.ObjectChange(obj, ObjectChangeType.Change);
-
-                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
-            }
-        }
-
-        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj, Action<Vector3> newColorCallback)
-        {
-            using (var colorDialog = new RealtimeColorDialog(
-                _editor.Configuration.ColorDialog_Position.X,
-                _editor.Configuration.ColorDialog_Position.Y,
-                c =>
-                {
-                    obj.Color = c.ToFloat3Color();
-                    _editor.ObjectChange(obj, ObjectChangeType.Change);
-                }, _editor.Configuration.UI_ColorScheme))
-            {
-                colorDialog.Color = (obj.Color).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
                 // Temporarily hide selection
@@ -406,11 +371,11 @@ namespace TombEditor
                 // Unhide selection
                 _editor.ToggleHiddenSelection(false);
 
-                obj.Color = colorDialog.Color.ToFloat3Color();
-                _editor.ObjectChange(obj, ObjectChangeType.Change);
+                obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
+                _editor.ObjectChange(obj as ObjectInstance, ObjectChangeType.Change);
 
                 _editor.Configuration.ColorDialog_Position = colorDialog.Position;
-                newColorCallback.Invoke(colorDialog.Color.ToFloat3Color());
+                newColorCallback?.Invoke(colorDialog.Color.ToFloat3Color());
             }
         }
 
@@ -862,7 +827,7 @@ namespace TombEditor
                 if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
                     Control.ModifierKeys.HasFlag(Keys.Control) ||
                     Control.ModifierKeys.HasFlag(Keys.Alt))
-                    EditStaticMeshColor(owner, (StaticInstance)instance);
+                    EditColor(owner, (StaticInstance)instance);
                 else
                 {
                     using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
