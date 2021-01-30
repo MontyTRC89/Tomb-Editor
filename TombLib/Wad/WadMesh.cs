@@ -220,11 +220,12 @@ namespace TombLib.Wad
             }
 
             var pages = Wad2.PackTexturesForExport(texturePieces);
+            var name = string.IsNullOrEmpty(mesh.Name) ? "UntitledMesh" : mesh.Name;
 
             // Create the materials
             for (int i = 0; i < pages.Count; i++)
             {
-                var textureFileName = "Texture_" + i + ".png";
+                var textureFileName = name + "_" + i + ".png";
                 var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
 
                 var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + i, pages[i], path, false, false, 0, i);
@@ -322,7 +323,7 @@ namespace TombLib.Wad
 
             for (int i = 0; i < pages.Count; i++)
             {
-                var textureFileName = "Texture_" + i + ".png";
+                var textureFileName = name + "_" + i + ".png";
                 var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
                 pages[i].Image.Save(path);
             }
