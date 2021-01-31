@@ -2961,7 +2961,11 @@ namespace TombEditor
             int roomNumber = _editor.Level.AssignRoomToFree(newRoom);
             newRoom.Position = roomPos;
             newRoom.AddObject(_editor.Level, new PortalInstance(portalArea, PortalInstance.GetOppositeDirection(direction), room));
-            newRoom.Name = "Room " + roomNumber + " (digged " + dirString + ")";
+            newRoom.Name = "Room " + roomNumber;
+            
+            if (_editor.Configuration.UI_GenerateRoomDescriptions)
+                newRoom.Name += " (digged " + dirString + ")";
+
             _editor.RoomListChange();
 
             // Build the geometry of the new room
