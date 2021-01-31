@@ -208,7 +208,7 @@
             this.toolGroup.Margin = new System.Windows.Forms.Padding(1);
             this.toolGroup.Name = "toolGroup";
             this.toolGroup.Size = new System.Drawing.Size(23, 20);
-            this.toolGroup.ToolTipText = "Group Textuing";
+            this.toolGroup.ToolTipText = "Group Texturing";
             this.toolGroup.Click += new System.EventHandler(this.toolGroup_Click);
             // 
             // toolSeparator1
