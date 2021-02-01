@@ -51,7 +51,7 @@
       <moveable id="25" name="DinoWarrior" />
       <moveable id="27" name="Larson" />
       <moveable id="28" name="Pierre" />
-      <moveable id="29" name="Skateboard" show_with="30" />
+      <moveable id="29" name="Skateboard" show_with="30" hidden="true" />
       <moveable id="30" name="Skateboard kid" show_with="29" />
       <moveable id="31" name="Cowboy" />
       <moveable id="32" name="Mr. T" />
@@ -61,7 +61,7 @@
       <moveable id="36" name="Swinging blade" />
       <moveable id="37" name="Spikes" />
       <moveable id="38" name="Boulder" />
-      <moveable id="39" name="Dart" />
+      <moveable id="39" name="Dart" hidden="true" />
       <moveable id="40" name="Wall-mounted dartgun" />
       <moveable id="41" name="Door (opens upward)" />
       <moveable id="42" name="Slamming doors" />
@@ -713,7 +713,7 @@
       <moveable id="58" name="Swinging sandbag / spiky ball" />
       <moveable id="59" name="Spikes / Glass shards" />
       <moveable id="60" name="Boulder" />
-      <moveable id="61" name="Disk (like dart)" />
+      <moveable id="61" name="Disk (like dart)" hidden="true" />
       <moveable id="62" name="Wall-mounted disk shooter (like dartgun)" />
       <moveable id="63" name="Drawbridge" />
       <moveable id="64" name="Slamming door" />
@@ -1421,7 +1421,7 @@
       <moveable id="87" name="Spikes / Barbed wire" />
       <moveable id="88" name="Boulder / Barrel" />
       <moveable id="89" name="Giant boulder (Temple of Puna)" />
-      <moveable id="90" name="Disk (like dart)" />
+      <moveable id="90" name="Disk (like dart)" hidden="true" />
       <moveable id="91" name="Dart emitter" />
       <moveable id="94" name="Spiked frame / Slamming door" />
       <moveable id="97" name="Movable cubical block (pushable)" />
@@ -2488,10 +2488,10 @@
       <moveable id="373" name="FLARE_INV_ITEM" description="Flare Inv Item" t5m="FLARE_INV_ITEM" />
       <moveable id="374" name="DIARY_ITEM" description="Diary Item" t5m="DIARY_ITEM" />
       <moveable id="375" name="COMPASS_ITEM" description="Compass Item" t5m="COMPASS_ITEM" />
-      <moveable id="376" name="MEMCARD_LOAD_INV_ITEM" description="Memcard Load Inv Item" />
-      <moveable id="377" name="MEMCARD_SAVE_INV_ITEM" description="Memcard Save Inv Item" />
-      <moveable id="378" name="PC_LOAD_INV_ITEM" description="Pc Load Inv Item" />
-      <moveable id="379" name="PC_SAVE_INV_ITEM" description="Pc Save Inv Item" />
+      <moveable id="376" name="MEMCARD_LOAD_INV_ITEM" description="Memcard Load Inv Item" hidden="true" />
+      <moveable id="377" name="MEMCARD_SAVE_INV_ITEM" description="Memcard Save Inv Item" hidden="true" />
+      <moveable id="378" name="PC_LOAD_INV_ITEM" description="Pc Load Inv Item" hidden="true" />
+      <moveable id="379" name="PC_SAVE_INV_ITEM" description="Pc Save Inv Item" hidden="true" />
       <moveable id="380" name="SMOKE_EMITTER_WHITE" description="Smoke Emitter White" t5m="SMOKE_EMITTER_WHITE" />
       <moveable id="381" name="SMOKE_EMITTER_BLACK" description="Smoke Emitter Black" t5m="SMOKE_EMITTER_BLACK" />
       <moveable id="382" name="STEAM_EMITTER" description="Steam Emitter" t5m="STEAM_EMITTER" />
