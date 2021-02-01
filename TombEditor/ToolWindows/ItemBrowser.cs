@@ -47,7 +47,9 @@ namespace TombEditor.ToolWindows
                 
                 comboItems.Items.Clear();
                 foreach (var moveable in allMoveables.Values)
-                    comboItems.Items.Add(moveable);
+                    if(!TrCatalog.IsHidden(_editor.Level.Settings.GameVersion,moveable.Id.TypeId))
+                        comboItems.Items.Add(moveable);
+                
                 foreach (var staticMesh in allStatics.Values)
                     comboItems.Items.Add(staticMesh);
 
