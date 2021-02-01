@@ -113,7 +113,6 @@ namespace TombEditor
         public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float TextureMap_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
-        public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
         public bool TextureMap_DrawSelectionDirectionIndicators { get; set; } = true;
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
