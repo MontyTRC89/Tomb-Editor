@@ -40,14 +40,16 @@ namespace TombEditor.ToolWindows
         {
             // Update available items combo box
             if (obj is Editor.LoadedWadsChangedEvent ||
-                obj is Editor.GameVersionChangedEvent)
+                obj is Editor.GameVersionChangedEvent ||
+                obj is Editor.ConfigurationChangedEvent)
             {
                 var allMoveables = _editor.Level.Settings.WadGetAllMoveables();
                 var allStatics   = _editor.Level.Settings.WadGetAllStatics();
                 
                 comboItems.Items.Clear();
                 foreach (var moveable in allMoveables.Values)
-                    if(!TrCatalog.IsHidden(_editor.Level.Settings.GameVersion,moveable.Id.TypeId))
+                    if (!_editor.Configuration.RenderingItem_HideInternalObjects ||
+                        !TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, moveable.Id.TypeId))
                         comboItems.Items.Add(moveable);
                 
                 foreach (var staticMesh in allStatics.Values)
@@ -85,11 +87,13 @@ namespace TombEditor.ToolWindows
                         comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
                     else
                     {
-                        if(!TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, e.Current.Value.MoveableId.TypeId))
+                        if (!_editor.Configuration.RenderingItem_HideInternalObjects || 
+                            !TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, e.Current.Value.MoveableId.TypeId))
                         {
                             comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
                         }
                     }
+
                     MakeActive();
                 }
             }
