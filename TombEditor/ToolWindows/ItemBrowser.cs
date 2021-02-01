@@ -84,8 +84,12 @@ namespace TombEditor.ToolWindows
                     if (e.Current.Value.IsStatic)
                         comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
                     else
-                        comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
-
+                    {
+                        if(!TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, e.Current.Value.MoveableId.TypeId))
+                        {
+                            comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
+                        }
+                    }
                     MakeActive();
                 }
             }
