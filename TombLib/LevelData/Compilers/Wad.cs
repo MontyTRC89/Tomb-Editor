@@ -47,7 +47,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, int meshIndex,
+        private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
                                        bool isWaterfall = false, bool isOptics = false,
                                        WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
@@ -96,7 +96,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     if (oldMesh.VerticesNormals.Count == 0)
                     {
-                        _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
+                        _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                         oldMesh.CalculateNormals();
                     }
                     useShades = false;
@@ -108,7 +108,7 @@ namespace TombLib.LevelData.Compilers
                         if (oldMesh.VerticesNormals.Count == 0)
                         {
                             
-                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
+                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                             oldMesh.CalculateNormals();
                         }
                         useShades = false;
@@ -124,7 +124,7 @@ namespace TombLib.LevelData.Compilers
                 if (oldMesh.VerticesNormals.Count == 0)
                 {
                     
-                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", meshIndex, objectId));
+                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", meshIndex, objectName));
                     oldMesh.CalculateNormals();
                 }
                 useShades = false;
@@ -191,7 +191,7 @@ namespace TombLib.LevelData.Compilers
                 if(poly.ShineStrength > 0)
                 {
                     if (useShades && isStatic)
-                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectId + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
+                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {
                         lightingEffect |= 0x02;
@@ -464,7 +464,7 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++)
                 {
                     var wadMesh = oldMoveable.Meshes[i];
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
+                    ConvertWadMesh(wadMesh, false, oldMoveable.Id.ShortName(_level.Settings.GameVersion), i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
                 var meshTrees = new List<tr_meshtree>();
@@ -553,7 +553,7 @@ namespace TombLib.LevelData.Compilers
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
-                    ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
+                    ConvertWadMesh(oldStaticMesh.Mesh, true, oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 0, false, false, oldStaticMesh.LightingType);
                 }
                 else
                 {
