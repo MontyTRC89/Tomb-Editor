@@ -3956,10 +3956,10 @@ namespace TombEditor
             }
 
             // No wads specified, no wads loaded, nothing to do
-            if (wads.Count() == 0)
+            if (wads.Count() == 0 || wads.Where(w => w != null).Count() == 0)
                 return false;
 
-            var incomingVersion = wads.First().GameVersion.Native();
+            var incomingVersion = wads.Where(w => w != null).First().GameVersion.Native();
             var message = "Loaded wad" + (wads.Count() > 1 ? "s " : " ");
             if (wads.All(w => w.GameVersion.Native() == incomingVersion) &&
                 incomingVersion != settings.GameVersion.Native())
