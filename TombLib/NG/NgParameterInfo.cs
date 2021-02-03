@@ -410,28 +410,35 @@ namespace TombLib.NG
             // Should we splice timer into extra?
             bool decode = false;
 
-            switch (operands[0])
+            try
             {
-                case 0x8000:
-                case 0x9000:
-                    result.TriggerType = TriggerType.ConditionNg;
-                    result.TargetType = TriggerTargetType.ParameterNg;
-                    decode = !NgCatalog.ConditionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
-                    break;
+                switch (operands[0])
+                {
+                    case 0x8000:
+                    case 0x9000:
+                        result.TriggerType = TriggerType.ConditionNg;
+                        result.TargetType = TriggerTargetType.ParameterNg;
+                        decode = !NgCatalog.ConditionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
+                        break;
 
-                case 0x2000:
-                    result.TargetType = TriggerTargetType.FlipEffect;
-                    decode = !NgCatalog.FlipEffectTrigger.MainList[operands[1]].Extra.IsEmpty;
-                    break;
+                    case 0x2000:
+                        result.TargetType = TriggerTargetType.FlipEffect;
+                        decode = !NgCatalog.FlipEffectTrigger.MainList[operands[1]].Extra.IsEmpty;
+                        break;
 
-                case 0x4000:
-                case 0x5000:
-                    result.TargetType = TriggerTargetType.ActionNg;
-                    decode = !NgCatalog.ActionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
-                    break;
+                    case 0x4000:
+                    case 0x5000:
+                        result.TargetType = TriggerTargetType.ActionNg;
+                        decode = !NgCatalog.ActionTrigger.MainList[(ushort)(operands[2] & 0xFF)].Extra.IsEmpty;
+                        break;
 
-                default:
-                    return null; // Incorrect first operand!
+                    default:
+                        return null; // Incorrect first operand!
+                }
+            }
+            catch
+            {
+                return null;
             }
 
             // Target is always raw
