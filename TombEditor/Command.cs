@@ -14,6 +14,9 @@ using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 using NLog;
+using TombLib.Wad;
+using System.Text;
+using TombLib.Wad.Catalog;
 
 namespace TombEditor
 {
@@ -774,12 +777,10 @@ namespace TombEditor
                 if (DarkMessageBox.Show(args.Window, "Do you want to delete all objects in selected rooms? This action can't be undone.",
                                        "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    var deleteLights = (DarkMessageBox.Show(args.Window, "Delete lights as well?",
-                                         "Delete all objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
 
                     foreach (var room in args.Editor.SelectedRooms)
                     {
-                        var objects = room.Objects.Where(ob => ob is PositionBasedObjectInstance && (!(ob is LightInstance) || deleteLights)).ToList();
+                        var objects = room.Objects.Where(ob => ob is PositionBasedObjectInstance && !(ob is LightInstance)).ToList();
                         if (objects.Count > 0)
                             for (int i = objects.Count - 1; i >= 0; i--)
                             {
@@ -1987,8 +1988,45 @@ namespace TombEditor
                     return;
                 EditorActions.MakeQuickItemGroup(args.Window);
             });
+			AddCommand("DeleteAllLights", "Delete all lights", CommandType.Lighting, delegate (CommandArgs args) {
+			if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",
+								   "Delete all lights", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+				foreach (var room in args.Editor.Level.ExistingRooms) {
+					var objects = room.Objects.Where(ob => ob is LightInstance).ToList();
+					if (objects.Count > 0)
+						for (int i = objects.Count - 1; i >= 0; i--) {
+							var obj = objects[i];
+							EditorActions.DeleteObjectWithoutUpdate(obj);
+							objects.RemoveAt(i);
+						}
+				}
+			});
 
-            _commands = _commands.OrderBy(o => o.Type).ToList();
+			AddCommand("GetObjectStatistics", "Copy object statistics into clipboard", CommandType.Objects, delegate (CommandArgs args) {
+				SortedDictionary<WadMoveableId,uint> moveablesCount = new SortedDictionary<WadMoveableId, uint>();
+				SortedDictionary<WadStaticId,uint> staticsCount = new SortedDictionary<WadStaticId, uint>();
+				int totalMoveablesCount;
+				int totalStaticsCount;
+
+				EditorActions.GetObjectStatistics(args.Editor, moveablesCount, staticsCount,out totalMoveablesCount, out totalStaticsCount);
+
+				var sb = new StringBuilder();
+				foreach (var kvp in moveablesCount) {
+					string name = TrCatalog.GetMoveableName(args.Editor.Level.Settings.GameVersion, kvp.Key.TypeId);
+					sb.AppendLine(name + "\t\t\tx" + kvp.Value);
+				}
+				sb.AppendLine("----------------------------------------------------");
+				foreach (var kvp in staticsCount) {
+					string name = TrCatalog.GetStaticName(args.Editor.Level.Settings.GameVersion, kvp.Key.TypeId);
+					sb.AppendLine(name + "\t\t\tx" + kvp.Value);
+				}
+				sb.AppendLine("----------------------------------------------------");
+				sb.AppendLine("Total Moveables :\t\t\t" + totalMoveablesCount);
+				sb.AppendLine("Total Statics :\t\t\t" + totalStaticsCount);
+				Clipboard.SetText(sb.ToString());
+				args.Editor.SendMessage("Object statistics copied into clipboard!");
+			});
+			_commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
 }

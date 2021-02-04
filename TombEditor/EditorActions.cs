@@ -1910,7 +1910,16 @@ namespace TombEditor
             }
         }
 
-        public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
+		internal static void DeleteAllLights(CommandArgs args) {
+
+			foreach(var r in args.Editor.Level.Rooms.Where(r => r != null)) {
+				foreach (var l in r.Objects.Where(obj => obj is LightInstance).Cast<LightInstance>()) {
+					l.RemoveFromRoom(args.Editor.Level, r);
+				};
+			}
+		}
+
+		public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
             int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
@@ -5246,5 +5255,32 @@ namespace TombEditor
                                 settings.SelectedSounds.Add(foundId);
                         }
         }
+
+		public static void GetObjectStatistics(Editor editor,IDictionary<WadMoveableId,uint> resultMoveables,IDictionary<WadStaticId, uint> resultStatics, out int totalMoveables, out int totalStatics) {
+			totalMoveables = 0;
+			totalStatics = 0;
+			foreach (var room in editor.Level.ExistingRooms) {
+				var roomMoveables = room.Objects.Where(ob => ob is MoveableInstance).Cast<MoveableInstance>().ToList();
+				var roomStatics = room.Objects.Where(ob => ob is StaticInstance).Cast<StaticInstance>().ToList();
+
+				foreach (var m in roomMoveables) {
+					if (resultMoveables.ContainsKey(m.WadObjectId)) {
+						resultMoveables[m.WadObjectId]++;
+					} else {
+						resultMoveables.Add(m.WadObjectId, 1);
+					}
+					totalMoveables++;
+				}
+				foreach (var s in roomStatics) {
+					if (resultStatics.ContainsKey(s.WadObjectId)) {
+						resultStatics[s.WadObjectId]++;
+					} else {
+						resultStatics.Add(s.WadObjectId, 1);
+					}
+					totalStatics++;
+				}
+
+			}
+		}
     }
 }
