@@ -49,8 +49,6 @@ namespace TombEditor.Forms
 
         private AnimatedTextureFrame RemapTexture(AnimatedTextureFrame source, float scale)
         {
-            if (scale == 1.0f) return source;
-
             var dummyTexture = new TextureArea() { TexCoord0 = source.TexCoord0, TexCoord1 = source.TexCoord1, TexCoord2 = source.TexCoord2, TexCoord3 = source.TexCoord3 };
             dummyTexture = RemapTexture(dummyTexture, scale);
             source.TexCoord0 = dummyTexture.TexCoord0;
