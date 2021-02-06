@@ -121,9 +121,10 @@ namespace TombEditor.Forms
 			this.moveLaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitSectorObjectOnSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			this.deleteAllTriggersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.deleteAllLightsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteAllTriggersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.setStaticMeshColorToRoomLightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripMenuItem();
@@ -1050,9 +1051,7 @@ namespace TombEditor.Forms
             this.moveLaraToolStripMenuItem,
             this.splitSectorObjectOnSelectionToolStripMenuItem,
             this.toolStripSeparator7,
-            this.deleteAllTriggersToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.deleteAllLightsToolStripMenuItem,
+            this.deleteAllToolStripMenuItem,
             this.toolStripSeparator3,
             this.setStaticMeshColorToRoomLightToolStripMenuItem,
             this.toolStripMenuItem10,
@@ -1317,32 +1316,44 @@ namespace TombEditor.Forms
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
 			this.toolStripSeparator7.Size = new System.Drawing.Size(256, 6);
 			// 
-			// deleteAllTriggersToolStripMenuItem
+			// deleteAllToolStripMenuItem
 			// 
-			this.deleteAllTriggersToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.deleteAllTriggersToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.deleteAllTriggersToolStripMenuItem.Name = "deleteAllTriggersToolStripMenuItem";
-			this.deleteAllTriggersToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
-			this.deleteAllTriggersToolStripMenuItem.Tag = "DeleteAllTriggers";
-			this.deleteAllTriggersToolStripMenuItem.Text = "DeleteAllTriggers";
-			// 
-			// toolStripMenuItem2
-			// 
-			this.toolStripMenuItem2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.toolStripMenuItem2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(259, 22);
-			this.toolStripMenuItem2.Tag = "DeleteAllObjects";
-			this.toolStripMenuItem2.Text = "DeleteAllObjects";
+			this.deleteAllToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.deleteAllToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteAllLightsToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.deleteAllTriggersToolStripMenuItem});
+			this.deleteAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.deleteAllToolStripMenuItem.Name = "deleteAllToolStripMenuItem";
+			this.deleteAllToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.deleteAllToolStripMenuItem.Text = "Delete ...";
 			// 
 			// deleteAllLightsToolStripMenuItem
 			// 
 			this.deleteAllLightsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.deleteAllLightsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.deleteAllLightsToolStripMenuItem.Name = "deleteAllLightsToolStripMenuItem";
-			this.deleteAllLightsToolStripMenuItem.Size = new System.Drawing.Size(259, 22);
+			this.deleteAllLightsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.deleteAllLightsToolStripMenuItem.Tag = "DeleteAllLights";
 			this.deleteAllLightsToolStripMenuItem.Text = "DeleteAllLights";
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.toolStripMenuItem2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+			this.toolStripMenuItem2.Tag = "DeleteAllObjects";
+			this.toolStripMenuItem2.Text = "DeleteAllObjects";
+			// 
+			// deleteAllTriggersToolStripMenuItem
+			// 
+			this.deleteAllTriggersToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.deleteAllTriggersToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.deleteAllTriggersToolStripMenuItem.Name = "deleteAllTriggersToolStripMenuItem";
+			this.deleteAllTriggersToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.deleteAllTriggersToolStripMenuItem.Tag = "DeleteAllTriggers";
+			this.deleteAllTriggersToolStripMenuItem.Text = "DeleteAllTriggers";
 			// 
 			// toolStripSeparator3
 			// 
@@ -2455,17 +2466,18 @@ namespace TombEditor.Forms
         private ToolStripMenuItem drawWhiteTextureLightingOnlyToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator8;
         private ToolStripMenuItem ShowRealTintForObjectsToolStripMenuItem;
-        private ToolStripMenuItem deleteAllLightsToolStripMenuItem;
-        private ToolStripMenuItem deleteAllTriggersToolStripMenuItem;
         private ToolStripMenuItem importedGeometryBrowserToolstripMenuItem;
         private ToolStripMenuItem addSpriteToolStripMenuItem;
         private ToolStripMenuItem toolStripMenuItem9;
         private ToolStripMenuItem addMemoToolStripMenuItem;
         private ToolStripMenuItem statisticsToolStripMenuItem;
-		private ToolStripMenuItem toolStripMenuItem2;
 		private ToolStripSeparator toolStripSeparator9;
 		private ToolStripSeparator toolStripSeparator11;
 		private ToolStripSeparator toolStripSeparator10;
 		private ToolStripMenuItem toolStripMenuItem10;
+		private ToolStripMenuItem deleteAllToolStripMenuItem;
+		private ToolStripMenuItem deleteAllLightsToolStripMenuItem;
+		private ToolStripMenuItem toolStripMenuItem2;
+		private ToolStripMenuItem deleteAllTriggersToolStripMenuItem;
 	}
 }

@@ -1988,10 +1988,10 @@ namespace TombEditor
                     return;
                 EditorActions.MakeQuickItemGroup(args.Window);
             });
-			AddCommand("DeleteAllLights", "Delete all lights", CommandType.Lighting, delegate (CommandArgs args) {
+			AddCommand("DeleteAllLights", "Delete lights in selected rooms", CommandType.Edit, delegate (CommandArgs args) {
 			if (DarkMessageBox.Show(args.Window, "Do you want to delete all lights in level? This action can't be undone.",
 								   "Delete all lights", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-				foreach (var room in args.Editor.Level.ExistingRooms) {
+				foreach (var room in args.Editor.SelectedRooms) {
 					var objects = room.Objects.Where(ob => ob is LightInstance).ToList();
 					if (objects.Count > 0)
 						for (int i = objects.Count - 1; i >= 0; i--) {
