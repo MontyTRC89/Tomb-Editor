@@ -18,6 +18,7 @@ Tomb Editor:
  * Fix exception when find & replace objects dialog was opened with trigger selected.
  * Fix exception when script with invalid flipeffect ID is imported into trigger window.
  * Fix mousewheel zoom speed not being updated in options window.
+ * Fix inconsistent 3D view descriptions for sinks and locked cameras.
  
 WadTool:
  * Export static and moveable meshes with textures to all supported 3D formats.
