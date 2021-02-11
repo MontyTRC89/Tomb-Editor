@@ -355,7 +355,7 @@ namespace TombEditor.ToolWindows
             var limitWarning = string.Empty;
 
             tbStats.BackColor = Colors.GreyBackground;
-            tbStats.Text = string.Empty;
+            tbStats.Clear();
 
             // Room block
 

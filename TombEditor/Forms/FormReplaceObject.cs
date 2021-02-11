@@ -151,7 +151,7 @@ namespace TombEditor.Forms
             else if (instance is StaticInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
                 result += " (" + instance.SecondaryAttribDesc + ": " + ((StaticInstance)instance).Ocb + ")";
             else if (instance is SinkInstance)
-                result += " (" + instance.PrimaryAttribDesc + ": " + ((SinkInstance)instance).Strength + ")";
+                result += " (" + instance.PrimaryAttribDesc + ": " + (((SinkInstance)instance).Strength + 1) + ")";
             else if (instance is ImportedGeometryInstance)
                 result += " (" + instance.SecondaryAttribDesc + ": " + ((ImportedGeometryInstance)instance).Scale.ToString(".0#") + ")";
             else if (instance is SoundSourceInstance)
