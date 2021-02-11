@@ -11,17 +11,22 @@ namespace TombEditor.Controls.ContextMenus
         public BlockContextMenu(Editor editor, IWin32Window owner, Room targetRoom, VectorInt2 targetBlock)
             : base(editor, owner)
         {
-            Items.Add(new ToolStripMenuItem("Paste object", Properties.Resources.general_clipboard_16, (o, e) =>
+			
+			Items.Add(new ToolStripMenuItem("Paste object", Properties.Resources.general_clipboard_16, (o, e) =>
             {
                 EditorActions.PasteObject(targetBlock, targetRoom);
             }) { Enabled = Clipboard.ContainsData(typeof(ObjectClipboardData).FullName) });
             Items.Add(new ToolStripSeparator());
-
-            Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>
+			
+			Items.Add(new ToolStripMenuItem("Move Lara", null, (o, e) =>
             {
                 EditorActions.MoveLara(this, targetRoom, targetBlock);
             }));
-            Items.Add(new ToolStripSeparator());
+			Items.Add(new ToolStripMenuItem("Move Object", Properties.Resources.general_target_16, (o, e) => {
+				var obj = editor.SelectedObject as PositionBasedObjectInstance;
+				EditorActions.MoveObject(obj, targetRoom, targetBlock);
+			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance });
+			Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Add camera", Properties.Resources.objects_Camera_16, (o, e) =>
             {

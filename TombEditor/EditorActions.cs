@@ -4220,8 +4220,15 @@ namespace TombEditor
                     return true;
             return false;
         }
+		public static void MoveObject(PositionBasedObjectInstance instance, Room targetRoom, VectorInt2 block) {
 
-        public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
+			var r = instance.Room;
+			_editor.UndoManager.PushObjectTransformed(instance);
+			instance.Room.RemoveObject(_editor.Level, instance);
+			_editor.ObjectChange(instance, ObjectChangeType.Change, r);
+			PlaceObjectWithoutUpdate(targetRoom, block, instance);
+		}
+		public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her
             MoveableInstance lara;
