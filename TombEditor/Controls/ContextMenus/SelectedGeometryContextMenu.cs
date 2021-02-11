@@ -9,6 +9,7 @@ namespace TombEditor.Controls.ContextMenus
         public SelectedGeometryContextMenu(Editor editor, IWin32Window owner, Room targetRoom, RectangleInt2 targetArea, VectorInt2 targetBlock)
             : base(editor, owner)
         {
+			
             Items.Add(new ToolStripMenuItem("Paste object", Properties.Resources.general_clipboard_16, (o, e) =>
             {
                 EditorActions.PasteObject(targetBlock, targetRoom);
@@ -20,7 +21,11 @@ namespace TombEditor.Controls.ContextMenus
             {
                 EditorActions.MoveLara(this, targetRoom, targetBlock);
             }));
-            Items.Add(new ToolStripSeparator());
+			Items.Add(new ToolStripMenuItem("Move Object", Properties.Resources.general_target_16, (o, e) => {
+				var obj = editor.SelectedObject as PositionBasedObjectInstance;
+				EditorActions.MoveObject(obj, targetRoom, targetBlock);
+			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance });
+			Items.Add(new ToolStripSeparator());
 
             Items.Add(new ToolStripMenuItem("Add trigger", null, (o, e) =>
             {
