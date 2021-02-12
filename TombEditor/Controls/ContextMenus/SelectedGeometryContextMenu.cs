@@ -21,7 +21,9 @@ namespace TombEditor.Controls.ContextMenus
             {
                 EditorActions.MoveLara(this, targetRoom, targetBlock);
             }));
-			Items.Add(new ToolStripMenuItem("Move Object", Properties.Resources.general_target_16, (o, e) => {
+
+			Items.Add(new ToolStripMenuItem("Move Object", Properties.Resources.general_target_16, (o, e) => 
+            {
 				var obj = editor.SelectedObject as PositionBasedObjectInstance;
 				EditorActions.MoveObject(obj, targetRoom, targetBlock);
 			}) { Enabled = _editor.SelectedObject is PositionBasedObjectInstance });

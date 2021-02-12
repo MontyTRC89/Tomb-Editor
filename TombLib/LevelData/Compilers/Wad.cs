@@ -259,7 +259,9 @@ namespace TombLib.LevelData.Compilers
 
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
-			if(l.Settings.RemoveUnusedObjects) {
+
+			if (l.Settings.RemoveUnusedObjects)
+            {
 				ReportProgress(1, "Removing unused moveables and statics");
 
 				// List all Moveables that have been placed in the level
@@ -288,19 +290,21 @@ namespace TombLib.LevelData.Compilers
 						staticsToRemove.Add(kvp.Key);
 					}
 				}
-				//Remove all moveables and statics that were found to be not essential and not placed
-				foreach (var id in moveablesToRemove) {
+
+				// Remove all moveables and statics that were found to be not essential and not placed
+
+				foreach (var id in moveablesToRemove)
+                {
 					moveables.Remove(id);
 					_progressReporter.ReportInfo("    Removed unused Moveable: " + TrCatalog.GetMoveableName(l.Settings.GameVersion, id.TypeId));
 				}
-				foreach (var id in staticsToRemove) {
+				foreach (var id in staticsToRemove)
+                {
 					statics.Remove(id);
 					_progressReporter.ReportInfo("    Removed unused Static: " + TrCatalog.GetStaticName(l.Settings.GameVersion, id.TypeId));
-
 				}
 			}
 			
-
 			// First thing build frames
 			ReportProgress(5, "Building meshes and animations");
             var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());

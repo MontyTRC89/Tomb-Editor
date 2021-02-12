@@ -2,6 +2,7 @@ Version 1.3.11
 ==============
 Tomb Editor:
  * Added "copy object statistics" function which copies counts of placed objects into clipboard.
+ * Level settings option to remove unused statics and moveables from level file.
  * Implement color tint for imported geometry.
  * Import double-sided face attributes via material name prefix.
  * Export additive blending properly for MQO.
