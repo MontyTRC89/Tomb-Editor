@@ -1625,14 +1625,14 @@ namespace TombEditor.Forms
             PopulateSoundInfoList();
         }
 
+        private void cbRemoveObjects_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.RemoveUnusedObjects = cbRemoveObjects.Checked;
+            UpdateDialog();
+        }
+
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
-
-		private void cbRemoveObjects_CheckedChanged(object sender, EventArgs e) {
-			_levelSettings.RemoveUnusedObjects = cbRemoveObjects.Checked;
-			UpdateDialog();
-
-		}
 	}
 }
