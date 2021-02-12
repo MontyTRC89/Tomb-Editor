@@ -103,7 +103,7 @@ namespace TombLib.LevelData.Compilers
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
 
             // Prepare level data
-            ConvertWad2DataToTrData();
+            ConvertWad2DataToTrData(_level);
             BuildRooms();
 
             // Compile textures

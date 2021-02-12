@@ -253,15 +253,56 @@ namespace TombLib.LevelData.Compilers
             public int KeyFrameSize { get; set; }
         }
 
-        public void ConvertWad2DataToTrData()
+        public void ConvertWad2DataToTrData(Level l)
         {
             ReportProgress(0, "Preparing WAD data");
 
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
+			if(l.Settings.RemoveUnusedObjects) {
+				ReportProgress(1, "Removing unused moveables and statics");
 
-            // First thing build frames
-            ReportProgress(1, "Building meshes and animations");
+				// List all Moveables that have been placed in the level
+				ISet<WadMoveableId> placedMoveables = new HashSet<WadMoveableId>();
+				ISet<WadStaticId> placedStatics = new HashSet<WadStaticId>();
+				foreach (var room in l.Rooms.Where(r => r != null)) {
+					foreach (var o in room.Objects) {
+						if (o is MoveableInstance) {
+							placedMoveables.Add((o as MoveableInstance).WadObjectId);
+						}
+						if (o is StaticInstance) {
+							placedStatics.Add((o as StaticInstance).WadObjectId);
+						}
+					}
+				}
+				IList<WadMoveableId> moveablesToRemove = new List<WadMoveableId>();
+				IList<WadStaticId> staticsToRemove = new List<WadStaticId>();
+				//List all moveables and statics that aren't placed and are not essential
+				foreach (var kvp in moveables) {
+					if (!placedMoveables.Contains(kvp.Key) && !TrCatalog.IsEssential(_level.Settings.GameVersion, kvp.Key.TypeId)) {
+						moveablesToRemove.Add(kvp.Key);
+					}
+				}
+				foreach (var kvp in statics) {
+					if (!placedStatics.Contains(kvp.Key)) {
+						staticsToRemove.Add(kvp.Key);
+					}
+				}
+				//Remove all moveables and statics that were found to be not essential and not placed
+				foreach (var id in moveablesToRemove) {
+					moveables.Remove(id);
+					_progressReporter.ReportInfo("    Removed unused Moveable: " + TrCatalog.GetMoveableName(l.Settings.GameVersion, id.TypeId));
+				}
+				foreach (var id in staticsToRemove) {
+					statics.Remove(id);
+					_progressReporter.ReportInfo("    Removed unused Static: " + TrCatalog.GetStaticName(l.Settings.GameVersion, id.TypeId));
+
+				}
+			}
+			
+
+			// First thing build frames
+			ReportProgress(5, "Building meshes and animations");
             var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
