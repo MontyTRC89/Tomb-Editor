@@ -45,6 +45,7 @@ namespace TombLib.Wad.Catalog
             public bool Shatterable { get; set; }
             public string TR5MainSlot { get; set; }
             public bool IsHidden { get; set; }
+			public bool IsEssential { get; set; }
         }
 
         private struct ItemSound
@@ -207,19 +208,30 @@ namespace TombLib.Wad.Catalog
             return entry.Shatterable;
         }
 
-        public static bool IsHidden(TRVersion.Game version, uint id)
-        {
-            Game game;
-            if (!Games.TryGetValue(version.Native(), out game))
-                return false;
-            Item entry;
-            if (!game.Moveables.TryGetValue(id, out entry))
-                return false;
+		public static bool IsHidden(TRVersion.Game version, uint id)
+		{
+			Game game;
+			if (!Games.TryGetValue(version.Native(), out game))
+				return false;
+			Item entry;
+			if (!game.Moveables.TryGetValue(id, out entry))
+				return false;
 
-            return entry.IsHidden;
-        }
+			return entry.IsHidden;
+		}
 
-        public static uint? GetItemIndex(TRVersion.Game version, string name, out bool isMoveable)
+		public static bool IsEssential(TRVersion.Game version, uint id)
+		{
+			Game game;
+			if (!Games.TryGetValue(version.Native(), out game))
+				return true;
+			Item entry;
+			if (!game.Moveables.TryGetValue(id, out entry))
+				return true;
+			return entry.IsEssential;
+		}
+
+		public static uint? GetItemIndex(TRVersion.Game version, string name, out bool isMoveable)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
@@ -520,12 +532,15 @@ namespace TombLib.Wad.Catalog
                         if (moveableNode.Attributes["t5m"] != null)
                             tr5MainSlot = moveableNode.Attributes["t5m"].Value;
 
-                        var hidden = false;
-                        if (moveableNode.Attributes["hidden"] != null)
-                            hidden = moveableNode.Attributes["hidden"].Value.Equals("true",StringComparison.OrdinalIgnoreCase);
+						var hidden = false;
+						if (moveableNode.Attributes["hidden"] != null)
+							hidden = moveableNode.Attributes["hidden"].Value.Equals("true", StringComparison.OrdinalIgnoreCase);
+						var essential = true;
+						if (moveableNode.Attributes["essential"] != null)
+							essential = moveableNode.Attributes["essential"].Value.Equals("true", StringComparison.OrdinalIgnoreCase);
 
-                        game.Moveables.Add(id, new Item { Names = new List<string>(names), 
-                            SkinId = skinId, SubstituteId = substituteId, AIObject = isAI, TR5MainSlot = tr5MainSlot, IsHidden = hidden });
+						game.Moveables.Add(id, new Item { Names = new List<string>(names), 
+                            SkinId = skinId, SubstituteId = substituteId, AIObject = isAI, TR5MainSlot = tr5MainSlot, IsHidden = hidden,IsEssential = essential });
                     }
 
                 // Parse statics
