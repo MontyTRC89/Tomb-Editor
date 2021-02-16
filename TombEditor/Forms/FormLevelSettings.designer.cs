@@ -462,7 +462,7 @@
 			this.cbRemoveObjects.Size = new System.Drawing.Size(297, 17);
 			this.cbRemoveObjects.TabIndex = 112;
 			this.cbRemoveObjects.Tag = "";
-			this.cbRemoveObjects.Text = "Remove non-placed objects from final compiled level";
+			this.cbRemoveObjects.Text = "Remove unused objects from compiled level";
 			this.pathToolTip.SetToolTip(this.cbRemoveObjects, "Removes moveables and statics that are in the WADs, but not placed in the level. " +
         "Use with caution in the case of dynamic object creation with scripts!");
 			this.cbRemoveObjects.CheckedChanged += new System.EventHandler(this.cbRemoveObjects_CheckedChanged);
