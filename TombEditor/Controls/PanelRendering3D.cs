@@ -1981,78 +1981,78 @@ namespace TombEditor.Controls
             
             // Draw cone, light spheres etc.
 
-            if (_editor.SelectedObject is LightInstance && lights.Contains(_editor.SelectedObject) && ShowLightMeshes)
+            if (_editor.SelectedObject is LightInstance && lights.Contains(_editor.SelectedObject))
             {
                 var light = (LightInstance)_editor.SelectedObject;
+				if(ShowLightMeshes)
+					if (light.Type == LightType.Point || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
+					{
+						_legacyDevice.SetVertexBuffer(_sphere.VertexBuffer);
+						_legacyDevice.SetVertexInputLayout(_sphere.InputLayout);
+						_legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
 
-                if (light.Type == LightType.Point || light.Type == LightType.Shadow || light.Type == LightType.FogBulb)
-                {
-                    _legacyDevice.SetVertexBuffer(_sphere.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(_sphere.InputLayout);
-                    _legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
+						Matrix4x4 model;
 
-                    Matrix4x4 model;
+						if (light.Type == LightType.Point || light.Type == LightType.Shadow)
+						{
+							model = Matrix4x4.CreateScale(light.InnerRange * 2.0f) * light.ObjectMatrix;
+							effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
+							effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-                    if (light.Type == LightType.Point || light.Type == LightType.Shadow)
-                    {
-                        model = Matrix4x4.CreateScale(light.InnerRange * 2.0f) * light.ObjectMatrix;
-                        effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                        effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+							effect.CurrentTechnique.Passes[0].Apply();
+							_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+						}
 
-                        effect.CurrentTechnique.Passes[0].Apply();
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-                    }
+						model = Matrix4x4.CreateScale(light.OuterRange * 2.0f) * light.ObjectMatrix;
+						effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
+						effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-                    model = Matrix4x4.CreateScale(light.OuterRange * 2.0f) * light.ObjectMatrix;
-                    effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+						effect.CurrentTechnique.Passes[0].Apply();
+						_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
+					}
+					else if (light.Type == LightType.Spot)
+					{
+						_legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
+						_legacyDevice.SetVertexInputLayout(_cone.InputLayout);
+						_legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
 
-                    effect.CurrentTechnique.Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _sphere.IndexBuffer.ElementCount);
-                }
-                else if (light.Type == LightType.Spot)
-                {
-                    _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(_cone.InputLayout);
-                    _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
+						// Inner cone
+						float coneAngle = (float)Math.Atan2(1, 3.14159265);
+						float lenScaleH = light.InnerRange;
+						float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / (coneAngle * lenScaleH);
 
-                    // Inner cone
-                    float coneAngle = (float)Math.Atan2(512, 1024);
-                    float lenScaleH = light.InnerRange;
-                    float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / coneAngle * lenScaleH;
+						Matrix4x4 Model = Matrix4x4.CreateScale(lenScaleW, lenScaleW, lenScaleH) * light.ObjectMatrix;
+						effect.Parameters["ModelViewProjection"].SetValue((Model * _viewProjection).ToSharpDX());
+						effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-                    Matrix4x4 Model = Matrix4x4.CreateScale(lenScaleW, lenScaleW, lenScaleH) * light.ObjectMatrix;
-                    effect.Parameters["ModelViewProjection"].SetValue((Model * _viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
+						effect.CurrentTechnique.Passes[0].Apply();
 
-                    effect.CurrentTechnique.Passes[0].Apply();
+						_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
 
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+						// Outer cone
+						float cutoffScaleH = light.OuterRange;
+						float cutoffScaleW = light.OuterAngle * (float)(Math.PI / 180) / coneAngle * cutoffScaleH;
 
-                    // Outer cone
-                    float cutoffScaleH = light.OuterRange;
-                    float cutoffScaleW = light.OuterAngle * (float)(Math.PI / 180) / coneAngle * cutoffScaleH;
+						Matrix4x4 model2 = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * light.ObjectMatrix;
+						effect.Parameters["ModelViewProjection"].SetValue((model2 * _viewProjection).ToSharpDX());
+						effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
 
-                    Matrix4x4 model2 = Matrix4x4.CreateScale(cutoffScaleW, cutoffScaleW, cutoffScaleH) * light.ObjectMatrix;
-                    effect.Parameters["ModelViewProjection"].SetValue((model2 * _viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 0.0f, 1.0f, 1.0f));
+						effect.CurrentTechnique.Passes[0].Apply();
+						_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+					}
+					else if (light.Type == LightType.Sun)
+					{
+						_legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
+						_legacyDevice.SetVertexInputLayout(_cone.InputLayout);
+						_legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
 
-                    effect.CurrentTechnique.Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                }
-                else if (light.Type == LightType.Sun)
-                {
-                    _legacyDevice.SetVertexBuffer(_cone.VertexBuffer);
-                    _legacyDevice.SetVertexInputLayout(_cone.InputLayout);
-                    _legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
+						Matrix4x4 model = Matrix4x4.CreateScale(0.01f, 0.01f, 1.0f) * light.ObjectMatrix;
+						effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
+						effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
 
-                    Matrix4x4 model = Matrix4x4.CreateScale(0.01f, 0.01f, 1.0f) * light.ObjectMatrix;
-                    effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(new Vector4(0.0f, 1.0f, 0.0f, 1.0f));
-
-                    effect.CurrentTechnique.Passes[0].Apply();
-                    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
-                }
+						effect.CurrentTechnique.Passes[0].Apply();
+						_legacyDevice.DrawIndexed(PrimitiveType.TriangleList, _cone.IndexBuffer.ElementCount);
+					}
 
                 // Add text message
                 textToDraw.Add(CreateTextTagForObject(
