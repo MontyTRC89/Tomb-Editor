@@ -113,7 +113,7 @@ namespace TombEditor.Forms
                 if (obj is Editor.ModeChangedEvent)
                     ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
-                bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
+                bookmarkObjectToolStripMenuItem.Enabled = editObjectToolStripMenuItem.Enabled = selectedObject != null;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
             }
 
