@@ -2019,7 +2019,7 @@ namespace TombEditor.Controls
 						// Inner cone
 						float coneAngle = (float)Math.Atan2(512, 1024);
 						float lenScaleH = light.InnerRange;
-						float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / (coneAngle * lenScaleH);
+						float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / coneAngle * lenScaleH;
 
 						Matrix4x4 Model = Matrix4x4.CreateScale(lenScaleW, lenScaleW, lenScaleH) * light.ObjectMatrix;
 						effect.Parameters["ModelViewProjection"].SetValue((Model * _viewProjection).ToSharpDX());
