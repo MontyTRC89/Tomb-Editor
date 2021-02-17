@@ -2017,7 +2017,7 @@ namespace TombEditor.Controls
 						_legacyDevice.SetIndexBuffer(_cone.IndexBuffer, _cone.IsIndex32Bits);
 
 						// Inner cone
-						float coneAngle = (float)Math.Atan2(1, 3.14159265);
+						float coneAngle = (float)Math.Atan2(512, 1024);
 						float lenScaleH = light.InnerRange;
 						float lenScaleW = light.InnerAngle * (float)(Math.PI / 180) / (coneAngle * lenScaleH);
 
