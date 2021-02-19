@@ -1,5 +1,6 @@
 ﻿using DarkUI.Docking;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
 using TombLib.LevelData;
@@ -57,20 +58,32 @@ namespace TombEditor.ToolWindows
 
                 if (comboItems.Items.Count > 0)
                 {
-                    comboItems.SelectedIndex = 0;
+                    // Check if any reloaded wads still have current selected item present. If they do, re-select it
+                    // to preserve item list position. If item is not present, just reset selection to first item in the list.
 
-                    // Update visible conflicting item, otherwise it's not updated in 3D control.
-                    if(comboItems.SelectedItem is WadMoveable)
+                    if (_editor.ChosenItem.HasValue &&
+                        _editor.Level.Settings.Wads.Any(w => (!_editor.ChosenItem.Value.IsStatic && w.Wad.Moveables.Any(w2 => w2.Key == _editor.ChosenItem.Value.MoveableId)) ||
+                                                             ( _editor.ChosenItem.Value.IsStatic && w.Wad.Statics.Any  (w2 => w2.Key == _editor.ChosenItem.Value.StaticId))))
                     {
-                        var currentObject = (WadMoveableId)panelItem.CurrentObject.Id;
-                        if (allMoveables.ContainsKey(currentObject))
-                            panelItem.CurrentObject = allMoveables[currentObject];
+                        ChoseItem(_editor.ChosenItem.Value);
                     }
-                    else if (comboItems.SelectedItem is WadStatic)
+                    else
                     {
-                        var currentObject = (WadStaticId)panelItem.CurrentObject.Id;
-                        if (allStatics.ContainsKey(currentObject))
-                            panelItem.CurrentObject = allStatics[currentObject];
+                        comboItems.SelectedIndex = 0;
+
+                        // Update visible conflicting item, otherwise it's not updated in 3D control.
+                        if (comboItems.SelectedItem is WadMoveable)
+                        {
+                            var currentObject = (WadMoveableId)panelItem.CurrentObject.Id;
+                            if (allMoveables.ContainsKey(currentObject))
+                                panelItem.CurrentObject = allMoveables[currentObject];
+                        }
+                        else if (comboItems.SelectedItem is WadStatic)
+                        {
+                            var currentObject = (WadStaticId)panelItem.CurrentObject.Id;
+                            if (allStatics.ContainsKey(currentObject))
+                                panelItem.CurrentObject = allStatics[currentObject];
+                        }
                     }
                 }
             }
@@ -82,20 +95,7 @@ namespace TombEditor.ToolWindows
                 if (!e.Current.HasValue)
                     comboItems.SelectedItem = panelItem.CurrentObject = null;
                 else
-                {
-                    if (e.Current.Value.IsStatic)
-                        comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(e.Current.Value.StaticId);
-                    else
-                    {
-                        if (!_editor.Configuration.RenderingItem_HideInternalObjects || 
-                            !TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, e.Current.Value.MoveableId.TypeId))
-                        {
-                            comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(e.Current.Value.MoveableId);
-                        }
-                    }
-
-                    MakeActive();
-                }
+                    ChoseItem(e.Current.Value);
             }
 
             if (obj is Editor.ChosenItemChangedEvent ||
@@ -108,6 +108,27 @@ namespace TombEditor.ToolWindows
                 if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
+        }
+
+        private void ChoseItem(ItemType item)
+        {
+            if (item == null)
+                return;
+
+            if (item.IsStatic)
+            {
+                comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetStatic(item.StaticId);
+            }
+            else
+            {
+                if (!_editor.Configuration.RenderingItem_HideInternalObjects ||
+                    !TrCatalog.IsHidden(_editor.Level.Settings.GameVersion, item.MoveableId.TypeId))
+                {
+                    comboItems.SelectedItem = panelItem.CurrentObject = _editor.Level.Settings.WadTryGetMoveable(item.MoveableId);
+                }
+            }
+
+            MakeActive();
         }
 
         private void FindLaraSkin()
