@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.ToolWindows
+﻿namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	partial class ContentExplorer
 	{
@@ -18,7 +18,7 @@
 		private void InitializeComponent()
 		{
 			this.treeView = new DarkUI.Controls.DarkTreeView();
-			this.searchTextBox = new TombIDE.ScriptEditor.Controls.SearchTextBox();
+			this.searchTextBox = new TombIDE.ScriptingStudio.Controls.SearchTextBox();
 			this.SuspendLayout();
 			// 
 			// treeView

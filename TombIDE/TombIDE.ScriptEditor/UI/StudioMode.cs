@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.UI
+﻿namespace TombIDE.ScriptingStudio.UI
 {
 	/// <summary>
 	/// Depending on the <c>StudioMode</c>, <b>File</b>, <b>Edit</b>, <b>Options</b>, <b>View</b> and <b>Help</b> menu sections might contain different items.<br />

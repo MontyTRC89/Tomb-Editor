@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.Settings
+﻿namespace TombIDE.ScriptingStudio.Settings
 {
 	partial class FormSaveSchemeAs
 	{

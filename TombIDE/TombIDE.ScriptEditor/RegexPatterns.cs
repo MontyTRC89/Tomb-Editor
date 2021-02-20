@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	internal static class RegexPatterns
 	{

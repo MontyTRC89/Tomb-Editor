@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Properties;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.Properties;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ScriptEditor.ToolStrips
+namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	public class StudioToolStrip : DarkToolStrip
 	{

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Helpers;
 using TombLib.Scripting.Lua;
 
-namespace TombIDE.ScriptEditor.Helpers
+namespace TombIDE.ScriptingStudio.Helpers
 {
 	internal static class FileHelper
 	{

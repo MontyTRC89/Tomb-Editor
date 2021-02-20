@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.Settings
+﻿namespace TombIDE.ScriptingStudio.Settings
 {
 	partial class FormTextEditorSettings
 	{
@@ -25,7 +25,7 @@
 			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.tabPage_Global = new System.Windows.Forms.TabPage();
 			this.tabPage_ClassicScript = new System.Windows.Forms.TabPage();
-			this.settingsClassicScript = new TombIDE.ScriptEditor.Settings.ClassicScriptSettingsControl();
+			this.settingsClassicScript = new TombIDE.ScriptingStudio.Settings.ClassicScriptSettingsControl();
 			this.tabPage_Lua = new System.Windows.Forms.TabPage();
 			this.treeView = new DarkUI.Controls.DarkTreeView();
 			this.panel_Buttons.SuspendLayout();

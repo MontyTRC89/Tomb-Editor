@@ -7,8 +7,8 @@
     <ProjectGuid>{2397EA24-CB8E-482F-8E93-F3D626D255E5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TombIDE.ScriptEditor</RootNamespace>
-    <AssemblyName>TombIDE.ScriptEditor</AssemblyName>
+    <RootNamespace>TombIDE.ScriptingStudio</RootNamespace>
+    <AssemblyName>TombIDE.ScriptingStudio</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

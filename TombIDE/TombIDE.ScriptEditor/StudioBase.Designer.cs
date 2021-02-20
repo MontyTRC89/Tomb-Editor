@@ -1,4 +1,4 @@
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	partial class StudioBase
 	{
@@ -17,10 +17,10 @@ namespace TombIDE.ScriptEditor
 
 		private void InitializeComponent()
 		{
-			this.StatusStrip = new TombIDE.ScriptEditor.ToolStrips.StudioStatusStrip();
-			this.ToolStrip = new TombIDE.ScriptEditor.ToolStrips.StudioToolStrip();
-			this.MenuStrip = new TombIDE.ScriptEditor.ToolStrips.StudioMenuStrip();
-			this.textEditorContextMenu = new TombIDE.ScriptEditor.Controls.TextEditorContextMenu();
+			this.StatusStrip = new TombIDE.ScriptingStudio.ToolStrips.StudioStatusStrip();
+			this.ToolStrip = new TombIDE.ScriptingStudio.ToolStrips.StudioToolStrip();
+			this.MenuStrip = new TombIDE.ScriptingStudio.ToolStrips.StudioMenuStrip();
+			this.textEditorContextMenu = new TombIDE.ScriptingStudio.Controls.TextEditorContextMenu();
 			this.SuspendLayout();
 			// 
 			// StatusStrip

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace TombIDE.ScriptEditor.UI
+namespace TombIDE.ScriptingStudio.UI
 {
 	internal struct UIKeys
 	{

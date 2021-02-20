@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.ToolWindows
+﻿namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	partial class SearchResults
 	{

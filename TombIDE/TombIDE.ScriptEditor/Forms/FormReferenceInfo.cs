@@ -7,7 +7,7 @@ using TombIDE.Shared;
 using TombLib.Scripting.ClassicScript.Enums;
 using TombLib.Scripting.ClassicScript.Utils;
 
-namespace TombIDE.ScriptEditor.Forms
+namespace TombIDE.ScriptingStudio.Forms
 {
 	// TODO: Refactor !!!
 

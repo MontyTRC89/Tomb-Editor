@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.UI
+﻿namespace TombIDE.ScriptingStudio.UI
 {
 	public enum UIElement
 	{

@@ -1,9 +1,9 @@
 ﻿using DarkUI.Controls;
 using System.Collections.Generic;
 using System.IO;
-using TombIDE.ScriptEditor.Properties;
+using TombIDE.ScriptingStudio.Properties;
 
-namespace TombIDE.ScriptEditor.Helpers
+namespace TombIDE.ScriptingStudio.Helpers
 {
 	internal static class FileTreeViewHelper
 	{

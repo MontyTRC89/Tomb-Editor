@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.Forms
+﻿namespace TombLib.Scripting.Forms
 {
 	partial class FormFindReplace
 	{

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Scripting;
 using TombLib.Scripting.Bases;
@@ -12,7 +12,7 @@ using TombLib.Scripting.ClassicScript.Workers;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
 
-namespace TombIDE.ScriptEditor.ToolWindows
+namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class ContentExplorer : DarkToolWindow
 	{

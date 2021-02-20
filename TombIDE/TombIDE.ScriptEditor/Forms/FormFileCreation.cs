@@ -2,11 +2,11 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Helpers;
+using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ScriptEditor.Forms
+namespace TombIDE.ScriptingStudio.Forms
 {
 	internal partial class FormFileCreation : DarkForm
 	{

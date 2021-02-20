@@ -7,7 +7,7 @@ using TombIDE.Shared;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Objects;
 
-namespace TombIDE.ScriptEditor.ToolWindows
+namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class SearchResults : DarkToolWindow
 	{

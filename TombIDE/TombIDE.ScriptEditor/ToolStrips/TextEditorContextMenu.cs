@@ -1,11 +1,11 @@
 ﻿using DarkUI.Controls;
 using System;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Properties;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.Properties;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 
-namespace TombIDE.ScriptEditor.Controls
+namespace TombIDE.ScriptingStudio.Controls
 {
 	internal class TextEditorContextMenu : DarkContextMenu
 	{

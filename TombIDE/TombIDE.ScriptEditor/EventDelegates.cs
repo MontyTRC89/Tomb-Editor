@@ -1,6 +1,6 @@
-﻿using TombIDE.ScriptEditor.Objects;
+﻿using TombIDE.ScriptingStudio.Objects;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	public delegate void FileOpenedEventHandler(object sender, FileOpenedEventArgs e);
 

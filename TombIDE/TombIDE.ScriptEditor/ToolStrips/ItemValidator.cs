@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.UI;
 
-namespace TombIDE.ScriptEditor.ToolStrips
+namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	internal static class ItemValidator
 	{
