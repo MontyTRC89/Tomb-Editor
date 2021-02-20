@@ -166,14 +166,6 @@
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting.TextEditors\TombLib.Scripting.TextEditors.csproj">
-      <Project>{9F07E72D-3526-42DD-B85B-E85E2953F0F1}</Project>
-      <Name>TombLib.Scripting.TextEditors</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting\TombLib.Scripting.csproj">
-      <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
-      <Name>TombLib.Scripting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
       <Name>TombIDE.Shared</Name>
