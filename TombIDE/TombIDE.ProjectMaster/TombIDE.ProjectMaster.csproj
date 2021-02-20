@@ -226,7 +226,7 @@
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Forms\TombLib.Forms.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
       <Project>{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}</Project>
       <Name>TombLib.Forms</Name>
     </ProjectReference>
@@ -234,7 +234,7 @@
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
       <Name>TombIDE.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>
     </ProjectReference>

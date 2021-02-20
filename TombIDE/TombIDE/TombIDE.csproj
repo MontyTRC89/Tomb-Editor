@@ -36,7 +36,10 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
-    <Reference Include="CustomTabControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="CustomTabControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Libs\CustomTabControl.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -166,11 +169,11 @@
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
       <Name>TombIDE.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Forms\TombLib.Forms.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
       <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
       <Name>TombLib.Forms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>
     </ProjectReference>
