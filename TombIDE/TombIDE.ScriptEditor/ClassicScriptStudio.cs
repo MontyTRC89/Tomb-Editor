@@ -42,7 +42,7 @@ namespace TombIDE.ScriptEditor
 			PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath))
 		{
 			DockPanelState = WindowLayout.TestLayout;
-			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+			//DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 

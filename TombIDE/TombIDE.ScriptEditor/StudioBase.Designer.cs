@@ -18,7 +18,6 @@ namespace TombIDE.ScriptEditor
 		private void InitializeComponent()
 		{
 			this.StatusStrip = new TombIDE.ScriptEditor.ToolStrips.StudioStatusStrip();
-			this.DockPanel = new DarkUI.Docking.DarkDockPanel();
 			this.ToolStrip = new TombIDE.ScriptEditor.ToolStrips.StudioToolStrip();
 			this.MenuStrip = new TombIDE.ScriptEditor.ToolStrips.StudioMenuStrip();
 			this.textEditorContextMenu = new TombIDE.ScriptEditor.Controls.TextEditorContextMenu();
@@ -31,20 +30,6 @@ namespace TombIDE.ScriptEditor
 			this.StatusStrip.Name = "StatusStrip";
 			this.StatusStrip.Size = new System.Drawing.Size(960, 28);
 			this.StatusStrip.TabIndex = 1;
-			// 
-			// DockPanel
-			// 
-			this.DockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.DockPanel.EqualizeGroupSizes = true;
-			this.DockPanel.Location = new System.Drawing.Point(0, 49);
-			this.DockPanel.Name = "DockPanel";
-			this.DockPanel.Padding = new System.Windows.Forms.Padding(2);
-			this.DockPanel.PrioritizeLeft = false;
-			this.DockPanel.PrioritizeRight = false;
-			this.DockPanel.Size = new System.Drawing.Size(960, 523);
-			this.DockPanel.TabIndex = 0;
-			this.DockPanel.ContentAdded += new System.EventHandler<DarkUI.Docking.DockContentEventArgs>(this.DockPanel_ContentChanged);
-			this.DockPanel.ContentRemoved += new System.EventHandler<DarkUI.Docking.DockContentEventArgs>(this.DockPanel_ContentChanged);
 			// 
 			// ToolStrip
 			// 
@@ -81,7 +66,6 @@ namespace TombIDE.ScriptEditor
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.Controls.Add(this.DockPanel);
 			this.Controls.Add(this.ToolStrip);
 			this.Controls.Add(this.MenuStrip);
 			this.Controls.Add(this.StatusStrip);
@@ -94,7 +78,6 @@ namespace TombIDE.ScriptEditor
 
 		#endregion
 
-		protected DarkUI.Docking.DarkDockPanel DockPanel;
 		private Controls.TextEditorContextMenu textEditorContextMenu;
 		public ToolStrips.StudioMenuStrip MenuStrip;
 		public ToolStrips.StudioToolStrip ToolStrip;

@@ -61,6 +61,24 @@
     <Compile Include="Helpers\FileTreeViewHelper.cs" />
     <Compile Include="Objects\ReferenceComboItem.cs" />
     <Compile Include="Objects\ReferenceComboType.cs" />
+    <Compile Include="Settings\ClassicScriptSettingsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Settings\ClassicScriptSettingsControl.Designer.cs">
+      <DependentUpon>ClassicScriptSettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\FormSaveSchemeAs.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\FormSaveSchemeAs.Designer.cs">
+      <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\FormTextEditorSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\FormTextEditorSettings.Designer.cs">
+      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="ToolStrips\ToolStripExtensions.cs" />
     <Compile Include="UI\DocumentMode.cs" />
     <Compile Include="UI\DocumentModePresets\MenuStripPresets.cs" />
@@ -180,6 +198,15 @@
     <Compile Include="WindowLayout.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Settings\ClassicScriptSettingsControl.resx">
+      <DependentUpon>ClassicScriptSettingsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\FormSaveSchemeAs.resx">
+      <DependentUpon>FormSaveSchemeAs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\FormTextEditorSettings.resx">
+      <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ContentExplorer.resx">
       <DependentUpon>ContentExplorer.cs</DependentUpon>
     </EmbeddedResource>
@@ -254,6 +281,5 @@
   <ItemGroup>
     <None Include=".editorconfig" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
