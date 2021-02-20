@@ -1166,9 +1166,13 @@ namespace DarkUI.Controls
             }
         }
 
+        [Category("Appearance")]
         public Color OddNodeColor { get; set; } = Colors.HeaderBackground;
+        [Category("Appearance")]
         public Color EvenNodeColor { get; set; } = Colors.GreyBackground;
+        [Category("Appearance")]
         public Color FocusedNodeColor { get; set; } = Colors.BlueSelection;
+        [Category("Appearance")]
         public Color NonFocusedNodeColor { get; set; } = Colors.GreySelection;
 
         private void DrawNode(DarkTreeNode node, Graphics g)
