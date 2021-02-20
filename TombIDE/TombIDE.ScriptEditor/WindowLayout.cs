@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	internal class WindowLayout
 	{

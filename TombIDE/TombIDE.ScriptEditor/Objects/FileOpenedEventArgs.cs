@@ -1,7 +1,7 @@
 ﻿using System;
 using TombLib.Scripting.Enums;
 
-namespace TombIDE.ScriptEditor.Objects
+namespace TombIDE.ScriptingStudio.Objects
 {
 	public class FileOpenedEventArgs : EventArgs
 	{

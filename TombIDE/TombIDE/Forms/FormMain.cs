@@ -28,7 +28,7 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
-		private ScriptEditor.ClassicScriptStudio classicScriptStudio;
+		private ScriptingStudio.ClassicScriptStudio classicScriptStudio;
 		private ProjectMaster.ProjectMaster projectMaster;
 
 		private WinEventDelegate eventDelegate = null;
@@ -50,7 +50,7 @@ namespace TombIDE
 			projectMaster.Dock = DockStyle.Fill;
 			tabPage_ProjectMaster.Controls.Add(projectMaster);
 
-			classicScriptStudio = new ScriptEditor.ClassicScriptStudio { Parent = this };
+			classicScriptStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
 			classicScriptStudio.Dock = DockStyle.Fill;
 			tabPage_ScriptEditor.Controls.Add(classicScriptStudio);
 

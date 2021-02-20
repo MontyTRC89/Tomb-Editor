@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.Settings
+﻿namespace TombIDE.ScriptingStudio.Settings
 {
 	partial class ClassicScriptSettingsControl
 	{
@@ -87,7 +87,7 @@
 			// button_ImportScheme
 			// 
 			this.button_ImportScheme.Checked = false;
-			this.button_ImportScheme.Image = global::TombIDE.ScriptEditor.Properties.Resources.Import_16;
+			this.button_ImportScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Import_16;
 			this.button_ImportScheme.Location = new System.Drawing.Point(483, 16);
 			this.button_ImportScheme.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_ImportScheme.Name = "button_ImportScheme";
@@ -721,7 +721,7 @@
 			// button_SaveScheme
 			// 
 			this.button_SaveScheme.Checked = false;
-			this.button_SaveScheme.Image = global::TombIDE.ScriptEditor.Properties.Resources.Save_16;
+			this.button_SaveScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Save_16;
 			this.button_SaveScheme.Location = new System.Drawing.Point(413, 16);
 			this.button_SaveScheme.Name = "button_SaveScheme";
 			this.button_SaveScheme.Size = new System.Drawing.Size(25, 25);
@@ -732,7 +732,7 @@
 			// button_DeleteScheme
 			// 
 			this.button_DeleteScheme.Checked = false;
-			this.button_DeleteScheme.Image = global::TombIDE.ScriptEditor.Properties.Resources.Trash_16;
+			this.button_DeleteScheme.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Trash_16;
 			this.button_DeleteScheme.Location = new System.Drawing.Point(444, 16);
 			this.button_DeleteScheme.Name = "button_DeleteScheme";
 			this.button_DeleteScheme.Size = new System.Drawing.Size(25, 25);
@@ -743,7 +743,7 @@
 			// button_OpenSchemesFolder
 			// 
 			this.button_OpenSchemesFolder.Checked = false;
-			this.button_OpenSchemesFolder.Image = global::TombIDE.ScriptEditor.Properties.Resources.ForwardArrow_16;
+			this.button_OpenSchemesFolder.Image = global::TombIDE.ScriptingStudio.Properties.Resources.ForwardArrow_16;
 			this.button_OpenSchemesFolder.Location = new System.Drawing.Point(514, 16);
 			this.button_OpenSchemesFolder.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.button_OpenSchemesFolder.Name = "button_OpenSchemesFolder";

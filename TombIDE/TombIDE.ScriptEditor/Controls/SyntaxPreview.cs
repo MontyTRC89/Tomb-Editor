@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Resources;
 
-namespace TombIDE.ScriptEditor.Controls
+namespace TombIDE.ScriptingStudio.Controls
 {
 	public class SyntaxPreview : RichTextBox
 	{

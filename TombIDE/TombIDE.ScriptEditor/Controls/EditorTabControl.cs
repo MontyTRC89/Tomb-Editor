@@ -8,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using TombIDE.ScriptEditor.Forms;
-using TombIDE.ScriptEditor.Helpers;
+using TombIDE.ScriptingStudio.Forms;
+using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 
-namespace TombIDE.ScriptEditor.Controls
+namespace TombIDE.ScriptingStudio.Controls
 {
 	public class EditorTabControl : CustomTabControl
 	{
@@ -545,7 +545,7 @@ namespace TombIDE.ScriptEditor.Controls
 				if (result == FileSavingResult.Cancelled || result == FileSavingResult.Failed)
 					e.Cancel = true;
 			}
-			else if (AreTheExactSameEditor(editorOfTab, CurrentEditor))
+			else if (CurrentEditor != null && AreTheExactSameEditor(editorOfTab, CurrentEditor))
 				foreach (TabPage tab in fileTabPages)
 				{
 					IEditorControl editor = GetEditorOfTab(tab);

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using ClassicScriptConfig = TombLib.Scripting.ClassicScript.CS_EditorConfiguration;
 using LuaConfig = TombLib.Scripting.Lua.Lua_EditorConfiguration;
 
-namespace TombIDE.ScriptEditor.Settings
+namespace TombIDE.ScriptingStudio.Settings
 {
 	// TODO: Refactor
 

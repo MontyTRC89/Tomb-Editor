@@ -3,7 +3,7 @@ using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Lua;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	public class ConfigurationCollection
 	{

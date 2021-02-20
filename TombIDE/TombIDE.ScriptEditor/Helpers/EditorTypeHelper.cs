@@ -4,7 +4,7 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Lua;
 
-namespace TombIDE.ScriptEditor.Helpers
+namespace TombIDE.ScriptingStudio.Helpers
 {
 	internal static class EditorTypeHelper
 	{

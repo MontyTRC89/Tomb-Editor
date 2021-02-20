@@ -4,15 +4,15 @@ using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Controls;
-using TombIDE.ScriptEditor.Forms;
-using TombIDE.ScriptEditor.Helpers;
-using TombIDE.ScriptEditor.Objects;
-using TombIDE.ScriptEditor.Properties;
-using TombIDE.ScriptEditor.Settings;
-using TombIDE.ScriptEditor.ToolStrips;
-using TombIDE.ScriptEditor.ToolWindows;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Forms;
+using TombIDE.ScriptingStudio.Helpers;
+using TombIDE.ScriptingStudio.Objects;
+using TombIDE.ScriptingStudio.Properties;
+using TombIDE.ScriptingStudio.Settings;
+using TombIDE.ScriptingStudio.ToolStrips;
+using TombIDE.ScriptingStudio.ToolWindows;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Forms;
 using TombLib.Scripting.Bases;
@@ -20,7 +20,7 @@ using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	public abstract partial class StudioBase : UserControl
 	{

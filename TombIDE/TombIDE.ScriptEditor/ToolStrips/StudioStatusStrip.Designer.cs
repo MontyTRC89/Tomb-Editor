@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.ToolStrips
+﻿namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	partial class StudioStatusStrip
 	{
@@ -24,7 +24,7 @@
 			this.label_Selected = new System.Windows.Forms.ToolStripStatusLabel();
 			this.label_Zoom = new DarkUI.Controls.DarkLabel();
 			this.panel_Syntax = new System.Windows.Forms.Panel();
-			this.SyntaxPreview = new TombIDE.ScriptEditor.Controls.SyntaxPreview();
+			this.SyntaxPreview = new TombIDE.ScriptingStudio.Controls.SyntaxPreview();
 			this.statusStrip = new DarkUI.Controls.DarkStatusStrip();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.panel_Syntax.SuspendLayout();
@@ -37,7 +37,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_ResetZoom.Checked = false;
 			this.button_ResetZoom.Enabled = false;
-			this.button_ResetZoom.Image = global::TombIDE.ScriptEditor.Properties.Resources.Reset_16;
+			this.button_ResetZoom.Image = global::TombIDE.ScriptingStudio.Properties.Resources.Reset_16;
 			this.button_ResetZoom.Location = new System.Drawing.Point(934, 2);
 			this.button_ResetZoom.Margin = new System.Windows.Forms.Padding(2);
 			this.button_ResetZoom.Name = "button_ResetZoom";

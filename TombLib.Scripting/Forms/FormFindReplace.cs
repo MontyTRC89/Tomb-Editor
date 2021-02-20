@@ -8,12 +8,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using TombLib.Scripting;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Objects;
 
-namespace TombIDE.ScriptEditor.Forms
+namespace TombLib.Scripting.Forms
 {
 	public partial class FormFindReplace : DarkForm
 	{

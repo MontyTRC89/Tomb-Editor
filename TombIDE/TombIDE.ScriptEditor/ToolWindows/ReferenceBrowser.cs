@@ -7,13 +7,13 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using TombIDE.ScriptEditor.Objects;
+using TombIDE.ScriptingStudio.Objects;
 using TombIDE.Shared;
 using TombLib.Scripting.ClassicScript.Enums;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Resources;
 
-namespace TombIDE.ScriptEditor.ToolWindows
+namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class ReferenceBrowser : DarkToolWindow
 	{

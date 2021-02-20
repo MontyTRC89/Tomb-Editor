@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ScriptEditor.ToolStrips
+namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	internal static class ToolStripExtensions
 	{

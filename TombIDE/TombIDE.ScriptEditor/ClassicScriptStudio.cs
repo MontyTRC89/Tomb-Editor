@@ -6,11 +6,11 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Controls;
-using TombIDE.ScriptEditor.Forms;
-using TombIDE.ScriptEditor.Objects;
-using TombIDE.ScriptEditor.ToolWindows;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.Controls;
+using TombIDE.ScriptingStudio.Forms;
+using TombIDE.ScriptingStudio.Objects;
+using TombIDE.ScriptingStudio.ToolWindows;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Bases;
@@ -21,7 +21,7 @@ using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.ClassicScript.Utils;
 using TombLib.Scripting.Interfaces;
 
-namespace TombIDE.ScriptEditor
+namespace TombIDE.ScriptingStudio
 {
 	public sealed class ClassicScriptStudio : StudioBase
 	{

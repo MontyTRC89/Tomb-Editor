@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.Objects
+﻿namespace TombIDE.ScriptingStudio.Objects
 {
 	internal class ReferenceComboItem
 	{

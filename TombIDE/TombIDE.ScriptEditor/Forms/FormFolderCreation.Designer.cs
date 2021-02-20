@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.Forms
+﻿namespace TombIDE.ScriptingStudio.Forms
 {
 	partial class FormFolderCreation
 	{

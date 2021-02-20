@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace TombIDE.ScriptEditor.Controls
+namespace TombIDE.ScriptingStudio.Controls
 {
 	internal class SearchTextBox : DarkTextBox
 	{

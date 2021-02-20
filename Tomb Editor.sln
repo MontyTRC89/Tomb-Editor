@@ -38,7 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TombIDE", "TombIDE", "{0AC2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE", "TombIDE\TombIDE\TombIDE.csproj", "{CA19A4C1-85E7-4BB2-97C6-1AAA2B48C532}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE.ScriptEditor", "TombIDE\TombIDE.ScriptEditor\TombIDE.ScriptEditor.csproj", "{2397EA24-CB8E-482F-8E93-F3D626D255E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE.ScriptingStudio", "TombIDE\TombIDE.ScriptEditor\TombIDE.ScriptingStudio.csproj", "{2397EA24-CB8E-482F-8E93-F3D626D255E5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE.Shared", "TombIDE\TombIDE.Shared\TombIDE.Shared.csproj", "{92D73867-1202-43E5-B615-FB998ED8F796}"
 EndProject

@@ -1,7 +1,7 @@
 ﻿using DarkUI.Docking;
 using TombIDE.Shared;
 
-namespace TombIDE.ScriptEditor.ToolWindows
+namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class CompilerLogs : DarkToolWindow
 	{

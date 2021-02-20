@@ -1,13 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.UI;
+using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Interfaces;
 
-namespace TombIDE.ScriptEditor.ToolStrips
+namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	public partial class StudioStatusStrip : UserControl
 	{

@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor
+﻿namespace TombIDE.ScriptingStudio
 {
 	internal struct SupportedFormats
 	{

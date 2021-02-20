@@ -4,7 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared.SharedClasses;
 
-namespace TombIDE.ScriptEditor.Forms
+namespace TombIDE.ScriptingStudio.Forms
 {
 	internal partial class FormRenameItem : DarkForm
 	{

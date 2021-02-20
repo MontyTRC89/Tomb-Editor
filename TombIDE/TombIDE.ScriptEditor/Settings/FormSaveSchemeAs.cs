@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace TombIDE.ScriptEditor.Settings
+namespace TombIDE.ScriptingStudio.Settings
 {
 	internal enum ColorSchemeType
 	{

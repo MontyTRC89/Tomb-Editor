@@ -16,7 +16,7 @@ using TombLib.Scripting.ClassicScript.Resources;
 using TombLib.Scripting.Objects;
 using TombLib.Scripting.Resources;
 
-namespace TombIDE.ScriptEditor.Settings
+namespace TombIDE.ScriptingStudio.Settings
 {
 	internal partial class ClassicScriptSettingsControl : UserControl
 	{

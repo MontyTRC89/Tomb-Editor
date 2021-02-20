@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.ToolWindows
+﻿namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	partial class ReferenceBrowser
 	{
@@ -21,7 +21,7 @@
 			this.contextMenu = new DarkUI.Controls.DarkContextMenu();
 			this.menuItem_Copy = new System.Windows.Forms.ToolStripMenuItem();
 			this.dataGrid = new DarkUI.Controls.DarkDataGridView();
-			this.searchTextBox = new TombIDE.ScriptEditor.Controls.SearchTextBox();
+			this.searchTextBox = new TombIDE.ScriptingStudio.Controls.SearchTextBox();
 			this.contextMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
 			this.SuspendLayout();

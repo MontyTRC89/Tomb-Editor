@@ -7,14 +7,14 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.ScriptEditor.Forms;
-using TombIDE.ScriptEditor.Helpers;
-using TombIDE.ScriptEditor.Objects;
+using TombIDE.ScriptingStudio.Forms;
+using TombIDE.ScriptingStudio.Helpers;
+using TombIDE.ScriptingStudio.Objects;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Enums;
 
-namespace TombIDE.ScriptEditor.ToolWindows
+namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class FileExplorer : DarkToolWindow
 	{

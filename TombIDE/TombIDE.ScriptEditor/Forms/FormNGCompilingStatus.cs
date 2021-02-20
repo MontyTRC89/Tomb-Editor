@@ -1,7 +1,7 @@
 ﻿using DarkUI.Forms;
 using System.ComponentModel;
 
-namespace TombIDE.ScriptEditor.Forms
+namespace TombIDE.ScriptingStudio.Forms
 {
 	public partial class FormNGCompilingStatus : DarkForm
 	{

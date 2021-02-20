@@ -1,4 +1,4 @@
-﻿namespace TombIDE.ScriptEditor.UI.StudioModePresets
+﻿namespace TombIDE.ScriptingStudio.UI.StudioModePresets
 {
 	internal static class MenuStripPresets
 	{
