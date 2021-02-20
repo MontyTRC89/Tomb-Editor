@@ -111,5 +111,5 @@ namespace TombIDE
 		}
 
 		private static bool IsUnicodePath(string path) => path.Any(c => c > byte.MaxValue);
-    }
+	}
 }
