@@ -5,7 +5,6 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.Controls;
-using TombIDE.ScriptingStudio.Forms;
 using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.Objects;
 using TombIDE.ScriptingStudio.Properties;
@@ -17,6 +16,7 @@ using TombIDE.Shared;
 using TombLib.Forms;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.Forms;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
 

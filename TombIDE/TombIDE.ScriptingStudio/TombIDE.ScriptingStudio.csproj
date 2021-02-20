@@ -253,15 +253,15 @@
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
       <Project>{5D9A72E7-4B33-4177-AD7C-1B46591005FD}</Project>
       <Name>TombLib.Scripting.ClassicScript</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj">
       <Project>{87D4149C-E716-49F6-848F-ACA345D11B30}</Project>
       <Name>TombLib.Scripting.Lua</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Scripting\TombLib.Scripting.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting\TombLib.Scripting.csproj">
       <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
       <Name>TombLib.Scripting</Name>
     </ProjectReference>
@@ -269,11 +269,11 @@
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
       <Name>TombIDE.Shared</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib.Forms\TombLib.Forms.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib.Forms\TombLib.Forms.csproj">
       <Project>{eb61dfac-51a6-44e3-869c-9bbde830a40e}</Project>
       <Name>TombLib.Forms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
       <Name>TombLib</Name>
     </ProjectReference>

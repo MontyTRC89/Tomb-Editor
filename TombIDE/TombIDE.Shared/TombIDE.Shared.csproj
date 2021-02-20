@@ -68,7 +68,7 @@
       <Project>{F19472F5-8C44-4C51-A8A0-B9DE5F555255}</Project>
       <Name>DarkUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\TombLib\TombLib.csproj">
+    <ProjectReference Include="..\..\TombLib\TombLib\TombLib.csproj">
       <Project>{A0421DCD-80D1-44D8-8243-6A33F83A692C}</Project>
       <Name>TombLib</Name>
     </ProjectReference>

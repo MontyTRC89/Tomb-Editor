@@ -4,7 +4,7 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombEditor", "TombEditor\TombEditor.csproj", "{330CCD5E-D061-4C40-B568-BF367213C525}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib", "TombLib\TombLib.csproj", "{A0421DCD-80D1-44D8-8243-6A33F83A692C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib", "TombLib\TombLib\TombLib.csproj", "{A0421DCD-80D1-44D8-8243-6A33F83A692C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WadTool", "WadTool\WadTool.csproj", "{FA212817-73AF-453A-9F34-A59BEABFF916}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -20,12 +20,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "DarkUI\Example\E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NgXmlBuilder", "NgXmlBuilder\NgXmlBuilder.csproj", "{EFC2A02B-1138-46EA-A496-F94D58AC6B3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Forms", "TombLib.Forms\TombLib.Forms.csproj", "{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Forms", "TombLib\TombLib.Forms\TombLib.Forms.csproj", "{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E2F6F614-5007-471A-A22C-39B7D840376C} = {E2F6F614-5007-471A-A22C-39B7D840376C}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering", "TombLib.Rendering\TombLib.Rendering.csproj", "{E2F6F614-5007-471A-A22C-39B7D840376C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Rendering", "TombLib\TombLib.Rendering\TombLib.Rendering.csproj", "{E2F6F614-5007-471A-A22C-39B7D840376C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A0421DCD-80D1-44D8-8243-6A33F83A692C} = {A0421DCD-80D1-44D8-8243-6A33F83A692C}
 	EndProjectSection
@@ -46,13 +46,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombIDE.REGSVR", "TombIDE\T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TombLib", "TombLib", "{642147AB-23FD-4715-AE26-90BE6C755FD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting", "TombLib.Scripting\TombLib.Scripting.csproj", "{3EAAFD71-DD96-427D-8793-643DADD2F3A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting", "TombLib\TombLib.Scripting\TombLib.Scripting.csproj", "{3EAAFD71-DD96-427D-8793-643DADD2F3A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.ClassicScript", "TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj", "{5D9A72E7-4B33-4177-AD7C-1B46591005FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.ClassicScript", "TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj", "{5D9A72E7-4B33-4177-AD7C-1B46591005FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Lua", "TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj", "{87D4149C-E716-49F6-848F-ACA345D11B30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Lua", "TombLib\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj", "{87D4149C-E716-49F6-848F-ACA345D11B30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.FileAssociation", "TombLib.FileAssociation\TombLib.FileAssociation.csproj", "{0B145643-7B29-40ED-8B52-4245136D3200}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.FileAssociation", "TombLib\TombLib.FileAssociation\TombLib.FileAssociation.csproj", "{0B145643-7B29-40ED-8B52-4245136D3200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
