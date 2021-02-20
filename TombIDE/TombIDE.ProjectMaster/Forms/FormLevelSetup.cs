@@ -120,8 +120,8 @@ namespace TombIDE.ProjectMaster
 				level.Settings.GameLevelFilePath = level.Settings.MakeRelative(dataFilePath, VariableType.LevelDirectory);
 				level.Settings.GameVersion = _targetProject.GameVersion;
 
-                level.Settings.WadSoundPaths.Clear();
-                level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
+				level.Settings.WadSoundPaths.Clear();
+				level.Settings.WadSoundPaths.Add(new WadSoundPath(LevelSettings.VariableCreate(VariableType.LevelDirectory) + LevelSettings.Dir + ".." + LevelSettings.Dir + ".." + LevelSettings.Dir + "Sounds"));
 
 				Prj2Writer.SaveToPrj2(prj2FilePath, level);
 
