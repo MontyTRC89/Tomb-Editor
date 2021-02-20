@@ -158,7 +158,7 @@
       <Project>{8e9772c8-dffd-4abb-a319-8226f9a4ee14}</Project>
       <Name>TombIDE.ProjectMaster</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TombIDE.ScriptEditor\TombIDE.ScriptingStudio.csproj">
+    <ProjectReference Include="..\TombIDE.ScriptingStudio\TombIDE.ScriptingStudio.csproj">
       <Project>{2397ea24-cb8e-482f-8e93-f3d626d255e5}</Project>
       <Name>TombIDE.ScriptingStudio</Name>
     </ProjectReference>
