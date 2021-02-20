@@ -1092,9 +1092,9 @@ namespace TombEditor
 
         private void UpdateLevelStatistics(bool onlyRoom, bool resetCompilationStats = false, bool force = false)
         {
-            // Don't update stats if option is unset
+            // Don't update stats if option is unset or there is no level
 
-            if (!Configuration.UI_ShowStats)
+            if (!Configuration.UI_ShowStats || Level == null)
                 return;
 
             // Don't update stats if already updating
