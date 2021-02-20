@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Localization>
+	<AskRestoreSession>
+		Looks like your previous Script Editor session was unsuccessfully closed.
+		Would you like to restore the unsaved files?
+	</AskRestoreSession>
+
+	<AskFileReload>
+		The file "{0}"
+
+		has been modified in another program.
+		Would you like to reload it?
+	</AskFileReload>
+
+	<AskMoveFileToBin>
+		Are you sure you want to move the "{0}" file into the recycle bin?
+	</AskMoveFileToBin>
+
+	<AskMoveFolderToBin>
+		Are you sure you want to move the "{0}" folder and all its contents into the recycle bin?
+	</AskMoveFolderToBin>
+
+	<AskUnsavedChanged>
+		Do you want to save changes to {0} ?
+	</AskUnsavedChanged>
+
+	<AreYouSure>Are you sure?</AreYouSure>
+	<RestoreSessionMBT>Restore session?</RestoreSessionMBT>
+	<FileReloadMBT>Reload?</FileReloadMBT>
+	<UnsavedChangedMBT>Unsaved changes!</UnsavedChangedMBT>
+
+	<Error>Error</Error>
+
+	<File>File</File>
+	<Edit>Edit</Edit>
+	<Tools>Tools</Tools>
+	<Options>Options</Options>
+	<View>View</View>
+	<Help>Help</Help>
+
+	<NewFile>New File...</NewFile>
+	<Save>Save</Save>
+	<SaveAs>Save As...</SaveAs>
+	<SaveAll>Save All</SaveAll>
+	<Build>Build Script...</Build>
+
+	<Undo>Undo</Undo>
+	<CantUndo>Can't Undo</CantUndo>
+	<Redo>Redo</Redo>
+	<CantRedo>Can't Redo</CantRedo>
+	<Cut>Cut</Cut>
+	<Copy>Copy</Copy>
+	<Paste>Paste</Paste>
+	<FindReplace>Find and Replace...</FindReplace>
+	<SelectAll>Select All</SelectAll>
+
+	<Reindent>Reindent Code</Reindent>
+	<TrimWhitespace>Trim Ending Whitespace</TrimWhitespace>
+	<CommentOut>Comment out Selected Lines</CommentOut>
+	<Uncomment>Uncomment Selected Lines</Uncomment>
+	<ToggleBookmark>Toggle Bookmark</ToggleBookmark>
+	<PrevBookmark>Go To Previous Bookmark</PrevBookmark>
+	<NextBookmark>Go To Next Bookmark</NextBookmark>
+	<ClearBookmarks>Clear All Bookmarks...</ClearBookmarks>
+
+	<UseNewInclude>Use New #INCLUDE Method</UseNewInclude>
+	<ShowLogsAfterBuild>Show Logs After Build</ShowLogsAfterBuild>
+	<ReindentOnSave>Reindent on Save</ReindentOnSave>
+	<Settings>Text Editor Settings...</Settings>
+
+	<ContentExplorer>Content Explorer</ContentExplorer>
+	<FileExplorer>File Explorer</FileExplorer>
+	<ReferenceBrowser>Reference Browser</ReferenceBrowser>
+	<CompilerLogs>Compiler Logs</CompilerLogs>
+	<SearchResults>Search Results</SearchResults>
+	<ToolStrip>Tool Strip</ToolStrip>
+	<StatusStrip>Status Strip</StatusStrip>
+
+	<About>About...</About>
+
+	<Close>Close</Close>
+	<OpenContainingFolder>Open Containing Folder</OpenContainingFolder>
+
+	<Untitled>Untitled</Untitled>
+
+	<SearchContent>Search Content...</SearchContent>
+	<SearchFunctions>Search Functions...</SearchFunctions>
+	<SearchFiles>Search Files...</SearchFiles>
+	<SearchReferences>Search References...</SearchReferences>
+
+	<Sections>Sections</Sections>
+	<Levels>Levels</Levels>
+	<Includes>Includes</Includes>
+	<Defines>Defines</Defines>
+
+	<Row>Row: {0}</Row>
+	<Column>Column: {0}</Column>
+	<Line>Line: {0}</Line>
+	<Selected>Selected: {0}</Selected>
+	<Zoom>Zoom: {0}%</Zoom>
+	<ResetZoom>Reset Zoom</ResetZoom>
+
+	<DecimalValue>Decimal Value</DecimalValue>
+	<HexadecimalValue>Hexadecimal Value</HexadecimalValue>
+	<Macro>Macro</Macro>
+	<ArgumentRange>Argument {0} (range)</ArgumentRange>
+	<Variable>Variable</Variable>
+	<Description>Description</Description>
+	<Sounds>Sounds</Sounds>
+
+	<MnemonicConstants>Mnemonic Constants</MnemonicConstants>
+	<EnemyDamageValues>Enemy Damage Values</EnemyDamageValues>
+	<KeyboardScancodes>Keyboard Scancodes</KeyboardScancodes>
+	<OCBList>OCB List</OCBList>
+	<OldCommandsList>Old Commands List</OldCommandsList>
+	<NewCommandsList>New Commands List</NewCommandsList>
+	<SoundIndices>Sound (SFX) Indices</SoundIndices>
+	<MoveableSlotIndices>Moveable Slot Indices</MoveableSlotIndices>
+	<StaticObjectIndices>Static Object Indices</StaticObjectIndices>
+	<VariablePlaceholders>Variable Placeholders</VariablePlaceholders>
+
+	<NewFolder>New Folder...</NewFolder>
+	<ViewInDefaultEditor>View in Default Editor</ViewInDefaultEditor>
+	<ViewCode>View Code</ViewCode>
+	<RenameItem>Rename Item...</RenameItem>
+	<DeleteItem>Delete Item</DeleteItem>
+	<OpenItemInExplorer>Open Item in Explorer</OpenItemInExplorer>
+
+	<!-- {0} - File path -->
+	<MatchSourceNodeText>{0} (Match count: {1})</MatchSourceNodeText>
+
+	<!-- {0} - Line number -->
+	<!-- {1} - Line text -->
+	<SingleMatchNodeText>(Line: {0}) {1}</SingleMatchNodeText>
+</Localization>

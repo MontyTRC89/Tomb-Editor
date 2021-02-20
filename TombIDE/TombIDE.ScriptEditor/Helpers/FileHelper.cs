@@ -1,141 +1,74 @@
-﻿using DarkUI.Controls;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
+using TombIDE.ScriptEditor.UI;
+using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Parsers;
+using TombLib.Scripting.Enums;
+using TombLib.Scripting.Helpers;
+using TombLib.Scripting.Lua;
 
 namespace TombIDE.ScriptEditor.Helpers
 {
 	internal static class FileHelper
 	{
-		#region Public methods
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath)
-		{ return CreateFullFileListNode(sourceDirectoryPath, string.Empty, false, null, false); }
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern)
-		{ return CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, null, false); }
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern, bool expandAllNodes)
-		{ return CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, null, expandAllNodes); }
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, string fileSearchPattern, DarkTreeView expandedSourceTreeView)
-		{ return CreateFullFileListNode(sourceDirectoryPath, fileSearchPattern, false, expandedSourceTreeView, false); }
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, bool directoriesOnly)
-		{ return CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, null, false); }
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, bool directoriesOnly, bool expandAllNodes)
-		{ return CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, null, expandAllNodes); }
-
-		public static DarkTreeNode CreateFullFileListNode(string sourceDirectoryPath, bool directoriesOnly, DarkTreeView expandedSourceTreeView)
-		{ return CreateFullFileListNode(sourceDirectoryPath, string.Empty, directoriesOnly, expandedSourceTreeView, false); }
-
-		public static void DeleteFiles(string[] files)
+		public static DocumentMode GetDocumentModeForFile(string filePath, EditorType editorType = EditorType.Default)
 		{
-			foreach (string file in files)
-				if (File.Exists(file))
-					File.Delete(file);
+			Type editorClassType = EditorTypeHelper.GetEditorClassType(filePath, editorType);
+
+			if (editorClassType != null)
+			{
+				if (editorClassType == typeof(ClassicScriptEditor))
+					return DocumentMode.ClassicScript;
+				else if (editorClassType == typeof(StringEditor))
+					return DocumentMode.Strings;
+				else if (editorClassType == typeof(LuaEditor))
+					return DocumentMode.Lua;
+			}
+
+			return DocumentMode.PlainText;
 		}
 
-		#endregion Public methods
-
-		#region Private methods
-
-		private static DarkTreeNode CreateFullFileListNode(
-			string sourceDirectoryPath, string fileSearchPattern, bool directoriesOnly, DarkTreeView expandedSourceTreeView, bool expandAllNodes)
+		public static bool IsStringFile(string filePath)
 		{
-			DirectoryInfo sourceDirectory = new DirectoryInfo(sourceDirectoryPath);
+			string[] lines = File.ReadAllLines(filePath);
 
-			DarkTreeNode node = new DarkTreeNode(sourceDirectory.Name)
-			{
-				Icon = Properties.Resources.folder.ToBitmap(),
-				Tag = sourceDirectory
-			};
-
-			FillNodeWithItems(ref node, fileSearchPattern, directoriesOnly, expandedSourceTreeView, expandAllNodes);
-
-			if (expandAllNodes)
-				node.Expanded = true;
-
-			return node;
-		}
-
-		private static void FillNodeWithItems(
-			ref DarkTreeNode node, string fileSearchPattern, bool directoriesOnly, DarkTreeView expandedSourceTreeView, bool expandAllNodes)
-		{
-			Stack<DarkTreeNode> stack = new Stack<DarkTreeNode>();
-			stack.Push(node);
-
-			while (stack.Count > 0)
-			{
-				DarkTreeNode currentNode = stack.Pop();
-				DirectoryInfo info = (DirectoryInfo)currentNode.Tag;
-
-				currentNode.Nodes.AddRange(GetDirectoryNodes(ref stack, info.GetDirectories(), expandedSourceTreeView, expandAllNodes));
-
-				if (!directoriesOnly)
-					foreach (string filter in fileSearchPattern.Split('|'))
-						currentNode.Nodes.AddRange(GetFileNodes(info.GetFiles(filter)));
-
-				if (expandedSourceTreeView != null)
+			foreach (string line in lines)
+				if (LineParser.IsSectionHeaderLine(line))
 				{
-					DarkTreeNode expandedSourceNode = expandedSourceTreeView.FindNode(currentNode.FullPath);
+					string text = LineParser.GetSectionHeaderText(line);
 
-					if (expandedSourceNode != null)
-						currentNode.Expanded = expandedSourceNode.Expanded;
+					if (StringHelper.BulkStringComparision(text, StringComparison.OrdinalIgnoreCase,
+						"Strings", "PSXStrings", "PCStrings", "ExtraNG"))
+						return true;
 				}
-				else if (expandAllNodes)
-					currentNode.Expanded = true;
-			}
+
+			return false;
 		}
 
-		private static List<DarkTreeNode> GetDirectoryNodes(
-			ref Stack<DarkTreeNode> stack, DirectoryInfo[] directories, DarkTreeView expandedSourceTreeView, bool expandAllNodes)
+		public static bool IsClassicScriptFile(string filePath)
 		{
-			List<DarkTreeNode> nodes = new List<DarkTreeNode>();
+			string[] lines = File.ReadAllLines(filePath);
 
-			foreach (DirectoryInfo directory in directories)
-			{
-				DarkTreeNode childDirectoryNode = new DarkTreeNode(directory.Name)
+			foreach (string line in lines)
+				if (LineParser.IsSectionHeaderLine(line))
 				{
-					Icon = Properties.Resources.folder.ToBitmap(),
-					Tag = directory
-				};
+					string text = LineParser.GetSectionHeaderText(line);
 
-				nodes.Add(childDirectoryNode);
-				stack.Push(childDirectoryNode);
-
-				if (expandedSourceTreeView != null)
-				{
-					DarkTreeNode expandedSourceChildNode = expandedSourceTreeView.FindNode(childDirectoryNode.FullPath);
-
-					if (expandedSourceChildNode != null)
-						childDirectoryNode.Expanded = expandedSourceChildNode.Expanded;
+					if (StringHelper.BulkStringComparision(text, StringComparison.OrdinalIgnoreCase,
+						"PSXExtensions", "PCExtensions", "Language", "Options", "Title", "Level"))
+						return true;
 				}
-				else if (expandAllNodes)
-					childDirectoryNode.Expanded = true;
-			}
 
-			return nodes;
+			return false;
 		}
 
-		private static List<DarkTreeNode> GetFileNodes(FileInfo[] files)
-		{
-			List<DarkTreeNode> nodes = new List<DarkTreeNode>();
+		public static bool IsLuaFile(string filePath)
+			=> Path.GetExtension(filePath).Equals(SupportedFormats.Lua, StringComparison.OrdinalIgnoreCase);
 
-			foreach (FileInfo file in files)
-			{
-				DarkTreeNode fileNode = new DarkTreeNode(file.Name)
-				{
-					Icon = Properties.Resources.file.ToBitmap(),
-					Tag = file
-				};
+		public static bool IsTextFile(string filePath)
+			=> Path.GetExtension(filePath).Equals(SupportedFormats.Text, StringComparison.OrdinalIgnoreCase);
 
-				nodes.Add(fileNode);
-			}
-
-			return nodes;
-		}
-
-		#endregion Private methods
+		public static string GetOriginalFilePathFromBackupFile(string backupFilePath)
+			=> Path.Combine(Path.GetDirectoryName(backupFilePath), Path.GetFileNameWithoutExtension(backupFilePath));
 	}
 }

@@ -47,31 +47,88 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\FileList.cs">
+    <Compile Include="..\..\GlobalPaths.cs">
+      <Link>GlobalPaths.cs</Link>
+    </Compile>
+    <Compile Include="ConfigurationCollection.cs" />
+    <Compile Include="Helpers\EditorTypeHelper.cs" />
+    <Compile Include="Helpers\FileTreeViewHelper.cs" />
+    <Compile Include="Objects\ReferenceComboItem.cs" />
+    <Compile Include="Objects\ReferenceComboType.cs" />
+    <Compile Include="ToolStrips\ToolStripExtensions.cs" />
+    <Compile Include="UI\DocumentMode.cs" />
+    <Compile Include="UI\DocumentModePresets\MenuStripPresets.cs" />
+    <Compile Include="UI\StudioModePresets\MenuStripPresets.cs" />
+    <Compile Include="UI\StudioModePresets\ToolStripPresets.cs" />
+    <Compile Include="ToolWindows\ContentExplorer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\FileList.Designer.cs">
-      <DependentUpon>FileList.cs</DependentUpon>
+    <Compile Include="ToolWindows\ContentExplorer.Designer.cs">
+      <DependentUpon>ContentExplorer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ObjectBrowser.cs">
+    <Compile Include="ToolWindows\SearchResults.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ObjectBrowser.Designer.cs">
-      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    <Compile Include="ToolWindows\SearchResults.Designer.cs">
+      <DependentUpon>SearchResults.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ReferenceBrowser.cs">
+    <Compile Include="Controls\EditorTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SearchTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EventDelegates.cs" />
+    <Compile Include="Objects\ReferenceDefinitionEventArgs.cs" />
+    <Compile Include="Objects\FileOpenedEventArgs.cs" />
+    <Compile Include="ToolStrips\ItemValidator.cs" />
+    <Compile Include="ToolStrips\StudioStatusStrip.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ReferenceBrowser.Designer.cs">
+    <Compile Include="ToolStrips\StudioStatusStrip.Designer.cs">
+      <DependentUpon>StudioStatusStrip.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolStrips\TextEditorContextMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\CompilerLogs.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\CompilerLogs.Designer.cs">
+      <DependentUpon>CompilerLogs.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\FileExplorer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\FileExplorer.Designer.cs">
+      <DependentUpon>FileExplorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ToolWindows\ReferenceBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ToolWindows\ReferenceBrowser.Designer.cs">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SyntaxPreview.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolStrips\StudioMenuStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ToolStrips\StudioToolStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFileCreation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormFileCreation.Designer.cs">
+      <DependentUpon>FormFileCreation.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormFolderCreation.cs">
       <SubType>Form</SubType>
@@ -85,23 +142,11 @@
     <Compile Include="Forms\FormNGCompilingStatus.Designer.cs">
       <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormFindReplace.cs">
+    <Compile Include="Forms\FormReferenceInfo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormFindReplace.Designer.cs">
-      <DependentUpon>FormFindReplace.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormMnemonicInfo.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormMnemonicInfo.Designer.cs">
-      <DependentUpon>FormMnemonicInfo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FormFileCreation.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormFileCreation.Designer.cs">
-      <DependentUpon>FormFileCreation.cs</DependentUpon>
+    <Compile Include="Forms\FormReferenceInfo.Designer.cs">
+      <DependentUpon>FormReferenceInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormRenameItem.cs">
       <SubType>Form</SubType>
@@ -117,23 +162,41 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ScriptEditor.cs">
+    <Compile Include="StudioBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ScriptEditor.Designer.cs">
-      <DependentUpon>ScriptEditor.cs</DependentUpon>
+    <Compile Include="StudioBase.Designer.cs">
+      <DependentUpon>StudioBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RegexPatterns.cs" />
+    <Compile Include="ClassicScriptStudio.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="SupportedFormats.cs" />
+    <Compile Include="UI\StudioMode.cs" />
+    <Compile Include="UI\UIElement.cs" />
+    <Compile Include="UI\UIKeys.cs" />
+    <Compile Include="UI\DocumentModePresets\ToolStripPresets.cs" />
+    <Compile Include="WindowLayout.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\FileList.resx">
-      <DependentUpon>FileList.cs</DependentUpon>
+    <EmbeddedResource Include="ToolWindows\ContentExplorer.resx">
+      <DependentUpon>ContentExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ObjectBrowser.resx">
-      <DependentUpon>ObjectBrowser.cs</DependentUpon>
+    <EmbeddedResource Include="ToolWindows\FileExplorer.resx">
+      <DependentUpon>FileExplorer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ReferenceBrowser.resx">
+    <EmbeddedResource Include="ToolWindows\ReferenceBrowser.resx">
       <DependentUpon>ReferenceBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\CompilerLogs.resx">
+      <DependentUpon>CompilerLogs.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolWindows\SearchResults.resx">
+      <DependentUpon>SearchResults.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormFileCreation.resx">
+      <DependentUpon>FormFileCreation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormFolderCreation.resx">
       <DependentUpon>FormFolderCreation.cs</DependentUpon>
@@ -141,14 +204,8 @@
     <EmbeddedResource Include="Forms\FormNGCompilingStatus.resx">
       <DependentUpon>FormNGCompilingStatus.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFindReplace.resx">
-      <DependentUpon>FormFindReplace.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMnemonicInfo.resx">
-      <DependentUpon>FormMnemonicInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormFileCreation.resx">
-      <DependentUpon>FormFileCreation.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormReferenceInfo.resx">
+      <DependentUpon>FormReferenceInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormRenameItem.resx">
       <DependentUpon>FormRenameItem.cs</DependentUpon>
@@ -157,14 +214,29 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ScriptEditor.resx">
-      <DependentUpon>ScriptEditor.cs</DependentUpon>
+    <EmbeddedResource Include="StudioBase.resx">
+      <DependentUpon>StudioBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ToolStrips\StudioStatusStrip.resx">
+      <DependentUpon>StudioStatusStrip.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">
       <Project>{f19472f5-8c44-4c51-a8a0-b9de5f555255}</Project>
       <Name>DarkUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
+      <Project>{5D9A72E7-4B33-4177-AD7C-1B46591005FD}</Project>
+      <Name>TombLib.Scripting.ClassicScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting.Lua\TombLib.Scripting.Lua.csproj">
+      <Project>{87D4149C-E716-49F6-848F-ACA345D11B30}</Project>
+      <Name>TombLib.Scripting.Lua</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TombLib.Scripting\TombLib.Scripting.csproj">
+      <Project>{3eaafd71-dd96-427d-8793-643dadd2f3a3}</Project>
+      <Name>TombLib.Scripting</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
@@ -180,32 +252,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AboutScreen_800.png" />
-    <Content Include="Resources\Images\forward-arrow-16.png" />
-    <Content Include="Resources\Images\general_create_new-16.png" />
-    <Content Include="Resources\Images\general_edit-16.png" />
-    <Content Include="Resources\Images\general_folder-16.png" />
-    <Content Include="Resources\Images\general_trash-16.png" />
-    <Content Include="Resources\Icons\file.ico" />
-    <Content Include="Resources\Icons\folder.ico" />
-    <Content Include="Resources\Images\actions_play-16.png" />
-    <Content Include="Resources\Images\general_AboutIcon-16.png" />
-    <Content Include="Resources\Images\general_clipboard-16.png" />
-    <Content Include="Resources\Images\general_copy-16.png" />
-    <Content Include="Resources\Images\general_copy_comments-16.png" />
-    <Content Include="Resources\Images\general_cut-16.png" />
-    <Content Include="Resources\Images\general_redo-16.png" />
-    <Content Include="Resources\Images\general_Save-16.png" />
-    <Content Include="Resources\Images\general_SaveAll-16.png" />
-    <Content Include="Resources\Images\general_search-16.png" />
-    <Content Include="Resources\Images\general_settings-16.png" />
-    <Content Include="Resources\Images\general_undo-16.png" />
-    <Content Include="Resources\Images\script-bookmark-16.png" />
-    <Content Include="Resources\Images\script-clearbookmarks-16.png" />
-    <Content Include="Resources\Images\script-comment-16.png" />
-    <Content Include="Resources\Images\script-nextbookmark-16.png" />
-    <Content Include="Resources\Images\script-prevbookmark-16.png" />
-    <Content Include="Resources\Images\script-uncomment-16.png" />
+    <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -212,7 +212,7 @@ namespace TombIDE
 
 		private void InstallEngine(Project project)
 		{
-			string engineBasePath = DefaultPaths.GetEngineTemplatesPath();
+			string engineBasePath = DefaultPaths.EngineTemplatesDirectory;
 
 			switch (comboBox_EngineType.SelectedIndex)
 			{
@@ -225,7 +225,7 @@ namespace TombIDE
 					break;
 			}
 
-			string sharedArchivePath = Path.Combine(DefaultPaths.GetSharedTemplatesPath(project.GameVersion), "Shared.zip");
+			string sharedArchivePath = Path.Combine(TemplatePaths.GetSharedTemplatesPath(project.GameVersion), "Shared.zip");
 
 			// Extract the engine base into the ProjectPath folder
 			using (ZipArchive engineArchive = new ZipArchive(File.OpenRead(engineBasePath)))

@@ -190,31 +190,6 @@ namespace TombIDE.Shared
 
 		/* Script Editor Events */
 
-		#region ScriptEditor_OpenFile
-
-		public class ScriptEditor_OpenFileEvent : IIDEEvent
-		{
-			public string RequestedFilePath { get; internal set; }
-		}
-
-		public void ScriptEditor_OpenFile(string requestedFilePath) =>
-			RaiseEvent(new ScriptEditor_OpenFileEvent { RequestedFilePath = requestedFilePath });
-
-		#endregion ScriptEditor_OpenFile
-
-		#region ScriptEditor_SelectObject
-
-		public class ScriptEditor_SelectObjectEvent : IIDEEvent
-		{
-			public string ObjectName { get; internal set; }
-			public ObjectType ObjectType { get; internal set; }
-		}
-
-		public void ScriptEditor_SelectObject(string objectName, ObjectType type) =>
-			RaiseEvent(new ScriptEditor_SelectObjectEvent { ObjectName = objectName, ObjectType = type });
-
-		#endregion ScriptEditor_SelectObject
-
 		#region ScriptEditor_AppendScriptLines
 
 		public class ScriptEditor_AppendScriptLinesEvent : IIDEEvent
@@ -310,19 +285,6 @@ namespace TombIDE.Shared
 
 		#endregion ScriptEditor_RenameLevel
 
-		#region ScriptEditor_OpenReferenceDescription
-
-		public class ScriptEditor_OpenReferenceDescriptionEvent : IIDEEvent
-		{
-			public string ReferenceName { get; internal set; }
-			public ReferenceType ReferenceType { get; internal set; }
-		}
-
-		public void ScriptEditor_OpenReferenceDescription(string referenceName, ReferenceType type) =>
-			RaiseEvent(new ScriptEditor_OpenReferenceDescriptionEvent { ReferenceName = referenceName, ReferenceType = type });
-
-		#endregion ScriptEditor_OpenReferenceDescription
-
 		// Construction and destruction
 		public IDE(IDEConfiguration ideConfiguration, List<Project> availableProjects, List<Plugin> availablePlugins)
 		{
@@ -333,5 +295,7 @@ namespace TombIDE.Shared
 
 		public void Dispose()
 		{ }
+
+		public static IDE Global;
 	}
 }

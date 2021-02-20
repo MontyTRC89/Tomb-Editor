@@ -257,7 +257,7 @@ namespace TombIDE.ProjectMaster
 		{
 			try
 			{
-				string pluginsFolderPath = DefaultPaths.GetTRNGPluginsPath(); // Internal TombIDE folder
+				string pluginsFolderPath = DefaultPaths.TRNGPluginsDirectory; // Internal TombIDE folder
 
 				if (!Directory.Exists(pluginsFolderPath))
 					Directory.CreateDirectory(pluginsFolderPath);

@@ -19,31 +19,18 @@
 		Dutch
 	}
 
-	public enum ObjectType
-	{
-		Section,
-		Level,
-		Include,
-		Define
-	}
-
-	public enum ReferenceType
-	{
-		OCBs,
-		OLDCommands,
-		NEWCommands,
-		Mnemonics
-	}
-
 	public enum FileCreationMode
 	{
 		New,
-		Saving
+		SavingAs
 	}
 
-	public enum FindingOrder
+	public enum FileSavingResult
 	{
-		Prev,
-		Next
+		AlreadySaved,
+		Success,
+		Rejected,
+		Cancelled,
+		Failed
 	}
 }

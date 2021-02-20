@@ -38,9 +38,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalPaths.cs">
+      <Link>GlobalPaths.cs</Link>
+    </Compile>
     <Compile Include="Enumerations.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="SharedClasses\DefaultPaths.cs" />
+    <Compile Include="Localization\Localization.cs" />
+    <Compile Include="SharedClasses\TemplatePaths.cs" />
+    <Compile Include="Strings.cs" />
     <Compile Include="SharedClasses\PathHelper.cs" />
     <Compile Include="SharedForms\FormLoading.cs">
       <SubType>Form</SubType>
@@ -75,6 +79,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Localization\EN\TombIDE.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Localization\PL\TombIDE.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TIDE\NGC\!~~DO_NOT_USE_THIS_NG_CENTER.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -132,36 +142,6 @@
     <Content Include="TIDE\NGC\VGE\Tomb_NextGeneration.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TIDE\References\NEW Commands List.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Enemy Damage List.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Keyboard Scancodes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Mnemonic Constants.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Moveable Slot Indices.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\OCB List.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\OLD Commands List.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Sound SFX Indices.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Static Object Indices.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TIDE\References\Variable Placeholders.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="TIDE\Templates\TOMB4\Defaults\FLEP.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -201,18 +181,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TIDE\NGC\VGE\tools\keep.me">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TIDE\References\Descriptions\Mnemonic Constants.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TIDE\References\Descriptions\NEW Commands.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TIDE\References\Descriptions\OCBs.rdda">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="TIDE\References\Descriptions\OLD Commands.rdda">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="TIDE\Templates\Engines\TR4.zip">
