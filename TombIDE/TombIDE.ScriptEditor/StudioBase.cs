@@ -9,6 +9,7 @@ using TombIDE.ScriptEditor.Forms;
 using TombIDE.ScriptEditor.Helpers;
 using TombIDE.ScriptEditor.Objects;
 using TombIDE.ScriptEditor.Properties;
+using TombIDE.ScriptEditor.Settings;
 using TombIDE.ScriptEditor.ToolStrips;
 using TombIDE.ScriptEditor.ToolWindows;
 using TombIDE.ScriptEditor.UI;
@@ -24,6 +25,16 @@ namespace TombIDE.ScriptEditor
 	public abstract partial class StudioBase : UserControl
 	{
 		#region Properties
+
+		public new Control Parent
+		{
+			get => base.Parent;
+			set
+			{
+				base.Parent = value;
+				InitializeDockPanel();
+			}
+		}
 
 		public abstract StudioMode StudioMode { get; }
 
@@ -68,6 +79,8 @@ namespace TombIDE.ScriptEditor
 		protected ConfigurationCollection Configs = new ConfigurationCollection();
 
 		protected FormFindReplace FormFindReplace;
+
+		protected DarkDockPanel DockPanel;
 
 		// Document:
 
@@ -131,12 +144,10 @@ namespace TombIDE.ScriptEditor
 
 			InitializeTabControl();
 			InitializeFileExplorer();
-			ApplyMessageFilters(); // For the docking panel
 
 			if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
 			{
 				InitializeFindReplaceForm();
-				InitializeDockPanel();
 
 				MenuStrip.StudioMode = StudioMode;
 				ToolStrip.StudioMode = StudioMode;
@@ -173,16 +184,33 @@ namespace TombIDE.ScriptEditor
 
 		private void InitializeDockPanel()
 		{
+			DockPanel = new DarkDockPanel();
+
+			DockPanel.Dock = DockStyle.Fill;
+			DockPanel.EqualizeGroupSizes = true;
+			DockPanel.Padding = new Padding(2);
+			DockPanel.PrioritizeLeft = false;
+			DockPanel.PrioritizeRight = false;
+			DockPanel.ContentAdded += DockPanel_ContentChanged;
+			DockPanel.ContentRemoved += DockPanel_ContentChanged;
+
+			Controls.Add(DockPanel);
+
+			DockPanel.BringToFront();
+
 			// We have to initialize a default layout before applying the user defined one
 			// otherwise we're gonna experience control priority issues.
 
-			DockPanelState = WindowLayout.DefaultLayout;
-			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+			DockPanel.RestoreDockPanelState(WindowLayout.DefaultLayout, FindDockContentByKey);
 
 			// We can remove the content after the initialization is done
 			DockPanel.RemoveContent();
 
 			// The fact that we have to do this for it to work correctly is complete bullsh*t
+
+			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+
+			ApplyMessageFilters();
 		}
 
 		private void InitializeFrequentlyAccessedItems()

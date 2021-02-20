@@ -50,7 +50,7 @@ namespace TombIDE
 			projectMaster.Dock = DockStyle.Fill;
 			tabPage_ProjectMaster.Controls.Add(projectMaster);
 
-			classicScriptStudio = new ScriptEditor.ClassicScriptStudio();
+			classicScriptStudio = new ScriptEditor.ClassicScriptStudio { Parent = this };
 			classicScriptStudio.Dock = DockStyle.Fill;
 			tabPage_ScriptEditor.Controls.Add(classicScriptStudio);
 
