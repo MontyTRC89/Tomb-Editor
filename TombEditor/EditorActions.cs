@@ -905,17 +905,7 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Trigger volume"))
                     return;
 
-                var existingWindow = Application.OpenForms[nameof(FormVolume)];
-                if (existingWindow == null)
-                {
-                    var volForm = new FormVolume((VolumeInstance)instance);
-                    volForm.Show(owner);
-                }
-                else
-                {
-                    (existingWindow as FormVolume).SaveAndReopenVolume((VolumeInstance)instance);
-                    existingWindow.Focus();
-                }
+                // TODO: Add a function selection window.
             }
             else if (instance is MemoInstance)
             {
