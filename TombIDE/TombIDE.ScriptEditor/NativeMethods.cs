@@ -60,9 +60,9 @@ namespace TombIDE.ScriptEditor
 		/// </summary>
 		public static void BeginControlUpdate(IntPtr controlHandle)
 		{
-			Message msgSuspendUpdate = Message.Create(controlHandle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+			var msgSuspendUpdate = Message.Create(controlHandle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
 
-			NativeWindow window = NativeWindow.FromHandle(controlHandle);
+			var window = NativeWindow.FromHandle(controlHandle);
 			window.DefWndProc(ref msgSuspendUpdate);
 		}
 
@@ -71,9 +71,9 @@ namespace TombIDE.ScriptEditor
 		/// </summary>
 		public static void EndControlUpdate(IntPtr controlHandle)
 		{
-			Message msgResumeUpdate = Message.Create(controlHandle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
+			var msgResumeUpdate = Message.Create(controlHandle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
 
-			NativeWindow window = NativeWindow.FromHandle(controlHandle);
+			var window = NativeWindow.FromHandle(controlHandle);
 			window.DefWndProc(ref msgResumeUpdate);
 		}
 	}

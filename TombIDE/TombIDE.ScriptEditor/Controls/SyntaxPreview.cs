@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using TombLib.Scripting.Resources;
-using TombLib.Scripting.TextEditors;
+using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Resources;
 
 namespace TombIDE.ScriptEditor.Controls
 {
-	internal class SyntaxPreview : RichTextBox
+	public class SyntaxPreview : RichTextBox
 	{
 		/* Properties */
 
@@ -20,7 +20,7 @@ namespace TombIDE.ScriptEditor.Controls
 
 		/* Private fields */
 
-		private TextEditorConfigs _configs;
+		private CS_EditorConfiguration _config;
 
 		private string _cachedText;
 		private int _cachedArgumentIndex;
@@ -46,10 +46,10 @@ namespace TombIDE.ScriptEditor.Controls
 
 		public void ReloadSettings()
 		{
-			_configs = TextEditorConfigs.Load();
+			_config = new CS_EditorConfiguration().Load<CS_EditorConfiguration>();
 
-			BackColor = ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Background);
-			ForeColor = ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Values.HtmlColor);
+			BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Background);
+			ForeColor = ColorTranslator.FromHtml(_config.ColorScheme.Values.HtmlColor);
 
 			DoSyntaxHighlighting();
 		}
@@ -79,16 +79,16 @@ namespace TombIDE.ScriptEditor.Controls
 		{
 			// Clear all styles
 			SelectAll();
-			SelectionColor = ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Values.HtmlColor);
+			SelectionColor = ColorTranslator.FromHtml(_config.ColorScheme.Values.HtmlColor);
 
 			// Set the colors
-			SetTextColor(@"\[\b(" + string.Join("|", ScriptKeywords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Sections.HtmlColor));
-			SetTextColor(ScriptPatterns.StandardCommands, ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.StandardCommands.HtmlColor));
-			SetTextColor(ScriptPatterns.NewCommands, ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.NewCommands.HtmlColor));
-			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.References.HtmlColor));
-			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.References.HtmlColor));
-			SetTextColor(@"(,|/|\(\*Array\*\))", ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Foreground));
-			SetTextColor(ScriptPatterns.Comments, ColorTranslator.FromHtml(_configs.ClassicScript.ColorScheme.Comments.HtmlColor));
+			SetTextColor(@"\[\b(" + string.Join("|", Keywords.Sections) + @"|Any)\b\]", ColorTranslator.FromHtml(_config.ColorScheme.Sections.HtmlColor));
+			SetTextColor(Patterns.StandardCommands, ColorTranslator.FromHtml(_config.ColorScheme.StandardCommands.HtmlColor));
+			SetTextColor(Patterns.NewCommands, ColorTranslator.FromHtml(_config.ColorScheme.NewCommands.HtmlColor));
+			SetTextColor("(ENABLED|DISABLED|#INCLUDE|#DEFINE|#FIRST_ID)", ColorTranslator.FromHtml(_config.ColorScheme.References.HtmlColor));
+			SetTextColor(@"\(.*?_\.*?\)", ColorTranslator.FromHtml(_config.ColorScheme.References.HtmlColor));
+			SetTextColor(@"(,|/|\(\*Array\*\))", ColorTranslator.FromHtml(_config.ColorScheme.Foreground));
+			SetTextColor(Patterns.Comments, ColorTranslator.FromHtml(_config.ColorScheme.Comments.HtmlColor));
 		}
 
 		private void SetTextColor(string regexPattern, Color color)
@@ -125,7 +125,7 @@ namespace TombIDE.ScriptEditor.Controls
 			else
 				token = currentArgument.Trim();
 
-			List<string> prevArgs = new List<string>();
+			var prevArgs = new List<string>();
 
 			for (int i = 0; i < CurrentArgumentIndex; i++)
 				prevArgs.Add(arguments[i]);

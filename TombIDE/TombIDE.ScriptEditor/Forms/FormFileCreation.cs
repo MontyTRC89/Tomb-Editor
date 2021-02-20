@@ -12,16 +12,16 @@ namespace TombIDE.ScriptEditor.Forms
 	{
 		public string NewFilePath { get; private set; }
 
-		private IDE _ide;
+		private string _scriptRootFolderPath;
 
 		#region Construction
 
-		public FormFileCreation(IDE ide, FileCreationMode mode, string initialNodePath = null, string initialFileName = null)
+		public FormFileCreation(string scriptRootFolderPath, FileCreationMode mode, string initialNodePath = null, string initialFileName = null)
 		{
 			InitializeComponent();
 			SwitchMode(mode);
 
-			_ide = ide;
+			_scriptRootFolderPath = scriptRootFolderPath;
 
 			FillFolderList();
 
@@ -62,6 +62,8 @@ namespace TombIDE.ScriptEditor.Forms
 				// // // //
 				NewFilePath = Path.Combine(targetDirectory, newFileName);
 				// // // //
+
+				File.Create(NewFilePath).Close();
 			}
 			catch (Exception ex)
 			{
@@ -84,7 +86,7 @@ namespace TombIDE.ScriptEditor.Forms
 					button_Create.Text = "Create";
 					break;
 
-				case FileCreationMode.Saving:
+				case FileCreationMode.SavingAs:
 					Text = "Saving As...";
 					label_Where.Text = "Where to Save:";
 					button_Create.Text = "Save";
@@ -95,7 +97,7 @@ namespace TombIDE.ScriptEditor.Forms
 		private void FillFolderList()
 		{
 			treeView.Nodes.Clear();
-			treeView.Nodes.Add(FileHelper.CreateFullFileListNode(_ide.Project.ScriptPath, true, true));
+			treeView.Nodes.Add(FileTreeViewHelper.CreateFullFileListNode(_scriptRootFolderPath, true, true));
 		}
 
 		private void SetInitialNodePath(string initialNodePath)

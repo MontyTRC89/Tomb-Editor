@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\GlobalPaths.cs">
+      <Link>GlobalPaths.cs</Link>
+    </Compile>
     <Compile Include="Forms\FormPluginManager.cs">
       <SubType>Form</SubType>
     </Compile>

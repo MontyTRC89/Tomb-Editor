@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.Shared;
-using TombIDE.Shared.SharedClasses;
 using TombLib.LevelData;
 
 namespace TombIDE.ProjectMaster
@@ -116,7 +115,7 @@ namespace TombIDE.ProjectMaster
 
 			ProcessStartInfo startInfo = new ProcessStartInfo
 			{
-				FileName = Path.Combine(DefaultPaths.GetProgramDirectory(), "TombEditor.exe"),
+				FileName = Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"),
 				Arguments = "\"" + batchListFilePath + "\""
 			};
 

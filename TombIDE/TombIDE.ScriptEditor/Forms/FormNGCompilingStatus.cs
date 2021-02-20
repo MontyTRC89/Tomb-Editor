@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace TombIDE.ScriptEditor.Forms
 {
-	internal partial class FormNGCompilingStatus : DarkForm
+	public partial class FormNGCompilingStatus : DarkForm
 	{
 		public FormNGCompilingStatus()
 		{

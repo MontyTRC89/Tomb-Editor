@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Windows.Forms;
 using TombIDE.ScriptEditor.Helpers;
-using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptEditor.Forms
@@ -12,15 +11,15 @@ namespace TombIDE.ScriptEditor.Forms
 	{
 		public string NewFolderPath { get; private set; }
 
-		private IDE _ide;
+		private string _scriptRootDirectoryPath;
 
 		#region Construction
 
-		public FormFolderCreation(IDE ide, string initialNodePath)
+		public FormFolderCreation(string scriptRootDirectoryPath, string initialNodePath)
 		{
 			InitializeComponent();
 
-			_ide = ide;
+			_scriptRootDirectoryPath = scriptRootDirectoryPath;
 
 			FillFolderList();
 
@@ -72,7 +71,7 @@ namespace TombIDE.ScriptEditor.Forms
 		private void FillFolderList()
 		{
 			treeView.Nodes.Clear();
-			treeView.Nodes.Add(FileHelper.CreateFullFileListNode(_ide.Project.ScriptPath, true, true));
+			treeView.Nodes.Add(FileTreeViewHelper.CreateFullFileListNode(_scriptRootDirectoryPath, true, true));
 		}
 
 		private void SetInitialNodePath(string initialNodePath)

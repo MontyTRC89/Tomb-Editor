@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace TombIDE.Shared.SharedClasses
@@ -21,6 +22,19 @@ namespace TombIDE.Shared.SharedClasses
 			};
 
 			Process.Start(startInfo);
+		}
+
+		public static void DeleteFiles(string[] files)
+		{
+			foreach (string file in files)
+				if (File.Exists(file))
+					File.Delete(file);
+		}
+
+		public static void DisposeItems(params IDisposable[] items)
+		{
+			for (int i = 0; i < items.Length; i++)
+				items[i].Dispose();
 		}
 	}
 }

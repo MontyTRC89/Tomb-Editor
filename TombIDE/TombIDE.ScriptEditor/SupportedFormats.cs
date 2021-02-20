@@ -2,16 +2,8 @@
 {
 	internal struct SupportedFormats
 	{
-		public static string[] Text
-		{
-			get
-			{
-				return new string[]
-				{
-					".txt",
-					".lua"
-				};
-			}
-		}
+		public const string Text = ".txt";
+		public const string Lua = ".lua";
+		public const string Backup = ".backup";
 	}
 }

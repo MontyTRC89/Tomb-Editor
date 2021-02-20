@@ -28,8 +28,11 @@ namespace TombIDE
 	{
 		private IDE _ide;
 
-		private ScriptEditor.ScriptEditor scriptEditor;
+		private ScriptEditor.ClassicScriptStudio classicScriptStudio;
 		private ProjectMaster.ProjectMaster projectMaster;
+
+		private WinEventDelegate eventDelegate = null;
+		private IntPtr eventHook = IntPtr.Zero;
 
 		#region Initialization
 
@@ -47,14 +50,34 @@ namespace TombIDE
 			projectMaster.Dock = DockStyle.Fill;
 			tabPage_ProjectMaster.Controls.Add(projectMaster);
 
-			scriptEditor = new ScriptEditor.ScriptEditor();
-			scriptEditor.Dock = DockStyle.Fill;
-			tabPage_ScriptEditor.Controls.Add(scriptEditor);
+			classicScriptStudio = new ScriptEditor.ClassicScriptStudio();
+			classicScriptStudio.Dock = DockStyle.Fill;
+			tabPage_ScriptEditor.Controls.Add(classicScriptStudio);
 
 			// Add the current project name to the window title
 			Text = "TombIDE - " + _ide.Project.Name;
 
 			panel_CoverLoading.BringToFront(); // Cover the whole form with this panel to hide the graphical glitches happening while loading
+
+			eventDelegate = new WinEventDelegate(WinEventProc);
+			eventHook = NativeMethods.SetWinEventHook(
+				NativeMethods.EVENT_SYSTEM_FOREGROUND, NativeMethods.EVENT_SYSTEM_FOREGROUND,
+				IntPtr.Zero, eventDelegate, 0, 0, NativeMethods.WINEVENT_OUTOFCONTEXT);
+		}
+
+		public void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+		{
+			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
+			{
+				classicScriptStudio.IsMainWindowFocued = true;
+				classicScriptStudio.EditorTabControl.TryRunFileReloadQueue();
+			}
+
+			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
+				classicScriptStudio.IsMainWindowFocued = false;
+
+			if (IsDisposed)
+				NativeMethods.UnhookWinEvent(eventHook);
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -80,7 +103,7 @@ namespace TombIDE
 				{
 					// Initialize the IDE interfaces
 					projectMaster.Initialize(_ide);
-					scriptEditor.Initialize(_ide);
+					//scriptEditor.Initialize(_ide);
 
 					SelectIDETab(IDETab.ProjectMaster);
 
@@ -131,9 +154,9 @@ namespace TombIDE
 			else
 			{
 				// Add the default buttons
-				AddProgramButton(Path.Combine(DefaultPaths.GetProgramDirectory(), "TombEditor.exe"), false);
-				AddProgramButton(Path.Combine(DefaultPaths.GetProgramDirectory(), "WadTool.exe"), false);
-				AddProgramButton(Path.Combine(DefaultPaths.GetProgramDirectory(), "SoundTool.exe"), false);
+				AddProgramButton(Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"), false);
+				AddProgramButton(Path.Combine(DefaultPaths.ProgramDirectory, "WadTool.exe"), false);
+				AddProgramButton(Path.Combine(DefaultPaths.ProgramDirectory, "SoundTool.exe"), false);
 			}
 
 			// Update the list with only valid programs

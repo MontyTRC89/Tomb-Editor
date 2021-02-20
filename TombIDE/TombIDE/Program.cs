@@ -28,6 +28,8 @@ namespace TombIDE
 
 			using (IDE ide = new IDE(ideConfiguration, availableProjects, availablePlugins))
 			{
+				IDE.Global = ide;
+
 				using (FormStart form = new FormStart(ide))
 				{
 					if (args.Length > 0)
@@ -56,24 +58,20 @@ namespace TombIDE
 						Application.Run(form);
 				}
 			}
-
-#if (DEBUG)
-			System.Diagnostics.Process.GetCurrentProcess().Kill(); // Faster app closing while debugging
-#endif
 		}
 
 		private static void UpdateNGCompilerPaths()
 		{
 			try
 			{
-				string programPath = DefaultPaths.GetProgramDirectory();
+				string programPath = DefaultPaths.ProgramDirectory;
 
 				if (IsUnicodePath(programPath))
 					throw new ArgumentException(
 						"Your executing path contains non-ASCII symbols. This will not allow the compilers to work correctly.\n" +
 						"Please consider removing all non-ASCII symbols from the executing path before launching TombIDE.");
 
-				string virtualEnginePath = DefaultPaths.GetVGEPath();
+				string virtualEnginePath = DefaultPaths.VGEDirectory;
 
 				if (virtualEnginePath.Length > 255)
 					throw new PathTooLongException(

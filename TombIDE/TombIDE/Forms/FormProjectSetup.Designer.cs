@@ -38,6 +38,9 @@
 			this.textBox_ProjectPath = new DarkUI.Controls.DarkTextBox();
 			this.textBox_ProjectName = new DarkUI.Controls.DarkTextBox();
 			this.progressBar = new DarkUI.Controls.DarkProgressBar();
+			this.checkBox_Legacy = new DarkUI.Controls.DarkCheckBox();
+			this.comboBox_GameType = new DarkUI.Controls.DarkComboBox();
+			this.label_04 = new DarkUI.Controls.DarkLabel();
 			this.panel_LevelsRadioChoice.SuspendLayout();
 			this.panel_ProjectSettings.SuspendLayout();
 			this.panel_ScriptRadioChoice.SuspendLayout();
@@ -80,9 +83,10 @@
 			// 
 			// button_Create
 			// 
+			this.button_Create.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.button_Create.Checked = false;
 			this.button_Create.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button_Create.Location = new System.Drawing.Point(327, 316);
+			this.button_Create.Location = new System.Drawing.Point(327, 346);
 			this.button_Create.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
 			this.button_Create.Name = "button_Create";
 			this.button_Create.Size = new System.Drawing.Size(128, 23);
@@ -106,12 +110,13 @@
 			this.comboBox_EngineType.FormattingEnabled = true;
 			this.comboBox_EngineType.Items.AddRange(new object[] {
             "- Select -",
+            "Vanilla",
             "TRNG",
             "TRNG + FLEP"});
-			this.comboBox_EngineType.Location = new System.Drawing.Point(72, 54);
+			this.comboBox_EngineType.Location = new System.Drawing.Point(251, 54);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";
-			this.comboBox_EngineType.Size = new System.Drawing.Size(285, 21);
+			this.comboBox_EngineType.Size = new System.Drawing.Size(106, 21);
 			this.comboBox_EngineType.TabIndex = 3;
 			// 
 			// label_01
@@ -129,7 +134,7 @@
 			// 
 			this.label_02.AutoSize = true;
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_02.Location = new System.Drawing.Point(3, 57);
+			this.label_02.Location = new System.Drawing.Point(182, 57);
 			this.label_02.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
 			this.label_02.Name = "label_02";
 			this.label_02.Size = new System.Drawing.Size(66, 13);
@@ -181,6 +186,9 @@
 			// panel_ProjectSettings
 			// 
 			this.panel_ProjectSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panel_ProjectSettings.Controls.Add(this.comboBox_GameType);
+			this.panel_ProjectSettings.Controls.Add(this.label_04);
+			this.panel_ProjectSettings.Controls.Add(this.checkBox_Legacy);
 			this.panel_ProjectSettings.Controls.Add(this.button_Help);
 			this.panel_ProjectSettings.Controls.Add(this.panel_ScriptRadioChoice);
 			this.panel_ProjectSettings.Controls.Add(this.panel_LevelsRadioChoice);
@@ -198,7 +206,7 @@
 			this.panel_ProjectSettings.Location = new System.Drawing.Point(9, 12);
 			this.panel_ProjectSettings.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.panel_ProjectSettings.Name = "panel_ProjectSettings";
-			this.panel_ProjectSettings.Size = new System.Drawing.Size(446, 298);
+			this.panel_ProjectSettings.Size = new System.Drawing.Size(446, 328);
 			this.panel_ProjectSettings.TabIndex = 0;
 			// 
 			// panel_ScriptRadioChoice
@@ -269,11 +277,51 @@
 			// 
 			// progressBar
 			// 
-			this.progressBar.Location = new System.Drawing.Point(9, 316);
+			this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.progressBar.Location = new System.Drawing.Point(9, 346);
 			this.progressBar.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(312, 23);
 			this.progressBar.TabIndex = 2;
+			// 
+			// checkBox_Legacy
+			// 
+			this.checkBox_Legacy.Checked = true;
+			this.checkBox_Legacy.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBox_Legacy.Location = new System.Drawing.Point(6, 296);
+			this.checkBox_Legacy.Margin = new System.Windows.Forms.Padding(3, 0, 3, 6);
+			this.checkBox_Legacy.Name = "checkBox_Legacy";
+			this.checkBox_Legacy.Size = new System.Drawing.Size(432, 24);
+			this.checkBox_Legacy.TabIndex = 18;
+			this.checkBox_Legacy.Text = "Prefer legacy project structure (Use this if you\'re used to the NG_Center workflo" +
+    "w)";
+			// 
+			// comboBox_GameType
+			// 
+			this.comboBox_GameType.FormattingEnabled = true;
+			this.comboBox_GameType.Items.AddRange(new object[] {
+            "- Select -",
+            "TR1",
+            "TR2",
+            "TR3",
+            "TR4",
+            "TR5"});
+			this.comboBox_GameType.Location = new System.Drawing.Point(67, 54);
+			this.comboBox_GameType.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
+			this.comboBox_GameType.Name = "comboBox_GameType";
+			this.comboBox_GameType.Size = new System.Drawing.Size(106, 21);
+			this.comboBox_GameType.TabIndex = 20;
+			// 
+			// label_04
+			// 
+			this.label_04.AutoSize = true;
+			this.label_04.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.label_04.Location = new System.Drawing.Point(3, 57);
+			this.label_04.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
+			this.label_04.Name = "label_04";
+			this.label_04.Size = new System.Drawing.Size(61, 13);
+			this.label_04.TabIndex = 19;
+			this.label_04.Text = "Game type:";
 			// 
 			// FormProjectSetup
 			// 
@@ -281,7 +329,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.ClientSize = new System.Drawing.Size(464, 351);
+			this.ClientSize = new System.Drawing.Size(464, 381);
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.button_Create);
 			this.Controls.Add(this.panel_ProjectSettings);
@@ -322,5 +370,8 @@
 		private System.Windows.Forms.Panel panel_LevelsRadioChoice;
 		private System.Windows.Forms.Panel panel_ProjectSettings;
 		private System.Windows.Forms.Panel panel_ScriptRadioChoice;
+		private DarkUI.Controls.DarkCheckBox checkBox_Legacy;
+		private DarkUI.Controls.DarkComboBox comboBox_GameType;
+		private DarkUI.Controls.DarkLabel label_04;
 	}
 }

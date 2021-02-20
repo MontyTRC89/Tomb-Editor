@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
-using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.REGSVR
 {
@@ -19,7 +18,7 @@ namespace TombIDE.REGSVR
 
 		private static void RegisterNGCenterLibraries()
 		{
-			string systemDirectory = DefaultPaths.GetSystemDirectory();
+			string systemDirectory = DefaultPaths.SystemDirectory;
 
 			string MSCOMCTL = Path.Combine(systemDirectory, "Mscomctl.ocx");
 			string RICHTX32 = Path.Combine(systemDirectory, "Richtx32.ocx");

@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Localization>
+	<AskRestoreSession>
+		Wykryto niepoprawnie zamkniętą sesję edytora skryptów.
+		Czy chcesz przywrócić utracone zmiany w plikach z poprzedniej sesji?
+	</AskRestoreSession>
+
+	<AskFileReload>
+		Plik "{0}"
+
+		został zmodyfikowany w innym programie.
+		Czy chcesz go przeładować?
+	</AskFileReload>
+
+	<AskMoveFileToBin>
+		Czy na pewno chcesz przenieść plik "{0}" do kosza?
+	</AskMoveFileToBin>
+
+	<AskMoveFolderToBin>
+		Czy na pewno chcesz przenieść folder "{0}" oraz całą jego zawartość do kosza?
+	</AskMoveFolderToBin>
+
+	<AskUnsavedChanged>
+		Czy chcesz zapisać zmiany w pliku {0} ?
+	</AskUnsavedChanged>
+
+	<AreYouSure>Na pewno?</AreYouSure>
+	<RestoreSessionMBT>Przywrócić sesję?</RestoreSessionMBT>
+	<FileReloadMBT>Przeładować?</FileReloadMBT>
+	<UnsavedChangedMBT>Niezapisane zmiany!</UnsavedChangedMBT>
+
+	<Error>Błąd</Error>
+
+	<File>Plik</File>
+	<Edit>Edycja</Edit>
+	<Tools>Narzędzia</Tools>
+	<Options>Opcje</Options>
+	<View>Widok</View>
+	<Help>Pomoc</Help>
+
+	<NewFile>Nowy plik...</NewFile>
+	<Save>Zapisz</Save>
+	<SaveAs>Zapisz jako...</SaveAs>
+	<SaveAll>Zapisz wszystko</SaveAll>
+	<Build>Buduj skrypt...</Build>
+
+	<Undo>Cofnij</Undo>
+	<CantUndo>Nie można cofnąć</CantUndo>
+	<Redo>Ponów</Redo>
+	<CantRedo>Nie można ponowić</CantRedo>
+	<Cut>Wytnij</Cut>
+	<Copy>Kopiuj</Copy>
+	<Paste>Wklej</Paste>
+	<FindReplace>Znajdź i zamień...</FindReplace>
+	<SelectAll>Zaznacz wszystko</SelectAll>
+
+	<Reindent>Uporządkuj białe znaki</Reindent>
+	<TrimWhitespace>Usuń białe znaki na końcach linii</TrimWhitespace>
+	<CommentOut>Wstaw zakomentowanie</CommentOut>
+	<Uncomment>Usuń zakomentowanie</Uncomment>
+	<ToggleBookmark>Przełącz zakładkę</ToggleBookmark>
+	<PrevBookmark>Idź do poprzedniej zakładki</PrevBookmark>
+	<NextBookmark>Idź do następnej zakładki</NextBookmark>
+	<ClearBookmarks>Wyczyść wszystkie zakładki...</ClearBookmarks>
+
+	<UseNewInclude>Używaj nowej metody #INCLUDE</UseNewInclude>
+	<ShowLogsAfterBuild>Pokaż raport po budowie skryptu</ShowLogsAfterBuild>
+	<ReindentOnSave>Uporządkuj białe znaki po zapisie pliku</ReindentOnSave>
+	<Settings>Ustawienia edytora tekstu...</Settings>
+
+	<ContentExplorer>Eksplorator zawartości</ContentExplorer>
+	<FileExplorer>Eksplorator plików</FileExplorer>
+	<ReferenceBrowser>Wyszukiwarka referencji</ReferenceBrowser>
+	<CompilerLogs>Raport kompilatora</CompilerLogs>
+	<SearchResults>Wyniki wyszukiwania</SearchResults>
+	<ToolStrip>Pasek narzędzi</ToolStrip>
+	<StatusStrip>Pasek stanu</StatusStrip>
+
+	<About>O TombIDE...</About>
+
+	<Close>Zamknij</Close>
+	<OpenContainingFolder>Otwórz folder zawierający plik</OpenContainingFolder>
+
+	<Untitled>Bez Nazwy</Untitled>
+
+	<SearchContent>Przeszukaj zawartość...</SearchContent>
+	<SearchFunctions>Przeszukaj funkcje...</SearchFunctions>
+	<SearchFiles>Przeszukaj pliki...</SearchFiles>
+	<SearchReferences>Przeszukaj referencje...</SearchReferences>
+
+	<Sections>Sekcje</Sections>
+	<Levels>Poziomy</Levels>
+	<Includes>Załączone pliki</Includes>
+	<Defines>Definicje</Defines>
+
+	<Row>Wiersz: {0}</Row>
+	<Column>Kolumna: {0}</Column>
+	<Line>Linia: {0}</Line>
+	<Selected>Zaznaczone: {0}</Selected>
+	<Zoom>Powiększenie: {0}%</Zoom>
+	<ResetZoom>Resetuj powiększenie</ResetZoom>
+
+	<DecimalValue>Wartość dziesiętna</DecimalValue>
+	<HexadecimalValue>Wartość szesnastkowa</HexadecimalValue>
+	<Macro>Makro</Macro>
+	<ArgumentRange>Argument {0} (przedział)</ArgumentRange>
+	<Variable>Zmienna</Variable>
+	<Description>Opis</Description>
+	<Sounds>Dźwięki</Sounds>
+
+	<MnemonicConstants>Stałe mnemoniczne</MnemonicConstants>
+	<EnemyDamageValues>Wartości obrażeń przeciwników</EnemyDamageValues>
+	<KeyboardScancodes>Oznaczenia klawiszy</KeyboardScancodes>
+	<OCBList>Lista OCB</OCBList>
+	<OldCommandsList>Lista starych komend</OldCommandsList>
+	<NewCommandsList>Lista nowych komend</NewCommandsList>
+	<SoundIndices>Indeksy dźwięków</SoundIndices>
+	<MoveableSlotIndices>Indeksy interaktywnych obiektów</MoveableSlotIndices>
+	<StaticObjectIndices>Indeksy statycznych obiektów</StaticObjectIndices>
+	<VariablePlaceholders>Zmienne zastępcze</VariablePlaceholders>
+
+	<NewFolder>Nowy folder...</NewFolder>
+	<ViewInDefaultEditor>Otwórz w domyślnym edytorze</ViewInDefaultEditor>
+	<ViewCode>Otwórz kod</ViewCode>
+	<RenameItem>Zmień nazwę elementu...</RenameItem>
+	<DeleteItem>Usuń element</DeleteItem>
+	<OpenItemInExplorer>Otwórz element w eskploratorze</OpenItemInExplorer>
+
+	<!-- {0} - File path -->
+	<MatchSourceNodeText>{0} (Ilość wystąpień: {1})</MatchSourceNodeText>
+
+	<!-- {0} - Line number -->
+	<!-- {1} - Line text -->
+	<SingleMatchNodeText>(Linia: {0}) {1}</SingleMatchNodeText>
+</Localization>
