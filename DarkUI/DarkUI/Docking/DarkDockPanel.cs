@@ -24,12 +24,39 @@ namespace DarkUI.Docking
         private readonly List<DarkDockContent> _contents;
         private readonly Dictionary<DarkDockArea, DarkDockRegion> _regions;
 
+        private bool _prioritizeLeft = true;
+        private bool _prioritizeRight = true;
         private DarkDockContent _activeContent;
         private bool _switchingContent;
 
         #endregion
 
         #region Property Region
+
+        [DefaultValue(true)]
+        public bool PrioritizeLeft
+        {
+            get { return _prioritizeLeft; }
+            set
+            {
+                _prioritizeLeft = value;
+                AddRegions();
+            }
+        }
+
+        [DefaultValue(true)]
+        public bool PrioritizeRight
+        {
+            get { return _prioritizeRight; }
+            set
+            {
+                _prioritizeRight = value;
+                AddRegions();
+            }
+        }
+
+        [DefaultValue(false)]
+        public bool EqualizeGroupSizes { get; set; } = false;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -231,18 +258,45 @@ namespace DarkUI.Docking
             var bottomRegion = new DarkDockRegion(this, DarkDockArea.Bottom);
             _regions.Add(DarkDockArea.Bottom, bottomRegion);
 
-            // Add the regions in this order to force the bottom region to be positioned
-            // between the left and right regions properly.
-            Controls.Add(documentRegion);
-            Controls.Add(bottomRegion);
-            Controls.Add(leftRegion);
-            Controls.Add(rightRegion);
+            AddRegions();
 
             // Create tab index for intuitive tabbing order
             documentRegion.TabIndex = 0;
             rightRegion.TabIndex = 1;
             bottomRegion.TabIndex = 2;
             leftRegion.TabIndex = 3;
+        }
+
+        private void AddRegions()
+        {
+            Controls.Clear();
+
+            Controls.Add(_regions[DarkDockArea.Document]);
+
+            if (PrioritizeLeft && PrioritizeRight)
+            {
+                Controls.Add(_regions[DarkDockArea.Bottom]);
+                Controls.Add(_regions[DarkDockArea.Left]);
+                Controls.Add(_regions[DarkDockArea.Right]);
+            }
+            else if (PrioritizeLeft)
+            {
+                Controls.Add(_regions[DarkDockArea.Right]);
+                Controls.Add(_regions[DarkDockArea.Bottom]);
+                Controls.Add(_regions[DarkDockArea.Left]);
+            }
+            else if (PrioritizeRight)
+            {
+                Controls.Add(_regions[DarkDockArea.Left]);
+                Controls.Add(_regions[DarkDockArea.Bottom]);
+                Controls.Add(_regions[DarkDockArea.Right]);
+            }
+            else
+            {
+                Controls.Add(_regions[DarkDockArea.Left]);
+                Controls.Add(_regions[DarkDockArea.Right]);
+                Controls.Add(_regions[DarkDockArea.Bottom]);
+            }
         }
 
         public void DragContent(DarkDockContent content)

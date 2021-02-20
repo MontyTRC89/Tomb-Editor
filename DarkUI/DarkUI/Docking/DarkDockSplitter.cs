@@ -133,7 +133,14 @@ namespace DarkUI.Docking
 
         public void UpdateBounds()
         {
-            var bounds = _parentControl.RectangleToScreen(_control.Bounds);
+			// I have no idea why doing RectangleToScreen() directly on _parentControl breaks it.
+			var copy = new Control
+			{
+				Bounds = _parentControl.Bounds,
+				Parent = _parentControl.Parent
+			};
+
+			var bounds = copy.RectangleToScreen(_control.Bounds);
 
             switch (SplitterType)
             {
@@ -154,6 +161,8 @@ namespace DarkUI.Docking
                     _minimum = bounds.Top - 2 + _control.MinimumSize.Height;
                     break;
             }
+
+            copy.Dispose();
         }
 
         #endregion

@@ -267,41 +267,49 @@ namespace DarkUI.Docking
 
                 case DarkDockArea.Left:
                 case DarkDockArea.Right:
-                    do
-                    {
-                        restart = false;
+                    if (DockPanel.EqualizeGroupSizes)
                         foreach (var group in _groups)
+                            group.Size = new Size(ClientRectangle.Width, ClientRectangle.Height / _groups.Count);
+                    else
+                        do
                         {
-                            if (group.Location.Y >= ClientRectangle.Height - group.MinimumSize.Height)
-                                restart = CropLargestGroup(@group.MinimumSize.Height > 0 ? group.MinimumSize.Height : Consts.ToolWindowHeaderSize);
+                            restart = false;
+                            foreach (var group in _groups)
+                            {
+                                if (group.Location.Y >= ClientRectangle.Height - group.MinimumSize.Height)
+                                    restart = CropLargestGroup(@group.MinimumSize.Height > 0 ? group.MinimumSize.Height : Consts.ToolWindowHeaderSize);
 
-                            if (group.Height <= 0)
-                                group.Size = new Size(ClientRectangle.Width, @group.MinimumSize.Height > 0 ? @group.MinimumSize.Width : Consts.ToolWindowHeaderSize);
-                            else if (@group.Order == lastGroup.Order && @group.Location.Y > ClientRectangle.Height)
-                                group.Size = new Size(ClientRectangle.Width, group.Location.Y - ClientRectangle.Height);
-                            else
-                                group.Size = new Size(ClientRectangle.Width, group.Height);
-                        }
-                    } while (restart);
+                                if (group.Height <= 0)
+                                    group.Size = new Size(ClientRectangle.Width, @group.MinimumSize.Height > 0 ? @group.MinimumSize.Width : Consts.ToolWindowHeaderSize);
+                                else if (@group.Order == lastGroup.Order && @group.Location.Y > ClientRectangle.Height)
+                                    group.Size = new Size(ClientRectangle.Width, group.Location.Y - ClientRectangle.Height);
+                                else
+                                    group.Size = new Size(ClientRectangle.Width, group.Height);
+                            }
+                        } while (restart);
                     break;
 
                 case DarkDockArea.Bottom:
-                    do
-                    {
-                        restart = false;
+                    if (DockPanel.EqualizeGroupSizes)
                         foreach (var group in _groups)
+                            group.Size = new Size(ClientRectangle.Width / _groups.Count, ClientRectangle.Height);
+                    else
+                        do
                         {
-                            if (group.Location.X >= ClientRectangle.Width - group.MinimumSize.Width)
-                                restart = CropLargestGroup(@group.MinimumSize.Width > 0 ? group.MinimumSize.Width : Consts.ToolWindowHeaderSize);
+                            restart = false;
+                            foreach (var group in _groups)
+                            {
+                                if (group.Location.X >= ClientRectangle.Width - group.MinimumSize.Width)
+                                    restart = CropLargestGroup(@group.MinimumSize.Width > 0 ? group.MinimumSize.Width : Consts.ToolWindowHeaderSize);
 
-                            if (group.Width <= 0)
-                                group.Size = new Size(@group.MinimumSize.Width > 0 ? @group.MinimumSize.Width : Consts.ToolWindowHeaderSize, ClientRectangle.Height);
-                            else if (@group.Order == lastGroup.Order && @group.Location.X > ClientRectangle.Width)
-                                group.Size = new Size(group.Location.X - ClientRectangle.Width, ClientRectangle.Height);
-                            else
-                                group.Size = new Size(group.Width, ClientRectangle.Height);
-                        }
-                    } while (restart);
+                                if (group.Width <= 0)
+                                    group.Size = new Size(@group.MinimumSize.Width > 0 ? @group.MinimumSize.Width : Consts.ToolWindowHeaderSize, ClientRectangle.Height);
+                                else if (@group.Order == lastGroup.Order && @group.Location.X > ClientRectangle.Width)
+                                    group.Size = new Size(group.Location.X - ClientRectangle.Width, ClientRectangle.Height);
+                                else
+                                    group.Size = new Size(group.Width, ClientRectangle.Height);
+                            }
+                        } while (restart);
                     break;
             }
 
@@ -476,6 +484,23 @@ namespace DarkUI.Docking
             _parentForm = FindForm();
             Debug.Assert(_parentForm != null, nameof(_parentForm) + " != null");
             _parentForm.ResizeEnd += ParentForm_ResizeEnd;
+        }
+
+        private new Form FindForm()
+		{
+            Form parentForm = base.FindForm();
+
+            if (_parentForm == null)
+            {
+                Control parent = Parent;
+
+                while (!(parent is Form))
+                    parent = parent.Parent;
+
+                parentForm = parent as Form;
+            }
+
+            return parentForm;
         }
 
         private void ParentForm_ResizeEnd(object sender, EventArgs e)
