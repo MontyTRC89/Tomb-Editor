@@ -12,18 +12,16 @@ namespace TombLib.Scripting.Objects
 	public sealed class CompletionData : ICompletionData
 	{
 		public CompletionData(string text)
-		{
-			Text = text;
-		}
+			=> Text = text;
 
-		public ImageSource Image { get { return null; } }
+		public ImageSource Image => null;
 
-		public string Text { get; private set; }
-		public object Content { get { return Text; } }
-		public object Description { get { return null; } }
-		public double Priority { get { return 0; } }
+		public string Text { get; }
+		public object Content => Text;
+		public object Description => "";
+		public double Priority => 0;
 
-		public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs) =>
-			textArea.Document.Replace(completionSegment, Text);
+		public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
+			=> textArea.Document.Replace(completionSegment, Text);
 	}
 }

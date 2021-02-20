@@ -68,7 +68,6 @@
     <StartupObject>TombEditor.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.1.0.0, Culture=neutral, PublicKeyToken=9cc39be672370310" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.7.2\lib\net45\NLog.dll</HintPath>
@@ -685,10 +684,6 @@
     <ProjectReference Include="..\TombLib.Rendering\TombLib.Rendering.csproj">
       <Project>{e2f6f614-5007-471a-a22c-39b7d840376c}</Project>
       <Name>TombLib.Rendering</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TombLib.Scripting.TextEditors\TombLib.Scripting.TextEditors.csproj">
-      <Project>{9f07e72d-3526-42dd-b85b-e85e2953f0f1}</Project>
-      <Name>TombLib.Scripting.TextEditors</Name>
     </ProjectReference>
     <ProjectReference Include="..\TombLib\TombLib.csproj">
       <Project>{a0421dcd-80d1-44d8-8243-6a33f83a692c}</Project>
