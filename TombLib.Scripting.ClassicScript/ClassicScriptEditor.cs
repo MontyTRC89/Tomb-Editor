@@ -422,7 +422,12 @@ namespace TombLib.Scripting.ClassicScript
 
 				if (DocumentParser.DocumentContainsSections(Document))
 				{
-					int sectionStartLineNumber = DocumentParser.GetSectionStartLine(Document, CaretOffset).LineNumber;
+					DocumentLine sectionStartLine = DocumentParser.GetSectionStartLine(Document, CaretOffset);
+
+					if (sectionStartLine == null)
+						return;
+
+					int sectionStartLineNumber = sectionStartLine.LineNumber;
 					takenIndicesList = GetTakenIndicesList(commandKey, sectionStartLineNumber + 1);
 				}
 				else
