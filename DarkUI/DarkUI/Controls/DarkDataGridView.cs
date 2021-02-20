@@ -3,11 +3,9 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static System.Windows.Forms.DataGridView;
 using System.Collections;
 using System.Diagnostics;
 using System.Drawing.Design;
-
 using System.Reflection;
 using System.Drawing.Drawing2D;
 using DarkUI.Config;
@@ -29,38 +27,36 @@ namespace DarkUI.Controls
         private int _dragColumnIndex = -1;
         private bool _dragValue = false;
 
-        private static readonly DataGridViewCellStyle _cellStyleUnfocusedEven = GetCellStyle(false, false, false);
-        private static readonly DataGridViewCellStyle _cellStyleUnfocusedOdd = GetCellStyle(false, true, false);
-        private static readonly DataGridViewCellStyle _cellStyleFocusedEven = GetCellStyle(true, false, false);
-        private static readonly DataGridViewCellStyle _cellStyleFocusedOdd = GetCellStyle(true, true, false);
-        private static readonly DataGridViewCellStyle _cellStyleHeader = GetCellStyle(true, true, true);
-        private static readonly PropertyInfo _dataGridViewDoubleBuffered = typeof(DataGridView).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance);
+        private DataGridViewCellStyle _cellStyleUnfocusedEven;
+        private DataGridViewCellStyle _cellStyleUnfocusedOdd;
+        private DataGridViewCellStyle _cellStyleFocusedEven;
+        private DataGridViewCellStyle _cellStyleFocusedOdd;
+        private DataGridViewCellStyle _cellStyleHeader;
+        private readonly PropertyInfo _dataGridViewDoubleBuffered = typeof(DataGridView).GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static DataGridViewCellStyle GetCellStyle(bool isFocused, bool isOdd, bool isHeader)
+        private DataGridViewCellStyle GetCellStyle(bool isFocused, bool isOdd, bool isHeader)
         {
             return new DataGridViewCellStyle
             {
-                // Darker colors:
-                // BackColor = isOdd ? Colors.MediumBackground : Colors.DarkBackground,
-                BackColor = isHeader ? Colors.MediumBackground :
-                        (isOdd ? Colors.GreyBackground : Colors.HeaderBackground),
-                ForeColor = Colors.LightText,
-                SelectionBackColor = isFocused ? Colors.BlueSelection : Colors.GreySelection,
-                SelectionForeColor = Colors.LightText,
+                BackColor = isHeader ? HeaderColor : (isOdd ? OddRowColor : EvenRowColor),
+                ForeColor = ForegroundColor,
+                SelectionBackColor = isFocused ? FocusedRowColor : NonFocusedRowColor,
+                SelectionForeColor = ForegroundColor
             };
         }
 
         private const int DragDrawSideMargin = 3;
         private const int DragDrawHeight = 2;
 
-        private static readonly Brush _dragDrawBrush = new HatchBrush(HatchStyle.Percent50, Color.Transparent, Color.LightGray);
+        private readonly Brush _dragDrawBrush = new HatchBrush(HatchStyle.Percent50, Color.Transparent, Color.LightGray);
 
         private int _scrollSize => Consts.ScrollBarSize;
 
         public DarkDataGridView()
         {
             Name = "DarkDataGridView";
-            OutlineColor = Colors.LightBorder;
+
+            UpdateCellStyles();
 
             // Configure inner data grid view
             _base.Name = "baseView";
@@ -80,12 +76,14 @@ namespace DarkUI.Controls
             _base.BackColor = _base.BackgroundColor;
             _base.GridColor = Colors.DarkBorder;
             _base.DefaultCellStyle = _cellStyleUnfocusedEven;
-            _base.AlternatingRowsDefaultCellStyle = _cellStyleUnfocusedOdd;
+            _base.AlternatingRowsDefaultCellStyle = _alternateRowStyles ? _cellStyleUnfocusedOdd : null;
             _base.ColumnHeadersDefaultCellStyle = _cellStyleHeader;
             _base.RowHeadersDefaultCellStyle = _cellStyleHeader;
 
             _base.CellFormatting += BaseCellFormatting;
             _base.CellValueChanged += BaseCellValueChanged;
+            _base.CellValueChanged += delegate
+            { UpdateScrollBarLayout(); };
             _base.SelectionChanged += BaseSelectionChanged;
             _base.MouseWheel += BaseMouseWheel;
             _base.KeyDown += BaseKeyDown;
@@ -136,15 +134,12 @@ namespace DarkUI.Controls
             Controls.Add(_hScrollBar);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _base?.Dispose();
-                _hScrollBar?.Dispose();
-                _vScrollBar?.Dispose();
-            }
-            base.Dispose(disposing);
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+
+            _base.DefaultCellStyle = _cellStyleUnfocusedEven;
+            _base.AlternatingRowsDefaultCellStyle = _alternateRowStyles ? _cellStyleUnfocusedOdd : null;
         }
 
         private void BaseCellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -165,9 +160,36 @@ namespace DarkUI.Controls
                 _base.ClearSelection();
         }
 
+        [Browsable(true)]
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        public bool PreventScrollOnCtrl { get; set; }
+
+        private bool _dynamicVScrollAdjust = false;
+        [Browsable(true)]
+        [Category("Behavior")]
+        [DefaultValue(false)]
+        public bool DynamicVScrollAdjust
+		{
+            get { return _dynamicVScrollAdjust; }
+            set
+			{
+                _dynamicVScrollAdjust = value;
+
+                if(_dynamicVScrollAdjust)
+					_base.Scroll += PerformDynamicVScrollAdjust;
+                else
+                    _base.Scroll -= PerformDynamicVScrollAdjust;
+            }
+		}
+
+		private void PerformDynamicVScrollAdjust(object sender, ScrollEventArgs e)
+            => UpdateScrollBarLayout();
+
         private void BaseMouseWheel(object sender, MouseEventArgs e)
         {
-            _vScrollBar.ScrollBy(e.Delta < 0 ? 1 : -1);
+            if(!(PreventScrollOnCtrl && ModifierKeys.HasFlag(Keys.Control)))
+                _vScrollBar.ScrollBy(e.Delta < 0 ? 1 : -1);
         }
 
         private void ToggleFirstCheckbox(DataGridViewCellMouseEventArgs e)
@@ -428,13 +450,13 @@ namespace DarkUI.Controls
         private void BaseLostFocus(object sender, EventArgs e)
         {
             _base.DefaultCellStyle = _cellStyleUnfocusedEven;
-            _base.AlternatingRowsDefaultCellStyle = _cellStyleUnfocusedOdd;
+            _base.AlternatingRowsDefaultCellStyle = _alternateRowStyles ? _cellStyleUnfocusedOdd : null;
         }
 
         private void BaseGotFocus(object sender, EventArgs e)
         {
             _base.DefaultCellStyle = _cellStyleFocusedEven;
-            _base.AlternatingRowsDefaultCellStyle = _cellStyleFocusedOdd;
+            _base.AlternatingRowsDefaultCellStyle = _alternateRowStyles ? _cellStyleFocusedOdd : null;
         }
 
         private void _hScrollBar_ValueChanged(object sender, ScrollValueEventArgs e)
@@ -624,7 +646,8 @@ namespace DarkUI.Controls
             }
         }
 
-        [ReadOnly(true)]
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x515151")]
         public Color OutlineColor
         {
             get { return base.BackColor; }
@@ -714,8 +737,77 @@ namespace DarkUI.Controls
         [EditorBrowsable(EditorBrowsableState.Never)]
         [ReadOnly(true)]
         public new Color BackColor { get { return _base.BackColor; } set { _base.BackColor = value; } }
-        [ReadOnly(true)]
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x3C3F41")]
         public Color BackgroundColor { get { return _base.BackgroundColor; } set { _base.BackgroundColor = value; } }
+
+        private Color _headerColumn = Colors.MediumBackground;
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x313335")]
+        public Color HeaderColor
+		{
+            get { return _headerColumn; }
+            set { _headerColumn = value; UpdateCellStyles(); }
+		}
+
+        private Color _oddRowColor = Colors.HeaderBackground;
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x393C3E")]
+        public Color OddRowColor
+        {
+            get { return _oddRowColor; }
+            set { _oddRowColor = value; UpdateCellStyles(); }
+        }
+
+        private Color _evenRowColor = Colors.GreyBackground;
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x3C3F41")]
+        public Color EvenRowColor
+        {
+            get { return _evenRowColor; }
+            set { _evenRowColor = value; UpdateCellStyles(); }
+        }
+
+        private Color _focusedRowColor = Colors.BlueSelection;
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x4B6EAF")]
+        public Color FocusedRowColor
+        {
+            get { return _focusedRowColor; }
+            set { _focusedRowColor = value; UpdateCellStyles(); }
+        }
+
+        private Color _nonFocusedRowColor = Colors.GreySelection;
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x5C5C5C")]
+        public Color NonFocusedRowColor
+        {
+            get { return _nonFocusedRowColor; }
+            set { _nonFocusedRowColor = value; UpdateCellStyles(); }
+        }
+
+        private Color _foregroundColor = Colors.LightText;
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "Gainsboro")]
+        public Color ForegroundColor
+        {
+            get { return _foregroundColor; }
+            set { _foregroundColor = value; UpdateCellStyles(); }
+        }
+
+        private bool _alternateRowStyles = true;
+        [Category("Appearance")]
+        [DefaultValue(true)]
+        public bool AlternateRowStyles
+        {
+            get { return _alternateRowStyles; }
+            set
+			{
+                _alternateRowStyles = value;
+                _base.AlternatingRowsDefaultCellStyle = _alternateRowStyles ? _cellStyleUnfocusedOdd : null;
+            }
+        }
+
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public new Image BackgroundImage { get { return _base.BackgroundImage; } set { _base.BackgroundImage = value; } }
@@ -794,7 +886,8 @@ namespace DarkUI.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public new Color ForeColor { get { return _base.ForeColor; } set { _base.ForeColor = value; } }
-        [ReadOnly(true)]
+        [Category("Appearance")]
+        [DefaultValue(typeof(Color), "0x333333")]
         public Color GridColor { get { return _base.GridColor; } set { _base.GridColor = value; } }
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -1069,8 +1162,8 @@ namespace DarkUI.Controls
         public DataObject GetClipboardContent() { return _base.GetClipboardContent(); }
         public Rectangle GetColumnDisplayRectangle(int columnIndex, bool cutOverflow) { return _base.GetColumnDisplayRectangle(columnIndex, cutOverflow); }
         public Rectangle GetRowDisplayRectangle(int rowIndex, bool cutOverflow) { return _base.GetRowDisplayRectangle(rowIndex, cutOverflow); }
-        public HitTestInfo HitTest(int x, int y) { return _base.HitTest(x, y); }
-        public HitTestInfo HitTest(Point p) { return _base.HitTest(p.X, p.Y); }
+        public DataGridView.HitTestInfo HitTest(int x, int y) { return _base.HitTest(x, y); }
+        public DataGridView.HitTestInfo HitTest(Point p) { return _base.HitTest(p.X, p.Y); }
         public void InvalidateCell(DataGridViewCell dataGridViewCell) { _base.InvalidateCell(dataGridViewCell); }
         public void InvalidateCell(int columnIndex, int rowIndex) { _base.InvalidateCell(columnIndex, rowIndex); }
         public void InvalidateColumn(int columnIndex) { _base.InvalidateColumn(columnIndex); }
@@ -1087,6 +1180,15 @@ namespace DarkUI.Controls
         public void UpdateRowErrorText(int rowIndex) { _base.UpdateRowErrorText(rowIndex); }
         public void UpdateRowErrorText(int rowIndexStart, int rowIndexEnd) { _base.UpdateRowErrorText(rowIndexStart, rowIndexEnd); }
         public void UpdateRowHeightInfo(int rowIndex, bool updateToEnd) { _base.UpdateRowHeightInfo(rowIndex, updateToEnd); }
+
+        private void UpdateCellStyles()
+        {
+            _cellStyleUnfocusedEven = GetCellStyle(false, false, false);
+            _cellStyleUnfocusedOdd = GetCellStyle(false, true, false);
+            _cellStyleFocusedEven = GetCellStyle(true, false, false);
+            _cellStyleFocusedOdd = GetCellStyle(true, true, false);
+            _cellStyleHeader = GetCellStyle(true, true, true);
+        }
 
         // Based on insanely helpful (any very hard to find!) online information about how to make the "Columns" property editable...
         // https://stackoverflow.com/questions/36787383/expose-columns-property-of-a-datagridview-in-usercontrol-and-make-it-editable-vi/36794920#36794920
@@ -1156,10 +1258,10 @@ namespace DarkUI.Controls
     public class DarkDataGridViewButtonCell : DataGridViewButtonCell
     {
         // Unfortunately we need access to a private data member
-        private static readonly PropertyInfo _buttonState = typeof(DataGridViewButtonCell).GetProperty("ButtonState", BindingFlags.NonPublic | BindingFlags.Instance);
+        private readonly PropertyInfo _buttonState = typeof(DataGridViewButtonCell).GetProperty("ButtonState", BindingFlags.NonPublic | BindingFlags.Instance);
 
-        private static readonly Padding _padding = new Padding(1, 1, 2, 2);
-        private static readonly StringFormat _stringFormat = new StringFormat
+        private readonly Padding _padding = new Padding(1, 1, 2, 2);
+        private readonly StringFormat _stringFormat = new StringFormat
         {
             LineAlignment = StringAlignment.Center,
             Alignment = StringAlignment.Center,
@@ -1351,8 +1453,8 @@ namespace DarkUI.Controls
 
     public class DarkDataGridViewComboBoxCell : DataGridViewComboBoxCell
     {
-        private static readonly Padding _padding = new Padding(1, 1, 2, 2);
-        private static readonly StringFormat _stringFormat = new StringFormat
+        private readonly Padding _padding = new Padding(1, 1, 2, 2);
+        private readonly StringFormat _stringFormat = new StringFormat
         {
             LineAlignment = StringAlignment.Center,
             Alignment = StringAlignment.Near,
