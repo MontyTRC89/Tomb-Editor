@@ -1,4 +1,5 @@
 ﻿using DarkUI.Forms;
+using MiniFileAssociation;
 using System;
 
 namespace TombLib.FileAssociation
@@ -10,24 +11,13 @@ namespace TombLib.FileAssociation
 		private bool _wasTRPROJChecked = false;
 
 		public FormMain()
-		{
-			InitializeComponent();
-		}
+			=> InitializeComponent();
 
 		protected override void OnLoad(EventArgs e)
 		{
-			if (Association.IsPRJ2Associated())
-				checkBox_prj2.Checked = true;
-
-			if (Association.IsWAD2Associated())
-				checkBox_wad2.Checked = true;
-
-			if (Association.IsTRPROJAssociated())
-				checkBox_trproj.Checked = true;
-
-			_wasPRJ2Checked = checkBox_prj2.Checked;
-			_wasWAD2Checked = checkBox_wad2.Checked;
-			_wasTRPROJChecked = checkBox_trproj.Checked;
+			_wasPRJ2Checked = checkBox_prj2.Checked = Association.IsAssociatedWith(".prj2", DefaultPaths.TombEditorExecutable);
+			_wasWAD2Checked = checkBox_wad2.Checked = Association.IsAssociatedWith(".wad2", DefaultPaths.WadToolExecutable);
+			_wasTRPROJChecked = checkBox_trproj.Checked = Association.IsAssociatedWith(".trproj", DefaultPaths.TombIDEExecutable);
 
 			button_Apply.Enabled = false;
 
@@ -37,19 +27,19 @@ namespace TombLib.FileAssociation
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
 			if (checkBox_prj2.Checked)
-				Association.AssociatePRJ2();
+				Program.AssociatePRJ2();
 			else
-				Association.RemoveAssociation(".prj2");
+				Association.ClearAssociations(".prj2");
 
 			if (checkBox_wad2.Checked)
-				Association.AssociateWAD2();
+				Program.AssociateWAD2();
 			else
-				Association.RemoveAssociation(".wad2");
+				Association.ClearAssociations(".wad2");
 
 			if (checkBox_trproj.Checked)
-				Association.AssociateTRPROJ();
+				Program.AssociateTRPROJ();
 			else
-				Association.RemoveAssociation(".trproj");
+				Association.ClearAssociations(".trproj");
 
 			_wasPRJ2Checked = checkBox_prj2.Checked;
 			_wasWAD2Checked = checkBox_wad2.Checked;

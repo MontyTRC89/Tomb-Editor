@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MiniFileAssociation;
+using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -16,10 +18,10 @@ namespace TombLib.FileAssociation
 			{
 				if (args[0].Equals("-a", StringComparison.OrdinalIgnoreCase))
 					RunAssociation();
+				else if (Regex.IsMatch(args[0], @"-\d\d\d"))
+					RunAssociationWithBinaryArgs(args[0]);
 				else if (args[0].Equals("-d", StringComparison.OrdinalIgnoreCase))
 					RunDeassociation();
-				else if (Regex.IsMatch(args[0], @"-\d\d\d"))
-					RunAssociationBinaryArgs(args[0]);
 			}
 			else
 				OpenGUI();
@@ -32,69 +34,64 @@ namespace TombLib.FileAssociation
 			Application.Run(new FormMain());
 		}
 
-		private static void RunAssociationBinaryArgs(string args)
+		private static void RunAssociation()
+		{
+			AssociatePRJ2();
+			AssociateWAD2();
+			AssociateTRPROJ();
+		}
+
+		private static void RunAssociationWithBinaryArgs(string args)
 		{
 			bool associatePRJ2 = int.Parse(args[1].ToString()) != 0;
 			bool associateWAD2 = int.Parse(args[2].ToString()) != 0;
 			bool associateTRPROJ = int.Parse(args[3].ToString()) != 0;
 
 			if (associatePRJ2)
-				Association.AssociatePRJ2();
+				AssociatePRJ2();
 
 			if (associateWAD2)
-				Association.AssociateWAD2();
+				AssociateWAD2();
 
 			if (associateTRPROJ)
-				Association.AssociateTRPROJ();
-		}
-
-		private static void RunAssociation()
-		{
-			if (!Association.IsPRJ2Associated())
-				AskAssociatePRJ2();
-
-			if (!Association.IsWAD2Associated())
-				AskAssociateWAD2();
-
-			if (!Association.IsTRPROJAssociated())
-				AskAssociateTRPROJ();
+				AssociateTRPROJ();
 		}
 
 		private static void RunDeassociation() // Is this even a real word?
 		{
-			Association.RemoveAssociation(".prj2");
-			Association.RemoveAssociation(".wad2");
-			Association.RemoveAssociation(".trproj");
+			Association.ClearAssociations(".prj2");
+			Association.ClearAssociations(".wad2");
+			Association.ClearAssociations(".trproj");
 		}
 
-		private static void AskAssociatePRJ2()
+		public static void AssociatePRJ2()
 		{
-			DialogResult result = MessageBox.Show(
-				"Would you like to associate .prj2 files with TombEditor?", "Associate?",
-				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			string extension = ".prj2";
+			string openWith = DefaultPaths.TombEditorExecutable;
+			string description = "TombEditor Project File";
+			string iconPath = Path.Combine(DefaultPaths.ResourcesDirectory, "te_file.ico");
 
-			if (result == DialogResult.Yes)
-				Association.AssociatePRJ2();
+			Association.SetAssociation(extension, openWith, description, iconPath);
 		}
 
-		private static void AskAssociateWAD2()
+		public static void AssociateWAD2()
 		{
-			DialogResult result = MessageBox.Show(
-				"Would you like to associate .wad2 files with WadTool?", "Associate?",
-				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			string extension = ".wad2";
+			string openWith = DefaultPaths.WadToolExecutable;
+			string description = "Wad2 Object File";
+			string iconPath = Path.Combine(DefaultPaths.ResourcesDirectory, "wt_file.ico");
 
-			if (result == DialogResult.Yes)
-				Association.AssociateWAD2();
+			Association.SetAssociation(extension, openWith, description, iconPath);
 		}
 
-		private static void AskAssociateTRPROJ()
+		public static void AssociateTRPROJ()
 		{
-			DialogResult result = MessageBox.Show(
-				"Would you like to associate .trproj files with TombIDE?", "Associate?",
-				MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			string extension = ".trproj";
+			string openWith = DefaultPaths.TombIDEExecutable;
+			string description = "TombIDE Project File";
+			string iconPath = Path.Combine(DefaultPaths.ResourcesDirectory, "tide_file.ico");
 
-			if (result == DialogResult.Yes)
-				Association.AssociateTRPROJ();
+			Association.SetAssociation(extension, openWith, description, iconPath);
 		}
 	}
 }
