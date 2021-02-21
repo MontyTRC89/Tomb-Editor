@@ -2024,7 +2024,7 @@ namespace TombEditor
 				sb.AppendLine("Total Moveables :\t\t\t" + totalMoveablesCount);
 				sb.AppendLine("Total Statics :\t\t\t" + totalStaticsCount);
 				Clipboard.SetText(sb.ToString());
-				args.Editor.SendMessage("Object statistics copied into clipboard!");
+				args.Editor.SendMessage("Object statistics copied into clipboard!", PopupType.Info);
 			});
 			_commands = _commands.OrderBy(o => o.Type).ToList();
         }
