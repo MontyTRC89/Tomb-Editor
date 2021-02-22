@@ -576,8 +576,8 @@ namespace TombLib.Scripting.Forms
 
 		private TextEditorBase GetTextEditorOfTab(TabPage tab)
 		{
-			IEnumerable<ElementHost> elementHosts = tab.Controls.OfType<ElementHost>();
-			return elementHosts.Count() > 0 ? elementHosts.First().Child as TextEditorBase : null;
+			IEnumerable<ElementHost> elementHosts = tab?.Controls.OfType<ElementHost>();
+			return elementHosts?.Count() > 0 ? elementHosts.First().Child as TextEditorBase : null;
 		}
 
 		private string GetCurrentPattern()

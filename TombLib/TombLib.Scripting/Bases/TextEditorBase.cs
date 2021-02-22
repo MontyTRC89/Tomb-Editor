@@ -716,8 +716,11 @@ namespace TombLib.Scripting.Bases
 		void IEditorControl.Undo() => Undo();
 		void IEditorControl.Redo() => Redo();
 
-		public virtual void GoTo(string objectName, object identifyingObject = null)
+		public virtual void GoToObject(string objectName, object identifyingObject = null)
 		{ } // Bruh
+
+		public void Dispose()
+			=> _contentChangedWorker?.Dispose();
 
 		#endregion IEditorControl methods
 	}

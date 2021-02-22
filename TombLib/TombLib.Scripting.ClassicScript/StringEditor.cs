@@ -186,6 +186,14 @@ namespace TombLib.Scripting.ClassicScript
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing)
+				_contentChangedWorker?.Dispose();
+
+			base.Dispose(disposing);
+		}
+
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
 			if (ModifierKeys == Keys.Control)
@@ -476,7 +484,7 @@ namespace TombLib.Scripting.ClassicScript
 				(CurrentDataGrid.EditingControl as TextBox).SelectAll();
 		}
 
-		public void GoTo(string objectName, object identifyingObject = null)
+		public void GoToObject(string objectName, object identifyingObject = null)
 		{
 			TabPage targetTab = TabPages.Cast<TabPage>().ToList().Find(x => x.Name.Equals($"[{objectName}]", StringComparison.OrdinalIgnoreCase));
 

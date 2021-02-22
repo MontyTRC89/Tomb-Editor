@@ -5,6 +5,7 @@ using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Scripting.Bases;
 using TombLib.Scripting.ClassicScript;
+using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.Interfaces;
 
 namespace TombIDE.ScriptingStudio.ToolStrips
@@ -26,13 +27,27 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			}
 		}
 
-		#endregion Properties
-
-		#region Fields
-
 		private IEditorControl _editorControl;
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IEditorControl EditorControl
+		{
+			get => _editorControl;
+			set
+			{
+				if (_editorControl != null)
+					_editorControl.StatusChanged -= EditorControl_StatusChanged;
 
-		#endregion Fields
+				_editorControl = value;
+
+				if (_editorControl != null)
+					_editorControl.StatusChanged += EditorControl_StatusChanged;
+
+				UpdateStatus();
+			}
+		}
+
+		#endregion Properties
 
 		#region Construction
 
@@ -56,19 +71,6 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 		#region Methods
 
-		public void UpdateStatus(IEditorControl editor)
-		{
-			if (_editorControl != null)
-				_editorControl.StatusChanged -= EditorControl_StatusChanged;
-
-			_editorControl = editor;
-
-			if (_editorControl != null)
-				_editorControl.StatusChanged += EditorControl_StatusChanged;
-
-			UpdateStatus();
-		}
-
 		private void UpdateStatus()
 		{
 			UpdateItemVisibility();
@@ -88,6 +90,8 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 				toolTip.SetToolTip(button_ResetZoom, button_ResetZoom.Enabled ? Strings.Default.ResetZoom : string.Empty);
 			}
+
+			UpdateSyntaxPreview();
 		}
 
 		private void UpdateItemVisibility()
@@ -100,6 +104,15 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			button_ResetZoom.Visible = _editorControl != null;
 
 			panel_Syntax.Visible = _editorControl != null && _documentMode == DocumentMode.ClassicScript;
+		}
+
+		private void UpdateSyntaxPreview()
+		{
+			if (_editorControl is ClassicScriptEditor csEditor)
+			{
+				SyntaxPreview.CurrentArgumentIndex = ArgumentParser.GetArgumentIndexAtOffset(csEditor.Document, csEditor.CaretOffset);
+				SyntaxPreview.Text = CommandParser.GetCommandSyntax(csEditor.Document, csEditor.CaretOffset);
+			}
 		}
 
 		#endregion Methods

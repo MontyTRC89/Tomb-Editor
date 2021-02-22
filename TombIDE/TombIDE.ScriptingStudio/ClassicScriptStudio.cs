@@ -41,17 +41,12 @@ namespace TombIDE.ScriptingStudio
 			IDE.Global.Project.EnginePath,
 			PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath))
 		{
-			DockPanelState = WindowLayout.TestLayout;
-			//DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
+			DockPanelState = DefaultLayouts.ClassicScriptLayout;
 
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 
-			EditorTabControl.SelectedIndexChanged += EditorTabControl_SelectedIndexChanged;
-
 			NGCBackgroundWorker.DoWork += NGCBackgroundWorker_DoWork;
 			NGCBackgroundWorker.RunWorkerCompleted += NGCBackgroundWorker_RunWorkerCompleted;
-
-			//ContentExplorer.ObjectClicked += ObjectBrowser_ObjectClicked;
 
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
 		}
@@ -205,14 +200,11 @@ namespace TombIDE.ScriptingStudio
 		{
 			if (sender is ClassicScriptEditor textEditor)
 			{
-				textEditor.TextArea.Caret.PositionChanged += TextEditor_CaretPositionChanged;
 				textEditor.MouseDoubleClick += TextEditor_MouseDoubleClick;
 				textEditor.KeyDown += TextEditor_KeyDown;
 				textEditor.WordDefinitionRequested += TextEditor_WordDefinitionRequested;
 			}
 		}
-
-		private void TextEditor_CaretPositionChanged(object sender, EventArgs e) => UpdateSyntaxPreview();
 
 		private void TextEditor_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
@@ -241,12 +233,6 @@ namespace TombIDE.ScriptingStudio
 				type = RddaReader.GetCommandType(word);
 
 			FormReferenceInfo.Show(word, type);
-		}
-
-		private void EditorTabControl_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateSyntaxPreview();
-			ContentExplorer.UpdateTreeView(CurrentEditor);
 		}
 
 		private void NGCBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -334,17 +320,6 @@ namespace TombIDE.ScriptingStudio
 
 				DarkMessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-		}
-
-		private void UpdateSyntaxPreview()
-		{
-			if (CurrentEditor != null && CurrentEditor is ClassicScriptEditor editor)
-			{
-				StatusStrip.SyntaxPreview.CurrentArgumentIndex = ArgumentParser.GetArgumentIndexAtOffset(editor.Document, editor.CaretOffset);
-				StatusStrip.SyntaxPreview.Text = CommandParser.GetCommandSyntax(editor.Document, editor.CaretOffset);
-			}
-			else
-				StatusStrip.SyntaxPreview.Text = string.Empty;
 		}
 
 		protected override void ApplyUserSettings(IEditorControl editor)

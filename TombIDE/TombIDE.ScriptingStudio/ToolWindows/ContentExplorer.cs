@@ -31,17 +31,31 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 			}
 		}
 
+		private IEditorControl _editorControl;
+		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public IEditorControl EditorControl
+		{
+			get => _editorControl;
+			set
+			{
+				if (_editorControl != null)
+					EditorControl.ContentChangedWorkerRunCompleted -= EditorControl_ContentChangedWorkerRunCompleted;
+
+				_editorControl = value;
+
+				if (_editorControl != null)
+					_editorControl.ContentChangedWorkerRunCompleted += EditorControl_ContentChangedWorkerRunCompleted;
+
+				UpdateTreeView();
+			}
+		}
+
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ContentNodesProviderBase NodesProvider { get; set; }
 
 		#endregion Properties
-
-		#region Fields
-
-		private IEditorControl _editorControl;
-
-		#endregion Fields
 
 		#region Construction
 
@@ -80,9 +94,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 		{
 			treeView.Nodes.Clear();
 
-			var nodes = e.Result as IEnumerable<DarkTreeNode>;
-
-			if (nodes != null && nodes.Count() > 0)
+			if (e.Result is IEnumerable<DarkTreeNode> nodes && nodes.Count() > 0)
 				treeView.Nodes.AddRange(nodes);
 
 			treeView.Invalidate();
@@ -92,22 +104,9 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		#region Methods
 
-		public void UpdateTreeView(IEditorControl editor)
-		{
-			if (_editorControl != null)
-				_editorControl.ContentChangedWorkerRunCompleted -= EditorControl_ContentChangedWorkerRunCompleted;
-
-			_editorControl = editor;
-
-			if (_editorControl != null)
-				_editorControl.ContentChangedWorkerRunCompleted += EditorControl_ContentChangedWorkerRunCompleted;
-
-			UpdateTreeView();
-		}
-
 		private void UpdateTreeView()
 		{
-			if (_editorControl != null && NodesProvider != null && !NodesProvider.IsBusy)
+			if (EditorControl != null && NodesProvider != null && !NodesProvider.IsBusy)
 			{
 				string filter = string.Empty;
 
@@ -115,7 +114,12 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 					filter = searchTextBox.Text.Trim();
 
 				NodesProvider.Filter = filter;
-				NodesProvider.RunWorkerAsync(_editorControl.Content);
+				NodesProvider.RunWorkerAsync(EditorControl.Content);
+			}
+			else if (EditorControl == null || NodesProvider == null)
+			{
+				treeView.Nodes.Clear();
+				treeView.Invalidate();
 			}
 		}
 

@@ -4,7 +4,7 @@ using TombLib.Scripting.Enums;
 
 namespace TombLib.Scripting.Interfaces
 {
-	public interface IEditorControl
+	public interface IEditorControl : IDisposable
 	{
 		#region Properties
 
@@ -62,7 +62,7 @@ namespace TombLib.Scripting.Interfaces
 
 		void SelectAll();
 
-		void GoTo(string objectName, object identifyingObject = null);
+		void GoToObject(string objectName, object identifyingObject = null);
 
 		void UpdateSettings(ConfigurationBase configuration);
 

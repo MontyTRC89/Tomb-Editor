@@ -9,6 +9,7 @@
 	/// </summary>
 	public enum DocumentMode
 	{
+		None,
 		PlainText,
 		ClassicScript,
 		Lua,
