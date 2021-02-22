@@ -117,13 +117,13 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		private void menuItem_NewFile_Click(object sender, EventArgs e) => CreateNewFile();
 		private void menuItem_NewFolder_Click(object sender, EventArgs e) => CreateNewFolder();
-		private void menuItem_ViewCode_Click(object sender, EventArgs e) => OpenSelectedFile(EditorType.Text);
 		private void menuItem_ViewInEditor_Click(object sender, EventArgs e) => OpenSelectedFile();
+		private void menuItem_ViewCode_Click(object sender, EventArgs e) => OpenSelectedFile(EditorType.Text);
 		private void menuItem_Rename_Click(object sender, EventArgs e) => RenameItem();
 		private void menuItem_Delete_Click(object sender, EventArgs e) => DeleteItem();
 
-		private void menuItem_OpenInExplorer_Click(object sender, EventArgs e) =>
-			SharedMethods.OpenInExplorer(GetItemPathFromNode(treeView.SelectedNodes[0]));
+		private void menuItem_OpenInExplorer_Click(object sender, EventArgs e)
+			=> SharedMethods.OpenInExplorer(GetItemPathFromNode(treeView.SelectedNodes[0]));
 
 		#endregion Events
 

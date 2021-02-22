@@ -8,9 +8,6 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	internal static class ToolStripExtensions
 	{
-		public static ToolStripMenuItem FindMenuItem(this ToolStrip toolStrip, UIElement element)
-			=> FindItem(toolStrip, element) as ToolStripMenuItem;
-
 		public static ToolStripItem FindItem(this ToolStrip toolStrip, UIElement element)
 		{
 			foreach (ToolStripItem item in toolStrip.GetAllItems())

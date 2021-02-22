@@ -115,6 +115,8 @@ namespace TombIDE.ScriptingStudio
 		private ToolStripItem SaveMenuItem;
 		private ToolStripItem SaveToolStripButton;
 
+		private ToolStripItem SaveAsMenuItem;
+
 		private ToolStripItem SaveAllMenuItem;
 		private ToolStripItem SaveAllToolStripButton;
 
@@ -166,14 +168,15 @@ namespace TombIDE.ScriptingStudio
 			EditorTabControlDocument.Controls.Add(EditorTabControl);
 			EditorTabControl.SelectedIndexChanged += EditorTabControl_SelectedIndexChanged;
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
+			EditorTabControl.TabClosing += EditorTabControl_TabClosing;
 		}
 
 		private void InitializeFileExplorer()
 		{
-			FileExplorer.FileOpened += FileTreeView_FileOpened;
+			FileExplorer.FileOpened += FileExplorer_FileOpened;
 			FileExplorer.FileChanged += FileExplorer_FileChanged;
-			FileExplorer.FileRenamed += FileTreeView_FileRenamed;
-			FileExplorer.FileDeleted += FileTreeView_FileDeleted;
+			FileExplorer.FileRenamed += FileExplorer_FileRenamed;
+			FileExplorer.FileDeleted += FileExplorer_FileDeleted;
 		}
 
 		private void InitializeFindReplaceForm()
@@ -184,13 +187,15 @@ namespace TombIDE.ScriptingStudio
 
 		private void InitializeDockPanel()
 		{
-			DockPanel = new DarkDockPanel();
+			DockPanel = new DarkDockPanel
+			{
+				Dock = DockStyle.Fill,
+				EqualizeGroupSizes = true,
+				Padding = new Padding(2),
+				PrioritizeLeft = false,
+				PrioritizeRight = false
+			};
 
-			DockPanel.Dock = DockStyle.Fill;
-			DockPanel.EqualizeGroupSizes = true;
-			DockPanel.Padding = new Padding(2);
-			DockPanel.PrioritizeLeft = false;
-			DockPanel.PrioritizeRight = false;
 			DockPanel.ContentAdded += DockPanel_ContentChanged;
 			DockPanel.ContentRemoved += DockPanel_ContentChanged;
 
@@ -198,16 +203,16 @@ namespace TombIDE.ScriptingStudio
 
 			DockPanel.BringToFront();
 
-			// We have to initialize a default layout before applying the user defined one
+			// We have to initialize a dummy layout before applying any other one
 			// otherwise we're gonna experience control priority issues.
-
-			DockPanel.RestoreDockPanelState(WindowLayout.DefaultLayout, FindDockContentByKey);
+			DockPanel.RestoreDockPanelState(DefaultLayouts.DummyLayout, FindDockContentByKey);
 
 			// We can remove the content after the initialization is done
 			DockPanel.RemoveContent();
 
 			// The fact that we have to do this for it to work correctly is complete bullsh*t
 
+			// Apply the current layout
 			DockPanel.RestoreDockPanelState(DockPanelState, FindDockContentByKey);
 
 			ApplyMessageFilters();
@@ -224,16 +229,18 @@ namespace TombIDE.ScriptingStudio
 			SaveMenuItem = MenuStrip.FindItem(UIElement.Save);
 			SaveToolStripButton = ToolStrip.FindItem(UIElement.Save);
 
+			SaveAsMenuItem = MenuStrip.FindItem(UIElement.SaveAs);
+
 			SaveAllMenuItem = MenuStrip.FindItem(UIElement.SaveAll);
 			SaveAllToolStripButton = ToolStrip.FindItem(UIElement.SaveAll);
 
-			ToolStripViewItem = MenuStrip.FindMenuItem(UIElement.ToolStrip);
-			ContentExplorerViewItem = MenuStrip.FindMenuItem(UIElement.ContentExplorer);
-			FileExplorerViewItem = MenuStrip.FindMenuItem(UIElement.FileExplorer);
-			ReferenceBrowserViewItem = MenuStrip.FindMenuItem(UIElement.ReferenceBrowser);
-			CompilerLogsViewItem = MenuStrip.FindMenuItem(UIElement.CompilerLogs);
-			SearchResultsViewItem = MenuStrip.FindMenuItem(UIElement.SearchResults);
-			StatusStripViewItem = MenuStrip.FindMenuItem(UIElement.StatusStrip);
+			ToolStripViewItem = MenuStrip.FindItem(UIElement.ToolStrip) as ToolStripMenuItem;
+			ContentExplorerViewItem = MenuStrip.FindItem(UIElement.ContentExplorer) as ToolStripMenuItem;
+			FileExplorerViewItem = MenuStrip.FindItem(UIElement.FileExplorer) as ToolStripMenuItem;
+			ReferenceBrowserViewItem = MenuStrip.FindItem(UIElement.ReferenceBrowser) as ToolStripMenuItem;
+			CompilerLogsViewItem = MenuStrip.FindItem(UIElement.CompilerLogs) as ToolStripMenuItem;
+			SearchResultsViewItem = MenuStrip.FindItem(UIElement.SearchResults) as ToolStripMenuItem;
+			StatusStripViewItem = MenuStrip.FindItem(UIElement.StatusStrip) as ToolStripMenuItem;
 		}
 
 		private void ApplyMessageFilters()
@@ -248,8 +255,8 @@ namespace TombIDE.ScriptingStudio
 
 		protected virtual void OnIDEEventRaised(IIDEEvent obj)
 		{
-			if (obj is IDE.ProgramClosingEvent)
-				(obj as IDE.ProgramClosingEvent).CanClose = EditorTabControl.AskSaveAll();
+			if (obj is IDE.ProgramClosingEvent e)
+				e.CanClose = EditorTabControl.AskSaveAll();
 		}
 
 		private void DockPanel_ContentChanged(object sender, DockContentEventArgs e)
@@ -263,7 +270,8 @@ namespace TombIDE.ScriptingStudio
 			if (CurrentEditor != null)
 				DocumentMode = FileHelper.GetDocumentModeForFile(CurrentEditor.FilePath, CurrentEditor.EditorType);
 
-			StatusStrip.UpdateStatus(CurrentEditor);
+			ContentExplorer.EditorControl = CurrentEditor;
+			StatusStrip.EditorControl = CurrentEditor;
 			UpdateUndoRedoSaveStates();
 		}
 
@@ -271,7 +279,6 @@ namespace TombIDE.ScriptingStudio
 		{
 			var editor = sender as IEditorControl;
 
-			editor.StatusChanged += Editor_StatusChanged;
 			editor.ContentChangedWorkerRunCompleted += Editor_ContentChangedWorkerRunCompleted;
 
 			if (editor is TextEditorBase textEditor)
@@ -281,11 +288,17 @@ namespace TombIDE.ScriptingStudio
 				scriptEditor.UpdateSettings(Configs.ClassicScript);
 
 			DocumentMode = FileHelper.GetDocumentModeForFile(CurrentEditor.FilePath, CurrentEditor.EditorType);
-			InitializeFrequentlyAccessedItems();
+
+			ContentExplorer.EditorControl = CurrentEditor;
+			StatusStrip.EditorControl = CurrentEditor;
+			UpdateUndoRedoSaveStates();
 		}
 
-		private void Editor_StatusChanged(object sender, EventArgs e)
-			=> StatusStrip.UpdateStatus(CurrentEditor);
+		private void EditorTabControl_TabClosing(object sender, TabControlCancelEventArgs e)
+		{
+			if (EditorTabControl.TabCount == 1)
+				DocumentMode = DocumentMode.None;
+		}
 
 		private void Editor_ContentChangedWorkerRunCompleted(object sender, EventArgs e)
 			=> UpdateUndoRedoSaveStates();
@@ -297,7 +310,10 @@ namespace TombIDE.ScriptingStudio
 				FormFindReplace.Show(this, (CurrentEditor as TextEditorBase).SelectedText);
 		}
 
-		private void FileTreeView_FileOpened(object sender, FileOpenedEventArgs e)
+		private void ContentExplorer_ObjectClicked(object sender, ObjectClickedEventArgs e)
+			=> CurrentEditor.GoToObject(e.ObjectName, e.IdentifyingObject);
+
+		private void FileExplorer_FileOpened(object sender, FileOpenedEventArgs e)
 			=> EditorTabControl.OpenFile(e.FilePath, e.EditorType, false);
 
 		private void FileExplorer_FileChanged(object sender, FileSystemEventArgs e)
@@ -306,10 +322,10 @@ namespace TombIDE.ScriptingStudio
 				EditorTabControl.AddFileToReloadQueue(e.FullPath);
 		}
 
-		private void FileTreeView_FileRenamed(object sender, RenamedEventArgs e)
+		private void FileExplorer_FileRenamed(object sender, RenamedEventArgs e)
 			=> EditorTabControl.RenameDocumentTabPage(e.OldFullPath, e.FullPath);
 
-		private void FileTreeView_FileDeleted(object sender, FileSystemEventArgs e)
+		private void FileExplorer_FileDeleted(object sender, FileSystemEventArgs e)
 			=> EditorTabControl.CloseInvalidTabPages();
 
 		private void FormFindReplace_FindAllPerformed(object sender, FindReplaceEventArgs e)
@@ -355,6 +371,8 @@ namespace TombIDE.ScriptingStudio
 			SaveMenuItem.Enabled = CurrentEditor != null && CurrentEditor.IsContentChanged;
 			SaveToolStripButton.Enabled = SaveMenuItem.Enabled;
 
+			SaveAsMenuItem.Enabled = EditorTabControl.SelectedTab != null;
+
 			SaveAllMenuItem.Enabled = !EditorTabControl.IsEveryTabSaved();
 			SaveAllToolStripButton.Enabled = SaveAllMenuItem.Enabled;
 		}
@@ -382,13 +400,13 @@ namespace TombIDE.ScriptingStudio
 				case UIElement.Build: Build(); break;
 
 				// Edit
-				case UIElement.Undo: CurrentEditor.Undo(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Redo: CurrentEditor.Redo(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Cut: CurrentEditor.Cut(); break;
-				case UIElement.Copy: CurrentEditor.Copy(); break;
-				case UIElement.Paste: CurrentEditor.Paste(); break;
-				case UIElement.Find: FormFindReplace.Show(this, CurrentEditor.SelectedContent?.ToString()); break;
-				case UIElement.SelectAll: CurrentEditor.SelectAll(); StatusStrip.UpdateStatus(CurrentEditor); break;
+				case UIElement.Undo: CurrentEditor?.Undo(); UpdateUndoRedoSaveStates(); break;
+				case UIElement.Redo: CurrentEditor?.Redo(); UpdateUndoRedoSaveStates(); break;
+				case UIElement.Cut: CurrentEditor?.Cut(); break;
+				case UIElement.Copy: CurrentEditor?.Copy(); break;
+				case UIElement.Paste: CurrentEditor?.Paste(); break;
+				case UIElement.Find: FormFindReplace.Show(this, CurrentEditor?.SelectedContent?.ToString()); break;
+				case UIElement.SelectAll: CurrentEditor?.SelectAll(); break;
 
 				// Options
 				case UIElement.UseNewInclude:
@@ -425,7 +443,7 @@ namespace TombIDE.ScriptingStudio
 		protected void ToggleItemVisibility(UIElement command)
 		{
 			Control control = GetControlByKey<Control>(command.ToString());
-			ToolStripMenuItem menuItem = MenuStrip.FindMenuItem(command);
+			var menuItem = MenuStrip.FindItem(command) as ToolStripMenuItem;
 
 			if (control is DarkToolWindow toolWindow)
 			{
@@ -495,7 +513,7 @@ namespace TombIDE.ScriptingStudio
 
 		protected void ToggleSetting(UIElement command)
 		{
-			ToolStripMenuItem menuItem = MenuStrip.FindMenuItem(command);
+			var menuItem = MenuStrip.FindItem(command) as ToolStripMenuItem;
 
 			switch (command)
 			{
@@ -519,9 +537,6 @@ namespace TombIDE.ScriptingStudio
 		}
 
 		#endregion Other methods
-
-		private void ContentExplorer_ObjectClicked(object sender, ObjectClickedEventArgs e)
-			=> CurrentEditor.GoTo(e.ObjectName, e.IdentifyingObject);
 	}
 }
 

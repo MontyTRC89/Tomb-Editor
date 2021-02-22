@@ -2,6 +2,8 @@
 {
 	internal static class ToolStripPresets
 	{
+		public static readonly UIElement[] None = null;
+
 		public static readonly UIElement[] PlainText = new UIElement[]
 		{
 			UIElement.ToggleBookmark,

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace TombIDE.Shared.SharedClasses
 {
@@ -30,6 +32,9 @@ namespace TombIDE.Shared.SharedClasses
 				if (File.Exists(file))
 					File.Delete(file);
 		}
+
+		public static void DisposeItems(IEnumerable<IDisposable> items)
+			=> DisposeItems(items.ToArray());
 
 		public static void DisposeItems(params IDisposable[] items)
 		{

@@ -516,7 +516,7 @@ namespace TombLib.Scripting.ClassicScript
 		public new void GetWordFromOffset(int offset)
 			=> base.GetWordFromOffset(offset);
 
-		public override void GoTo(string objectName, object identifyingObject = null)
+		public override void GoToObject(string objectName, object identifyingObject = null)
 		{
 			if (identifyingObject is ObjectType type)
 			{

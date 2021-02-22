@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using TombIDE.ScriptingStudio.Forms;
 using TombIDE.ScriptingStudio.Helpers;
+using TombIDE.ScriptingStudio.Properties;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 using TombLib.Scripting.Enums;
@@ -27,13 +28,15 @@ namespace TombIDE.ScriptingStudio.Controls
 			get => _scriptRootDirectoryPath;
 			set
 			{
-				_scriptRootDirectoryPath = value;
+				if (AskSaveAll())
+				{
+					SharedMethods.DisposeItems(TabPages.Cast<TabPage>());
 
-				foreach (TabPage tab in TabPages)
-					tab.Dispose();
+					_scriptRootDirectoryPath = value;
 
-				if (!string.IsNullOrWhiteSpace(ScriptRootDirectoryPath))
-					CheckPreviousSession();
+					if (!string.IsNullOrWhiteSpace(ScriptRootDirectoryPath))
+						CheckPreviousSession();
+				}
 			}
 		}
 
@@ -76,14 +79,15 @@ namespace TombIDE.ScriptingStudio.Controls
 			Dock = DockStyle.Fill;
 			DisplayStyle = TabStyle.Dark;
 			DisplayStyleProvider.ShowTabCloser = true;
+			EnableMiddleClickTabClosing = true;
 			Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 238);
 		}
 
 		private void InitializeContextMenu()
 		{
-			menuItem_Save.Image = Properties.Resources.Save_16;
-			menuItem_Close.Image = Properties.Resources.Delete_16;
-			menuItem_OpenFolder.Image = Properties.Resources.ForwardArrow_16;
+			menuItem_Save.Image = Resources.Save_16;
+			menuItem_Close.Image = Resources.Delete_16;
+			menuItem_OpenFolder.Image = Resources.ForwardArrow_16;
 
 			menuItem_Save.Click += MenuItem_Save_Click;
 			menuItem_Close.Click += MenuItem_Close_Click;
@@ -324,7 +328,7 @@ namespace TombIDE.ScriptingStudio.Controls
 				editor.Save(editor.FilePath);
 				UpdateTabPageName(editor);
 
-				SaveOtherTabPagesOfEditor(editor);
+				SaveOtherTabPagesOfFile(editor);
 			}
 			catch (Exception ex) // Saving failed somehow
 			{
@@ -348,13 +352,13 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public FileSavingResult SaveFileAs(TabPage tab)
 		{
-			IEditorControl textEditor = GetEditorOfTab(tab);
+			IEditorControl editor = GetEditorOfTab(tab);
 
 			using (var form = new FormFileCreation(ScriptRootDirectoryPath, FileCreationMode.SavingAs))
 				if (form.ShowDialog(this) == DialogResult.OK)
 				{
-					textEditor.FilePath = form.NewFilePath;
-					tab.Text = Path.GetFileName(form.NewFilePath); // Bruh
+					editor.FilePath = form.NewFilePath;
+					UpdateTabPageName(tab);
 
 					return SaveFile(tab);
 				}
@@ -362,16 +366,17 @@ namespace TombIDE.ScriptingStudio.Controls
 					return FileSavingResult.Cancelled;
 		}
 
-		private void SaveOtherTabPagesOfEditor(IEditorControl editor)
+		private void SaveOtherTabPagesOfFile(IEditorControl excludedEditor)
 		{
 			foreach (TabPage tabPage in TabPages)
 			{
 				IEditorControl tabEditor = GetEditorOfTab(tabPage);
 
-				if (tabEditor.FilePath == editor.FilePath && tabEditor.EditorType != editor.EditorType)
+				// Same file, different EditorType
+				if (tabEditor.FilePath == excludedEditor.FilePath && tabEditor.EditorType != excludedEditor.EditorType)
 				{
-					if (tabEditor.Content != editor.Content)
-						tabEditor.Content = editor.Content;
+					if (tabEditor.Content != excludedEditor.Content)
+						tabEditor.Content = excludedEditor.Content;
 
 					tabEditor.TryRunContentChangedWorker();
 
@@ -436,57 +441,19 @@ namespace TombIDE.ScriptingStudio.Controls
 				FileSavingResult result = TryAskSaveFile(mostRecentTabPage);
 
 				if (result == FileSavingResult.AlreadySaved || result == FileSavingResult.Success || result == FileSavingResult.Rejected)
-					mostRecentTabPage.Dispose();
-
-				IEnumerable<TabPage> fileTabPages = FindTabPagesOfFile(filePath);
-
-				foreach (TabPage tab in fileTabPages)
-					tab.Dispose();
-			}
-		}
-
-		public void CloseTabPage(IEditorControl editor)
-			=> CloseTabPage(FindTabPage(editor.FilePath, editor.EditorType));
-
-		public void CloseTabPage(int index)
-			=> CloseTabPage(TabPages[index]);
-
-		public void CloseTabPage(TabPage tab)
-		{
-			if (tab != null)
-			{
-				IEditorControl editorOfTab = GetEditorOfTab(tab);
-
-				string filePath = editorOfTab.FilePath;
-				IEnumerable<TabPage> fileTabPages = FindTabPagesOfFile(filePath);
-
-				if (fileTabPages.Count() == 1)
 				{
-					FileSavingResult result = TryAskSaveFile(tab);
+					CloseTab(mostRecentTabPage);
 
-					if (result == FileSavingResult.AlreadySaved || result == FileSavingResult.Success || result == FileSavingResult.Rejected)
-						tab.Dispose();
-				}
-				else if (IsMostRecentlyModifiedTabPageOfFile(tab))
-				{
-					foreach (TabPage tabPage in fileTabPages)
-					{
-						IEditorControl editor = GetEditorOfTab(tabPage);
-						editor.Content = editorOfTab.Content;
-					}
+					IEnumerable<TabPage> fileTabPages = FindTabPagesOfFile(filePath);
 
-					tab.Dispose();
+					foreach (TabPage tab in fileTabPages)
+						CloseTab(tab);
 				}
-				else
-					tab.Dispose();
 			}
 		}
 
 		public void CloseInvalidTabPages()
-		{
-			foreach (TabPage tab in GetTabPagesToClose())
-				tab.Dispose();
-		}
+			=> SharedMethods.DisposeItems(GetTabPagesToClose());
 
 		private IEnumerable<TabPage> GetTabPagesToClose()
 		{
@@ -513,14 +480,14 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public IEditorControl GetEditorOfTab(TabPage tab)
 		{
-			IEnumerable<ElementHost> elementHosts = tab.Controls.OfType<ElementHost>();
+			IEnumerable<ElementHost> elementHosts = tab?.Controls.OfType<ElementHost>();
 
-			if (elementHosts.Count() > 0)
+			if (elementHosts?.Count() > 0)
 				return elementHosts.First().Child as IEditorControl;
 			else
 			{
-				IEnumerable<IEditorControl> editors = tab.Controls.OfType<IEditorControl>();
-				return editors.Count() > 0 ? editors.First() : null;
+				IEnumerable<IEditorControl> editors = tab?.Controls.OfType<IEditorControl>();
+				return editors?.Count() > 0 ? editors.First() : null;
 			}
 		}
 
@@ -529,7 +496,8 @@ namespace TombIDE.ScriptingStudio.Controls
 		#region Events
 
 		public event EventHandler FileOpened;
-		protected virtual void OnFileOpened(EventArgs e) => FileOpened?.Invoke(CurrentEditor, e);
+		protected virtual void OnFileOpened(EventArgs e)
+			=> FileOpened?.Invoke(CurrentEditor, e);
 
 		protected override void OnTabClosing(TabControlCancelEventArgs e)
 		{
@@ -545,12 +513,17 @@ namespace TombIDE.ScriptingStudio.Controls
 				if (result == FileSavingResult.Cancelled || result == FileSavingResult.Failed)
 					e.Cancel = true;
 			}
-			else if (CurrentEditor != null && AreTheExactSameEditor(editorOfTab, CurrentEditor))
+			else if (IsMostRecentlyModifiedTabPageOfFile(e.TabPage))
 				foreach (TabPage tab in fileTabPages)
 				{
 					IEditorControl editor = GetEditorOfTab(tab);
 					editor.Content = editorOfTab.Content;
 				}
+
+			if (!e.Cancel)
+				editorOfTab.Dispose();
+
+			base.OnTabClosing(e);
 		}
 
 		protected override void OnSelectedIndexChanged(EventArgs e)
@@ -578,11 +551,8 @@ namespace TombIDE.ScriptingStudio.Controls
 		{
 			base.OnMouseClick(e);
 
-			switch (e.Button)
-			{
-				case MouseButtons.Middle: CloseTabPage(FindTabPage(e.Location)); break;
-				case MouseButtons.Right: TryOpenContextMenu(e.Location); break;
-			}
+			if (e.Button == MouseButtons.Right)
+				TryOpenContextMenu(e.Location);
 		}
 
 		private void TryOpenContextMenu(Point location)
@@ -600,7 +570,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			=> SaveFile(((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl as TabPage);
 
 		private void MenuItem_Close_Click(object sender, EventArgs e)
-			=> CloseTabPage(((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl as TabPage);
+			=> CloseTab(((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl as TabPage);
 
 		private void MenuItem_OpenFolder_Click(object sender, EventArgs e)
 			=> SharedMethods.OpenInExplorer(((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl.Tag.ToString());
@@ -611,7 +581,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 			UpdateTabPageName(senderEditor);
 
-			if (AreTheExactSameEditor(senderEditor, CurrentEditor))
+			if (senderEditor == CurrentEditor)
 				foreach (TabPage tab in FindTabPagesOfFile(senderEditor.FilePath))
 				{
 					IEditorControl tabEditor = GetEditorOfTab(tab);
@@ -646,9 +616,9 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public void RenameDocumentTabPage(string oldFilePath, string newFilePath)
 		{
-			TabPage tab = FindTabPage(oldFilePath);
+			IEnumerable<TabPage> tabPages = FindTabPagesOfFile(oldFilePath);
 
-			if (tab != null)
+			foreach (TabPage tab in tabPages)
 			{
 				IEditorControl editor = GetEditorOfTab(tab);
 				editor.FilePath = newFilePath;
@@ -669,17 +639,18 @@ namespace TombIDE.ScriptingStudio.Controls
 		/// </summary>
 		public bool IsEveryTabSaved()
 		{
-			foreach (TabPage tab in TabPages)
+			List<string> filePaths = GetFilePaths();
+
+			foreach (string path in filePaths)
+			{
+				TabPage tab = GetMostRecentlyModifiedTabPageOfFile(path);
+
 				if (GetEditorOfTab(tab).IsContentChanged)
 					return false;
+			}
 
 			return true;
 		}
-
-		#endregion Other methods
-
-		private bool AreTheExactSameEditor(IEditorControl a, IEditorControl b)
-			=> a.FilePath == b.FilePath && a.EditorType == b.EditorType && a.GetType() == b.GetType();
 
 		private List<string> GetFilePaths()
 		{
@@ -721,5 +692,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 			return mostRecentFound;
 		}
+
+		#endregion Other methods
 	}
 }

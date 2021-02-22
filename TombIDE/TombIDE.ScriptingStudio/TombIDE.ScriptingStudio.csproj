@@ -186,7 +186,6 @@
     <Compile Include="StudioBase.Designer.cs">
       <DependentUpon>StudioBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="RegexPatterns.cs" />
     <Compile Include="ClassicScriptStudio.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -195,7 +194,7 @@
     <Compile Include="UI\UIElement.cs" />
     <Compile Include="UI\UIKeys.cs" />
     <Compile Include="UI\DocumentModePresets\ToolStripPresets.cs" />
-    <Compile Include="WindowLayout.cs" />
+    <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Settings\ClassicScriptSettingsControl.resx">
