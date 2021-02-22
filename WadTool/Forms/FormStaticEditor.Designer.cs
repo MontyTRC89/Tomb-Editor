@@ -149,7 +149,7 @@
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(3, 39);
+            this.darkLabel2.Location = new System.Drawing.Point(3, 38);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(38, 13);
             this.darkLabel2.TabIndex = 51;
@@ -199,7 +199,7 @@
             // 
             this.darkLabel7.AutoSize = true;
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel7.Location = new System.Drawing.Point(3, 81);
+            this.darkLabel7.Location = new System.Drawing.Point(3, 80);
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(39, 13);
             this.darkLabel7.TabIndex = 57;
@@ -229,7 +229,7 @@
             // 
             this.darkLabel10.AutoSize = true;
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(3, 81);
+            this.darkLabel10.Location = new System.Drawing.Point(3, 80);
             this.darkLabel10.Name = "darkLabel10";
             this.darkLabel10.Size = new System.Drawing.Size(39, 13);
             this.darkLabel10.TabIndex = 71;
@@ -259,7 +259,7 @@
             // 
             this.darkLabel13.AutoSize = true;
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(3, 39);
+            this.darkLabel13.Location = new System.Drawing.Point(3, 38);
             this.darkLabel13.Name = "darkLabel13";
             this.darkLabel13.Size = new System.Drawing.Size(38, 13);
             this.darkLabel13.TabIndex = 65;
@@ -696,7 +696,7 @@
             0,
             0,
             65536});
-            this.nudColBoxMaxX.Location = new System.Drawing.Point(6, 98);
+            this.nudColBoxMaxX.Location = new System.Drawing.Point(6, 97);
             this.nudColBoxMaxX.LoopValues = false;
             this.nudColBoxMaxX.Maximum = new decimal(new int[] {
             65535,
@@ -768,7 +768,7 @@
             0,
             0,
             65536});
-            this.nudColBoxMinX.Location = new System.Drawing.Point(6, 55);
+            this.nudColBoxMinX.Location = new System.Drawing.Point(6, 54);
             this.nudColBoxMinX.LoopValues = false;
             this.nudColBoxMinX.Maximum = new decimal(new int[] {
             65535,
@@ -874,7 +874,7 @@
             0,
             0,
             65536});
-            this.nudVisBoxMaxX.Location = new System.Drawing.Point(6, 98);
+            this.nudVisBoxMaxX.Location = new System.Drawing.Point(6, 97);
             this.nudVisBoxMaxX.LoopValues = false;
             this.nudVisBoxMaxX.Maximum = new decimal(new int[] {
             65535,
@@ -946,7 +946,7 @@
             0,
             0,
             65536});
-            this.nudVisBoxMinX.Location = new System.Drawing.Point(6, 56);
+            this.nudVisBoxMinX.Location = new System.Drawing.Point(6, 55);
             this.nudVisBoxMinX.LoopValues = false;
             this.nudVisBoxMinX.Maximum = new decimal(new int[] {
             65535,
