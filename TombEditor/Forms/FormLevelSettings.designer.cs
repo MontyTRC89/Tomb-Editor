@@ -382,7 +382,8 @@
 			this.cbOverrideAllLightQuality.TabIndex = 108;
 			this.cbOverrideAllLightQuality.Tag = "";
 			this.cbOverrideAllLightQuality.Text = "Override individual settings";
-			this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
+            this.cbOverrideAllLightQuality.Visible = false;
+            this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
 			this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
 			// 
 			// cmbDefaultLightQuality
