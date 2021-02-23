@@ -8,6 +8,7 @@ using TombLib.Utils;
 using System.Linq;
 using TombLib.GeometryIO.Importers;
 using NLog;
+using TombLib.Graphics;
 
 namespace TombLib.Wad
 {
@@ -182,6 +183,154 @@ namespace TombLib.Wad
                 return null;
         }
 
+        public static IOModel PrepareForExport(string filePath, WadMesh m)
+        {
+            var model = new IOModel();
+            var mesh = new IOMesh(m.Name);
+            model.Meshes.Add(mesh);
+
+            // Collect all textures
+            var tempTextures = new Dictionary<Hash, WadTexture>();
+            for (int i = 0; i < m.Polys.Count; i++)
+            {
+                var poly = m.Polys[i];
+
+                //Add uniquely the texture to the dictionary
+                if (!tempTextures.ContainsKey(((WadTexture)poly.Texture.Texture).Hash))
+                    tempTextures.Add(((WadTexture)poly.Texture.Texture).Hash, ((WadTexture)poly.Texture.Texture));
+            }
+
+            List<WadTexture> textureList = tempTextures.Values.ToList();
+            textureList.Sort(delegate (WadTexture x, WadTexture y)
+            {
+                if (x.Image.Width > y.Image.Width)
+                    return -1;
+                else if (x.Image.Width < y.Image.Width)
+                    return 1;
+                return 0;
+            });
+
+            var texturePieces = new Dictionary<Hash, WadTexture.AtlasReference>();
+            foreach (var texture in textureList)
+            {
+                texturePieces.Add(texture.Hash, new WadTexture.AtlasReference
+                {
+                    Texture = texture
+                });
+            }
+
+            var pages = Wad2.PackTexturesForExport(texturePieces);
+            var name = string.IsNullOrEmpty(mesh.Name) ? "UntitledMesh" : mesh.Name;
+
+            // Create the materials
+            for (int i = 0; i < pages.Count; i++)
+            {
+                var textureFileName = name + "_" + i + ".png";
+                var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
+
+                var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + i, pages[i], path, false, false, 0, i);
+                var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + i, pages[i], path, false, true, 0, i);
+                var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + i, pages[i], path, true, false, 0, i);
+                var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + i, pages[i], path, true, true, 0, i);
+
+                model.Materials.Add(matOpaque);
+                model.Materials.Add(matOpaqueDoubleSided);
+                model.Materials.Add(matAdditiveBlending);
+                model.Materials.Add(matAdditiveBlendingDoubleSided);
+            }
+
+            int lastIndex = 0;
+
+            foreach (var p in m.Polys)
+            {
+                var poly = new IOPolygon(p.Shape == WadPolygonShape.Quad ? IOPolygonShape.Quad : IOPolygonShape.Triangle);
+
+                mesh.Positions.Add(m.VerticesPositions[p.Index0]);
+                mesh.Positions.Add(m.VerticesPositions[p.Index1]);
+                mesh.Positions.Add(m.VerticesPositions[p.Index2]);
+                if (p.Shape == WadPolygonShape.Quad)
+                {
+                    mesh.Positions.Add(m.VerticesPositions[p.Index3]);
+                }
+
+                mesh.Normals.Add(m.VerticesNormals[p.Index0]);
+                mesh.Normals.Add(m.VerticesNormals[p.Index1]);
+                mesh.Normals.Add(m.VerticesNormals[p.Index2]);
+                if (p.Shape == WadPolygonShape.Quad)
+                {
+                    mesh.Normals.Add(m.VerticesNormals[p.Index3]);
+                }
+
+                var texture = texturePieces[((WadTexture)p.Texture.Texture).Hash];
+
+                var offset = new Vector2
+                    (
+                        Math.Max(0.0f, texture.Position.X),
+                        Math.Max(0.0f, texture.Position.Y)
+                    );
+
+                mesh.UV.Add((p.Texture.TexCoord0 + offset) / 256.0f);
+                mesh.UV.Add((p.Texture.TexCoord1 + offset) / 256.0f);
+                mesh.UV.Add((p.Texture.TexCoord2 + offset) / 256.0f);
+                if (p.Shape == WadPolygonShape.Quad)
+                {
+                    mesh.UV.Add((p.Texture.TexCoord3 + offset) / 256.0f);
+                }
+
+                if (m.VerticesColors.Count >= m.VerticesPositions.Count)
+                {
+                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index0], 1.0f));
+                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index1], 1.0f));
+                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index2], 1.0f));
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index3], 1.0f));
+                    }
+                }
+                else
+                {
+                    mesh.Colors.Add(Vector4.One);
+                    mesh.Colors.Add(Vector4.One);
+                    mesh.Colors.Add(Vector4.One);
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        mesh.Colors.Add(Vector4.One);
+                    }
+                }
+
+                var mat = model.Materials[0];
+                foreach (var mt in model.Materials)
+                    if (mt.Page == texture.Atlas)
+                        if (mt.AdditiveBlending == (p.Texture.BlendMode >= BlendMode.Additive))
+                            if (mt.DoubleSided == p.Texture.DoubleSided)
+                                if (mt.Shininess == 0)
+                                    mat = mt;
+
+                poly.Indices.Add(lastIndex + 0);
+                poly.Indices.Add(lastIndex + 1);
+                poly.Indices.Add(lastIndex + 2);
+                if (p.Shape == WadPolygonShape.Quad)
+                {
+                    poly.Indices.Add(lastIndex + 3);
+                }
+
+                if (!mesh.Submeshes.ContainsKey(mat))
+                    mesh.Submeshes.Add(mat, new IOSubmesh(mat));
+
+                mesh.Submeshes[mat].Polygons.Add(poly);
+                lastIndex += (p.Shape == WadPolygonShape.Quad ? 4 : 3);
+            }
+
+            for (int i = 0; i < pages.Count; i++)
+            {
+                var textureFileName = name + "_" + i + ".png";
+                var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
+                pages[i].Image.Save(path);
+            }
+
+            return model;
+        }
+
         public static List<WadMesh> ImportFromExternalModel(string fileName, IOGeometrySettings settings, bool mergeIntoOne)
         {
             IOModel tmpModel = null;
@@ -246,6 +395,20 @@ namespace TombLib.Wad
                             area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
                             area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
                             area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+
+                            /*var min = Vector2.Min(Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
+                            var max = Vector2.Max(Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
+                            var size = max - min;
+
+                            area.TexCoord0 -= min;
+                            area.TexCoord1 -= min;
+                            area.TexCoord2 -= min;
+                            area.TexCoord3 -= min;
+
+                            var texture = new WadTexture(ImageC.CreateNew((int)size.X, (int)size.Y));
+                            texture.Image.CopyFrom(0, 0, tmpSubmesh.Value.Material.Texture.Image, (int)min.X, (int)min.Y, (int)size.X, (int)size.Y);
+                            */
+
                             area.Texture = tmpSubmesh.Value.Material.Texture;
                             area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
                             area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
@@ -266,7 +429,22 @@ namespace TombLib.Wad
                             area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
                             area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
                             area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+
                             area.TexCoord3 = area.TexCoord2;
+
+                            /*var min = Vector2.Min(Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
+                            var max = Vector2.Max(Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
+                            var size = max - min;
+
+                            area.TexCoord0 -= min;
+                            area.TexCoord1 -= min;
+                            area.TexCoord2 -= min;
+                            area.TexCoord3 -= min;
+
+                            var texture = new WadTexture(ImageC.CreateNew((int)size.X, (int)size.Y));
+                            texture.Image.CopyFrom(0, 0, tmpSubmesh.Value.Material.Texture.Image, (int)min.X, (int)min.Y, (int)size.X, (int)size.Y);
+                            */
+
                             area.Texture = tmpSubmesh.Value.Material.Texture;
                             area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
                             area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;

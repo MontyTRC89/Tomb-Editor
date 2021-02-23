@@ -68,7 +68,6 @@
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
-            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
             this.nudColBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
@@ -96,6 +95,8 @@
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
+            this.butExportMeshToFile = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -148,7 +149,7 @@
             // 
             this.darkLabel2.AutoSize = true;
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel2.Location = new System.Drawing.Point(3, 39);
+            this.darkLabel2.Location = new System.Drawing.Point(3, 38);
             this.darkLabel2.Name = "darkLabel2";
             this.darkLabel2.Size = new System.Drawing.Size(38, 13);
             this.darkLabel2.TabIndex = 51;
@@ -198,7 +199,7 @@
             // 
             this.darkLabel7.AutoSize = true;
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel7.Location = new System.Drawing.Point(3, 81);
+            this.darkLabel7.Location = new System.Drawing.Point(3, 80);
             this.darkLabel7.Name = "darkLabel7";
             this.darkLabel7.Size = new System.Drawing.Size(39, 13);
             this.darkLabel7.TabIndex = 57;
@@ -228,7 +229,7 @@
             // 
             this.darkLabel10.AutoSize = true;
             this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(3, 81);
+            this.darkLabel10.Location = new System.Drawing.Point(3, 80);
             this.darkLabel10.Name = "darkLabel10";
             this.darkLabel10.Size = new System.Drawing.Size(39, 13);
             this.darkLabel10.TabIndex = 71;
@@ -258,7 +259,7 @@
             // 
             this.darkLabel13.AutoSize = true;
             this.darkLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel13.Location = new System.Drawing.Point(3, 39);
+            this.darkLabel13.Location = new System.Drawing.Point(3, 38);
             this.darkLabel13.Name = "darkLabel13";
             this.darkLabel13.Size = new System.Drawing.Size(38, 13);
             this.darkLabel13.TabIndex = 65;
@@ -324,9 +325,9 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Checked = false;
-            this.butSaveChanges.Location = new System.Drawing.Point(896, 583);
+            this.butSaveChanges.Location = new System.Drawing.Point(939, 583);
             this.butSaveChanges.Name = "butSaveChanges";
-            this.butSaveChanges.Size = new System.Drawing.Size(80, 23);
+            this.butSaveChanges.Size = new System.Drawing.Size(59, 23);
             this.butSaveChanges.TabIndex = 46;
             this.butSaveChanges.Text = "OK";
             this.butSaveChanges.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -529,9 +530,9 @@
             this.butImportMeshFromFile.Checked = false;
             this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 583);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
-            this.butImportMeshFromFile.Size = new System.Drawing.Size(81, 23);
+            this.butImportMeshFromFile.Size = new System.Drawing.Size(59, 23);
             this.butImportMeshFromFile.TabIndex = 98;
-            this.butImportMeshFromFile.Text = "Import mesh";
+            this.butImportMeshFromFile.Text = "Import";
             this.butImportMeshFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butImportMeshFromFile.Click += new System.EventHandler(this.butImportMeshFromFile_Click);
             // 
@@ -597,14 +598,6 @@
             this.darkLabel20.Size = new System.Drawing.Size(37, 13);
             this.darkLabel20.TabIndex = 103;
             this.darkLabel20.Text = "Pos X:";
-            // 
-            // panelRendering
-            // 
-            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(1, 1);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(797, 599);
-            this.panelRendering.TabIndex = 109;
             // 
             // darkGroupBox4
             // 
@@ -703,7 +696,7 @@
             0,
             0,
             65536});
-            this.nudColBoxMaxX.Location = new System.Drawing.Point(6, 98);
+            this.nudColBoxMaxX.Location = new System.Drawing.Point(6, 97);
             this.nudColBoxMaxX.LoopValues = false;
             this.nudColBoxMaxX.Maximum = new decimal(new int[] {
             65535,
@@ -775,7 +768,7 @@
             0,
             0,
             65536});
-            this.nudColBoxMinX.Location = new System.Drawing.Point(6, 55);
+            this.nudColBoxMinX.Location = new System.Drawing.Point(6, 54);
             this.nudColBoxMinX.LoopValues = false;
             this.nudColBoxMinX.Maximum = new decimal(new int[] {
             65535,
@@ -881,7 +874,7 @@
             0,
             0,
             65536});
-            this.nudVisBoxMaxX.Location = new System.Drawing.Point(6, 98);
+            this.nudVisBoxMaxX.Location = new System.Drawing.Point(6, 97);
             this.nudVisBoxMaxX.LoopValues = false;
             this.nudVisBoxMaxX.Maximum = new decimal(new int[] {
             65535,
@@ -953,7 +946,7 @@
             0,
             0,
             65536});
-            this.nudVisBoxMinX.Location = new System.Drawing.Point(6, 56);
+            this.nudVisBoxMinX.Location = new System.Drawing.Point(6, 55);
             this.nudVisBoxMinX.LoopValues = false;
             this.nudVisBoxMinX.Maximum = new decimal(new int[] {
             65535,
@@ -1125,9 +1118,9 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
-            this.butCancel.Location = new System.Drawing.Point(981, 583);
+            this.butCancel.Location = new System.Drawing.Point(1003, 583);
             this.butCancel.Name = "butCancel";
-            this.butCancel.Size = new System.Drawing.Size(81, 23);
+            this.butCancel.Size = new System.Drawing.Size(59, 23);
             this.butCancel.TabIndex = 111;
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -1145,11 +1138,32 @@
             this.darkSectionPanel2.Size = new System.Drawing.Size(799, 601);
             this.darkSectionPanel2.TabIndex = 112;
             // 
+            // panelRendering
+            // 
+            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelRendering.Location = new System.Drawing.Point(1, 1);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(797, 599);
+            this.panelRendering.TabIndex = 0;
+            // 
+            // butExportMeshToFile
+            // 
+            this.butExportMeshToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butExportMeshToFile.Checked = false;
+            this.butExportMeshToFile.Location = new System.Drawing.Point(874, 583);
+            this.butExportMeshToFile.Name = "butExportMeshToFile";
+            this.butExportMeshToFile.Size = new System.Drawing.Size(60, 23);
+            this.butExportMeshToFile.TabIndex = 113;
+            this.butExportMeshToFile.Text = "Export";
+            this.butExportMeshToFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butExportMeshToFile.Click += new System.EventHandler(this.butExportMeshToFile_Click);
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1068, 634);
+            this.Controls.Add(this.butExportMeshToFile);
             this.Controls.Add(this.darkSectionPanel2);
             this.Controls.Add(this.butImportMeshFromFile);
             this.Controls.Add(this.butCancel);
@@ -1240,7 +1254,6 @@
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkLabel darkLabel19;
         private DarkUI.Controls.DarkLabel darkLabel20;
-        private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkGroupBox darkGroupBox3;
         private DarkUI.Controls.DarkGroupBox darkGroupBox1;
         private DarkUI.Controls.DarkGroupBox darkGroupBox2;
@@ -1268,5 +1281,7 @@
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxZ;
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxY;
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxX;
+        private Controls.PanelRenderingStaticEditor panelRendering;
+        private DarkUI.Controls.DarkButton butExportMeshToFile;
     }
 }

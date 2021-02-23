@@ -103,7 +103,7 @@ namespace TombLib.LevelData.Compilers
             _sortedRooms = _level.GetRearrangedRooms(_progressReporter);
 
             // Prepare level data
-            ConvertWad2DataToTrData();
+            ConvertWad2DataToTrData(_level);
             BuildRooms();
 
             // Compile textures
@@ -153,9 +153,6 @@ namespace TombLib.LevelData.Compilers
                     break;
                 case TRVersion.Game.TR5:
                     WriteLevelTr5();
-                    break;
-                case TRVersion.Game.TR5Main:
-                    WriteLevelTr5Main();
                     break;
                 default:
                     throw new NotImplementedException("The selected game engine is not supported yet");

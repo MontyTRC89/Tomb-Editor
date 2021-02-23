@@ -36,6 +36,7 @@ namespace TombEditor
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public bool RenderingItem_Antialias { get; set; } = false;
+        public bool RenderingItem_HideInternalObjects { get; set; } = true;
 
         // Main 3D window options
 
@@ -112,7 +113,6 @@ namespace TombEditor
         public float TextureMap_NavigationSpeedMouseZoom { get; set; } = 7.5f;
         public float TextureMap_NavigationSpeedKeyZoom { get; set; } = 0.17f;
         public float TextureMap_NavigationSpeedKeyMove { get; set; } = 107.0f;
-        public float TextureMap_TextureAreaToViewRelativeSize { get; set; } = 0.32f;
         public bool TextureMap_DrawSelectionDirectionIndicators { get; set; } = true;
         public bool TextureMap_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
         public bool TextureMap_PickTextureWithoutAttributes { get; set; } = false;
@@ -152,6 +152,7 @@ namespace TombEditor
         public bool UI_SetAttributesAtOnce { get; set; } = true;
         public bool UI_OnlyShowSmallMessageWhenRoomIsLocked { get; set; } = false;
         public bool UI_WarnBeforeDeletingObjects { get; set; } = true;
+        public bool UI_GenerateRoomDescriptions { get; set; } = true;
         public bool UI_AutoSwitchSectorColoringInfo { get; set; } = true;
         public float UI_FormColor_Brightness { get; set; } = 100.0f;
         public string UI_FormColor_ButtonHighlight { get; set; } = ColorTranslator.ToHtml(Color.FromArgb(104, 151, 187));

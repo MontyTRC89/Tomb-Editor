@@ -3,7 +3,7 @@ using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
-    public class MoveableInstance : ItemInstance
+    public class MoveableInstance : ItemInstance, IColorable
     {
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads

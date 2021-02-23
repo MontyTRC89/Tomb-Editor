@@ -113,7 +113,7 @@ namespace TombEditor.Forms
                 if (obj is Editor.ModeChangedEvent)
                     ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 
-                bookmarkObjectToolStripMenuItem.Enabled = selectedObject != null;
+                bookmarkObjectToolStripMenuItem.Enabled = editObjectToolStripMenuItem.Enabled = selectedObject != null;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = selectedObject is SectorBasedObjectInstance && _editor.SelectedSectors.Valid;
             }
 
@@ -131,6 +131,11 @@ namespace TombEditor.Forms
                 addSphereVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
                 toolStripMenuSeparator7.Visible = addBoxVolumeToolStripMenuItem.Visible;
             }
+
+            // Clear autosave information
+            if (obj is Editor.LevelChangedEvent ||
+                obj is Editor.LevelFileNameChangedEvent)
+                statusAutosave.Text = string.Empty;
 
             if (obj is Editor.UndoStackChangedEvent)
             {
@@ -241,7 +246,8 @@ namespace TombEditor.Forms
             }
 
             // Update save button
-            if (obj is Editor.HasUnsavedChangesChangedEvent)
+            if (obj is Editor.InitEvent ||
+                obj is Editor.HasUnsavedChangesChangedEvent)
                 saveLevelToolStripMenuItem.Enabled = _editor.HasUnsavedChanges;
 
             // Reload window layout and keyboard shortcuts if the configuration changed

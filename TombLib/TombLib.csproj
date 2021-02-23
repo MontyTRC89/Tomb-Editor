@@ -207,7 +207,6 @@
     <Compile Include="LevelData\Compilers\Tr3.cs" />
     <Compile Include="LevelData\Compilers\Tr4.cs" />
     <Compile Include="LevelData\Compilers\Tr5.cs" />
-    <Compile Include="LevelData\Compilers\Tr5Main.cs" />
     <Compile Include="LevelData\Compilers\Util\TexInfoManager.cs" />
     <Compile Include="LevelData\Compilers\Util\SpriteAllocator.cs" />
     <Compile Include="LevelData\Compilers\Wad.cs" />

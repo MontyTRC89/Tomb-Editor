@@ -47,7 +47,7 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, int objectId, int meshIndex,
+        private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
                                        bool isWaterfall = false, bool isOptics = false,
                                        WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
         {
@@ -96,7 +96,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     if (oldMesh.VerticesNormals.Count == 0)
                     {
-                        _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
+                        _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                         oldMesh.CalculateNormals();
                     }
                     useShades = false;
@@ -108,7 +108,7 @@ namespace TombLib.LevelData.Compilers
                         if (oldMesh.VerticesNormals.Count == 0)
                         {
                             
-                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectId));
+                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                             oldMesh.CalculateNormals();
                         }
                         useShades = false;
@@ -124,7 +124,7 @@ namespace TombLib.LevelData.Compilers
                 if (oldMesh.VerticesNormals.Count == 0)
                 {
                     
-                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", meshIndex, objectId));
+                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", meshIndex, objectName));
                     oldMesh.CalculateNormals();
                 }
                 useShades = false;
@@ -191,7 +191,7 @@ namespace TombLib.LevelData.Compilers
                 if(poly.ShineStrength > 0)
                 {
                     if (useShades && isStatic)
-                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectId + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
+                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {
                         lightingEffect |= 0x02;
@@ -253,15 +253,60 @@ namespace TombLib.LevelData.Compilers
             public int KeyFrameSize { get; set; }
         }
 
-        public void ConvertWad2DataToTrData()
+        public void ConvertWad2DataToTrData(Level l)
         {
             ReportProgress(0, "Preparing WAD data");
 
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
-            // First thing build frames
-            ReportProgress(1, "Building meshes and animations");
+			if (l.Settings.RemoveUnusedObjects)
+            {
+				ReportProgress(1, "Removing unused moveables and statics");
+
+				// List all Moveables that have been placed in the level
+				ISet<WadMoveableId> placedMoveables = new HashSet<WadMoveableId>();
+				ISet<WadStaticId> placedStatics = new HashSet<WadStaticId>();
+				foreach (var room in l.Rooms.Where(r => r != null)) {
+					foreach (var o in room.Objects) {
+						if (o is MoveableInstance) {
+							placedMoveables.Add((o as MoveableInstance).WadObjectId);
+						}
+						if (o is StaticInstance) {
+							placedStatics.Add((o as StaticInstance).WadObjectId);
+						}
+					}
+				}
+				IList<WadMoveableId> moveablesToRemove = new List<WadMoveableId>();
+				IList<WadStaticId> staticsToRemove = new List<WadStaticId>();
+				//List all moveables and statics that aren't placed and are not essential
+				foreach (var kvp in moveables) {
+					if (!placedMoveables.Contains(kvp.Key) && !TrCatalog.IsEssential(_level.Settings.GameVersion, kvp.Key.TypeId)) {
+						moveablesToRemove.Add(kvp.Key);
+					}
+				}
+				foreach (var kvp in statics) {
+					if (!placedStatics.Contains(kvp.Key)) {
+						staticsToRemove.Add(kvp.Key);
+					}
+				}
+
+				// Remove all moveables and statics that were found to be not essential and not placed
+
+				foreach (var id in moveablesToRemove)
+                {
+					moveables.Remove(id);
+					_progressReporter.ReportInfo("    Removed unused Moveable: " + TrCatalog.GetMoveableName(l.Settings.GameVersion, id.TypeId));
+				}
+				foreach (var id in staticsToRemove)
+                {
+					statics.Remove(id);
+					_progressReporter.ReportInfo("    Removed unused Static: " + TrCatalog.GetStaticName(l.Settings.GameVersion, id.TypeId));
+				}
+			}
+			
+			// First thing build frames
+			ReportProgress(5, "Building meshes and animations");
             var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
@@ -297,8 +342,7 @@ namespace TombLib.LevelData.Compilers
                                 _level.Settings.GameVersion == TRVersion.Game.TR1,
                                 _level.Settings.GameVersion == TRVersion.Game.TR4 ||
                                 _level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5 ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5Main);
+                                _level.Settings.GameVersion == TRVersion.Game.TR5);
                     }
 
                     // Figure out padding of the frames
@@ -465,7 +509,7 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++)
                 {
                     var wadMesh = oldMoveable.Meshes[i];
-                    ConvertWadMesh(wadMesh, false, (int)oldMoveable.Id.TypeId, i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
+                    ConvertWadMesh(wadMesh, false, oldMoveable.Id.ShortName(_level.Settings.GameVersion), i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
                 var meshTrees = new List<tr_meshtree>();
@@ -554,7 +598,7 @@ namespace TombLib.LevelData.Compilers
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
-                    ConvertWadMesh(oldStaticMesh.Mesh, true, (int)oldStaticMesh.Id.TypeId,0, false, false, oldStaticMesh.LightingType);
+                    ConvertWadMesh(oldStaticMesh.Mesh, true, oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 0, false, false, oldStaticMesh.LightingType);
                 }
                 else
                 {
@@ -826,8 +870,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion > TRVersion.Game.TR3)
             {
                 // In TRNG and TR5Main NumDemoData is used as sound map size
-                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                      _level.Settings.GameVersion == TRVersion.Game.TR5Main ? _soundMapSize : 0));
+                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ? _soundMapSize : 0));
             }
 
             using (var ms = new MemoryStream())

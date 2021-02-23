@@ -290,9 +290,11 @@ namespace TombLib.LevelData.IO
                     settings.RemapAnimatedTextures = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.AgressiveTexturePacking)
                     settings.AgressiveTexturePacking = chunkIO.ReadChunkBool(chunkSize);
-                else if (id == Prj2Chunks.RearrangeRooms)
-                    settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
-                else if (id == Prj2Chunks.AgressiveFloordataPacking)
+				else if (id == Prj2Chunks.RearrangeRooms)
+					settings.RearrangeVerticalRooms = chunkIO.ReadChunkBool(chunkSize);
+				else if (id == Prj2Chunks.RemoveUnusedObjects)
+					settings.RemoveUnusedObjects = chunkIO.ReadChunkBool(chunkSize);
+				else if (id == Prj2Chunks.AgressiveFloordataPacking)
                     settings.AgressiveFloordataPacking = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.DefaultAmbientLight)
                     settings.DefaultAmbientLight = chunkIO.ReadChunkVector3(chunkSize);
@@ -1360,7 +1362,8 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
-                else if (id3 == Prj2Chunks.ObjectImportedGeometry3)
+                else if (id3 == Prj2Chunks.ObjectImportedGeometry3 ||
+                         id3 == Prj2Chunks.ObjectImportedGeometry4)
                 {
                     var instance = new ImportedGeometryInstance();
 
@@ -1368,6 +1371,10 @@ namespace TombLib.LevelData.IO
                     instance.SetArbitaryRotationsYX(chunkIO.Raw.ReadSingle(), chunkIO.Raw.ReadSingle());
                     instance.Roll = chunkIO.Raw.ReadSingle();
                     instance.Scale = chunkIO.Raw.ReadSingle();
+
+                    if (id3 == Prj2Chunks.ObjectImportedGeometry4)
+                        instance.Color = chunkIO.Raw.ReadVector3();
+
                     instance.Model = levelSettingsIds.ImportedGeometries.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
 
                     chunkIO.ReadChunks((id4, chunkSize4) =>

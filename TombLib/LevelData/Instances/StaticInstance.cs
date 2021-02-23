@@ -21,7 +21,7 @@ namespace TombLib.LevelData
         All = 16380
     }
 
-    public class StaticInstance : ItemInstance
+    public class StaticInstance : ItemInstance, IColorable
     {
         // Don't use a reference here because the loaded Wad might not
         // contain each required object. Additionally the loaded Wads

@@ -21,6 +21,7 @@ namespace TombEditor.Forms
 
         private void butCancel_Click(object sender, EventArgs e)
         {
+            _movable.Color = oldColor;
             DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -36,7 +37,7 @@ namespace TombEditor.Forms
             cbBit3.Checked = (_movable.CodeBits & (1 << 2)) != 0;
             cbBit4.Checked = (_movable.CodeBits & (1 << 3)) != 0;
             cbBit5.Checked = (_movable.CodeBits & (1 << 4)) != 0;
-            panelColor.BackColor = _movable.Color.ToWinFormsColor();
+            panelColor.BackColor = (_movable.Color * 0.5f).ToWinFormsColor();
             cbInvisible.Checked = _movable.Invisible;
             cbClearBody.Checked = _movable.ClearBody;
             tbOCB.Text = _movable.Ocb.ToString();
@@ -85,7 +86,7 @@ namespace TombEditor.Forms
 
         private void panelColor_Click(object sender, EventArgs e)
         {
-            EditorActions.EditMoveableColor(this, _movable, (Vector3 newColor) => {
+            EditorActions.EditColor(this, _movable, (Vector3 newColor) => {
                 panelColor.BackColor = newColor.ToWinFormsColor();
             });
         }

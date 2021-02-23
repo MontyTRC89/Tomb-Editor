@@ -17,6 +17,7 @@ using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.GeometryIO.Importers;
 using TombLib.Wad.Catalog;
+using System.Threading;
 
 namespace WadTool
 {
@@ -242,87 +243,273 @@ namespace WadTool
             return wadObject.Id;
         }
 
-        public static void ExportMesh(WadToolClass tool, IWin32Window owner, WadMesh m)
+        /*public static void ExportMoveable(WadToolClass tool, IWin32Window owner, WadMoveable m)
         {
-            // Step 1: collect all textures
-            /*var texturePieces = new Dictionary<Hash, WadTexture>();
-            for (int i = 0; i < m.Polys.Count; i++)
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                var poly = m.Polys[i];
+                saveFileDialog.Title = "Export model";
+                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.DefaultExt = "dae";
+                saveFileDialog.FileName = m.Id.ShortName(TRVersion.Game.TRNG);
 
-                // Create the new tile and compute hash
-                var textureQuad = poly.Texture.GetRect(poly.Shape == WadPolygonShape.Triangle);
-                var image = ImageC.CreateNew((int)textureQuad.Width, (int)textureQuad.Height);
-                image.CopyFrom(0, 0, poly.Texture.Texture.Image, (int)textureQuad.X0, (int)textureQuad.Y0,
-                    (int)(textureQuad.X0 + textureQuad.X1), (int)(textureQuad.Y0 + textureQuad.Y1));
-                WadTexture text = new WadTexture(image);
-
-                // Store the hash for the next steps
-                poly.TextureHash = text.Hash;
-
-                //Add uniquely the texture to the dictionary
-                if (!texturePieces.ContainsKey(text.Hash))
-                    texturePieces.Add(text.Hash, text);
-            }
-
-            // Step 2: collect textures in 256x256 pages
-            int processedTextures = 0;
-            var lastTexture = ImageC.CreateNew(256, 256);
-            var packer = new RectPackerSimpleStack(new VectorInt2(256, 256));
-            while (processedTextures < texturePieces.Count)
-            {
-                var texture = texturePieces.ElementAt(processedTextures).Value;
-                var result = packer.TryAdd(new VectorInt2(texture.Image.Width, texture.Image.Height));
-                if (!result.HasValue)
+                if (saveFileDialog.ShowDialog(owner) == DialogResult.OK)
                 {
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                    {
+                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                        settingsDialog.SelectPreset("Normal scale");
 
+                        if (settingsDialog.ShowDialog(owner) == DialogResult.OK)
+                        {
+                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
+                            {
+                                return "";
+                            };
+
+                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
+                            new Thread(() =>
+                            {
+                                var resultModel = PrepareModelForExport(saveFileDialog.FileName, m);
+
+                                if (resultModel != null)
+                                {
+                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                    {
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    string errorMessage = "";
+                                    return;
+                                }
+                            }).Start();
+                        }
+                    }
                 }
-                processedTextures++;
             }
-
-            var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + j + "_" + i,
-                                                                   texture,
-                                                                   fileName,
-                                                                   i,
-                                                                   false,
-                                                                   false,
-                                                                   0);
-
-            var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + j + "_" + i,
-                                                      texture,
-                                                      fileName,
-                                                      i,
-                                                      false,
-                                                      true,
-                                                      0);
-
-            var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + j + "_" + i,
-                                                     texture,
-                                                     fileName,
-                                                     i,
-                                                     true,
-                                                     false,
-                                                     0);
-
-            var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + j + "_" + i,
-                                                                texture,
-                                                                fileName,
-                                                                i,
-                                                                true,
-                                                                true,
-                                                                0);
-
-            var mesh = new IOMesh(m.Name);
-
-            foreach (var poly in m.Polys)
-            {
-
-            }
-
-            m.Polys[0].Texture.*/
-
-            return;
         }
+        */
+
+        private static void UpdateBoneAbsolutePositions(List<WadBone> bones)
+        {
+            bones[0].AbsoluteTranslation = bones[0].Translation;
+
+            var currentNode = bones[0];
+            var stack = new Stack<WadBone>();
+
+            for (int j = 1; j < bones.Count; j++)
+            {
+                var boneNode = bones[j];
+
+                switch (bones[j].OpCode)
+                {
+                    case WadLinkOpcode.NotUseStack:
+                        bones[j].AbsoluteTranslation = bones[j].Translation + currentNode.AbsoluteTranslation;
+                        currentNode = bones[j];
+                        break;
+
+                    case WadLinkOpcode.Pop:
+                        if (stack.Count > 0)
+                        {
+                            currentNode = stack.Pop();
+                            bones[j].AbsoluteTranslation = bones[j].Translation + currentNode.AbsoluteTranslation;
+                            currentNode = bones[j];
+                        }
+                        else
+                        {
+                            bones[j].AbsoluteTranslation = bones[j].Translation;
+                            currentNode = bones[j];
+                        }
+                        break;
+
+                    case WadLinkOpcode.Push:
+                        stack.Push(currentNode);
+                        bones[j].AbsoluteTranslation = bones[j].Translation + currentNode.AbsoluteTranslation;
+                        currentNode = bones[j];
+                        break;
+
+                    case WadLinkOpcode.Read:
+                        if (stack.Count > 0)
+                        {
+                            var bone = stack.Pop();
+                            bones[j].AbsoluteTranslation = bones[j].Translation + bone.AbsoluteTranslation;
+                            currentNode = bones[j];
+                            stack.Push(bone);
+                        }
+                        else
+                        {
+                            bones[j].AbsoluteTranslation = bones[j].Translation;
+                            currentNode = bones[j];
+                        }
+                        break;
+                }
+            }
+        }
+
+        /*public static IOModel PrepareModelForExport(string filePath, WadMoveable m)
+        {
+            var model = new IOModel();
+
+            var tempTextures = new Dictionary<Hash, WadTexture>();
+            for (int i = 0; i < m.Bones.Count; i++)
+            {
+                for (int j = 0; j < m.Bones[i].Mesh.Polys.Count; j++)
+                {
+                    var poly = m.Bones[i].Mesh.Polys[j];
+                    if (!tempTextures.ContainsKey(((WadTexture)poly.Texture.Texture).Hash))
+                        tempTextures.Add(((WadTexture)poly.Texture.Texture).Hash, ((WadTexture)poly.Texture.Texture));
+                }
+            }
+
+            List<WadTexture> textureList = tempTextures.Values.ToList();
+            textureList.Sort(delegate (WadTexture x, WadTexture y)
+            {
+                if (x.Image.Width > y.Image.Width)
+                    return -1;
+                else if (x.Image.Width < y.Image.Width)
+                    return 1;
+                return 0;
+            });
+
+            var texturePieces = new Dictionary<Hash, WadTexture>();
+            foreach (var texture in textureList)
+            {
+                texturePieces.Add(texture.Hash, texture);
+            }
+
+            var pages = PackTexturesForExport(texturePieces);
+
+            // Create the materials
+            for (int i = 0; i < pages.Count; i++)
+            {
+                var textureFileName = "Texture_" + i + ".png";
+                var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
+
+                var matOpaque = new IOMaterial(Material.Material_Opaque + "_" + i, pages[i], path, false, false, 0, i);
+                var matOpaqueDoubleSided = new IOMaterial(Material.Material_OpaqueDoubleSided + "_" + i, pages[i], path, false, true, 0, i);
+                var matAdditiveBlending = new IOMaterial(Material.Material_AdditiveBlending + "_" + i, pages[i], path, true, false, 0, i);
+                var matAdditiveBlendingDoubleSided = new IOMaterial(Material.Material_AdditiveBlendingDoubleSided + "_" + i, pages[i], path, true, true, 0, i);
+
+                model.Materials.Add(matOpaque);
+                model.Materials.Add(matOpaqueDoubleSided);
+                model.Materials.Add(matAdditiveBlending);
+                model.Materials.Add(matAdditiveBlendingDoubleSided);
+            }
+
+            UpdateBoneAbsolutePositions(m.Bones);
+
+            for (int i = 0; i < m.Bones.Count; i++)
+            {
+                int lastIndex = 0;
+
+                var mesh = new IOMesh(
+                    "TeMov_" + 
+                    i + 
+                    "_" + 
+                    m.Bones[i].AbsoluteTranslation.X.ToString() + 
+                    "_" +
+                    m.Bones[i].AbsoluteTranslation.Y.ToString() +
+                    "_" +
+                    m.Bones[i].AbsoluteTranslation.Z.ToString()
+                    );
+                model.Meshes.Add(mesh);
+
+                mesh.Position = m.Bones[i].AbsoluteTranslation;
+
+                foreach (var p in m.Bones[i].Mesh.Polys)
+                {
+                    var poly = new IOPolygon(p.Shape == WadPolygonShape.Quad ? IOPolygonShape.Quad : IOPolygonShape.Triangle);
+
+                    mesh.Positions.Add(m.Bones[i].AbsoluteTranslation + m.Bones[i].Mesh.VerticesPositions[p.Index0]);
+                    mesh.Positions.Add(m.Bones[i].AbsoluteTranslation + m.Bones[i].Mesh.VerticesPositions[p.Index1]);
+                    mesh.Positions.Add(m.Bones[i].AbsoluteTranslation + m.Bones[i].Mesh.VerticesPositions[p.Index2]);
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        mesh.Positions.Add(m.Bones[i].AbsoluteTranslation + m.Bones[i].Mesh.VerticesPositions[p.Index3]);
+                    }
+
+                    mesh.Normals.Add(m.Bones[i].Mesh.VerticesNormals[p.Index0]);
+                    mesh.Normals.Add(m.Bones[i].Mesh.VerticesNormals[p.Index1]);
+                    mesh.Normals.Add(m.Bones[i].Mesh.VerticesNormals[p.Index2]);
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        mesh.Normals.Add(m.Bones[i].Mesh.VerticesNormals[p.Index3]);
+                    }
+
+                    var texture = texturePieces[((WadTexture)p.Texture.Texture).Hash];
+
+                    float scale = 256.0f;
+
+                    var offset = new Vector2
+                        (
+                            (texture.PositionInAtlas.X - 0.5f) / scale,
+                            (texture.PositionInAtlas.Y - 0.5f) / scale
+                        );
+                    mesh.UV.Add(p.Texture.TexCoord0 / scale + offset);
+                    mesh.UV.Add(p.Texture.TexCoord1 / scale + offset);
+                    mesh.UV.Add(p.Texture.TexCoord2 / scale + offset);
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        mesh.UV.Add(p.Texture.TexCoord3 / scale + offset);
+                    }
+
+                    
+                    if (m.VerticesColors.Count >= m.VerticesPositions.Count)
+                    {
+                        mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index0], 1.0f));
+                        mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index1], 1.0f));
+                        mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index2], 1.0f));
+                        if (p.Shape == WadPolygonShape.Quad)
+                        {
+                            mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index3], 1.0f));
+                        }
+                    }
+                    else
+                    {
+                        mesh.Colors.Add(Vector4.One);
+                        mesh.Colors.Add(Vector4.One);
+                        mesh.Colors.Add(Vector4.One);
+                        if (p.Shape == WadPolygonShape.Quad)
+                        {
+                            mesh.Colors.Add(Vector4.One);
+                        }
+                    }
+
+                    var mat = model.Materials[0];
+                    foreach (var mt in model.Materials)
+                        if (mt.Page == texture.Atlas)
+                            if (mt.AdditiveBlending == (p.Texture.BlendMode >= BlendMode.Additive))
+                                if (mt.DoubleSided == p.Texture.DoubleSided)
+                                    if (mt.Shininess == 0)
+                                        mat = mt;
+
+                    poly.Indices.Add(lastIndex + 0);
+                    poly.Indices.Add(lastIndex + 1);
+                    poly.Indices.Add(lastIndex + 2);
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        poly.Indices.Add(lastIndex + 3);
+                    }
+
+                    if (!mesh.Submeshes.ContainsKey(mat))
+                        mesh.Submeshes.Add(mat, new IOSubmesh(mat));
+
+                    mesh.Submeshes[mat].Polygons.Add(poly);
+                    lastIndex += (p.Shape == WadPolygonShape.Quad ? 4 : 3);
+                }
+            }
+
+            for (int i = 0; i < pages.Count; i++)
+            {
+                var textureFileName = "Texture_" + i + ".png";
+                var path = Path.Combine(Path.GetDirectoryName(filePath), textureFileName);
+                pages[i].Image.Save(path);
+            }
+
+            return model;
+        }*/
 
         public static void ImportModelAsStaticMesh(WadToolClass tool, IWin32Window owner)
         {

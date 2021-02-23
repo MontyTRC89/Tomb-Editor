@@ -348,7 +348,7 @@ namespace TombEditor
             _editor.ObjectChange(obj, ObjectChangeType.Change);
         }
 
-        public static void EditStaticMeshColor(IWin32Window owner, StaticInstance obj)
+        public static void EditColor(IWin32Window owner, IColorable obj, Action<Vector3> newColorCallback = null)
         {
             using (var colorDialog = new RealtimeColorDialog(
                 _editor.Configuration.ColorDialog_Position.X,
@@ -356,45 +356,10 @@ namespace TombEditor
                 c =>
                 {
                     obj.Color = c.ToFloat3Color() * 2.0f;
-                    _editor.ObjectChange(obj, ObjectChangeType.Change);
+                    _editor.ObjectChange(obj as ObjectInstance, ObjectChangeType.Change);
                 }, _editor.Configuration.UI_ColorScheme))
             {
                 colorDialog.Color = (obj.Color * 0.5f).ToWinFormsColor();
-                var oldLightColor = colorDialog.Color;
-
-                // Temporarily hide selection
-                _editor.ToggleHiddenSelection(true);
-
-                if (colorDialog.ShowDialog(owner) == DialogResult.OK)
-                {
-                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
-                    _editor.UndoManager.PushObjectPropertyChanged(obj);
-                }
-                else
-                    colorDialog.Color = oldLightColor;
-
-                // Unhide selection
-                _editor.ToggleHiddenSelection(false);
-
-                obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
-                _editor.ObjectChange(obj, ObjectChangeType.Change);
-
-                _editor.Configuration.ColorDialog_Position = colorDialog.Position;
-            }
-        }
-
-        public static void EditMoveableColor(IWin32Window owner, MoveableInstance obj, Action<Vector3> newColorCallback)
-        {
-            using (var colorDialog = new RealtimeColorDialog(
-                _editor.Configuration.ColorDialog_Position.X,
-                _editor.Configuration.ColorDialog_Position.Y,
-                c =>
-                {
-                    obj.Color = c.ToFloat3Color();
-                    _editor.ObjectChange(obj, ObjectChangeType.Change);
-                }, _editor.Configuration.UI_ColorScheme))
-            {
-                colorDialog.Color = (obj.Color).ToWinFormsColor();
                 var oldLightColor = colorDialog.Color;
 
                 // Temporarily hide selection
@@ -406,11 +371,11 @@ namespace TombEditor
                 // Unhide selection
                 _editor.ToggleHiddenSelection(false);
 
-                obj.Color = colorDialog.Color.ToFloat3Color();
-                _editor.ObjectChange(obj, ObjectChangeType.Change);
+                obj.Color = colorDialog.Color.ToFloat3Color() * 2.0f;
+                _editor.ObjectChange(obj as ObjectInstance, ObjectChangeType.Change);
 
                 _editor.Configuration.ColorDialog_Position = colorDialog.Position;
-                newColorCallback.Invoke(colorDialog.Color.ToFloat3Color());
+                newColorCallback?.Invoke(colorDialog.Color.ToFloat3Color());
             }
         }
 
@@ -862,7 +827,7 @@ namespace TombEditor
                 if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
                     Control.ModifierKeys.HasFlag(Keys.Control) ||
                     Control.ModifierKeys.HasFlag(Keys.Alt))
-                    EditStaticMeshColor(owner, (StaticInstance)instance);
+                    EditColor(owner, (StaticInstance)instance);
                 else
                 {
                     using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
@@ -1048,15 +1013,19 @@ namespace TombEditor
             foreach (var r in affectedRooms)
                 _editor.RoomSectorPropertiesChange(r);
 
+            // Avoid having the removed object still selected
+            _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
+
             // Additional updates
             if (instance is SectorBasedObjectInstance)
                 _editor.RoomSectorPropertiesChange(room);
+
             if (instance is LightInstance)
             {
-
                 room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
                 _editor.RoomGeometryChange(room);
             }
+
             if (instance is PortalInstance)
             {
                 room.BuildGeometry();
@@ -1081,9 +1050,6 @@ namespace TombEditor
                     _editor.RoomSectorPropertiesChange(room.AlternateOpposite);
                 }
             }
-
-            // Avoid having the removed object still selected
-            _editor.ObjectChange(instance, ObjectChangeType.Remove, room);
         }
 
         public static void RotateTexture(Room room, VectorInt2 pos, BlockFace face)
@@ -1944,7 +1910,16 @@ namespace TombEditor
             }
         }
 
-        public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
+		internal static void DeleteAllLights(CommandArgs args) {
+
+			foreach(var r in args.Editor.Level.Rooms.Where(r => r != null)) {
+				foreach (var l in r.Objects.Where(obj => obj is LightInstance).Cast<LightInstance>()) {
+					l.RemoveFromRoom(args.Editor.Level, r);
+				};
+			}
+		}
+
+		public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
         {
             Block block = room.GetBlock(pos);
             int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
@@ -2995,7 +2970,11 @@ namespace TombEditor
             int roomNumber = _editor.Level.AssignRoomToFree(newRoom);
             newRoom.Position = roomPos;
             newRoom.AddObject(_editor.Level, new PortalInstance(portalArea, PortalInstance.GetOppositeDirection(direction), room));
-            newRoom.Name = "Room " + roomNumber + " (digged " + dirString + ")";
+            newRoom.Name = "Room " + roomNumber;
+            
+            if (_editor.Configuration.UI_GenerateRoomDescriptions)
+                newRoom.Name += " (digged " + dirString + ")";
+
             _editor.RoomListChange();
 
             // Build the geometry of the new room
@@ -3986,10 +3965,10 @@ namespace TombEditor
             }
 
             // No wads specified, no wads loaded, nothing to do
-            if (wads.Count() == 0)
+            if (wads.Count() == 0 || wads.Where(w => w != null).Count() == 0)
                 return false;
 
-            var incomingVersion = wads.First().GameVersion.Native();
+            var incomingVersion = wads.Where(w => w != null).First().GameVersion.Native();
             var message = "Loaded wad" + (wads.Count() > 1 ? "s " : " ");
             if (wads.All(w => w.GameVersion.Native() == incomingVersion) &&
                 incomingVersion != settings.GameVersion.Native())
@@ -4242,7 +4221,16 @@ namespace TombEditor
             return false;
         }
 
-        public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
+		public static void MoveObject(PositionBasedObjectInstance instance, Room targetRoom, VectorInt2 block)
+        {
+			var r = instance.Room;
+			_editor.UndoManager.PushObjectTransformed(instance);
+			instance.Room.RemoveObject(_editor.Level, instance);
+			_editor.ObjectChange(instance, ObjectChangeType.Change, r);
+			PlaceObjectWithoutUpdate(targetRoom, block, instance);
+		}
+
+		public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her
             MoveableInstance lara;
@@ -5276,5 +5264,32 @@ namespace TombEditor
                                 settings.SelectedSounds.Add(foundId);
                         }
         }
+
+		public static void GetObjectStatistics(Editor editor,IDictionary<WadMoveableId,uint> resultMoveables,IDictionary<WadStaticId, uint> resultStatics, out int totalMoveables, out int totalStatics) {
+			totalMoveables = 0;
+			totalStatics = 0;
+			foreach (var room in editor.Level.ExistingRooms) {
+				var roomMoveables = room.Objects.Where(ob => ob is MoveableInstance).Cast<MoveableInstance>().ToList();
+				var roomStatics = room.Objects.Where(ob => ob is StaticInstance).Cast<StaticInstance>().ToList();
+
+				foreach (var m in roomMoveables) {
+					if (resultMoveables.ContainsKey(m.WadObjectId)) {
+						resultMoveables[m.WadObjectId]++;
+					} else {
+						resultMoveables.Add(m.WadObjectId, 1);
+					}
+					totalMoveables++;
+				}
+				foreach (var s in roomStatics) {
+					if (resultStatics.ContainsKey(s.WadObjectId)) {
+						resultStatics[s.WadObjectId]++;
+					} else {
+						resultStatics.Add(s.WadObjectId, 1);
+					}
+					totalStatics++;
+				}
+
+			}
+		}
     }
 }

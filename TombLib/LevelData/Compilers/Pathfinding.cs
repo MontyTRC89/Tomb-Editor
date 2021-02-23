@@ -218,19 +218,16 @@ namespace TombLib.LevelData.Compilers
             ReportProgress(52, "    Number of boxes/zones: " + _boxes.Length);
             ReportProgress(52, "    Number of overlaps: " + _overlaps.Length);
 
-            if (_level.Settings.GameVersion != TRVersion.Game.TR5Main)
-            {
-                if (_boxes.Length < _limits[Limit.BoxMinCount])
-                    _progressReporter.ReportWarn("Level has too few boxes. Add some room geometry or game may crash.");
+            if (_boxes.Length < _limits[Limit.BoxMinCount])
+                _progressReporter.ReportWarn("Level has too few boxes. Add some room geometry or game may crash.");
 
-                var boxLimit = _limits[Limit.BoxLimit];
-                if (_boxes.Length >= boxLimit)
-                    _progressReporter.ReportWarn("Box limit is reached, maximum is " + boxLimit + ". Game may crash. Reduce level size or split it.");
+            var boxLimit = _limits[Limit.BoxLimit];
+            if (_boxes.Length >= boxLimit)
+                _progressReporter.ReportWarn("Box limit is reached, maximum is " + boxLimit + ". Game may crash. Reduce level size or split it.");
 
-                var overlapLimit = _limits[Limit.OverlapLimit];
-                if (_overlaps.Length >= overlapLimit)
-                    _progressReporter.ReportWarn("Overlap limit is reached, maximum is " + overlapLimit + ". Game may crash. Reduce level size or split it.");
-            }
+            var overlapLimit = _limits[Limit.OverlapLimit] - 2;
+            if (_overlaps.Length >= overlapLimit)
+                _progressReporter.ReportWarn("Overlap limit is reached, maximum is " + overlapLimit + ". Game may crash. Reduce level size or split it.");
         }
 
         private IEnumerable<int> GetAllReachableBoxes(int box, int zoneType, bool flipped)

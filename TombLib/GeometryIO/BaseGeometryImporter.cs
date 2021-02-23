@@ -103,6 +103,11 @@ namespace TombLib.GeometryIO
                     if (uv.Y >= h) uv.Y = h;
                 }
             }
+
+            // Round coordinates up to 1% of precision
+            uv.X = (float)Math.Round((float)uv.X, 2);
+            uv.Y = (float)Math.Round((float)uv.Y, 2);
+
             return uv;
         }
 

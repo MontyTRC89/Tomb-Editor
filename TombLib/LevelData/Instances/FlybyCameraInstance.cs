@@ -18,7 +18,7 @@ namespace TombLib.LevelData
 
         public FlybyCameraInstance(ObjectInstance selectedObject = null)
         {
-            if(selectedObject != null && selectedObject is FlybyCameraInstance)
+            if (selectedObject != null && selectedObject is FlybyCameraInstance)
             {
                 var prevCam = (FlybyCameraInstance)selectedObject;
                 var currSeq = prevCam.Sequence;
@@ -33,6 +33,13 @@ namespace TombLib.LevelData
 
                 Sequence = currSeq;
                 Number = currNum;
+                Fov = prevCam.Fov;
+
+                // Additionally copy last cam parameters
+
+                RotationX = prevCam.RotationX;
+                RotationY = prevCam.RotationY;
+                Roll = prevCam.Roll;
             }
         }
 

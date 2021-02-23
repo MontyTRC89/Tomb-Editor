@@ -56,7 +56,6 @@
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
             this.sectionCurrentBone = new DarkUI.Controls.DarkSectionPanel();
             this.nudTransZ = new DarkUI.Controls.DarkNumericUpDown();
             this.nudTransY = new DarkUI.Controls.DarkNumericUpDown();
@@ -67,8 +66,10 @@
             this.darkLabel21 = new DarkUI.Controls.DarkLabel();
             this.panelAll = new DarkUI.Controls.DarkPanel();
             this.panelMain = new DarkUI.Controls.DarkPanel();
+            this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
             this.panelRight = new DarkUI.Controls.DarkPanel();
             this.section3D = new DarkUI.Controls.DarkSectionPanel();
+            this.butExportSelectedMesh = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.cmBone.SuspendLayout();
             this.sectionCurrentBone.SuspendLayout();
@@ -167,7 +168,7 @@
             this.butLoadModel.Checked = false;
             this.butLoadModel.Location = new System.Drawing.Point(3, 475);
             this.butLoadModel.Name = "butLoadModel";
-            this.butLoadModel.Size = new System.Drawing.Size(310, 23);
+            this.butLoadModel.Size = new System.Drawing.Size(152, 23);
             this.butLoadModel.TabIndex = 80;
             this.butLoadModel.Text = "Replace model";
             this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -188,7 +189,6 @@
             // 
             this.butAddFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromWad2.Checked = false;
-            this.butAddFromWad2.Image = global::WadTool.Properties.Resources.search_16;
             this.butAddFromWad2.Location = new System.Drawing.Point(161, 446);
             this.butAddFromWad2.Name = "butAddFromWad2";
             this.butAddFromWad2.Size = new System.Drawing.Size(152, 23);
@@ -214,7 +214,6 @@
             // 
             this.butReplaceFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromWad2.Checked = false;
-            this.butReplaceFromWad2.Image = global::WadTool.Properties.Resources.search_16;
             this.butReplaceFromWad2.Location = new System.Drawing.Point(3, 446);
             this.butReplaceFromWad2.Name = "butReplaceFromWad2";
             this.butReplaceFromWad2.Size = new System.Drawing.Size(152, 23);
@@ -256,7 +255,7 @@
             this.deleteToolStripMenuItem,
             this.renameToolStripMenuItem});
             this.cmBone.Name = "cmBone";
-            this.cmBone.Size = new System.Drawing.Size(191, 274);
+            this.cmBone.Size = new System.Drawing.Size(191, 252);
             // 
             // popToolStripMenuItem
             // 
@@ -391,17 +390,6 @@
             this.renameToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.renameToolStripMenuItem.Text = "Rename";
             this.renameToolStripMenuItem.Click += new System.EventHandler(this.RenameToolStripMenuItem_Click);
-            // 
-            // panelRendering
-            // 
-            this.panelRendering.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelRendering.Location = new System.Drawing.Point(0, 0);
-            this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(452, 554);
-            this.panelRendering.TabIndex = 91;
-            this.panelRendering.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDown);
-            this.panelRendering.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseUp);
             // 
             // sectionCurrentBone
             // 
@@ -567,6 +555,14 @@
             this.panelMain.Size = new System.Drawing.Size(454, 554);
             this.panelMain.TabIndex = 0;
             // 
+            // panelRendering
+            // 
+            this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelRendering.Location = new System.Drawing.Point(0, 0);
+            this.panelRendering.Name = "panelRendering";
+            this.panelRendering.Size = new System.Drawing.Size(452, 554);
+            this.panelRendering.TabIndex = 0;
+            // 
             // panelRight
             // 
             this.panelRight.Controls.Add(this.section3D);
@@ -579,6 +575,7 @@
             // 
             // section3D
             // 
+            this.section3D.Controls.Add(this.butExportSelectedMesh);
             this.section3D.Controls.Add(this.treeSkeleton);
             this.section3D.Controls.Add(this.butLoadModel);
             this.section3D.Controls.Add(this.butDeleteBone);
@@ -593,6 +590,18 @@
             this.section3D.SectionHeader = "Meshtree";
             this.section3D.Size = new System.Drawing.Size(316, 501);
             this.section3D.TabIndex = 108;
+            // 
+            // butExportSelectedMesh
+            // 
+            this.butExportSelectedMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butExportSelectedMesh.Checked = false;
+            this.butExportSelectedMesh.Location = new System.Drawing.Point(161, 475);
+            this.butExportSelectedMesh.Name = "butExportSelectedMesh";
+            this.butExportSelectedMesh.Size = new System.Drawing.Size(152, 23);
+            this.butExportSelectedMesh.TabIndex = 91;
+            this.butExportSelectedMesh.Text = "Export selected mesh";
+            this.butExportSelectedMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butExportSelectedMesh.Click += new System.EventHandler(this.butExportSelectedMesh_Click);
             // 
             // butCancel
             // 
@@ -663,7 +672,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
-        private Controls.PanelRenderingSkeleton panelRendering;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
@@ -686,5 +694,7 @@
         private DarkUI.Controls.DarkSectionPanel section3D;
         private DarkUI.Controls.DarkPanel panelMain;
         private DarkUI.Controls.DarkButton butCancel;
+        private DarkUI.Controls.DarkButton butExportSelectedMesh;
+        private Controls.PanelRenderingSkeleton panelRendering;
     }
 }

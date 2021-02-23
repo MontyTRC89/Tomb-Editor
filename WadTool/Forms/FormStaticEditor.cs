@@ -1,8 +1,6 @@
 ﻿using DarkUI.Forms;
 using SharpDX.Toolkit.Graphics;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -12,6 +10,7 @@ using TombLib.Graphics;
 using TombLib.Wad;
 using WadTool.Controls;
 using TombLib.Utils;
+using System.Threading;
 
 namespace WadTool
 {
@@ -569,6 +568,54 @@ namespace WadTool
             _workingStatic.VisibilityBox = new BoundingBox();
             UpdateVisibilityBoxUI();
             panelRendering.Invalidate();
+        }
+
+        private void butExportMeshToFile_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "Export mesh";
+                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.DefaultExt = "mqo";
+                saveFileDialog.FileName = _workingStatic.Mesh.Name;
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                    {
+                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                        settingsDialog.SelectPreset("Normal scale");
+
+                        if (settingsDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
+                            {
+                                return "";
+                            };
+
+                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
+                            new Thread(() =>
+                            {
+                                var resultModel =WadMesh.PrepareForExport(saveFileDialog.FileName, _workingStatic.Mesh);
+
+                                if (resultModel != null)
+                                {
+                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                    {
+                                        return;
+                                    }
+                                }
+                                else
+                                {
+                                    string errorMessage = "";
+                                    return;
+                                }
+                            }).Start();
+                        }
+                    }
+                }
+            }
         }
     }
 }

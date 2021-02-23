@@ -463,7 +463,7 @@ namespace TombLib.LevelData.Compilers
                 if(_level.Settings.GameVersion == TRVersion.Game.TRNG && setupTrigger.TriggerType == TriggerType.Monkey)
                     _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
 
-                if ((_level.Settings.GameVersion != TRVersion.Game.TR5 && _level.Settings.GameVersion != TRVersion.Game.TR5Main) &&
+                if ((_level.Settings.GameVersion != TRVersion.Game.TR5) &&
                     (setupTrigger.TriggerType > TriggerType.ConditionNg && setupTrigger.TriggerType < TriggerType.Monkey))
                     _progressReporter.ReportWarn("Level uses trigger type '" + setupTrigger.TriggerType + "', which is not supported in this game engine.");
                     

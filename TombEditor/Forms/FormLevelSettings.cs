@@ -625,6 +625,7 @@ namespace TombEditor.Forms
             cbAgressiveFloordataPacking.Checked = _levelSettings.AgressiveFloordataPacking;
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
             cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
+			cbRemoveObjects.Checked = _levelSettings.RemoveUnusedObjects;
 
             // Lock settings dependent on preview mode
             cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
@@ -1624,8 +1625,14 @@ namespace TombEditor.Forms
             PopulateSoundInfoList();
         }
 
+        private void cbRemoveObjects_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.RemoveUnusedObjects = cbRemoveObjects.Checked;
+            UpdateDialog();
+        }
+
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
-    }
+	}
 }

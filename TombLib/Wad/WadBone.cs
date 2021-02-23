@@ -8,6 +8,7 @@ namespace TombLib.Wad
         public string Name { get; set; }
         public WadMesh Mesh { get; set; }
         public Vector3 Translation { get; set; }
+        public Vector3 AbsoluteTranslation { get; set; }
         public WadBone Parent { get; set; }
         public List<WadBone> Children { get; } = new List<WadBone>();
         public WadLinkOpcode OpCode { get; set; }
