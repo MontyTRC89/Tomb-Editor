@@ -2975,6 +2975,7 @@ namespace TombEditor.Controls
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+						}
 
                         // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
@@ -3188,6 +3189,7 @@ namespace TombEditor.Controls
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
                             _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+						}
 
                         // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
