@@ -214,7 +214,7 @@
             this.Controls.Add(this.btOk);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(397, 390);
+            this.MinimumSize = new System.Drawing.Size(397, 420);
             this.Name = "FormAnimCommandsEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

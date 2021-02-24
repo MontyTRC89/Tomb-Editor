@@ -71,7 +71,7 @@ namespace WadTool
         public Size Window_FormStateChangesEditor_Size { get; set; } = new Size(596, 299);
         public bool Window_FormStateChangesEditor_Maximized { get; set; } = false;
         public Point Window_FormAnimCommandsEditor_Position { get; set; } = new Point(-1);
-        public Size Window_FormAnimCommandsEditor_Size { get; set; } = new Size(397, 359); 
+        public Size Window_FormAnimCommandsEditor_Size { get; set; } = new Size(397, 420); 
         public bool Window_FormAnimCommandsEditor_Maximized { get; set; } = false;
         public Point Window_FormReplaceAnimCommands_Position { get; set; } = new Point(-1);
         public Size Window_FormReplaceAnimCommands_Size { get; set; } = new Size(811, 460);
