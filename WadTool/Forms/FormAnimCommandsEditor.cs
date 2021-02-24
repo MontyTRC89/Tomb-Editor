@@ -39,7 +39,9 @@ namespace WadTool
             // current set of animcommands to data grid view, so live preview is possible.
             // Backup list is restored if user pushes cancel or changes animation in parent window.
 
-            _backupCommands = new List<WadAnimCommand>(animation.WadAnimation.AnimCommands);
+            _backupCommands = new List<WadAnimCommand>();
+            foreach (var ac in animation.WadAnimation.AnimCommands)
+                _backupCommands.Add(ac.Clone()); // Do deep copy
             _animCommands = new BindingList<WadAnimCommand>(animation.WadAnimation.AnimCommands);
             gridViewCommands.DataSource = _animCommands;
         }
@@ -117,6 +119,8 @@ namespace WadTool
 
             if (gridViewCommands.SelectedRows.Count == 0)
                 animCommandEditor.Command = null;
+
+            _editor.Tool.AnimationEditorAnimcommandChanged();
         }
 
         private void MoveCommand(bool down)
@@ -149,7 +153,8 @@ namespace WadTool
                     gridViewCommands.Rows[index - 1].Selected = true;
                 }
             }
-            
+
+            _editor.Tool.AnimationEditorAnimcommandChanged();
         }
 
         private void ApplyChanges()
@@ -189,17 +194,51 @@ namespace WadTool
                 gridViewCommands.Rows[i].Selected = false;
             }
             gridViewCommands.Rows[_animCommands.Count - 1].Selected = true;
-            
+
+            _editor.Tool.AnimationEditorAnimcommandChanged();
         }
 
         private void butCopy_Click(object sender, EventArgs e)
         {
+            if (gridViewCommands.SelectedRows.Count == 0)
+                return;
+
             foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
             {
                 int index = row.Index;
-                WadAnimCommand cmdCopy = _animCommands[index].Clone();
+                var cmdCopy = _animCommands[index].Clone();
                 _animCommands.Insert(index+1, cmdCopy);
             }
+
+            _editor.Tool.AnimationEditorAnimcommandChanged();
+        }
+
+        private void butCopyToAll_Click(object sender, EventArgs e)
+        {
+            if (_editor.SelectionIsEmpty || gridViewCommands.SelectedRows.Count == 0)
+                return;
+
+            for (int i = _editor.Selection.Y; i >= _editor.Selection.X; i--)
+            {
+                foreach (DataGridViewRow row in gridViewCommands.SelectedRows)
+                {
+                    int index = row.Index;
+
+                    // Don't create copy if animcommand isn't frame-based or there's the same animcommand within selection area
+                    if (_animCommands[index].FrameBased && _animCommands[index].Parameter1 == i)
+                        continue;
+
+                    var cmdCopy = _animCommands[index].Clone();
+
+                    // Change frame number
+                    if (_animCommands[index].FrameBased)
+                        cmdCopy.Parameter1 = (short)i;
+
+                    _animCommands.Insert(index + 1, cmdCopy);
+                }
+            }
+
+            _editor.Tool.AnimationEditorAnimcommandChanged();
         }
 
         private void btOk_Click(object sender, EventArgs e)
