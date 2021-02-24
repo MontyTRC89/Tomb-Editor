@@ -113,7 +113,7 @@
             this.butCopyToAll.Name = "butCopyToAll";
             this.butCopyToAll.Size = new System.Drawing.Size(24, 24);
             this.butCopyToAll.TabIndex = 101;
-            this.toolTip1.SetToolTip(this.butCopyToAll, "Copy selected animcommand to all frames");
+            this.toolTip1.SetToolTip(this.butCopyToAll, "Copy selected animcommand to selected frames");
             this.butCopyToAll.Click += new System.EventHandler(this.butCopyToAll_Click);
             // 
             // gridViewCommands
