@@ -51,7 +51,7 @@ namespace TombLib.Rendering
                     // Load specified font
                     Create(description);
                 }  
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // Fall back to default font
                     GDI.DeleteObject(_gdiFont);
@@ -62,7 +62,7 @@ namespace TombLib.Rendering
                     Create(new Description() { TextureAllocator = TextureAllocator } );
                 }  
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Dispose();
                 throw;

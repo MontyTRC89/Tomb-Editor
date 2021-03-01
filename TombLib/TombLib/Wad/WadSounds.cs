@@ -317,7 +317,7 @@ namespace TombLib.Wad
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
