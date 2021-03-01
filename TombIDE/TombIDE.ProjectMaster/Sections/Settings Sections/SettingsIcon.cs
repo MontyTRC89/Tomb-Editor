@@ -1,10 +1,7 @@
 ﻿using DarkUI.Forms;
-using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
@@ -111,9 +108,7 @@ namespace TombIDE.ProjectMaster
 			try
 			{
 				IconInjector.InjectIcon(_ide.Project.LaunchFilePath, iconPath);
-
 				UpdateIcons();
-				UpdateWindowsIconCache();
 			}
 			catch (Exception ex)
 			{
@@ -123,24 +118,17 @@ namespace TombIDE.ProjectMaster
 
 		private void UpdateIcons() // This method is trash I know, but I couldn't find a better one
 		{
-			// Generate a random string to create a temporary .exe file.
-			// We will extract the icon from the .exe copy because Windows is caching icons which doesn't allow us to easily extract
-			// icons larger than 32x32 px.
-			Random random = new Random();
-			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-			string randomString = new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
-
 			// Create the temporary .exe file
-			string tempFilePath = _ide.Project.LaunchFilePath + "." + randomString + ".exe";
+			string tempFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".exe");
 			File.Copy(_ide.Project.LaunchFilePath, tempFilePath);
 
-			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap());
+			Bitmap ico_256 = ImageHandling.CropBitmapWhitespace(IconExtractor.ExtractIcon(tempFilePath, IconSize.Jumbo).ToBitmap());
 
 			// Windows doesn't seem to have a name for 128x128 px icons, therefore we must resize the Jumbo one
-			Bitmap ico_128 = (Bitmap)ImageHandling.ResizeImage(IconExtractor.GetIconFrom(tempFilePath, IconSize.Jumbo, false).ToBitmap(), 128, 128); ;
+			Bitmap ico_128 = ImageHandling.ResizeImage(ico_256, 128, 128) as Bitmap;
 
-			Bitmap ico_48 = ImageHandling.CropBitmapWhitespace(IconExtractor.GetIconFrom(tempFilePath, IconSize.ExtraLarge, false).ToBitmap());
-			Bitmap ico_16 = IconExtractor.GetIconFrom(tempFilePath, IconSize.Small, false).ToBitmap();
+			Bitmap ico_48 = ImageHandling.CropBitmapWhitespace(IconExtractor.ExtractIcon(tempFilePath, IconSize.ExtraLarge).ToBitmap());
+			Bitmap ico_16 = IconExtractor.ExtractIcon(tempFilePath, IconSize.Small).ToBitmap();
 
 			if (ico_256.Width == ico_48.Width && ico_256.Height == ico_48.Height)
 			{
@@ -165,24 +153,6 @@ namespace TombIDE.ProjectMaster
 
 			// Now delete the temporary .exe file
 			File.Delete(tempFilePath);
-		}
-
-		private void UpdateWindowsIconCache()
-		{
-			ProcessStartInfo info = new ProcessStartInfo
-			{
-				FileName = @"C:\Windows\SysNative\ie4uinit.exe",
-				Arguments = IsWindows10() ? "-show" : "-ClearIconCache"
-			};
-
-			Process.Start(info);
-		}
-
-		private bool IsWindows10()
-		{
-			RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
-			string productName = (string)key.GetValue("ProductName");
-			return productName.StartsWith("Windows 10");
 		}
 
 		#endregion Methods

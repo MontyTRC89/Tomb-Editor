@@ -1,6 +1,7 @@
 ﻿using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TombLib.Scripting.ClassicScript.Parsers
 {
@@ -108,6 +109,58 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			}
 
 			return command + "=" + string.Join(",", newArgumentList.ToArray());
+		}
+
+		public static string GetFirstLetterOfCurrentArgument(TextDocument document, int offset)
+		{
+			try // TODO: Possibly get rid of this try / catch
+			{
+				int currentArgumentIndex = GetArgumentIndexAtOffset(document, offset);
+
+				if (currentArgumentIndex == -1)
+					return null;
+
+				string syntax = CommandParser.GetCommandSyntax(document, offset);
+
+				if (string.IsNullOrEmpty(syntax))
+					return null;
+
+				string[] syntaxArguments = syntax.Split(',');
+
+				if (syntaxArguments.Length < currentArgumentIndex)
+					return null;
+
+				string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
+
+				if (!currentSyntaxArgument.Contains("_"))
+					return null;
+
+				string flagPrefix = currentSyntaxArgument.Split('_')[0].Split('(')[1];
+
+				return flagPrefix[0].ToString();
+			}
+			catch
+			{
+				return null;
+			}
+		}
+
+		public static string GetFirstLetterOfLastFlag(TextDocument document, int offset)
+		{
+			int currentArgumentIndex = GetArgumentIndexAtOffset(document, offset);
+
+			if (currentArgumentIndex == -1 || currentArgumentIndex == 0)
+				return null;
+
+			string prevArgument = GetArgumentFromIndex(document, offset, currentArgumentIndex - 1).Trim();
+
+			if (!prevArgument.Contains("_"))
+				return null;
+
+			if (prevArgument.Contains("="))
+				prevArgument.Split('=').Last().Trim();
+
+			return prevArgument[0].ToString();
 		}
 	}
 }

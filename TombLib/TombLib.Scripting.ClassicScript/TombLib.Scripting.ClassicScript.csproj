@@ -68,6 +68,7 @@
     <Compile Include="Objects\ColorScheme.cs" />
     <Compile Include="CS_EditorConfiguration.cs" />
     <Compile Include="Objects\WordDefinitionEventArgs.cs" />
+    <Compile Include="Parsers\GlobalParser.cs" />
     <Compile Include="Parsers\WordParser.cs" />
     <Compile Include="Utils\RddaReader.cs" />
     <Compile Include="Resources\ConfigurationDefaults.cs" />

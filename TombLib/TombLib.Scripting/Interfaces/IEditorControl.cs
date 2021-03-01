@@ -51,6 +51,8 @@ namespace TombLib.Scripting.Interfaces
 		#region Methods
 
 		void Load(string fileName, bool silentSession);
+
+		void Save();
 		void Save(string fileName);
 
 		void Undo();

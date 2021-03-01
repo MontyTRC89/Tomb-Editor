@@ -217,10 +217,10 @@ namespace TombIDE.ScriptingStudio.Controls
 				try
 				{
 					string file = _pendingFileReloads[i];
-					IEnumerable<TabPage> tabPages = FindTabPagesOfFile(file);
+					IEnumerable<TabPage> tabPagesOfFile = FindTabPagesOfFile(file);
 
-					if (tabPages.Count() > 0)
-						TryAskFileReload(tabPages);
+					if (tabPagesOfFile.Count() > 0)
+						TryAskFileReload(tabPagesOfFile);
 				}
 				catch (Exception) { }
 
@@ -228,11 +228,11 @@ namespace TombIDE.ScriptingStudio.Controls
 			ReloadQueueRunning = false;
 		}
 
-		private void TryAskFileReload(IEnumerable<TabPage> tabPages)
+		private void TryAskFileReload(IEnumerable<TabPage> tabPagesOfFile)
 		{
 			DialogResult? result = null;
 
-			foreach (TabPage tab in tabPages)
+			foreach (TabPage tab in tabPagesOfFile)
 			{
 				IEditorControl editor = GetEditorOfTab(tab);
 				string fileContent = File.ReadAllText(editor.FilePath, Encoding.GetEncoding(1252));
@@ -266,9 +266,9 @@ namespace TombIDE.ScriptingStudio.Controls
 
 			foreach (string path in filePaths)
 			{
-				TabPage tab = GetMostRecentlyModifiedTabPageOfFile(path);
+				TabPage mostRecentTabOfFile = GetMostRecentlyModifiedTabPageOfFile(path);
 
-				FileSavingResult result = TryAskSaveFile(tab);
+				FileSavingResult result = TryAskSaveFile(mostRecentTabOfFile);
 
 				if (result == FileSavingResult.Cancelled || result == FileSavingResult.Failed)
 					return false;
@@ -283,8 +283,8 @@ namespace TombIDE.ScriptingStudio.Controls
 
 			foreach (string path in filePaths)
 			{
-				TabPage tab = GetMostRecentlyModifiedTabPageOfFile(path);
-				SaveFile(tab);
+				TabPage mostRecentTabOfFile = GetMostRecentlyModifiedTabPageOfFile(path);
+				SaveFile(mostRecentTabOfFile);
 			}
 		}
 
@@ -325,7 +325,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 			try
 			{
-				editor.Save(editor.FilePath);
+				editor.Save();
 				UpdateTabPageName(editor);
 
 				SaveOtherTabPagesOfFile(editor);
@@ -434,15 +434,15 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public void CloseTabPagesOfFile(string filePath)
 		{
-			TabPage mostRecentTabPage = GetMostRecentlyModifiedTabPageOfFile(filePath);
+			TabPage mostRecentTabOfFile = GetMostRecentlyModifiedTabPageOfFile(filePath);
 
-			if (mostRecentTabPage != null)
+			if (mostRecentTabOfFile != null)
 			{
-				FileSavingResult result = TryAskSaveFile(mostRecentTabPage);
+				FileSavingResult result = TryAskSaveFile(mostRecentTabOfFile);
 
 				if (result == FileSavingResult.AlreadySaved || result == FileSavingResult.Success || result == FileSavingResult.Rejected)
 				{
-					CloseTab(mostRecentTabPage);
+					CloseTab(mostRecentTabOfFile);
 
 					IEnumerable<TabPage> fileTabPages = FindTabPagesOfFile(filePath);
 
@@ -533,16 +533,16 @@ namespace TombIDE.ScriptingStudio.Controls
 			if (CurrentEditor != null)
 			{
 				var fileTabPages = FindTabPagesOfFile(CurrentEditor.FilePath).ToList();
-				TabPage tab = GetMostRecentlyModifiedTabPageOfFile(CurrentEditor.FilePath);
+				TabPage mostRecentTabOfFile = GetMostRecentlyModifiedTabPageOfFile(CurrentEditor.FilePath);
 
-				fileTabPages.Remove(tab);
+				fileTabPages.Remove(mostRecentTabOfFile);
 
 				foreach (TabPage tabPage in fileTabPages)
 				{
 					IEditorControl editorOfTab = GetEditorOfTab(tabPage);
 
-					if (editorOfTab.Content != GetEditorOfTab(tab).Content)
-						editorOfTab.Content = GetEditorOfTab(tab).Content;
+					if (editorOfTab.Content != GetEditorOfTab(mostRecentTabOfFile).Content)
+						editorOfTab.Content = GetEditorOfTab(mostRecentTabOfFile).Content;
 				}
 			}
 		}

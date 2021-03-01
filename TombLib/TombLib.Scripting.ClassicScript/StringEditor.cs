@@ -324,7 +324,7 @@ namespace TombLib.Scripting.ClassicScript
 			IsSilentSession = silentSession;
 		}
 
-		public void SaveCurrentFile()
+		public void Save()
 			=> Save(FilePath);
 
 		public void Save(string filePath)

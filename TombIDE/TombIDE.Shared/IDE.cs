@@ -221,16 +221,15 @@ namespace TombIDE.Shared
 
 		public class ScriptEditor_AddNewNGStringEvent : IIDEEvent
 		{
-			public string PluginName { get; internal set; }
-			public string InternalDllPath { get; internal set; }
+			public string NGString { get; internal set; }
 		}
 
 		/// <summary>
 		/// Sends a request to the Script Editor to add a new ExtraNG string at the end of the main {LANGUAGE}.txt file.
 		/// <para>Note: It automatically adds index prefixes, like "0: {STRING}", "1: {STRING}" etc.</para>
 		/// </summary>
-		public void ScriptEditor_AddNewNGString(string pluginName, string internalDllPath) =>
-			RaiseEvent(new ScriptEditor_AddNewNGStringEvent { PluginName = pluginName, InternalDllPath = internalDllPath });
+		public void ScriptEditor_AddNewNGString(string ngString) =>
+			RaiseEvent(new ScriptEditor_AddNewNGStringEvent { NGString = ngString });
 
 		#endregion ScriptEditor_AddNewNGString
 
@@ -258,12 +257,12 @@ namespace TombIDE.Shared
 
 		public class ScriptEditor_StringPresenceCheckEvent : IIDEEvent
 		{
-			public string LevelName { get; internal set; }
+			public string String { get; internal set; }
 		}
 
-		public bool ScriptEditor_IsStringDefined(string levelName)
+		public bool ScriptEditor_IsStringDefined(string @string)
 		{
-			RaiseEvent(new ScriptEditor_StringPresenceCheckEvent { LevelName = levelName });
+			RaiseEvent(new ScriptEditor_StringPresenceCheckEvent { String = @string });
 			return StringDefined;
 		}
 

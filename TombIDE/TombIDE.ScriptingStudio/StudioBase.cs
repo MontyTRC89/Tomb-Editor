@@ -26,16 +26,6 @@ namespace TombIDE.ScriptingStudio
 	{
 		#region Properties
 
-		public new Control Parent
-		{
-			get => base.Parent;
-			set
-			{
-				base.Parent = value;
-				InitializeDockPanel();
-			}
-		}
-
 		public abstract StudioMode StudioMode { get; }
 
 		public DocumentMode DocumentMode
@@ -137,30 +127,27 @@ namespace TombIDE.ScriptingStudio
 		{ }
 		public StudioBase(string scriptRootDirectoryPath, string engineDirectoryPath, string initialFilePath)
 		{
-			IDE.Global.IDEEventRaised += OnIDEEventRaised;
-
 			InitializeComponent();
-
-			ScriptRootDirectoryPath = scriptRootDirectoryPath;
-			EngineDirectoryPath = engineDirectoryPath;
-
-			InitializeTabControl();
-			InitializeFileExplorer();
 
 			if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
 			{
-				InitializeFindReplaceForm();
+				IDE.Global.IDEEventRaised += OnIDEEventRaised;
+
+				ScriptRootDirectoryPath = scriptRootDirectoryPath;
+				EngineDirectoryPath = engineDirectoryPath;
 
 				MenuStrip.StudioMode = StudioMode;
 				ToolStrip.StudioMode = StudioMode;
 
+				InitializeTabControl();
+				InitializeContentExplorer();
+				InitializeFileExplorer();
+				InitializeFindReplaceForm();
 				InitializeFrequentlyAccessedItems(); // For quick control state updating
 
-				ContentExplorer.ObjectClicked += ContentExplorer_ObjectClicked;
+				if (!string.IsNullOrWhiteSpace(initialFilePath))
+					EditorTabControl.OpenFile(initialFilePath);
 			}
-
-			if (!string.IsNullOrWhiteSpace(initialFilePath))
-				EditorTabControl.OpenFile(initialFilePath);
 		}
 
 		private void InitializeTabControl()
@@ -170,6 +157,9 @@ namespace TombIDE.ScriptingStudio
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 			EditorTabControl.TabClosing += EditorTabControl_TabClosing;
 		}
+
+		private void InitializeContentExplorer()
+			=> ContentExplorer.ObjectClicked += ContentExplorer_ObjectClicked;
 
 		private void InitializeFileExplorer()
 		{
@@ -253,6 +243,13 @@ namespace TombIDE.ScriptingStudio
 
 		#region Events
 
+		protected override void OnParentChanged(EventArgs e)
+		{
+			base.OnParentChanged(e);
+
+			InitializeDockPanel();
+		}
+
 		protected virtual void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.ProgramClosingEvent e)
@@ -296,7 +293,7 @@ namespace TombIDE.ScriptingStudio
 
 		private void EditorTabControl_TabClosing(object sender, TabControlCancelEventArgs e)
 		{
-			if (EditorTabControl.TabCount == 1)
+			if (!e.Cancel && EditorTabControl.TabCount == 1)
 				DocumentMode = DocumentMode.None;
 		}
 
@@ -348,7 +345,7 @@ namespace TombIDE.ScriptingStudio
 		protected virtual void OnToolStripItemClicked(UIElement e)
 		{
 			HandleGlobalCommands(e);
-			HandleTextEditorCommands(e);
+			HandleDocumentCommands(e);
 		}
 
 		protected void UpdateUndoRedoSaveStates()
@@ -402,9 +399,9 @@ namespace TombIDE.ScriptingStudio
 				// Edit
 				case UIElement.Undo: CurrentEditor?.Undo(); UpdateUndoRedoSaveStates(); break;
 				case UIElement.Redo: CurrentEditor?.Redo(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Cut: CurrentEditor?.Cut(); break;
-				case UIElement.Copy: CurrentEditor?.Copy(); break;
-				case UIElement.Paste: CurrentEditor?.Paste(); break;
+				case UIElement.Cut: CurrentEditor?.Cut(); UpdateUndoRedoSaveStates(); break;
+				case UIElement.Copy: CurrentEditor?.Copy(); UpdateUndoRedoSaveStates(); break;
+				case UIElement.Paste: CurrentEditor?.Paste(); UpdateUndoRedoSaveStates(); break;
 				case UIElement.Find: FormFindReplace.Show(this, CurrentEditor?.SelectedContent?.ToString()); break;
 				case UIElement.SelectAll: CurrentEditor?.SelectAll(); break;
 
@@ -424,7 +421,7 @@ namespace TombIDE.ScriptingStudio
 				ToggleItemVisibility(command);
 		}
 
-		private void HandleTextEditorCommands(UIElement command)
+		private void HandleDocumentCommands(UIElement command)
 		{
 			if (CurrentEditor is TextEditorBase textEditor)
 				switch (command)
@@ -539,23 +536,3 @@ namespace TombIDE.ScriptingStudio
 		#endregion Other methods
 	}
 }
-
-//{
-//	if (CurrentEditor is ScriptTextEditor scriptEditor)
-//		scriptEditor.UpdateSettings(ConfigurationCollection.CS_EditorConfiguration);
-//	else if (CurrentEditor is StringEditor stringEditor)
-//		stringEditor.UpdateSettings(null);
-//	else if (CurrentEditor is LuaTextEditor luaEditor)
-//		luaEditor.UpdateSettings(ConfigurationCollection.Lua_EditorConfiguration);
-
-//	ToolStripMenuItem useNewInclude = MenuStrip.FindMenuItem(UICommand.UseNewInclude);
-//	ToolStripMenuItem showLogsAfterBuild = MenuStrip.FindMenuItem(UICommand.ShowLogsAfterBuild);
-//	ToolStripMenuItem reindentOnSave = MenuStrip.FindMenuItem(UICommand.ReindentOnSave);
-
-//	if (useNewInclude != null)
-//		useNewInclude.Checked = IDE.Global.IDEConfiguration.UseNewIncludeMethod;
-//	if (showLogsAfterBuild != null)
-//		showLogsAfterBuild.Checked = IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild;
-//	if (reindentOnSave != null)
-//		reindentOnSave.Checked = IDE.Global.IDEConfiguration.ReindentOnSave;
-//}

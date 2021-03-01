@@ -33,7 +33,7 @@
 
 	<File>Plik</File>
 	<Edit>Edycja</Edit>
-	<Tools>Narzędzia</Tools>
+	<Document>Dokument</Document>
 	<Options>Opcje</Options>
 	<View>Widok</View>
 	<Help>Pomoc</Help>
@@ -65,7 +65,7 @@
 
 	<UseNewInclude>Używaj nowej metody #INCLUDE</UseNewInclude>
 	<ShowLogsAfterBuild>Pokaż raport po budowie skryptu</ShowLogsAfterBuild>
-	<ReindentOnSave>Uporządkuj białe znaki po zapisie pliku</ReindentOnSave>
+	<ReindentOnSave>Uporządkuj białe znaki przy zapisie pliku</ReindentOnSave>
 	<Settings>Ustawienia edytora tekstu...</Settings>
 
 	<ContentExplorer>Eksplorator zawartości</ContentExplorer>

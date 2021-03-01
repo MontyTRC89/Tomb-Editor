@@ -1,5 +1,4 @@
 ﻿using DarkUI.Forms;
-using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +18,8 @@ using TombLib.Scripting.ClassicScript.Enums;
 using TombLib.Scripting.ClassicScript.Objects;
 using TombLib.Scripting.ClassicScript.Parsers;
 using TombLib.Scripting.ClassicScript.Utils;
+using TombLib.Scripting.ClassicScript.Writers;
+using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 
 namespace TombIDE.ScriptingStudio
@@ -27,12 +28,16 @@ namespace TombIDE.ScriptingStudio
 	{
 		public override StudioMode StudioMode => StudioMode.ClassicScript;
 
+		#region Fields
+
 		private FormReferenceInfo FormReferenceInfo = new FormReferenceInfo();
 		private FormNGCompilingStatus FormCompiling = new FormNGCompilingStatus();
 
 		private BackgroundWorker NGCBackgroundWorker = new BackgroundWorker();
 
 		public ReferenceBrowser ReferenceBrowser = new ReferenceBrowser();
+
+		#endregion Fields
 
 		#region Construction
 
@@ -78,48 +83,41 @@ namespace TombIDE.ScriptingStudio
 
 				TabPage scriptFileTab = EditorTabControl.FindTabPage(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
 				bool wasScriptFileAlreadyOpened = scriptFileTab != null;
-				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened ?
-					EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged : false;
+				bool wasScriptFileFileChanged = wasScriptFileAlreadyOpened && EditorTabControl.GetEditorOfTab(scriptFileTab).IsContentChanged;
 
 				TabPage languageFileTab = EditorTabControl.FindTabPage(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English));
 				bool wasLanguageFileAlreadyOpened = languageFileTab != null;
-				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened ?
-					EditorTabControl.GetEditorOfTab(languageFileTab).IsContentChanged : false;
+				bool wasLanguageFileFileChanged = wasLanguageFileAlreadyOpened && EditorTabControl.GetEditorOfTab(languageFileTab).IsContentChanged;
 
-				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent)
+				if (obj is IDE.ScriptEditor_AppendScriptLinesEvent asle && asle.Lines.Count > 0)
 				{
-					List<string> inputLines = ((IDE.ScriptEditor_AppendScriptLinesEvent)obj).Lines;
-
-					if (inputLines.Count == 0)
-						return;
-
-					AppendScriptLines(inputLines);
+					AppendScriptLines(asle.Lines);
 					EndSilentScriptAction(cachedTab, true, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
-				else if (obj is IDE.ScriptEditor_AddNewLevelStringEvent)
+				else if (obj is IDE.ScriptEditor_AddNewLevelStringEvent anlse)
 				{
-					AddNewLevelNameString(((IDE.ScriptEditor_AddNewLevelStringEvent)obj).LevelName);
+					AddNewLevelNameString(anlse.LevelName);
 					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
-				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent)
+				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent anngse)
 				{
-					bool isChanged = AddNewNGString(((IDE.ScriptEditor_AddNewNGStringEvent)obj).PluginName);
+					bool isChanged = AddNewNGString(anngse.NGString);
 					EndSilentScriptAction(cachedTab, isChanged, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
 				}
-				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent)
+				else if (obj is IDE.ScriptEditor_ScriptPresenceCheckEvent scrpce)
 				{
-					IDE.Global.ScriptDefined = IsLevelScriptDefined(((IDE.ScriptEditor_ScriptPresenceCheckEvent)obj).LevelName);
+					IDE.Global.ScriptDefined = IsLevelScriptDefined(scrpce.LevelName);
 					EndSilentScriptAction(cachedTab, false, false, !wasScriptFileAlreadyOpened);
 				}
-				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent)
+				else if (obj is IDE.ScriptEditor_StringPresenceCheckEvent strpce)
 				{
-					IDE.Global.StringDefined = IsLevelLanguageStringDefined(((IDE.ScriptEditor_StringPresenceCheckEvent)obj).LevelName);
+					IDE.Global.StringDefined = IsLevelLanguageStringDefined(strpce.String);
 					EndSilentScriptAction(cachedTab, false, false, !wasLanguageFileAlreadyOpened);
 				}
-				else if (obj is IDE.ScriptEditor_RenameLevelEvent)
+				else if (obj is IDE.ScriptEditor_RenameLevelEvent rle)
 				{
-					string oldName = ((IDE.ScriptEditor_RenameLevelEvent)obj).OldName;
-					string newName = ((IDE.ScriptEditor_RenameLevelEvent)obj).NewName;
+					string oldName = rle.OldName;
+					string newName = rle.NewName;
 
 					RenameRequestedLevelScript(oldName, newName);
 					RenameRequestedLanguageString(oldName, newName);
@@ -131,49 +129,65 @@ namespace TombIDE.ScriptingStudio
 
 		private void AppendScriptLines(List<string> inputLines)
 		{
-			//OpenScriptFile(true); // Changes the current CurrentTextEditor as well
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
 
-			//CurrentTextEditor.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
-			//CurrentTextEditor.ScrollToLine(CurrentTextEditor.LineCount);
+			if (CurrentEditor is TextEditorBase editor)
+			{
+				editor.AppendText(string.Join(Environment.NewLine, inputLines) + Environment.NewLine);
+				editor.ScrollToLine(editor.LineCount);
+			}
 		}
 
 		private void AddNewLevelNameString(string levelName)
 		{
-			//OpenLanguageFile(DefaultLanguage, true); // Changes the current CurrentTextEditor as well
-			//LanguageStringWriter.WriteNewLevelNameString(CurrentTextEditor, levelName);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+
+			if (CurrentEditor is TextEditorBase editor)
+				LanguageStringWriter.WriteNewLevelNameString(editor, levelName);
 		}
 
 		private bool AddNewNGString(string ngString)
 		{
-			//OpenLanguageFile(DefaultLanguage, true); // Changes the current CurrentTextEditor as well
-			//return LanguageStringWriter.WriteNewNGString(CurrentTextEditor, ngString);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+
+			if (CurrentEditor is TextEditorBase editor)
+				return LanguageStringWriter.WriteNewNGString(editor, ngString);
+
 			return false;
 		}
 
 		private void RenameRequestedLevelScript(string oldName, string newName)
 		{
-			//OpenScriptFile(true); // Changes the current CurrentTextEditor as well
-			//ScriptReplacer.RenameLevelScript(CurrentTextEditor, oldName, newName);
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+
+			if (CurrentEditor is TextEditorBase editor)
+				ScriptReplacer.RenameLevelScript(editor, oldName, newName);
 		}
 
 		private void RenameRequestedLanguageString(string oldName, string newName)
 		{
-			//OpenLanguageFile(DefaultLanguage, true); // Changes the current CurrentTextEditor as well
-			//ScriptReplacer.RenameLanguageString(CurrentTextEditor, oldName, newName);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+
+			if (CurrentEditor is TextEditorBase editor)
+				ScriptReplacer.RenameLanguageString(editor, oldName, newName);
 		}
 
 		private bool IsLevelScriptDefined(string levelName)
 		{
-			//OpenScriptFile(true); // Changes the current CurrentTextEditor as well
-			//return DocumentParser.IsLevelScriptDefined(CurrentTextEditor.Document, levelName);
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+
+			if (CurrentEditor is TextEditorBase editor)
+				return DocumentParser.IsLevelScriptDefined(editor.Document, levelName);
 
 			return false;
 		}
 
 		private bool IsLevelLanguageStringDefined(string levelName)
 		{
-			//OpenLanguageFile(DefaultLanguage, true); // Changes the current CurrentTextEditor as well
-			//return DocumentParser.IsLevelLanguageStringDefined(CurrentTextEditor.Document, levelName);
+			EditorTabControl.OpenFile(PathHelper.GetLanguageFilePath(ScriptRootDirectoryPath, GameLanguage.English), EditorType.Text);
+
+			if (CurrentEditor is TextEditorBase editor)
+				return DocumentParser.IsLevelLanguageStringDefined(editor.Document, levelName);
 
 			return false;
 		}
@@ -237,12 +251,10 @@ namespace TombIDE.ScriptingStudio
 
 		private void NGCBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			foreach (Process process in Process.GetProcesses())
-				if (process.ProcessName.Contains("NG_Center"))
-				{
-					process.WaitForExit();
-					break;
-				}
+			Process ngCenterProcess = Array.Find(Process.GetProcesses(), x => x.ProcessName.Contains("NG_Center"));
+
+			if (ngCenterProcess != null)
+				ngCenterProcess.WaitForExit();
 		}
 
 		private void NGCBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -254,30 +266,20 @@ namespace TombIDE.ScriptingStudio
 		private void ReferenceBrowser_ReferenceDefinitionRequested(object sender, ReferenceDefinitionEventArgs e)
 			=> FormReferenceInfo.Show(e.Keyword, e.Type);
 
-		//private void ObjectBrowser_ObjectClicked(object sender, ObjectClickedEventArgs e)
-		//	=> SelectObject(e.ObjectName, e.);
-
 		#endregion Events
 
 		private void OpenIncludeFile()
 		{
 			if (CurrentEditor is TextEditorBase editor)
 			{
-				DocumentLine caretLine = editor.Document.GetLineByOffset(editor.CaretOffset);
-				string caretLineText = editor.Document.GetText(caretLine.Offset, caretLine.Length);
+				string fullFilePath = CommandParser.GetFullIncludePath(editor.Document, editor.CaretOffset);
 
-				if (LineParser.IsValidIncludeLine(caretLineText))
-				{
-					string pathPart = caretLineText.Split('"')[1];
-					string fullFilePath = Path.Combine(ScriptRootDirectoryPath, pathPart);
+				if (File.Exists(fullFilePath))
+					EditorTabControl.OpenFile(fullFilePath);
+				else
+					DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-					if (File.Exists(fullFilePath))
-						EditorTabControl.OpenFile(fullFilePath);
-					else
-						DarkMessageBox.Show(this, "Couldn't find the target file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-					editor.SelectionLength = 0;
-				}
+				editor.SelectionLength = 0;
 			}
 		}
 
@@ -337,3 +339,23 @@ namespace TombIDE.ScriptingStudio
 			=> CompileTRNGScript();
 	}
 }
+
+//{
+//	if (CurrentEditor is ScriptTextEditor scriptEditor)
+//		scriptEditor.UpdateSettings(ConfigurationCollection.CS_EditorConfiguration);
+//	else if (CurrentEditor is StringEditor stringEditor)
+//		stringEditor.UpdateSettings(null);
+//	else if (CurrentEditor is LuaTextEditor luaEditor)
+//		luaEditor.UpdateSettings(ConfigurationCollection.Lua_EditorConfiguration);
+
+//	ToolStripMenuItem useNewInclude = MenuStrip.FindMenuItem(UICommand.UseNewInclude);
+//	ToolStripMenuItem showLogsAfterBuild = MenuStrip.FindMenuItem(UICommand.ShowLogsAfterBuild);
+//	ToolStripMenuItem reindentOnSave = MenuStrip.FindMenuItem(UICommand.ReindentOnSave);
+
+//	if (useNewInclude != null)
+//		useNewInclude.Checked = IDE.Global.IDEConfiguration.UseNewIncludeMethod;
+//	if (showLogsAfterBuild != null)
+//		showLogsAfterBuild.Checked = IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild;
+//	if (reindentOnSave != null)
+//		reindentOnSave.Checked = IDE.Global.IDEConfiguration.ReindentOnSave;
+//}
