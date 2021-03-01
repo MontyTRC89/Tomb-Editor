@@ -61,7 +61,7 @@ namespace TombIDE.ProjectMaster
 						if (initialPlugins.Exists(x => x.InternalDllPath.ToLower() == plugin.InternalDllPath.ToLower()))
 							continue;
 
-						_ide.ScriptEditor_AddNewNGString(plugin.Name, plugin.InternalDllPath);
+						_ide.ScriptEditor_AddNewNGString(Path.GetFileNameWithoutExtension(plugin.InternalDllPath));
 					}
 				}
 			}

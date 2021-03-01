@@ -4,7 +4,6 @@ using ICSharpCode.AvalonEdit.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -157,8 +156,8 @@ namespace TombLib.Scripting.ClassicScript
 					HandleAutocompleteOnEmptyLine();
 				else if (e.Text != "_" && CaretOffset > 1)
 				{
-					string firstLetterOfLastFlag = GetFirstLetterOfLastFlag();
-					string firstLetterOfCurrentFlag = GetFirstLetterOfCurrentArgument();
+					string firstLetterOfLastFlag = ArgumentParser.GetFirstLetterOfLastFlag(Document, CaretOffset);
+					string firstLetterOfCurrentFlag = ArgumentParser.GetFirstLetterOfCurrentArgument(Document, CaretOffset);
 
 					if (!string.IsNullOrEmpty(firstLetterOfLastFlag)
 						&& e.Text.Equals(firstLetterOfLastFlag, StringComparison.OrdinalIgnoreCase)
@@ -176,58 +175,6 @@ namespace TombLib.Scripting.ClassicScript
 				else if (e.Text == "_" && CaretOffset > 1)
 					HandleAutocompleteAfterUnderscore();
 			}
-		}
-
-		private string GetFirstLetterOfCurrentArgument()
-		{
-			try // TODO: Possibly get rid of this try / catch
-			{
-				int currentArgumentIndex = ArgumentParser.GetArgumentIndexAtOffset(Document, CaretOffset);
-
-				if (currentArgumentIndex == -1)
-					return null;
-
-				string syntax = CommandParser.GetCommandSyntax(Document, CaretOffset);
-
-				if (string.IsNullOrEmpty(syntax))
-					return null;
-
-				string[] syntaxArguments = syntax.Split(',');
-
-				if (syntaxArguments.Length < currentArgumentIndex)
-					return null;
-
-				string currentSyntaxArgument = syntaxArguments[currentArgumentIndex];
-
-				if (!currentSyntaxArgument.Contains("_"))
-					return null;
-
-				string flagPrefix = currentSyntaxArgument.Split('_')[0].Split('(')[1];
-
-				return flagPrefix[0].ToString();
-			}
-			catch
-			{
-				return null;
-			}
-		}
-
-		private string GetFirstLetterOfLastFlag()
-		{
-			int currentArgumentIndex = ArgumentParser.GetArgumentIndexAtOffset(Document, CaretOffset);
-
-			if (currentArgumentIndex == -1 || currentArgumentIndex == 0)
-				return null;
-
-			string prevArgument = ArgumentParser.GetArgumentFromIndex(Document, CaretOffset, currentArgumentIndex - 1).Trim();
-
-			if (!prevArgument.Contains("_"))
-				return null;
-
-			if (prevArgument.Contains("="))
-				prevArgument.Split('=').Last().Trim();
-
-			return prevArgument[0].ToString();
 		}
 
 		private void HandleAutocompleteAfterSpaceCtrl()
@@ -402,67 +349,12 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void InputFreeIndex()
 		{
-			string commandKey = CommandParser.GetCommandKey(Document, CaretOffset);
+			int nextFreeIndex = GlobalParser.GetNextFreeIndex(Document, CaretOffset);
 
-			if (string.IsNullOrEmpty(commandKey))
+			if (nextFreeIndex == -1)
 				return;
 
-			if (commandKey.Equals("AddEffect", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("ColorRGB", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("GlobalTrigger", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("Image", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("ItemGroup", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("MultiEnvCondition", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("Organizer", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("Parameters", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("TestPosition", StringComparison.OrdinalIgnoreCase)
-				|| commandKey.Equals("TriggerGroup", StringComparison.OrdinalIgnoreCase))
-			{
-				IEnumerable<int> takenIndicesList;
-
-				if (DocumentParser.DocumentContainsSections(Document))
-				{
-					DocumentLine sectionStartLine = DocumentParser.GetSectionStartLine(Document, CaretOffset);
-
-					if (sectionStartLine == null)
-						return;
-
-					int sectionStartLineNumber = sectionStartLine.LineNumber;
-					takenIndicesList = GetTakenIndicesList(commandKey, sectionStartLineNumber + 1);
-				}
-				else
-					takenIndicesList = GetTakenIndicesList(commandKey, 0);
-
-				for (int i = 1; i < 1024; i++)
-					if (!takenIndicesList.Contains(i))
-					{
-						TextArea.PerformTextInput(i.ToString());
-						break;
-					}
-			}
-		}
-
-		private IEnumerable<int> GetTakenIndicesList(string commandKey, int loopStartLine)
-		{
-			for (int i = loopStartLine; i < Document.LineCount; i++)
-			{
-				DocumentLine processedLine = Document.GetLineByNumber(i);
-				string processedLineText = Document.GetText(processedLine.Offset, processedLine.Length);
-
-				string command = CommandParser.GetCommandKey(Document, processedLine.Offset);
-
-				if (string.IsNullOrEmpty(command))
-					continue;
-
-				if (processedLineText.Contains("="))
-					if (command.Equals(commandKey, StringComparison.OrdinalIgnoreCase))
-					{
-						int takenIndex;
-
-						if (int.TryParse(processedLineText.Split('=')[1].Split(',')[0].Trim(), out takenIndex))
-							yield return takenIndex;
-					}
-			}
+			TextArea.PerformTextInput(nextFreeIndex.ToString());
 		}
 
 		public void UpdateSettings(CS_EditorConfiguration configuration)

@@ -24,7 +24,7 @@ namespace TombIDE.Shared.Local
 
 		public string File { get; set; }
 		public string Edit { get; set; }
-		public string Tools { get; set; }
+		public string Document { get; set; }
 		public string Options { get; set; }
 		public string View { get; set; }
 		public string Help { get; set; }

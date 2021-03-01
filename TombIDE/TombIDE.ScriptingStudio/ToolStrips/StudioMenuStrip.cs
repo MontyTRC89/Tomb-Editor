@@ -50,7 +50,7 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 		private readonly ToolStripMenuItem FileMenu = new ToolStripMenuItem(Strings.Default.File) { Tag = typeof(StudioMode) };
 		private readonly ToolStripMenuItem EditMenu = new ToolStripMenuItem(Strings.Default.Edit) { Tag = typeof(StudioMode) };
-		private readonly ToolStripMenuItem ToolsMenu = new ToolStripMenuItem(Strings.Default.Tools) { Tag = typeof(DocumentMode) };
+		private readonly ToolStripMenuItem DocumentMenu = new ToolStripMenuItem(Strings.Default.Document) { Tag = typeof(DocumentMode) };
 		private readonly ToolStripMenuItem OptionsMenu = new ToolStripMenuItem(Strings.Default.Options) { Tag = typeof(StudioMode) };
 		private readonly ToolStripMenuItem ViewMenu = new ToolStripMenuItem(Strings.Default.View) { Tag = typeof(StudioMode) };
 		private readonly ToolStripMenuItem HelpMenu = new ToolStripMenuItem(Strings.Default.Help) { Tag = typeof(StudioMode) };
@@ -118,7 +118,7 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			{ Tag = UIElement.SelectAll, ShortcutKeyDisplayString = "Ctrl+A" }, // Shortcut is handled by the editor itself
 		};
 
-		private ToolStripItem[] ToolsItems => new ToolStripItem[]
+		private ToolStripItem[] DocumentItems => new ToolStripItem[]
 		{
 			new ToolStripMenuItem(Strings.Default.Reindent, null, OnItemClicked, UIKeys.Reindent)
 			{ Tag = UIElement.Reindent },

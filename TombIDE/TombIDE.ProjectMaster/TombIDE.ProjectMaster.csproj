@@ -36,6 +36,12 @@
     <Reference Include="CustomTabControl">
       <HintPath>..\..\Libs\CustomTabControl.dll</HintPath>
     </Reference>
+    <Reference Include="IconExtractor, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\BetterIconExtractor.1.0.0\lib\net40\IconExtractor.dll</HintPath>
+    </Reference>
+    <Reference Include="IconInjector, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IconInjector.1.0.0\lib\net40\IconInjector.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="SharpCompress, Version=0.23.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpCompress.0.23.0\lib\net45\SharpCompress.dll</HintPath>
@@ -88,8 +94,6 @@
     <Compile Include="Forms\FormSplashPreview.Designer.cs">
       <DependentUpon>FormSplashPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="IconExtractor.cs" />
-    <Compile Include="IconInjector.cs" />
     <Compile Include="PakFile.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
