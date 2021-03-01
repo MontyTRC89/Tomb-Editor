@@ -384,7 +384,7 @@ namespace TombLib.Wad.TrLevels
 
                                 }*/
 
-                                levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
+                                //levelReader.BaseStream.Seek(roomDataSize, SeekOrigin.Current);
                             }
                         }
 

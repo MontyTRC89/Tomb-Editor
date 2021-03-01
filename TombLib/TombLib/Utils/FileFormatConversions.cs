@@ -184,7 +184,7 @@ namespace TombLib.Utils
                 // Finished!
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -485,7 +485,7 @@ namespace TombLib.Utils
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

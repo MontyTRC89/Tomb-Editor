@@ -73,7 +73,22 @@ namespace TombLib.Utils
             output.W = alpha;
             return output;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+			return base.Equals(obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
+		public override string ToString()
+		{
+			return base.ToString();
+		}
+	}
 
     // A very simple but very efficient image that is independent of GDI+.
     // This structure is under the control of the garbage collector and therefore does not need a Dispose() call.
