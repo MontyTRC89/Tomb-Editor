@@ -494,10 +494,11 @@ namespace DarkUI.Docking
             {
                 Control parent = Parent;
 
-                while (!(parent is Form))
+                while (!(parent is Form) && parent != null)
                     parent = parent.Parent;
 
-                parentForm = parent as Form;
+                if(parent is Form)
+                    parentForm = parent as Form;
             }
 
             return parentForm;

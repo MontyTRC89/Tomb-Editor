@@ -26,6 +26,18 @@ namespace TombIDE.ScriptingStudio
 	{
 		#region Properties
 
+		public new Control Parent
+		{
+			get => base.Parent;
+			set
+			{
+				base.Parent = value;
+
+				if (value is Form)
+					InitializeDockPanel();
+			}
+		}
+
 		public abstract StudioMode StudioMode { get; }
 
 		public DocumentMode DocumentMode
@@ -92,7 +104,7 @@ namespace TombIDE.ScriptingStudio
 		// Bottom:
 
 		public CompilerLogs CompilerLogs = new CompilerLogs();
-		public SearchResults SearchResults = new SearchResults();
+		public SearchResults SearchResults;
 
 		/* Very frequently accessed items */
 
@@ -144,6 +156,8 @@ namespace TombIDE.ScriptingStudio
 				InitializeFileExplorer();
 				InitializeFindReplaceForm();
 				InitializeFrequentlyAccessedItems(); // For quick control state updating
+
+				SearchResults = new SearchResults(EditorTabControl);
 
 				if (!string.IsNullOrWhiteSpace(initialFilePath))
 					EditorTabControl.OpenFile(initialFilePath);
@@ -242,13 +256,6 @@ namespace TombIDE.ScriptingStudio
 		#endregion Construction
 
 		#region Events
-
-		protected override void OnParentChanged(EventArgs e)
-		{
-			base.OnParentChanged(e);
-
-			InitializeDockPanel();
-		}
 
 		protected virtual void OnIDEEventRaised(IIDEEvent obj)
 		{

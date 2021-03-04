@@ -312,38 +312,8 @@ namespace TombLib.Scripting.Forms
 				string pattern = GetCurrentPattern();
 				RegexOptions options = GetCurrentRegexOptions();
 
-				targetTextEditor.SelectedText = AdvancedRegexReplace(targetTextEditor.SelectedText, pattern, textBox_Replace.Text, options);
+				targetTextEditor.SelectedText = Regex.Replace(targetTextEditor.SelectedText, pattern, textBox_Replace.Text, options);
 			}
-		}
-
-		/// <summary>
-		/// Implements group replacement support.
-		/// </summary>
-		private string AdvancedRegexReplace(string input, string pattern, string replacement, RegexOptions options)
-		{
-			string result = input;
-
-			foreach (Match match in Regex.Matches(input, pattern, options))
-			{
-				GroupCollection groups = match.Groups;
-
-				for (int i = 0; i < groups.Count; i++)
-				{
-					if (i == 0)
-					{
-						result = Regex.Replace(result, pattern, replacement, options);
-						continue;
-					}
-
-					Group group = groups[i];
-
-					foreach (Match groupMatch in Regex.Matches(replacement, @"\$\d*"))
-						if (groupMatch.Value.Trim('$').Trim() == i.ToString())
-							result = Regex.Replace(result, pattern, replacement.Replace(groupMatch.Value, group.Value), options);
-				}
-			}
-
-			return result;
 		}
 
 		#endregion Replace methods
@@ -473,7 +443,7 @@ namespace TombLib.Scripting.Forms
 				if (matchCount > 0)
 				{
 					currentTabTextEditor.SelectAll();
-					currentTabTextEditor.SelectedText = AdvancedRegexReplace(currentTabTextEditor.Text, pattern, textBox_Replace.Text, options);
+					currentTabTextEditor.SelectedText = Regex.Replace(currentTabTextEditor.Text, pattern, textBox_Replace.Text, options);
 					MoveCaretToDocumentStart(currentTabTextEditor);
 				}
 			}
@@ -496,7 +466,7 @@ namespace TombLib.Scripting.Forms
 								continue;
 
 							tabTextEditor.SelectAll();
-							tabTextEditor.SelectedText = AdvancedRegexReplace(tabTextEditor.Text, pattern, textBox_Replace.Text, options);
+							tabTextEditor.SelectedText = Regex.Replace(tabTextEditor.Text, pattern, textBox_Replace.Text, options);
 							MoveCaretToDocumentStart(tabTextEditor);
 						}
 					else
