@@ -3,22 +3,30 @@ using DarkUI.Docking;
 using ICSharpCode.AvalonEdit.Document;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Controls;
 using TombIDE.Shared;
 using TombLib.Scripting.Bases;
+using TombLib.Scripting.Enums;
 using TombLib.Scripting.Objects;
 
 namespace TombIDE.ScriptingStudio.ToolWindows
 {
 	public partial class SearchResults : DarkToolWindow
 	{
-		public SearchResults()
+		private EditorTabControl _targetTabControl;
+
+		public SearchResults(EditorTabControl targetTabControl)
 		{
 			InitializeComponent();
 			DockText = Strings.Default.SearchResults;
+
+			_targetTabControl = targetTabControl;
 		}
 
 		public void UpdateResults(FindReplaceEventArgs e)
 		{
+			treeView.Nodes.Clear();
+
 			foreach (FindReplaceSource source in e.SourceCollection)
 			{
 				var sourceNode =
@@ -46,19 +54,17 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 			var item = treeView.SelectedNodes[0].Tag as FindReplaceItem;
 
-			//if (_targetTabControl != null)
-			//{
-			//	string sourceFilePath = treeView.SelectedNodes[0].ParentNode.Tag.ToString();
-			//	TabPage tab = _targetTabControl.FindTabPage(sourceFilePath);
+			if (_targetTabControl != null)
+			{
+				string sourceFilePath = treeView.SelectedNodes[0].ParentNode.Tag.ToString();
+				TabPage tab = _targetTabControl.FindTabPage(sourceFilePath, EditorType.Text);
 
-			//	if (tab != null)
-			//	{
-			//		_targetTabControl.SelectTab(tab);
-			//		HandleJump((TextEditorBase)_targetTabControl.CurrentEditor, item);
-			//	}
-			//}
-			//else if (_targetTextEditor != null)
-			//	HandleJump(_targetTextEditor, item);
+				if (tab != null)
+				{
+					_targetTabControl.SelectTab(tab);
+					HandleJump(_targetTabControl.CurrentEditor as TextEditorBase, item);
+				}
+			}
 		}
 
 		private void HandleJump(TextEditorBase textEditor, FindReplaceItem item)

@@ -121,7 +121,8 @@ namespace TombLib.Scripting.Bases
 		private void SetNewDefaultSettings()
 		{
 			Options.AllowScrollBelowDocument = true;
-			TextArea.TextView.Margin = new Thickness(4, 0, 0, 0);
+			TextArea.Margin = new Thickness(6, 0, 0, 0);
+			TextArea.TextView.Margin = new Thickness(3, 0, 0, 0);
 
 			FontWeight = FontWeights.Normal;
 

@@ -337,7 +337,7 @@ namespace TombLib.Scripting.ClassicScript
 
 			SelectAll();
 			SelectedText = trimOnly ? Cleaner.TrimEndingWhitespace(Text) : Cleaner.ReindentScript(Text);
-			Select(0, 0);
+			ResetSelection();
 
 			ScrollToHorizontalOffset(scrollOffset.X);
 			ScrollToVerticalOffset(scrollOffset.Y);

@@ -54,6 +54,8 @@ namespace TombIDE.ScriptingStudio
 			NGCBackgroundWorker.RunWorkerCompleted += NGCBackgroundWorker_RunWorkerCompleted;
 
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
+
+			FileExplorer.Filter = "*.txt";
 		}
 
 		#endregion Construction

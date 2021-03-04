@@ -373,7 +373,8 @@ namespace TombIDE.ScriptingStudio.Controls
 				IEditorControl tabEditor = GetEditorOfTab(tabPage);
 
 				// Same file, different EditorType
-				if (tabEditor.FilePath == excludedEditor.FilePath && tabEditor.EditorType != excludedEditor.EditorType)
+				if (tabEditor.FilePath.Equals(excludedEditor.FilePath, StringComparison.OrdinalIgnoreCase)
+					&& tabEditor.EditorType != excludedEditor.EditorType)
 				{
 					if (tabEditor.Content != excludedEditor.Content)
 						tabEditor.Content = excludedEditor.Content;
@@ -410,7 +411,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			{
 				IEditorControl editor = GetEditorOfTab(tab);
 
-				if (editor.FilePath == filePath && editor.EditorType == editorType)
+				if (editor.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase) && editor.EditorType == editorType)
 					return tab;
 			}
 
@@ -423,7 +424,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			{
 				IEditorControl editor = GetEditorOfTab(tab);
 
-				if (editor.FilePath == filePath)
+				if (editor.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase))
 					yield return tab;
 			}
 		}
@@ -461,7 +462,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			{
 				IEditorControl editor = GetEditorOfTab(tab);
 
-				if (!File.Exists(editor.FilePath))
+				if (editor != null && !File.Exists(editor.FilePath))
 				{
 					if (editor.IsContentChanged)
 						editor.FilePath = null;
