@@ -41,10 +41,8 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public ClassicScriptStudio() : base(
-			IDE.Global.Project.ScriptPath,
-			IDE.Global.Project.EnginePath,
-			PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath))
+		public ClassicScriptStudio() :
+			base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath, PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath))
 		{
 			DockPanelState = DefaultLayouts.ClassicScriptLayout;
 
@@ -270,6 +268,8 @@ namespace TombIDE.ScriptingStudio
 
 		#endregion Events
 
+		#region Other methods
+
 		private void OpenIncludeFile()
 		{
 			if (CurrentEditor is TextEditorBase editor)
@@ -327,37 +327,21 @@ namespace TombIDE.ScriptingStudio
 		}
 
 		protected override void ApplyUserSettings(IEditorControl editor)
-		{
-			editor.UpdateSettings(Configs.ClassicScript);
-		}
+			=> editor.UpdateSettings(Configs.ClassicScript);
 
 		protected override void ApplyUserSettings()
 		{
 			foreach (TabPage tab in EditorTabControl.TabPages)
-				EditorTabControl.GetEditorOfTab(tab).UpdateSettings(Configs.ClassicScript);
+				ApplyUserSettings(EditorTabControl.GetEditorOfTab(tab));
+
+			StatusStrip.SyntaxPreview.ReloadSettings();
+
+			UpdateSettings();
 		}
 
 		protected override void Build()
 			=> CompileTRNGScript();
+
+		#endregion Other methods
 	}
 }
-
-//{
-//	if (CurrentEditor is ScriptTextEditor scriptEditor)
-//		scriptEditor.UpdateSettings(ConfigurationCollection.CS_EditorConfiguration);
-//	else if (CurrentEditor is StringEditor stringEditor)
-//		stringEditor.UpdateSettings(null);
-//	else if (CurrentEditor is LuaTextEditor luaEditor)
-//		luaEditor.UpdateSettings(ConfigurationCollection.Lua_EditorConfiguration);
-
-//	ToolStripMenuItem useNewInclude = MenuStrip.FindMenuItem(UICommand.UseNewInclude);
-//	ToolStripMenuItem showLogsAfterBuild = MenuStrip.FindMenuItem(UICommand.ShowLogsAfterBuild);
-//	ToolStripMenuItem reindentOnSave = MenuStrip.FindMenuItem(UICommand.ReindentOnSave);
-
-//	if (useNewInclude != null)
-//		useNewInclude.Checked = IDE.Global.IDEConfiguration.UseNewIncludeMethod;
-//	if (showLogsAfterBuild != null)
-//		showLogsAfterBuild.Checked = IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild;
-//	if (reindentOnSave != null)
-//		reindentOnSave.Checked = IDE.Global.IDEConfiguration.ReindentOnSave;
-//}

@@ -357,20 +357,22 @@ namespace TombLib.Scripting.ClassicScript
 			TextArea.PerformTextInput(nextFreeIndex.ToString());
 		}
 
-		public void UpdateSettings(CS_EditorConfiguration configuration)
+		public override void UpdateSettings(ConfigurationBase configuration)
 		{
-			SyntaxHighlighting = new SyntaxHighlighting(configuration.ColorScheme);
+			var config = configuration as CS_EditorConfiguration;
 
-			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(configuration.ColorScheme.Background));
-			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(configuration.ColorScheme.Foreground));
+			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
 
-			ShowSectionSeparators = configuration.ShowSectionSeparators;
+			Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Background));
+			Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(config.ColorScheme.Foreground));
 
-			Cleaner.PreEqualSpace = configuration.Tidy_PreEqualSpace;
-			Cleaner.PostEqualSpace = configuration.Tidy_PostEqualSpace;
-			Cleaner.PreCommaSpace = configuration.Tidy_PreCommaSpace;
-			Cleaner.PostCommaSpace = configuration.Tidy_PostCommaSpace;
-			Cleaner.ReduceSpaces = configuration.Tidy_ReduceSpaces;
+			ShowSectionSeparators = config.ShowSectionSeparators;
+
+			Cleaner.PreEqualSpace = config.Tidy_PreEqualSpace;
+			Cleaner.PostEqualSpace = config.Tidy_PostEqualSpace;
+			Cleaner.PreCommaSpace = config.Tidy_PreCommaSpace;
+			Cleaner.PostCommaSpace = config.Tidy_PostCommaSpace;
+			Cleaner.ReduceSpaces = config.Tidy_ReduceSpaces;
 
 			base.UpdateSettings(configuration);
 		}
