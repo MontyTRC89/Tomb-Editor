@@ -2,8 +2,6 @@
 using DarkUI.Forms;
 using System;
 using System.Windows.Forms;
-using ClassicScriptConfig = TombLib.Scripting.ClassicScript.CS_EditorConfiguration;
-using LuaConfig = TombLib.Scripting.Lua.Lua_EditorConfiguration;
 
 namespace TombIDE.ScriptingStudio.Settings
 {
@@ -11,17 +9,13 @@ namespace TombIDE.ScriptingStudio.Settings
 
 	public partial class FormTextEditorSettings : DarkForm
 	{
-		private ClassicScriptConfig _classicScriptConfig = new ClassicScriptConfig();
-		private LuaConfig _luaConfig = new LuaConfig();
-
-		private readonly ClassicScriptConfig _classicScriptConfigCopy = new ClassicScriptConfig();
-		private readonly LuaConfig _luaConfigCopy = new LuaConfig();
+		private ConfigurationCollection configs = new ConfigurationCollection();
 
 		public FormTextEditorSettings()
 		{
 			InitializeComponent();
 
-			settingsClassicScript.Initialize(_classicScriptConfig);
+			settingsClassicScript.Initialize(configs.ClassicScript);
 
 			var classicScriptNode = new DarkTreeNode("Classic Script");
 			var luaNode = new DarkTreeNode("Lua");
@@ -38,19 +32,17 @@ namespace TombIDE.ScriptingStudio.Settings
 
 			if (DialogResult == DialogResult.OK)
 			{
-				settingsClassicScript.ApplySettings(_classicScriptConfig);
+				settingsClassicScript.ApplySettings(configs.ClassicScript);
 			}
 			else
 			{
-				_classicScriptConfigCopy.Save();
-				_luaConfigCopy.Save();
+				configs.SaveAllConfigs();
 			}
 		}
 
 		private void button_Apply_Click(object sender, EventArgs e)
 		{
-			_classicScriptConfig.Save();
-			_luaConfig.Save();
+			configs.SaveAllConfigs();
 		}
 
 		private void button_ResetDefault_Click(object sender, EventArgs e)

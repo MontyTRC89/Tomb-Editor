@@ -532,7 +532,9 @@ namespace TombIDE.ScriptingStudio.Settings
 		private void UpdatePreviewTemp(bool forceUpdate = true)
 		{
 			editorPreview.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because AvalonEdit has a different font size scale
-			editorPreview.FontFamily = new System.Windows.Media.FontFamily(comboBox_FontFamily.SelectedItem.ToString());
+
+			if(comboBox_FontFamily.SelectedItem != null)
+				editorPreview.FontFamily = new System.Windows.Media.FontFamily(comboBox_FontFamily.SelectedItem.ToString());
 
 			editorPreview.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
 

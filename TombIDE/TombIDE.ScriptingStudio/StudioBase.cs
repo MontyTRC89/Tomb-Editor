@@ -15,7 +15,6 @@ using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Forms;
 using TombLib.Scripting.Bases;
-using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Forms;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
@@ -34,7 +33,10 @@ namespace TombIDE.ScriptingStudio
 				base.Parent = value;
 
 				if (value is Form)
+				{
 					InitializeDockPanel();
+					ApplyUserSettings();
+				}
 			}
 		}
 
@@ -86,24 +88,24 @@ namespace TombIDE.ScriptingStudio
 
 		// Document:
 
-		public EditorTabControl EditorTabControl = new EditorTabControl();
+		public EditorTabControl EditorTabControl;
 
 		/// <summary>
 		/// Dockable document. (Parent of <c>EditorTabControl</c>)
 		/// </summary>
-		public DarkDocument EditorTabControlDocument = new DarkDocument();
+		public DarkDocument EditorTabControlDocument;
 
 		// Left:
 
-		public ContentExplorer ContentExplorer = new ContentExplorer();
+		public ContentExplorer ContentExplorer;
 
 		// Right:
 
-		public FileExplorer FileExplorer = new FileExplorer();
+		public FileExplorer FileExplorer;
 
 		// Bottom:
 
-		public CompilerLogs CompilerLogs = new CompilerLogs();
+		public CompilerLogs CompilerLogs;
 		public SearchResults SearchResults;
 
 		/* Very frequently accessed items */
@@ -143,21 +145,23 @@ namespace TombIDE.ScriptingStudio
 
 			if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
 			{
-				IDE.Global.IDEEventRaised += OnIDEEventRaised;
-
-				ScriptRootDirectoryPath = scriptRootDirectoryPath;
-				EngineDirectoryPath = engineDirectoryPath;
-
 				MenuStrip.StudioMode = StudioMode;
 				ToolStrip.StudioMode = StudioMode;
+
+				InitializeFrequentlyAccessedItems(); // For quick control state updating
 
 				InitializeTabControl();
 				InitializeContentExplorer();
 				InitializeFileExplorer();
 				InitializeFindReplaceForm();
-				InitializeFrequentlyAccessedItems(); // For quick control state updating
 
+				CompilerLogs = new CompilerLogs();
 				SearchResults = new SearchResults(EditorTabControl);
+
+				IDE.Global.IDEEventRaised += OnIDEEventRaised;
+
+				ScriptRootDirectoryPath = scriptRootDirectoryPath;
+				EngineDirectoryPath = engineDirectoryPath;
 
 				if (!string.IsNullOrWhiteSpace(initialFilePath))
 					EditorTabControl.OpenFile(initialFilePath);
@@ -166,17 +170,24 @@ namespace TombIDE.ScriptingStudio
 
 		private void InitializeTabControl()
 		{
-			EditorTabControlDocument.Controls.Add(EditorTabControl);
+			EditorTabControl = new EditorTabControl();
 			EditorTabControl.SelectedIndexChanged += EditorTabControl_SelectedIndexChanged;
 			EditorTabControl.FileOpened += EditorTabControl_FileOpened;
 			EditorTabControl.TabClosing += EditorTabControl_TabClosing;
+
+			EditorTabControlDocument = new DarkDocument();
+			EditorTabControlDocument.Controls.Add(EditorTabControl);
 		}
 
 		private void InitializeContentExplorer()
-			=> ContentExplorer.ObjectClicked += ContentExplorer_ObjectClicked;
+		{
+			ContentExplorer = new ContentExplorer();
+			ContentExplorer.ObjectClicked += ContentExplorer_ObjectClicked;
+		}
 
 		private void InitializeFileExplorer()
 		{
+			FileExplorer = new FileExplorer();
 			FileExplorer.FileOpened += FileExplorer_FileOpened;
 			FileExplorer.FileChanged += FileExplorer_FileChanged;
 			FileExplorer.FileRenamed += FileExplorer_FileRenamed;
@@ -270,14 +281,7 @@ namespace TombIDE.ScriptingStudio
 			=> OnToolStripItemClicked((UIElement)(sender as ToolStripItem).Tag);
 
 		private void EditorTabControl_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (CurrentEditor != null)
-				DocumentMode = FileHelper.GetDocumentModeForFile(CurrentEditor.FilePath, CurrentEditor.EditorType);
-
-			ContentExplorer.EditorControl = CurrentEditor;
-			StatusStrip.EditorControl = CurrentEditor;
-			UpdateUndoRedoSaveStates();
-		}
+			=> UpdateUI();
 
 		private void EditorTabControl_FileOpened(object sender, EventArgs e)
 		{
@@ -288,14 +292,9 @@ namespace TombIDE.ScriptingStudio
 			if (editor is TextEditorBase textEditor)
 				textEditor.KeyDown += TextEditor_KeyDown;
 
-			if (editor is ClassicScriptEditor scriptEditor)
-				scriptEditor.UpdateSettings(Configs.ClassicScript);
+			ApplyUserSettings(editor);
 
-			DocumentMode = FileHelper.GetDocumentModeForFile(CurrentEditor.FilePath, CurrentEditor.EditorType);
-
-			ContentExplorer.EditorControl = CurrentEditor;
-			StatusStrip.EditorControl = CurrentEditor;
-			UpdateUndoRedoSaveStates();
+			UpdateUI();
 		}
 
 		private void EditorTabControl_TabClosing(object sender, TabControlCancelEventArgs e)
@@ -318,7 +317,7 @@ namespace TombIDE.ScriptingStudio
 			=> CurrentEditor.GoToObject(e.ObjectName, e.IdentifyingObject);
 
 		private void FileExplorer_FileOpened(object sender, FileOpenedEventArgs e)
-			=> EditorTabControl.OpenFile(e.FilePath, e.EditorType, false);
+			=> EditorTabControl.OpenFile(e.FilePath, e.EditorType);
 
 		private void FileExplorer_FileChanged(object sender, FileSystemEventArgs e)
 		{
@@ -348,6 +347,17 @@ namespace TombIDE.ScriptingStudio
 		#endregion Events
 
 		#region Event methods
+
+		private void UpdateUI()
+		{
+			if (CurrentEditor != null)
+				DocumentMode = FileHelper.GetDocumentModeForFile(CurrentEditor.FilePath, CurrentEditor.EditorType);
+
+			ContentExplorer.EditorControl = CurrentEditor;
+			StatusStrip.EditorControl = CurrentEditor;
+
+			UpdateUndoRedoSaveStates();
+		}
 
 		protected virtual void OnToolStripItemClicked(UIElement e)
 		{
@@ -398,17 +408,17 @@ namespace TombIDE.ScriptingStudio
 			{
 				// File
 				case UIElement.NewFile: FileExplorer.CreateNewFile(); break;
-				case UIElement.Save: EditorTabControl.SaveFile(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.SaveAs: EditorTabControl.SaveFileAs(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.SaveAll: EditorTabControl.SaveAll(); UpdateUndoRedoSaveStates(); break;
+				case UIElement.Save: EditorTabControl.SaveFile(); break;
+				case UIElement.SaveAs: EditorTabControl.SaveFileAs(); break;
+				case UIElement.SaveAll: EditorTabControl.SaveAll(); break;
 				case UIElement.Build: Build(); break;
 
 				// Edit
-				case UIElement.Undo: CurrentEditor?.Undo(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Redo: CurrentEditor?.Redo(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Cut: CurrentEditor?.Cut(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Copy: CurrentEditor?.Copy(); UpdateUndoRedoSaveStates(); break;
-				case UIElement.Paste: CurrentEditor?.Paste(); UpdateUndoRedoSaveStates(); break;
+				case UIElement.Undo: CurrentEditor?.Undo(); break;
+				case UIElement.Redo: CurrentEditor?.Redo(); break;
+				case UIElement.Cut: CurrentEditor?.Cut(); break;
+				case UIElement.Copy: CurrentEditor?.Copy(); break;
+				case UIElement.Paste: CurrentEditor?.Paste(); break;
 				case UIElement.Find: FormFindReplace.Show(this, CurrentEditor?.SelectedContent?.ToString()); break;
 				case UIElement.SelectAll: CurrentEditor?.SelectAll(); break;
 
@@ -426,6 +436,8 @@ namespace TombIDE.ScriptingStudio
 
 			if (command >= UIElement.ToolStrip && command <= UIElement.StatusStrip) // All "View" menu items
 				ToggleItemVisibility(command);
+
+			UpdateUndoRedoSaveStates();
 		}
 
 		private void HandleDocumentCommands(UIElement command)
@@ -513,6 +525,26 @@ namespace TombIDE.ScriptingStudio
 				else
 					item.Checked = DockPanel.ContainsContent(GetControlByKey<DarkToolWindow>(command.ToString()));
 			}
+		}
+
+		protected void UpdateSettings()
+		{
+			UpdateSetting(UIElement.UseNewInclude);
+			UpdateSetting(UIElement.ShowLogsAfterBuild);
+			UpdateSetting(UIElement.ReindentOnSave);
+		}
+
+		protected void UpdateSetting(UIElement command)
+		{
+			var menuItem = MenuStrip.FindItem(command) as ToolStripMenuItem;
+
+			if(menuItem != null)
+				switch (command)
+				{
+					case UIElement.UseNewInclude: menuItem.Checked = Configs.ClassicScript.UseNewIncludeMethod; break;
+					case UIElement.ShowLogsAfterBuild: menuItem.Checked = IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild; break;
+					case UIElement.ReindentOnSave: menuItem.Checked = IDE.Global.IDEConfiguration.ReindentOnSave; break;
+				}
 		}
 
 		protected void ToggleSetting(UIElement command)
