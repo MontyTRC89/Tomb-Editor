@@ -538,10 +538,10 @@ namespace TombIDE.ScriptingStudio
 		{
 			var menuItem = MenuStrip.FindItem(command) as ToolStripMenuItem;
 
-			if(menuItem != null)
+			if (menuItem != null)
 				switch (command)
 				{
-					case UIElement.UseNewInclude: menuItem.Checked = Configs.ClassicScript.UseNewIncludeMethod; break;
+					case UIElement.UseNewInclude: menuItem.Checked = IDE.Global.IDEConfiguration.UseNewIncludeMethod; break;
 					case UIElement.ShowLogsAfterBuild: menuItem.Checked = IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild; break;
 					case UIElement.ReindentOnSave: menuItem.Checked = IDE.Global.IDEConfiguration.ReindentOnSave; break;
 				}
@@ -553,7 +553,7 @@ namespace TombIDE.ScriptingStudio
 
 			switch (command)
 			{
-				case UIElement.UseNewInclude: Configs.ClassicScript.UseNewIncludeMethod = menuItem.Checked; break;
+				case UIElement.UseNewInclude: IDE.Global.IDEConfiguration.UseNewIncludeMethod = menuItem.Checked; break;
 				case UIElement.ShowLogsAfterBuild: IDE.Global.IDEConfiguration.ShowCompilerLogsAfterBuild = menuItem.Checked; break;
 				case UIElement.ReindentOnSave: IDE.Global.IDEConfiguration.ReindentOnSave = menuItem.Checked; break;
 			}

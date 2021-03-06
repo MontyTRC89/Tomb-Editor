@@ -85,8 +85,18 @@ namespace TombLib.Scripting.ClassicScript.Utils
 				windowList = ngCenter.GetWindows();
 				Window ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
 
-				if (ngcErrorMessageBox != null) // If the build attempt failed
-					return false;
+				if (ngcErrorMessageBox != null) // If the first build attempt failed
+				{
+					ngcErrorMessageBox.KeyIn(KeyboardInput.SpecialKeys.ESCAPE); // Closes the message box
+					buildButton.KeyIn(KeyboardInput.SpecialKeys.RETURN); // Try again
+
+					// CHECK IF AN ERROR MESSAGE BOX APPEARED
+					windowList = ngCenter.GetWindows();
+					ngcErrorMessageBox = windowList.Find(x => x.Title.Equals("NG_CENTER"));
+
+					if (ngcErrorMessageBox != null) // If the second build attempt failed
+						return false;
+				}
 
 				// CLICK THE "Show Log" BUTTON AND UPDATE PATHS FROM VGE TO PROJECT
 				Button logButton = mainNGCenterWindow.Get<Button>("Show Log");

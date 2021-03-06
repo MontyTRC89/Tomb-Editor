@@ -11,8 +11,6 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Properties
 
-		public bool UseNewIncludeMethod { get; set; } = ConfigurationDefaults.UseNewIncludeMethod;
-
 		public bool ShowSectionSeparators { get; set; } = ConfigurationDefaults.ShowSectionSeparators;
 
 		public bool Tidy_PreEqualSpace { get; set; } = ConfigurationDefaults.Tidy_PreEqualSpace;

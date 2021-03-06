@@ -13,6 +13,24 @@ namespace TombIDE.ProjectMaster
 	{
 		private IDE _ide;
 
+		private bool _isPendingLevelListReload = false;
+
+		private bool _isMainWindowFocused;
+		public bool IsMainWindowFocued
+		{
+			get => _isMainWindowFocused;
+			set
+			{
+				_isMainWindowFocused = value;
+
+				if (_isMainWindowFocused && _isPendingLevelListReload)
+				{
+					_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+					_isPendingLevelListReload = false;
+				}
+			}
+		}
+
 		#region Initialization
 
 		public ProjectMaster()
@@ -123,8 +141,21 @@ namespace TombIDE.ProjectMaster
 		#region Watchers
 
 		// Deleting .prj2 files is critical, so watch out
-		private void prj2FileWatcher_Deleted(object sender, FileSystemEventArgs e) => _ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
-		private void levelFolderWatcher_Deleted(object sender, FileSystemEventArgs e) => _ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+		private void prj2FileWatcher_Deleted(object sender, FileSystemEventArgs e)
+		{
+			if (IsMainWindowFocued)
+				_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+			else
+				_isPendingLevelListReload = true;
+		}
+
+		private void levelFolderWatcher_Deleted(object sender, FileSystemEventArgs e)
+		{
+			if (IsMainWindowFocued)
+				_ide.RaiseEvent(new IDE.PRJ2FileDeletedEvent());
+			else
+				_isPendingLevelListReload = true;
+		}
 
 		// Plugin watchers
 		private void projectDLLFileWatcher_Changed(object sender, FileSystemEventArgs e) => CheckPlugins();

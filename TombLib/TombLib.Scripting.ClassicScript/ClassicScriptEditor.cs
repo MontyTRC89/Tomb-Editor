@@ -440,7 +440,7 @@ namespace TombLib.Scripting.ClassicScript
 
 			CaretOffset = lastSectionLine.Offset + lastSectionLine.Length;
 
-			TextArea.PerformTextInput($"\nPlugin= {nextFreePluginIndex}, {pluginString}, IGNORE");
+			TextArea.PerformTextInput($"{Environment.NewLine}Plugin= {nextFreePluginIndex}, {pluginString}, IGNORE");
 
 			return true;
 		}

@@ -70,11 +70,16 @@ namespace TombIDE
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() == Handle)
 			{
 				classicScriptStudio.IsMainWindowFocued = true;
+				projectMaster.IsMainWindowFocued = true;
+
 				classicScriptStudio.EditorTabControl.TryRunFileReloadQueue();
 			}
 
 			if (!IsDisposed && NativeMethods.GetForegroundWindow() != Handle)
+			{
 				classicScriptStudio.IsMainWindowFocued = false;
+				projectMaster.IsMainWindowFocued = false;
+			}
 
 			if (IsDisposed)
 				NativeMethods.UnhookWinEvent(eventHook);

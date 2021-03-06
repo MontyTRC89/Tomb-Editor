@@ -7,8 +7,6 @@
 
 		public const string SelectedColorSchemeName = "VS15";
 
-		public const bool UseNewIncludeMethod = true;
-
 		public const bool ShowSectionSeparators = true;
 
 		public const bool Tidy_PreEqualSpace = false;

@@ -22,7 +22,7 @@ namespace TombLib.Scripting.ClassicScript.Resources
 		/// </summary>
 		public static List<string> AllConstantFlags = new List<string>();
 
-		private static void SetupConstants(string ngcPath)
+		public static void SetupConstants(string ngcPath)
 		{
 			StandardConstants = GetMnemonicConstants(DefaultPaths.ReferencesDirectory);
 			PluginConstants = GetPluginMnemonics(ngcPath);
