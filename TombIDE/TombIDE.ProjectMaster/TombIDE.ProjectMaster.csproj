@@ -234,6 +234,10 @@
       <Project>{EB61DFAC-51A6-44E3-869C-9BBDE830A40E}</Project>
       <Name>TombLib.Forms</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TombLib\TombLib.Scripting.ClassicScript\TombLib.Scripting.ClassicScript.csproj">
+      <Project>{5d9a72e7-4b33-4177-ad7c-1b46591005fd}</Project>
+      <Name>TombLib.Scripting.ClassicScript</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TombIDE.Shared\TombIDE.Shared.csproj">
       <Project>{92d73867-1202-43e5-b615-fb998ed8f796}</Project>
       <Name>TombIDE.Shared</Name>

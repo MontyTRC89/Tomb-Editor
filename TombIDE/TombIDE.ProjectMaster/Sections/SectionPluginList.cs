@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.Scripting.ClassicScript.Resources;
 
 namespace TombIDE.ProjectMaster
 {
@@ -66,6 +67,8 @@ namespace TombIDE.ProjectMaster
 						_ide.ScriptEditor_AddNewPluginEntry(pluginString);
 						_ide.ScriptEditor_AddNewNGString(pluginString);
 					}
+
+					MnemonicData.SetupConstants(DefaultPaths.InternalNGCDirectory);
 				}
 			}
 		}

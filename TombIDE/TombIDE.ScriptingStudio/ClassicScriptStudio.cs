@@ -318,7 +318,7 @@ namespace TombIDE.ScriptingStudio
 
 				bool success = await NGCompiler.Compile(
 					ScriptRootDirectoryPath, EngineDirectoryPath,
-					Configs.ClassicScript.UseNewIncludeMethod);
+					IDE.Global.IDEConfiguration.UseNewIncludeMethod);
 
 				if (success)
 				{
