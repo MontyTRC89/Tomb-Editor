@@ -3,7 +3,7 @@
 	public enum IDETab
 	{
 		ProjectMaster,
-		ScriptEditor
+		ScriptingStudio
 	}
 
 	public enum GameLanguage

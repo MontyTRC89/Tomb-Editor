@@ -17,7 +17,7 @@ namespace TombIDE
 {
 	/* Important notes */
 	// All program buttons are instances of the DarkButton class.
-	// Tab buttons on the left tool strip (such as "Project Master", "Script Editor" etc.) are simple panels.
+	// Tab buttons on the left tool strip (such as "Project Master", "Scripting Studio" etc.) are simple panels.
 	// Other buttons (such as "Launch Game") are System.Windows.Forms buttons.
 	// Program button names are just numbers from 0 to {darkbuttons.Count}.
 	// The name number depends on the position of the button.
@@ -52,7 +52,7 @@ namespace TombIDE
 
 			classicScriptStudio = new ScriptingStudio.ClassicScriptStudio { Parent = this };
 			classicScriptStudio.Dock = DockStyle.Fill;
-			tabPage_ScriptEditor.Controls.Add(classicScriptStudio);
+			tabPage_ScriptingStudio.Controls.Add(classicScriptStudio);
 
 			// Add the current project name to the window title
 			Text = "TombIDE - " + _ide.Project.Name;
@@ -199,8 +199,8 @@ namespace TombIDE
 				OnProjectPathsChanged(obj);
 			else if (obj is IDE.ScriptEditor_ContentChangedEvent)
 			{
-				// Indicate changes inside the Script Editor
-				panelButton_ScriptEditor.BackColor = Color.FromArgb(180, 100, 0);
+				// Indicate changes inside the Scripting Studio
+				panelButton_ScriptingStudio.BackColor = Color.FromArgb(180, 100, 0);
 				timer_ScriptButtonBlinking.Interval = 1;
 				timer_ScriptButtonBlinking.Start();
 			}
@@ -505,7 +505,7 @@ namespace TombIDE
 		}
 
 		private void panelButton_ProjectMaster_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ProjectMaster);
-		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptEditor);
+		private void panelButton_ScriptEditor_Click(object sender, EventArgs e) => SelectIDETab(IDETab.ScriptingStudio);
 
 		private void Special_LaunchFLEP(object sender, EventArgs e) => LaunchFLEP();
 		private void button_OpenFolder_Click(object sender, EventArgs e) => SharedMethods.OpenInExplorer(_ide.Project.ProjectPath);
@@ -513,9 +513,9 @@ namespace TombIDE
 
 		private void timer_ScriptButtonBlinking_Tick(object sender, EventArgs e)
 		{
-			int red = panelButton_ScriptEditor.BackColor.R;
-			int green = panelButton_ScriptEditor.BackColor.G;
-			int blue = panelButton_ScriptEditor.BackColor.B;
+			int red = panelButton_ScriptingStudio.BackColor.R;
+			int green = panelButton_ScriptingStudio.BackColor.G;
+			int blue = panelButton_ScriptingStudio.BackColor.B;
 
 			if (red > 48)
 				red--;
@@ -526,7 +526,7 @@ namespace TombIDE
 			if (blue < 48)
 				blue++;
 
-			panelButton_ScriptEditor.BackColor = Color.FromArgb(red, green, blue);
+			panelButton_ScriptingStudio.BackColor = Color.FromArgb(red, green, blue);
 
 			if (red == 48 && green == 48 && blue == 48)
 				timer_ScriptButtonBlinking.Stop();
@@ -583,9 +583,9 @@ namespace TombIDE
 			{
 				// A friendly reminder
 				DarkMessageBox.Show(this, "Before launching the game, you must compile\n" +
-					"your first script using the Script Editor.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					"your first script using the Scripting Studio.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-				SelectIDETab(IDETab.ScriptEditor);
+				SelectIDETab(IDETab.ScriptingStudio);
 			}
 		}
 
@@ -598,18 +598,18 @@ namespace TombIDE
 				case IDETab.ProjectMaster:
 				{
 					panelButton_ProjectMaster.BackColor = Color.FromArgb(135, 135, 135);
-					panelButton_ScriptEditor.BackColor = Color.FromArgb(48, 48, 48);
+					panelButton_ScriptingStudio.BackColor = Color.FromArgb(48, 48, 48);
 
 					tablessTabControl.SelectTab(0);
 					break;
 				}
-				case IDETab.ScriptEditor:
+				case IDETab.ScriptingStudio:
 				{
 					if (timer_ScriptButtonBlinking.Enabled)
 						timer_ScriptButtonBlinking.Stop();
 
 					panelButton_ProjectMaster.BackColor = Color.FromArgb(48, 48, 48);
-					panelButton_ScriptEditor.BackColor = Color.FromArgb(135, 135, 135);
+					panelButton_ScriptingStudio.BackColor = Color.FromArgb(135, 135, 135);
 
 					tablessTabControl.SelectTab(1);
 					break;

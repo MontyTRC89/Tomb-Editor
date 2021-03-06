@@ -32,9 +32,9 @@
 			this.panel_Main = new System.Windows.Forms.Panel();
 			this.tablessTabControl = new TombLib.Controls.DarkTabbedContainer();
 			this.tabPage_ProjectMaster = new System.Windows.Forms.TabPage();
-			this.tabPage_ScriptEditor = new System.Windows.Forms.TabPage();
+			this.tabPage_ScriptingStudio = new System.Windows.Forms.TabPage();
 			this.panel_Programs = new System.Windows.Forms.Panel();
-			this.panelButton_ScriptEditor = new System.Windows.Forms.Panel();
+			this.panelButton_ScriptingStudio = new System.Windows.Forms.Panel();
 			this.panelButton_ProjectMaster = new System.Windows.Forms.Panel();
 			this.timer_ScriptButtonBlinking = new System.Windows.Forms.Timer(this.components);
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
@@ -180,7 +180,7 @@
 			// tablessTabControl
 			// 
 			this.tablessTabControl.Controls.Add(this.tabPage_ProjectMaster);
-			this.tablessTabControl.Controls.Add(this.tabPage_ScriptEditor);
+			this.tablessTabControl.Controls.Add(this.tabPage_ScriptingStudio);
 			this.tablessTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tablessTabControl.Location = new System.Drawing.Point(0, 0);
 			this.tablessTabControl.Name = "tablessTabControl";
@@ -197,14 +197,14 @@
 			this.tabPage_ProjectMaster.TabIndex = 0;
 			this.tabPage_ProjectMaster.Text = "Project Master";
 			// 
-			// tabPage_ScriptEditor
+			// tabPage_ScriptingStudio
 			// 
-			this.tabPage_ScriptEditor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-			this.tabPage_ScriptEditor.Location = new System.Drawing.Point(4, 22);
-			this.tabPage_ScriptEditor.Name = "tabPage_ScriptEditor";
-			this.tabPage_ScriptEditor.Size = new System.Drawing.Size(997, 573);
-			this.tabPage_ScriptEditor.TabIndex = 2;
-			this.tabPage_ScriptEditor.Text = "Script Editor";
+			this.tabPage_ScriptingStudio.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+			this.tabPage_ScriptingStudio.Location = new System.Drawing.Point(4, 22);
+			this.tabPage_ScriptingStudio.Name = "tabPage_ScriptingStudio";
+			this.tabPage_ScriptingStudio.Size = new System.Drawing.Size(997, 573);
+			this.tabPage_ScriptingStudio.TabIndex = 2;
+			this.tabPage_ScriptingStudio.Text = "Scripting Studio";
 			// 
 			// panel_Programs
 			// 
@@ -216,7 +216,7 @@
 			this.panel_Programs.Controls.Add(this.label_Separator_03);
 			this.panel_Programs.Controls.Add(this.button_LaunchGame);
 			this.panel_Programs.Controls.Add(this.label_Separator_02);
-			this.panel_Programs.Controls.Add(this.panelButton_ScriptEditor);
+			this.panel_Programs.Controls.Add(this.panelButton_ScriptingStudio);
 			this.panel_Programs.Controls.Add(this.panelButton_ProjectMaster);
 			this.panel_Programs.Controls.Add(this.label_Separator_01);
 			this.panel_Programs.Controls.Add(this.button_Leave);
@@ -231,17 +231,17 @@
 			this.panel_Programs.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel_Programs_MouseMove);
 			this.panel_Programs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.panel_Programs_MouseUp);
 			// 
-			// panelButton_ScriptEditor
+			// panelButton_ScriptingStudio
 			// 
-			this.panelButton_ScriptEditor.BackgroundImage = global::TombIDE.Properties.Resources.ide_script_30;
-			this.panelButton_ScriptEditor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.panelButton_ScriptEditor.Location = new System.Drawing.Point(2, 114);
-			this.panelButton_ScriptEditor.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-			this.panelButton_ScriptEditor.Name = "panelButton_ScriptEditor";
-			this.panelButton_ScriptEditor.Size = new System.Drawing.Size(42, 42);
-			this.panelButton_ScriptEditor.TabIndex = 4;
-			this.toolTip.SetToolTip(this.panelButton_ScriptEditor, "Script Editor");
-			this.panelButton_ScriptEditor.Click += new System.EventHandler(this.panelButton_ScriptEditor_Click);
+			this.panelButton_ScriptingStudio.BackgroundImage = global::TombIDE.Properties.Resources.ide_script_30;
+			this.panelButton_ScriptingStudio.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.panelButton_ScriptingStudio.Location = new System.Drawing.Point(2, 114);
+			this.panelButton_ScriptingStudio.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+			this.panelButton_ScriptingStudio.Name = "panelButton_ScriptingStudio";
+			this.panelButton_ScriptingStudio.Size = new System.Drawing.Size(42, 42);
+			this.panelButton_ScriptingStudio.TabIndex = 4;
+			this.toolTip.SetToolTip(this.panelButton_ScriptingStudio, "Scripting Studio");
+			this.panelButton_ScriptingStudio.Click += new System.EventHandler(this.panelButton_ScriptEditor_Click);
 			// 
 			// panelButton_ProjectMaster
 			// 
@@ -295,12 +295,12 @@
 		private System.Windows.Forms.Panel panel_Main;
 		private System.Windows.Forms.Panel panel_Programs;
 		private System.Windows.Forms.Panel panelButton_ProjectMaster;
-		private System.Windows.Forms.Panel panelButton_ScriptEditor;
+		private System.Windows.Forms.Panel panelButton_ScriptingStudio;
 		private System.Windows.Forms.Timer timer_ScriptButtonBlinking;
 		private System.Windows.Forms.ToolStripMenuItem menuItem_DeleteButton;
 		private System.Windows.Forms.ToolTip toolTip;
 		private TombLib.Controls.DarkTabbedContainer tablessTabControl;
 		private System.Windows.Forms.TabPage tabPage_ProjectMaster;
-		private System.Windows.Forms.TabPage tabPage_ScriptEditor;
+		private System.Windows.Forms.TabPage tabPage_ScriptingStudio;
 	}
 }

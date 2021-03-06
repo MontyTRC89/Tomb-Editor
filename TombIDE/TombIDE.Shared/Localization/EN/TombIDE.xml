@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Localization>
 	<AskRestoreSession>
-		Looks like your previous Script Editor session was unsuccessfully closed.
+		Looks like your previous Scripting Studio session was unsuccessfully closed.
 		Would you like to restore the unsaved files?
 	</AskRestoreSession>
 

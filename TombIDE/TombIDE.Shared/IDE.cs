@@ -79,7 +79,7 @@ namespace TombIDE.Shared
 		}
 
 		/// <summary>
-		/// Asks the Script Editor if all files are saved and if the application can be safely closed.
+		/// Asks the Scripting Studio if all files are saved and if the application can be safely closed.
 		/// </summary>
 		public bool CanClose()
 		{

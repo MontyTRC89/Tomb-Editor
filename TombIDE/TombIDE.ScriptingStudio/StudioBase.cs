@@ -268,6 +268,13 @@ namespace TombIDE.ScriptingStudio
 
 		#region Events
 
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+
+			UpdateViewMenu();
+		}
+
 		protected virtual void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.ProgramClosingEvent e)
@@ -523,7 +530,7 @@ namespace TombIDE.ScriptingStudio
 				if (command == UIElement.ToolStrip || command == UIElement.StatusStrip)
 					item.Checked = GetControlByKey<Control>(command.ToString()).Visible;
 				else
-					item.Checked = DockPanel.ContainsContent(GetControlByKey<DarkToolWindow>(command.ToString()));
+					item.Checked = DockPanel != null && DockPanel.ContainsContent(GetControlByKey<DarkToolWindow>(command.ToString()));
 			}
 		}
 
