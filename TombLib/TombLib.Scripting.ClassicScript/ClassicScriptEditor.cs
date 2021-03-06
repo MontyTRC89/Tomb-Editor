@@ -239,7 +239,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		private void HandleAutocompleteOnEmptyLine()
 		{
-			string currentSection = DocumentParser.GetSectionName(Document, CaretOffset);
+			string currentSection = DocumentParser.GetCurrentSectionName(Document, CaretOffset);
 
 			if (currentSection != null && StringHelper.BulkStringComparision(currentSection, StringComparison.OrdinalIgnoreCase,
 				"Strings", "PSXStrings", "PCStrings", "ExtraNG"))
@@ -423,6 +423,26 @@ namespace TombLib.Scripting.ClassicScript
 					SelectLine(objectLine);
 				}
 			}
+		}
+
+		public bool TryAddNewPluginEntry(string pluginString)
+		{
+			DocumentLine optionsSectionLine = DocumentParser.FindDocumentLineOfSection(Document, "Options");
+
+			if (optionsSectionLine == null)
+				return false;
+
+			if (DocumentParser.IsPluginDefined(Document, pluginString))
+				return false;
+
+			int nextFreePluginIndex = GlobalParser.GetNextFreeIndex(Document, optionsSectionLine.Offset, "Plugin");
+			DocumentLine lastSectionLine = DocumentParser.GetLastLineOfCurrentSection(Document, optionsSectionLine.Offset);
+
+			CaretOffset = lastSectionLine.Offset + lastSectionLine.Length;
+
+			TextArea.PerformTextInput($"\nPlugin= {nextFreePluginIndex}, {pluginString}, IGNORE");
+
+			return true;
 		}
 	}
 }

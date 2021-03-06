@@ -217,6 +217,18 @@ namespace TombIDE.Shared
 
 		#endregion ScriptEditor_AddNewLevelString
 
+		#region ScriptEditor_AddNewPluginEntry
+
+		public class ScriptEditor_AddNewPluginEntryEvent : IIDEEvent
+		{
+			public string PluginString { get; internal set; }
+		}
+
+		public void ScriptEditor_AddNewPluginEntry(string pluginString) =>
+			RaiseEvent(new ScriptEditor_AddNewPluginEntryEvent { PluginString = pluginString });
+
+		#endregion ScriptEditor_AddNewPluginEntry
+
 		#region ScriptEditor_AddNewNGString
 
 		public class ScriptEditor_AddNewNGStringEvent : IIDEEvent

@@ -2,6 +2,7 @@
 using System;
 using System.Text.RegularExpressions;
 using TombLib.Scripting.Bases;
+using TombLib.Scripting.ClassicScript.Parsers;
 
 namespace TombLib.Scripting.ClassicScript.Writers
 {
@@ -17,9 +18,9 @@ namespace TombLib.Scripting.ClassicScript.Writers
 		{
 			if (!IsNGStringAlreadyDefined(textEditor.Document, ngString))
 			{
-				DocumentLine extrangSectionStartLine = GetExtraNGSectionStartLine(textEditor.Document);
+				DocumentLine extrangSectionStartLine = DocumentParser.FindDocumentLineOfSection(textEditor.Document, "ExtraNG");
 
-				for (int i = textEditor.Document.LineCount; i <= extrangSectionStartLine.LineNumber; i--)
+				for (int i = textEditor.Document.LineCount; i >= extrangSectionStartLine.LineNumber; i--)
 				{
 					DocumentLine line = textEditor.Document.GetLineByNumber(i);
 					string lineText = textEditor.Document.GetText(line.Offset, line.Length);
@@ -27,11 +28,9 @@ namespace TombLib.Scripting.ClassicScript.Writers
 					if (Regex.IsMatch(lineText, @"^\d+:"))
 					{
 						textEditor.CaretOffset = line.EndOffset;
-						textEditor.TextArea.PerformTextInput(Environment.NewLine);
+						int prevNumber = int.Parse(Regex.Replace(lineText, @"^(\d+):.*$", "$1"));
 
-						int prevNumber = int.Parse(Regex.Replace(lineText, @"^(\d+):", "$1"));
-
-						textEditor.SelectedText = prevNumber + 1 + ": " + ngString;
+						textEditor.TextArea.PerformTextInput($"{Environment.NewLine}{prevNumber + 1}: {ngString}");
 
 						textEditor.ScrollToLine(i + 1);
 						return true;
@@ -39,9 +38,7 @@ namespace TombLib.Scripting.ClassicScript.Writers
 					else if (i == extrangSectionStartLine.LineNumber)
 					{
 						textEditor.CaretOffset = line.EndOffset;
-						textEditor.TextArea.PerformTextInput(Environment.NewLine);
-
-						textEditor.SelectedText = "0: " + ngString;
+						textEditor.TextArea.PerformTextInput($"{Environment.NewLine}0: {ngString}");
 
 						textEditor.ScrollToLine(i + 1);
 						return true;
@@ -52,22 +49,9 @@ namespace TombLib.Scripting.ClassicScript.Writers
 			return false;
 		}
 
-		private static DocumentLine GetExtraNGSectionStartLine(TextDocument document)
-		{
-			foreach (DocumentLine line in document.Lines)
-			{
-				string lineText = document.GetText(line.Offset, line.Length);
-
-				if (lineText.StartsWith("[extrang]", StringComparison.OrdinalIgnoreCase))
-					return line;
-			}
-
-			return null;
-		}
-
 		private static bool IsNGStringAlreadyDefined(TextDocument document, string ngString)
 		{
-			DocumentLine extrangSectionStartLine = GetExtraNGSectionStartLine(document);
+			DocumentLine extrangSectionStartLine = DocumentParser.FindDocumentLineOfSection(document, "ExtraNG");
 
 			for (int i = extrangSectionStartLine.LineNumber + 1; i < document.LineCount; i++)
 			{

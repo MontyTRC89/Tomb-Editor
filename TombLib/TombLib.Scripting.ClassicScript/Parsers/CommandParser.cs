@@ -198,7 +198,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		private static string GetCorrectCommandVariation(TextDocument document, int offset, string command)
 		{
-			string sectionName = DocumentParser.GetSectionName(document, offset);
+			string sectionName = DocumentParser.GetCurrentSectionName(document, offset);
 
 			if (command.Equals("level", StringComparison.OrdinalIgnoreCase))
 				return GetCorrectLevelCommandForSection(sectionName);

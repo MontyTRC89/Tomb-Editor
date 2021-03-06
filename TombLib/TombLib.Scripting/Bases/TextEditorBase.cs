@@ -300,7 +300,10 @@ namespace TombLib.Scripting.Bases
 
 			Document.UndoStack.EndUndoGroup();
 
-			ResetSelectionAt(cachedLine);
+			if (cachedLine.EndOffset <= Document.TextLength)
+				ResetSelectionAt(cachedLine);
+			else
+				ResetSelection();
 
 			TryRunContentChangedWorker();
 		}

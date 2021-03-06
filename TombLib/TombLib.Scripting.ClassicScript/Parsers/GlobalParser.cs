@@ -11,19 +11,23 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		public static int GetNextFreeIndex(TextDocument document, int offset)
 		{
 			string commandKey = CommandParser.GetCommandKey(document, offset);
+			return GetNextFreeIndex(document, offset, commandKey);
+		}
 
+		public static int GetNextFreeIndex(TextDocument document, int offset, string commandKey)
+		{
 			if (string.IsNullOrEmpty(commandKey))
 				return -1;
 
 			if (StringHelper.BulkStringComparision(commandKey, StringComparison.OrdinalIgnoreCase,
 				"AddEffect", "ColorRGB", "GlobalTrigger", "Image", "ItemGroup", "MultiEnvCondition",
-				"Organizer", "Parameters", "TestPosition", "TriggerGroup"))
+				"Organizer", "Parameters", "TestPosition", "TriggerGroup", "Plugin"))
 			{
 				IEnumerable<int> takenIndicesList;
 
 				if (DocumentParser.DocumentContainsSections(document))
 				{
-					DocumentLine sectionStartLine = DocumentParser.GetSectionStartLine(document, offset);
+					DocumentLine sectionStartLine = DocumentParser.GetStartLineOfCurrentSection(document, offset);
 
 					if (sectionStartLine == null)
 						return -1;
@@ -34,9 +38,9 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 				else
 					takenIndicesList = GetTakenIndicesList(document, commandKey, 0);
 
-				int nextFreeIndex = 0;
+				int nextFreeIndex = 1;
 
-				while (!takenIndicesList.Contains(nextFreeIndex))
+				while (takenIndicesList.Contains(nextFreeIndex))
 					nextFreeIndex++;
 
 				return nextFreeIndex;
