@@ -53,7 +53,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 		/// </summary>
 		public static bool IsLineInStandardStringSection(TextDocument document, DocumentLine line)
 		{
-			string lineSectionName = DocumentParser.GetSectionName(document, line.Offset);
+			string lineSectionName = DocumentParser.GetCurrentSectionName(document, line.Offset);
 
 			if (string.IsNullOrEmpty(lineSectionName))
 				return false;
@@ -65,7 +65,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		public static bool IsLineInExtraNGSection(TextDocument document, DocumentLine line)
 		{
-			string lineSectionName = DocumentParser.GetSectionName(document, line.Offset);
+			string lineSectionName = DocumentParser.GetCurrentSectionName(document, line.Offset);
 
 			if (string.IsNullOrEmpty(lineSectionName))
 				return false;

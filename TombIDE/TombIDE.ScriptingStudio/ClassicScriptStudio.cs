@@ -70,6 +70,7 @@ namespace TombIDE.ScriptingStudio
 		private bool IsSilentAction(IIDEEvent obj)
 			=> obj is IDE.ScriptEditor_AppendScriptLinesEvent
 			|| obj is IDE.ScriptEditor_AddNewLevelStringEvent
+			|| obj is IDE.ScriptEditor_AddNewPluginEntryEvent
 			|| obj is IDE.ScriptEditor_AddNewNGStringEvent
 			|| obj is IDE.ScriptEditor_ScriptPresenceCheckEvent
 			|| obj is IDE.ScriptEditor_StringPresenceCheckEvent
@@ -98,6 +99,11 @@ namespace TombIDE.ScriptingStudio
 				{
 					AddNewLevelNameString(anlse.LevelName);
 					EndSilentScriptAction(cachedTab, true, !wasLanguageFileFileChanged, !wasLanguageFileAlreadyOpened);
+				}
+				else if (obj is IDE.ScriptEditor_AddNewPluginEntryEvent anpee)
+				{
+					bool isChanged = AddNewPluginEntry(anpee.PluginString);
+					EndSilentScriptAction(cachedTab, isChanged, !wasScriptFileFileChanged, !wasScriptFileAlreadyOpened);
 				}
 				else if (obj is IDE.ScriptEditor_AddNewNGStringEvent anngse)
 				{
@@ -144,6 +150,16 @@ namespace TombIDE.ScriptingStudio
 
 			if (CurrentEditor is TextEditorBase editor)
 				LanguageStringWriter.WriteNewLevelNameString(editor, levelName);
+		}
+
+		private bool AddNewPluginEntry(string pluginString)
+		{
+			EditorTabControl.OpenFile(PathHelper.GetScriptFilePath(ScriptRootDirectoryPath));
+
+			if (CurrentEditor is ClassicScriptEditor editor)
+				return editor.TryAddNewPluginEntry(pluginString);
+
+			return false;
 		}
 
 		private bool AddNewNGString(string ngString)
@@ -195,7 +211,10 @@ namespace TombIDE.ScriptingStudio
 		private void EndSilentScriptAction(TabPage previousTab, bool indicateChange, bool saveAffectedFile, bool closeAffectedTab)
 		{
 			if (indicateChange)
+			{
+				CurrentEditor.LastModified = DateTime.Now;
 				IDE.Global.ScriptEditor_IndicateExternalChange();
+			}
 
 			if (saveAffectedFile)
 				EditorTabControl.SaveFile(EditorTabControl.SelectedTab);
@@ -203,7 +222,10 @@ namespace TombIDE.ScriptingStudio
 			if (closeAffectedTab)
 				EditorTabControl.TabPages.Remove(EditorTabControl.SelectedTab);
 
-			EditorTabControl.SelectTab(previousTab);
+			EditorTabControl.EnsureTabFileSynchronization();
+
+			if (previousTab != null)
+				EditorTabControl.SelectTab(previousTab);
 		}
 
 		#endregion IDE Events

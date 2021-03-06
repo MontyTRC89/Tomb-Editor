@@ -586,6 +586,8 @@ namespace TombIDE
 
 		private void SelectIDETab(IDETab tab)
 		{
+			classicScriptStudio.EditorTabControl.EnsureTabFileSynchronization();
+
 			switch (tab)
 			{
 				case IDETab.ProjectMaster:

@@ -694,6 +694,15 @@ namespace TombIDE.ScriptingStudio.Controls
 			return mostRecentFound;
 		}
 
+		public void EnsureTabFileSynchronization()
+		{
+			foreach (string file in GetFilePaths())
+			{
+				TabPage mostRecent = GetMostRecentlyModifiedTabPageOfFile(file);
+				SaveOtherTabPagesOfFile(GetEditorOfTab(mostRecent));
+			}
+		}
+
 		#endregion Other methods
 	}
 }

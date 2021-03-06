@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TombLib.Scripting.ClassicScript.Controls;
@@ -19,7 +20,7 @@ namespace TombLib.Scripting.ClassicScript.Utils
 			{
 				bool isExtraNG = Regex.IsMatch(dataGrid.Name, @"^\[ExtraNG\]", RegexOptions.IgnoreCase);
 
-				builder.AppendLine($"\n{dataGrid.Name}");
+				builder.AppendLine(Environment.NewLine + dataGrid.Name);
 
 				foreach (DataGridViewRow row in dataGrid.Rows)
 				{
