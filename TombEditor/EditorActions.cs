@@ -4226,7 +4226,7 @@ namespace TombEditor
 			var r = instance.Room;
 			_editor.UndoManager.PushObjectTransformed(instance);
 			instance.Room.RemoveObject(_editor.Level, instance);
-			_editor.ObjectChange(instance, ObjectChangeType.Change, r);
+			_editor.ObjectChange(instance, ObjectChangeType.Remove, r);
 			PlaceObjectWithoutUpdate(targetRoom, block, instance);
 		}
 
