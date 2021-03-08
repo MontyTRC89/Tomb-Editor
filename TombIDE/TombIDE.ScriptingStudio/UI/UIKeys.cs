@@ -26,5 +26,11 @@ namespace TombIDE.ScriptingStudio.UI
 		public const Keys PrevBookmark = Keys.Control | Keys.Oemcomma;
 		public const Keys NextBookmark = Keys.Control | Keys.OemPeriod;
 		public const Keys ClearBookmarks = Keys.Control | Keys.Shift | Keys.B;
+
+		public Keys GetKeys(string flag)
+		{
+			object value = GetType().GetField(flag)?.GetValue(this);
+			return value != null ? (Keys)value : Keys.None;
+		}
 	}
 }

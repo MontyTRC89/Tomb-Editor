@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -179,10 +181,9 @@ namespace TombIDE.ProjectMaster
 			UpdateInternalPluginList();
 			LookForUndefinedPlugins();
 
-			_ide.AvailablePlugins.Sort(delegate (Plugin p1, Plugin p2) { return p1.Name.CompareTo(p2.Name); });
-
 			UpdateProjectPluginList();
 
+			_ide.AvailablePlugins.Sort(delegate (Plugin p1, Plugin p2) { return p1.Name.CompareTo(p2.Name); });
 			_ide.Project.InstalledPlugins.Sort(delegate (Plugin p1, Plugin p2) { return p1.Name.CompareTo(p2.Name); });
 
 			HandleScriptReferenceFiles();
@@ -252,16 +253,55 @@ namespace TombIDE.ProjectMaster
 
 				if (!isPluginAvailable) // The plugin's DLL file is unknown for TombIDE
 				{
-					Plugin plugin = new Plugin
+					if (PluginExistsInPARCFile(pluginFile))
 					{
-						Name = Path.GetFileName(pluginFile)
-					};
+						LookForUndefinedPlugins();
 
-					projectPlugins.Add(plugin);
+						Plugin plugin = _ide.AvailablePlugins.Find(
+							x => Path.GetFileName(x.InternalDllPath).Equals(Path.GetFileName(pluginFile), StringComparison.OrdinalIgnoreCase));
+
+						if (plugin != null)
+							projectPlugins.Add(plugin);
+					}
+					else
+					{
+						Plugin plugin = new Plugin
+						{
+							Name = Path.GetFileName(pluginFile)
+						};
+
+						projectPlugins.Add(plugin);
+					}
 				}
 			}
 
 			_ide.Project.InstalledPlugins = projectPlugins;
+		}
+
+		private bool PluginExistsInPARCFile(string pluginFile)
+		{
+			string parcPath = Path.Combine(IDE.Global.Project.EnginePath, "plugins.parc");
+
+			if (!File.Exists(parcPath))
+				return false;
+
+			bool found = false;
+
+			using (ZipArchive parc = ZipFile.OpenRead(parcPath))
+				foreach (ZipArchiveEntry entry in parc.Entries)
+					if (entry.FullName.Split('\\')[0].Equals(Path.GetFileNameWithoutExtension(pluginFile), StringComparison.OrdinalIgnoreCase))
+					{
+						string destPath = Path.Combine(DefaultPaths.TRNGPluginsDirectory, entry.FullName);
+						string dirName = Path.GetDirectoryName(destPath);
+
+						if (!Directory.Exists(dirName))
+							Directory.CreateDirectory(dirName);
+
+						entry.ExtractToFile(destPath, true);
+						found = true;
+					}
+
+			return found;
 		}
 
 		private void HandleScriptReferenceFiles()

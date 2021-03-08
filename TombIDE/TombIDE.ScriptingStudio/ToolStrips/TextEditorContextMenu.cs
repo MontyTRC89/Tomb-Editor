@@ -17,14 +17,14 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		private ToolStripItem[] ItemList => new ToolStripItem[]
 		{
-			new ToolStripButton(Strings.Default.Cut, Resources.Cut_16, OnButtonClicked) { Tag = UIElement.Cut },
-			new ToolStripButton(Strings.Default.Copy, Resources.Copy_16, OnButtonClicked) { Tag = UIElement.Copy },
-			new ToolStripButton(Strings.Default.Paste, Resources.CopyComments_16, OnButtonClicked) { Tag = UIElement.Paste },
+			new ToolStripButton(Strings.Default.Cut, Resources.Cut_16, OnButtonClicked) { Tag = UICommand.Cut },
+			new ToolStripButton(Strings.Default.Copy, Resources.Copy_16, OnButtonClicked) { Tag = UICommand.Copy },
+			new ToolStripButton(Strings.Default.Paste, Resources.CopyComments_16, OnButtonClicked) { Tag = UICommand.Paste },
 			new ToolStripSeparator(),
-			new ToolStripButton(Strings.Default.CommentOut, Resources.Comment_16, OnButtonClicked) { Tag = UIElement.CommentOut },
-			new ToolStripButton(Strings.Default.Uncomment, Resources.Uncomment_16, OnButtonClicked) { Tag = UIElement.Uncomment },
+			new ToolStripButton(Strings.Default.CommentOut, Resources.Comment_16, OnButtonClicked) { Tag = UICommand.CommentOut },
+			new ToolStripButton(Strings.Default.Uncomment, Resources.Uncomment_16, OnButtonClicked) { Tag = UICommand.Uncomment },
 			new ToolStripSeparator(),
-			new ToolStripButton(Strings.Default.ToggleBookmark, Resources.Bookmark_16, OnButtonClicked) { Tag = UIElement.ToggleBookmark },
+			new ToolStripButton(Strings.Default.ToggleBookmark, Resources.Bookmark_16, OnButtonClicked) { Tag = UICommand.ToggleBookmark },
 		};
 
 		#endregion Items

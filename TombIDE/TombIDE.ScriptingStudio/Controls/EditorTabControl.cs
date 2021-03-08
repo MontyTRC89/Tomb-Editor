@@ -13,6 +13,7 @@ using TombIDE.ScriptingStudio.Helpers;
 using TombIDE.ScriptingStudio.Properties;
 using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
+using TombLib.Scripting.Bases;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
 
@@ -43,6 +44,8 @@ namespace TombIDE.ScriptingStudio.Controls
 		public IEditorControl CurrentEditor => SelectedTab != null ? GetEditorOfTab(SelectedTab) : null;
 
 		public bool ReloadQueueRunning { get; private set; }
+
+		public Type PlainTextTypeOverride { get; set; } = null;
 
 		#endregion Properties
 
@@ -156,6 +159,9 @@ namespace TombIDE.ScriptingStudio.Controls
 		private void OpenFileInNewTabPage(string filePath, EditorType editorType, bool silentSession)
 		{
 			Type editorClassType = EditorTypeHelper.GetEditorClassType(filePath, editorType);
+
+			if (PlainTextTypeOverride != null && editorClassType == typeof(TextEditorBase))
+				editorClassType = PlainTextTypeOverride;
 
 			if (editorClassType != null)
 			{

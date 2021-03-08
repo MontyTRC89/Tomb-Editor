@@ -38,8 +38,9 @@ namespace TombIDE.Shared.SharedClasses
 
 		public static void DisposeItems(params IDisposable[] items)
 		{
-			for (int i = 0; i < items.Length; i++)
-				items[i].Dispose();
+			if(items != null)
+				for (int i = 0; i < items.Length; i++)
+					items[i].Dispose();
 		}
 	}
 }

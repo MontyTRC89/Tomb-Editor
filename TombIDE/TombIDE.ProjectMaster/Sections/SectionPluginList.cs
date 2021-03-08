@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Windows.Forms;
 using TombIDE.Shared;
@@ -49,6 +50,8 @@ namespace TombIDE.ProjectMaster
 		{
 			if (obj is IDE.PluginListsUpdatedEvent)
 				UpdateTreeView();
+			else if (obj is IDE.PluginListsUpdatedEvent)
+				CreatePARCFile();
 		}
 
 		private void button_ManagePlugins_Click(object sender, EventArgs e)
@@ -69,8 +72,58 @@ namespace TombIDE.ProjectMaster
 					}
 
 					MnemonicData.SetupConstants(DefaultPaths.InternalNGCDirectory);
+					CreatePARCFile();
 				}
 			}
+		}
+
+		private void CreatePARCFile()
+		{
+			string[] pluginDirs = Directory.GetDirectories(DefaultPaths.TRNGPluginsDirectory);
+			var validDirs = new List<string>();
+
+			foreach (string directory in pluginDirs)
+				if (IDE.Global.Project.InstalledPlugins.Exists(
+					x => Path.GetFileNameWithoutExtension(x.InternalDllPath).Equals(
+						Path.GetFileName(directory), StringComparison.OrdinalIgnoreCase)))
+				{
+					validDirs.Add(directory);
+				}
+
+			string tempCompressPath = Path.Combine(DefaultPaths.TIDEDirectory, "~TEMP");
+
+			if (Directory.Exists(tempCompressPath))
+				Directory.Delete(tempCompressPath, true);
+
+			Directory.CreateDirectory(tempCompressPath);
+
+			foreach (string directory in validDirs)
+			{
+				string tempDirPath = directory.Replace(DefaultPaths.TRNGPluginsDirectory, tempCompressPath);
+
+				if (Directory.Exists(tempDirPath))
+					Directory.Delete(tempDirPath, true);
+
+				Directory.CreateDirectory(tempDirPath);
+
+				foreach (string dirPath in Directory.GetDirectories(directory, "*", System.IO.SearchOption.AllDirectories))
+					Directory.CreateDirectory(dirPath.Replace(DefaultPaths.TRNGPluginsDirectory, tempCompressPath));
+
+				foreach (string newPath in Directory.GetFiles(directory, "*.*", System.IO.SearchOption.AllDirectories))
+					File.Copy(newPath, newPath.Replace(DefaultPaths.TRNGPluginsDirectory, tempCompressPath));
+			}
+
+			string zipPath = Path.Combine(DefaultPaths.TIDEDirectory, "plugins.parc");
+
+			if (File.Exists(zipPath))
+				File.Delete(zipPath);
+
+			ZipFile.CreateFromDirectory(tempCompressPath, zipPath, CompressionLevel.Fastest, false);
+
+			File.Copy(zipPath, Path.Combine(IDE.Global.Project.EnginePath, "plugins.parc"), true);
+
+			File.Delete(zipPath);
+			Directory.Delete(tempCompressPath, true);
 		}
 
 		private void button_OpenInExplorer_Click(object sender, EventArgs e)

@@ -45,6 +45,11 @@ namespace TombIDE.Shared.Local
 		public string FindReplace { get; set; }
 		public string SelectAll { get; set; }
 
+		public string Convert { get; set; }
+		public string TabsToSpaces { get; set; }
+		public string SpacesToTabs { get; set; }
+		public string IndentationSize { get; set; }
+
 		public string Reindent { get; set; }
 		public string TrimWhitespace { get; set; }
 		public string CommentOut { get; set; }
@@ -53,6 +58,11 @@ namespace TombIDE.Shared.Local
 		public string PrevBookmark { get; set; }
 		public string NextBookmark { get; set; }
 		public string ClearBookmarks { get; set; }
+
+		public string PrevSection { get; set; }
+		public string NextSection { get; set; }
+		public string ClearCell { get; set; }
+		public string RemoveLastCell { get; set; }
 
 		public string UseNewInclude { get; set; }
 		public string ShowLogsAfterBuild { get; set; }
@@ -141,7 +151,11 @@ namespace TombIDE.Shared.Local
 
 			foreach (FieldInfo field in fields)
 			{
-				string fieldValue = field.GetValue(localization).ToString();
+				string fieldValue = field.GetValue(localization)?.ToString();
+
+				if (fieldValue == null)
+					continue;
+
 				string newValue = GetNormalizedValue(fieldValue);
 
 				field.SetValue(localization, newValue);

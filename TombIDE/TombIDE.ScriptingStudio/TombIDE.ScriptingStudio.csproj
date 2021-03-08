@@ -81,9 +81,6 @@
     </Compile>
     <Compile Include="ToolStrips\ToolStripExtensions.cs" />
     <Compile Include="UI\DocumentMode.cs" />
-    <Compile Include="UI\DocumentModePresets\MenuStripPresets.cs" />
-    <Compile Include="UI\StudioModePresets\MenuStripPresets.cs" />
-    <Compile Include="UI\StudioModePresets\ToolStripPresets.cs" />
     <Compile Include="ToolWindows\ContentExplorer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -180,20 +177,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="StudioBase.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="StudioBase.Designer.cs">
-      <DependentUpon>StudioBase.cs</DependentUpon>
+    <Compile Include="Bases\StudioBase.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ClassicScriptStudio.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="SupportedFormats.cs" />
     <Compile Include="UI\StudioMode.cs" />
-    <Compile Include="UI\UIElement.cs" />
+    <Compile Include="UI\StudioSeparator.cs" />
+    <Compile Include="UI\StudioToolStripButton.cs" />
+    <Compile Include="UI\StudioToolStripItem.cs" />
+    <Compile Include="UI\ToolStripXmlReader.cs" />
+    <Compile Include="UI\UICommand.cs" />
     <Compile Include="UI\UIKeys.cs" />
-    <Compile Include="UI\DocumentModePresets\ToolStripPresets.cs" />
     <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -240,9 +237,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="StudioBase.resx">
-      <DependentUpon>StudioBase.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ToolStrips\StudioStatusStrip.resx">
       <DependentUpon>StudioStatusStrip.cs</DependentUpon>
     </EmbeddedResource>
@@ -280,5 +274,20 @@
   <ItemGroup>
     <None Include=".editorconfig" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Strings.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\PlainText.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\MenuStrips\Lua.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Strings.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\PlainText.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\Lua.xml" />
+    <EmbeddedResource Include="UI\DocumentModePresets\ToolStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\Lua.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\ClassicScript.xml" />
+    <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Lua.xml" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

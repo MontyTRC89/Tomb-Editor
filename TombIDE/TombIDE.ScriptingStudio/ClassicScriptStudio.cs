@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
+using TombIDE.ScriptingStudio.Bases;
 using TombIDE.ScriptingStudio.Controls;
 using TombIDE.ScriptingStudio.Forms;
 using TombIDE.ScriptingStudio.Objects;
@@ -54,6 +56,8 @@ namespace TombIDE.ScriptingStudio
 			ReferenceBrowser.ReferenceDefinitionRequested += ReferenceBrowser_ReferenceDefinitionRequested;
 
 			FileExplorer.Filter = "*.txt";
+
+			EditorTabControl.PlainTextTypeOverride = typeof(ClassicScriptEditor);
 		}
 
 		#endregion Construction

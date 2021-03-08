@@ -8,10 +8,10 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	internal static class ToolStripExtensions
 	{
-		public static ToolStripItem FindItem(this ToolStrip toolStrip, UIElement element)
+		public static ToolStripItem FindItem(this ToolStrip toolStrip, UICommand element)
 		{
 			foreach (ToolStripItem item in toolStrip.GetAllItems())
-				if (item.Tag is UIElement e && e == element)
+				if (item.Tag is UICommand e && e == element)
 					return item;
 
 			return null;

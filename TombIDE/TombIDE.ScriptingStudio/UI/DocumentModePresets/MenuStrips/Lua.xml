@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Items>
+	<Item LangKey="Document" Position="2">
+		<Item LangKey="Convert">
+			<Item LangKey="TabsToSpaces" Command="TabsToSpaces" />
+			<Item LangKey="SpacesToTabs" Command="SpacesToTabs" />
+			<Separator />
+			<Item LangKey="IndentationSize">
+				<Item OverrideText="2" Command="IndentationSize" />
+				<Item OverrideText="4" Command="IndentationSize" />
+				<Item OverrideText="6" Command="IndentationSize" />
+				<Item OverrideText="8" Command="IndentationSize" />
+			</Item>
+		</Item>
+		<Separator />
+		<Item LangKey="Reindent" Command="Reindent" />
+		<Item LangKey="TrimWhiteSpace" Command="TrimWhiteSpace" />
+		<Separator />
+		<Item LangKey="CommentOut" Command="CommentOut" Icon="Comment_16" />
+		<Item LangKey="Uncomment" Command="Uncomment" Icon="Uncomment_16" />
+		<Separator />
+		<Item LangKey="ToggleBookmark" Command="ToggleBookmark" Icon="Bookmark_16" Keys="ToggleBookmark" />
+		<Item LangKey="PrevBookmark" Command="PrevBookmark" Icon="PrevBookmark_16" Keys="PrevBookmark" KeysDisplay="Ctrl+Comma" />
+		<Item LangKey="NextBookmark" Command="NextBookmark" Icon="NextBookmark_16" Keys="NextBookmark" KeysDisplay="Ctrl+Period" />
+		<Item LangKey="ClearBookmarks" Command="ClearBookmarks" Icon="ClearBookmarks_16" Keys="ClearBookmarks" />
+	</Item>
+</Items>
