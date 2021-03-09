@@ -80,7 +80,7 @@
       <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolStrips\ToolStripExtensions.cs" />
-    <Compile Include="UI\DocumentMode.cs" />
+    <Compile Include="UI\Enums\DocumentMode.cs" />
     <Compile Include="ToolWindows\ContentExplorer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -102,7 +102,6 @@
     <Compile Include="EventDelegates.cs" />
     <Compile Include="Objects\ReferenceDefinitionEventArgs.cs" />
     <Compile Include="Objects\FileOpenedEventArgs.cs" />
-    <Compile Include="ToolStrips\ItemValidator.cs" />
     <Compile Include="ToolStrips\StudioStatusStrip.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -184,9 +183,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SupportedFormats.cs" />
-    <Compile Include="UI\StudioMode.cs" />
-    <Compile Include="UI\StudioSeparator.cs" />
-    <Compile Include="UI\StudioToolStripButton.cs" />
+    <Compile Include="UI\Enums\StudioMode.cs" />
+    <Compile Include="UI\StudioItemParser.cs" />
     <Compile Include="UI\StudioToolStripItem.cs" />
     <Compile Include="UI\ToolStripXmlReader.cs" />
     <Compile Include="UI\UICommand.cs" />

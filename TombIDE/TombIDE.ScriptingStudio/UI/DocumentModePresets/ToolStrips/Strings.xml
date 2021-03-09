@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Items>
+	<Separator />
 	<Item LangKey="PrevSection" Command="PrevSection" />
 	<Item LangKey="NextSection" Command="NextSection" />
 	<Separator />
-	<Item LangKey="ClearCell" Command="CommentOut" Icon="Comment_16" />
+	<Item LangKey="ClearCell" Command="ClearCell" />
 	<Separator />
 	<Item LangKey="RemoveLastCell" Command="RemoveLastCell" />
 </Items>

@@ -8,6 +8,7 @@
 	/// </summary>
 	public enum StudioMode
 	{
+		None,
 		ClassicScript,
 		Lua
 	}

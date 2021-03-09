@@ -30,7 +30,7 @@
 		/// <summary><c>#define </c></summary>
 		public static string DefineCommand => @"^#define\s+";
 
-		/// <summary><c>CONSTANT VALUE</c></summary>
+		/// <summary><c>CONSTANT VALUE // 2 regex groups</c></summary>
 		public static string DefineValue => @"(\w*)\s+(\w*)";
 
 		/// <summary><c>"..."</c></summary>

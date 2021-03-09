@@ -4,12 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
-using TombIDE.ScriptingStudio.Properties;
 using TombIDE.ScriptingStudio.UI;
-using TombIDE.Shared;
-using TombIDE.Shared.Local;
+using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptingStudio.ToolStrips
 {
@@ -25,8 +22,13 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			get => _studioMode;
 			set
 			{
-				_studioMode = value;
-				GetStudioModeItems();
+				if (value != _studioMode)
+				{
+					_studioMode = value;
+					UpdateItems<StudioMode>();
+
+					OnStudioModeChanged(EventArgs.Empty);
+				}
 			}
 		}
 
@@ -38,8 +40,13 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			get => _documentMode;
 			set
 			{
-				_documentMode = value;
-				GetDocumentModeItems();
+				if (value != _documentMode)
+				{
+					_documentMode = value;
+					UpdateItems<DocumentMode>();
+
+					OnDocumentModeChanged(EventArgs.Empty);
+				}
 			}
 		}
 
@@ -48,23 +55,11 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 		#region Construction
 
 		public StudioMenuStrip()
-			=> AddDefaultItems();
-
+		{ }
 		public StudioMenuStrip(StudioMode studioMode, DocumentMode editMode)
 		{
-			AddDefaultItems();
-
 			StudioMode = studioMode;
 			DocumentMode = editMode;
-		}
-
-		private void AddDefaultItems()
-		{
-			FieldInfo[] nonPublicFields = GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
-			FieldInfo[] menuFields = Array.FindAll(nonPublicFields, x => x.Name.EndsWith("Menu"));
-
-			foreach (FieldInfo menuField in menuFields)
-				Items.Add(menuField.GetValue(this) as ToolStripMenuItem);
 		}
 
 		#endregion Construction
@@ -75,71 +70,107 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 		private void OnItemClicked(object sender, EventArgs e)
 			=> ItemClicked?.Invoke(sender, e);
 
+		public event EventHandler StudioModeChanged;
+		private void OnStudioModeChanged(EventArgs e)
+			=> StudioModeChanged?.Invoke(this, e);
+
+		public event EventHandler DocumentModeChanged;
+		private void OnDocumentModeChanged(EventArgs e)
+			=> DocumentModeChanged?.Invoke(this, e);
+
 		#endregion Events
 
 		#region Other methods
 
-		private IEnumerable<ToolStripItem> GetStudioModeItems()
+		private void UpdateItems<T>() where T : Enum
 		{
-			List<StudioToolStripItem> items = ToolStripXmlReader.GetItemsFromXml($"UI.StudioModePresets.MenuStrips.{StudioMode}.xml");
+			string enumName = typeof(T).Name;
+			Enum modeEnum = GetModeEnum(enumName); // Either StudioMode or DocumentMode
+			string enumValueName = GetEnumValueName(modeEnum);
 
-			foreach (StudioToolStripItem item in items)
-			{
-				string text = item.OverrideText ??
-					typeof(Localization).GetProperty(item.LangKey ?? string.Empty)?.GetValue(Strings.Default)?.ToString() ??
-					item.LangKey;
+			ClearRelatedItems(modeEnum);
 
-				var menuItem = new ToolStripMenuItem(text) { Name = item.Position };
-				menuItem.DropDownItems.AddRange(GetItems(item)?.ToArray());
+			if (enumValueName.Equals("None", StringComparison.OrdinalIgnoreCase))
+				return;
 
-				yield return menuItem;
-			}
+			IEnumerable<StudioToolStripItem> studioItems = GetStudioItems(enumName, enumValueName);
+			IEnumerable<ToolStripMenuItem> menuItems = GetMenuItemsFromStudioItems(studioItems, modeEnum);
+
+			AddMenuItems(menuItems);
 		}
 
-		private IEnumerable<ToolStripItem> GetDocumentModeItems()
+		private void ClearRelatedItems(Enum modeEnum)
 		{
-			//List<StudioToolStripItem> items = ToolStripXmlReader.GetItemsFromXml($"UI.DocumentModePresets.MenuStrips.{DocumentMode}.xml");
+			IEnumerable<ToolStripItem> targetItems = Items.GetTargetItems(modeEnum);
 
-			//foreach (StudioToolStripItem item in items)
-			//{
-			//	GetItems(item);
-			//}
+			foreach (ToolStripMenuItem menuItem in targetItems)
+				SharedMethods.DisposeItems(menuItem.GetAllItems());
+
+			SharedMethods.DisposeItems(targetItems);
 		}
 
-		private IEnumerable<ToolStripItem> GetItems(StudioToolStripItem root)
+		private IEnumerable<ToolStripMenuItem> GetMenuItemsFromStudioItems(IEnumerable<StudioToolStripItem> studioItems, Enum modeEnum)
 		{
-			foreach (StudioToolStripItem item in root.DropDownItems)
+			foreach (StudioToolStripItem studioItem in studioItems)
 			{
-				if (item is StudioSeparator)
+				var menuItem = new ToolStripMenuItem(StudioItemParser.GetItemText(studioItem))
 				{
-					yield return new ToolStripSeparator();
-					continue;
-				}
-
-				string text = item.OverrideText ??
-					typeof(Localization).GetProperty(item.LangKey ?? string.Empty)?.GetValue(Strings.Default)?.ToString() ??
-					item.LangKey;
-
-				var icon = typeof(Resources).GetProperty(item.Icon ?? string.Empty, BindingFlags.NonPublic | BindingFlags.Static)?.GetValue(null) as Image;
-
-				object keysValue = typeof(UIKeys).GetField(item.Keys ?? string.Empty, BindingFlags.Public | BindingFlags.Static)?.GetValue(null);
-				Keys keys = keysValue != null ? (Keys)keysValue : Keys.None;
-
-				Enum.TryParse(item.Command, true, out UICommand command);
-
-				var menuItem = new ToolStripMenuItem(text, icon, OnItemClicked, keys)
-				{
-					ShortcutKeyDisplayString = item.KeysDisplay,
-					CheckOnClick = item.CheckOnClick.GetValueOrDefault(),
-					Tag = command
+					Name = studioItem.Position,
+					Tag = modeEnum.GetType()
 				};
 
-				menuItem.DropDownItems.AddRange(GetItems(item)?.ToArray());
+				menuItem.DropDownItems.AddRange(GetSubMenuItems(studioItem)?.ToArray());
 
 				yield return menuItem;
 			}
+		}
+
+		private void AddMenuItems(IEnumerable<ToolStripMenuItem> menuItems)
+		{
+			foreach (ToolStripMenuItem menuItem in menuItems)
+			{
+				bool hasPositionDefined = int.TryParse(menuItem.Name, out int position);
+
+				if (hasPositionDefined && position < Items.Count)
+					Items.Insert(position, menuItem);
+				else
+					Items.Add(menuItem);
+			}
+		}
+
+		private IEnumerable<ToolStripItem> GetSubMenuItems(StudioToolStripItem root)
+		{
+			foreach (StudioToolStripItem item in root.DropDownItems)
+				if (item is StudioSeparator)
+					yield return new ToolStripSeparator();
+				else
+				{
+					string text = StudioItemParser.GetItemText(item);
+					Image icon = StudioItemParser.FindImageInResources(item.Icon);
+					Keys keys = StudioItemParser.FindPredefinedKeys(item.Keys);
+
+					var menuItem = new ToolStripMenuItem(text, icon, OnItemClicked, keys)
+					{
+						ShortcutKeyDisplayString = item.KeysDisplay,
+						CheckOnClick = item.CheckOnClick,
+						Tag = StudioItemParser.GetCommand(item.Command)
+					};
+
+					menuItem.DropDownItems.AddRange(GetSubMenuItems(item)?.ToArray());
+
+					yield return menuItem;
+				}
 		}
 
 		#endregion Other methods
+
+		private Enum GetModeEnum(string enumName)
+			=> GetType().GetProperty(enumName).GetValue(this) as Enum;
+
+		private string GetEnumValueName(Enum @enum)
+			=> @enum.ToString().Split('.').Last();
+
+		private IEnumerable<StudioToolStripItem> GetStudioItems(string enumTypeName, string enumValueName)
+			=> ToolStripXmlReader.GetItemsFromXml($"UI.{enumTypeName}Presets.MenuStrips.{enumValueName}.xml");
 	}
 }

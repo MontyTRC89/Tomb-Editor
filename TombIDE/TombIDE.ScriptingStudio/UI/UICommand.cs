@@ -2,6 +2,8 @@
 {
 	public enum UICommand
 	{
+		None,
+
 		// File:
 
 		NewFile,

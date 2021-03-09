@@ -4,13 +4,6 @@
 		<Item LangKey="Convert">
 			<Item LangKey="TabsToSpaces" Command="TabsToSpaces" />
 			<Item LangKey="SpacesToTabs" Command="SpacesToTabs" />
-			<Separator />
-			<Item LangKey="IndentationSize">
-				<Item OverrideText="2" Command="IndentationSize" />
-				<Item OverrideText="4" Command="IndentationSize" />
-				<Item OverrideText="6" Command="IndentationSize" />
-				<Item OverrideText="8" Command="IndentationSize" />
-			</Item>
 		</Item>
 		<Separator />
 		<Item LangKey="TrimWhiteSpace" Command="TrimWhiteSpace" />

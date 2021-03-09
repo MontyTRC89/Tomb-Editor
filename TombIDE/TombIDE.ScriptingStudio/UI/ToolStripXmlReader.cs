@@ -27,26 +27,30 @@ namespace TombIDE.ScriptingStudio.UI
 				if (node.NodeType == XmlNodeType.Comment)
 					continue;
 
-				if (node.Name.Equals("Separator", StringComparison.OrdinalIgnoreCase))
+				bool isSeparator = node.Name.Equals("Separator", StringComparison.OrdinalIgnoreCase);
+				bool isButton = node.Name.Equals("Button", StringComparison.OrdinalIgnoreCase);
+				bool isNormalItem = node.Name.Equals("Item", StringComparison.OrdinalIgnoreCase);
+
+				if (isSeparator)
 					itemList.Add(new StudioSeparator());
-				else if (node.Name.Equals("Button", StringComparison.OrdinalIgnoreCase))
-					itemList.Add(new StudioToolStripButton());
-				else if (node.Name.Equals("Item", StringComparison.OrdinalIgnoreCase))
+				else if (isButton || isNormalItem)
 				{
 					var item = new StudioToolStripItem
 					{
-						LangKey = node.Attributes["LangKey"]?.Value,
-						Command = node.Attributes["Command"]?.Value,
-						Icon = node.Attributes["Icon"]?.Value,
-						Keys = node.Attributes["Keys"]?.Value,
-						KeysDisplay = node.Attributes["KeysDisplay"]?.Value,
-						CheckOnClick = node.Attributes["CheckOnClick"]?.Value?.Equals("True", StringComparison.OrdinalIgnoreCase),
-						OverrideText = node.Attributes["OverrideText"]?.Value,
-						Position = node.Attributes["Position"]?.Value ?? "-1",
+						LangKey = node.Attributes["LangKey"]?.Value ?? string.Empty,
+						Command = node.Attributes["Command"]?.Value ?? string.Empty,
+						Icon = node.Attributes["Icon"]?.Value ?? string.Empty,
+						Keys = node.Attributes["Keys"]?.Value ?? string.Empty,
+						KeysDisplay = node.Attributes["KeysDisplay"]?.Value ?? string.Empty,
+						CheckOnClick = node.Attributes["CheckOnClick"]?.Value?.Equals("True", StringComparison.OrdinalIgnoreCase) ?? false,
+						Position = node.Attributes["Position"]?.Value ?? string.Empty,
 						DropDownItems = GetItems(node)
 					};
 
-					itemList.Add(item);
+					if (isButton)
+						itemList.Add(StudioToolStripButton.FromNormalItem(item));
+					else
+						itemList.Add(item);
 				}
 			}
 

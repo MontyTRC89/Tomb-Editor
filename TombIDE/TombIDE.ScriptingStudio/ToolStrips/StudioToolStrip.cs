@@ -2,11 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TombIDE.ScriptingStudio.Properties;
 using TombIDE.ScriptingStudio.UI;
-using TombIDE.Shared;
 using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptingStudio.ToolStrips
@@ -23,10 +22,13 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			get => _studioMode;
 			set
 			{
-				SharedMethods.DisposeItems(GetStudioItems()?.ToArray());
+				if (value != _studioMode)
+				{
+					_studioMode = value;
+					UpdateItems<StudioMode>();
 
-				_studioMode = value;
-				UpdateStudioItems();
+					OnStudioModeChanged(EventArgs.Empty);
+				}
 			}
 		}
 
@@ -38,86 +40,17 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			get => _documentMode;
 			set
 			{
-				SharedMethods.DisposeItems(GetToolsItems()?.ToArray());
+				if (value != _documentMode)
+				{
+					_documentMode = value;
+					UpdateItems<DocumentMode>();
 
-				_documentMode = value;
-				UpdateToolsItems();
+					OnDocumentModeChanged(EventArgs.Empty);
+				}
 			}
 		}
 
 		#endregion Properties
-
-		#region Items
-
-		private ToolStripItem[] StudioItems => new ToolStripItem[]
-		{
-			new ToolStripButton(Strings.Default.NewFile, Resources.New_16, OnItemClicked)
-			{ Tag = UICommand.NewFile, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripSeparator(),
-
-			new ToolStripButton(Strings.Default.Save, Resources.Save_16, OnItemClicked)
-			{ Tag = UICommand.Save, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.SaveAll, Resources.SaveAll_16, OnItemClicked)
-			{ Tag = UICommand.SaveAll, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripSeparator(),
-
-			new ToolStripButton(Strings.Default.Undo, Resources.Undo_16, OnItemClicked)
-			{ Tag = UICommand.Undo, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.Redo, Resources.Redo_16, OnItemClicked)
-			{ Tag = UICommand.Redo, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripSeparator(),
-
-			new ToolStripButton(Strings.Default.Cut, Resources.Cut_16, OnItemClicked)
-			{ Tag = UICommand.Cut, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.Copy, Resources.Copy_16, OnItemClicked)
-			{ Tag = UICommand.Copy, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.Paste, Resources.Clipboard_16, OnItemClicked)
-			{ Tag = UICommand.Paste, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripSeparator(),
-
-			new ToolStripDropDownButton(Strings.Default.Build, Resources.Play_16, OnItemClicked)
-			{
-				Tag = UICommand.Build,
-				DisplayStyle = ToolStripItemDisplayStyle.ImageAndText,
-				TextImageRelation = TextImageRelation.ImageBeforeText,
-				ShowDropDownArrow = false
-			}
-		};
-
-		private ToolStripItem[] ToolsItems => new ToolStripItem[]
-		{
-			new ToolStripSeparator(),
-
-			new ToolStripButton(Strings.Default.CommentOut, Resources.Comment_16, OnItemClicked)
-			{ Tag = UICommand.CommentOut, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.Uncomment, Resources.Uncomment_16, OnItemClicked)
-			{ Tag = UICommand.Uncomment, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripSeparator(),
-
-			new ToolStripButton(Strings.Default.ToggleBookmark, Resources.Bookmark_16, OnItemClicked)
-			{ Tag = UICommand.ToggleBookmark, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.PrevBookmark, Resources.PrevBookmark_16, OnItemClicked)
-			{ Tag = UICommand.PrevBookmark, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.NextBookmark, Resources.NextBookmark_16, OnItemClicked)
-			{ Tag = UICommand.NextBookmark, DisplayStyle = ToolStripItemDisplayStyle.Image },
-
-			new ToolStripButton(Strings.Default.ClearBookmarks, Resources.ClearBookmarks_16, OnItemClicked)
-			{ Tag = UICommand.ClearBookmarks, DisplayStyle = ToolStripItemDisplayStyle.Image }
-		};
-
-		#endregion Items
 
 		#region Construction
 
@@ -137,38 +70,76 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 		private void OnItemClicked(object sender, EventArgs e)
 			=> ItemClicked?.Invoke(sender, e);
 
+		public event EventHandler StudioModeChanged;
+		private void OnStudioModeChanged(EventArgs e)
+			=> StudioModeChanged?.Invoke(this, e);
+
+		public event EventHandler DocumentModeChanged;
+		private void OnDocumentModeChanged(EventArgs e)
+			=> DocumentModeChanged?.Invoke(this, e);
+
 		#endregion Events
 
 		#region Other methods
 
-		private void UpdateStudioItems()
+		private void UpdateItems<T>() where T : Enum
 		{
-			//Items.AddRange(ItemValidator.GetValidToolStripItems(StudioMode, StudioItems).ToArray());
-			//Items.ReduceSeparators();
+			string enumName = typeof(T).Name;
+			Enum modeEnum = GetModeEnum(enumName); // Either StudioMode or DocumentMode
+			string enumValueName = GetEnumValueName(modeEnum);
+
+			ClearRelatedItems(modeEnum);
+
+			if (enumValueName.Equals("None", StringComparison.OrdinalIgnoreCase))
+				return;
+
+			IEnumerable<StudioToolStripItem> studioItems = GetStudioItems(enumName, enumValueName);
+			IEnumerable<ToolStripItem> toolStripItems = GetToolStripItemsFromStudioItems(studioItems, modeEnum);
+
+			Items.AddRange(toolStripItems.ToArray());
 		}
 
-		private void UpdateToolsItems()
+		private void ClearRelatedItems(Enum modeEnum)
+			=> SharedMethods.DisposeItems(Items.GetTargetItems(modeEnum));
+
+		private IEnumerable<ToolStripItem> GetToolStripItemsFromStudioItems(IEnumerable<StudioToolStripItem> studioItems, Enum modeEnum)
 		{
-			//Items.AddRange(ItemValidator.GetValidToolStripItems(DocumentMode, ToolsItems).ToArray());
-			//Items.ReduceSeparators();
-		}
+			foreach (StudioToolStripItem studioItem in studioItems)
+				if (studioItem is StudioSeparator)
+					yield return new ToolStripSeparator();
+				else
+				{
+					string text = StudioItemParser.GetItemText(studioItem);
+					Image icon = StudioItemParser.FindImageInResources(studioItem.Icon);
+					Keys keys = StudioItemParser.FindPredefinedKeys(studioItem.Keys);
 
-		private IEnumerable<ToolStripItem> GetStudioItems()
-		{
-			return null;
-
-			//var elements = typeof(UI.StudioModePresets.ToolStripPresets).GetField(StudioMode.ToString()).GetValue(null) as UICommand[];
-			//return ItemValidator.GetItems(this.GetAllItems().ToArray(), elements, false);
-		}
-
-		private IEnumerable<ToolStripItem> GetToolsItems()
-		{
-			return null;
-
-			//var elements = typeof(UI.DocumentModePresets.ToolStripPresets).GetField(DocumentMode.ToString()).GetValue(null) as UICommand[];
-			//return ItemValidator.GetItems(this.GetAllItems().ToArray(), elements, false);
+					if (studioItem is StudioToolStripButton)
+						yield return new ToolStripDropDownButton(text, icon, OnItemClicked)
+						{
+							DisplayStyle = ToolStripItemDisplayStyle.ImageAndText,
+							TextImageRelation = TextImageRelation.ImageBeforeText,
+							ShowDropDownArrow = false,
+							Tag = StudioItemParser.GetCommand(studioItem.Command)
+						};
+					else
+						yield return new ToolStripButton(text, icon, OnItemClicked)
+						{
+							DisplayStyle = ToolStripItemDisplayStyle.Image,
+							CheckOnClick = studioItem.CheckOnClick,
+							Tag = StudioItemParser.GetCommand(studioItem.Command)
+						};
+				}
 		}
 
 		#endregion Other methods
+
+		private Enum GetModeEnum(string enumName)
+			=> GetType().GetProperty(enumName).GetValue(this) as Enum;
+
+		private string GetEnumValueName(Enum @enum)
+			=> @enum.ToString().Split('.').Last();
+
+		private IEnumerable<StudioToolStripItem> GetStudioItems(string enumTypeName, string enumValueName)
+			=> ToolStripXmlReader.GetItemsFromXml($"UI.{enumTypeName}Presets.ToolStrips.{enumValueName}.xml");
 	}
 }

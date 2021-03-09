@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Items>
+	<Separator />
 	<Item LangKey="CommentOut" Command="CommentOut" Icon="Comment_16" />
 	<Item LangKey="Uncomment" Command="Uncomment" Icon="Uncomment_16" />
 	<Separator />

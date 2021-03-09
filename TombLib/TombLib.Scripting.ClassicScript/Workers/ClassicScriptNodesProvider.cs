@@ -102,12 +102,11 @@ namespace TombLib.Scripting.ClassicScript.Workers
 
 		private DarkTreeNode GetIncludeNode(string lineText)
 		{
-			var regex = new Regex(Patterns.IncludeCommand + Patterns.FilePath, RegexOptions.IgnoreCase); // (#include "...")
+			var regex = new Regex($"{Patterns.IncludeCommand}({Patterns.FilePath})", RegexOptions.IgnoreCase); // (#include "...")
 
 			if (regex.IsMatch(lineText))
 			{
-				lineText = LineParser.RemoveComments(lineText);
-				string includeFileName = Regex.Replace(lineText, Patterns.IncludeCommand, string.Empty).Trim('"'); // Removes "#include "
+				string includeFileName = regex.Match(lineText).Groups[1].Value.Trim('"');
 
 				if (!string.IsNullOrWhiteSpace(includeFileName) && includeFileName.Contains(Filter, StringComparison.OrdinalIgnoreCase))
 					return new DarkTreeNode(includeFileName) { Tag = ObjectType.Include };
@@ -122,7 +121,6 @@ namespace TombLib.Scripting.ClassicScript.Workers
 
 			if (regex.IsMatch(lineText))
 			{
-				lineText = LineParser.RemoveComments(lineText);
 				string definedConstantName = regex.Match(lineText).Groups[1].Value;
 
 				if (!string.IsNullOrWhiteSpace(definedConstantName) && definedConstantName.Contains(Filter, StringComparison.OrdinalIgnoreCase))

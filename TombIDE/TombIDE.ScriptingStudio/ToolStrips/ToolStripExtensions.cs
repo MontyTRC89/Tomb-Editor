@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using TombIDE.ScriptingStudio.UI;
-using TombIDE.Shared.SharedClasses;
 
 namespace TombIDE.ScriptingStudio.ToolStrips
 {
@@ -46,73 +46,10 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			}
 		}
 
-		public static void ReduceSeparators(this ToolStripItemCollection itemCollection)
-		{
-			TrimSeparatorsOnStart(itemCollection);
-			TrimSeparatorsOnEnd(itemCollection);
+		public static bool IsTargetItem(this ToolStripItem item, Enum modeEnum)
+			=> item.Tag is Type type && type == modeEnum.GetType();
 
-			RemoveSeparatorDuplicates(itemCollection);
-		}
-
-		public static void RemoveSeparatorDuplicates(this ToolStripItemCollection itemCollection)
-		{
-			var itemsToDispose = new List<IDisposable>();
-			int separatorsInARowCount = 0;
-
-			for (int i = 0; i < itemCollection.Count; i++)
-			{
-				ToolStripItem item = itemCollection[i];
-				separatorsInARowCount = item is ToolStripSeparator ? separatorsInARowCount + 1 : 0;
-
-				if (separatorsInARowCount > 1)
-					itemsToDispose.Add(item);
-			}
-
-			SharedMethods.DisposeItems(itemsToDispose.ToArray());
-		}
-
-		public static void TrimSeparatorsOnStart(this ToolStripItemCollection itemCollection)
-		{
-			var itemsToDispose = new List<IDisposable>();
-			int separatorsInARowCount = 0;
-
-			for (int i = 0; i < itemCollection.Count; i++)
-			{
-				ToolStripItem item = itemCollection[i];
-
-				if ((i == 0 || separatorsInARowCount > 0) && item is ToolStripSeparator)
-				{
-					itemsToDispose.Add(item);
-					separatorsInARowCount++;
-				}
-				else
-					break;
-			}
-
-			SharedMethods.DisposeItems(itemsToDispose.ToArray());
-		}
-
-		public static void TrimSeparatorsOnEnd(this ToolStripItemCollection itemCollection)
-		{
-			var itemsToDispose = new List<IDisposable>();
-			int separatorsInARowCount = 0;
-
-			int lastItemIndex = itemCollection.Count - 1;
-
-			for (int i = lastItemIndex; i >= 0; i--)
-			{
-				ToolStripItem item = itemCollection[i];
-
-				if ((i == lastItemIndex || separatorsInARowCount > 0) && item is ToolStripSeparator)
-				{
-					itemsToDispose.Add(item);
-					separatorsInARowCount++;
-				}
-				else
-					break;
-			}
-
-			SharedMethods.DisposeItems(itemsToDispose.ToArray());
-		}
+		public static IEnumerable<ToolStripItem> GetTargetItems(this ToolStripItemCollection items, Enum modeEnum)
+			=> items.Cast<ToolStripItem>().ToList().FindAll(x => x.IsTargetItem(modeEnum));
 	}
 }
