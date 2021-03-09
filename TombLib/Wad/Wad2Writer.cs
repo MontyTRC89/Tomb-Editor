@@ -179,6 +179,9 @@ namespace TombLib.Wad
                     }
                 });
 
+                // Write light mode
+                chunkIO.WriteChunkInt(Wad2Chunks.MeshLightingType, (int)mesh.LightingType);
+
                 // Write polygons
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygons, () =>
                 {

@@ -16,9 +16,7 @@ struct PixelInputType
 float4x4 ModelViewProjection;
 float4 Color;
 bool AlphaTest;
-
-int Shape;
-int SplitMode;
+bool StaticLighting;
 
 Texture2D Texture;
 sampler TextureSampler;
@@ -28,7 +26,12 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
     output.UV = input.UV;
-    output.Color = float4(Color.xyz * input.Color.xyz, 1.0);
+	
+	if (StaticLighting)
+		output.Color = float4(Color.xyz * input.Color.xyz, 1.0);
+	else
+		output.Color = Color;
+		
     return output;
 }
 

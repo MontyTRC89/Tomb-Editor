@@ -442,6 +442,10 @@ namespace TombLib.Wad
                         return true;
                     });
                 }
+                else if (id2 == Wad2Chunks.MeshLightingType)
+                {
+                    mesh.LightingType = (WadMeshLightingType)chunkIO.ReadChunkInt(chunkSize2);
+                }
                 else if (id2 == Wad2Chunks.MeshPolygons)
                 {
                     chunkIO.ReadChunks((id3, chunkSize3) =>

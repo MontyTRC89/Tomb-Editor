@@ -476,7 +476,15 @@ namespace TombLib.LevelData.Compilers
                     else
                     {
                         int flags = (instance.CodeBits << 9) | (instance.ClearBody ? 0x80 : 0) | (instance.Invisible ? 0x100 : 0);
-                        ushort color = instance.Color.Equals(Vector3.One) ? (ushort)0xFFFF : PackColorTo16Bit(instance.Color);
+
+                        var instanceColor = instance.Color;
+
+                        // HACK: in TR3+, moveables have RGB components swapped to BGR
+                        if (_level.Settings.GameVersion > TRVersion.Game.TR2)
+                            instanceColor = new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X);
+
+                        // Calculate TR color
+                        ushort color = instance.Color.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings.GameVersion);
 
                         // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
                         var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);

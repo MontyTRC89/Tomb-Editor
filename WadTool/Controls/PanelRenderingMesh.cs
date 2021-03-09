@@ -102,7 +102,7 @@ namespace WadTool.Controls
                 // TODO Keep data on GPU, optimize data upload
                 // Use new renderer
                 var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
-                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
+                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
                 var world = Matrix4x4.Identity;
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());

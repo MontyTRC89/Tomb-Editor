@@ -89,48 +89,30 @@ namespace TombLib.LevelData.Compilers
 
             // FIX: the following code will check for valid normals and shades combinations.
             // As last chance, I recalculate the normals on the fly.
+
             bool useShades = false;
-            if (isStatic)
-            {
-                if (lightType == WadMeshLightingType.Normals)
-                {
-                    if (oldMesh.VerticesNormals.Count == 0)
-                    {
-                        _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
-                        oldMesh.CalculateNormals();
-                    }
-                    useShades = false;
-                }
-                else
-                {
-                    if (oldMesh.VerticesColors.Count == 0)
-                    {
-                        if (oldMesh.VerticesNormals.Count == 0)
-                        {
-                            
-                            _progressReporter.ReportWarn(string.Format("Static {0} is a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
-                            oldMesh.CalculateNormals();
-                        }
-                        useShades = false;
-                    }
-                    else
-                    {
-                        useShades = true;
-                    }
-                }
-            }
-            else
+            bool flatLighting = false;
+            var objectString = isStatic ? "Static" : "Moveable";
+
+            // If light type is static and vertex colors count isn't valid, use flat lighting
+            if (lightType != WadMeshLightingType.Normals && oldMesh.VerticesColors.Count != oldMesh.VerticesPositions.Count)
+                flatLighting = true;
+
+            if (lightType == WadMeshLightingType.Normals)
             {
                 if (oldMesh.VerticesNormals.Count == 0)
                 {
-                    
-                    _progressReporter.ReportWarn(string.Format("Mesh {0} of Moveable {1} contains invalid lighting data. Normals will be recalculated on the fly.", meshIndex, objectName));
+                    _progressReporter.ReportWarn(string.Format(objectString + " {0} has a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                     oldMesh.CalculateNormals();
                 }
                 useShades = false;
             }
+            else
+            {
+                useShades = true;
+            }
 
-            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesColors.Count : oldMesh.VerticesNormals.Count);
+            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesPositions.Count : oldMesh.VerticesNormals.Count);
             currentMeshSize += 2;
 
             if (!useShades)
@@ -149,13 +131,15 @@ namespace TombLib.LevelData.Compilers
             }
             else
             {
-                newMesh.Lights = new short[oldMesh.VerticesColors.Count];
+                newMesh.Lights = new short[oldMesh.VerticesPositions.Count];
 
-                for (int j = 0; j < oldMesh.VerticesColors.Count; j++)
+                for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
                 {
                     // HACK: Because of inconsistent TE light model (0.0f-2.0f), clamp luma to 1.0f to avoid issues with
                     // incorrect shade translations in room meshes reimported as statics.
-                    newMesh.Lights[j] = (short)(8191.0f - Math.Min(oldMesh.VerticesColors[j].GetLuma(), 1.0f) * 8191.0f);
+                    var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VerticesColors[j].GetLuma(), 1.0f);
+
+                    newMesh.Lights[j] = (short)(8191.0f - lightValue * 8191.0f);
                     currentMeshSize += 2;
                 }
             }
@@ -509,7 +493,9 @@ namespace TombLib.LevelData.Compilers
                 for (int i = 0; i < oldMoveable.Meshes.Count; i++)
                 {
                     var wadMesh = oldMoveable.Meshes[i];
-                    ConvertWadMesh(wadMesh, false, oldMoveable.Id.ShortName(_level.Settings.GameVersion), i, oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
+                    ConvertWadMesh(wadMesh, false, oldMoveable.Id.ShortName(_level.Settings.GameVersion), i, 
+                        oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion),
+                        wadMesh.LightingType);
                 }
 
                 var meshTrees = new List<tr_meshtree>();

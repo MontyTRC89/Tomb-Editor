@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib.Wad.Catalog;
+using System.Linq;
 
 namespace TombEditor.Forms
 {
@@ -42,12 +44,17 @@ namespace TombEditor.Forms
             cbClearBody.Checked = _movable.ClearBody;
             tbOCB.Text = _movable.Ocb.ToString();
 
-            // Disable version-specific controls
+            // Disable mesh-specific controls
 
-            bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
-            if (!isT5M) Size = new System.Drawing.Size(Size.Width, 226);
-            lblColor.Visible = isT5M;
-            panelColor.Visible = isT5M;
+            bool isStaticLighting = false;
+            var model = _editor.Level.Settings.WadTryGetMoveable(_movable.WadObjectId);
+            if (model != null && model.Meshes.Count > 0)
+                isStaticLighting = model.Meshes.Any(m => m.LightingType != TombLib.Wad.WadMeshLightingType.Normals);
+
+            if (!isStaticLighting)
+                Size = new System.Drawing.Size(Size.Width, 226);
+            lblColor.Visible = isStaticLighting;
+            panelColor.Visible = isStaticLighting;
         }
 
         private void butOK_Click(object sender, EventArgs e)
