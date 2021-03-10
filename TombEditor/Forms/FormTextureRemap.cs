@@ -191,7 +191,7 @@ namespace TombEditor.Forms
 
             // Animated textures
             int animatedTextureCount = 0;
-            if (cbRestrictToSelectedRooms.Checked)
+            if (cbRemapAnimTextures.Checked)
                 foreach (AnimatedTextureSet set in level.Settings.AnimatedTextureSets)
                 {
                     var framesToRemove = new List<AnimatedTextureFrame>();

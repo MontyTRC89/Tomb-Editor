@@ -170,6 +170,7 @@ namespace TombLib.Controls
 
                 effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["StaticLighting"].SetValue(false);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
@@ -213,11 +214,12 @@ namespace TombLib.Controls
             {
                 StaticModel model = _wadRenderer.GetStatic((WadStatic)CurrentObject);
 
-                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
+                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
 
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["StaticLighting"].SetValue(false);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 

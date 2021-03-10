@@ -62,8 +62,8 @@ namespace TombEditor.ToolWindows
                     // to preserve item list position. If item is not present, just reset selection to first item in the list.
 
                     if (_editor.ChosenItem.HasValue &&
-                        _editor.Level.Settings.Wads.Any(w => (!_editor.ChosenItem.Value.IsStatic && w.Wad.Moveables.Any(w2 => w2.Key == _editor.ChosenItem.Value.MoveableId)) ||
-                                                             ( _editor.ChosenItem.Value.IsStatic && w.Wad.Statics.Any  (w2 => w2.Key == _editor.ChosenItem.Value.StaticId))))
+                        _editor.Level.Settings.Wads.Any(w => w.Wad != null && ((!_editor.ChosenItem.Value.IsStatic && w.Wad.Moveables.Any(w2 => w2.Key == _editor.ChosenItem.Value.MoveableId)) ||
+                                                                               ( _editor.ChosenItem.Value.IsStatic && w.Wad.Statics.Any  (w2 => w2.Key == _editor.ChosenItem.Value.StaticId)))))
                     {
                         ChoseItem(_editor.ChosenItem.Value);
                     }

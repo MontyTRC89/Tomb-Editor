@@ -173,6 +173,9 @@ namespace WadTool.Controls
 
                     effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                     effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(Vector4.One);
+                    effect.Parameters["StaticLighting"].SetValue(node.WadMesh.LightingType != WadMeshLightingType.Normals);
+
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var mesh_ in mesh.Meshes)
@@ -301,6 +304,7 @@ namespace WadTool.Controls
                     }
                 }
                 SelectedNode = foundNode;
+                _tool.BonePicked();
             }
 
             Invalidate();

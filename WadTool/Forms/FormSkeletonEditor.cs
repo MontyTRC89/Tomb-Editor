@@ -64,12 +64,13 @@ namespace WadTool
 
             panelRendering.Skeleton = _bones;
 
-            if (treeSkeleton.SelectedNodes.Count <= 0)
+            if (treeSkeleton.SelectedNodes.Count <= 0 && treeSkeleton.Nodes.Count > 0)
             {
                 treeSkeleton.SelectNode(treeSkeleton.Nodes[0]);
                 panelRendering.SelectedNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
             }
 
+            UpdateUI();
             panelRendering.Invalidate();
         }
 
@@ -87,6 +88,9 @@ namespace WadTool
                 UpdateUI();
                 UpdateSkeletonMatrices(treeSkeleton.Nodes[0], Matrix4x4.Identity);
             }
+
+            if (obj is WadToolClass.BonePickedEvent)
+                UpdateUI();
         }
 
         private List<DarkTreeNode> LoadSkeleton()
@@ -203,6 +207,7 @@ namespace WadTool
             nudTransX.Value = (decimal)panelRendering.SelectedNode.Bone.Translation.X;
             nudTransY.Value = (decimal)panelRendering.SelectedNode.Bone.Translation.Y;
             nudTransZ.Value = (decimal)panelRendering.SelectedNode.Bone.Translation.Z;
+            comboLightType.SelectedIndex = panelRendering.SelectedNode.Bone.Mesh.LightingType == WadMeshLightingType.Normals ? 0 : 1;
             panelRendering.Invalidate();
         }
 
@@ -709,6 +714,13 @@ namespace WadTool
             _tool.BoneOffsetMoved();
         }
 
+        private void comboLightType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (panelRendering.SelectedNode == null) return;
+            panelRendering.SelectedNode.Bone.Mesh.LightingType = comboLightType.SelectedIndex == 0 ? WadMeshLightingType.Normals : WadMeshLightingType.VertexColors;
+            panelRendering.Invalidate();
+        }
+
         private void butSaveChanges_Click(object sender, EventArgs e)
         {
             SaveChanges();
@@ -786,6 +798,14 @@ namespace WadTool
                     }
                 }
             }
+        }
+
+        private void butSetToAll_Click(object sender, EventArgs e)
+        {
+            var lightType = comboLightType.SelectedIndex == 0 ? WadMeshLightingType.Normals : WadMeshLightingType.VertexColors;
+            foreach (var mesh in _moveable.Meshes)
+                mesh.LightingType = lightType;
+            UpdateUI();
         }
     }
 }

@@ -193,12 +193,13 @@ namespace WadTool.Controls
             {
                 var model = _wadRenderer.GetStatic(Static);
 
-                var effect = _deviceManager.___LegacyEffects["StaticModel"];
+                var effect = _deviceManager.___LegacyEffects["Model"];
 
                 var world = GizmoTransform;
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
+                effect.Parameters["StaticLighting"].SetValue(Static.LightingType != WadMeshLightingType.Normals);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 

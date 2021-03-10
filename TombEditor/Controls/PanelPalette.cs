@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
@@ -91,13 +92,29 @@ namespace TombEditor.Controls
 
                 if (_editor.SelectedObject is IColorable)
                 {
-                    // Discard moveable and fog bulb color editing if game version condition isnt met
+                    bool changeColor = true;
 
-                    if (_editor.SelectedObject is MoveableInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
-                    { }
+                    // Discard color editing if conditions aren't met
+                    // FIXME: For TR5Main, it may be considered to apply dynamic lighting in addition to tint, so those conditions can be then changed.
+
+                    if (_editor.SelectedObject is MoveableInstance)
+                    {
+                        var model = _editor.Level.Settings.WadTryGetMoveable((_editor.SelectedObject as MoveableInstance).WadObjectId);
+                        if (model == null || !model.Meshes.Any(m => m.LightingType != TombLib.Wad.WadMeshLightingType.Normals))
+                            changeColor = false;
+                    }
+                    else if (_editor.SelectedObject is StaticInstance)
+                    {
+                        var mesh = _editor.Level.Settings.WadTryGetStatic((_editor.SelectedObject as StaticInstance).WadObjectId);
+                        if (mesh == null || mesh.LightingType == TombLib.Wad.WadMeshLightingType.Normals)
+                            changeColor = false;
+                    }
                     else if (_editor.SelectedObject is LightInstance && (_editor.SelectedObject as LightInstance).Type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
-                    { }
-                    else
+                    {
+                        changeColor = false;
+                    }
+                    
+                    if (changeColor)
                     {
                         var instance = _editor.SelectedObject as IColorable;
                         instance.Color = SelectedColor.ToFloat3Color() * 2.0f;

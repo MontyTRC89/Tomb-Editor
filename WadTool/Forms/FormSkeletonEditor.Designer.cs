@@ -57,6 +57,9 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sectionCurrentBone = new DarkUI.Controls.DarkSectionPanel();
+            this.butSetToAll = new DarkUI.Controls.DarkButton();
+            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.comboLightType = new DarkUI.Controls.DarkComboBox();
             this.nudTransZ = new DarkUI.Controls.DarkNumericUpDown();
             this.nudTransY = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel29 = new DarkUI.Controls.DarkLabel();
@@ -93,7 +96,7 @@
             this.treeSkeleton.Name = "treeSkeleton";
             this.treeSkeleton.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
             this.treeSkeleton.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
-            this.treeSkeleton.Size = new System.Drawing.Size(310, 383);
+            this.treeSkeleton.Size = new System.Drawing.Size(310, 354);
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
             this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDown);
@@ -141,7 +144,7 @@
             this.butRenameBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRenameBone.Checked = false;
             this.butRenameBone.Image = global::WadTool.Properties.Resources.edit_16;
-            this.butRenameBone.Location = new System.Drawing.Point(161, 417);
+            this.butRenameBone.Location = new System.Drawing.Point(161, 388);
             this.butRenameBone.Name = "butRenameBone";
             this.butRenameBone.Size = new System.Drawing.Size(73, 23);
             this.butRenameBone.TabIndex = 84;
@@ -154,7 +157,7 @@
             this.butDeleteBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteBone.Checked = false;
             this.butDeleteBone.Image = global::WadTool.Properties.Resources.trash_161;
-            this.butDeleteBone.Location = new System.Drawing.Point(240, 417);
+            this.butDeleteBone.Location = new System.Drawing.Point(240, 388);
             this.butDeleteBone.Name = "butDeleteBone";
             this.butDeleteBone.Size = new System.Drawing.Size(73, 23);
             this.butDeleteBone.TabIndex = 83;
@@ -166,7 +169,7 @@
             // 
             this.butLoadModel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butLoadModel.Checked = false;
-            this.butLoadModel.Location = new System.Drawing.Point(3, 475);
+            this.butLoadModel.Location = new System.Drawing.Point(3, 446);
             this.butLoadModel.Name = "butLoadModel";
             this.butLoadModel.Size = new System.Drawing.Size(152, 23);
             this.butLoadModel.TabIndex = 80;
@@ -189,7 +192,7 @@
             // 
             this.butAddFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromWad2.Checked = false;
-            this.butAddFromWad2.Location = new System.Drawing.Point(161, 446);
+            this.butAddFromWad2.Location = new System.Drawing.Point(161, 417);
             this.butAddFromWad2.Name = "butAddFromWad2";
             this.butAddFromWad2.Size = new System.Drawing.Size(152, 23);
             this.butAddFromWad2.TabIndex = 87;
@@ -202,7 +205,7 @@
             this.butAddFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromFile.Checked = false;
             this.butAddFromFile.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddFromFile.Location = new System.Drawing.Point(3, 417);
+            this.butAddFromFile.Location = new System.Drawing.Point(3, 388);
             this.butAddFromFile.Name = "butAddFromFile";
             this.butAddFromFile.Size = new System.Drawing.Size(73, 23);
             this.butAddFromFile.TabIndex = 86;
@@ -214,7 +217,7 @@
             // 
             this.butReplaceFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromWad2.Checked = false;
-            this.butReplaceFromWad2.Location = new System.Drawing.Point(3, 446);
+            this.butReplaceFromWad2.Location = new System.Drawing.Point(3, 417);
             this.butReplaceFromWad2.Name = "butReplaceFromWad2";
             this.butReplaceFromWad2.Size = new System.Drawing.Size(152, 23);
             this.butReplaceFromWad2.TabIndex = 90;
@@ -227,7 +230,7 @@
             this.butReplaceFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromFile.Checked = false;
             this.butReplaceFromFile.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butReplaceFromFile.Location = new System.Drawing.Point(82, 417);
+            this.butReplaceFromFile.Location = new System.Drawing.Point(82, 388);
             this.butReplaceFromFile.Name = "butReplaceFromFile";
             this.butReplaceFromFile.Size = new System.Drawing.Size(73, 23);
             this.butReplaceFromFile.TabIndex = 89;
@@ -393,6 +396,9 @@
             // 
             // sectionCurrentBone
             // 
+            this.sectionCurrentBone.Controls.Add(this.comboLightType);
+            this.sectionCurrentBone.Controls.Add(this.butSetToAll);
+            this.sectionCurrentBone.Controls.Add(this.darkLabel1);
             this.sectionCurrentBone.Controls.Add(this.nudTransZ);
             this.sectionCurrentBone.Controls.Add(this.nudTransY);
             this.sectionCurrentBone.Controls.Add(this.darkLabel29);
@@ -401,11 +407,43 @@
             this.sectionCurrentBone.Controls.Add(this.darkLabel26);
             this.sectionCurrentBone.Controls.Add(this.darkLabel21);
             this.sectionCurrentBone.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.sectionCurrentBone.Location = new System.Drawing.Point(0, 501);
+            this.sectionCurrentBone.Location = new System.Drawing.Point(0, 472);
             this.sectionCurrentBone.Name = "sectionCurrentBone";
-            this.sectionCurrentBone.SectionHeader = "Transform";
-            this.sectionCurrentBone.Size = new System.Drawing.Size(316, 53);
+            this.sectionCurrentBone.SectionHeader = "Current bone";
+            this.sectionCurrentBone.Size = new System.Drawing.Size(316, 82);
             this.sectionCurrentBone.TabIndex = 107;
+            // 
+            // butSetToAll
+            // 
+            this.butSetToAll.Checked = false;
+            this.butSetToAll.Location = new System.Drawing.Point(235, 56);
+            this.butSetToAll.Name = "butSetToAll";
+            this.butSetToAll.Size = new System.Drawing.Size(78, 23);
+            this.butSetToAll.TabIndex = 108;
+            this.butSetToAll.Text = "Set to all";
+            this.butSetToAll.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butSetToAll.Click += new System.EventHandler(this.butSetToAll_Click);
+            // 
+            // darkLabel1
+            // 
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(4, 59);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(76, 13);
+            this.darkLabel1.TabIndex = 107;
+            this.darkLabel1.Text = "Light mode:";
+            // 
+            // comboLightType
+            // 
+            this.comboLightType.FormattingEnabled = true;
+            this.comboLightType.Items.AddRange(new object[] {
+            "Dynamic Lighting",
+            "Static Lighting"});
+            this.comboLightType.Location = new System.Drawing.Point(82, 56);
+            this.comboLightType.Name = "comboLightType";
+            this.comboLightType.Size = new System.Drawing.Size(147, 23);
+            this.comboLightType.TabIndex = 106;
+            this.comboLightType.SelectedIndexChanged += new System.EventHandler(this.comboLightType_SelectedIndexChanged);
             // 
             // nudTransZ
             // 
@@ -588,14 +626,14 @@
             this.section3D.Location = new System.Drawing.Point(0, 0);
             this.section3D.Name = "section3D";
             this.section3D.SectionHeader = "Meshtree";
-            this.section3D.Size = new System.Drawing.Size(316, 501);
+            this.section3D.Size = new System.Drawing.Size(316, 472);
             this.section3D.TabIndex = 108;
             // 
             // butExportSelectedMesh
             // 
             this.butExportSelectedMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butExportSelectedMesh.Checked = false;
-            this.butExportSelectedMesh.Location = new System.Drawing.Point(161, 475);
+            this.butExportSelectedMesh.Location = new System.Drawing.Point(161, 446);
             this.butExportSelectedMesh.Name = "butExportSelectedMesh";
             this.butExportSelectedMesh.Size = new System.Drawing.Size(152, 23);
             this.butExportSelectedMesh.TabIndex = 91;
@@ -696,5 +734,8 @@
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkButton butExportSelectedMesh;
         private Controls.PanelRenderingSkeleton panelRendering;
+        private DarkUI.Controls.DarkButton butSetToAll;
+        private DarkUI.Controls.DarkLabel darkLabel1;
+        private DarkUI.Controls.DarkComboBox comboLightType;
     }
 }

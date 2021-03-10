@@ -382,7 +382,8 @@
 			this.cbOverrideAllLightQuality.TabIndex = 108;
 			this.cbOverrideAllLightQuality.Tag = "";
 			this.cbOverrideAllLightQuality.Text = "Override individual settings";
-			this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
+            this.cbOverrideAllLightQuality.Visible = false;
+            this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
 			this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
 			// 
 			// cmbDefaultLightQuality
@@ -463,7 +464,7 @@
 			this.cbRemoveObjects.TabIndex = 112;
 			this.cbRemoveObjects.Tag = "";
 			this.cbRemoveObjects.Text = "Remove unused objects from compiled level";
-			this.pathToolTip.SetToolTip(this.cbRemoveObjects, "Removes moveables and statics that are in the WADs, but not placed in the level. " +
+			this.pathToolTip.SetToolTip(this.cbRemoveObjects, "Removes moveables and statics that are in the WADs, but not placed in the level.\r\n" +
         "Use with caution in the case of dynamic object creation with scripts!");
 			this.cbRemoveObjects.CheckedChanged += new System.EventHandler(this.cbRemoveObjects_CheckedChanged);
 			// 
