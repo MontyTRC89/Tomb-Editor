@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using DarkUI.Forms;
+using System.Drawing;
 using System.Windows.Forms;
 using TombLib.Scripting.Controls;
 using TombLib.Scripting.Objects;
@@ -128,6 +129,43 @@ namespace TombLib.Scripting.ClassicScript.Controls
 				Columns[0].Width = stringWidth;
 				Columns[1].Width = stringWidth;
 			}
+		}
+
+		public void ClearSelectedString()
+		{
+			DataGridViewCell selectedCell = SelectedCells.Count > 0 ? SelectedCells[0] : null;
+
+			if (selectedCell != null)
+			{
+				DataGridViewCell stringCell = selectedCell.OwningRow.Cells[2];
+				string cachedValue = stringCell.Value?.ToString();
+
+				stringCell.Value = "NULL";
+
+				OnCellContentChanged(new CellContentChangedEventArgs(
+					stringCell.ColumnIndex, stringCell.RowIndex,
+					cachedValue, stringCell.Value));
+			}
+		}
+
+		public void RemoveLastString()
+		{
+			if (AllowUserToDeleteRows)
+			{
+				DialogResult result = DarkMessageBox.Show(this,
+					"Are you sure you want to remove the last string entry?\nThis action cannot be undone!", "Are you sure?",
+					MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+
+				if (result == DialogResult.Yes)
+				{
+					DataGridViewRow lastRow = Rows[Rows.Count - 2];
+					Rows.Remove(lastRow);
+				}
+			}
+			else
+				DarkMessageBox.Show(this,
+					"Removing strings in this section is not allowed.", "Not allowed",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		#endregion Public methods

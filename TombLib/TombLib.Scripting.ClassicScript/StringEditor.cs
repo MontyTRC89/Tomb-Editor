@@ -1,5 +1,4 @@
-﻿using DarkUI.Forms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -177,11 +176,7 @@ namespace TombLib.Scripting.ClassicScript
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			if (!CurrentDataGrid.IsCurrentCellInEditMode)
-			{
 				HandleUndoRedoKeys(keyData);
-				HandleTabSwitchingKeys(ref keyData);
-				HandleRowDeletion(keyData);
-			}
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
@@ -208,48 +203,6 @@ namespace TombLib.Scripting.ClassicScript
 				Undo();
 			else if (keyData == (Keys.Control | Keys.Y))
 				Redo();
-		}
-
-		private void HandleTabSwitchingKeys(ref Keys keyData)
-		{
-			if (keyData == (Keys.Control | Keys.Right))
-			{
-				if (SelectedIndex < TabPages.Count)
-					SelectedIndex++;
-
-				keyData = Keys.None;
-			}
-			else if (keyData == (Keys.Control | Keys.Left))
-			{
-				if (SelectedIndex > 0)
-					SelectedIndex--;
-
-				keyData = Keys.None;
-			}
-		}
-
-		private void HandleRowDeletion(Keys keyData)
-		{
-			bool isLastRowSelected = CurrentDataGrid.CurrentRow.Index == CurrentDataGrid.RowCount - 2;
-
-			if (CurrentDataGrid.AllowUserToDeleteRows && isLastRowSelected && keyData == Keys.Delete)
-			{
-				object stringValue = CurrentDataGrid.CurrentRow.Cells[2].Value;
-
-				if (stringValue != null && stringValue.ToString() != "NULL")
-				{
-					DialogResult result = DarkMessageBox.Show(this,
-						"Are you sure you want to remove the last row?\nThis action cannot be undone!", "Are you sure?",
-						MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-
-					if (result == DialogResult.Yes)
-						CurrentDataGrid.Rows.Remove(CurrentDataGrid.CurrentRow);
-				}
-				else
-					CurrentDataGrid.Rows.Remove(CurrentDataGrid.CurrentRow);
-
-				TryRunContentChangedWorker();
-			}
 		}
 
 		#endregion Override methods
@@ -305,6 +258,9 @@ namespace TombLib.Scripting.ClassicScript
 			idCell.Value = nextID;
 			hexCell.Value = ContentReader.GetShortHex((short)nextID, 3);
 		}
+
+		private void ExtraNGDataGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+			=> TryRunContentChangedWorker();
 
 		#endregion Events
 
@@ -421,6 +377,7 @@ namespace TombLib.Scripting.ClassicScript
 			dataGrid.AllowUserToAddRows = true;
 			dataGrid.AllowUserToDeleteRows = true;
 			dataGrid.RowsAdded += ExtraNGDataGrid_RowsAdded;
+			dataGrid.RowsRemoved += ExtraNGDataGrid_RowsRemoved;
 		}
 
 		private StringDataGridView CreateStringDataGrid(string sectionName)
@@ -602,6 +559,18 @@ namespace TombLib.Scripting.ClassicScript
 
 		public StringDataGridView GetDataGridOfTab(TabPage tab)
 			=> tab.Controls.OfType<StringDataGridView>().First();
+
+		public void GoToPreviousSection()
+		{
+			if (SelectedIndex > 0)
+				SelectedIndex--;
+		}
+
+		public void GoToNextSection()
+		{
+			if (SelectedIndex < TabPages.Count)
+				SelectedIndex++;
+		}
 
 		#endregion Other methods
 	}

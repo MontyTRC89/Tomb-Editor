@@ -14,6 +14,7 @@ using TombIDE.ScriptingStudio.UI;
 using TombIDE.Shared;
 using TombLib.Forms;
 using TombLib.Scripting.Bases;
+using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.Forms;
 using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Objects;
@@ -472,6 +473,8 @@ namespace TombIDE.ScriptingStudio.Bases
 			if (CurrentEditor is TextEditorBase textEditor)
 				switch (command)
 				{
+					case UICommand.TabsToSpaces: textEditor.ConvertTabsToSpaces(); break;
+					case UICommand.SpacesToTabs: textEditor.ConvertSpacesToTabs(); break;
 					case UICommand.Reindent: textEditor.TidyCode(); break;
 					case UICommand.TrimWhiteSpace: textEditor.TidyCode(true); break;
 					case UICommand.CommentOut: textEditor.CommentOutLines(); break;
@@ -480,6 +483,15 @@ namespace TombIDE.ScriptingStudio.Bases
 					case UICommand.PrevBookmark: textEditor.GoToPrevBookmark(); break;
 					case UICommand.NextBookmark: textEditor.GoToNextBookmark(); break;
 					case UICommand.ClearBookmarks: textEditor.ClearAllBookmarks(this); break;
+				}
+
+			if (CurrentEditor is StringEditor stringEditor)
+				switch (command)
+				{
+					case UICommand.PrevSection: stringEditor.GoToPreviousSection(); break;
+					case UICommand.NextSection: stringEditor.GoToNextSection(); break;
+					case UICommand.ClearString: stringEditor.CurrentDataGrid?.ClearSelectedString(); break;
+					case UICommand.RemoveLastString: stringEditor.CurrentDataGrid?.RemoveLastString(); break;
 				}
 		}
 

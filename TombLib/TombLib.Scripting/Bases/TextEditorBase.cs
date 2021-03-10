@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -607,6 +608,74 @@ namespace TombLib.Scripting.Bases
 						line.IsBookmarked = false;
 
 			TextArea.TextView.InvalidateLayer(KnownLayer.Background);
+		}
+
+		public void ConvertSpacesToTabs()
+		{
+			var resultBuilder = new StringBuilder();
+
+			for (int i = 1; i <= Document.LineCount; i++)
+			{
+				DocumentLine line = Document.GetLineByNumber(i);
+				string lineText = Document.GetText(line.Offset, line.Length);
+
+				const int TAB_SIZE = 4;
+
+				string result = string.Empty;
+				var re = new Regex(@" {2,}$");
+
+				for (int start = 0; start < lineText.Length; start += TAB_SIZE)
+				{
+					int len = Math.Min(lineText.Length - start, TAB_SIZE);
+					Match m = re.Match(lineText, start, len);
+
+					if (m.Success)
+					{
+						result += lineText.Substring(start, TAB_SIZE - m.Length);
+						result += '\t';
+					}
+					else
+						result += lineText.Substring(start, len);
+				}
+
+				resultBuilder.Append(result);
+
+				if (i < Document.LineCount)
+					resultBuilder.Append(Environment.NewLine);
+			}
+
+			Content = resultBuilder.ToString();
+		}
+
+		public void ConvertTabsToSpaces()
+		{
+			var resultBuilder = new StringBuilder();
+
+			for (int i = 1; i <= Document.LineCount; i++)
+			{
+				DocumentLine line = Document.GetLineByNumber(i);
+				string lineText = Document.GetText(line.Offset, line.Length);
+
+				string[] textValues = lineText.Split('\t');
+
+				if (textValues.Length > 1)
+					for (int j = 0; j < textValues.Length; j++)
+					{
+						string value = textValues[j];
+
+						if (j == textValues.Length - 1)
+							resultBuilder.Append(value);
+						else
+							resultBuilder.Append(value + new string(' ', 4 - value.Length % 4));
+					}
+				else
+					resultBuilder.Append(lineText);
+
+				if (i < Document.LineCount)
+					resultBuilder.Append(Environment.NewLine);
+			}
+
+			Content = resultBuilder.ToString();
 		}
 
 		public void SelectLine(int lineNumber) => SelectLine(Document.GetLineByNumber(lineNumber));
