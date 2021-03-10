@@ -17,7 +17,7 @@
 		<Separator />
 		<Item LangKey="Cut" Command="Cut" Icon="Cut_16" KeysDisplay="Ctrl+X" />
 		<Item LangKey="Copy" Command="Copy" Icon="Copy_16" KeysDisplay="Ctrl+C" />
-		<Item LangKey="Paste" Command="Paste" Icon="CopyComments_16" KeysDisplay="Ctrl+V" />
+		<Item LangKey="Paste" Command="Paste" Icon="Clipboard_16" KeysDisplay="Ctrl+V" />
 		<Separator />
 		<Item LangKey="Find" Command="Find" Icon="Search_16" KeysDisplay="Ctrl+F / Ctrl+H" />
 		<Separator />

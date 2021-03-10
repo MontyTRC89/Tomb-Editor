@@ -316,7 +316,12 @@ namespace TombLib.Scripting.Bases
 		public void ApplyErrorsToLines(List<ErrorLine> errorLines)
 		{
 			foreach (ErrorLine line in errorLines)
+			{
+				if (line.LineNumber > Document.LineCount)
+					continue;
+
 				Document.GetLineByNumber(line.LineNumber).Error = line;
+			}
 		}
 
 		public void ResetAllErrors()

@@ -80,7 +80,7 @@
       <DependentUpon>FormTextEditorSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="ToolStrips\ToolStripExtensions.cs" />
-    <Compile Include="UI\Enums\DocumentMode.cs" />
+    <Compile Include="UI\Modes\DocumentMode.cs" />
     <Compile Include="ToolWindows\ContentExplorer.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -183,12 +183,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SupportedFormats.cs" />
-    <Compile Include="UI\Enums\StudioMode.cs" />
-    <Compile Include="UI\StudioItemParser.cs" />
-    <Compile Include="UI\StudioToolStripItem.cs" />
-    <Compile Include="UI\ToolStripXmlReader.cs" />
+    <Compile Include="UI\Modes\StudioMode.cs" />
+    <Compile Include="UI\Objects\StudioItemParser.cs" />
+    <Compile Include="UI\Objects\StudioToolStripItem.cs" />
+    <Compile Include="UI\Objects\ToolStripXmlReader.cs" />
     <Compile Include="UI\UICommand.cs" />
-    <Compile Include="UI\UIElementArgs.cs" />
+    <Compile Include="UI\Objects\UIElementArgs.cs" />
     <Compile Include="UI\UIKeys.cs" />
     <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
@@ -286,6 +286,18 @@
     <EmbeddedResource Include="UI\StudioModePresets\MenuStrips\ClassicScript.xml" />
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\ClassicScript.xml" />
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Lua.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\ClassicScript.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Lua.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\PlainText.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\DocumentModePresets\ContextMenus\Strings.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
