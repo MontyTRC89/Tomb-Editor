@@ -27,6 +27,11 @@ namespace TombIDE.ScriptingStudio.UI
 		public const Keys NextBookmark = Keys.Control | Keys.OemPeriod;
 		public const Keys ClearBookmarks = Keys.Control | Keys.Shift | Keys.B;
 
+		public const Keys PrevSection = Keys.Control | Keys.Left;
+		public const Keys NextSection = Keys.Control | Keys.Right;
+		public const Keys ClearString = Keys.Delete;
+		public const Keys RemoveLastString = Keys.Control | Keys.Delete;
+
 		public Keys GetKeys(string flag)
 		{
 			object value = GetType().GetField(flag)?.GetValue(this);

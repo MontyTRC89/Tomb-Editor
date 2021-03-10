@@ -51,7 +51,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		private static IEnumerable<int> GetTakenIndicesList(TextDocument document, string commandKey, int loopStartLine)
 		{
-			for (int i = loopStartLine; i < document.LineCount; i++)
+			for (int i = loopStartLine; i <= document.LineCount; i++)
 			{
 				DocumentLine processedLine = document.GetLineByNumber(i);
 				string processedLineText = document.GetText(processedLine.Offset, processedLine.Length);

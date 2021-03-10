@@ -135,11 +135,13 @@ namespace TombIDE.ScriptingStudio.Bases
 
 		private void InitializeToolStrips()
 		{
-			MenuStrip = new StudioMenuStrip(StudioMode, DocumentMode.None) { Dock = DockStyle.Top };
+			MenuStrip = new StudioMenuStrip() { Dock = DockStyle.Top, StudioMode = StudioMode };
 			MenuStrip.ItemClicked += ToolStrip_ItemClicked;
+			MenuStrip.StudioModeChanged += MenuStrip_StudioModeChanged;
 
-			ToolStrip = new StudioToolStrip(StudioMode, DocumentMode.None) { Dock = DockStyle.Top };
+			ToolStrip = new StudioToolStrip() { Dock = DockStyle.Top, StudioMode = StudioMode };
 			ToolStrip.ItemClicked += ToolStrip_ItemClicked;
+			ToolStrip.StudioModeChanged += ToolStrip_StudioModeChanged;
 
 			StatusStrip = new StudioStatusStrip() { Dock = DockStyle.Bottom };
 
@@ -147,7 +149,8 @@ namespace TombIDE.ScriptingStudio.Bases
 			Controls.Add(ToolStrip);
 			Controls.Add(MenuStrip);
 
-			InitializeFrequentlyAccessedToolStripItems(); // For quick control state updating
+			InitializeFrequentlyAccessedMenuStripItems();
+			InitializeFrequentlyAccessedToolStripItems();
 		}
 
 		private void InitializeTabControl()
@@ -215,17 +218,13 @@ namespace TombIDE.ScriptingStudio.Bases
 			ApplyMessageFilters();
 		}
 
-		private void InitializeFrequentlyAccessedToolStripItems()
+		private void InitializeFrequentlyAccessedMenuStripItems()
 		{
 			UndoMenuItem = MenuStrip.FindItem(UICommand.Undo);
-			UndoToolStripButton = ToolStrip.FindItem(UICommand.Undo);
 			RedoMenuItem = MenuStrip.FindItem(UICommand.Redo);
-			RedoToolStripButton = ToolStrip.FindItem(UICommand.Redo);
 			SaveMenuItem = MenuStrip.FindItem(UICommand.Save);
-			SaveToolStripButton = ToolStrip.FindItem(UICommand.Save);
 			SaveAsMenuItem = MenuStrip.FindItem(UICommand.SaveAs);
 			SaveAllMenuItem = MenuStrip.FindItem(UICommand.SaveAll);
-			SaveAllToolStripButton = ToolStrip.FindItem(UICommand.SaveAll);
 
 			ToolStripViewItem = MenuStrip.FindItem(UICommand.ToolStrip) as ToolStripMenuItem;
 			ContentExplorerViewItem = MenuStrip.FindItem(UICommand.ContentExplorer) as ToolStripMenuItem;
@@ -234,6 +233,14 @@ namespace TombIDE.ScriptingStudio.Bases
 			CompilerLogsViewItem = MenuStrip.FindItem(UICommand.CompilerLogs) as ToolStripMenuItem;
 			SearchResultsViewItem = MenuStrip.FindItem(UICommand.SearchResults) as ToolStripMenuItem;
 			StatusStripViewItem = MenuStrip.FindItem(UICommand.StatusStrip) as ToolStripMenuItem;
+		}
+
+		private void InitializeFrequentlyAccessedToolStripItems()
+		{
+			UndoToolStripButton = ToolStrip.FindItem(UICommand.Undo);
+			RedoToolStripButton = ToolStrip.FindItem(UICommand.Redo);
+			SaveToolStripButton = ToolStrip.FindItem(UICommand.Save);
+			SaveAllToolStripButton = ToolStrip.FindItem(UICommand.SaveAll);
 		}
 
 		private void ApplyMessageFilters()
@@ -301,8 +308,14 @@ namespace TombIDE.ScriptingStudio.Bases
 		private void DockPanel_ContentChanged(object sender, DockContentEventArgs e)
 			=> UpdateViewMenu();
 
+		private void MenuStrip_StudioModeChanged(object sender, EventArgs e)
+			=> InitializeFrequentlyAccessedMenuStripItems();
+
+		private void ToolStrip_StudioModeChanged(object sender, EventArgs e)
+			=> InitializeFrequentlyAccessedToolStripItems();
+
 		private void ToolStrip_ItemClicked(object sender, EventArgs e)
-			=> OnToolStripItemClicked((UICommand)(sender as ToolStripItem).Tag);
+			=> OnToolStripItemClicked(((sender as ToolStripItem).Tag as UIElementArgs).Command);
 
 		private void EditorTabControl_SelectedIndexChanged(object sender, EventArgs e)
 			=> UpdateUI();
@@ -375,7 +388,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		protected void UpdateUI()
 		{
 			if (CurrentEditor != null)
-				DocumentMode = FileHelper.GetDocumentModeForFile(CurrentEditor.FilePath, CurrentEditor.EditorType);
+				DocumentMode = FileHelper.GetDocumentModeOfEditor(CurrentEditor);
 
 			ContentExplorer.EditorControl = CurrentEditor;
 			StatusStrip.EditorControl = CurrentEditor;
@@ -389,24 +402,24 @@ namespace TombIDE.ScriptingStudio.Bases
 			UndoMenuItem.Enabled = CurrentEditor != null && CurrentEditor.CanUndo;
 			UndoMenuItem.Text = UndoMenuItem.Enabled ? Strings.Default.Undo : Strings.Default.CantUndo;
 
-			//UndoToolStripButton.Enabled = UndoMenuItem.Enabled;
-			//UndoToolStripButton.ToolTipText = UndoMenuItem.Text;
+			UndoToolStripButton.Enabled = UndoMenuItem.Enabled;
+			UndoToolStripButton.ToolTipText = UndoMenuItem.Text;
 
 			// Redo buttons
 			RedoMenuItem.Enabled = CurrentEditor != null && CurrentEditor.CanRedo;
 			RedoMenuItem.Text = RedoMenuItem.Enabled ? Strings.Default.Redo : Strings.Default.CantRedo;
 
-			//RedoToolStripButton.Enabled = RedoMenuItem.Enabled;
-			//RedoToolStripButton.ToolTipText = RedoMenuItem.Text;
+			RedoToolStripButton.Enabled = RedoMenuItem.Enabled;
+			RedoToolStripButton.ToolTipText = RedoMenuItem.Text;
 
 			// Save buttons
 			SaveMenuItem.Enabled = CurrentEditor != null && CurrentEditor.IsContentChanged;
-			//SaveToolStripButton.Enabled = SaveMenuItem.Enabled;
+			SaveToolStripButton.Enabled = SaveMenuItem.Enabled;
 
 			SaveAsMenuItem.Enabled = CurrentEditor != null;
 
 			SaveAllMenuItem.Enabled = !EditorTabControl.IsEveryTabSaved();
-			//SaveAllToolStripButton.Enabled = SaveAllMenuItem.Enabled;
+			SaveAllToolStripButton.Enabled = SaveAllMenuItem.Enabled;
 		}
 
 		protected void UpdateViewMenu()
@@ -524,7 +537,7 @@ namespace TombIDE.ScriptingStudio.Bases
 		{
 			if (item != null)
 			{
-				var command = (UICommand)item.Tag;
+				UICommand command = (item.Tag as UIElementArgs).Command;
 
 				if (command == UICommand.ToolStrip || command == UICommand.StatusStrip)
 					item.Checked = GetControlByKey<Control>(command.ToString()).Visible;

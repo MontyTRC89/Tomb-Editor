@@ -24,11 +24,8 @@
 
 		// Document:
 
-		Convert,
-
 		TabsToSpaces,
 		SpacesToTabs,
-		IndentationSize,
 
 		Reindent,
 		TrimWhiteSpace,
@@ -41,8 +38,8 @@
 
 		PrevSection,
 		NextSection,
-		ClearCell,
-		RemoveLastCell,
+		ClearString,
+		RemoveLastString,
 
 		// Options:
 

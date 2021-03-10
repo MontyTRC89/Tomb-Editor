@@ -72,9 +72,9 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 				DocumentLine iline = document.GetLineByNumber(i);
 				string ilineText = document.GetText(iline.Offset, iline.Length);
 
-				if (iline != sectionStartLine && ilineText.StartsWith("["))
+				if (iline != sectionStartLine && (ilineText.StartsWith("[") || i == document.LineCount))
 				{
-					for (int j = i - 1; i >= 1; j--)
+					for (int j = i; i >= 1; j--)
 					{
 						DocumentLine jline = document.GetLineByNumber(j);
 						string jlineText = document.GetText(jline.Offset, jline.Length);

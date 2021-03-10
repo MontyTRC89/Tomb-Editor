@@ -54,14 +54,23 @@
 	<FindReplace>Find and Replace...</FindReplace>
 	<SelectAll>Select All</SelectAll>
 
+	<Convert>Convert</Convert>
+	<TabsToSpaces>Tabs to Spaces</TabsToSpaces>
+	<SpacesToTabs>Spaces to Tabs</SpacesToTabs>
+
 	<Reindent>Reindent Code</Reindent>
 	<TrimWhitespace>Trim Ending Whitespace</TrimWhitespace>
 	<CommentOut>Comment out Selected Lines</CommentOut>
 	<Uncomment>Uncomment Selected Lines</Uncomment>
 	<ToggleBookmark>Toggle Bookmark</ToggleBookmark>
-	<PrevBookmark>Go To Previous Bookmark</PrevBookmark>
-	<NextBookmark>Go To Next Bookmark</NextBookmark>
+	<PrevBookmark>Go to Previous Bookmark</PrevBookmark>
+	<NextBookmark>Go to Next Bookmark</NextBookmark>
 	<ClearBookmarks>Clear All Bookmarks...</ClearBookmarks>
+
+	<PrevSection>Go to Previous Section</PrevSection>
+	<NextSection>Go to Next Section</NextSection>
+	<ClearString>Clear Selected String</ClearString>
+	<RemoveLastString>Remove Last String in Current Section</RemoveLastString>
 
 	<UseNewInclude>Use New #INCLUDE Method</UseNewInclude>
 	<ShowLogsAfterBuild>Show Logs After Build</ShowLogsAfterBuild>

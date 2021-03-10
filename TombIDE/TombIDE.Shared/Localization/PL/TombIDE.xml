@@ -54,6 +54,10 @@
 	<FindReplace>Znajdź i zamień...</FindReplace>
 	<SelectAll>Zaznacz wszystko</SelectAll>
 
+	<Convert>Zamień</Convert>
+	<TabsToSpaces>Tabulatory na spacje</TabsToSpaces>
+	<SpacesToTabs>Spacje na tabulatory</SpacesToTabs>
+
 	<Reindent>Uporządkuj białe znaki</Reindent>
 	<TrimWhitespace>Usuń białe znaki na końcach linii</TrimWhitespace>
 	<CommentOut>Wstaw zakomentowanie</CommentOut>
@@ -62,6 +66,11 @@
 	<PrevBookmark>Idź do poprzedniej zakładki</PrevBookmark>
 	<NextBookmark>Idź do następnej zakładki</NextBookmark>
 	<ClearBookmarks>Wyczyść wszystkie zakładki...</ClearBookmarks>
+
+	<PrevSection>Idź do poprzedniej sekcji</PrevSection>
+	<NextSection>Idź do następnej sekcji</NextSection>
+	<ClearString>Wyczyść zaznaczony string</ClearString>
+	<RemoveLastString>Usuń ostatni string w aktualnej sekcji</RemoveLastString>
 
 	<UseNewInclude>Używaj nowej metody #INCLUDE</UseNewInclude>
 	<ShowLogsAfterBuild>Pokaż raport po budowie skryptu</ShowLogsAfterBuild>

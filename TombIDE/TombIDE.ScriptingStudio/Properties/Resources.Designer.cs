@@ -171,6 +171,16 @@ namespace TombIDE.ScriptingStudio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Eraser_16 {
+            get {
+                object obj = ResourceManager.GetObject("Eraser_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon File {
@@ -216,6 +226,16 @@ namespace TombIDE.ScriptingStudio.Properties {
         internal static System.Drawing.Bitmap Import_16 {
             get {
                 object obj = ResourceManager.GetObject("Import_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Left_16 {
+            get {
+                object obj = ResourceManager.GetObject("Left_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -276,6 +296,16 @@ namespace TombIDE.ScriptingStudio.Properties {
         internal static System.Drawing.Bitmap Reset_16 {
             get {
                 object obj = ResourceManager.GetObject("Reset_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Right_16 {
+            get {
+                object obj = ResourceManager.GetObject("Right_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

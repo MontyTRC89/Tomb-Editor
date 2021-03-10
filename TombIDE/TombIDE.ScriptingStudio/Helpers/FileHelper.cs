@@ -3,17 +3,17 @@ using System.IO;
 using TombIDE.ScriptingStudio.UI;
 using TombLib.Scripting.ClassicScript;
 using TombLib.Scripting.ClassicScript.Parsers;
-using TombLib.Scripting.Enums;
 using TombLib.Scripting.Helpers;
+using TombLib.Scripting.Interfaces;
 using TombLib.Scripting.Lua;
 
 namespace TombIDE.ScriptingStudio.Helpers
 {
 	internal static class FileHelper
 	{
-		public static DocumentMode GetDocumentModeForFile(string filePath, EditorType editorType = EditorType.Default)
+		public static DocumentMode GetDocumentModeOfEditor(IEditorControl editor)
 		{
-			Type editorClassType = EditorTypeHelper.GetEditorClassType(filePath, editorType);
+			Type editorClassType = editor.GetType();
 
 			if (editorClassType != null)
 			{

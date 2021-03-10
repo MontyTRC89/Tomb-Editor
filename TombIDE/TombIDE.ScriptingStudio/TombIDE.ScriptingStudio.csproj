@@ -188,6 +188,7 @@
     <Compile Include="UI\StudioToolStripItem.cs" />
     <Compile Include="UI\ToolStripXmlReader.cs" />
     <Compile Include="UI\UICommand.cs" />
+    <Compile Include="UI\UIElementArgs.cs" />
     <Compile Include="UI\UIKeys.cs" />
     <Compile Include="UI\DefaultLayouts.cs" />
   </ItemGroup>
@@ -286,6 +287,5 @@
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\ClassicScript.xml" />
     <EmbeddedResource Include="UI\StudioModePresets\ToolStrips\Lua.xml" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

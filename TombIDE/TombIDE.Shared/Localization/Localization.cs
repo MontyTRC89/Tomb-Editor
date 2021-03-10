@@ -48,7 +48,6 @@ namespace TombIDE.Shared.Local
 		public string Convert { get; set; }
 		public string TabsToSpaces { get; set; }
 		public string SpacesToTabs { get; set; }
-		public string IndentationSize { get; set; }
 
 		public string Reindent { get; set; }
 		public string TrimWhitespace { get; set; }
@@ -61,8 +60,8 @@ namespace TombIDE.Shared.Local
 
 		public string PrevSection { get; set; }
 		public string NextSection { get; set; }
-		public string ClearCell { get; set; }
-		public string RemoveLastCell { get; set; }
+		public string ClearString { get; set; }
+		public string RemoveLastString { get; set; }
 
 		public string UseNewInclude { get; set; }
 		public string ShowLogsAfterBuild { get; set; }

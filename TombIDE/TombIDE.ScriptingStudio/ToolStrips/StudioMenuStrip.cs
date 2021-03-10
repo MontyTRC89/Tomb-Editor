@@ -52,18 +52,6 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 		#endregion Properties
 
-		#region Construction
-
-		public StudioMenuStrip()
-		{ }
-		public StudioMenuStrip(StudioMode studioMode, DocumentMode editMode)
-		{
-			StudioMode = studioMode;
-			DocumentMode = editMode;
-		}
-
-		#endregion Construction
-
 		#region Events
 
 		public new event EventHandler ItemClicked;
@@ -116,10 +104,10 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 				var menuItem = new ToolStripMenuItem(StudioItemParser.GetItemText(studioItem))
 				{
 					Name = studioItem.Position,
-					Tag = modeEnum.GetType()
+					Tag = new UIElementArgs(modeEnum.GetType())
 				};
 
-				menuItem.DropDownItems.AddRange(GetSubMenuItems(studioItem)?.ToArray());
+				menuItem.DropDownItems.AddRange(GetSubMenuItems(studioItem, modeEnum.GetType())?.ToArray());
 
 				yield return menuItem;
 			}
@@ -138,7 +126,7 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 			}
 		}
 
-		private IEnumerable<ToolStripItem> GetSubMenuItems(StudioToolStripItem root)
+		private IEnumerable<ToolStripItem> GetSubMenuItems(StudioToolStripItem root, Type uiModeEnumType)
 		{
 			foreach (StudioToolStripItem item in root.DropDownItems)
 				if (item is StudioSeparator)
@@ -153,10 +141,10 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 					{
 						ShortcutKeyDisplayString = item.KeysDisplay,
 						CheckOnClick = item.CheckOnClick,
-						Tag = StudioItemParser.GetCommand(item.Command)
+						Tag = new UIElementArgs(uiModeEnumType, StudioItemParser.GetCommand(item.Command))
 					};
 
-					menuItem.DropDownItems.AddRange(GetSubMenuItems(item)?.ToArray());
+					menuItem.DropDownItems.AddRange(GetSubMenuItems(item, uiModeEnumType)?.ToArray());
 
 					yield return menuItem;
 				}

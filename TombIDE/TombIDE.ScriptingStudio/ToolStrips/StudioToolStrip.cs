@@ -52,18 +52,6 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 
 		#endregion Properties
 
-		#region Construction
-
-		public StudioToolStrip()
-		{ }
-		public StudioToolStrip(StudioMode studioMode, DocumentMode editMode)
-		{
-			StudioMode = studioMode;
-			DocumentMode = editMode;
-		}
-
-		#endregion Construction
-
 		#region Events
 
 		public new event EventHandler ItemClicked;
@@ -106,7 +94,7 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 		{
 			foreach (StudioToolStripItem studioItem in studioItems)
 				if (studioItem is StudioSeparator)
-					yield return new ToolStripSeparator();
+					yield return new ToolStripSeparator() { Tag = new UIElementArgs(modeEnum.GetType()) };
 				else
 				{
 					string text = StudioItemParser.GetItemText(studioItem);
@@ -119,14 +107,14 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 							DisplayStyle = ToolStripItemDisplayStyle.ImageAndText,
 							TextImageRelation = TextImageRelation.ImageBeforeText,
 							ShowDropDownArrow = false,
-							Tag = StudioItemParser.GetCommand(studioItem.Command)
+							Tag = new UIElementArgs(modeEnum.GetType(), StudioItemParser.GetCommand(studioItem.Command))
 						};
 					else
 						yield return new ToolStripButton(text, icon, OnItemClicked)
 						{
 							DisplayStyle = ToolStripItemDisplayStyle.Image,
 							CheckOnClick = studioItem.CheckOnClick,
-							Tag = StudioItemParser.GetCommand(studioItem.Command)
+							Tag = new UIElementArgs(modeEnum.GetType(), StudioItemParser.GetCommand(studioItem.Command))
 						};
 				}
 		}

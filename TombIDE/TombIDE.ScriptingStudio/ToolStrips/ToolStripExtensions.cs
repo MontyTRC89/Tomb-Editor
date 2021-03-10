@@ -8,10 +8,10 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 {
 	internal static class ToolStripExtensions
 	{
-		public static ToolStripItem FindItem(this ToolStrip toolStrip, UICommand element)
+		public static ToolStripItem FindItem(this ToolStrip toolStrip, UICommand command)
 		{
 			foreach (ToolStripItem item in toolStrip.GetAllItems())
-				if (item.Tag is UICommand e && e == element)
+				if (item.Tag is UIElementArgs e && e.Command == command)
 					return item;
 
 			return null;
@@ -47,7 +47,7 @@ namespace TombIDE.ScriptingStudio.ToolStrips
 		}
 
 		public static bool IsTargetItem(this ToolStripItem item, Enum modeEnum)
-			=> item.Tag is Type type && type == modeEnum.GetType();
+			=> item.Tag is UIElementArgs e && e.UIModeEnumType == modeEnum.GetType();
 
 		public static IEnumerable<ToolStripItem> GetTargetItems(this ToolStripItemCollection items, Enum modeEnum)
 			=> items.Cast<ToolStripItem>().ToList().FindAll(x => x.IsTargetItem(modeEnum));
