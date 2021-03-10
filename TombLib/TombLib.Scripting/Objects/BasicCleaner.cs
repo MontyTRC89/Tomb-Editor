@@ -4,9 +4,9 @@ namespace TombLib.Scripting.Objects
 {
 	public class BasicCleaner
 	{
-		public string TrimEndingWhitespace(string editorContent)
+		public static string TrimEndingWhitespace(string input)
 		{
-			string[] lines = TrimEndingWhitespaceOnLines(editorContent.Replace("\r", string.Empty).Split('\n'));
+			string[] lines = TrimEndingWhitespaceOnLines(input.Replace("\r", string.Empty).Split('\n'));
 			return string.Join(Environment.NewLine, lines);
 		}
 

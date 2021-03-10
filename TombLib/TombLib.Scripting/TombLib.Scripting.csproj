@@ -60,6 +60,7 @@
     <Compile Include="Objects\CellContentChangedEventArgs.cs" />
     <Compile Include="Objects\ObjectClickedEventArgs.cs" />
     <Compile Include="Resources\StringEditorDefaults.cs" />
+    <Compile Include="Utils\WhiteSpaceConverter.cs" />
     <Compile Include="Workers\ContentChangedWorker.cs">
       <SubType>Component</SubType>
     </Compile>

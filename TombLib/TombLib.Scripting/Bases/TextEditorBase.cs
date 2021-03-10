@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -16,8 +15,10 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using TombLib.Scripting.Enums;
 using TombLib.Scripting.Interfaces;
+using TombLib.Scripting.Objects;
 using TombLib.Scripting.Rendering;
 using TombLib.Scripting.Resources;
+using TombLib.Scripting.Utils;
 using TombLib.Scripting.Workers;
 
 namespace TombLib.Scripting.Bases
@@ -616,72 +617,10 @@ namespace TombLib.Scripting.Bases
 		}
 
 		public void ConvertSpacesToTabs()
-		{
-			var resultBuilder = new StringBuilder();
-
-			for (int i = 1; i <= Document.LineCount; i++)
-			{
-				DocumentLine line = Document.GetLineByNumber(i);
-				string lineText = Document.GetText(line.Offset, line.Length);
-
-				const int TAB_SIZE = 4;
-
-				string result = string.Empty;
-				var re = new Regex(@" {2,}$");
-
-				for (int start = 0; start < lineText.Length; start += TAB_SIZE)
-				{
-					int len = Math.Min(lineText.Length - start, TAB_SIZE);
-					Match m = re.Match(lineText, start, len);
-
-					if (m.Success)
-					{
-						result += lineText.Substring(start, TAB_SIZE - m.Length);
-						result += '\t';
-					}
-					else
-						result += lineText.Substring(start, len);
-				}
-
-				resultBuilder.Append(result);
-
-				if (i < Document.LineCount)
-					resultBuilder.Append(Environment.NewLine);
-			}
-
-			Content = resultBuilder.ToString();
-		}
+			=> Content = WhiteSpaceConverter.ConvertSpacesToTabs(Content, 4);
 
 		public void ConvertTabsToSpaces()
-		{
-			var resultBuilder = new StringBuilder();
-
-			for (int i = 1; i <= Document.LineCount; i++)
-			{
-				DocumentLine line = Document.GetLineByNumber(i);
-				string lineText = Document.GetText(line.Offset, line.Length);
-
-				string[] textValues = lineText.Split('\t');
-
-				if (textValues.Length > 1)
-					for (int j = 0; j < textValues.Length; j++)
-					{
-						string value = textValues[j];
-
-						if (j == textValues.Length - 1)
-							resultBuilder.Append(value);
-						else
-							resultBuilder.Append(value + new string(' ', 4 - value.Length % 4));
-					}
-				else
-					resultBuilder.Append(lineText);
-
-				if (i < Document.LineCount)
-					resultBuilder.Append(Environment.NewLine);
-			}
-
-			Content = resultBuilder.ToString();
-		}
+			=> Content = WhiteSpaceConverter.ConvertTabsToSpaces(Content, 4);
 
 		public void SelectLine(int lineNumber) => SelectLine(Document.GetLineByNumber(lineNumber));
 		public void SelectLine(DocumentLine line) => Select(line.Offset, line.Length);
@@ -784,7 +723,7 @@ namespace TombLib.Scripting.Bases
 		}
 
 		public virtual void TidyCode(bool trimOnly = false)
-		{ }
+			=> Content = BasicCleaner.TrimEndingWhitespace(Content);
 
 		#endregion Other public methods
 

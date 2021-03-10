@@ -7,7 +7,7 @@
 		</Item>
 		<Separator />
 		<Item LangKey="Reindent" Command="Reindent" />
-		<Item LangKey="TrimWhiteSpace" Command="TrimWhiteSpace" />
+		<Item LangKey="TrimWhitespace" Command="TrimWhitespace" />
 		<Separator />
 		<Item LangKey="CommentOut" Command="CommentOut" Icon="Comment_16" />
 		<Item LangKey="Uncomment" Command="Uncomment" Icon="Uncomment_16" />

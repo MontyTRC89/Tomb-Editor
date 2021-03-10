@@ -101,7 +101,7 @@ namespace TombLib.Scripting.Forms
 
 		private bool Find(FindingOrder order)
 		{
-			if (string.IsNullOrWhiteSpace(textBox_Find.Text))
+			if (string.IsNullOrEmpty(textBox_Find.Text))
 			{
 				ShowError("Invalid input.");
 				return false;
@@ -322,7 +322,7 @@ namespace TombLib.Scripting.Forms
 
 		private void FindAll()
 		{
-			if (string.IsNullOrWhiteSpace(textBox_Find.Text))
+			if (string.IsNullOrEmpty(textBox_Find.Text))
 			{
 				ShowError("Invalid input.");
 				return;

@@ -336,7 +336,7 @@ namespace TombLib.Scripting.ClassicScript
 			Vector scrollOffset = TextArea.TextView.ScrollOffset;
 
 			SelectAll();
-			SelectedText = trimOnly ? Cleaner.TrimEndingWhitespace(Text) : Cleaner.ReindentScript(Text);
+			SelectedText = trimOnly ? BasicCleaner.TrimEndingWhitespace(Text) : Cleaner.ReindentScript(Text);
 			ResetSelection();
 
 			ScrollToHorizontalOffset(scrollOffset.X);
