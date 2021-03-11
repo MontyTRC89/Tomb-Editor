@@ -17,6 +17,7 @@ float4x4 ModelViewProjection;
 float4 Color;
 bool AlphaTest;
 bool StaticLighting;
+bool ColoredVertices;
 
 Texture2D Texture;
 sampler TextureSampler;
@@ -26,9 +27,16 @@ PixelInputType VS(VertexInputType input)
     PixelInputType output;
     output.Position = mul(float4(input.Position, 1.0f), ModelViewProjection);
     output.UV = input.UV;
+	output.Color = float4(input.Color, 1.0f);
+	
+	if (!ColoredVertices) 
+	{
+		float luma = (output.Color.x * 0.2126f) + (output.Color.y * 0.7152f) + (output.Color.z * 0.0722f);
+		output.Color = float4(luma, luma, luma, output.Color.w);
+	}
 	
 	if (StaticLighting)
-		output.Color = float4(Color.xyz * input.Color.xyz, 1.0);
+		output.Color = float4(Color.xyz * output.Color.xyz, 1.0f);
 	else
 		output.Color = Color;
 		

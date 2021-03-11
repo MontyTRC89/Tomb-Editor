@@ -71,7 +71,6 @@ namespace WadTool
             }
 
             UpdateUI();
-            panelRendering.Invalidate();
         }
 
         private void ExpandSkeleton()
@@ -283,7 +282,7 @@ namespace WadTool
             ExpandSkeleton();
 
             panelRendering.Skeleton = _bones;
-            panelRendering.Invalidate();
+            UpdateUI();
         }
 
         private void ToggleBonePop()

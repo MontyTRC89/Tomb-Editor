@@ -171,6 +171,7 @@ namespace TombLib.Controls
                 effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["StaticLighting"].SetValue(false);
+                effect.Parameters["ColoredVertices"].SetValue(false);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 
@@ -219,7 +220,8 @@ namespace TombLib.Controls
                 effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                 effect.Parameters["AlphaTest"].SetValue(DrawTransparency);
                 effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.Parameters["StaticLighting"].SetValue(false);
+                effect.Parameters["StaticLighting"].SetValue(false); 
+                effect.Parameters["ColoredVertices"].SetValue(false);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
 

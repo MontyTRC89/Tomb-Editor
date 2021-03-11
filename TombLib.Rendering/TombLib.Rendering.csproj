@@ -229,9 +229,6 @@
     <Content Include="Rendering\Legacy\Solid.fx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Rendering\Legacy\StaticModel.fx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\flyby_camera.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\imp_geo.png" />
     <EmbeddedResource Include="Rendering\ServiceObjectTextures\light_effect.png" />
