@@ -4,6 +4,7 @@ Tomb Editor:
  * Change tint for moveables with static light model.
  
 WadTool:
+ * A feature to apply selected animcommand to all selected frames.
  * Allow changing mesh light type in skeleton editor for moveables.
 
 Version 1.3.11
