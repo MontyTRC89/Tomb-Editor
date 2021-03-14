@@ -19,7 +19,6 @@
     public enum WadMeshLightingType : ushort
     {
         Normals,
-        PrecalculatedGrayShades,
         VertexColors
     }
 

@@ -509,7 +509,7 @@ namespace WadTool
             }
             else
             {
-                _workingStatic.LightingType = WadMeshLightingType.PrecalculatedGrayShades;
+                _workingStatic.LightingType = WadMeshLightingType.VertexColors;
                 butAddLight.Enabled = true;
                 butDeleteLight.Enabled = true;
                 numIntensity.Enabled = true;

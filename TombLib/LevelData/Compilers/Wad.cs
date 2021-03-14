@@ -49,7 +49,7 @@ namespace TombLib.LevelData.Compilers
 
         private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
                                        bool isWaterfall = false, bool isOptics = false,
-                                       WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
+                                       WadMeshLightingType lightType = WadMeshLightingType.VertexColors)
         {
             // Don't add already existing meshes
             var hash = oldMesh.Hash;
