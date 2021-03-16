@@ -76,6 +76,8 @@ namespace TombLib.GeometryIO.Importers
 
                                 textures.Add(i, GetTexture(basePath, texturePath));
                             }
+                            else
+                                throw new FileNotFoundException("Texture for material " + material.Name + " is missing");
 
                             material.DoubleSided = (doubleSided == "1");
 
