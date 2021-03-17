@@ -2,6 +2,7 @@ Version 1.3.12
 ==============
 Tomb Editor:
  * Change tint for moveables with static light model.
+ * Display missing texture errors correctly for imported MQO files.
  
 WadTool:
  * A feature to apply selected animcommand to all selected frames.
