@@ -260,8 +260,8 @@ namespace TombLib.GeometryIO.Exporters
                     writer.WriteLine("    Ns 0.000000");
                     writer.WriteLine("    d " + (material.AdditiveBlending ? "0.500000" : "1.000000"));
                     writer.WriteLine("    illum 2");
-                    writer.WriteLine("    map_Ka " + Path.GetFileName(material.TexturePath));
-                    writer.WriteLine("    map_Kd " + Path.GetFileName(material.TexturePath));
+                    writer.WriteLine("    map_Ka " + Path.GetFileName(material.Path));
+                    writer.WriteLine("    map_Kd " + Path.GetFileName(material.Path));
                     writer.WriteLine("\n");
                 }
             }
