@@ -33,7 +33,7 @@ namespace TombLib.GeometryIO.Exporters
                 foreach (var material in model.UsedMaterials)
                 {
                     writer.Write("\t\"" + material.Name + "\" col(1.000 1.000 1.000 " + (material.AdditiveBlending ? "0.500" : "1.000") + ") dif(0.000) amb(1.000) emi(1.000) spc(0.000) power(5.00) ");
-                    writer.Write("tex(\"" + material.TexturePath /*GetTexturePath(path, material.Texture)*/ + "\") ");
+                    writer.Write("tex(\"" + Path.GetFileName(material.TexturePath) + "\") ");
                     if (material.DoubleSided)
                         writer.Write("dbls(1) ");
                     writer.WriteLine("shader(1) vcol(1) ");

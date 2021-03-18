@@ -597,7 +597,7 @@ namespace WadTool
                             BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
                             new Thread(() =>
                             {
-                                var resultModel =WadMesh.PrepareForExport(saveFileDialog.FileName, _workingStatic.Mesh);
+                                var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, _workingStatic.Mesh);
 
                                 if (resultModel != null)
                                 {
