@@ -57,6 +57,26 @@ namespace TombEditor.Controls
             Invalidate();
         }
 
+        public void PickColor(IColorable instance)
+        {
+            var normalizedColor = instance.Color / 2.0f;
+            var color = new ColorC((byte)(normalizedColor.X * 255), (byte)(normalizedColor.Y * 255), (byte)(normalizedColor.Z * 255));
+
+            for (int i = 0; i < _palette.Count; i++)
+            {
+                if (_palette[i] == color)
+                {
+                    _selectedColorCoord = new Point((i % PaletteSize.Width), i / PaletteSize.Width);
+                    _editor.LastUsedPaletteColourChange(SelectedColor);
+                    Invalidate();
+                    return;
+                }
+            }
+
+            _selectedColorCoord = new Point(-1);
+            Invalidate();
+        }
+
         private Color GetColorFromPalette(Point point)
         {
             if (_palette == null)
@@ -174,9 +194,7 @@ namespace TombEditor.Controls
                 else
                 {
                     // Save undo in case we're editing selected light colour
-                    if (_editor.SelectedObject is LightInstance ||
-                        _editor.SelectedObject is StaticInstance ||
-                        _editor.SelectedObject is MoveableInstance)
+                    if (_editor.SelectedObject is IColorable)
                         _editor.UndoManager.PushObjectPropertyChanged((PositionBasedObjectInstance)_editor.SelectedObject);
 
                     _editor.ToggleHiddenSelection(true);
