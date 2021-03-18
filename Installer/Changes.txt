@@ -4,6 +4,7 @@ Tomb Editor:
  * Change tint for moveables with static light model.
  * Display missing texture errors correctly for imported MQO files.
  * Use relative texture paths when exporting rooms.
+ * Fix MQO drawing in imported geometry browser.
  
 WadTool:
  * A feature to apply selected animcommand to all selected frames.

@@ -196,19 +196,14 @@ namespace TombLib.Controls
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
 
                     effect.Parameters["ModelViewProjection"].SetValue((matrices[i] * viewProjection).ToSharpDX());
 
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
-                    {
                         _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                    }
-
-                    //foreach (var submesh in mesh.Submeshes)
-                    //    _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
             }
             else if (CurrentObject is WadStatic)
@@ -231,7 +226,7 @@ namespace TombLib.Controls
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
 
                     effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
@@ -276,7 +271,7 @@ namespace TombLib.Controls
 
                     _legacyDevice.SetVertexBuffer(0, mesh.VertexBuffer);
                     _legacyDevice.SetIndexBuffer(mesh.IndexBuffer, true);
-                    _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, mesh.VertexBuffer));
+                    _legacyDevice.SetVertexInputLayout(mesh.InputLayout);
 
                     effect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     effect.Techniques[0].Passes[0].Apply();
@@ -298,9 +293,6 @@ namespace TombLib.Controls
                         effect.Techniques[0].Passes[0].Apply();
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                     }
-
-                    foreach (var submesh in mesh.Submeshes)
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                 }
             }
         }
