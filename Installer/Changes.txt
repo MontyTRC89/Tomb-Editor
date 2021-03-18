@@ -5,6 +5,7 @@ Tomb Editor:
  * Display missing texture errors correctly for imported MQO files.
  * Use relative texture paths when exporting rooms.
  * Fix MQO drawing in imported geometry browser.
+ * Fix exception if animated frame repeat is set to 0 or less.
  
 WadTool:
  * A feature to apply selected animcommand to all selected frames.

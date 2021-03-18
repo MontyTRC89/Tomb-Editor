@@ -1174,5 +1174,32 @@ namespace TombEditor.Forms
             _editor.AnimatedTexturesChange();
             Close();
         }
+
+        private void texturesDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            try
+            {
+                var cell = texturesDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                var name = texturesDataGridView.Columns[e.ColumnIndex].Name;
+
+                if (name == texturesDataGridViewColumnRepeat.Name)
+                {
+                    Int16 parsedValue = 0;
+                    if (e.FormattedValue == null || !Int16.TryParse(e.FormattedValue.ToString(), out parsedValue))
+                    {
+                        if (!Int16.TryParse(cell.Value.ToString(), out parsedValue))
+                            parsedValue = 0;
+                    }
+
+                    if (parsedValue > Int16.MaxValue)
+                        cell.Value = Int16.MaxValue;
+                    else if (parsedValue < 1)
+                        cell.Value = (Int16)1;
+                    else
+                        cell.Value = parsedValue;
+                }
+            }
+            catch (Exception ex) { }
+        }
     }
 }
