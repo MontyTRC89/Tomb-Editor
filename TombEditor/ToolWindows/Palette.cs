@@ -42,11 +42,7 @@ namespace TombEditor.ToolWindows
             }
 
             if (obj is Editor.SelectedObjectChangedEvent)
-            {
-                var o = obj as Editor.SelectedObjectChangedEvent;
-                if (o.Current is IColorable)
-                    lightPalette.PickColor(o.Current as IColorable);
-            }
+                lightPalette.PickColor();
 
             if (obj is Editor.ResetPaletteEvent)
             {

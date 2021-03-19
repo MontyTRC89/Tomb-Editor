@@ -54,22 +54,26 @@ namespace TombEditor.Controls
             if (palette.Count < 1) return; // No suitable color data found
             _palette.Clear();
             foreach (var c in palette) _palette.Add(new ColorC(c.R, c.G, c.B));
-            Invalidate();
+            PickColor();
         }
 
-        public void PickColor(IColorable instance)
+        public void PickColor()
         {
-            var normalizedColor = instance.Color / 2.0f;
-            var color = new ColorC((byte)(normalizedColor.X * 255), (byte)(normalizedColor.Y * 255), (byte)(normalizedColor.Z * 255));
-
-            for (int i = 0; i < _palette.Count; i++)
+            var instance = _editor.SelectedObject as IColorable;
+            if (instance != null)
             {
-                if (_palette[i] == color)
+                var normalizedColor = instance.Color / 2.0f;
+                var color = new ColorC((byte)(normalizedColor.X * 255), (byte)(normalizedColor.Y * 255), (byte)(normalizedColor.Z * 255));
+
+                for (int i = 0; i < _palette.Count; i++)
                 {
-                    _selectedColorCoord = new Point((i % PaletteSize.Width), i / PaletteSize.Width);
-                    _editor.LastUsedPaletteColourChange(SelectedColor);
-                    Invalidate();
-                    return;
+                    if (_palette[i] == color)
+                    {
+                        _selectedColorCoord = new Point((i % PaletteSize.Width), i / PaletteSize.Width);
+                        _editor.LastUsedPaletteColourChange(SelectedColor);
+                        Invalidate();
+                        return;
+                    }
                 }
             }
 
