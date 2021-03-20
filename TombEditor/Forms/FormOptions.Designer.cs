@@ -1149,7 +1149,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel1.Size = new System.Drawing.Size(363, 510);
+            this.panel1.Size = new System.Drawing.Size(363, 509);
             this.panel1.TabIndex = 9;
             // 
             // darkGroupBox1
@@ -1161,7 +1161,7 @@
             this.darkGroupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox1.Location = new System.Drawing.Point(3, 411);
             this.darkGroupBox1.Name = "darkGroupBox1";
-            this.darkGroupBox1.Size = new System.Drawing.Size(357, 96);
+            this.darkGroupBox1.Size = new System.Drawing.Size(357, 95);
             this.darkGroupBox1.TabIndex = 6;
             this.darkGroupBox1.TabStop = false;
             this.darkGroupBox1.Text = "Misc";
@@ -1183,7 +1183,7 @@
             0,
             0,
             65536});
-            this.darkNumericUpDown1.Location = new System.Drawing.Point(254, 68);
+            this.darkNumericUpDown1.Location = new System.Drawing.Point(254, 67);
             this.darkNumericUpDown1.LoopValues = false;
             this.darkNumericUpDown1.Name = "darkNumericUpDown1";
             this.darkNumericUpDown1.Size = new System.Drawing.Size(64, 22);
@@ -1193,7 +1193,7 @@
             // cbEnableLogging
             // 
             this.cbEnableLogging.AutoSize = true;
-            this.cbEnableLogging.Location = new System.Drawing.Point(6, 45);
+            this.cbEnableLogging.Location = new System.Drawing.Point(6, 44);
             this.cbEnableLogging.Name = "cbEnableLogging";
             this.cbEnableLogging.Size = new System.Drawing.Size(105, 17);
             this.cbEnableLogging.TabIndex = 2;
@@ -1204,7 +1204,7 @@
             // 
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 70);
+            this.darkLabel1.Location = new System.Drawing.Point(3, 69);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(187, 13);
             this.darkLabel1.TabIndex = 0;
