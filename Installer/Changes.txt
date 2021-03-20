@@ -5,6 +5,7 @@ Tomb Editor:
  * Highlight selected object tint in palette if it has it.
  * Display missing texture errors correctly for imported MQO files.
  * Use relative texture paths when exporting rooms.
+ * An option to grid border walls in new rooms, as in dxtre3d.
  * Fix undo for imported geometry tint.
  * Fix MQO drawing in imported geometry browser.
  * Fix exception if animated frame repeat is set to 0 or less.

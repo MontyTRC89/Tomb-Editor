@@ -1963,6 +1963,10 @@ namespace TombEditor
             _editor.RoomListChange();
             _editor.UndoManager.PushRoomCreated(newRoom);
             _editor.SelectRoom(newRoom);
+
+            // Make border wall grids, as in dxtre3d
+            if (_editor.Configuration.Editor_GridNewRoom)
+                GridWallsSquares(newRoom, newRoom.LocalArea, false, false);
         }
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
@@ -2746,9 +2750,11 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void GridWallsSquares(Room room, RectangleInt2 area, bool fiveDivisions = false)
+        public static void GridWallsSquares(Room room, RectangleInt2 area, bool fiveDivisions = false, bool fromUI = true)
         {
-            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+            // Don't undo if action is called implicitly (e.g. new room/level creation)
+            if (fromUI)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             int minFloor = int.MaxValue;
             int maxCeiling = int.MinValue;
@@ -2841,7 +2847,13 @@ namespace TombEditor
                     }
                 }
 
-            SmartBuildGeometry(room, area);
+            // Explicitly build geometry if action is called from user interface.
+            // Otherwise (e.g. new room or level creation), do it implicitly, without calling global editor events.
+
+            if (fromUI)
+                SmartBuildGeometry(room, area);
+            else
+                room.BuildGeometry();
         }
 
         public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
@@ -5265,7 +5277,8 @@ namespace TombEditor
                         }
         }
 
-		public static void GetObjectStatistics(Editor editor,IDictionary<WadMoveableId,uint> resultMoveables,IDictionary<WadStaticId, uint> resultStatics, out int totalMoveables, out int totalStatics) {
+		public static void GetObjectStatistics(Editor editor,IDictionary<WadMoveableId,uint> resultMoveables,IDictionary<WadStaticId, uint> resultStatics, out int totalMoveables, out int totalStatics)
+        {
 			totalMoveables = 0;
 			totalStatics = 0;
 			foreach (var room in editor.Level.ExistingRooms) {

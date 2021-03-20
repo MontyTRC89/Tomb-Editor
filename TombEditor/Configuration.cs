@@ -25,6 +25,7 @@ namespace TombEditor
 
         public TRVersion.Game Editor_DefaultProjectGameVersion { get; set; } = TRVersion.Game.TRNG;
         public int Editor_DefaultNewRoomSize { get; set; } = 20;
+        public bool Editor_GridNewRoom { get; set; } = false;
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
 
