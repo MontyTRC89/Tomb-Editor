@@ -242,6 +242,7 @@
             this.darkNumericUpDown20 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkCheckBox45 = new DarkUI.Controls.DarkCheckBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -329,7 +330,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 484);
+            this.tabPage6.Size = new System.Drawing.Size(386, 511);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -340,7 +341,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -352,7 +353,7 @@
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.panel2.Size = new System.Drawing.Size(363, 1079);
+            this.panel2.Size = new System.Drawing.Size(363, 1098);
             this.panel2.TabIndex = 4;
             // 
             // groupColorScheme
@@ -415,7 +416,7 @@
             this.groupColorScheme.Controls.Add(this.darkLabel42);
             this.groupColorScheme.Controls.Add(this.panelColorSelector1);
             this.groupColorScheme.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupColorScheme.Location = new System.Drawing.Point(3, 230);
+            this.groupColorScheme.Location = new System.Drawing.Point(3, 249);
             this.groupColorScheme.Name = "groupColorScheme";
             this.groupColorScheme.Size = new System.Drawing.Size(357, 846);
             this.groupColorScheme.TabIndex = 3;
@@ -1009,6 +1010,7 @@
             // 
             // darkGroupBox6
             // 
+            this.darkGroupBox6.Controls.Add(this.darkCheckBox45);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox42);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox37);
             this.darkGroupBox6.Controls.Add(this.darkCheckBox32);
@@ -1021,7 +1023,7 @@
             this.darkGroupBox6.Dock = System.Windows.Forms.DockStyle.Top;
             this.darkGroupBox6.Location = new System.Drawing.Point(3, 0);
             this.darkGroupBox6.Name = "darkGroupBox6";
-            this.darkGroupBox6.Size = new System.Drawing.Size(357, 230);
+            this.darkGroupBox6.Size = new System.Drawing.Size(357, 249);
             this.darkGroupBox6.TabIndex = 2;
             this.darkGroupBox6.TabStop = false;
             this.darkGroupBox6.Text = "General";
@@ -3087,6 +3089,16 @@
             this.darkNumericUpDown21.TabIndex = 27;
             this.darkNumericUpDown21.Tag = "Rendering3D_NavigationSpeedKeyRotate";
             // 
+            // darkCheckBox45
+            // 
+            this.darkCheckBox45.AutoSize = true;
+            this.darkCheckBox45.Location = new System.Drawing.Point(6, 228);
+            this.darkCheckBox45.Name = "darkCheckBox45";
+            this.darkCheckBox45.Size = new System.Drawing.Size(281, 17);
+            this.darkCheckBox45.TabIndex = 49;
+            this.darkCheckBox45.Tag = "Palette_PickColorFromSelectedObject";
+            this.darkCheckBox45.Text = "Automatically pick selected object color to palette";
+            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3398,5 +3410,6 @@
         private DarkUI.Controls.DarkCheckBox darkCheckBox42;
         private DarkUI.Controls.DarkCheckBox darkCheckBox43;
         private DarkUI.Controls.DarkCheckBox darkCheckBox44;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox45;
     }
 }

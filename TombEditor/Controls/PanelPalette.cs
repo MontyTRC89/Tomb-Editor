@@ -59,6 +59,9 @@ namespace TombEditor.Controls
 
         public void PickColor()
         {
+            if (!_editor.Configuration.Palette_PickColorFromSelectedObject || _editor.SelectedObject == null)
+                return;
+
             var instance = _editor.SelectedObject as IColorable;
             if (instance != null)
             {
@@ -76,9 +79,6 @@ namespace TombEditor.Controls
                     }
                 }
             }
-
-            _selectedColorCoord = new Point(-1);
-            Invalidate();
         }
 
         private Color GetColorFromPalette(Point point)

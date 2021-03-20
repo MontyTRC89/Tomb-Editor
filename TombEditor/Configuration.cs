@@ -124,6 +124,7 @@ namespace TombEditor
         // Palette options
 
         public bool Palette_TextureSamplingMode { get; set; } = false;
+        public bool Palette_PickColorFromSelectedObject { get; set; } = false;
 
         // Gizmo options
 
