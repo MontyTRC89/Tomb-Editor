@@ -44,6 +44,13 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.SelectedObjectChangedEvent)
                 lightPalette.PickColor();
 
+            if (obj is Editor.ObjectChangedEvent)
+            {
+                var o = obj as Editor.ObjectChangedEvent;
+                if (o.ChangeType == ObjectChangeType.Change && o.Object == _editor.SelectedObject && o.Object is IColorable)
+                    lightPalette.PickColor();
+            }
+
             if (obj is Editor.ResetPaletteEvent)
             {
                 if (!butSampleFromTextures.Checked)
