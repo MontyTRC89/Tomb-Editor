@@ -37,7 +37,7 @@ namespace TombEditor
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public bool RenderingItem_Antialias { get; set; } = false;
-        public bool RenderingItem_HideInternalObjects { get; set; } = true;
+        public bool RenderingItem_HideInternalObjects { get; set; } = false;
 
         // Main 3D window options
 
