@@ -19,6 +19,10 @@ namespace TombEditor.Forms
             _movable = moveable;
             InitializeComponent();
             _editor = Editor.Instance;
+
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
         }
 
         private void butCancel_Click(object sender, EventArgs e)

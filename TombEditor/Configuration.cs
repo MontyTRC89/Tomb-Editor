@@ -211,6 +211,12 @@ namespace TombEditor
         public Point Window_FormSprite_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormSprite_Size { get; set; } = new Size(350, 370);
         public bool Window_FormSprite_Maximized { get; set; } = false;
+        public Point Window_FormMoveable_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormMoveable_Size { get; set; } = new Size(232, 254);
+        public bool Window_FormMoveable_Maximized { get; set; } = false;
+        public Point Window_FormStaticMesh_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormStaticMesh_Size { get; set; } = new Size(237, 418);
+        public bool Window_FormStaticMesh_Maximized { get; set; } = false;
         public Point Window_FormReplaceObject_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormReplaceObject_Size { get; set; } = new Size(600, 264);
         public bool Window_FormReplaceObject_Maximized { get; set; } = false;

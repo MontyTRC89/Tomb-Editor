@@ -19,6 +19,10 @@ namespace TombEditor.Forms
             _staticMesh = staticMesh;
             newOCB = _staticMesh.Ocb;
             InitializeComponent();
+
+            // Set window property handlers
+            Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
+            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
         }
 
         private void FormObject_Load(object sender, EventArgs e)
