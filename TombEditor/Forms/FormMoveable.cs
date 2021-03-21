@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad.Catalog;
 using System.Linq;
 
 namespace TombEditor.Forms
@@ -21,8 +20,7 @@ namespace TombEditor.Forms
             _editor = Editor.Instance;
 
             // Set window property handlers
-            Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
-            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
+            Configuration.ConfigureWindow(this, _editor.Configuration);
         }
 
         private void butCancel_Click(object sender, EventArgs e)

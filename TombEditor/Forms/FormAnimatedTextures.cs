@@ -113,8 +113,7 @@ namespace TombEditor.Forms
             _isNg = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
             // Set window property handlers
-            Configuration.LoadWindowProperties(this, _editor.Configuration);
-            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
+            Configuration.ConfigureWindow(this, _editor.Configuration);
 
             // Setup controls
             SetupControls();

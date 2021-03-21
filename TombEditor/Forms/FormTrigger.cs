@@ -51,8 +51,7 @@ namespace TombEditor.Forms
                 Text = "Trigger editor";
 
             // Set window property handlers
-            Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
-            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
+            Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
 
             Initialize(_trigger);
         }
