@@ -14,6 +14,7 @@ Tomb Editor:
 WadTool:
  * A feature to apply selected animcommand to all selected frames.
  * Allow changing mesh light type in skeleton editor for moveables.
+ * Highlight bone in the list when picked from 3D window in skeleton editor.
 
 Version 1.3.11
 ==============

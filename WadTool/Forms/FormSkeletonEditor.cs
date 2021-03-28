@@ -3,7 +3,6 @@ using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Windows.Forms;
@@ -16,7 +15,7 @@ using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
-    public partial class FormSkeletonEditor : DarkUI.Forms.DarkForm
+    public partial class FormSkeletonEditor : DarkForm
     {
         private Wad2 _wad;
         private WadMoveable _moveable;
@@ -89,7 +88,16 @@ namespace WadTool
             }
 
             if (obj is WadToolClass.BonePickedEvent)
+            {
                 UpdateUI();
+                if (_nodesDictionary.Count > 0)
+                    foreach (var node in _nodesDictionary.Keys)
+                        if (panelRendering.SelectedNode == node)
+                        {
+                            treeSkeleton.SelectNode(_nodesDictionary[node]);
+                            break;
+                        }
+            }
         }
 
         private List<DarkTreeNode> LoadSkeleton()
@@ -482,9 +490,16 @@ namespace WadTool
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
                 return;
+
+            if (_nodesDictionary.Count <= 1)
+            {
+                DarkMessageBox.Show(this, "Root bone can't be deleted.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            if (DarkMessageBox.Show(this, "Are you really sure to delete bone '" + theNode.Bone.Name + "'?" +
+            if (DarkMessageBox.Show(this, "Are you really sure to delete bone '" + theNode.Bone.Name + "'?" + "\n" +
                                     "Angles associated to this bone will be deleted from all keyframes of all animations.",
                                     "Delete bone",
                                     MessageBoxButtons.YesNo,
