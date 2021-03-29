@@ -894,6 +894,10 @@ namespace TombEditor.Forms
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
                 "Select new texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory).ToList();
 
+            // Don't load existing textures
+            paths = paths.Where(p => !_levelSettings.Textures.Any(item => _levelSettings.MakeRelative(item.Path, VariableType.LevelDirectory)
+                         .Equals(_levelSettings.MakeRelative(p, VariableType.LevelDirectory), StringComparison.InvariantCultureIgnoreCase))).ToList();
+
             // Load textures concurrently
             ReferencedTextureWrapper[] results = new ReferencedTextureWrapper[paths.Count];
             Parallel.For(0, paths.Count, i => results[i] = new ReferencedTextureWrapper(this, new LevelTexture(_levelSettings, paths[i])));
@@ -979,6 +983,10 @@ namespace TombEditor.Forms
             List<string> paths = LevelFileDialog.BrowseFiles(this, _levelSettings, _levelSettings.LevelFilePath,
                 "Select new object files", ReferencedWad.FileExtensions, VariableType.LevelDirectory).ToList();
 
+            // Don't load existing wads
+            paths = paths.Where(p => !_levelSettings.Wads.Any(item => _levelSettings.MakeRelative(item.Path, VariableType.LevelDirectory)
+                         .Equals(_levelSettings.MakeRelative(p, VariableType.LevelDirectory), StringComparison.InvariantCultureIgnoreCase))).ToList();
+
             // Load objects concurrently
             ReferencedWadWrapper[] results = new ReferencedWadWrapper[paths.Count];
             var synchronizedDialog = new GraphicalDialogHandler(this);
@@ -1041,6 +1049,10 @@ namespace TombEditor.Forms
                 "Select new sound catalogs", WadSounds.FormatExtensions, VariableType.LevelDirectory)
                 // Filter out already loaded catalogs
                 .Where(path => !_levelSettings.SoundsCatalogs.Any(item => item.Path == path)).ToList();
+
+            // Don't load existing sound catalogs
+            paths = paths.Where(p => !_levelSettings.SoundsCatalogs.Any(item => _levelSettings.MakeRelative(item.Path, VariableType.LevelDirectory)
+                         .Equals(_levelSettings.MakeRelative(p, VariableType.LevelDirectory), StringComparison.InvariantCultureIgnoreCase))).ToList();
 
             // Load catalogs concurrently
             ReferencedSoundsCatalogWrapper[] results = new ReferencedSoundsCatalogWrapper[paths.Count];

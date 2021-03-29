@@ -145,6 +145,10 @@ namespace TombEditor.Controls
                 var importInfos = new List<KeyValuePair<ImportedGeometry, ImportedGeometryInfo>>();
                 foreach (string path in paths)
                 {
+                    // Don't load existing geometries
+                    if (LevelSettings.ImportedGeometries.Find(item => LevelSettings.MakeAbsolute(item.Info.Path).Equals(path, StringComparison.InvariantCultureIgnoreCase)) != null)
+                        continue;
+
                     using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
                         settingsDialog.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);

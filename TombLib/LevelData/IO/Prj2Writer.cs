@@ -251,7 +251,7 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkBool(Prj2Chunks.ImportedGeometryInvertFaces, importedGeometry.Info.InvertFaces);
                             chunkIO.WriteChunkEnd();
                         }
-                        levelSettingIds.ImportedGeometries.Add(importedGeometry, index++);
+                        levelSettingIds.ImportedGeometries.TryAdd(importedGeometry, index++);
                     }
                     chunkIO.WriteChunkEnd();
                 }
