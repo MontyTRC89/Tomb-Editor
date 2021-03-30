@@ -1642,7 +1642,7 @@ namespace WadTool
                 else if (Path.GetExtension(path) == ".trw")
                 {
                     containsMetadata = true;
-                    animation = Tr4Wad.LoadTrw(path, _editor.CurrentAnim.Index);
+                    animation = WadActions.ImportAnimationFromTrw(path, _editor.CurrentAnim.Index);
                 }
                 else
                     animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
