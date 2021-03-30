@@ -3709,8 +3709,10 @@ namespace TombEditor
             if (!File.Exists(file))
                 return false;
 
+            file = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+
             ImportedGeometry geometryToPlace = _editor.Level.Settings.ImportedGeometries.Find(
-                item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
+                item => _editor.Level.Settings.MakeRelative(item.Info.Path, VariableType.LevelDirectory).Equals(file, StringComparison.InvariantCultureIgnoreCase));
 
             if (geometryToPlace == null)
                 geometryToPlace = AddImportedGeometry(owner, file);
@@ -3757,10 +3759,6 @@ namespace TombEditor
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory)).ToList();
-
-            // Don't load existing textures
-            paths = paths.Where(p => !_editor.Level.Settings.Textures.Any(item => _editor.Level.Settings.MakeRelative(item.Path, VariableType.LevelDirectory)
-                         .Equals(_editor.Level.Settings.MakeRelative(p, VariableType.LevelDirectory), StringComparison.InvariantCultureIgnoreCase))).ToList();
 
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new LevelTexture[0];
@@ -3880,10 +3878,6 @@ namespace TombEditor
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load object files (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory)).ToList();
-
-            // Don't load existing wads
-            paths = paths.Where(p => !_editor.Level.Settings.Wads.Any(item => _editor.Level.Settings.MakeRelative(item.Path, VariableType.LevelDirectory)
-                         .Equals(_editor.Level.Settings.MakeRelative(p, VariableType.LevelDirectory), StringComparison.InvariantCultureIgnoreCase))).ToList();
 
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new ReferencedWad[0];
