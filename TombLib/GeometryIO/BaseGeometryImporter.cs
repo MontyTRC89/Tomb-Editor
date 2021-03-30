@@ -123,6 +123,7 @@ namespace TombLib.GeometryIO
         {
             new FileFormat("Filmbox", "fbx"),
             new FileFormat("Collada", "dae"),
+            new FileFormat("WadMerger", "trw"),
             new FileFormat("TombEditor XML", "anim")
         };
 

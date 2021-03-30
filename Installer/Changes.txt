@@ -13,6 +13,7 @@ Tomb Editor:
  * Fix exception if animated frame repeat is set to 0 or less.
  
 WadTool:
+ * Import WadMerger .trw animations.
  * A feature to apply selected animcommand to all selected frames.
  * Allow changing mesh light type in skeleton editor for moveables.
 

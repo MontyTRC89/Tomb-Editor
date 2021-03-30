@@ -16,6 +16,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
+using TombLib.Wad.Tr4Wad;
 
 namespace WadTool
 {
@@ -1629,15 +1630,35 @@ namespace WadTool
             if (path == null)
                 return;
 
-            bool fromXml = Path.GetExtension(path) == ".anim";
+            bool containsMetadata = false;
 
-            if (fromXml)
-                animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
-            else
-                animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
+            try
+            {
+                if (Path.GetExtension(path) == ".anim")
+                {
+                    containsMetadata = true;
+                    animation = WadActions.ImportAnimationFromXml(_editor.Tool, path);
+                }
+                else if (Path.GetExtension(path) == ".trw")
+                {
+                    containsMetadata = true;
+                    animation = Tr4Wad.LoadTrw(path, _editor.CurrentAnim.Index);
+                }
+                else
+                    animation = WadActions.ImportAnimationFromModel(_editor.Tool, this, _editor.Moveable.Bones.Count, path);
+            }
+            catch (Exception ex)
+            {
+                popup.ShowError(panelRendering, "Error while loading animation.\nException: " + ex.Message);
+                return;
+            }
 
             if (animation == null)
                 return;
+
+            // Don't replace animation name if it's empty
+            if (animation.Name == new WadAnimation().Name)
+                animation.Name = _editor.CurrentAnim.WadAnimation.Name;
 
             if (animation.KeyFrames[0].Angles.Count != _editor.Moveable.Bones.Count)
             {
@@ -1654,7 +1675,7 @@ namespace WadTool
             _editor.CurrentAnim.WadAnimation = animation;
 
             // Restore animcommands & state changes (only for generic imported anims)
-            if (!fromXml)
+            if (!containsMetadata)
             {
                 _editor.CurrentAnim.WadAnimation.AnimCommands.AddRange(oldCommands);
                 _editor.CurrentAnim.WadAnimation.StateChanges.AddRange(oldChanges);

@@ -1,23 +1,23 @@
-﻿using DarkUI.Forms;
+﻿using NLog;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using TombLib.Forms;
 using TombLib.Wad;
 using TombLib.Utils;
-using NLog;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Numerics;
+using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.GeometryIO.Importers;
 using TombLib.Wad.Catalog;
-using System.Threading;
 
 namespace WadTool
 {
@@ -1017,7 +1017,6 @@ namespace WadTool
                 return null;
             }
         }
-
 
         public static WadAnimation ImportAnimationFromModel(WadToolClass tool, IWin32Window owner, int nodeCount, string fileName)
         {
