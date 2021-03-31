@@ -330,7 +330,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 484);
+            this.tabPage6.Size = new System.Drawing.Size(386, 511);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -341,7 +341,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -1073,10 +1073,10 @@
             this.darkCheckBox33.AutoSize = true;
             this.darkCheckBox33.Location = new System.Drawing.Point(6, 159);
             this.darkCheckBox33.Name = "darkCheckBox33";
-            this.darkCheckBox33.Size = new System.Drawing.Size(339, 17);
+            this.darkCheckBox33.Size = new System.Drawing.Size(280, 17);
             this.darkCheckBox33.TabIndex = 46;
             this.darkCheckBox33.Tag = "UI_AutoFillTriggerTypesForSwitchAndKey";
-            this.darkCheckBox33.Text = "Autofill \"Key\" and \"Switch\" trigger types with selected objects";
+            this.darkCheckBox33.Text = "Autofill \"Key\", \"Switch\" and \"Dummy\" trigger types";
             // 
             // darkCheckBox31
             // 
@@ -1937,7 +1937,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(386, 511);
+            this.tabPage5.Size = new System.Drawing.Size(386, 484);
             this.tabPage5.TabIndex = 19;
             this.tabPage5.Text = "Gizmo";
             // 
@@ -2104,7 +2104,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(386, 511);
+            this.tabPage8.Size = new System.Drawing.Size(386, 484);
             this.tabPage8.TabIndex = 20;
             this.tabPage8.Text = "Item preview";
             // 
@@ -2291,7 +2291,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(386, 511);
+            this.tabPage3.Size = new System.Drawing.Size(386, 484);
             this.tabPage3.TabIndex = 21;
             this.tabPage3.Text = "2D window";
             // 
@@ -2536,7 +2536,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(386, 511);
+            this.tabPage4.Size = new System.Drawing.Size(386, 484);
             this.tabPage4.TabIndex = 22;
             this.tabPage4.Text = "Texture map";
             // 

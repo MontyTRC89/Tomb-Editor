@@ -577,6 +577,11 @@ namespace TombEditor
                         trigger.TriggerType = TriggerType.Key;
                     else if (isSwitch)
                         trigger.TriggerType = TriggerType.Switch;
+
+                    bool isBridge = (objectName.Contains("bridge") && 
+                        (objectName.Contains("flat") || objectName.Contains("tilt") || objectName.Contains("custom")));
+                    if (isBridge)
+                        trigger.TriggerType = TriggerType.Dummy;
                 }
             }
             else if (@object is FlybyCameraInstance)
