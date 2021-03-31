@@ -126,15 +126,11 @@ namespace TombLib.Wad.Tr4Wad
 
             // Add normals
             foreach (var oldNormal in oldMesh.Normals)
-            {
                 mesh.VerticesNormals.Add(new Vector3(oldNormal.X, -oldNormal.Y, oldNormal.Z));
-            }
 
             // Add shades
             foreach (var oldShade in oldMesh.Shades)
-            {
                 mesh.VerticesColors.Add(new Vector3((8191.0f - oldShade) / 8191.0f));
-            }
 
             // Add polygons
             foreach (var oldPoly in oldMesh.Polygons)
@@ -159,6 +155,12 @@ namespace TombLib.Wad.Tr4Wad
             }
 
             mesh.BoundingBox = new BoundingBox(oldMesh.Minimum, oldMesh.Maximum);
+
+            // In original wad/tr formats, negative normals count means that light type is static
+            if (oldMesh.NumNormals <= 0)
+                mesh.LightingType = WadMeshLightingType.VertexColors;
+            else
+                mesh.LightingType = WadMeshLightingType.Normals;
 
             // Usually only for static meshes
             if (mesh.VerticesNormals.Count == 0)

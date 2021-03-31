@@ -130,7 +130,7 @@ namespace TombEditor.Controls
                     else if (_editor.SelectedObject is StaticInstance)
                     {
                         var mesh = _editor.Level.Settings.WadTryGetStatic((_editor.SelectedObject as StaticInstance).WadObjectId);
-                        if (mesh == null || mesh.LightingType == TombLib.Wad.WadMeshLightingType.Normals)
+                        if (mesh == null || mesh.Mesh.LightingType == TombLib.Wad.WadMeshLightingType.Normals)
                             changeColor = false;
                     }
                     else if (_editor.SelectedObject is LightInstance && (_editor.SelectedObject as LightInstance).Type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)

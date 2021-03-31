@@ -335,7 +335,10 @@ namespace TombLib.Wad
 
                         LEB128.Write(chunkIO.Raw, s.Id.TypeId);
                         LEB128.Write(chunkIO.Raw, s.Flags);
-                        LEB128.Write(chunkIO.Raw, (short)s.LightingType);
+
+                        // HACK: historically written outside of Mesh struct. 
+                        // We preserve that to prevent messing with chunks.
+                        LEB128.Write(chunkIO.Raw, (short)s.Mesh.LightingType); 
 
                         WriteMesh(chunkIO, s.Mesh, textureTable);
 
@@ -362,8 +365,6 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMin, s.CollisionBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMax, s.CollisionBox.Maximum);
                         });
-
-                        //chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
                     });
                 }
             });

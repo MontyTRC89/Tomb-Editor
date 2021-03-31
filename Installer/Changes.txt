@@ -8,6 +8,7 @@ Tomb Editor:
  * An option to highlight selected object tint in palette if it has it.
  * An option to grid border walls in new rooms, as in dxtre3d.
  * Autofill dummy trigger type for bridge objects.
+ * Fix issues with parsing original wad mesh lighting type.
  * Fix prj2 saving issue if imported geometry duplicates are present in level settings.
  * Fix undo for imported geometry tint.
  * Fix MQO drawing in imported geometry browser.

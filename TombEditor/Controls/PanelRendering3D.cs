@@ -3182,7 +3182,7 @@ namespace TombEditor.Controls
                             {
                                 var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
 
-                                if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
+                                if (!ShowRealTintForObjects || (entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors) || (entry != null && entry.Merge && entry.TintAsAmbient))
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 else
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
