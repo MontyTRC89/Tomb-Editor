@@ -444,7 +444,7 @@ namespace TombLib.Wad
                 }
                 else if (id2 == Wad2Chunks.MeshLightingType)
                 {
-                    mesh.LightingType = chunkIO.ReadChunkInt(chunkSize2) == 0 ? WadMeshLightingType.Normals : WadMeshLightingType.VertexColors;
+                    mesh.LightingType = (WadMeshLightingType)chunkIO.ReadChunkInt(chunkSize2);
                 }
                 else if (id2 == Wad2Chunks.MeshPolygons)
                 {
@@ -886,9 +886,8 @@ namespace TombLib.Wad
                 var s = new WadStatic(new WadStaticId(LEB128.ReadUInt(chunkIO.Raw)));
                 s.Flags = LEB128.ReadShort(chunkIO.Raw);
 
-                // HACK: historically written outside of Mesh struct. 
-                // We preserve that to prevent messing with chunks.
-                var lightingType = LEB128.ReadShort(chunkIO.Raw) == 0 ? WadMeshLightingType.Normals : WadMeshLightingType.VertexColors;
+                // HACK: historically (pre-1.3.12) lighting type
+                var legacyLightingType = LEB128.ReadShort(chunkIO.Raw);
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
@@ -952,7 +951,10 @@ namespace TombLib.Wad
                     return true;
                 });
 
-                s.Mesh.LightingType = lightingType;
+                // HACK: Restore legacy pre-1.3.12 lighting type if needed
+                if (legacyLightingType != -1)
+                    s.Mesh.LightingType = (WadMeshLightingType)legacyLightingType;
+
                 wad.Statics.Add(s.Id, s);
                 return true;
             });

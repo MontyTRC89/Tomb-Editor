@@ -335,10 +335,7 @@ namespace TombLib.Wad
 
                         LEB128.Write(chunkIO.Raw, s.Id.TypeId);
                         LEB128.Write(chunkIO.Raw, s.Flags);
-
-                        // HACK: historically written outside of Mesh struct. 
-                        // We preserve that to prevent messing with chunks.
-                        LEB128.Write(chunkIO.Raw, (short)s.Mesh.LightingType); 
+                        LEB128.Write(chunkIO.Raw, -1); // Unused in 1.3.12 onwards
 
                         WriteMesh(chunkIO, s.Mesh, textureTable);
 
