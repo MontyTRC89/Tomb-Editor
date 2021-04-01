@@ -880,14 +880,16 @@ namespace TombLib.Wad
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
-                if (id != Wad2Chunks.Static)
+                if (id != Wad2Chunks.Static && id != Wad2Chunks.Static2)
                     return false;
 
                 var s = new WadStatic(new WadStaticId(LEB128.ReadUInt(chunkIO.Raw)));
                 s.Flags = LEB128.ReadShort(chunkIO.Raw);
 
                 // HACK: historically (pre-1.3.12) lighting type
-                var legacyLightingType = LEB128.ReadShort(chunkIO.Raw);
+                short legacyLightingType = -1;
+                if (id == Wad2Chunks.Static)
+                    legacyLightingType = LEB128.ReadShort(chunkIO.Raw);
 
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {

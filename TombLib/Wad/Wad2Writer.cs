@@ -329,13 +329,12 @@ namespace TombLib.Wad
             {
                 foreach (var staticMesh in wad.Statics)
                 {
-                    chunkIO.WriteChunkWithChildren(Wad2Chunks.Static, () =>
+                    chunkIO.WriteChunkWithChildren(Wad2Chunks.Static2, () =>
                     {
                         var s = staticMesh.Value;
 
                         LEB128.Write(chunkIO.Raw, s.Id.TypeId);
                         LEB128.Write(chunkIO.Raw, s.Flags);
-                        LEB128.Write(chunkIO.Raw, -1); // Unused in 1.3.12 onwards
 
                         WriteMesh(chunkIO, s.Mesh, textureTable);
 

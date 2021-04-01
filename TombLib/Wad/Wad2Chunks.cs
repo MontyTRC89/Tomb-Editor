@@ -121,7 +121,7 @@ namespace TombLib.Wad
         /**************/public static readonly ChunkId AnimCommandSoundInfo = ChunkId.FromString("W2CmdSnd");
         public static readonly ChunkId Statics = ChunkId.FromString("W2Statics");
         /**/public static readonly ChunkId Static = ChunkId.FromString("W2Static");
-        ///****/public static readonly ChunkId StaticName = ChunkId.FromString("W2StaticName");
+        /**/public static readonly ChunkId Static2 = ChunkId.FromString("W2Static2");
         /****/public static readonly ChunkId StaticVisibilityBox = ChunkId.FromString("W2StaticVB");
         /****/public static readonly ChunkId StaticCollisionBox = ChunkId.FromString("W2StaticCB");
         /****/public static readonly ChunkId StaticAmbientLight = ChunkId.FromString("W2StaticAmbientLight");
