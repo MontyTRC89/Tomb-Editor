@@ -408,7 +408,7 @@
             this.sectionCurrentBone.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.sectionCurrentBone.Location = new System.Drawing.Point(0, 472);
             this.sectionCurrentBone.Name = "sectionCurrentBone";
-            this.sectionCurrentBone.SectionHeader = "Current bone";
+            this.sectionCurrentBone.SectionHeader = "Current mesh";
             this.sectionCurrentBone.Size = new System.Drawing.Size(316, 82);
             this.sectionCurrentBone.TabIndex = 107;
             // 
@@ -624,7 +624,7 @@
             this.section3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.section3D.Location = new System.Drawing.Point(0, 0);
             this.section3D.Name = "section3D";
-            this.section3D.SectionHeader = "Meshtree";
+            this.section3D.SectionHeader = "Mesh tree";
             this.section3D.Size = new System.Drawing.Size(316, 472);
             this.section3D.TabIndex = 108;
             // 
