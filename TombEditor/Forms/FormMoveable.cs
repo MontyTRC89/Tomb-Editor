@@ -55,6 +55,9 @@ namespace TombEditor.Forms
 
             if (!isStaticLighting)
                 Size = new System.Drawing.Size(Size.Width, 226);
+            else
+                Size = new System.Drawing.Size(Size.Width, 254);
+
             lblColor.Visible = isStaticLighting;
             panelColor.Visible = isStaticLighting;
         }
