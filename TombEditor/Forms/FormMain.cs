@@ -201,7 +201,7 @@ namespace TombEditor.Forms
                 else
                     statusStripSelectedRoom.Text = "Selected room: " +
                         "Name = " + room + " | " +
-                        "Size = " + room.NumXSectors + " x " + room.NumZSectors + " | " +
+                        "Size = " + (room.NumXSectors - 2) + " x " + (room.NumZSectors - 2) + " | " +
                         "Pos = (" + room.Position.X + ", " + room.Position.Y + ", " + room.Position.Z + ") | " +
                         "Floor = " + (room.Position.Y + room.GetLowestCorner()) + " | " +
                         "Ceiling = " + (room.Position.Y + room.GetHighestCorner());
