@@ -330,7 +330,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(386, 511);
+            this.tabPage6.Size = new System.Drawing.Size(386, 484);
             this.tabPage6.TabIndex = 16;
             this.tabPage6.Text = "User interface";
             // 
@@ -341,7 +341,7 @@
             this.tabSubPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSubPanel3.Location = new System.Drawing.Point(3, 3);
             this.tabSubPanel3.Name = "tabSubPanel3";
-            this.tabSubPanel3.Size = new System.Drawing.Size(380, 505);
+            this.tabSubPanel3.Size = new System.Drawing.Size(380, 478);
             this.tabSubPanel3.TabIndex = 0;
             // 
             // panel2
@@ -1264,7 +1264,7 @@
             0,
             0});
             this.darkNumericUpDown41.Minimum = new decimal(new int[] {
-            1,
+            3,
             0,
             0,
             0});
@@ -1273,7 +1273,7 @@
             this.darkNumericUpDown41.TabIndex = 30;
             this.darkNumericUpDown41.Tag = "Editor_DefaultNewRoomSize";
             this.darkNumericUpDown41.Value = new decimal(new int[] {
-            1,
+            3,
             0,
             0,
             0});
@@ -1284,9 +1284,9 @@
             this.darkLabel70.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel70.Location = new System.Drawing.Point(3, 50);
             this.darkLabel70.Name = "darkLabel70";
-            this.darkLabel70.Size = new System.Drawing.Size(125, 13);
+            this.darkLabel70.Size = new System.Drawing.Size(224, 13);
             this.darkLabel70.TabIndex = 29;
-            this.darkLabel70.Text = "Default new room size:";
+            this.darkLabel70.Text = "Default new room size (with border walls):";
             // 
             // darkLabel34
             // 

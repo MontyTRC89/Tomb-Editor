@@ -15,6 +15,9 @@ namespace TombEditor.Forms
 
         private bool _alreadyUpdatingGui = false;
         private readonly Room _roomToResize;
+        private readonly int _recommendedDimensions;
+        private readonly string _visibleDimensions;
+
         public RectangleInt2 NewArea => new RectangleInt2(
             -(int)numericXn.Value,
             -(int)numericZn.Value,
@@ -29,6 +32,9 @@ namespace TombEditor.Forms
             gridControl.Room = roomToResize;
             _editor = editor;
             _roomToResize = roomToResize;
+            _recommendedDimensions = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.RoomDimensions);
+            _visibleDimensions = (_recommendedDimensions - 2) + "x" + (_recommendedDimensions - 2);
+            cbAllowOversizedRooms.Text = "Allow rooms bigger than " + _visibleDimensions;
 
             roomIcon.Image = Properties.Resources.misc_North;
 
@@ -59,8 +65,7 @@ namespace TombEditor.Forms
                 numericXp.Minimum = (3 - _roomToResize.NumXSectors) - numericXn.Value;
                 numericZp.Minimum = (3 - _roomToResize.NumZSectors) - numericZn.Value;
 
-                int recommendedDimensions = TrCatalog.GetLimit(_editor.Level.Settings.GameVersion, Limit.RoomDimensions);
-                int maxDimensions = cbAllowOversizedRooms.Checked ? 255 : recommendedDimensions;
+                int maxDimensions = cbAllowOversizedRooms.Checked ? 255 : _recommendedDimensions;
 
                 numericXn.Maximum = (maxDimensions - _roomToResize.NumXSectors) - numericXp.Value;
                 numericXp.Maximum = (maxDimensions - _roomToResize.NumXSectors) - numericXn.Value;
@@ -69,10 +74,10 @@ namespace TombEditor.Forms
 
                 gridControl.Invalidate();
 
-                if (cbAllowOversizedRooms.Checked && (NewArea.Width >= recommendedDimensions || NewArea.Height >= recommendedDimensions))
+                if (cbAllowOversizedRooms.Checked && (NewArea.Width >= _recommendedDimensions || NewArea.Height >= _recommendedDimensions))
                 {
                     roomIcon.BackColor = Color.Firebrick;
-                    toolTip.SetToolTip(roomIcon, "Room bigger than 32x32 will have in-game rendering issues!");
+                    toolTip.SetToolTip(roomIcon, "Room bigger than " + _visibleDimensions + " may have in-game rendering issues!");
                 }
                 else
                 {
