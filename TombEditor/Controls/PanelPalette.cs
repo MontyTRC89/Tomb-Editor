@@ -114,40 +114,15 @@ namespace TombEditor.Controls
                 _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1),
                                                 (int)MathC.Clamp((e.Y / _paletteCellHeight), 0, PaletteSize.Height - 1));
 
-                if (_editor.SelectedObject is IColorable)
+                if (_editor.SelectedObject.CanBeColored())
                 {
-                    bool changeColor = true;
+                    var instance = _editor.SelectedObject as IColorable;
+                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
 
-                    // Discard color editing if conditions aren't met
-                    // FIXME: For TR5Main, it may be considered to apply dynamic lighting in addition to tint, so those conditions can be then changed.
+                    if (_editor.SelectedObject is LightInstance)
+                        _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
-                    if (_editor.SelectedObject is MoveableInstance)
-                    {
-                        var model = _editor.Level.Settings.WadTryGetMoveable((_editor.SelectedObject as MoveableInstance).WadObjectId);
-                        if (model == null || !model.Meshes.Any(m => m.LightingType != TombLib.Wad.WadMeshLightingType.Normals))
-                            changeColor = false;
-                    }
-                    else if (_editor.SelectedObject is StaticInstance)
-                    {
-                        var mesh = _editor.Level.Settings.WadTryGetStatic((_editor.SelectedObject as StaticInstance).WadObjectId);
-                        if (mesh == null || mesh.Mesh.LightingType == TombLib.Wad.WadMeshLightingType.Normals)
-                            changeColor = false;
-                    }
-                    else if (_editor.SelectedObject is LightInstance && (_editor.SelectedObject as LightInstance).Type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
-                    {
-                        changeColor = false;
-                    }
-                    
-                    if (changeColor)
-                    {
-                        var instance = _editor.SelectedObject as IColorable;
-                        instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
-
-                        if (_editor.SelectedObject is LightInstance)
-                            _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-
-                        _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
-                    }
+                    _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
                 }
 
                 _editor.LastUsedPaletteColourChange(SelectedColor);

@@ -47,19 +47,10 @@ namespace TombEditor.Forms
             tbOCB.Text = _movable.Ocb.ToString();
 
             // Disable mesh-specific controls
-
-            bool isStaticLighting = false;
-            var model = _editor.Level.Settings.WadTryGetMoveable(_movable.WadObjectId);
-            if (model != null && model.Meshes.Count > 0)
-                isStaticLighting = model.Meshes.Any(m => m.LightingType != TombLib.Wad.WadMeshLightingType.Normals);
-
-            if (!isStaticLighting)
-                Size = new System.Drawing.Size(Size.Width, 226);
-            else
-                Size = new System.Drawing.Size(Size.Width, 254);
-
-            lblColor.Visible = isStaticLighting;
-            panelColor.Visible = isStaticLighting;
+            var canBeColored = _movable.CanBeColored();
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 254 : 226);
+            lblColor.Visible = canBeColored;
+            panelColor.Visible = canBeColored;
         }
 
         private void butOK_Click(object sender, EventArgs e)

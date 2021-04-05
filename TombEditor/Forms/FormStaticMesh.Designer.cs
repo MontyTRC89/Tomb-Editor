@@ -47,7 +47,7 @@ namespace TombEditor.Forms
             this.tbOCB = new DarkUI.Controls.DarkTextBox();
             this.label1 = new DarkUI.Controls.DarkLabel();
             this.cbSpecificShatter = new DarkUI.Controls.DarkCheckBox();
-            this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.lblColor = new DarkUI.Controls.DarkLabel();
             this.panelColor = new DarkUI.Controls.DarkPanel();
             ((System.ComponentModel.ISupportInitialize)(this.numScalable)).BeginInit();
             this.SuspendLayout();
@@ -56,7 +56,7 @@ namespace TombEditor.Forms
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(45, 346);
+            this.butOK.Location = new System.Drawing.Point(45, 350);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 14;
@@ -69,7 +69,7 @@ namespace TombEditor.Forms
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(131, 346);
+            this.butCancel.Location = new System.Drawing.Point(131, 350);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 15;
@@ -80,7 +80,7 @@ namespace TombEditor.Forms
             // cbDisableCollision
             // 
             this.cbDisableCollision.AutoSize = true;
-            this.cbDisableCollision.Location = new System.Drawing.Point(10, 37);
+            this.cbDisableCollision.Location = new System.Drawing.Point(10, 12);
             this.cbDisableCollision.Name = "cbDisableCollision";
             this.cbDisableCollision.Size = new System.Drawing.Size(110, 17);
             this.cbDisableCollision.TabIndex = 0;
@@ -90,7 +90,7 @@ namespace TombEditor.Forms
             // cbIceTrasparency
             // 
             this.cbIceTrasparency.AutoSize = true;
-            this.cbIceTrasparency.Location = new System.Drawing.Point(10, 83);
+            this.cbIceTrasparency.Location = new System.Drawing.Point(10, 58);
             this.cbIceTrasparency.Name = "cbIceTrasparency";
             this.cbIceTrasparency.Size = new System.Drawing.Size(109, 17);
             this.cbIceTrasparency.TabIndex = 2;
@@ -100,7 +100,7 @@ namespace TombEditor.Forms
             // cbHeavyTriggerOnCollision
             // 
             this.cbHeavyTriggerOnCollision.AutoSize = true;
-            this.cbHeavyTriggerOnCollision.Location = new System.Drawing.Point(10, 244);
+            this.cbHeavyTriggerOnCollision.Location = new System.Drawing.Point(10, 219);
             this.cbHeavyTriggerOnCollision.Name = "cbHeavyTriggerOnCollision";
             this.cbHeavyTriggerOnCollision.Size = new System.Drawing.Size(199, 17);
             this.cbHeavyTriggerOnCollision.TabIndex = 9;
@@ -110,7 +110,7 @@ namespace TombEditor.Forms
             // cbHardShatter
             // 
             this.cbHardShatter.AutoSize = true;
-            this.cbHardShatter.Location = new System.Drawing.Point(10, 221);
+            this.cbHardShatter.Location = new System.Drawing.Point(10, 196);
             this.cbHardShatter.Name = "cbHardShatter";
             this.cbHardShatter.Size = new System.Drawing.Size(90, 17);
             this.cbHardShatter.TabIndex = 8;
@@ -120,7 +120,7 @@ namespace TombEditor.Forms
             // cbHugeCollision
             // 
             this.cbHugeCollision.AutoSize = true;
-            this.cbHugeCollision.Location = new System.Drawing.Point(10, 198);
+            this.cbHugeCollision.Location = new System.Drawing.Point(10, 173);
             this.cbHugeCollision.Name = "cbHugeCollision";
             this.cbHugeCollision.Size = new System.Drawing.Size(100, 17);
             this.cbHugeCollision.TabIndex = 7;
@@ -130,7 +130,7 @@ namespace TombEditor.Forms
             // cbPoisonLaraOnCollision
             // 
             this.cbPoisonLaraOnCollision.AutoSize = true;
-            this.cbPoisonLaraOnCollision.Location = new System.Drawing.Point(10, 175);
+            this.cbPoisonLaraOnCollision.Location = new System.Drawing.Point(10, 150);
             this.cbPoisonLaraOnCollision.Name = "cbPoisonLaraOnCollision";
             this.cbPoisonLaraOnCollision.Size = new System.Drawing.Size(148, 17);
             this.cbPoisonLaraOnCollision.TabIndex = 6;
@@ -140,7 +140,7 @@ namespace TombEditor.Forms
             // cbExplodeKillingOnCollision
             // 
             this.cbExplodeKillingOnCollision.AutoSize = true;
-            this.cbExplodeKillingOnCollision.Location = new System.Drawing.Point(10, 152);
+            this.cbExplodeKillingOnCollision.Location = new System.Drawing.Point(10, 127);
             this.cbExplodeKillingOnCollision.Name = "cbExplodeKillingOnCollision";
             this.cbExplodeKillingOnCollision.Size = new System.Drawing.Size(165, 17);
             this.cbExplodeKillingOnCollision.TabIndex = 5;
@@ -150,7 +150,7 @@ namespace TombEditor.Forms
             // cbBurnLaraOnCollision
             // 
             this.cbBurnLaraOnCollision.AutoSize = true;
-            this.cbBurnLaraOnCollision.Location = new System.Drawing.Point(10, 129);
+            this.cbBurnLaraOnCollision.Location = new System.Drawing.Point(10, 104);
             this.cbBurnLaraOnCollision.Name = "cbBurnLaraOnCollision";
             this.cbBurnLaraOnCollision.Size = new System.Drawing.Size(138, 17);
             this.cbBurnLaraOnCollision.TabIndex = 4;
@@ -160,7 +160,7 @@ namespace TombEditor.Forms
             // cbDamageLaraOnContact
             // 
             this.cbDamageLaraOnContact.AutoSize = true;
-            this.cbDamageLaraOnContact.Location = new System.Drawing.Point(10, 106);
+            this.cbDamageLaraOnContact.Location = new System.Drawing.Point(10, 81);
             this.cbDamageLaraOnContact.Name = "cbDamageLaraOnContact";
             this.cbDamageLaraOnContact.Size = new System.Drawing.Size(155, 17);
             this.cbDamageLaraOnContact.TabIndex = 3;
@@ -170,7 +170,7 @@ namespace TombEditor.Forms
             // cbGlassTrasparency
             // 
             this.cbGlassTrasparency.AutoSize = true;
-            this.cbGlassTrasparency.Location = new System.Drawing.Point(10, 60);
+            this.cbGlassTrasparency.Location = new System.Drawing.Point(10, 35);
             this.cbGlassTrasparency.Name = "cbGlassTrasparency";
             this.cbGlassTrasparency.Size = new System.Drawing.Size(122, 17);
             this.cbGlassTrasparency.TabIndex = 1;
@@ -180,7 +180,7 @@ namespace TombEditor.Forms
             // cbScalable
             // 
             this.cbScalable.AutoSize = true;
-            this.cbScalable.Location = new System.Drawing.Point(10, 290);
+            this.cbScalable.Location = new System.Drawing.Point(10, 265);
             this.cbScalable.Name = "cbScalable";
             this.cbScalable.Size = new System.Drawing.Size(68, 17);
             this.cbScalable.TabIndex = 11;
@@ -195,7 +195,7 @@ namespace TombEditor.Forms
             0,
             0,
             65536});
-            this.numScalable.Location = new System.Drawing.Point(113, 289);
+            this.numScalable.Location = new System.Drawing.Point(113, 264);
             this.numScalable.LoopValues = false;
             this.numScalable.Maximum = new decimal(new int[] {
             1023,
@@ -210,8 +210,8 @@ namespace TombEditor.Forms
             // 
             // tbOCB
             // 
-            this.tbOCB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbOCB.Location = new System.Drawing.Point(45, 318);
+            this.tbOCB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbOCB.Location = new System.Drawing.Point(45, 292);
             this.tbOCB.Name = "tbOCB";
             this.tbOCB.Size = new System.Drawing.Size(166, 22);
             this.tbOCB.TabIndex = 13;
@@ -220,10 +220,9 @@ namespace TombEditor.Forms
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.label1.Location = new System.Drawing.Point(9, 320);
+            this.label1.Location = new System.Drawing.Point(7, 294);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 27;
@@ -232,30 +231,31 @@ namespace TombEditor.Forms
             // cbSpecificShatter
             // 
             this.cbSpecificShatter.AutoSize = true;
-            this.cbSpecificShatter.Location = new System.Drawing.Point(10, 267);
+            this.cbSpecificShatter.Location = new System.Drawing.Point(10, 242);
             this.cbSpecificShatter.Name = "cbSpecificShatter";
             this.cbSpecificShatter.Size = new System.Drawing.Size(198, 17);
             this.cbSpecificShatter.TabIndex = 10;
             this.cbSpecificShatter.Text = "Shatterable by specific moveables";
             this.cbSpecificShatter.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
             // 
-            // darkLabel1
+            // lblColor
             // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(7, 14);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(100, 13);
-            this.darkLabel1.TabIndex = 28;
-            this.darkLabel1.Text = "Static mesh color: ";
+            this.lblColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblColor.AutoSize = true;
+            this.lblColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblColor.Location = new System.Drawing.Point(7, 326);
+            this.lblColor.Name = "lblColor";
+            this.lblColor.Size = new System.Drawing.Size(32, 13);
+            this.lblColor.TabIndex = 28;
+            this.lblColor.Text = "Tint: ";
             // 
             // panelColor
             // 
-            this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelColor.Location = new System.Drawing.Point(113, 10);
+            this.panelColor.Location = new System.Drawing.Point(45, 320);
             this.panelColor.Name = "panelColor";
-            this.panelColor.Size = new System.Drawing.Size(98, 22);
+            this.panelColor.Size = new System.Drawing.Size(166, 22);
             this.panelColor.TabIndex = 29;
             this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
             // 
@@ -265,9 +265,9 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(217, 376);
+            this.ClientSize = new System.Drawing.Size(217, 380);
             this.Controls.Add(this.panelColor);
-            this.Controls.Add(this.darkLabel1);
+            this.Controls.Add(this.lblColor);
             this.Controls.Add(this.cbSpecificShatter);
             this.Controls.Add(this.tbOCB);
             this.Controls.Add(this.label1);
@@ -321,7 +321,7 @@ namespace TombEditor.Forms
         private DarkTextBox tbOCB;
         private DarkLabel label1;
         private DarkCheckBox cbSpecificShatter;
-        private DarkLabel darkLabel1;
+        private DarkLabel lblColor;
         private DarkUI.Controls.DarkPanel panelColor;
     }
 }

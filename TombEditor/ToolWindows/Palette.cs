@@ -42,7 +42,10 @@ namespace TombEditor.ToolWindows
             }
 
             if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                butEditColor.Enabled = ((Editor.SelectedObjectChangedEvent)obj).Current.CanBeColored();
                 lightPalette.PickColor();
+            }
 
             if (obj is Editor.ObjectChangedEvent)
             {

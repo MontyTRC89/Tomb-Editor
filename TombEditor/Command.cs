@@ -199,6 +199,12 @@ namespace TombEditor
                     EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
             });
 
+            AddCommand("EditObjectColor", "Edit object color", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject.CanBeColored())
+                    EditorActions.EditColor(args.Window, (IColorable)args.Editor.SelectedObject);
+            });
+
             AddCommand("SwitchBlendMode", "Switch blending mode", CommandType.Textures, delegate (CommandArgs args)
             {
                 var texture = args.Editor.SelectedTexture;

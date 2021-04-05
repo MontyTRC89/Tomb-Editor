@@ -365,8 +365,14 @@ namespace TombEditor
                 // Temporarily hide selection
                 _editor.ToggleHiddenSelection(true);
 
+                // Rollback to previous color if dialog is canceled or push undo if confirmed
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+                else if (obj is PositionBasedObjectInstance)
+                {
+                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
+                    _editor.UndoManager.PushObjectPropertyChanged(obj as PositionBasedObjectInstance);
+                }
 
                 // Unhide selection
                 _editor.ToggleHiddenSelection(false);
@@ -821,17 +827,22 @@ namespace TombEditor
         {
             if (instance is MoveableInstance)
             {
-                using (var formMoveable = new FormMoveable((MoveableInstance)instance))
-                    if (formMoveable.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                if (instance.CanBeColored() && Control.ModifierKeys.HasFlag(Keys.Control))
+                    EditColor(owner, (MoveableInstance)instance);
+                else
+                {
+                    using (var formMoveable = new FormMoveable((MoveableInstance)instance))
+                        if (formMoveable.ShowDialog(owner) != DialogResult.OK)
+                            return;
+                }
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
-                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
-                    Control.ModifierKeys.HasFlag(Keys.Control) ||
-                    Control.ModifierKeys.HasFlag(Keys.Alt))
+                if (instance.CanBeColored() &&
+                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || Control.ModifierKeys.HasFlag(Keys.Control)))
                     EditColor(owner, (StaticInstance)instance);
                 else
                 {
@@ -893,12 +904,15 @@ namespace TombEditor
             }
             else if (instance is ImportedGeometryInstance)
             {
-                using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
-                {
-                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
-                }
+                if (Control.ModifierKeys.HasFlag(Keys.Control))
+                    EditColor(owner, (ImportedGeometryInstance)instance);
+                else
+                    using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
+                    {
+                        if (formImportedGeometry.ShowDialog(owner) != DialogResult.OK)
+                            return;
+                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
+                    }
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is LightInstance)
