@@ -433,6 +433,10 @@ namespace SoundTool
                             soundCount++;
                         }
                     }
+
+                    if (reader.BaseStream.Position != reader.BaseStream.Length)
+                        throw new Exception("File is longer than expected. Make sure you're using correct sound catalog and MAIN.sfx file.");
+
                 }
                 catch (Exception ex)
                 {

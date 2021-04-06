@@ -850,6 +850,8 @@ namespace TombEditor
                         if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
                             return;
                 }
+                else
+                    _editor.SendMessage("Light mode for this static mesh was set to dynamic. Color can't be edited.", PopupType.Info);
 
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
