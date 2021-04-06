@@ -437,7 +437,7 @@ namespace SoundTool
                 catch (Exception ex)
                 {
                     reader.Close();
-                    popup.ShowError(soundInfoEditor, "There was a error reading MAIN.SFX. \nException: " + ex.Message);
+                    popup.ShowError(soundInfoEditor, "There was a error unpacking MAIN.SFX. \nException: " + ex.Message);
                     return;
                 }
 
