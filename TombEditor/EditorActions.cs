@@ -844,7 +844,7 @@ namespace TombEditor
                 if (instance.CanBeColored() &&
                     (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || Control.ModifierKeys.HasFlag(Keys.Control)))
                     EditColor(owner, (StaticInstance)instance);
-                else
+                else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
                 {
                     using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
                         if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
