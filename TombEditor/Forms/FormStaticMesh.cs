@@ -19,6 +19,9 @@ namespace TombEditor.Forms
             _staticMesh = staticMesh;
             newOCB = _staticMesh.Ocb;
             InitializeComponent();
+
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, Editor.Instance.Configuration);
         }
 
         private void FormObject_Load(object sender, EventArgs e)
@@ -29,6 +32,12 @@ namespace TombEditor.Forms
             oldColor = _staticMesh.Color;
             DecodeOCB();
             locked = false;
+
+            // Disable mesh-specific controls
+            var canBeColored = _staticMesh.CanBeColored();
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 422 : 393);
+            lblColor.Visible = canBeColored;
+            panelColor.Visible = canBeColored;
         }
 
         private void butOK_Click(object sender, EventArgs e)

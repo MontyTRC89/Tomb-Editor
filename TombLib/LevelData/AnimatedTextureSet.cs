@@ -37,8 +37,9 @@ namespace TombLib.LevelData
             set
             {
                 if (value < 1)
-                    throw new ArgumentOutOfRangeException(nameof(value), "'Repeat' must be at least 1.");
-                _repeat = value;
+                    _repeat = 1; // Clamp repeat to 1
+                else
+                    _repeat = value;
             }
         }
 

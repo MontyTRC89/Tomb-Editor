@@ -179,6 +179,9 @@ namespace TombLib.Wad
                     }
                 });
 
+                // Write light mode
+                chunkIO.WriteChunkInt(Wad2Chunks.MeshLightingType, (int)mesh.LightingType);
+
                 // Write polygons
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshPolygons, () =>
                 {
@@ -326,13 +329,12 @@ namespace TombLib.Wad
             {
                 foreach (var staticMesh in wad.Statics)
                 {
-                    chunkIO.WriteChunkWithChildren(Wad2Chunks.Static, () =>
+                    chunkIO.WriteChunkWithChildren(Wad2Chunks.Static2, () =>
                     {
                         var s = staticMesh.Value;
 
                         LEB128.Write(chunkIO.Raw, s.Id.TypeId);
                         LEB128.Write(chunkIO.Raw, s.Flags);
-                        LEB128.Write(chunkIO.Raw, (short)s.LightingType);
 
                         WriteMesh(chunkIO, s.Mesh, textureTable);
 
@@ -359,8 +361,6 @@ namespace TombLib.Wad
                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMin, s.CollisionBox.Minimum);
                             chunkIO.WriteChunkVector3(Wad2Chunks.MeshBoundingBoxMax, s.CollisionBox.Maximum);
                         });
-
-                        //chunkIO.WriteChunkString(Wad2Chunks.StaticName, s.Name);
                     });
                 }
             });

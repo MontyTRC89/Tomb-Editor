@@ -1323,7 +1323,6 @@ namespace TombEditor
             UndoManager = new EditorUndoManager(this, configuration.Editor_UndoDepth);
             EditorEventRaised += Editor_EditorEventRaised;
 
-
             _configurationWatcher = new FileSystemWatcherManager();
             _configurationWatcher.UpdateAllFiles(new[] { new ConfigurationWatchedObj { Parent = this } });
             _autoSavingTimer.Tick += (sender, e) => AutoSave();
@@ -1333,6 +1332,9 @@ namespace TombEditor
             _configurationIsLoadedFromFile = false;
             Level = level;
 
+            // Make border wall grids, as in dxtre3d
+            if (configuration.Editor_GridNewRoom)
+                EditorActions.GridWallsSquares(level.Rooms[0], level.Rooms[0].LocalArea, false, false);
         }
 
         public void Dispose()

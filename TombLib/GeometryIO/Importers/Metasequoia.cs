@@ -69,13 +69,18 @@ namespace TombLib.GeometryIO.Importers
                             if (texturePath != "")
                             {
                                 string basePath = Path.GetDirectoryName(filename);
-                                if (!File.Exists(Path.Combine(basePath, texturePath)))
-                                    basePath = Path.Combine(Path.GetDirectoryName(filename), "Texture");
-                                if (!File.Exists(Path.Combine(basePath, texturePath)))
-                                    throw new FileNotFoundException("Texture " + texturePath + " could not be found");
+                                string alternatePath = Path.Combine(Path.GetDirectoryName(filename), "Texture");
 
-                                textures.Add(i, GetTexture(basePath, texturePath));
+                                var texture = GetTexture(basePath, texturePath);
+                                if (texture == null)
+                                    texture = GetTexture(alternatePath, texturePath);
+                                if (texture == null)
+                                    throw new FileNotFoundException("Texture " + Path.GetFileName(texturePath) + " could not be found");
+
+                                textures.Add(i, texture);
                             }
+                            else
+                                throw new FileNotFoundException("Texture for material " + material.Name + " is missing");
 
                             material.DoubleSided = (doubleSided == "1");
 

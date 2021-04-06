@@ -25,8 +25,7 @@ namespace TombEditor.Forms
                 _instance = instance;
 
                 // Set window property handlers
-                Configuration.LoadWindowProperties(this, _editor.Configuration);
-                FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
+                Configuration.ConfigureWindow(this, _editor.Configuration);
 
                 InitializeRendering(_editor.RenderingDevice);
                 PopulateSpriteList();

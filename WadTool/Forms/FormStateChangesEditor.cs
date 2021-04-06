@@ -59,8 +59,7 @@ namespace WadTool
             _editor.Tool.EditorEventRaised += Tool_EditorEventRaised;
 
             // Set window property handlers
-            Configuration.LoadWindowProperties(this, _editor.Tool.Configuration);
-            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Tool.Configuration));
+            Configuration.ConfigureWindow(this, _editor.Tool.Configuration);
         }
 
         private void Initialize(AnimationNode animation, WadStateChange newStateChange)

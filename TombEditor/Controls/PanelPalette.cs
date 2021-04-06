@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
@@ -53,7 +54,31 @@ namespace TombEditor.Controls
             if (palette.Count < 1) return; // No suitable color data found
             _palette.Clear();
             foreach (var c in palette) _palette.Add(new ColorC(c.R, c.G, c.B));
-            Invalidate();
+            PickColor();
+        }
+
+        public void PickColor()
+        {
+            if (!_editor.Configuration.Palette_PickColorFromSelectedObject || _editor.SelectedObject == null)
+                return;
+
+            var instance = _editor.SelectedObject as IColorable;
+            if (instance != null)
+            {
+                var normalizedColor = instance.Color / 2.0f;
+                var color = new ColorC((byte)(normalizedColor.X * 255), (byte)(normalizedColor.Y * 255), (byte)(normalizedColor.Z * 255));
+
+                for (int i = 0; i < _palette.Count; i++)
+                {
+                    if (_palette[i] == color)
+                    {
+                        _selectedColorCoord = new Point((i % PaletteSize.Width), i / PaletteSize.Width);
+                        _editor.LastUsedPaletteColourChange(SelectedColor);
+                        Invalidate();
+                        return;
+                    }
+                }
+            }
         }
 
         private Color GetColorFromPalette(Point point)
@@ -89,24 +114,15 @@ namespace TombEditor.Controls
                 _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1),
                                                 (int)MathC.Clamp((e.Y / _paletteCellHeight), 0, PaletteSize.Height - 1));
 
-                if (_editor.SelectedObject is IColorable)
+                if (_editor.SelectedObject.CanBeColored())
                 {
-                    // Discard moveable and fog bulb color editing if game version condition isnt met
+                    var instance = _editor.SelectedObject as IColorable;
+                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
 
-                    if (_editor.SelectedObject is MoveableInstance && _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
-                    { }
-                    else if (_editor.SelectedObject is LightInstance && (_editor.SelectedObject as LightInstance).Type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
-                    { }
-                    else
-                    {
-                        var instance = _editor.SelectedObject as IColorable;
-                        instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
+                    if (_editor.SelectedObject is LightInstance)
+                        _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
-                        if (_editor.SelectedObject is LightInstance)
-                            _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-
-                        _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
-                    }
+                    _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
                 }
 
                 _editor.LastUsedPaletteColourChange(SelectedColor);
@@ -157,9 +173,7 @@ namespace TombEditor.Controls
                 else
                 {
                     // Save undo in case we're editing selected light colour
-                    if (_editor.SelectedObject is LightInstance ||
-                        _editor.SelectedObject is StaticInstance ||
-                        _editor.SelectedObject is MoveableInstance)
+                    if (_editor.SelectedObject is IColorable)
                         _editor.UndoManager.PushObjectPropertyChanged((PositionBasedObjectInstance)_editor.SelectedObject);
 
                     _editor.ToggleHiddenSelection(true);

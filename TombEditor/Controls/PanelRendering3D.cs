@@ -2881,6 +2881,8 @@ namespace TombEditor.Controls
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+            skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
+            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(false);
 
             for (int i = 0; i < model.Meshes.Count; i++)
             {
@@ -2914,6 +2916,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
@@ -2933,7 +2936,10 @@ namespace TombEditor.Controls
                     var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(version, group.Key.TypeId));
                     var moveableSkin = _editor.Level.Settings.WadTryGetMoveable(skinId);
                     if (moveableSkin != null && moveableSkin.Meshes.Count == model.Meshes.Count)
+                    {
+                        movID = moveableSkin;
                         skin = _wadRenderer.GetMoveable(moveableSkin);
+                    }
                 }
 
                 for (int i = 0; i < skin.Meshes.Count; i++)
@@ -2953,9 +2959,20 @@ namespace TombEditor.Controls
                         else
                         {
                             if (ShowRealTintForObjects && _editor.Mode == EditorMode.Lighting)
-                                skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
+                            {
+                                if (movID.Meshes[i].LightingType == WadMeshLightingType.Normals)
+                                {
+                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
+                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
+                                }
+                                else
+                                {
+                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(true);
+                                    skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
+                                }
+                            }
                             else
-                                skinnedModelEffect.Parameters["Color"].SetValue(new Vector3(1.0f));
+                                skinnedModelEffect.Parameters["Color"].SetValue(Vector3.One);
                         }
 
                         Matrix4x4 world = model.AnimationTransforms[i] * instance.ObjectMatrix;
@@ -3131,8 +3148,9 @@ namespace TombEditor.Controls
                 return;
 
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-            var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["StaticModel"];
+            var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+            staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
             staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
@@ -3164,10 +3182,15 @@ namespace TombEditor.Controls
                             {
                                 var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
 
-                                if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
+                                if (!ShowRealTintForObjects || (entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors) || (entry != null && entry.Merge && entry.TintAsAmbient))
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 else
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));
+
+                                if (entry != null && entry.Merge)
+                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(!entry.ClearShades);
+                                else
+                                    staticMeshEffect.Parameters["StaticLighting"].SetValue(true);
                             }
                             else
                                 staticMeshEffect.Parameters["Color"].SetValue(Vector3.One);

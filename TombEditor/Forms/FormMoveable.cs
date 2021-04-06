@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using System.Linq;
 
 namespace TombEditor.Forms
 {
@@ -17,6 +18,9 @@ namespace TombEditor.Forms
             _movable = moveable;
             InitializeComponent();
             _editor = Editor.Instance;
+
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, _editor.Configuration);
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -42,12 +46,11 @@ namespace TombEditor.Forms
             cbClearBody.Checked = _movable.ClearBody;
             tbOCB.Text = _movable.Ocb.ToString();
 
-            // Disable version-specific controls
-
-            bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
-            if (!isT5M) Size = new System.Drawing.Size(Size.Width, 226);
-            lblColor.Visible = isT5M;
-            panelColor.Visible = isT5M;
+            // Disable mesh-specific controls
+            var canBeColored = _movable.CanBeColored();
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 254 : 226);
+            lblColor.Visible = canBeColored;
+            panelColor.Visible = canBeColored;
         }
 
         private void butOK_Click(object sender, EventArgs e)

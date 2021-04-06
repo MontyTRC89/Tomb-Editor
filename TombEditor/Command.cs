@@ -199,6 +199,12 @@ namespace TombEditor
                     EditorActions.EditObject(args.Editor.SelectedObject, args.Window);
             });
 
+            AddCommand("EditObjectColor", "Edit object color", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject.CanBeColored())
+                    EditorActions.EditColor(args.Window, (IColorable)args.Editor.SelectedObject);
+            });
+
             AddCommand("SwitchBlendMode", "Switch blending mode", CommandType.Textures, delegate (CommandArgs args)
             {
                 var texture = args.Editor.SelectedTexture;
@@ -631,6 +637,10 @@ namespace TombEditor
 
                 args.Editor.Level = Level.CreateSimpleLevel(args.Editor.Configuration.Editor_DefaultProjectGameVersion);
                 GC.Collect(); // Clean up memory
+
+                // Make border wall grids, as in dxtre3d
+                if (args.Editor.Configuration.Editor_GridNewRoom)
+                    EditorActions.GridWallsSquares(args.Editor.Level.Rooms[0], args.Editor.Level.Rooms[0].LocalArea, false, false);
             });
 
             AddCommand("OpenLevel", "Open existing level...", CommandType.File, delegate (CommandArgs args)

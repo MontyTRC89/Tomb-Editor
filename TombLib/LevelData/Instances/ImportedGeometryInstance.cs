@@ -56,7 +56,7 @@ namespace TombLib.LevelData
             {
                 result += Model.Info.Name;
                 if (Model.DirectXModel == null)
-                    result += "(Unloaded: " + (Model.LoadException?.Message ?? "") + ")";
+                    result += "\n(Unloaded: " + (Model.LoadException?.Message ?? "") + ")";
             }
             return result;
         }

@@ -1,23 +1,24 @@
-﻿using DarkUI.Forms;
+﻿using NLog;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using TombLib.Forms;
 using TombLib.Wad;
 using TombLib.Utils;
-using NLog;
 using TombLib.GeometryIO;
 using TombLib.Graphics;
-using System.Xml;
-using System.Xml.Serialization;
-using System.Numerics;
+using TombLib.IO;
 using TombLib.LevelData;
 using TombLib.LevelData.IO;
 using TombLib.GeometryIO.Importers;
 using TombLib.Wad.Catalog;
-using System.Threading;
+using TombLib;
 
 namespace WadTool
 {
@@ -50,11 +51,11 @@ namespace WadTool
                         return;
                     }
 
-                    if (newWad.HasUnknownData)
-                        tool.SendMessage("Loaded wad2 is of newer version.\nSome data was lost. Don't save this wad2 and use newest version of Wad Tool.", PopupType.Warning);
-
                     newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
                 }
+
+                if (newWad.HasUnknownData)
+                    tool.SendMessage("Loaded wad2 is of newer version.\nSome data was lost. Don't save this wad2 and use newest version of Wad Tool.", PopupType.Warning);
             }
             catch (OperationCanceledException)
             {
@@ -1018,6 +1019,177 @@ namespace WadTool
             }
         }
 
+        public static WadAnimation ImportAnimationFromTrw(string fileName, int sourceAnimIndex)
+        {
+            var result = new WadAnimation();
+
+            using (var reader = new BinaryReaderEx(File.OpenRead(fileName)))
+            {
+                var wmVersion = reader.ReadInt32();
+                var fileType = reader.ReadInt32();
+
+                // Most common trw type is 190, there is also rare 170 which is
+                // blunt copy of wad data and requires low-level parsing, so we ignore that.
+
+                if (wmVersion != 190)
+                    throw new Exception("Unknown .trw version");
+
+                if (fileType != 5)
+                    throw new Exception("File is not valid .trw file");
+
+                reader.ReadBytes(4); // Unused
+
+                result.FrameRate = reader.ReadByte();
+
+                reader.ReadBytes(1); // Unused
+
+                result.StateId = reader.ReadUInt16();
+                var speed = reader.ReadInt32();
+                var accel = reader.ReadInt32();
+                var speedLateral = reader.ReadInt32();
+                var accelLateral = reader.ReadInt32();
+
+                reader.ReadBytes(4); // Unused
+
+                var nextAnimation = reader.ReadInt16();
+                result.NextFrame = reader.ReadUInt16();
+                var numStateChanges = reader.ReadUInt16();
+
+                reader.ReadBytes(6); // Unused
+
+                // WM keeps NextAnim as index offset, so it may be incorrectly negative
+                result.NextAnimation = (ushort)(MathC.Clamp(sourceAnimIndex + nextAnimation, 0, UInt16.MaxValue));
+
+                reader.ReadBytes(4); // Unused
+
+                var numCommands = reader.ReadUInt16();
+                logger.Info("Trw animation commands: " + numCommands);
+
+                for (var i = 0; i < numCommands; i++)
+                {
+                    var ac = new WadAnimCommand();
+                    ac.Type = (WadAnimCommandType)reader.ReadUInt16();
+                    ac.Parameter1 = reader.ReadInt16();
+                    ac.Parameter2 = reader.ReadInt16();
+                    ac.Parameter3 = reader.ReadInt16();
+
+                    result.AnimCommands.Add(ac);
+                }
+
+                reader.ReadBytes(8); // Unused
+
+                var numKeyFrames = reader.ReadUInt32();
+                logger.Info("Trw animation keyframes: " + numKeyFrames);
+
+                if (numKeyFrames == 0)
+                    throw new Exception(".trw file does not contain valid frames");
+
+                for (int i = 0; i < numKeyFrames; i++)
+                {
+                    var frame = new WadKeyFrame();
+
+                    var x1 =  reader.ReadInt16();
+                    var x2 =  reader.ReadInt16();
+                    var y1 = -reader.ReadInt16();
+                    var y2 = -reader.ReadInt16();
+                    var z1 =  reader.ReadInt16();
+                    var z2 =  reader.ReadInt16();
+                    var min = new Vector3(x1, y1, z1);
+                    var max = new Vector3(x2, y2, z2);
+
+                    frame.BoundingBox = new BoundingBox(min, max);
+
+                    var offX =  reader.ReadInt16();
+                    var offY = -reader.ReadInt16();
+                    var offZ =  reader.ReadInt16();
+
+                    frame.Offset = new Vector3(offX, offY, offZ);
+
+                    var numBones = reader.ReadUInt16();
+
+                    for (int j = 0; j < numBones; j++)
+                    {
+                        const float factor = 360.0f / 1024.0f;
+                        var rotX = -(float)reader.ReadInt16() * factor;
+                        var rotY =  (float)reader.ReadInt16() * factor;
+                        var rotZ = -(float)reader.ReadInt16() * factor;
+
+                        var rot = new WadKeyFrameRotation();
+                        rot.Rotations = new Vector3(rotX, rotY, rotZ);
+                        frame.Angles.Add(rot);
+                    }
+
+                    result.KeyFrames.Add(frame);
+                }
+
+                try
+                {
+                    for (int i = 0; i < numStateChanges; i++)
+                    {
+                        var sc = new WadStateChange();
+                        sc.StateId = reader.ReadUInt16();
+                        var numAnimDispatches = reader.ReadUInt16();
+
+                        reader.ReadBytes(2); // Unused
+
+                        // VB6 padding
+                        int padCounter = 10;
+                        reader.ReadBytes(padCounter);
+
+                        for (int j = 0; j < numAnimDispatches; j++)
+                        {
+                            var disp = new WadAnimDispatch();
+                            disp.InFrame = reader.ReadUInt16();
+                            disp.OutFrame = reader.ReadUInt16();
+                            disp.NextAnimation = reader.ReadUInt16();
+                            disp.NextFrame = reader.ReadUInt16();
+
+                            sc.Dispatches.Add(disp);
+                            padCounter += 4; // 4 bytes per 1 dispatch, don't ask why.
+                        }
+
+                        result.StateChanges.Add(sc);
+
+                        // VB6 padding
+                        reader.ReadBytes(padCounter);
+                    }
+                }
+                catch
+                {
+                    // In case unexpected VB6 padding is encountered, reset state changes
+                    // and continue importing anyway.
+
+                    logger.Warn(".trw file has incorrect state changes data block");
+                    result.StateChanges.Clear();
+                }
+
+                // New velocities
+                float acceleration = accel / 65536.0f;
+                result.StartVelocity = speed / 65536.0f;
+
+                float lateralAcceleration = accelLateral / 65536.0f;
+                result.StartLateralVelocity = speedLateral / 65536.0f;
+
+                if (result.KeyFrames.Count != 0 && result.FrameRate != 0)
+                {
+                    result.EndVelocity = result.StartVelocity + acceleration *
+                                        (result.KeyFrames.Count - 1) * result.FrameRate;
+                    result.EndLateralVelocity = result.StartLateralVelocity + lateralAcceleration *
+                                               (result.KeyFrames.Count - 1) * result.FrameRate;
+                }
+                else
+                {
+                    // Basic foolproofness for potentially broken animations
+                    result.EndVelocity = result.StartVelocity;
+                    result.EndLateralVelocity = result.StartLateralVelocity;
+                }
+
+                // WM was not aware of EndFrame field so we calculate that
+                result.EndFrame = (ushort)(result.GetRealNumberOfFrames() - 1);
+            }
+
+            return result;
+        }
 
         public static WadAnimation ImportAnimationFromModel(WadToolClass tool, IWin32Window owner, int nodeCount, string fileName)
         {

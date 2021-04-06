@@ -92,6 +92,15 @@ namespace TombLib
             }
         }
 
+        public static void ConfigureWindow(DarkForm form, ConfigurationBase config)
+        {
+            if (form == null || config == null)
+                return;
+
+            LoadWindowProperties(form, config);
+            form.FormClosing += new FormClosingEventHandler((s, e) => SaveWindowProperties(form, config));
+        }
+
         public string GetVariable(VariableType variableType)
         {
             switch (variableType)

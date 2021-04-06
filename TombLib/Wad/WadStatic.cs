@@ -51,7 +51,6 @@ namespace TombLib.Wad
         public BoundingBox VisibilityBox { get; set; } = new BoundingBox();
         public BoundingBox CollisionBox { get; set; } = new BoundingBox();
         public List<WadLight> Lights { get; set; } = new List<WadLight>();
-        public WadMeshLightingType LightingType { get; set; } = WadMeshLightingType.PrecalculatedGrayShades;
         public short AmbientLight { get; set; } = 128;
 
         public string ToString(TRVersion.Game gameVersion) => Id.ToString(gameVersion.Native());

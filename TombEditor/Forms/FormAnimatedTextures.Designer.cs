@@ -625,6 +625,7 @@ namespace TombEditor.Forms
             this.texturesDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.texturesDataGridView_CellDoubleClick);
             this.texturesDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.texturesDataGridView_CellFormatting);
             this.texturesDataGridView.CellParsing += new System.Windows.Forms.DataGridViewCellParsingEventHandler(this.texturesDataGridView_CellParsing);
+            this.texturesDataGridView.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.texturesDataGridView_CellValidating);
             this.texturesDataGridView.SelectionChanged += new System.EventHandler(this.texturesDataGridView_SelectionChanged);
             // 
             // texturesDataGridViewColumnImage

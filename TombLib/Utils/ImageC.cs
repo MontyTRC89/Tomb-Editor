@@ -201,6 +201,9 @@ namespace TombLib.Utils
 
         public void ApplyKernel(int xStart, int yStart, int width, int height, int weight, int[,] kernel)
         {
+            // Avoid potential divide by zero errors which shouldn't happen but some TE users experienced them anyway
+            weight = weight == 0 ? -2 : weight;
+
             ImageC oldImage = new ImageC(width, height, new byte[width * height * 4]);
             oldImage.CopyFrom(0, 0, this, xStart, yStart, width, height);
 

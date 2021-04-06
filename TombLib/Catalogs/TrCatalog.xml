@@ -90,8 +90,8 @@
       <moveable id="65" name="Trapdoor (opens downward)" essential="false"/>
       <moveable id="66" name="Trapdoor (opens downward)" essential="false"/>
       <moveable id="68" name="Bridge (flat)" essential="false"/>
-      <moveable id="69" name="Bridge (slope = 1)" essential="false"/>
-      <moveable id="70" name="Bridge (slope = 2)" essential="false"/>
+      <moveable id="69" name="Bridge (tilt = 1)" essential="false"/>
+      <moveable id="70" name="Bridge (tilt = 2)" essential="false"/>
       <moveable id="71" name="Passport (opening up)" hidden="true" />
       <moveable id="72" name="Compass" hidden="true" />
       <moveable id="73" name="Lara's home polaroid" hidden="true" />
@@ -762,8 +762,8 @@
       <moveable id="115" name="Trapdoor (opens downward)" essential="false"/>
       <moveable id="116" name="Trapdoor (opens downward)" essential="false"/>
       <moveable id="117" name="Bridge (flat)" essential="false"/>
-      <moveable id="118" name="Bridge (slope = 1)" essential="false"/>
-      <moveable id="119" name="Bridge (slope = 2)" essential="false"/>
+      <moveable id="118" name="Bridge (tilt = 1)" essential="false"/>
+      <moveable id="119" name="Bridge (tilt = 2)" essential="false"/>
       <moveable id="120" name="Secret #1" id2="190" use_body_from="248" />
       <moveable id="121" name="Secret #2" id2="191" use_body_from="248" />
       <moveable id="122" name="Lara and butler picture" hidden="true" />
@@ -1460,8 +1460,8 @@
       <moveable id="140" name="Trapdoor" essential="false"/>
       <moveable id="141" name="Trapdoor" essential="false"/>
       <moveable id="142" name="Bridge (flat)" essential="false"/>
-      <moveable id="143" name="Bridge (slope = 1)" essential="false"/>
-      <moveable id="144" name="Bridge (slope = 2)" essential="false"/>
+      <moveable id="143" name="Bridge (tilt = 1)" essential="false"/>
+      <moveable id="144" name="Bridge (tilt = 2)" essential="false"/>
       <moveable id="145" name="Passport (opening up)" t5m="INVENTORY_PASSPORT" hidden="true" />
       <moveable id="146" name="Stopwatch" hidden="true" />
       <moveable id="147" name="Lara and butler picture" t5m="INVENTORY_POLAROID" hidden="true" />
@@ -4139,12 +4139,12 @@
       <moveable id="445" name="Animating 15_mip" t5m="ANIMATING31" />
       <moveable id="446" name="Animating 16" t5m="ANIMATING16" />
       <moveable id="447" name="Animating 16_mip" t5m="ANIMATING32" />
-      <moveable id="448" name="Floor 1 flat" t5m="BRIDGE_FLAT" />
-      <moveable id="449" name="Floor 2 flat" />
-      <moveable id="450" name="Floor 1 slope 1" t5m="BRIDGE_TILT1" />
-      <moveable id="451" name="Floor 2 slope 1" />
-      <moveable id="452" name="Floor 1 slope 2" t5m="BRIDGE_TILT2" />
-      <moveable id="453" name="Floor 2 slope 2" />
+      <moveable id="448" name="Bridge 1 flat" t5m="BRIDGE_FLAT" />
+      <moveable id="449" name="Bridge 2 flat" />
+      <moveable id="450" name="Bridge 1 tilt 1" t5m="BRIDGE_TILT1" />
+      <moveable id="451" name="Bridge 2 tilt 1" />
+      <moveable id="452" name="Bridge 1 tilt 2" t5m="BRIDGE_TILT2" />
+      <moveable id="453" name="Bridge 2 tilt 2" />
       <moveable id="454" name="Horizon" t5m="HORIZON" hidden="true" />
       <moveable id="456" name="Binoculars graphics" t5m="BINOCULAR_GRAPHICS" hidden="true" />
       <moveable id="457" name="Target graphics" t5m="TARGET_GRAPHICS" hidden="true" />

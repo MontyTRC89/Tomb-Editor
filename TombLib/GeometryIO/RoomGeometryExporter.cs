@@ -311,7 +311,7 @@ namespace TombLib.GeometryIO
 
                 // Save only texture pages which are actually used in model.
                 foreach (var page in splitPages)
-                    if (model.UsedMaterials.Any(mat => mat.TexturePath == page.Path))
+                    if (model.UsedMaterials.Any(mat => mat.Path == page.Path))
                         page.SaveTexture();
 
                 result.Model = model;

@@ -284,8 +284,7 @@ namespace TombEditor.Forms
             this.SetActualSize();
 
             // Set window property handlers
-            Configuration.LoadWindowProperties(this, _editor.Configuration);
-            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, _editor.Configuration));
+            Configuration.ConfigureWindow(this, _editor.Configuration);
 
             // Remember colors
             _correctColor = gameLevelFilePathTxt.BackColor;

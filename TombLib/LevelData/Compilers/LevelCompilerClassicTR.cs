@@ -443,14 +443,28 @@ namespace TombLib.LevelData.Compilers
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
             _aiObjectsTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
 
+            bool laraPlaced = false;
+
             foreach (var room in _sortedRooms.Where(room => room != null))
                 foreach (var instance in room.Objects.OfType<MoveableInstance>())
                 {
-                    WadMoveable wadMoveable = _level.Settings.WadTryGetMoveable(instance.WadObjectId);
+                    var wadMoveable = _level.Settings.WadTryGetMoveable(instance.WadObjectId);
                     if (wadMoveable == null)
                     {
                         _progressReporter.ReportWarn("Moveable '" + instance + "' was not included in the level because it is missing the *.wad file.");
                         continue;
+                    }
+
+                    // Keep track on Lara count, since more than 1 Lara causes engine to crash.
+                    if (wadMoveable.Id.TypeId == 0)
+                    {
+                        if (laraPlaced)
+                        {
+                            _progressReporter.ReportWarn("Extra Lara was found and removed from room " + instance.Room + " to prevent crashes. Please use only one Lara in level.");
+                            continue;
+                        }
+                        else
+                            laraPlaced = true;
                     }
 
                     Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -476,7 +490,21 @@ namespace TombLib.LevelData.Compilers
                     else
                     {
                         int flags = (instance.CodeBits << 9) | (instance.ClearBody ? 0x80 : 0) | (instance.Invisible ? 0x100 : 0);
-                        ushort color = instance.Color.Equals(Vector3.One) ? (ushort)0xFFFF : PackColorTo16Bit(instance.Color);
+
+                        var instanceColor = instance.Color;
+
+                        // HACK: in TR3+, moveables have RGB components swapped to BGR
+                        if (_level.Settings.GameVersion > TRVersion.Game.TR2)
+                            instanceColor = new Vector3(instance.Color.Z, instance.Color.Y, instance.Color.X);
+
+                        // HACK: original tom2pc/winroomedit compiler forced tint to be reset to 1.0f in case
+                        // it is applied to moveable objects with non-static lighting.
+                        var model = _level.Settings.WadTryGetMoveable(instance.WadObjectId);
+                        if (model != null && model.Meshes.All(m => m.LightingType == WadMeshLightingType.Normals))
+                            instanceColor = Vector3.One;
+
+                        // Calculate TR color
+                        ushort color = instanceColor.Equals(Vector3.One) ? (ushort)0xFFFF : PackLightColor(instanceColor, _level.Settings.GameVersion);
 
                         // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
                         var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);

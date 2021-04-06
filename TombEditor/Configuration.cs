@@ -25,6 +25,7 @@ namespace TombEditor
 
         public TRVersion.Game Editor_DefaultProjectGameVersion { get; set; } = TRVersion.Game.TRNG;
         public int Editor_DefaultNewRoomSize { get; set; } = 20;
+        public bool Editor_GridNewRoom { get; set; } = false;
         public bool Editor_UseHalfPixelCorrectionOnPrjImport { get; set; } = false;
         public bool Editor_RespectFlybyPatchOnPrjImport { get; set; } = true;
 
@@ -36,7 +37,7 @@ namespace TombEditor
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public bool RenderingItem_Antialias { get; set; } = false;
-        public bool RenderingItem_HideInternalObjects { get; set; } = true;
+        public bool RenderingItem_HideInternalObjects { get; set; } = false;
 
         // Main 3D window options
 
@@ -123,6 +124,7 @@ namespace TombEditor
         // Palette options
 
         public bool Palette_TextureSamplingMode { get; set; } = false;
+        public bool Palette_PickColorFromSelectedObject { get; set; } = false;
 
         // Gizmo options
 
@@ -209,6 +211,12 @@ namespace TombEditor
         public Point Window_FormSprite_Position { get; set; } = new Point(-1); // Center by default
         public Size Window_FormSprite_Size { get; set; } = new Size(350, 370);
         public bool Window_FormSprite_Maximized { get; set; } = false;
+        public Point Window_FormMoveable_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormMoveable_Size { get; set; } = new Size(232, 254);
+        public bool Window_FormMoveable_Maximized { get; set; } = false;
+        public Point Window_FormStaticMesh_Position { get; set; } = new Point(-1); // Center by default
+        public Size Window_FormStaticMesh_Size { get; set; } = new Size(237, 418);
+        public bool Window_FormStaticMesh_Maximized { get; set; } = false;
         public Point Window_FormReplaceObject_Position { get; set; } = new Point(-1); // Center by default
         public Size  Window_FormReplaceObject_Size { get; set; } = new Size(600, 264);
         public bool Window_FormReplaceObject_Maximized { get; set; } = false;

@@ -5,12 +5,14 @@ namespace TombLib.GeometryIO
     public class IOMaterial
     {
         public string Name { get; private set; }
-        public string Path { get; set; }
         public Texture Texture { get; set; }
         public bool AdditiveBlending { get; set; }
         public bool DoubleSided { get; set; }
         public int Shininess { get; set; }
-        public string TexturePath { get; set; }
+
+        // These 2 fields are used for exporting material texture to split texture pages.
+
+        public string Path { get; set; }
         public int Page { get; set; }
 
         public IOMaterial(string name)
@@ -25,7 +27,7 @@ namespace TombLib.GeometryIO
             AdditiveBlending = additiveBlending;
             DoubleSided = doubleSided;
             Shininess = shininess;
-            TexturePath = texturePath;
+            Path = texturePath;
             Page = page;
         }
     }
