@@ -133,7 +133,7 @@ namespace WadTool
             if (!_lockAlignment && dataGridView.SelectedRows.Count > 0 && dataGridView.SelectedRows[0].Index >= 0)
             {
                 var sprite = (WadSprite)dataGridView.SelectedRows[0].DataBoundItem;
-                sprite.Alignment = new TombLib.RectangleInt2((int)nudL.Value, (int)nudR.Value, (int)nudT.Value, (int)nudB.Value);
+                sprite.Alignment = new TombLib.RectangleInt2((int)nudL.Value, (int)nudT.Value, (int)nudR.Value, (int)nudB.Value);
                 dataGridView.EditableRowCollection[dataGridView.SelectedRows[0].Index] = sprite;
             }
         }
