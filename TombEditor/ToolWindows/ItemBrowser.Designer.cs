@@ -111,10 +111,12 @@
             // 
             this.lblFromWad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFromWad.AutoEllipsis = true;
             this.lblFromWad.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lblFromWad.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblFromWad.Location = new System.Drawing.Point(3, 6);
             this.lblFromWad.Name = "lblFromWad";
+            this.lblFromWad.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.lblFromWad.Size = new System.Drawing.Size(124, 23);
             this.lblFromWad.TabIndex = 8;
             this.lblFromWad.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
