@@ -1306,7 +1306,7 @@ namespace TombLib.LevelData.IO
 
                         // XML_SOUND_SYSTEM: SFX is a valid catalog source so let's add it (SAM is implicitly loaded)
                         string sfxPath = (newWad.LoadException == null ?
-                            level.Settings.MakeAbsolute(newWad.Path).ToLower().Replace(".wad", ".sfx") :
+                            Path.GetDirectoryName(level.Settings.MakeAbsolute(newWad.Path)) + "\\" + Path.GetFileNameWithoutExtension(newWad.Path) + ".sfx" :
                             Path.GetDirectoryName(wadPath) + "\\" + Path.GetFileNameWithoutExtension(wadPath) + ".sfx");
                         sfxPath = PathC.TryFindFile(
                             level.Settings.GetVariable(VariableType.LevelDirectory),
