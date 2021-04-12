@@ -492,6 +492,29 @@ namespace TombLib.LevelData
             return null;
         }
 
+        public ReferencedWad WadTryGetWad(ItemType item, out bool multiple)
+        {
+            ReferencedWad result = null;
+            multiple = false;
+
+            foreach (ReferencedWad wad in Wads)
+            {
+                if (wad.Wad == null)
+                    continue;
+
+                if (( item.IsStatic && wad.Wad.Statics.ContainsKey(item.StaticId)) ||
+                    (!item.IsStatic && wad.Wad.Moveables.ContainsKey(item.MoveableId)))
+                {
+                    if (result == null)
+                        result = wad;
+                    else
+                        multiple = true;
+                }
+            }
+
+            return result;
+        }
+
         public SortedList<WadMoveableId, WadMoveable> WadGetAllMoveables()
         {
             SortedList<WadMoveableId, WadMoveable> result = new SortedList<WadMoveableId, WadMoveable>();

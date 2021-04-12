@@ -243,6 +243,7 @@
             this.darkNumericUpDown20 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel23 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown21 = new DarkUI.Controls.DarkNumericUpDown();
+            this.darkCheckBox46 = new DarkUI.Controls.DarkCheckBox();
             this.tabbedContainer.SuspendLayout();
             this.tabPage6.SuspendLayout();
             this.tabSubPanel3.SuspendLayout();
@@ -654,7 +655,7 @@
             this.darkLabel59.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel59.Location = new System.Drawing.Point(12, 640);
             this.darkLabel59.Name = "darkLabel59";
-            this.darkLabel59.Size = new System.Drawing.Size(121, 13);
+            this.darkLabel59.Size = new System.Drawing.Size(122, 13);
             this.darkLabel59.TabIndex = 62;
             this.darkLabel59.Text = "Trigger triggerer mark:";
             // 
@@ -794,7 +795,7 @@
             this.darkLabel52.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel52.Location = new System.Drawing.Point(12, 437);
             this.darkLabel52.Name = "darkLabel52";
-            this.darkLabel52.Size = new System.Drawing.Size(45, 13);
+            this.darkLabel52.Size = new System.Drawing.Size(46, 13);
             this.darkLabel52.TabIndex = 48;
             this.darkLabel52.Text = "Trigger:";
             // 
@@ -1699,7 +1700,7 @@
             this.cbGeometryLightPreview.AutoSize = true;
             this.cbGeometryLightPreview.Location = new System.Drawing.Point(6, 44);
             this.cbGeometryLightPreview.Name = "cbGeometryLightPreview";
-            this.cbGeometryLightPreview.Size = new System.Drawing.Size(196, 17);
+            this.cbGeometryLightPreview.Size = new System.Drawing.Size(197, 17);
             this.cbGeometryLightPreview.TabIndex = 41;
             this.cbGeometryLightPreview.Tag = "Rendering3D_HighQualityLightPreview";
             this.cbGeometryLightPreview.Text = "Use real Light Quality for preview";
@@ -2034,7 +2035,7 @@
             this.darkLabel36.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel36.Location = new System.Drawing.Point(6, 37);
             this.darkLabel36.Name = "darkLabel36";
-            this.darkLabel36.Size = new System.Drawing.Size(116, 13);
+            this.darkLabel36.Size = new System.Drawing.Size(117, 13);
             this.darkLabel36.TabIndex = 33;
             this.darkLabel36.Text = "Translation cone size:";
             // 
@@ -2089,6 +2090,7 @@
             // tabPage8
             // 
             this.tabPage8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabPage8.Controls.Add(this.darkCheckBox46);
             this.tabPage8.Controls.Add(this.darkCheckBox43);
             this.tabPage8.Controls.Add(this.darkCheckBox3);
             this.tabPage8.Controls.Add(this.darkNumericUpDown6);
@@ -2104,7 +2106,7 @@
             this.tabPage8.Location = new System.Drawing.Point(4, 22);
             this.tabPage8.Name = "tabPage8";
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage8.Size = new System.Drawing.Size(386, 484);
+            this.tabPage8.Size = new System.Drawing.Size(386, 511);
             this.tabPage8.TabIndex = 20;
             this.tabPage8.Text = "Item preview";
             // 
@@ -3099,6 +3101,16 @@
             this.darkNumericUpDown21.TabIndex = 27;
             this.darkNumericUpDown21.Tag = "Rendering3D_NavigationSpeedKeyRotate";
             // 
+            // darkCheckBox46
+            // 
+            this.darkCheckBox46.AutoSize = true;
+            this.darkCheckBox46.Location = new System.Drawing.Point(9, 193);
+            this.darkCheckBox46.Name = "darkCheckBox46";
+            this.darkCheckBox46.Size = new System.Drawing.Size(304, 17);
+            this.darkCheckBox46.TabIndex = 12;
+            this.darkCheckBox46.Tag = "RenderingItem_ShowMultipleWadsPrompt";
+            this.darkCheckBox46.Text = "Show hint in case current object exists in several wads";
+            // 
             // FormOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3411,5 +3423,6 @@
         private DarkUI.Controls.DarkCheckBox darkCheckBox43;
         private DarkUI.Controls.DarkCheckBox darkCheckBox44;
         private DarkUI.Controls.DarkCheckBox darkCheckBox45;
+        private DarkUI.Controls.DarkCheckBox darkCheckBox46;
     }
 }
