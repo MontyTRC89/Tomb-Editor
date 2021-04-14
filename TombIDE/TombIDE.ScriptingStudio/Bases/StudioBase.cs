@@ -110,9 +110,6 @@ namespace TombIDE.ScriptingStudio.Bases
 		#region Construction
 
 		public StudioBase(string scriptRootDirectoryPath, string engineDirectoryPath)
-			: this(scriptRootDirectoryPath, engineDirectoryPath, string.Empty)
-		{ }
-		public StudioBase(string scriptRootDirectoryPath, string engineDirectoryPath, string initialFilePath)
 		{
 			Configs = new ConfigurationCollection();
 
@@ -129,9 +126,6 @@ namespace TombIDE.ScriptingStudio.Bases
 
 			ScriptRootDirectoryPath = scriptRootDirectoryPath;
 			EngineDirectoryPath = engineDirectoryPath;
-
-			if (!string.IsNullOrWhiteSpace(initialFilePath))
-				EditorTabControl.OpenFile(initialFilePath);
 		}
 
 		private void InitializeToolStrips()

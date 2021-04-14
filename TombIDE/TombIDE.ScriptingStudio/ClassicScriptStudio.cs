@@ -42,8 +42,7 @@ namespace TombIDE.ScriptingStudio
 
 		#region Construction
 
-		public ClassicScriptStudio() :
-			base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath, PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath))
+		public ClassicScriptStudio() : base(IDE.Global.Project.ScriptPath, IDE.Global.Project.EnginePath)
 		{
 			DockPanelState = DefaultLayouts.ClassicScriptLayout;
 
@@ -57,6 +56,11 @@ namespace TombIDE.ScriptingStudio
 			FileExplorer.Filter = "*.txt";
 
 			EditorTabControl.PlainTextTypeOverride = typeof(ClassicScriptEditor);
+
+			string initialFilePath = PathHelper.GetScriptFilePath(IDE.Global.Project.ScriptPath);
+
+			if (!string.IsNullOrWhiteSpace(initialFilePath))
+				EditorTabControl.OpenFile(initialFilePath);
 		}
 
 		#endregion Construction
