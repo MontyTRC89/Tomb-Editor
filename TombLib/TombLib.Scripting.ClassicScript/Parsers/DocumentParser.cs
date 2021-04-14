@@ -74,7 +74,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 				if (iline != sectionStartLine && (ilineText.StartsWith("[") || i == document.LineCount))
 				{
-					for (int j = i; i >= 1; j--)
+					for (int j = i == document.LineCount ? i : i - 1; j >= 1; j--)
 					{
 						DocumentLine jline = document.GetLineByNumber(j);
 						string jlineText = document.GetText(jline.Offset, jline.Length);
