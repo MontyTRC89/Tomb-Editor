@@ -27,7 +27,6 @@
 	<Item LangKey="Options" Position="3">
 		<Item LangKey="UseNewInclude" Command="UseNewInclude" CheckOnClick="True" />
 		<Item LangKey="ShowLogsAfterBuild" Command="ShowLogsAfterBuild" CheckOnClick="True" />
-		<Item LangKey="ReindentOnSave" Command="ReindentOnSave" CheckOnClick="True" />
 		<Separator />
 		<Item LangKey="Settings" Command="Settings" Icon="Settings_16" />
 	</Item>

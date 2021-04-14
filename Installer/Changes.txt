@@ -9,6 +9,13 @@ Tomb Editor:
 SoundTool:
  * Add ability to unpack MAIN.SFX file using current sound catalog sample names.
 
+TombIDE:
+ * Added a brand new String Editor for language files (e.g. ENGLISH.TXT).
+ * Implemented "plugins.parc", which is an archive that stores a copy of all plugin a project is using.
+ * Fixed issues with plugin installtion and scripts not being properly generated.
+ * Some UI adjustments.
+ * Bug fixes.
+
 General:
  * Fix incorrect light mode assigned for static meshes in compiled levels loaded as wads.
 
