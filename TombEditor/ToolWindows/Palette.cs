@@ -41,6 +41,19 @@ namespace TombEditor.ToolWindows
                 lightPalette.LoadPalette(((Editor.LevelChangedEvent)obj).Current.Settings.Palette);
             }
 
+            if (obj is Editor.SelectedObjectChangedEvent)
+            {
+                butEditColor.Enabled = ((Editor.SelectedObjectChangedEvent)obj).Current.CanBeColored();
+                lightPalette.PickColor();
+            }
+
+            if (obj is Editor.ObjectChangedEvent)
+            {
+                var o = obj as Editor.ObjectChangedEvent;
+                if (o.ChangeType == ObjectChangeType.Change && o.Object == _editor.SelectedObject && o.Object is IColorable)
+                    lightPalette.PickColor();
+            }
+
             if (obj is Editor.ResetPaletteEvent)
             {
                 if (!butSampleFromTextures.Checked)

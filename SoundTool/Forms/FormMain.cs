@@ -376,6 +376,81 @@ namespace SoundTool
             }
         }
 
+        private void UnpackMainSFX()
+        {     
+            if (Sounds.SoundInfos.Count == 0)
+            {
+                popup.ShowError(soundInfoEditor, "No sounds present. Nothing to unpack!");
+                return;
+            }
+
+            var mainSFXPath = LevelFileDialog.BrowseFile(this, null, _configuration.SoundTool_LastMainSFXPath,
+                    "Choose MAIN.SFX file", _fileFormatSfx, null, false);
+            if (string.IsNullOrEmpty(mainSFXPath) || !File.Exists(mainSFXPath))
+                return; // User cancelled filename selection or file is unavailable
+
+            var samplePath = LevelFileDialog.BrowseFolder(this, null, _configuration.SoundTool_LastMainSFXSamplePath,
+                "Choose a path where all samples will be unpacked", null);
+            if (string.IsNullOrEmpty(samplePath) || !Directory.Exists(samplePath))
+                return; // User cancelled path selection or directory is unavailable
+
+            var sampleCount = 0;
+            var soundCount  = 0;
+
+            using (var reader = new BinaryReaderEx(new FileStream(mainSFXPath, FileMode.Open, FileAccess.Read)))
+            {
+                try
+                {
+                    foreach (var sound in Sounds.SoundInfos)
+                    {
+                        if (!sound.Indexed)
+                            continue;
+                        else
+                        {
+                            foreach (var sample in sound.Samples)
+                            {
+                                if (reader.BaseStream.Position >= reader.BaseStream.Length - 8)
+                                    throw new Exception("File is shorter than expected. Make sure you're using correct sound catalog and MAIN.sfx file.");
+
+                                var header = reader.ReadInt32();
+                                if (header != 0x46464952)
+                                    throw new Exception("Unexpected header found in MAIN.sfx. File may be corrupted.");
+
+                                var size = reader.ReadInt32();
+                                if (size == 0)
+                                    continue;
+
+                                reader.BaseStream.Position -= 8;
+                                var data = reader.ReadBytes(size + 8);
+
+                                using (var writer = new BinaryWriterEx(new FileStream(Path.Combine(samplePath, sample.FileName), FileMode.OpenOrCreate)))
+                                {
+                                    writer.WriteBlockArray(data);
+                                    writer.Close();
+                                    sampleCount++;
+                                }
+                            }
+                            soundCount++;
+                        }
+                    }
+
+                    if (reader.BaseStream.Position != reader.BaseStream.Length)
+                        throw new Exception("File is longer than expected. Make sure you're using correct sound catalog and MAIN.sfx file.");
+
+                }
+                catch (Exception ex)
+                {
+                    reader.Close();
+                    popup.ShowError(soundInfoEditor, "There was a error unpacking MAIN.SFX. \nException: " + ex.Message);
+                    return;
+                }
+
+                popup.ShowInfo(soundInfoEditor, "MAIN.SFX unpacked successfully!" + "\nExtracted " + sampleCount + " samples in " + soundCount + " sound infos.");
+                _configuration.SoundTool_LastMainSFXPath = Directory.GetParent(mainSFXPath).FullName;
+                _configuration.SoundTool_LastMainSFXSamplePath = samplePath; // Update settings
+            }
+        }
+
         private void IndexAllSounds()
         {
             Sounds.SoundInfos.ForEach(s => s.Indexed = true);
@@ -398,6 +473,7 @@ namespace SoundTool
         private void unindexStripMenuItem3_Click(object sender, EventArgs e) => UnindexAllSounds();
         private void buildMSFX2StripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(TRVersion.Game.TR2, true);
         private void buildMSFX3StripMenuItem_Click(object sender, EventArgs e) => CompileMainSFX(TRVersion.Game.TR3, true);
+        private void unpackMAINSFXToolStripMenuItem_Click(object sender, EventArgs e) => UnpackMainSFX();
         private void copyToolStripMenuItem_Click(object sender, EventArgs e) => soundInfoEditor.Copy();
         private void pasteToolStripMenuItem_Click(object sender, EventArgs e) => soundInfoEditor.Paste();
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();

@@ -1,9 +1,37 @@
+Version 1.3.13
+==============
+Tomb Editor:
+ * Palette button to quickly change current object colour, if applicable.
+ * An option to display a hint with wad name in item browser.
+ * Fix exception if a bunch of corrupted wads are added via level settings.
+ * Fix incorrect sound catalog path assignment for imported legacy prjs.
+ 
+SoundTool:
+ * Add ability to unpack MAIN.SFX file using current sound catalog sample names.
+
+General:
+ * Fix incorrect light mode assigned for static meshes in compiled levels loaded as wads.
+
 Version 1.3.12
 ==============
 Tomb Editor:
  * Change tint for moveables with static light model.
+ * Display missing texture errors correctly for imported MQO files.
+ * Display room size in status bar.
+ * Use relative texture paths when exporting rooms.
+ * An option to highlight selected object tint in palette if it has it.
+ * An option to grid border walls in new rooms, as in dxtre3d.
+ * Autofill dummy trigger type for bridge objects.
+ * Remove extra Laras on level compile if any.
+ * Fix issues with parsing original wad mesh lighting type.
+ * Fix prj2 saving issue if imported geometry duplicates are present in level settings.
+ * Fix undo for imported geometry tint.
+ * Fix MQO drawing in imported geometry browser.
+ * Fix exception if animated frame repeat is set to 0 or less.
  
 WadTool:
+ * Import WadMerger .trw animations.
+ * A feature to apply selected animcommand to all selected frames.
  * Allow changing mesh light type in skeleton editor for moveables.
 
 Version 1.3.11

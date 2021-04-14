@@ -365,8 +365,14 @@ namespace TombEditor
                 // Temporarily hide selection
                 _editor.ToggleHiddenSelection(true);
 
+                // Rollback to previous color if dialog is canceled or push undo if confirmed
                 if (colorDialog.ShowDialog(owner) != DialogResult.OK)
                     colorDialog.Color = oldLightColor;
+                else if (obj is PositionBasedObjectInstance)
+                {
+                    obj.Color = oldLightColor.ToFloat3Color() * 2.0f;
+                    _editor.UndoManager.PushObjectPropertyChanged(obj as PositionBasedObjectInstance);
+                }
 
                 // Unhide selection
                 _editor.ToggleHiddenSelection(false);
@@ -577,6 +583,11 @@ namespace TombEditor
                         trigger.TriggerType = TriggerType.Key;
                     else if (isSwitch)
                         trigger.TriggerType = TriggerType.Switch;
+
+                    bool isBridge = (objectName.Contains("bridge") && 
+                        (objectName.Contains("flat") || objectName.Contains("tilt") || objectName.Contains("custom")));
+                    if (isBridge)
+                        trigger.TriggerType = TriggerType.Dummy;
                 }
             }
             else if (@object is FlybyCameraInstance)
@@ -816,24 +827,31 @@ namespace TombEditor
         {
             if (instance is MoveableInstance)
             {
-                using (var formMoveable = new FormMoveable((MoveableInstance)instance))
-                    if (formMoveable.ShowDialog(owner) != DialogResult.OK)
-                        return;
+                if (instance.CanBeColored() && Control.ModifierKeys.HasFlag(Keys.Control))
+                    EditColor(owner, (MoveableInstance)instance);
+                else
+                {
+                    using (var formMoveable = new FormMoveable((MoveableInstance)instance))
+                        if (formMoveable.ShowDialog(owner) != DialogResult.OK)
+                            return;
+                }
+
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is StaticInstance)
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
-                if (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG ||
-                    Control.ModifierKeys.HasFlag(Keys.Control) ||
-                    Control.ModifierKeys.HasFlag(Keys.Alt))
+                if (instance.CanBeColored() &&
+                    (_editor.Level.Settings.GameVersion != TRVersion.Game.TRNG || Control.ModifierKeys.HasFlag(Keys.Control)))
                     EditColor(owner, (StaticInstance)instance);
-                else
+                else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
                 {
                     using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
                         if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
                             return;
                 }
+                else
+                    _editor.SendMessage("Light mode for this static mesh was set to dynamic. Color can't be edited.", PopupType.Info);
 
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
@@ -888,12 +906,15 @@ namespace TombEditor
             }
             else if (instance is ImportedGeometryInstance)
             {
-                using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
-                {
-                    if (formImportedGeometry.ShowDialog(owner) != DialogResult.OK)
-                        return;
-                    _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
-                }
+                if (Control.ModifierKeys.HasFlag(Keys.Control))
+                    EditColor(owner, (ImportedGeometryInstance)instance);
+                else
+                    using (var formImportedGeometry = new FormImportedGeometry((ImportedGeometryInstance)instance, _editor.Level.Settings))
+                    {
+                        if (formImportedGeometry.ShowDialog(owner) != DialogResult.OK)
+                            return;
+                        _editor.UpdateLevelSettings(formImportedGeometry.NewLevelSettings);
+                    }
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is LightInstance)
@@ -1953,6 +1974,10 @@ namespace TombEditor
             _editor.RoomListChange();
             _editor.UndoManager.PushRoomCreated(newRoom);
             _editor.SelectRoom(newRoom);
+
+            // Make border wall grids, as in dxtre3d
+            if (_editor.Configuration.Editor_GridNewRoom)
+                GridWallsSquares(newRoom, newRoom.LocalArea, false, false);
         }
 
         public static void DeleteRooms(IEnumerable<Room> rooms_, IWin32Window owner = null)
@@ -2736,9 +2761,11 @@ namespace TombEditor
             SmartBuildGeometry(room, area);
         }
 
-        public static void GridWallsSquares(Room room, RectangleInt2 area, bool fiveDivisions = false)
+        public static void GridWallsSquares(Room room, RectangleInt2 area, bool fiveDivisions = false, bool fromUI = true)
         {
-            _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
+            // Don't undo if action is called implicitly (e.g. new room/level creation)
+            if (fromUI)
+                _editor.UndoManager.PushGeometryChanged(_editor.SelectedRoom);
 
             int minFloor = int.MaxValue;
             int maxCeiling = int.MinValue;
@@ -2831,7 +2858,13 @@ namespace TombEditor
                     }
                 }
 
-            SmartBuildGeometry(room, area);
+            // Explicitly build geometry if action is called from user interface.
+            // Otherwise (e.g. new room or level creation), do it implicitly, without calling global editor events.
+
+            if (fromUI)
+                SmartBuildGeometry(room, area);
+            else
+                room.BuildGeometry();
         }
 
         public static Room CreateAdjoiningRoom(Room room, SectorSelection selection, PortalDirection direction, short roomDepth = 12, bool switchRoom = true, bool clearAdjoiningArea = false)
@@ -3687,8 +3720,10 @@ namespace TombEditor
             if (!File.Exists(file))
                 return false;
 
+            file = _editor.Level.Settings.MakeRelative(file, VariableType.LevelDirectory);
+
             ImportedGeometry geometryToPlace = _editor.Level.Settings.ImportedGeometries.Find(
-                item => _editor.Level.Settings.MakeAbsolute(item.Info.Path).Equals(file, StringComparison.InvariantCultureIgnoreCase));
+                item => _editor.Level.Settings.MakeRelative(item.Info.Path, VariableType.LevelDirectory).Equals(file, StringComparison.InvariantCultureIgnoreCase));
 
             if (geometryToPlace == null)
                 geometryToPlace = AddImportedGeometry(owner, file);
@@ -3735,6 +3770,7 @@ namespace TombEditor
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load texture files", LevelTexture.FileExtensions, VariableType.LevelDirectory)).ToList();
+
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new LevelTexture[0];
 
@@ -3853,6 +3889,7 @@ namespace TombEditor
             List<string> paths = (predefinedPaths ?? LevelFileDialog.BrowseFiles(owner, _editor.Level.Settings,
                 PathC.GetDirectoryNameTry(_editor.Level.Settings.LevelFilePath),
                 "Load object files (*.wad)", Wad2.WadFormatExtensions, VariableType.LevelDirectory)).ToList();
+
             if (paths.Count == 0) // Fast track to avoid unnecessary updates
                 return new ReferencedWad[0];
 
@@ -3954,11 +3991,14 @@ namespace TombEditor
                     wads = wads.Concat(settings.Wads.Select(w => w.Wad));
             }
 
+            // Clean up missing wads
+            wads = wads.Where(w => w != null);
+
             // No wads specified, no wads loaded, nothing to do
-            if (wads.Count() == 0 || wads.Where(w => w != null).Count() == 0)
+            if (wads.Count() == 0)
                 return false;
 
-            var incomingVersion = wads.Where(w => w != null).First().GameVersion.Native();
+            var incomingVersion = wads.First().GameVersion.Native();
             var message = "Loaded wad" + (wads.Count() > 1 ? "s " : " ");
             if (wads.All(w => w.GameVersion.Native() == incomingVersion) &&
                 incomingVersion != settings.GameVersion.Native())
@@ -5255,7 +5295,8 @@ namespace TombEditor
                         }
         }
 
-		public static void GetObjectStatistics(Editor editor,IDictionary<WadMoveableId,uint> resultMoveables,IDictionary<WadStaticId, uint> resultStatics, out int totalMoveables, out int totalStatics) {
+		public static void GetObjectStatistics(Editor editor,IDictionary<WadMoveableId,uint> resultMoveables,IDictionary<WadStaticId, uint> resultStatics, out int totalMoveables, out int totalStatics)
+        {
 			totalMoveables = 0;
 			totalStatics = 0;
 			foreach (var room in editor.Level.ExistingRooms) {

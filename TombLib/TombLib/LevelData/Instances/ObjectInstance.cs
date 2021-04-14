@@ -421,6 +421,41 @@ namespace TombLib.LevelData
         }
     }
 
+    public static class ColorableExtensions
+    {
+        public static bool CanBeColored(this ObjectInstance obj)
+        {
+            if (obj is IColorable)
+            {
+                bool changeColor = true;
+
+                // Discard color editing if conditions aren't met
+                // FIXME: For TR5Main, it may be considered to apply dynamic lighting in addition to tint, so those conditions can be then changed.
+
+                if (obj is MoveableInstance)
+                {
+                    var model = obj.Room.Level.Settings.WadTryGetMoveable((obj as MoveableInstance).WadObjectId);
+                    if (model == null || !model.Meshes.Any(m => m.LightingType != Wad.WadMeshLightingType.Normals))
+                        changeColor = false;
+                }
+                else if (obj is StaticInstance)
+                {
+                    var mesh = obj.Room.Level.Settings.WadTryGetStatic((obj as StaticInstance).WadObjectId);
+                    if (mesh == null || mesh.Mesh.LightingType == Wad.WadMeshLightingType.Normals)
+                        changeColor = false;
+                }
+                else if (obj is LightInstance && (obj as LightInstance).Type == LightType.FogBulb && obj.Room.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
+                {
+                    changeColor = false;
+                }
+
+                return changeColor;
+            }
+            else
+                return false;
+        }
+    }
+
     public static class RotatableExtensions
     {
         public static float GetRotationYRadians(this IRotateableY obj)

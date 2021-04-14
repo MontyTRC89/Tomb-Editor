@@ -214,7 +214,7 @@ namespace TombEditor
             {
                 var uo = (ImportedGeometryInstance)UndoObject;
                 Base = uo.Model;
-                Properties = new List<object> { uo.Scale };
+                Properties = new List<object> { uo.Scale, uo.Color };
             }
             else if (UndoObject is SpriteInstance)
             {
@@ -254,6 +254,7 @@ namespace TombEditor
                     var uo = ((ImportedGeometryInstance)UndoObject);
                     uo.Model = (ImportedGeometry)Base;
                     uo.Scale = (float)Properties[0];
+                    uo.Color = (Vector3)Properties[1];
                 }
                 else if (UndoObject is SpriteInstance)
                 {

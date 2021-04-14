@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
-using TombLib.Wad.Catalog;
 using System.Linq;
 
 namespace TombEditor.Forms
@@ -19,6 +18,9 @@ namespace TombEditor.Forms
             _movable = moveable;
             InitializeComponent();
             _editor = Editor.Instance;
+
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, _editor.Configuration);
         }
 
         private void butCancel_Click(object sender, EventArgs e)
@@ -45,16 +47,10 @@ namespace TombEditor.Forms
             tbOCB.Text = _movable.Ocb.ToString();
 
             // Disable mesh-specific controls
-
-            bool isStaticLighting = false;
-            var model = _editor.Level.Settings.WadTryGetMoveable(_movable.WadObjectId);
-            if (model != null && model.Meshes.Count > 0)
-                isStaticLighting = model.Meshes.Any(m => m.LightingType != TombLib.Wad.WadMeshLightingType.Normals);
-
-            if (!isStaticLighting)
-                Size = new System.Drawing.Size(Size.Width, 226);
-            lblColor.Visible = isStaticLighting;
-            panelColor.Visible = isStaticLighting;
+            var canBeColored = _movable.CanBeColored();
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 254 : 226);
+            lblColor.Visible = canBeColored;
+            panelColor.Visible = canBeColored;
         }
 
         private void butOK_Click(object sender, EventArgs e)

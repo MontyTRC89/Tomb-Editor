@@ -19,6 +19,7 @@
             this.paletteToolBar = new System.Windows.Forms.FlowLayoutPanel();
             this.butResetToDefaults = new DarkUI.Controls.DarkButton();
             this.butSampleFromTextures = new DarkUI.Controls.DarkButton();
+            this.butEditColor = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.lightPalette = new TombEditor.Controls.PanelPalette();
             this.paletteToolBar.SuspendLayout();
@@ -30,6 +31,7 @@
             this.paletteToolBar.AutoSize = true;
             this.paletteToolBar.Controls.Add(this.butResetToDefaults);
             this.paletteToolBar.Controls.Add(this.butSampleFromTextures);
+            this.paletteToolBar.Controls.Add(this.butEditColor);
             this.paletteToolBar.Dock = System.Windows.Forms.DockStyle.Left;
             this.paletteToolBar.Location = new System.Drawing.Point(0, 25);
             this.paletteToolBar.Name = "paletteToolBar";
@@ -57,6 +59,19 @@
             this.butSampleFromTextures.Size = new System.Drawing.Size(24, 24);
             this.butSampleFromTextures.TabIndex = 6;
             this.butSampleFromTextures.Tag = "SamplePaletteFromTextures";
+            // 
+            // butEditColor
+            // 
+            this.butEditColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditColor.Checked = false;
+            this.butEditColor.Enabled = false;
+            this.butEditColor.Image = global::TombEditor.Properties.Resources.general_edit_16;
+            this.butEditColor.Location = new System.Drawing.Point(3, 63);
+            this.butEditColor.Name = "butEditColor";
+            this.butEditColor.Size = new System.Drawing.Size(24, 24);
+            this.butEditColor.TabIndex = 7;
+            this.butEditColor.Tag = "EditObjectColor";
+            this.toolTip.SetToolTip(this.butEditColor, "Edit color for selected object");
             // 
             // lightPalette
             // 
@@ -97,5 +112,6 @@
         private DarkUI.Controls.DarkButton butResetToDefaults;
         private System.Windows.Forms.FlowLayoutPanel paletteToolBar;
         private System.Windows.Forms.ToolTip toolTip;
+        private DarkUI.Controls.DarkButton butEditColor;
     }
 }

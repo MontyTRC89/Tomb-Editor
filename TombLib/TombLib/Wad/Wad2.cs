@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using TombLib.GeometryIO;
-using TombLib.Graphics;
 using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad.Tr4Wad;

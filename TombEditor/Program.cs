@@ -30,7 +30,8 @@ namespace TombEditor
             if (args.Length >= 1)
             {
                 // Open files on start
-                if (args[0].EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
+                if (args[0].EndsWith(".prj",  StringComparison.InvariantCultureIgnoreCase) ||
+                    args[0].EndsWith(".prj2", StringComparison.InvariantCultureIgnoreCase))
                     startFile = args[0];
 
                 // Batch-compile levels

@@ -1,5 +1,6 @@
 ﻿using DarkUI.Docking;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
@@ -21,6 +22,8 @@ namespace TombEditor.ToolWindows
 
             _editor = Editor.Instance;
             _editor.EditorEventRaised += EditorEventRaised;
+
+            lblFromWad.ForeColor = DarkUI.Config.Colors.DisabledText;
         }
 
         public void InitializeRendering(RenderingDevice device)
@@ -105,9 +108,17 @@ namespace TombEditor.ToolWindows
             // Update tooltip texts
             if (obj is Editor.ConfigurationChangedEvent)
             {
-                if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
+                if (((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
+
+            // Update UI
+            if (obj is Editor.ConfigurationChangedEvent ||
+                obj is Editor.InitEvent)
+            {
+                lblFromWad.Visible = _editor.Configuration.RenderingItem_ShowMultipleWadsPrompt;
+            }
+
         }
 
         private void ChoseItem(ItemType item)
@@ -162,6 +173,22 @@ namespace TombEditor.ToolWindows
                 _editor.ChosenItem = new ItemType(((WadMoveable)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
             else if (comboItems.SelectedItem is WadStatic)
                 _editor.ChosenItem = new ItemType(((WadStatic)comboItems.SelectedItem).Id, _editor?.Level?.Settings);
+
+            if (_editor.ChosenItem != null)
+            {
+                bool multiple;
+                var wad = _editor.Level.Settings.WadTryGetWad(_editor.ChosenItem.Value, out multiple);
+
+                if (wad != null && multiple)
+                {
+                    lblFromWad.Text = "From " + Path.GetFileName(wad.Path);
+                    toolTip.SetToolTip(lblFromWad, "This object exists in several wads." + "\n" + "Used one is: " + _editor.Level.Settings.MakeAbsolute(wad.Path, VariableType.LevelDirectory));
+                    return;
+                }
+            }
+
+            lblFromWad.Text = string.Empty;
+            toolTip.SetToolTip(lblFromWad, string.Empty);
         }
 
         private void comboItems_Format(object sender, ListControlConvertEventArgs e)

@@ -175,6 +175,7 @@ namespace WadTool.Controls
                     effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
                     effect.Parameters["Color"].SetValue(Vector4.One);
                     effect.Parameters["StaticLighting"].SetValue(node.WadMesh.LightingType != WadMeshLightingType.Normals);
+                    effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TombLib.LevelData.TRVersion.Game.TR5Main);
 
                     effect.Techniques[0].Passes[0].Apply();
 

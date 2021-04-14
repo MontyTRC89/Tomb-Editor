@@ -22,6 +22,7 @@
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.comboItems = new DarkUI.Controls.DarkComboBox();
             this.panelRightBottom = new System.Windows.Forms.Panel();
+            this.lblFromWad = new DarkUI.Controls.DarkLabel();
             this.butItemDown = new DarkUI.Controls.DarkButton();
             this.butItemUp = new DarkUI.Controls.DarkButton();
             this.butFindItem = new DarkUI.Controls.DarkButton();
@@ -96,6 +97,7 @@
             // 
             // panelRightBottom
             // 
+            this.panelRightBottom.Controls.Add(this.lblFromWad);
             this.panelRightBottom.Controls.Add(this.butItemDown);
             this.panelRightBottom.Controls.Add(this.butItemUp);
             this.panelRightBottom.Controls.Add(this.butFindItem);
@@ -104,6 +106,20 @@
             this.panelRightBottom.Name = "panelRightBottom";
             this.panelRightBottom.Size = new System.Drawing.Size(284, 33);
             this.panelRightBottom.TabIndex = 1;
+            // 
+            // lblFromWad
+            // 
+            this.lblFromWad.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblFromWad.AutoEllipsis = true;
+            this.lblFromWad.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblFromWad.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.lblFromWad.Location = new System.Drawing.Point(3, 6);
+            this.lblFromWad.Name = "lblFromWad";
+            this.lblFromWad.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
+            this.lblFromWad.Size = new System.Drawing.Size(124, 23);
+            this.lblFromWad.TabIndex = 8;
+            this.lblFromWad.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // butItemDown
             // 
@@ -194,5 +210,6 @@
         private System.Windows.Forms.ToolTip toolTip;
         private DarkUI.Controls.DarkButton butItemDown;
         private DarkUI.Controls.DarkButton butItemUp;
+        private DarkUI.Controls.DarkLabel lblFromWad;
     }
 }

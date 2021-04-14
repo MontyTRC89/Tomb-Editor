@@ -54,7 +54,31 @@ namespace TombEditor.Controls
             if (palette.Count < 1) return; // No suitable color data found
             _palette.Clear();
             foreach (var c in palette) _palette.Add(new ColorC(c.R, c.G, c.B));
-            Invalidate();
+            PickColor();
+        }
+
+        public void PickColor()
+        {
+            if (!_editor.Configuration.Palette_PickColorFromSelectedObject || _editor.SelectedObject == null)
+                return;
+
+            var instance = _editor.SelectedObject as IColorable;
+            if (instance != null)
+            {
+                var normalizedColor = instance.Color / 2.0f;
+                var color = new ColorC((byte)(normalizedColor.X * 255), (byte)(normalizedColor.Y * 255), (byte)(normalizedColor.Z * 255));
+
+                for (int i = 0; i < _palette.Count; i++)
+                {
+                    if (_palette[i] == color)
+                    {
+                        _selectedColorCoord = new Point((i % PaletteSize.Width), i / PaletteSize.Width);
+                        _editor.LastUsedPaletteColourChange(SelectedColor);
+                        Invalidate();
+                        return;
+                    }
+                }
+            }
         }
 
         private Color GetColorFromPalette(Point point)
@@ -90,40 +114,15 @@ namespace TombEditor.Controls
                 _selectedColorCoord = new Point((int)MathC.Clamp((e.X / _paletteCellWidth), 0, PaletteSize.Width - 1),
                                                 (int)MathC.Clamp((e.Y / _paletteCellHeight), 0, PaletteSize.Height - 1));
 
-                if (_editor.SelectedObject is IColorable)
+                if (_editor.SelectedObject.CanBeColored())
                 {
-                    bool changeColor = true;
+                    var instance = _editor.SelectedObject as IColorable;
+                    instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
 
-                    // Discard color editing if conditions aren't met
-                    // FIXME: For TR5Main, it may be considered to apply dynamic lighting in addition to tint, so those conditions can be then changed.
+                    if (_editor.SelectedObject is LightInstance)
+                        _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
 
-                    if (_editor.SelectedObject is MoveableInstance)
-                    {
-                        var model = _editor.Level.Settings.WadTryGetMoveable((_editor.SelectedObject as MoveableInstance).WadObjectId);
-                        if (model == null || !model.Meshes.Any(m => m.LightingType != TombLib.Wad.WadMeshLightingType.Normals))
-                            changeColor = false;
-                    }
-                    else if (_editor.SelectedObject is StaticInstance)
-                    {
-                        var mesh = _editor.Level.Settings.WadTryGetStatic((_editor.SelectedObject as StaticInstance).WadObjectId);
-                        if (mesh == null || mesh.LightingType == TombLib.Wad.WadMeshLightingType.Normals)
-                            changeColor = false;
-                    }
-                    else if (_editor.SelectedObject is LightInstance && (_editor.SelectedObject as LightInstance).Type == LightType.FogBulb && _editor.Level.Settings.GameVersion.Legacy() <= TRVersion.Game.TR4)
-                    {
-                        changeColor = false;
-                    }
-                    
-                    if (changeColor)
-                    {
-                        var instance = _editor.SelectedObject as IColorable;
-                        instance.Color = SelectedColor.ToFloat3Color() * 2.0f;
-
-                        if (_editor.SelectedObject is LightInstance)
-                            _editor.SelectedObject.Room.RebuildLighting(_editor.Configuration.Rendering3D_HighQualityLightPreview);
-
-                        _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
-                    }
+                    _editor.ObjectChange(_editor.SelectedObject, ObjectChangeType.Change);
                 }
 
                 _editor.LastUsedPaletteColourChange(SelectedColor);
@@ -174,9 +173,7 @@ namespace TombEditor.Controls
                 else
                 {
                     // Save undo in case we're editing selected light colour
-                    if (_editor.SelectedObject is LightInstance ||
-                        _editor.SelectedObject is StaticInstance ||
-                        _editor.SelectedObject is MoveableInstance)
+                    if (_editor.SelectedObject is IColorable)
                         _editor.UndoManager.PushObjectPropertyChanged((PositionBasedObjectInstance)_editor.SelectedObject);
 
                     _editor.ToggleHiddenSelection(true);

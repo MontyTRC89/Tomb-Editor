@@ -221,6 +221,8 @@ namespace WadTool.Controls
 
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+                effect.Parameters["StaticLighting"].SetValue(false);
+                effect.Parameters["ColoredVertices"].SetValue(false);
 
                 // Build animation transforms
                 var matrices = new List<Matrix4x4>();

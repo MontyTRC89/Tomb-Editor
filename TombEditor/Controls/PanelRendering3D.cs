@@ -2881,6 +2881,8 @@ namespace TombEditor.Controls
 
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             skinnedModelEffect.Parameters["Color"].SetValue(new Vector4(1.0f));
+            skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
+            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(false);
 
             for (int i = 0; i < model.Meshes.Count; i++)
             {
@@ -2914,6 +2916,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
@@ -3147,6 +3150,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
+            staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
             staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
@@ -3178,7 +3182,7 @@ namespace TombEditor.Controls
                             {
                                 var entry = _editor.Level.Settings.GetStaticMergeEntry(instance.WadObjectId);
 
-                                if (!ShowRealTintForObjects || entry == null || (entry.Merge && entry.TintAsAmbient))
+                                if (!ShowRealTintForObjects || (entry == null && statID.Mesh.LightingType == WadMeshLightingType.VertexColors) || (entry != null && entry.Merge && entry.TintAsAmbient))
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color));
                                 else
                                     staticMeshEffect.Parameters["Color"].SetValue(ConvertColor(instance.Color * instance.Room.Properties.AmbientLight));

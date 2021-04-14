@@ -48,8 +48,7 @@ namespace TombLib.LevelData.Compilers
         }
 
         private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
-                                       bool isWaterfall = false, bool isOptics = false,
-                                       WadMeshLightingType lightType = WadMeshLightingType.PrecalculatedGrayShades)
+                                       bool isWaterfall = false, bool isOptics = false)
         {
             // Don't add already existing meshes
             var hash = oldMesh.Hash;
@@ -95,10 +94,10 @@ namespace TombLib.LevelData.Compilers
             var objectString = isStatic ? "Static" : "Moveable";
 
             // If light type is static and vertex colors count isn't valid, use flat lighting
-            if (lightType != WadMeshLightingType.Normals && oldMesh.VerticesColors.Count != oldMesh.VerticesPositions.Count)
+            if (oldMesh.LightingType != WadMeshLightingType.Normals && oldMesh.VerticesColors.Count != oldMesh.VerticesPositions.Count)
                 flatLighting = true;
 
-            if (lightType == WadMeshLightingType.Normals)
+            if (oldMesh.LightingType == WadMeshLightingType.Normals)
             {
                 if (oldMesh.VerticesNormals.Count == 0)
                 {
@@ -494,8 +493,7 @@ namespace TombLib.LevelData.Compilers
                 {
                     var wadMesh = oldMoveable.Meshes[i];
                     ConvertWadMesh(wadMesh, false, oldMoveable.Id.ShortName(_level.Settings.GameVersion), i, 
-                        oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion),
-                        wadMesh.LightingType);
+                        oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
                 var meshTrees = new List<tr_meshtree>();
@@ -584,7 +582,7 @@ namespace TombLib.LevelData.Compilers
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
-                    ConvertWadMesh(oldStaticMesh.Mesh, true, oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 0, false, false, oldStaticMesh.LightingType);
+                    ConvertWadMesh(oldStaticMesh.Mesh, true, oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 0, false, false);
                 }
                 else
                 {

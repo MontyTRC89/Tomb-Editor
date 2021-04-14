@@ -19,8 +19,7 @@ namespace TombEditor.Forms
             tbText.Text = _memo.Text;
 
             // Set window property handlers
-            Configuration.LoadWindowProperties(this, Editor.Instance.Configuration);
-            FormClosing += new FormClosingEventHandler((s, e) => Configuration.SaveWindowProperties(this, Editor.Instance.Configuration));
+            Configuration.ConfigureWindow(this, _editor.Configuration);
         }
 
         private void SaveChanges()

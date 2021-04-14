@@ -139,7 +139,7 @@ namespace TombLib.Forms
                     else if (control is DarkComboBox)
                     {
                         if (option is string) ((DarkComboBox)control).SelectedItem = (string)option;
-                        else if (option is int) ((DarkComboBox)control).SelectedItem = (int)option;
+                        else if (option is int) ((DarkComboBox)control).SelectedIndex = (int)option;
                         else if (option is float) ((DarkComboBox)control).SelectedItem = (float)option;
                         else if (option is TRVersion.Game) ((DarkComboBox)control).SelectedItem = (TRVersion.Game)option;
                     }
@@ -175,7 +175,7 @@ namespace TombLib.Forms
                     else if (control is DarkComboBox)
                     {
                         if (option is string) SetOptionValue(name, _currentConfig, ((DarkComboBox)control).SelectedItem.ToString());
-                        else if (option is int) SetOptionValue(name, _currentConfig, (int)((DarkComboBox)control).SelectedItem);
+                        else if (option is int) SetOptionValue(name, _currentConfig, (int)((DarkComboBox)control).SelectedIndex);
                         else if (option is float) SetOptionValue(name, _currentConfig, (float)((DarkComboBox)control).SelectedItem);
                         else if (option is TRVersion.Game) SetOptionValue(name, _currentConfig, (TRVersion.Game)((DarkComboBox)control).SelectedItem);
                     }
