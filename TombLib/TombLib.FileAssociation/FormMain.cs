@@ -11,7 +11,9 @@ namespace TombLib.FileAssociation
 		private bool _wasTRPROJChecked = false;
 
 		public FormMain()
-			=> InitializeComponent();
+        {
+            InitializeComponent();
+        }
 
 		protected override void OnLoad(EventArgs e)
 		{
