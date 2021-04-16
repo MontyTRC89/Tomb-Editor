@@ -3,6 +3,7 @@ Version 1.3.13
 Tomb Editor:
  * Palette button to quickly change current object colour, if applicable.
  * An option to display a hint with wad name in item browser.
+ * Fix exception if sink with maximum strength is selected.
  * Fix exception if a bunch of corrupted wads are added via level settings.
  * Fix incorrect sound catalog path assignment for imported legacy prjs.
  

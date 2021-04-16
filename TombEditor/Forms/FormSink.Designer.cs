@@ -30,50 +30,12 @@ namespace TombEditor.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboStrength = new DarkUI.Controls.DarkComboBox();
             this.label5 = new DarkUI.Controls.DarkLabel();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
+            this.nudStrength = new DarkUI.Controls.DarkNumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.nudStrength)).BeginInit();
             this.SuspendLayout();
-            // 
-            // comboStrength
-            // 
-            this.comboStrength.Items.AddRange(new object[] {
-            "1",
-            "2",
-            "3",
-            "4",
-            "5",
-            "6",
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "13",
-            "14",
-            "15",
-            "16",
-            "17",
-            "18",
-            "19",
-            "20",
-            "21",
-            "22",
-            "23",
-            "24",
-            "25",
-            "26",
-            "27",
-            "28",
-            "29",
-            "30",
-            "31"});
-            this.comboStrength.Location = new System.Drawing.Point(108, 12);
-            this.comboStrength.Name = "comboStrength";
-            this.comboStrength.Size = new System.Drawing.Size(67, 23);
-            this.comboStrength.TabIndex = 22;
             // 
             // label5
             // 
@@ -87,6 +49,7 @@ namespace TombEditor.Forms
             // 
             // butCancel
             // 
+            this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.butCancel.Location = new System.Drawing.Point(95, 47);
             this.butCancel.Name = "butCancel";
@@ -98,6 +61,7 @@ namespace TombEditor.Forms
             // 
             // butOK
             // 
+            this.butOK.Checked = false;
             this.butOK.Location = new System.Drawing.Point(9, 47);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
@@ -106,6 +70,34 @@ namespace TombEditor.Forms
             this.butOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butOK.Click += new System.EventHandler(this.butOK_Click);
             // 
+            // nudStrength
+            // 
+            this.nudStrength.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudStrength.Location = new System.Drawing.Point(108, 13);
+            this.nudStrength.LoopValues = false;
+            this.nudStrength.Maximum = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+            this.nudStrength.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudStrength.Name = "nudStrength";
+            this.nudStrength.Size = new System.Drawing.Size(67, 22);
+            this.nudStrength.TabIndex = 23;
+            this.nudStrength.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // FormSink
             // 
             this.AcceptButton = this.butOK;
@@ -113,7 +105,7 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(183, 77);
-            this.Controls.Add(this.comboStrength);
+            this.Controls.Add(this.nudStrength);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
@@ -127,6 +119,7 @@ namespace TombEditor.Forms
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Sink";
             this.Load += new System.EventHandler(this.FormSink_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.nudStrength)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -136,7 +129,7 @@ namespace TombEditor.Forms
 
         private DarkButton butOK;
         private DarkButton butCancel;
-        private DarkComboBox comboStrength;
         private DarkLabel label5;
+        private DarkNumericUpDown nudStrength;
     }
 }
