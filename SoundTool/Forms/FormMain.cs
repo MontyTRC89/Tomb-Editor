@@ -5,6 +5,7 @@ using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Forms;
 using TombLib.Utils;
+using System.Drawing;
 using System.IO;
 using TombLib.LevelData.IO;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ namespace SoundTool
             
             InitializeComponent();
             Configuration.LoadWindowProperties(this, _configuration);
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
 
             // Load either specified ref level or from config (if exists)
             if (!string.IsNullOrEmpty(refLevel))
