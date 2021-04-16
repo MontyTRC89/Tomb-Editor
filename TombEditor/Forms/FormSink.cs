@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
+using TombLib;
 
 namespace TombEditor.Forms
 {
@@ -24,12 +25,12 @@ namespace TombEditor.Forms
 
         private void FormSink_Load(object sender, EventArgs e)
         {
-            comboStrength.SelectedIndex = _sink.Strength;
+            nudStrength.Value = MathC.Clamp(_sink.Strength + 1, 1, 32);
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            _sink.Strength = (short)comboStrength.SelectedIndex;
+            _sink.Strength = (short)(nudStrength.Value - 1);
 
             DialogResult = DialogResult.OK;
             Close();

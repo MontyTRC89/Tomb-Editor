@@ -61,7 +61,7 @@ Section "Tomb Editor" Section1
   SetOutPath $INSTDIR
   File /r \
   /x "TIDE" \
-  /x "Resources" \
+  /x "Resources\ClassicScript" \
   /x "Configs" \
   /x "Assets" \
   /x "TombEditorLog*.txt" \
@@ -573,6 +573,7 @@ Section "Uninstall"
   RMDir "$INSTDIR\Assets\Samples\TR1"
   RMDir "$INSTDIR\Assets\Samples"
   RMDir "$INSTDIR\TIDE"
+  RMDir "$INSTDIR\Resources"
   RMDir "$INSTDIR\Runtimes"
   RMDir "$INSTDIR\Rendering"
   RMDir "$INSTDIR\Native"
