@@ -359,7 +359,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		public override void UpdateSettings(ConfigurationBase configuration)
 		{
-			var config = configuration as CS_EditorConfiguration;
+			var config = configuration as ClassicScriptEditorConfiguration;
 
 			SyntaxHighlighting = new SyntaxHighlighting(config.ColorScheme);
 

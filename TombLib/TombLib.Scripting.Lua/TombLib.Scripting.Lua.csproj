@@ -51,7 +51,7 @@
     <Compile Include="Utils\Autocomplete.cs" />
     <Compile Include="Objects\CodeCleaner.cs" />
     <Compile Include="Objects\ColorScheme.cs" />
-    <Compile Include="Lua_EditorConfiguration.cs" />
+    <Compile Include="LuaEditorConfiguration.cs" />
     <Compile Include="Resources\ConfigurationDefaults.cs" />
     <Compile Include="Utils\ErrorDetector.cs" />
     <Compile Include="Resources\Keywords.cs" />

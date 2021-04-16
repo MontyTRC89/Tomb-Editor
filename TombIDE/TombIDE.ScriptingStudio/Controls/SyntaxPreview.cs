@@ -20,7 +20,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		/* Private fields */
 
-		private CS_EditorConfiguration _config;
+		private ClassicScriptEditorConfiguration _config;
 
 		private string _cachedText;
 		private int _cachedArgumentIndex;
@@ -46,7 +46,7 @@ namespace TombIDE.ScriptingStudio.Controls
 
 		public void ReloadSettings()
 		{
-			_config = new CS_EditorConfiguration().Load<CS_EditorConfiguration>();
+			_config = new ClassicScriptEditorConfiguration().Load<ClassicScriptEditorConfiguration>();
 
 			BackColor = ColorTranslator.FromHtml(_config.ColorScheme.Background);
 			ForeColor = ColorTranslator.FromHtml(_config.ColorScheme.Values.HtmlColor);

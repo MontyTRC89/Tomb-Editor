@@ -31,7 +31,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			InitializeComponent();
 		}
 
-		public void Initialize(CS_EditorConfiguration config)
+		public void Initialize(ClassicScriptEditorConfiguration config)
 		{
 			InitializePreview();
 
@@ -228,7 +228,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		#region Loading
 
-		private void UpdateControlsWithSettings(CS_EditorConfiguration config)
+		private void UpdateControlsWithSettings(ClassicScriptEditorConfiguration config)
 		{
 			numeric_FontSize.Value = (decimal)config.FontSize - 4; // -4 because AvalonEdit has a different font size scale
 			comboBox_FontFamily.SelectedItem = config.FontFamily;
@@ -240,7 +240,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			comboBox_ColorSchemes.SelectedItem = config.SelectedColorSchemeName;
 		}
 
-		private void LoadSettingsForCheckBoxes(CS_EditorConfiguration config)
+		private void LoadSettingsForCheckBoxes(ClassicScriptEditorConfiguration config)
 		{
 			checkBox_Autocomplete.Checked = config.AutocompleteEnabled;
 			checkBox_LiveErrors.Checked = config.LiveErrorUnderlining;
@@ -259,7 +259,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			checkBox_VisibleTabs.Checked = config.ShowVisualTabs;
 		}
 
-		private void LoadSettingsForIdentationRules(CS_EditorConfiguration config)
+		private void LoadSettingsForIdentationRules(ClassicScriptEditorConfiguration config)
 		{
 			checkBox_PreEqualSpace.Checked = config.Tidy_PreEqualSpace;
 			checkBox_PostEqualSpace.Checked = config.Tidy_PostEqualSpace;
@@ -274,7 +274,7 @@ namespace TombIDE.ScriptingStudio.Settings
 
 		#region Applying
 
-		public void ApplySettings(CS_EditorConfiguration config)
+		public void ApplySettings(ClassicScriptEditorConfiguration config)
 		{
 			config.FontSize = (double)(numeric_FontSize.Value + 4); // +4 because AvalonEdit has a different font size scale
 			config.FontFamily = comboBox_FontFamily.SelectedItem.ToString();
@@ -288,7 +288,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			config.Save();
 		}
 
-		private void ApplySettingsFromCheckBoxes(CS_EditorConfiguration config)
+		private void ApplySettingsFromCheckBoxes(ClassicScriptEditorConfiguration config)
 		{
 			config.AutocompleteEnabled = checkBox_Autocomplete.Checked;
 			config.LiveErrorUnderlining = checkBox_LiveErrors.Checked;
@@ -307,7 +307,7 @@ namespace TombIDE.ScriptingStudio.Settings
 			config.ShowVisualTabs = checkBox_VisibleTabs.Checked;
 		}
 
-		private void ApplyIdentationRulesSettings(CS_EditorConfiguration config)
+		private void ApplyIdentationRulesSettings(ClassicScriptEditorConfiguration config)
 		{
 			config.Tidy_PreEqualSpace = checkBox_PreEqualSpace.Checked;
 			config.Tidy_PostEqualSpace = checkBox_PostEqualSpace.Checked;

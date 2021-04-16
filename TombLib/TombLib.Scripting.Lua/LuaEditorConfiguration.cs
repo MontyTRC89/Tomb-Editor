@@ -5,7 +5,7 @@ using TombLib.Scripting.Lua.Resources;
 
 namespace TombLib.Scripting.Lua
 {
-	public sealed class Lua_EditorConfiguration : TextEditorConfigBase
+	public sealed class LuaEditorConfiguration : TextEditorConfigBase
 	{
 		public override string DefaultPath { get; }
 
@@ -35,7 +35,7 @@ namespace TombLib.Scripting.Lua
 
 		#region Construction
 
-		public Lua_EditorConfiguration()
+		public LuaEditorConfiguration()
 			=> DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 
 		#endregion Construction

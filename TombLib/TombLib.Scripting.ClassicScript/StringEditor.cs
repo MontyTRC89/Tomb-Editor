@@ -527,7 +527,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		public void UpdateSettings(ConfigurationBase configuration) // TODO: Create it's own settings for the StringEditor
 		{
-			var config = configuration as CS_EditorConfiguration;
+			var config = configuration as ClassicScriptEditorConfiguration;
 
 			DefaultFontSize = (int)config.FontSize - 4; // -4 because of WPF
 			FontFamily = config.FontFamily;

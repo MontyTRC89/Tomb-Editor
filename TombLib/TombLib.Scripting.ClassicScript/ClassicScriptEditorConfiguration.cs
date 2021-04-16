@@ -5,7 +5,7 @@ using TombLib.Scripting.ClassicScript.Resources;
 
 namespace TombLib.Scripting.ClassicScript
 {
-	public sealed class CS_EditorConfiguration : TextEditorConfigBase
+	public sealed class ClassicScriptEditorConfiguration : TextEditorConfigBase
 	{
 		public override string DefaultPath { get; }
 
@@ -49,7 +49,7 @@ namespace TombLib.Scripting.ClassicScript
 
 		#region Construction
 
-		public CS_EditorConfiguration()
+		public ClassicScriptEditorConfiguration()
 		{
 			DefaultPath = Path.Combine(DefaultPaths.TextEditorConfigsDirectory, ConfigurationDefaults.ConfigurationFileName);
 

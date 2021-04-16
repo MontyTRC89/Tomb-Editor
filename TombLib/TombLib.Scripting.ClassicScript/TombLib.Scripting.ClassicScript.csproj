@@ -66,7 +66,7 @@
     <Compile Include="Enums\SubcommandType.cs" />
     <Compile Include="Enums\WordType.cs" />
     <Compile Include="Objects\ColorScheme.cs" />
-    <Compile Include="CS_EditorConfiguration.cs" />
+    <Compile Include="ClassicScriptEditorConfiguration.cs" />
     <Compile Include="Objects\WordDefinitionEventArgs.cs" />
     <Compile Include="Parsers\GlobalParser.cs" />
     <Compile Include="Parsers\WordParser.cs" />
