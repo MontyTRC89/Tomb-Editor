@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
-namespace TombLib.FileAssociation
+namespace FileAssociation
 {
 	internal static class Program
 	{

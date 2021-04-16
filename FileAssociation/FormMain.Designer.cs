@@ -1,4 +1,4 @@
-﻿namespace TombLib.FileAssociation
+﻿namespace FileAssociation
 {
 	partial class FormMain
 	{
