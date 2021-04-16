@@ -59,7 +59,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>wad_tool.ico</ApplicationIcon>
+    <ApplicationIcon>WT.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -575,6 +575,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\copy-to-all-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WT.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -43,7 +43,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>SoundTool.ico</ApplicationIcon>
+    <ApplicationIcon>ST.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -142,7 +142,9 @@
     <None Include="Resources\general_edit-16.png" />
     <None Include="Resources\general_create_new-16.png" />
     <None Include="Resources\icons_general\general_search-16.png" />
-    <Content Include="SoundTool.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ST.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

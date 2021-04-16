@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>tomb_ide.ico</ApplicationIcon>
+    <ApplicationIcon>TIDE.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -150,7 +150,7 @@
     <Content Include="Resources\ide-tools-30.png" />
     <Content Include="Resources\import-48.png" />
     <Content Include="Resources\open-48.png" />
-    <Content Include="tomb_ide.ico" />
+    <Content Include="TIDE.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DarkUI\DarkUI\DarkUI.csproj">

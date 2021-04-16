@@ -62,7 +62,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>tomb_editor.ico</ApplicationIcon>
+    <ApplicationIcon>TE.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TombEditor.Program</StartupObject>
@@ -660,8 +660,6 @@
     <None Include="Resources\icons_general\general_animcommand-16.png" />
     <None Include="Resources\icons_objects\objects_Memo-16.png" />
     <None Include="Resources\icons_actions\actions_DrawUntexturedLights-161.png" />
-    <Content Include="tomb_editor.ico" />
-    <None Include="Resources\Misc\tomb_editor.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DarkUI\DarkUI\DarkUI.csproj">
@@ -693,7 +691,9 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="TE.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy  /s /y /i /q "$(ProjectDir)Resources\assets" "$(TargetDir)Assets\"
