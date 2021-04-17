@@ -682,7 +682,7 @@ namespace TombLib.LevelData.IO
                     else
                         room.Properties.TypeStrength = 0;
 
-                    room.Properties.Reverberation = (Reverberation)reverb;
+                    room.Properties.Reverberation = reverb;
                     room.Properties.FlagHorizon = (flags1 & 0x0008) != 0;
                     room.Properties.FlagDamage = (flags1 & 0x0010) != 0;
                     room.Properties.FlagOutside = (flags1 & 0x0020) != 0;

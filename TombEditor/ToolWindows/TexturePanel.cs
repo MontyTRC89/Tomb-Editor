@@ -152,9 +152,10 @@ namespace TombEditor.ToolWindows
         {
             cmbBlending.Items.Clear();
 
-            // For TR4, TRNG and TR5Main we can add all types
-            if (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
-                _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            // For TR4, TRNG and TR5Main we can add all types (if extra blending modes are enabled)
+            if ((_editor.Level.Settings.GameEnableExtraBlendingModes ?? false) &&
+               (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
+                _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main))
             {
                 _blendingModeDescriptions.ForEach(item => cmbBlending.Items.Add(item));
             }

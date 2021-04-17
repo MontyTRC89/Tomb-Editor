@@ -474,6 +474,8 @@ namespace TombEditor.Forms
             gameLevelFilePathTxt.Text = _levelSettings.GameLevelFilePath;
             gameExecutableFilePathTxt.Text = _levelSettings.GameExecutableFilePath;
             GameEnableQuickStartFeatureCheckBox.Checked = _levelSettings.GameEnableQuickStartFeature;
+            GameEnableExtraBlendingModesCheckBox.Checked = _levelSettings.GameEnableExtraBlendingModes ?? false;
+            GameEnableExtraReverbPresetsCheckBox.Checked = _levelSettings.GameEnableExtraReverbPresets;
             comboGameVersion.Text = _levelSettings.GameVersion.ToString(); // Must also accept none enum values.
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
@@ -645,12 +647,17 @@ namespace TombEditor.Forms
             currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4);
             lblGameEnableQuickStartFeature1.Visible = currentVersionToCheck;
             GameEnableQuickStartFeatureCheckBox.Visible = currentVersionToCheck;
+            GameEnableExtraReverbPresetsCheckBox.Visible = currentVersionToCheck;
 
             // TR5 platform
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
+
+            // TR4 and TR5Main platforms
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4 || _levelSettings.GameVersion == TRVersion.Game.TR5Main);
+            GameEnableExtraBlendingModesCheckBox.Visible = currentVersionToCheck;
 
             // TR4 and above
             currentVersionToCheck = (_levelSettings.GameVersion.UsesMainSfx());
@@ -1176,6 +1183,18 @@ namespace TombEditor.Forms
             UpdateDialog();
         }
 
+        private void GameEnableExtraBlendingModesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.GameEnableExtraBlendingModes = GameEnableExtraBlendingModesCheckBox.Checked;
+            UpdateDialog();
+        }
+
+        private void GameEnableExtraReverbPresetsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.GameEnableExtraReverbPresets = GameEnableExtraReverbPresetsCheckBox.Checked;
+            UpdateDialog();
+        }
+
         // Path variable list
         private void pathVariablesDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -1633,5 +1652,5 @@ namespace TombEditor.Forms
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
-	}
+    }
 }

@@ -276,6 +276,10 @@ namespace TombLib.LevelData.IO
                     settings.GameExecutableFilePath = chunkIO.ReadChunkString(chunkSize);
                 else if (id == Prj2Chunks.GameEnableQuickStartFeature)
                     settings.GameEnableQuickStartFeature = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.GameEnableExtraBlendingModes)
+                    settings.GameEnableExtraBlendingModes = chunkIO.ReadChunkBool(chunkSize);
+                else if (id == Prj2Chunks.GameEnableExtraReverbPresets)
+                    settings.GameEnableExtraReverbPresets = chunkIO.ReadChunkBool(chunkSize);
                 else if (id == Prj2Chunks.GameVersion)
                     settings.GameVersion = (TRVersion.Game)chunkIO.ReadChunkLong(chunkSize);
                 else if (id == Prj2Chunks.Tr5LaraType)
@@ -724,6 +728,8 @@ namespace TombLib.LevelData.IO
 
                                         long blendFlag = LEB128.ReadLong(chunkIO.Raw);
                                         textureArea.BlendMode = (BlendMode)(blendFlag >> 1);
+                                        if (level.Settings.GameEnableExtraBlendingModes == null && textureArea.BlendMode > BlendMode.Additive)
+                                            level.Settings.GameEnableExtraBlendingModes = true;
                                         textureArea.DoubleSided = (blendFlag & 1) != 0;
                                         textureArea.Texture = levelSettingsIds.LevelTextures.TryGetOrDefault(LEB128.ReadLong(chunkIO.Raw));
 
@@ -840,7 +846,7 @@ namespace TombLib.LevelData.IO
                         if (room.Properties.LightEffectStrength > 4) room.Properties.LightEffectStrength = 4;
                     }
                     else if (id2 == Prj2Chunks.RoomReverberation)
-                        room.Properties.Reverberation = (Reverberation)chunkIO.ReadChunkByte(chunkSize2);
+                        room.Properties.Reverberation = chunkIO.ReadChunkByte(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomLocked)
                         room.Properties.Locked = chunkIO.ReadChunkBool(chunkSize2);
                     else if (id2 == Prj2Chunks.RoomHidden)

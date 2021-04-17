@@ -32,6 +32,8 @@ namespace TombLib.LevelData.IO
         /**/public static readonly ChunkId GameLevelFilePath = ChunkId.FromString("TeGameLevelFilePath"); // UTF-8 string
         /**/public static readonly ChunkId GameExecutableFilePath = ChunkId.FromString("TeGameExecutableFilePath"); // UTF-8 string
         /**/public static readonly ChunkId GameEnableQuickStartFeature = ChunkId.FromString("TeGameEnableQuickStartFeature"); // UTF-8 string
+        /**/public static readonly ChunkId GameEnableExtraBlendingModes = ChunkId.FromString("TeGameEnableExtraBlendingModes"); // UTF-8 string
+        /**/public static readonly ChunkId GameEnableExtraReverbPresets = ChunkId.FromString("TeGameEnableExtraReverbPresets"); // UTF-8 string
         /**/public static readonly ChunkId GameVersion = ChunkId.FromString("TeGameVersion");
         /**/public static readonly ChunkId DefaultAmbientLight = ChunkId.FromString("TeDefaultAmbientLight");
         /**/public static readonly ChunkId DefaultLightQuality = ChunkId.FromString("TeDefaultLightQuality");

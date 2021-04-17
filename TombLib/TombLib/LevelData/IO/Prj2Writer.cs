@@ -152,6 +152,8 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.GameLevelFilePath, settings.GameLevelFilePath ?? "");
                 chunkIO.WriteChunkString(Prj2Chunks.GameExecutableFilePath, settings.GameExecutableFilePath ?? "");
                 chunkIO.WriteChunkBool(Prj2Chunks.GameEnableQuickStartFeature, settings.GameEnableQuickStartFeature);
+                chunkIO.WriteChunkBool(Prj2Chunks.GameEnableExtraBlendingModes, settings.GameEnableExtraBlendingModes ?? false);
+                chunkIO.WriteChunkBool(Prj2Chunks.GameEnableExtraReverbPresets, settings.GameEnableExtraReverbPresets);
                 chunkIO.WriteChunkInt(Prj2Chunks.GameVersion, (long)settings.GameVersion);
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5LaraType, (long)settings.Tr5LaraType);
                 chunkIO.WriteChunkInt(Prj2Chunks.Tr5Weather, (long)settings.Tr5WeatherType);

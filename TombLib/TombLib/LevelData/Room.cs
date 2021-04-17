@@ -9,11 +9,6 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData
 {
-    public enum Reverberation : byte
-    {
-        Outside, SmallRoom, MediumRoom, LargeRoom, Pipe
-    }
-
     public enum RoomType : byte
     {
         Normal, Rain, Snow, Water, Quicksand
@@ -59,7 +54,7 @@ namespace TombLib.LevelData
         [DisplayName("No lensflare")]
         public bool FlagNoLensflare { get; set; }
         [DisplayName("Reverb type")]
-        public Reverberation Reverberation { get; set; }
+        public byte Reverberation { get; set; }
         [DisplayName("Locked")]
         public bool Locked { get; set; }
         [DisplayName("Hidden")]

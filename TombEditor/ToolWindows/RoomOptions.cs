@@ -23,6 +23,66 @@ namespace TombEditor.ToolWindows
             "Snow 4"
         };
 
+        private static readonly string[] _reverberationTypes = new string[]
+        {
+            "None",
+            "Small",
+            "Medium",
+            "Large",
+            "Pipe",
+        };
+
+        private static readonly string[] _extraReverberationTypes = new string[]
+        {
+            "None",
+            "Default",
+            "Generic",
+            "Padded Cell",
+            "Room",
+            "Bathroom",
+            "Living Room",
+            "Stone Room",
+            "Auditorium",
+            "Concert Hall",
+            "Cave",
+            "Arena",
+            "Hangar",
+            "Carpeted Hallway",
+            "Hallway",
+            "Stone Corridor",
+            "Alley",
+            "Forest",
+            "City",
+            "Mountains",
+            "Quarry",
+            "Plain",
+            "Parking Lot",
+            "Sewer Pipe",
+            "Underwater",
+            "Small Room",
+            "Medium Room",
+            "Large Room",
+            "Medium Hall",
+            "Large Hall",
+            "Plate",
+            "Custom 1",
+            "Custom 2",
+            "Custom 3",
+            "Custom 4",
+            "Custom 5",
+            "Custom 6",
+            "Custom 7",
+            "Custom 8",
+            "Custom 9",
+            "Custom 10",
+            "Custom 11",
+            "Custom 12",
+            "Custom 13",
+            "Custom 14",
+            "Custom 15",
+            "Custom 16"
+        };
+
         private readonly Editor _editor;
 
         public RoomOptions()
@@ -54,6 +114,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
+                bool isTR4orNG = _editor.Level.Settings.GameVersion == TRVersion.Game.TR4 || _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
                 bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
                 bool isTR4or5 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
@@ -65,6 +126,10 @@ namespace TombEditor.ToolWindows
                 cbFlagDamage.Enabled = isNGorT5M;
                 cbNoLensflare.Enabled = isTR4or5;
                 comboReverberation.Enabled = isTR345;
+                comboReverberation.SelectedIndexChanged -= comboReverberation_SelectedIndexChanged; // Prevent SelectedIndexChanged event from DataSource assignment in next line
+                comboReverberation.DataSource = isTR4orNG && _editor.Level.Settings.GameEnableExtraReverbPresets ? _extraReverberationTypes : _reverberationTypes;
+                comboReverberation.SelectedIndexChanged += comboReverberation_SelectedIndexChanged;
+                comboReverberation.SelectedIndex = _editor.SelectedRoom.Properties.Reverberation < comboReverberation.Items.Count ? _editor.SelectedRoom.Properties.Reverberation : -1;
                 comboLightEffect.Enabled = !isTR1;
                 numLightEffectStrength.Enabled = !isTR1;
 
@@ -108,7 +173,7 @@ namespace TombEditor.ToolWindows
                 // Update the state of other controls
                 ReadRoomType();
                 panelRoomAmbientLight.BackColor = (room.Properties.AmbientLight * new Vector3(0.5f, 0.5f, 0.5f)).ToWinFormsColor();
-                comboReverberation.SelectedIndex = (int)room.Properties.Reverberation;
+                comboReverberation.SelectedIndex = room.Properties.Reverberation < comboReverberation.Items.Count ? room.Properties.Reverberation : -1;
                 comboPortalShade.SelectedIndex = (int)room.Properties.LightInterpolationMode;
                 comboLightEffect.SelectedIndex = (int)room.Properties.LightEffect;
                 numLightEffectStrength.Value = room.Properties.LightEffectStrength;
@@ -324,10 +389,10 @@ namespace TombEditor.ToolWindows
 
         private void comboReverberation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_editor.SelectedRoom.Properties.Reverberation == (Reverberation)comboReverberation.SelectedIndex)
+            if (_editor.SelectedRoom.Properties.Reverberation == comboReverberation.SelectedIndex)
                 return;
 
-            _editor.SelectedRoom.Properties.Reverberation = (Reverberation)comboReverberation.SelectedIndex;
+            _editor.SelectedRoom.Properties.Reverberation = (byte)comboReverberation.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 

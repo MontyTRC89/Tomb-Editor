@@ -860,7 +860,9 @@ namespace TombEditor
             bool animatedTexturesChanged = !newSettings.AnimatedTextureSets.SequenceEqual(_level.Settings.AnimatedTextureSets);
             bool mergedStaticsChanged = !newSettings.AutoStaticMeshMerges.SequenceEqual(_level.Settings.AutoStaticMeshMerges);
             bool levelFilenameChanged = newSettings.MakeAbsolute(newSettings.LevelFilePath) != _level.Settings.MakeAbsolute(_level.Settings.LevelFilePath);
-            bool gameVersionChanged = newSettings.GameVersion != _level.Settings.GameVersion;
+            bool gameVersionChanged = newSettings.GameVersion != _level.Settings.GameVersion ||
+                                      newSettings.GameEnableExtraBlendingModes != _level.Settings.GameEnableExtraBlendingModes ||
+                                      newSettings.GameEnableExtraReverbPresets != _level.Settings.GameEnableExtraReverbPresets;
 
             // Update the current settings
             _level.ApplyNewLevelSettings(newSettings, instance => ObjectChange(instance, ObjectChangeType.Change));

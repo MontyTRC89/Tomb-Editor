@@ -164,7 +164,7 @@ namespace TombLib.LevelData.Compilers
                 Flipped = room.Alternated,
                 FlippedRoom = room.AlternateRoom,
                 BaseRoom = room.AlternateBaseRoom,
-                ReverbInfo = (byte)room.Properties.Reverberation,
+                ReverbInfo = room.Properties.Reverberation,
                 Flags = 0x40
             };
 

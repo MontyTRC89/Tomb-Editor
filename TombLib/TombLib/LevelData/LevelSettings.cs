@@ -165,6 +165,8 @@ namespace TombLib.LevelData
         // Game version and version-specific settings
         public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;
         public bool GameEnableQuickStartFeature { get; set; } = true;
+        public bool? GameEnableExtraBlendingModes { get; set; } = null;
+        public bool GameEnableExtraReverbPresets { get; set; } = false;
 
         // Paths
         public string LevelFilePath { get; set; } = null; // Can be null if the level has not been loaded from / saved to disk yet.
