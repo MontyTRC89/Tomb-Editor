@@ -482,8 +482,14 @@ namespace TombIDE.ScriptingStudio.Bases
 			if (CurrentEditor is StringEditor stringEditor)
 				switch (command)
 				{
-					case UICommand.PrevSection: stringEditor.GoToPreviousSection(); break;
-					case UICommand.NextSection: stringEditor.GoToNextSection(); break;
+					case UICommand.PrevSection:
+						stringEditor.GoToPreviousSection();
+						ContentExplorer.SelectNode(stringEditor.CurrentDataGrid.Name);
+						break;
+					case UICommand.NextSection:
+						stringEditor.GoToNextSection();
+						ContentExplorer.SelectNode(stringEditor.CurrentDataGrid.Name);
+						break;
 					case UICommand.ClearString: stringEditor.CurrentDataGrid?.ClearSelectedString(); break;
 					case UICommand.RemoveLastString: stringEditor.CurrentDataGrid?.RemoveLastString(); break;
 				}

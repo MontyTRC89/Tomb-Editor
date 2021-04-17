@@ -104,6 +104,13 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		#region Methods
 
+		public void SelectNode(string nodeText)
+		{
+			DarkTreeNode node = treeView.Nodes.Find(x => x.Text == nodeText.Trim('[').Trim(']'));
+			treeView.SelectNode(node);
+			treeView.Invalidate();
+		}
+
 		private void UpdateTreeView()
 		{
 			if (EditorControl != null && NodesProvider != null && !NodesProvider.IsBusy)
