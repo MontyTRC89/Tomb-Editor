@@ -10,7 +10,7 @@
 !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
 !define MUI_WELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplash.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "..\TombEditor\Resources\misc\misc_InstallerSplash.bmp" 
-!define MUI_ICON "..\TombEditor\Resources\Misc\tomb_editor.ico"
+!define MUI_ICON "..\Icons\ICO\TE.ico"
 !define MUI_FINISHPAGE_SHOWREADME "Changes.txt"
 
 !getdllversion "TombEditor.exe" Version_
