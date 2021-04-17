@@ -130,6 +130,7 @@ namespace TombEditor.ToolWindows
                 comboReverberation.DataSource = isTR4orNG && _editor.Level.Settings.GameEnableExtraReverbPresets ? _extraReverberationTypes : _reverberationTypes;
                 comboReverberation.SelectedIndexChanged += comboReverberation_SelectedIndexChanged;
                 comboReverberation.SelectedIndex = _editor.SelectedRoom.Properties.Reverberation < comboReverberation.Items.Count ? _editor.SelectedRoom.Properties.Reverberation : -1;
+                comboReverberation.DropDownWidth = isTR4orNG && _editor.Level.Settings.GameEnableExtraReverbPresets ? 121 : 71;
                 comboLightEffect.Enabled = !isTR1;
                 numLightEffectStrength.Enabled = !isTR1;
 
