@@ -342,7 +342,6 @@
             this.dgvSoundInfos.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.dgvSoundInfos.Location = new System.Drawing.Point(8, 57);
             this.dgvSoundInfos.Name = "dgvSoundInfos";
-            this.dgvSoundInfos.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.dgvSoundInfos.RowHeadersWidth = 41;
             this.dgvSoundInfos.Size = new System.Drawing.Size(268, 356);
             this.dgvSoundInfos.TabIndex = 2;
