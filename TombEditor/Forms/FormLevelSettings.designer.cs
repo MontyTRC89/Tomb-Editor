@@ -809,7 +809,6 @@
             this.textureFileDataGridView.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.textureFileDataGridView.Location = new System.Drawing.Point(6, 32);
             this.textureFileDataGridView.Name = "textureFileDataGridView";
-            this.textureFileDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.textureFileDataGridView.RowHeadersWidth = 41;
             this.textureFileDataGridView.RowTemplate.Height = 40;
             this.textureFileDataGridView.Size = new System.Drawing.Size(739, 467);
@@ -942,7 +941,6 @@
             this.objectFileDataGridView.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.objectFileDataGridView.Location = new System.Drawing.Point(6, 32);
             this.objectFileDataGridView.Name = "objectFileDataGridView";
-            this.objectFileDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.objectFileDataGridView.RowHeadersWidth = 41;
             this.objectFileDataGridView.Size = new System.Drawing.Size(739, 467);
             this.objectFileDataGridView.TabIndex = 4;
@@ -1114,7 +1112,6 @@
             this.staticMeshMergeDataGridView.Location = new System.Drawing.Point(6, 19);
             this.staticMeshMergeDataGridView.MultiSelect = false;
             this.staticMeshMergeDataGridView.Name = "staticMeshMergeDataGridView";
-            this.staticMeshMergeDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.staticMeshMergeDataGridView.RowHeadersWidth = 41;
             this.staticMeshMergeDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.staticMeshMergeDataGridView.Size = new System.Drawing.Size(769, 383);
@@ -1551,7 +1548,6 @@
             this.soundsCatalogsDataGridView.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.soundsCatalogsDataGridView.Location = new System.Drawing.Point(6, 32);
             this.soundsCatalogsDataGridView.Name = "soundsCatalogsDataGridView";
-            this.soundsCatalogsDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.soundsCatalogsDataGridView.RowHeadersWidth = 41;
             this.soundsCatalogsDataGridView.Size = new System.Drawing.Size(739, 180);
             this.soundsCatalogsDataGridView.TabIndex = 104;
@@ -1673,7 +1669,6 @@
             this.selectedSoundsDataGridView.Location = new System.Drawing.Point(6, 273);
             this.selectedSoundsDataGridView.MultiSelect = false;
             this.selectedSoundsDataGridView.Name = "selectedSoundsDataGridView";
-            this.selectedSoundsDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.selectedSoundsDataGridView.RowHeadersWidth = 41;
             this.selectedSoundsDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.selectedSoundsDataGridView.ShowCellErrors = false;
@@ -1780,7 +1775,6 @@
             this.soundDataGridView.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.soundDataGridView.Location = new System.Drawing.Point(6, 32);
             this.soundDataGridView.Name = "soundDataGridView";
-            this.soundDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.soundDataGridView.RowHeadersWidth = 41;
             this.soundDataGridView.Size = new System.Drawing.Size(739, 467);
             this.soundDataGridView.TabIndex = 2;
@@ -2077,7 +2071,6 @@
             this.pathVariablesDataGridView.ForegroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridView.Location = new System.Drawing.Point(6, 19);
             this.pathVariablesDataGridView.Name = "pathVariablesDataGridView";
-            this.pathVariablesDataGridView.OutlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridView.RowHeadersWidth = 41;
             this.pathVariablesDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.pathVariablesDataGridView.Size = new System.Drawing.Size(769, 480);
