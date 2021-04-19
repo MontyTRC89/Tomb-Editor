@@ -2517,6 +2517,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
             var groups = roomsWhoseObjectsToDraw.SelectMany(r => r.Objects).GroupBy(o => o.GetType());
             foreach (var group in groups)
