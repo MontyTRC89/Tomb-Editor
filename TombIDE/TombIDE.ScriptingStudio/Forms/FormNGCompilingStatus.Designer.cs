@@ -26,7 +26,7 @@
 			// 
 			// label_CompileInfo_01
 			// 
-			this.label_CompileInfo_01.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_CompileInfo_01.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_CompileInfo_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_CompileInfo_01.Location = new System.Drawing.Point(9, 34);
 			this.label_CompileInfo_01.Margin = new System.Windows.Forms.Padding(0);
@@ -38,7 +38,7 @@
 			// 
 			// label_CompileInfo_02
 			// 
-			this.label_CompileInfo_02.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_CompileInfo_02.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_CompileInfo_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_CompileInfo_02.Location = new System.Drawing.Point(9, 90);
 			this.label_CompileInfo_02.Margin = new System.Windows.Forms.Padding(0);
@@ -50,7 +50,7 @@
 			// 
 			// label_Compiling
 			// 
-			this.label_Compiling.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Compiling.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Compiling.ForeColor = System.Drawing.Color.Lime;
 			this.label_Compiling.Location = new System.Drawing.Point(9, 9);
 			this.label_Compiling.Margin = new System.Windows.Forms.Padding(0);
@@ -62,7 +62,7 @@
 			// 
 			// label_Debug
 			// 
-			this.label_Debug.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Debug.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Debug.ForeColor = System.Drawing.Color.Orange;
 			this.label_Debug.Location = new System.Drawing.Point(9, 9);
 			this.label_Debug.Margin = new System.Windows.Forms.Padding(0);
@@ -74,7 +74,7 @@
 			// 
 			// label_DebugInfo
 			// 
-			this.label_DebugInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_DebugInfo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_DebugInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_DebugInfo.Location = new System.Drawing.Point(9, 34);
 			this.label_DebugInfo.Margin = new System.Windows.Forms.Padding(0);
@@ -96,6 +96,7 @@
 			this.Controls.Add(this.label_Compiling);
 			this.Controls.Add(this.label_DebugInfo);
 			this.Controls.Add(this.label_Debug);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "FormNGCompilingStatus";
 			this.Opacity = 0.96D;

@@ -206,7 +206,7 @@
 			// 
 			this.textBox_EnginePath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_EnginePath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_EnginePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_EnginePath.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_EnginePath.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_EnginePath.Location = new System.Drawing.Point(7, 155);
 			this.textBox_EnginePath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
@@ -219,7 +219,7 @@
 			// 
 			this.textBox_ProjectName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_ProjectName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_ProjectName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_ProjectName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_ProjectName.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_ProjectName.Location = new System.Drawing.Point(7, 53);
 			this.textBox_ProjectName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
@@ -232,7 +232,7 @@
 			// 
 			this.textBox_LevelsPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_LevelsPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_LevelsPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_LevelsPath.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_LevelsPath.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_LevelsPath.Location = new System.Drawing.Point(7, 257);
 			this.textBox_LevelsPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
@@ -245,7 +245,7 @@
 			// 
 			this.textBox_ProjectPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_ProjectPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_ProjectPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_ProjectPath.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_ProjectPath.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_ProjectPath.Location = new System.Drawing.Point(7, 104);
 			this.textBox_ProjectPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
@@ -258,7 +258,7 @@
 			// 
 			this.textBox_ScriptPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_ScriptPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_ScriptPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_ScriptPath.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_ScriptPath.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_ScriptPath.Location = new System.Drawing.Point(7, 206);
 			this.textBox_ScriptPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);

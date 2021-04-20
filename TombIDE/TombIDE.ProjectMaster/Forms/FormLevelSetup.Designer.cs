@@ -64,7 +64,7 @@
 			// checkBox_CustomFileName
 			// 
 			this.checkBox_CustomFileName.Location = new System.Drawing.Point(9, 60);
-			this.checkBox_CustomFileName.Margin = new System.Windows.Forms.Padding(0, 6, 3, 6);
+			this.checkBox_CustomFileName.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
 			this.checkBox_CustomFileName.Name = "checkBox_CustomFileName";
 			this.checkBox_CustomFileName.Size = new System.Drawing.Size(158, 20);
 			this.checkBox_CustomFileName.TabIndex = 2;
@@ -101,17 +101,17 @@
 			this.label_01.Location = new System.Drawing.Point(9, 9);
 			this.label_01.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.label_01.Name = "label_01";
-			this.label_01.Size = new System.Drawing.Size(65, 13);
+			this.label_01.Size = new System.Drawing.Size(66, 13);
 			this.label_01.TabIndex = 0;
 			this.label_01.Text = "Level name:";
 			// 
 			// label_02
 			// 
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_02.Location = new System.Drawing.Point(6, 6);
+			this.label_02.Location = new System.Drawing.Point(-1, 6);
 			this.label_02.Margin = new System.Windows.Forms.Padding(6, 6, 3, 3);
 			this.label_02.Name = "label_02";
-			this.label_02.Size = new System.Drawing.Size(94, 20);
+			this.label_02.Size = new System.Drawing.Size(110, 20);
 			this.label_02.TabIndex = 0;
 			this.label_02.Text = "Ambient sound ID:";
 			this.label_02.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -132,7 +132,7 @@
             0,
             0});
 			this.numeric_SoundID.Name = "numeric_SoundID";
-			this.numeric_SoundID.Size = new System.Drawing.Size(220, 20);
+			this.numeric_SoundID.Size = new System.Drawing.Size(220, 22);
 			this.numeric_SoundID.TabIndex = 1;
 			this.numeric_SoundID.Value = new decimal(new int[] {
             110,
@@ -167,20 +167,20 @@
 			// textBox_CustomFileName
 			// 
 			this.textBox_CustomFileName.Enabled = false;
-			this.textBox_CustomFileName.Location = new System.Drawing.Point(173, 60);
-			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(3, 6, 0, 6);
+			this.textBox_CustomFileName.Location = new System.Drawing.Point(167, 60);
+			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
 			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
-			this.textBox_CustomFileName.Size = new System.Drawing.Size(282, 20);
+			this.textBox_CustomFileName.Size = new System.Drawing.Size(288, 22);
 			this.textBox_CustomFileName.TabIndex = 3;
 			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
 			// 
 			// textBox_LevelName
 			// 
-			this.textBox_LevelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_LevelName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_LevelName.Location = new System.Drawing.Point(9, 25);
 			this.textBox_LevelName.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.textBox_LevelName.Name = "textBox_LevelName";
-			this.textBox_LevelName.Size = new System.Drawing.Size(446, 26);
+			this.textBox_LevelName.Size = new System.Drawing.Size(446, 29);
 			this.textBox_LevelName.TabIndex = 1;
 			this.textBox_LevelName.TextChanged += new System.EventHandler(this.textBox_LevelName_TextChanged);
 			// 
@@ -197,6 +197,7 @@
 			this.Controls.Add(this.label_01);
 			this.Controls.Add(this.textBox_LevelName);
 			this.FlatBorder = true;
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.Name = "FormLevelSetup";

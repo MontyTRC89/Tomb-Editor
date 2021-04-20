@@ -102,7 +102,7 @@
 			// label_NoInfo
 			// 
 			this.label_NoInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_NoInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_NoInfo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_NoInfo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoInfo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoInfo.Name = "label_NoInfo";
@@ -114,7 +114,7 @@
 			// label_NoLogo
 			// 
 			this.label_NoLogo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_NoLogo.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_NoLogo.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_NoLogo.ForeColor = System.Drawing.Color.Gray;
 			this.label_NoLogo.Location = new System.Drawing.Point(0, 0);
 			this.label_NoLogo.Name = "label_NoLogo";
@@ -276,7 +276,7 @@
 			this.richTextBox_Description.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.richTextBox_Description.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.richTextBox_Description.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox_Description.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.richTextBox_Description.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.richTextBox_Description.ForeColor = System.Drawing.Color.Gainsboro;
 			this.richTextBox_Description.Location = new System.Drawing.Point(0, 0);
 			this.richTextBox_Description.Name = "richTextBox_Description";

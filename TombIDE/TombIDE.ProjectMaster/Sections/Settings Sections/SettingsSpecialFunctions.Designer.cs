@@ -42,7 +42,7 @@
 			// button_DeleteLogs
 			// 
 			this.button_DeleteLogs.Checked = false;
-			this.button_DeleteLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_DeleteLogs.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_DeleteLogs.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_trash_16;
 			this.button_DeleteLogs.Location = new System.Drawing.Point(7, 65);
 			this.button_DeleteLogs.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
@@ -56,7 +56,7 @@
 			// button_RenameLauncher
 			// 
 			this.button_RenameLauncher.Checked = false;
-			this.button_RenameLauncher.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_RenameLauncher.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_RenameLauncher.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_edit_16;
 			this.button_RenameLauncher.Location = new System.Drawing.Point(7, 34);
 			this.button_RenameLauncher.Margin = new System.Windows.Forms.Padding(6, 9, 3, 3);
@@ -85,7 +85,7 @@
 			// button_BatchBuild
 			// 
 			this.button_BatchBuild.Checked = false;
-			this.button_BatchBuild.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.button_BatchBuild.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.button_BatchBuild.Image = global::TombIDE.ProjectMaster.Properties.Resources.general_ArrowDown_16;
 			this.button_BatchBuild.Location = new System.Drawing.Point(7, 96);
 			this.button_BatchBuild.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
@@ -100,7 +100,7 @@
 			// 
 			this.textBox_LauncherName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_LauncherName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.textBox_LauncherName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_LauncherName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_LauncherName.ForeColor = System.Drawing.Color.Gainsboro;
 			this.textBox_LauncherName.Location = new System.Drawing.Point(205, 33);
 			this.textBox_LauncherName.Margin = new System.Windows.Forms.Padding(3, 8, 6, 3);

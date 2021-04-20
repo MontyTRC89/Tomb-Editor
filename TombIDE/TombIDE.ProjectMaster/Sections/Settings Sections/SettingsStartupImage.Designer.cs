@@ -83,7 +83,7 @@
 			// label_Blank
 			// 
 			this.label_Blank.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Blank.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Blank.Font = new System.Drawing.Font("Segoe UI", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Blank.ForeColor = System.Drawing.Color.Gray;
 			this.label_Blank.Location = new System.Drawing.Point(0, 0);
 			this.label_Blank.Name = "label_Blank";

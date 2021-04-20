@@ -187,7 +187,7 @@
 			this.treeView_Installed.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView_Installed.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
 			this.treeView_Installed.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-			this.treeView_Installed.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView_Installed.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView_Installed.ItemHeight = 40;
 			this.treeView_Installed.Location = new System.Drawing.Point(1, 25);
 			this.treeView_Installed.MaxDragChange = 40;
@@ -216,7 +216,7 @@
 			this.treeView_Available.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView_Available.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
 			this.treeView_Available.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-			this.treeView_Available.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView_Available.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView_Available.ItemHeight = 40;
 			this.treeView_Available.Location = new System.Drawing.Point(1, 53);
 			this.treeView_Available.MaxDragChange = 40;
@@ -274,6 +274,7 @@
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.Name = "FormPluginManager";

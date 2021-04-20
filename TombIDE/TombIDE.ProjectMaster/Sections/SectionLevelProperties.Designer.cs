@@ -94,7 +94,7 @@
 			// 
 			this.label_Loading.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.label_Loading.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Loading.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Loading.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Loading.ForeColor = System.Drawing.Color.Gray;
 			this.label_Loading.Location = new System.Drawing.Point(0, 0);
 			this.label_Loading.Name = "label_Loading";

@@ -267,6 +267,7 @@
 			this.Controls.Add(this.panel_Main);
 			this.Controls.Add(this.panel_Programs);
 			this.Controls.Add(this.panel_CoverLoading);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.KeyPreview = true;
 			this.MinimumSize = new System.Drawing.Size(1070, 640);
 			this.Name = "FormMain";

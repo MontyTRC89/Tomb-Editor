@@ -70,7 +70,7 @@ namespace TombIDE.ProjectMaster
 			// label_02
 			// 
 			this.label_02.AutoSize = true;
-			this.label_02.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_02.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
 			this.label_02.Location = new System.Drawing.Point(423, 115);
 			this.label_02.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);

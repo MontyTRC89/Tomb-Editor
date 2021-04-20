@@ -27,7 +27,7 @@
 			// 
 			this.label.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.label.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.label.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(244)))));
 			this.label.Location = new System.Drawing.Point(0, 256);
 			this.label.Name = "label";
@@ -61,6 +61,7 @@
 			this.ClientSize = new System.Drawing.Size(512, 316);
 			this.Controls.Add(this.panel);
 			this.Controls.Add(this.label);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;

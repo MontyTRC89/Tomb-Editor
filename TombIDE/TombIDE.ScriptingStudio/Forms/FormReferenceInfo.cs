@@ -98,7 +98,7 @@ namespace TombIDE.ScriptingStudio.Forms
 				Text = RddaReader.GetKeywordDescription(flag.TrimEnd('='), type),
 				ForeColor = Color.Gainsboro,
 				BackColor = Color.FromArgb(48, 48, 48),
-				Font = new Font("Microsoft Sans Serif", 12f),
+				Font = new Font("Segoe UI", 12f),
 				BorderStyle = BorderStyle.None,
 				Dock = DockStyle.Fill,
 				ReadOnly = true

@@ -301,7 +301,7 @@
 			this.colorButton_Comments.BackColorUseGeneric = false;
 			this.colorButton_Comments.Checked = false;
 			this.colorButton_Comments.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Comments.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.colorButton_Comments.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_Comments.Location = new System.Drawing.Point(191, 141);
 			this.colorButton_Comments.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.colorButton_Comments.Name = "colorButton_Comments";
@@ -328,7 +328,7 @@
 			this.colorButton_NewCommands.BackColorUseGeneric = false;
 			this.colorButton_NewCommands.Checked = false;
 			this.colorButton_NewCommands.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_NewCommands.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.colorButton_NewCommands.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_NewCommands.Location = new System.Drawing.Point(191, 100);
 			this.colorButton_NewCommands.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.colorButton_NewCommands.Name = "colorButton_NewCommands";
@@ -343,7 +343,7 @@
 			this.colorButton_References.BackColorUseGeneric = false;
 			this.colorButton_References.Checked = false;
 			this.colorButton_References.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_References.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.colorButton_References.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_References.Location = new System.Drawing.Point(12, 141);
 			this.colorButton_References.Margin = new System.Windows.Forms.Padding(9, 0, 3, 8);
 			this.colorButton_References.Name = "colorButton_References";
@@ -358,7 +358,7 @@
 			this.colorButton_Sections.BackColorUseGeneric = false;
 			this.colorButton_Sections.Checked = false;
 			this.colorButton_Sections.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Sections.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.colorButton_Sections.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_Sections.Location = new System.Drawing.Point(12, 59);
 			this.colorButton_Sections.Margin = new System.Windows.Forms.Padding(9, 0, 3, 3);
 			this.colorButton_Sections.Name = "colorButton_Sections";
@@ -373,7 +373,7 @@
 			this.colorButton_StandardCommands.BackColorUseGeneric = false;
 			this.colorButton_StandardCommands.Checked = false;
 			this.colorButton_StandardCommands.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_StandardCommands.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.colorButton_StandardCommands.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_StandardCommands.Location = new System.Drawing.Point(191, 59);
 			this.colorButton_StandardCommands.Margin = new System.Windows.Forms.Padding(6, 0, 3, 3);
 			this.colorButton_StandardCommands.Name = "colorButton_StandardCommands";
@@ -388,7 +388,7 @@
 			this.colorButton_Values.BackColorUseGeneric = false;
 			this.colorButton_Values.Checked = false;
 			this.colorButton_Values.ContextMenuStrip = this.buttonContextMenu;
-			this.colorButton_Values.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.colorButton_Values.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.colorButton_Values.Location = new System.Drawing.Point(12, 100);
 			this.colorButton_Values.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
 			this.colorButton_Values.Name = "colorButton_Values";

@@ -138,7 +138,7 @@
 			this.label_01.Location = new System.Drawing.Point(6, 6);
 			this.label_01.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
 			this.label_01.Name = "label_01";
-			this.label_01.Size = new System.Drawing.Size(136, 13);
+			this.label_01.Size = new System.Drawing.Size(147, 13);
 			this.label_01.TabIndex = 0;
 			this.label_01.Text = "Specified source .prj2 path:";
 			// 
@@ -149,17 +149,17 @@
 			this.label_02.Location = new System.Drawing.Point(6, 6);
 			this.label_02.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
 			this.label_02.Name = "label_02";
-			this.label_02.Size = new System.Drawing.Size(65, 13);
+			this.label_02.Size = new System.Drawing.Size(66, 13);
 			this.label_02.TabIndex = 0;
 			this.label_02.Text = "Level name:";
 			// 
 			// label_03
 			// 
 			this.label_03.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_03.Location = new System.Drawing.Point(6, 6);
+			this.label_03.Location = new System.Drawing.Point(-1, 6);
 			this.label_03.Margin = new System.Windows.Forms.Padding(6, 6, 3, 3);
 			this.label_03.Name = "label_03";
-			this.label_03.Size = new System.Drawing.Size(94, 20);
+			this.label_03.Size = new System.Drawing.Size(110, 20);
 			this.label_03.TabIndex = 0;
 			this.label_03.Text = "Ambient sound ID:";
 			this.label_03.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -180,7 +180,7 @@
             0,
             0});
 			this.numeric_SoundID.Name = "numeric_SoundID";
-			this.numeric_SoundID.Size = new System.Drawing.Size(220, 20);
+			this.numeric_SoundID.Size = new System.Drawing.Size(220, 22);
 			this.numeric_SoundID.TabIndex = 1;
 			this.numeric_SoundID.Value = new decimal(new int[] {
             110,
@@ -205,7 +205,7 @@
 			this.textBox_Prj2Path.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.textBox_Prj2Path.Name = "textBox_Prj2Path";
 			this.textBox_Prj2Path.ReadOnly = true;
-			this.textBox_Prj2Path.Size = new System.Drawing.Size(432, 20);
+			this.textBox_Prj2Path.Size = new System.Drawing.Size(432, 22);
 			this.textBox_Prj2Path.TabIndex = 1;
 			// 
 			// panel_02
@@ -233,7 +233,7 @@
 			this.textBox_CustomFileName.Location = new System.Drawing.Point(132, 57);
 			this.textBox_CustomFileName.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.textBox_CustomFileName.Name = "textBox_CustomFileName";
-			this.textBox_CustomFileName.Size = new System.Drawing.Size(306, 20);
+			this.textBox_CustomFileName.Size = new System.Drawing.Size(306, 22);
 			this.textBox_CustomFileName.TabIndex = 3;
 			this.textBox_CustomFileName.TextChanged += new System.EventHandler(this.textBox_CustomFileName_TextChanged);
 			// 
@@ -250,15 +250,15 @@
 			this.treeView.Name = "treeView";
 			this.treeView.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
 			this.treeView.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.treeView.Size = new System.Drawing.Size(432, 148);
+			this.treeView.Size = new System.Drawing.Size(432, 138);
 			this.treeView.TabIndex = 8;
 			// 
 			// radioButton_FolderKeep
 			// 
-			this.radioButton_FolderKeep.Location = new System.Drawing.Point(6, 330);
+			this.radioButton_FolderKeep.Location = new System.Drawing.Point(6, 320);
 			this.radioButton_FolderKeep.Margin = new System.Windows.Forms.Padding(6, 3, 6, 9);
 			this.radioButton_FolderKeep.Name = "radioButton_FolderKeep";
-			this.radioButton_FolderKeep.Size = new System.Drawing.Size(432, 20);
+			this.radioButton_FolderKeep.Size = new System.Drawing.Size(432, 30);
 			this.radioButton_FolderKeep.TabIndex = 9;
 			this.radioButton_FolderKeep.Text = "Import the whole specified folder but keep it\'s original location (Not recommende" +
     "d)";
@@ -290,11 +290,11 @@
 			// 
 			// textBox_LevelName
 			// 
-			this.textBox_LevelName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_LevelName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_LevelName.Location = new System.Drawing.Point(6, 22);
 			this.textBox_LevelName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_LevelName.Name = "textBox_LevelName";
-			this.textBox_LevelName.Size = new System.Drawing.Size(432, 26);
+			this.textBox_LevelName.Size = new System.Drawing.Size(432, 29);
 			this.textBox_LevelName.TabIndex = 1;
 			this.textBox_LevelName.TextChanged += new System.EventHandler(this.textBox_LevelName_TextChanged);
 			// 
@@ -342,6 +342,7 @@
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.Controls.Add(this.progressBar);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.Name = "FormImportLevel";

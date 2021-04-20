@@ -60,7 +60,7 @@
 			this.label_FolderName.Location = new System.Drawing.Point(3, 370);
 			this.label_FolderName.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
 			this.label_FolderName.Name = "label_FolderName";
-			this.label_FolderName.Size = new System.Drawing.Size(70, 13);
+			this.label_FolderName.Size = new System.Drawing.Size(75, 13);
 			this.label_FolderName.TabIndex = 0;
 			this.label_FolderName.Text = "Folder Name:";
 			// 
@@ -72,7 +72,7 @@
 			this.label_Where.Location = new System.Drawing.Point(11, 10);
 			this.label_Where.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.label_Where.Name = "label_Where";
-			this.label_Where.Size = new System.Drawing.Size(88, 13);
+			this.label_Where.Size = new System.Drawing.Size(94, 13);
 			this.label_Where.TabIndex = 5;
 			this.label_Where.Text = "Where to Create:";
 			// 
@@ -108,11 +108,11 @@
 			// textBox_NewFolderName
 			// 
 			this.textBox_NewFolderName.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.textBox_NewFolderName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.textBox_NewFolderName.Location = new System.Drawing.Point(73, 363);
+			this.textBox_NewFolderName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_NewFolderName.Location = new System.Drawing.Point(78, 363);
 			this.textBox_NewFolderName.Margin = new System.Windows.Forms.Padding(0, 3, 6, 6);
 			this.textBox_NewFolderName.Name = "textBox_NewFolderName";
-			this.textBox_NewFolderName.Size = new System.Drawing.Size(383, 26);
+			this.textBox_NewFolderName.Size = new System.Drawing.Size(378, 26);
 			this.textBox_NewFolderName.TabIndex = 1;
 			// 
 			// panel_02
@@ -136,6 +136,7 @@
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "FormFolderCreation";
 			this.ShowIcon = false;

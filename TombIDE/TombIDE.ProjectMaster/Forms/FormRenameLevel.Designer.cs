@@ -85,7 +85,7 @@
 			this.label.Location = new System.Drawing.Point(3, 3);
 			this.label.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.label.Name = "label";
-			this.label.Size = new System.Drawing.Size(38, 13);
+			this.label.Size = new System.Drawing.Size(39, 13);
 			this.label.TabIndex = 0;
 			this.label.Text = "Name:";
 			// 
@@ -97,7 +97,7 @@
 			this.label_LanguageError.Location = new System.Drawing.Point(20, 122);
 			this.label_LanguageError.Margin = new System.Windows.Forms.Padding(12, 3, 3, 9);
 			this.label_LanguageError.Name = "label_LanguageError";
-			this.label_LanguageError.Size = new System.Drawing.Size(331, 13);
+			this.label_LanguageError.Size = new System.Drawing.Size(367, 13);
 			this.label_LanguageError.TabIndex = 5;
 			this.label_LanguageError.Text = "Couldn\'t find a language string that matches the current level\'s name.";
 			this.label_LanguageError.Visible = false;
@@ -109,7 +109,7 @@
 			this.label_ScriptError.Location = new System.Drawing.Point(20, 106);
 			this.label_ScriptError.Margin = new System.Windows.Forms.Padding(12, 3, 3, 0);
 			this.label_ScriptError.Name = "label_ScriptError";
-			this.label_ScriptError.Size = new System.Drawing.Size(321, 13);
+			this.label_ScriptError.Size = new System.Drawing.Size(353, 13);
 			this.label_ScriptError.TabIndex = 4;
 			this.label_ScriptError.Text = "Couldn\'t find a script section that matches the current level\'s name.";
 			this.label_ScriptError.Visible = false;
@@ -132,7 +132,7 @@
 			// 
 			// textBox_NewName
 			// 
-			this.textBox_NewName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_NewName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_NewName.Location = new System.Drawing.Point(6, 19);
 			this.textBox_NewName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 6);
 			this.textBox_NewName.Name = "textBox_NewName";
@@ -161,6 +161,7 @@
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "FormRenameLevel";
 			this.ShowIcon = false;

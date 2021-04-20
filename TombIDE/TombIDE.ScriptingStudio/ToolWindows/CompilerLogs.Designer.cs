@@ -25,7 +25,7 @@
 			this.richTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.richTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.richTextBox.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.richTextBox.ForeColor = System.Drawing.Color.Gainsboro;
 			this.richTextBox.Location = new System.Drawing.Point(0, 25);
 			this.richTextBox.Name = "richTextBox";

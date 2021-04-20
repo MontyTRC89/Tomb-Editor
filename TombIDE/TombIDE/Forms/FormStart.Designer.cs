@@ -17,7 +17,6 @@
 
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormStart));
 			this.button_Delete = new System.Windows.Forms.ToolStripButton();
 			this.button_Import = new System.Windows.Forms.ToolStripButton();
 			this.button_Main_Import = new System.Windows.Forms.Button();
@@ -258,7 +257,7 @@
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
 			this.treeView.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-			this.treeView.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView.ItemHeight = 40;
 			this.treeView.Location = new System.Drawing.Point(0, 30);
 			this.treeView.MaxDragChange = 40;
@@ -339,6 +338,7 @@
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.MinimumSize = new System.Drawing.Size(512, 512);
 			this.Name = "FormStart";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

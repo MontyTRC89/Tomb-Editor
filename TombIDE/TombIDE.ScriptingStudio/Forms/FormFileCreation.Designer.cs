@@ -61,10 +61,10 @@
 			this.comboBox_FileFormat.Items.AddRange(new object[] {
             ".TXT (Text file)",
             ".LUA (LUA Script File)"});
-			this.comboBox_FileFormat.Location = new System.Drawing.Point(64, 368);
+			this.comboBox_FileFormat.Location = new System.Drawing.Point(70, 368);
 			this.comboBox_FileFormat.Margin = new System.Windows.Forms.Padding(0, 3, 3, 6);
 			this.comboBox_FileFormat.Name = "comboBox_FileFormat";
-			this.comboBox_FileFormat.Size = new System.Drawing.Size(392, 21);
+			this.comboBox_FileFormat.Size = new System.Drawing.Size(386, 23);
 			this.comboBox_FileFormat.TabIndex = 2;
 			// 
 			// label_FileName
@@ -75,7 +75,7 @@
 			this.label_FileName.Location = new System.Drawing.Point(3, 340);
 			this.label_FileName.Margin = new System.Windows.Forms.Padding(3, 3, 0, 0);
 			this.label_FileName.Name = "label_FileName";
-			this.label_FileName.Size = new System.Drawing.Size(57, 13);
+			this.label_FileName.Size = new System.Drawing.Size(60, 13);
 			this.label_FileName.TabIndex = 0;
 			this.label_FileName.Text = "File Name:";
 			// 
@@ -87,7 +87,7 @@
 			this.label_Format.Location = new System.Drawing.Point(3, 371);
 			this.label_Format.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
 			this.label_Format.Name = "label_Format";
-			this.label_Format.Size = new System.Drawing.Size(61, 13);
+			this.label_Format.Size = new System.Drawing.Size(67, 13);
 			this.label_Format.TabIndex = 3;
 			this.label_Format.Text = "File Format:";
 			// 
@@ -99,7 +99,7 @@
 			this.label_Where.Location = new System.Drawing.Point(11, 10);
 			this.label_Where.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.label_Where.Name = "label_Where";
-			this.label_Where.Size = new System.Drawing.Size(88, 13);
+			this.label_Where.Size = new System.Drawing.Size(94, 13);
 			this.label_Where.TabIndex = 5;
 			this.label_Where.Text = "Where to Create:";
 			// 
@@ -137,11 +137,11 @@
 			// textBox_NewFileName
 			// 
 			this.textBox_NewFileName.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			this.textBox_NewFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.textBox_NewFileName.Location = new System.Drawing.Point(64, 333);
+			this.textBox_NewFileName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_NewFileName.Location = new System.Drawing.Point(70, 333);
 			this.textBox_NewFileName.Margin = new System.Windows.Forms.Padding(0, 3, 6, 6);
 			this.textBox_NewFileName.Name = "textBox_NewFileName";
-			this.textBox_NewFileName.Size = new System.Drawing.Size(392, 26);
+			this.textBox_NewFileName.Size = new System.Drawing.Size(386, 26);
 			this.textBox_NewFileName.TabIndex = 1;
 			// 
 			// panel_02
@@ -165,6 +165,7 @@
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
 			this.FlatBorder = true;
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "FormFileCreation";
 			this.ShowIcon = false;

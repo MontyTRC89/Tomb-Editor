@@ -83,7 +83,7 @@ namespace TombIDE.ScriptingStudio.Controls
 			DisplayStyle = TabStyle.Dark;
 			DisplayStyleProvider.ShowTabCloser = true;
 			EnableMiddleClickTabClosing = true;
-			Font = new Font("Microsoft Sans Serif", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 238);
+			Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 238);
 		}
 
 		private void InitializeContextMenu()

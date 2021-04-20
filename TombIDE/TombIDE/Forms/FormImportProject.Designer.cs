@@ -75,10 +75,10 @@
 			// label_01
 			// 
 			this.label_01.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_01.Location = new System.Drawing.Point(6, 6);
+			this.label_01.Location = new System.Drawing.Point(-1, 6);
 			this.label_01.Margin = new System.Windows.Forms.Padding(6, 6, 0, 3);
 			this.label_01.Name = "label_01";
-			this.label_01.Size = new System.Drawing.Size(111, 20);
+			this.label_01.Size = new System.Drawing.Size(126, 20);
 			this.label_01.TabIndex = 0;
 			this.label_01.Text = "Game\'s .exe path:";
 			this.label_01.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -86,10 +86,10 @@
 			// label_02
 			// 
 			this.label_02.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-			this.label_02.Location = new System.Drawing.Point(6, 32);
+			this.label_02.Location = new System.Drawing.Point(-1, 32);
 			this.label_02.Margin = new System.Windows.Forms.Padding(6, 3, 0, 6);
 			this.label_02.Name = "label_02";
-			this.label_02.Size = new System.Drawing.Size(111, 20);
+			this.label_02.Size = new System.Drawing.Size(126, 20);
 			this.label_02.TabIndex = 2;
 			this.label_02.Text = "Launcher file location:";
 			this.label_02.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -101,7 +101,7 @@
 			this.label_03.Location = new System.Drawing.Point(6, 6);
 			this.label_03.Margin = new System.Windows.Forms.Padding(6, 6, 3, 0);
 			this.label_03.Name = "label_03";
-			this.label_03.Size = new System.Drawing.Size(72, 13);
+			this.label_03.Size = new System.Drawing.Size(76, 13);
 			this.label_03.TabIndex = 0;
 			this.label_03.Text = "Project name:";
 			// 
@@ -112,7 +112,7 @@
 			this.label_04.Location = new System.Drawing.Point(6, 60);
 			this.label_04.Margin = new System.Windows.Forms.Padding(6, 9, 3, 0);
 			this.label_04.Name = "label_04";
-			this.label_04.Size = new System.Drawing.Size(181, 13);
+			this.label_04.Size = new System.Drawing.Size(199, 13);
 			this.label_04.TabIndex = 2;
 			this.label_04.Text = "Script location: (Existing Script folder)";
 			// 
@@ -123,7 +123,7 @@
 			this.label_05.Location = new System.Drawing.Point(6, 108);
 			this.label_05.Margin = new System.Windows.Forms.Padding(6, 9, 3, 0);
 			this.label_05.Name = "label_05";
-			this.label_05.Size = new System.Drawing.Size(350, 13);
+			this.label_05.Size = new System.Drawing.Size(378, 13);
 			this.label_05.TabIndex = 5;
 			this.label_05.Text = "Levels location: (The folder where newly created levels should be stored)";
 			// 
@@ -145,11 +145,11 @@
 			this.textBox_LauncherPath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_LauncherPath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBox_LauncherPath.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_LauncherPath.Location = new System.Drawing.Point(120, 32);
+			this.textBox_LauncherPath.Location = new System.Drawing.Point(128, 32);
 			this.textBox_LauncherPath.Margin = new System.Windows.Forms.Padding(3, 3, 6, 6);
 			this.textBox_LauncherPath.Name = "textBox_LauncherPath";
 			this.textBox_LauncherPath.ReadOnly = true;
-			this.textBox_LauncherPath.Size = new System.Drawing.Size(318, 20);
+			this.textBox_LauncherPath.Size = new System.Drawing.Size(310, 22);
 			this.textBox_LauncherPath.TabIndex = 3;
 			// 
 			// textBox_ExePath
@@ -157,11 +157,11 @@
 			this.textBox_ExePath.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.textBox_ExePath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBox_ExePath.ForeColor = System.Drawing.Color.Gainsboro;
-			this.textBox_ExePath.Location = new System.Drawing.Point(120, 6);
+			this.textBox_ExePath.Location = new System.Drawing.Point(128, 6);
 			this.textBox_ExePath.Margin = new System.Windows.Forms.Padding(3, 6, 6, 3);
 			this.textBox_ExePath.Name = "textBox_ExePath";
 			this.textBox_ExePath.ReadOnly = true;
-			this.textBox_ExePath.Size = new System.Drawing.Size(318, 20);
+			this.textBox_ExePath.Size = new System.Drawing.Size(310, 22);
 			this.textBox_ExePath.TabIndex = 1;
 			// 
 			// panel_02
@@ -183,11 +183,11 @@
 			// 
 			// textBox_ProjectName
 			// 
-			this.textBox_ProjectName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_ProjectName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_ProjectName.Location = new System.Drawing.Point(6, 22);
 			this.textBox_ProjectName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_ProjectName.Name = "textBox_ProjectName";
-			this.textBox_ProjectName.Size = new System.Drawing.Size(432, 26);
+			this.textBox_ProjectName.Size = new System.Drawing.Size(432, 29);
 			this.textBox_ProjectName.TabIndex = 1;
 			// 
 			// textBox_LevelsPath
@@ -195,7 +195,7 @@
 			this.textBox_LevelsPath.Location = new System.Drawing.Point(6, 124);
 			this.textBox_LevelsPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 9);
 			this.textBox_LevelsPath.Name = "textBox_LevelsPath";
-			this.textBox_LevelsPath.Size = new System.Drawing.Size(351, 20);
+			this.textBox_LevelsPath.Size = new System.Drawing.Size(351, 22);
 			this.textBox_LevelsPath.TabIndex = 6;
 			this.textBox_LevelsPath.TextChanged += new System.EventHandler(this.textBox_LevelsPath_TextChanged);
 			// 
@@ -204,7 +204,7 @@
 			this.textBox_ScriptPath.Location = new System.Drawing.Point(6, 76);
 			this.textBox_ScriptPath.Margin = new System.Windows.Forms.Padding(6, 3, 3, 3);
 			this.textBox_ScriptPath.Name = "textBox_ScriptPath";
-			this.textBox_ScriptPath.Size = new System.Drawing.Size(351, 20);
+			this.textBox_ScriptPath.Size = new System.Drawing.Size(351, 22);
 			this.textBox_ScriptPath.TabIndex = 3;
 			// 
 			// toolTip
@@ -225,6 +225,7 @@
 			this.Controls.Add(this.button_Import);
 			this.Controls.Add(this.panel_01);
 			this.Controls.Add(this.panel_02);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.Name = "FormImportProject";

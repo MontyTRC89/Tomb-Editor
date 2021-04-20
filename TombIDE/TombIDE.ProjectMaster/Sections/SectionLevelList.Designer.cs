@@ -184,7 +184,7 @@
 			this.label_Hint.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.label_Hint.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.label_Hint.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.label_Hint.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.label_Hint.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.label_Hint.ForeColor = System.Drawing.Color.Gray;
 			this.label_Hint.Location = new System.Drawing.Point(1, 55);
 			this.label_Hint.Name = "label_Hint";
@@ -214,7 +214,7 @@
 			this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.treeView.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(52)))), ((int)(((byte)(52)))));
 			this.treeView.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
-			this.treeView.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.treeView.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.treeView.ItemHeight = 40;
 			this.treeView.Location = new System.Drawing.Point(1, 55);
 			this.treeView.MaxDragChange = 40;

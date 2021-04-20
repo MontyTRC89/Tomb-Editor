@@ -105,13 +105,13 @@
 			// 
 			this.comboBox_EngineType.FormattingEnabled = true;
 			this.comboBox_EngineType.Items.AddRange(new object[] {
-			"- Select -",
-			"TRNG",
-			"TRNG + FLEP"});
+            "- Select -",
+            "TRNG",
+            "TRNG + FLEP"});
 			this.comboBox_EngineType.Location = new System.Drawing.Point(72, 54);
 			this.comboBox_EngineType.Margin = new System.Windows.Forms.Padding(3, 6, 6, 6);
 			this.comboBox_EngineType.Name = "comboBox_EngineType";
-			this.comboBox_EngineType.Size = new System.Drawing.Size(285, 21);
+			this.comboBox_EngineType.Size = new System.Drawing.Size(285, 23);
 			this.comboBox_EngineType.TabIndex = 3;
 			// 
 			// label_01
@@ -121,7 +121,7 @@
 			this.label_01.Location = new System.Drawing.Point(3, 3);
 			this.label_01.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.label_01.Name = "label_01";
-			this.label_01.Size = new System.Drawing.Size(72, 13);
+			this.label_01.Size = new System.Drawing.Size(76, 13);
 			this.label_01.TabIndex = 0;
 			this.label_01.Text = "Project name:";
 			// 
@@ -132,7 +132,7 @@
 			this.label_02.Location = new System.Drawing.Point(3, 57);
 			this.label_02.Margin = new System.Windows.Forms.Padding(3, 9, 0, 0);
 			this.label_02.Name = "label_02";
-			this.label_02.Size = new System.Drawing.Size(66, 13);
+			this.label_02.Size = new System.Drawing.Size(71, 13);
 			this.label_02.TabIndex = 2;
 			this.label_02.Text = "Engine type:";
 			// 
@@ -143,7 +143,7 @@
 			this.label_03.Location = new System.Drawing.Point(3, 87);
 			this.label_03.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
 			this.label_03.Name = "label_03";
-			this.label_03.Size = new System.Drawing.Size(83, 13);
+			this.label_03.Size = new System.Drawing.Size(90, 13);
 			this.label_03.TabIndex = 4;
 			this.label_03.Text = "Project location:";
 			// 
@@ -238,7 +238,7 @@
 			this.textBox_LevelsPath.Location = new System.Drawing.Point(6, 267);
 			this.textBox_LevelsPath.Margin = new System.Windows.Forms.Padding(6, 3, 6, 9);
 			this.textBox_LevelsPath.Name = "textBox_LevelsPath";
-			this.textBox_LevelsPath.Size = new System.Drawing.Size(351, 20);
+			this.textBox_LevelsPath.Size = new System.Drawing.Size(351, 22);
 			this.textBox_LevelsPath.TabIndex = 13;
 			// 
 			// textBox_ScriptPath
@@ -247,7 +247,7 @@
 			this.textBox_ScriptPath.Location = new System.Drawing.Point(6, 185);
 			this.textBox_ScriptPath.Margin = new System.Windows.Forms.Padding(6, 3, 6, 9);
 			this.textBox_ScriptPath.Name = "textBox_ScriptPath";
-			this.textBox_ScriptPath.Size = new System.Drawing.Size(351, 20);
+			this.textBox_ScriptPath.Size = new System.Drawing.Size(351, 22);
 			this.textBox_ScriptPath.TabIndex = 9;
 			// 
 			// textBox_ProjectPath
@@ -255,12 +255,12 @@
 			this.textBox_ProjectPath.Location = new System.Drawing.Point(6, 103);
 			this.textBox_ProjectPath.Margin = new System.Windows.Forms.Padding(6, 3, 6, 9);
 			this.textBox_ProjectPath.Name = "textBox_ProjectPath";
-			this.textBox_ProjectPath.Size = new System.Drawing.Size(351, 20);
+			this.textBox_ProjectPath.Size = new System.Drawing.Size(351, 22);
 			this.textBox_ProjectPath.TabIndex = 5;
 			// 
 			// textBox_ProjectName
 			// 
-			this.textBox_ProjectName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+			this.textBox_ProjectName.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.textBox_ProjectName.Location = new System.Drawing.Point(6, 19);
 			this.textBox_ProjectName.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
 			this.textBox_ProjectName.Name = "textBox_ProjectName";
@@ -285,6 +285,7 @@
 			this.Controls.Add(this.progressBar);
 			this.Controls.Add(this.button_Create);
 			this.Controls.Add(this.panel_ProjectSettings);
+			this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.Name = "FormProjectSetup";
