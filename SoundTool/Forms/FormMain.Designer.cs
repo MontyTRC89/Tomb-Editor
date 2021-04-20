@@ -447,7 +447,6 @@
             this.Controls.Add(this.dgvSoundInfos);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.darkMenuStrip1);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainMenuStrip = this.darkMenuStrip1;
             this.MinimumSize = new System.Drawing.Size(802, 513);
             this.Name = "FormMain";

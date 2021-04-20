@@ -80,7 +80,6 @@ namespace TombEditor.Forms
             this.Controls.Add(this.tbText);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

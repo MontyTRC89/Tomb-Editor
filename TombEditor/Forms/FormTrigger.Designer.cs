@@ -408,7 +408,6 @@ namespace TombEditor.Forms
             this.ClientSize = new System.Drawing.Size(695, 223);
             this.Controls.Add(this.panelMain);
             this.DoubleBuffered = true;
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
             this.Name = "FormTrigger";
             this.ShowIcon = false;

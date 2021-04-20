@@ -395,7 +395,6 @@
             this.Controls.Add(this.panel2DGrid_sub);
             this.Controls.Add(this.panelBottom);
             this.DockText = "Sector Options";
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(284, 278);
             this.Name = "SectorOptions";
             this.SerializationKey = "SectorOptions";

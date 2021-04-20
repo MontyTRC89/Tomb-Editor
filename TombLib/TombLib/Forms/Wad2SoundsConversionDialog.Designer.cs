@@ -285,7 +285,6 @@ namespace TombLib.Forms
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(670, 560);
             this.Name = "Wad2SoundsConversionDialog";

@@ -830,6 +830,7 @@
             this.tbStats.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.tbStats.Cursor = System.Windows.Forms.Cursors.Default;
             this.tbStats.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tbStats.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbStats.Location = new System.Drawing.Point(4, 4);
             this.tbStats.Name = "tbStats";
             this.tbStats.ReadOnly = true;
@@ -859,7 +860,6 @@
             this.Controls.Add(this.panelStats);
             this.Controls.Add(this.toolStrip);
             this.DockText = "";
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainView";
             this.SerializationKey = "MainView";
             this.Size = new System.Drawing.Size(839, 289);

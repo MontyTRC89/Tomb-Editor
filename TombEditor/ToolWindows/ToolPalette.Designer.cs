@@ -51,7 +51,6 @@
             this.Controls.Add(this.toolBox);
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Right;
             this.DockText = "Tools";
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(28, 52);
             this.Name = "ToolPalette";
             this.SerializationKey = "ToolPalette";

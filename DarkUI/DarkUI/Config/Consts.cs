@@ -1,4 +1,6 @@
-﻿namespace DarkUI.Config
+﻿using System.Drawing;
+
+namespace DarkUI.Config
 {
     public static class Consts
     {
@@ -17,5 +19,7 @@
         public const int MinimumRegionSize = 80;
 
         public const bool DisableSingleDocumentTab = true;
+
+        public static readonly Font DefaultFont = new Font("Segoe UI", 8.25F);
     }
 }

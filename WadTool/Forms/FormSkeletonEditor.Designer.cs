@@ -663,7 +663,6 @@
             this.Controls.Add(this.cbDrawGizmo);
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.butSaveChanges);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MinimizeBox = false;

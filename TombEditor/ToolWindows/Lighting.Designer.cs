@@ -543,7 +543,6 @@
             this.Controls.Add(this.butAddPointLight);
             this.DefaultDockArea = DarkUI.Docking.DarkDockArea.Bottom;
             this.DockText = "Lighting";
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(444, 139);
             this.Name = "Lighting";
             this.SerializationKey = "Lighting";

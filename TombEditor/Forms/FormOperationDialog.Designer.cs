@@ -146,7 +146,6 @@ namespace TombEditor.Forms
             this.ClientSize = new System.Drawing.Size(654, 402);
             this.Controls.Add(this.panelLogAndProgressBar);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormOperationDialog";

@@ -223,7 +223,6 @@
             this.Controls.Add(this.listenKeys);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.butOK);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.KeyPreview = true;
             this.MinimizeBox = false;
             this.Name = "FormKeyboardLayout";

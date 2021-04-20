@@ -95,7 +95,6 @@
             this.Controls.Add(this.panelTriggerList);
             this.Controls.Add(this.panelTriggerTools);
             this.DockText = "Objects in Room";
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimumSize = new System.Drawing.Size(100, 100);
             this.Name = "ObjectList";
             this.SerializationKey = "ObjectList";

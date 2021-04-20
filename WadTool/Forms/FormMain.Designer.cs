@@ -1028,7 +1028,6 @@
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.darkToolStrip1);
             this.Controls.Add(this.darkMenuStrip1);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.darkMenuStrip1;
             this.MinimumSize = new System.Drawing.Size(800, 600);

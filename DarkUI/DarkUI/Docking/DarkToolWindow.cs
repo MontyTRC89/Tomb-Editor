@@ -47,6 +47,7 @@ namespace DarkUI.Docking
                      ControlStyles.UserPaint, true);
 
             BackColor = Colors.GreyBackground;
+            Font = Consts.DefaultFont;
             base.Padding = new Padding(0, Consts.ToolWindowHeaderSize, 0, 0);
 
             UpdateCloseButton();

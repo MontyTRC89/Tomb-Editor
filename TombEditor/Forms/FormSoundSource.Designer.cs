@@ -161,7 +161,6 @@
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.optionPlaySoundFromWadGroupBox);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(500, 520);
             this.Name = "FormSoundSource";

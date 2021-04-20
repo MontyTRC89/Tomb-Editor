@@ -467,7 +467,6 @@
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.cbAllowOversizedRooms);
             this.Controls.Add(this.optUseWalls);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(540, 355);
             this.Name = "FormResizeRoom";

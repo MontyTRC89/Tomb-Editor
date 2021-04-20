@@ -36,6 +36,7 @@ namespace DarkUI.Forms
         public DarkForm()
         {
             BackColor = Colors.GreyBackground;
+            Font = Consts.DefaultFont;
         }
 
         public sealed override Color BackColor

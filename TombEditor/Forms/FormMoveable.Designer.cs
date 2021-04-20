@@ -196,7 +196,6 @@ namespace TombEditor.Forms
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.cbBit1);
             this.Controls.Add(this.cbClearBody);
-            this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
