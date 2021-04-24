@@ -55,6 +55,7 @@ namespace DarkUI.Controls
         public DarkDataGridView()
         {
             Name = "DarkDataGridView";
+            OutlineColor = Colors.LightBorder;
 
             UpdateCellStyles();
 
@@ -648,6 +649,7 @@ namespace DarkUI.Controls
 
         [Category("Appearance")]
         [DefaultValue(typeof(Color), "0x515151")]
+        [ReadOnly(true)]
         public Color OutlineColor
         {
             get { return base.BackColor; }
