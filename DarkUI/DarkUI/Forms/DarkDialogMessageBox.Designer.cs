@@ -40,6 +40,7 @@ namespace DarkUI.Forms
             this.picIcon.Location = new System.Drawing.Point(10, 10);
             this.picIcon.Name = "picIcon";
             this.picIcon.Size = new System.Drawing.Size(32, 32);
+            this.picIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.picIcon.TabIndex = 3;
             this.picIcon.TabStop = false;
             // 
