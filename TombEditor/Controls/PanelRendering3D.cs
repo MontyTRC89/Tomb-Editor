@@ -2517,6 +2517,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
             _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.Default);
+            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
             var groups = roomsWhoseObjectsToDraw.SelectMany(r => r.Objects).GroupBy(o => o.GetType());
             foreach (var group in groups)
@@ -2992,7 +2993,7 @@ namespace TombEditor.Controls
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
+						}
 
                         // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
@@ -3212,7 +3213,7 @@ namespace TombEditor.Controls
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
                             _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                        }
+						}
 
                         // Add text message
                         if (i == 0 && _editor.SelectedObject == instance)
@@ -3536,7 +3537,6 @@ namespace TombEditor.Controls
                 if (ShowStatics)
                     DrawStatics(staticsToDraw, textToDraw, hiddenSelection);
 
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
                 _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
             }
 
