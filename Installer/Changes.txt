@@ -10,6 +10,9 @@ TombIDE:
  * Fixed issues with plugin installtion and scripts not being properly generated.
  * Some UI adjustments.
  * Bug fixes.
+ 
+General:
+ * Installer option and separate utility to associate file types with TE toolchain.
 
 Version 1.3.13
 ==============

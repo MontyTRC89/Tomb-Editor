@@ -116,9 +116,10 @@ Section "TombIDE" Section2
   TombIDE*.* 
   
   File /r "TIDE"
+  File /r "Resources\ClassicScript"
   File /r "Configs"
   
-  tideInstalled = "yes"
+  StrCpy $tideInstalled "yes"
   
 SectionEnd
 
@@ -174,7 +175,7 @@ LangString DESC_Section2 ${LANG_ENGLISH} "TombIDE. Also makes TombEditor not dep
 LangString DESC_Section3 ${LANG_ENGLISH} "Stock sound assets for TR1. Needed if you plan to build TR1 levels."
 LangString DESC_Section4 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications in Start Menu."
 LangString DESC_Section5 ${LANG_ENGLISH} "Shortcuts for Tomb Editor applications on Desktop."
-LangString DESC_Section6 ${LANG_ENGLISH} "Associate all filetypes with Tomb Editor, WadTool and TombIDE."
+LangString DESC_Section6 ${LANG_ENGLISH} "Associate file types with Tomb Editor, WadTool and TombIDE."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${Section1} $(DESC_Section1)
@@ -182,6 +183,7 @@ LangString DESC_Section6 ${LANG_ENGLISH} "Associate all filetypes with Tomb Edit
   !insertmacro MUI_DESCRIPTION_TEXT ${Section3} $(DESC_Section3)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section4} $(DESC_Section4)
   !insertmacro MUI_DESCRIPTION_TEXT ${Section5} $(DESC_Section5)
+  !insertmacro MUI_DESCRIPTION_TEXT ${Section6} $(DESC_Section6)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
@@ -692,16 +694,17 @@ FunctionEnd
 
 Function un.registerExtensions
   
-    ExecShell "" "$INSTDIR\FileAssociation.exe -000"
+  ExecShell "runas" "$INSTDIR\FileAssociation.exe" '-d'
+  Sleep 1000
     
 FunctionEnd
 
 Function .registerExtensions
   
   ${If} tideInstalled == "yes"
-    ExecShell "" "$INSTDIR\FileAssociation.exe -111"
+    ExecShell "runas" "$INSTDIR\FileAssociation.exe" '-111'
   ${Else}
-    ExecShell "" "$INSTDIR\FileAssociation.exe -110"
+    ExecShell "runas" "$INSTDIR\FileAssociation.exe" '-110'
   ${EndIf}
     
 FunctionEnd
