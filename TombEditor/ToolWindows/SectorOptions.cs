@@ -122,6 +122,8 @@ namespace TombEditor.ToolWindows
                 _editor.SectorColoringManager.SetPriority(SectorColoringType.NotWalkableFloor);
             else if (button == butPortal)
                 _editor.SectorColoringManager.SetPriority(SectorColoringType.Portal);
+            else if (button == butForceSolidFloor)
+                _editor.SectorColoringManager.SetPriority(SectorColoringType.ForceFloorSolid);
             else if (button == butClimbNegativeX ||
                      button == butClimbNegativeZ ||
                      button == butClimbPositiveX ||

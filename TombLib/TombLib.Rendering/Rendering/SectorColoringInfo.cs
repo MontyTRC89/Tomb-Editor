@@ -299,8 +299,25 @@ namespace TombLib.Rendering
                         }
                         break;
                     case SectorColoringShape.Hatch:
-                        if (block.ForceFloorSolid)
-                            return colorScheme.ColorForceSolidFloor;
+                        switch (priorityList[i])
+                        {
+                            case SectorColoringType.ForceFloorSolid:
+                                if (block.ForceFloorSolid)
+                                    return colorScheme.ColorForceSolidFloor;
+                                break;
+
+                            case SectorColoringType.Portal:
+                                {
+                                    var floorInfo = room.GetFloorRoomConnectionInfo(new VectorInt2(x, z), true);
+                                    var ceilingInfo = room.GetCeilingRoomConnectionInfo(new VectorInt2(x, z), true);
+
+                                    if ((floorInfo.Portal   != null && floorInfo.VisualType   == Room.RoomConnectionType.NoPortal) ||
+                                        (ceilingInfo.Portal != null && ceilingInfo.VisualType == Room.RoomConnectionType.NoPortal) ||
+                                        (block.WallPortal != null && !block.WallPortal.IsTraversable))
+                                        return colorScheme.ColorPortal;
+                                }
+                                break;
+                        }
                         break;
                     case SectorColoringShape.TriangleXnZn:
                         if (block.Type == BlockType.Wall && block.Floor.DiagonalSplit == DiagonalSplit.XnZn)
