@@ -62,7 +62,6 @@ Section "Tomb Editor" Section1
   SetOutPath $INSTDIR
   File /r \
   /x "TIDE" \
-  /x "Resources\ClassicScript" \
   /x "Configs" \
   /x "Assets" \
   /x "TombEditorLog*.txt" \
@@ -116,7 +115,6 @@ Section "TombIDE" Section2
   TombIDE*.* 
   
   File /r "TIDE"
-  File /r "Resources\ClassicScript"
   File /r "Configs"
   
   StrCpy $tideInstalled "yes"
@@ -548,6 +546,7 @@ Section "Uninstall"
   Delete "$INSTDIR\MiniZ32.dll"
   Delete "$INSTDIR\MiniZ.Net.dll"
   Delete "$INSTDIR\ICSharpCode.AvalonEdit.dll"
+  Delete "$INSTDIR\File Association.exe"
   Delete "$INSTDIR\DarkUI.dll"
   Delete "$INSTDIR\CustomTabControl.dll"
   Delete "$INSTDIR\ColorThief.Desktop.v45.dll"
@@ -694,7 +693,7 @@ FunctionEnd
 
 Function un.registerExtensions
   
-  ExecShell "runas" "$INSTDIR\FileAssociation.exe" '-d'
+  ExecShell "runas" "$INSTDIR\File Association.exe" '-d'
   Sleep 1000
     
 FunctionEnd
@@ -702,9 +701,9 @@ FunctionEnd
 Function .registerExtensions
   
   ${If} tideInstalled == "yes"
-    ExecShell "runas" "$INSTDIR\FileAssociation.exe" '-111'
+    ExecShell "runas" "$INSTDIR\File Association.exe" '-111'
   ${Else}
-    ExecShell "runas" "$INSTDIR\FileAssociation.exe" '-110'
+    ExecShell "runas" "$INSTDIR\File Association.exe" '-110'
   ${EndIf}
     
 FunctionEnd
