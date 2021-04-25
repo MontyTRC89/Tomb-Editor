@@ -162,7 +162,7 @@ Section "Desktop Shortcuts" Section5
 
 SectionEnd
 
-Section "Associate file types" Section6
+Section "Associate File Types" Section6
   
   SectionIn 1 2
   
