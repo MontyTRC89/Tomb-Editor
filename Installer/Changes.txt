@@ -3,6 +3,7 @@ Version 1.4
 
 Tomb Editor:
  * Show toggle opacity portals as hatch highlight in 2D grid.
+ * New level settings to show FLEP blending modes and new ChocolateFan's patch reverb presets in UI.
  
 TombIDE:
  * Added a brand new String Editor for language files (e.g. ENGLISH.TXT).

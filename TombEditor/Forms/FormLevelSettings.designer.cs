@@ -37,6 +37,8 @@
             this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.cbRearrangeRooms = new DarkUI.Controls.DarkCheckBox();
             this.cbRemoveObjects = new DarkUI.Controls.DarkCheckBox();
+            this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
@@ -46,8 +48,6 @@
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
-            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.lblGameEnableQuickStartFeature2 = new DarkUI.Controls.DarkLabel();
             this.lblGameEnableQuickStartFeature1 = new DarkUI.Controls.DarkLabel();
             this.GameEnableQuickStartFeatureCheckBox = new DarkUI.Controls.DarkCheckBox();
@@ -470,6 +470,30 @@
         "\nUse with caution in the case of dynamic object creation with scripts!");
             this.cbRemoveObjects.CheckedChanged += new System.EventHandler(this.cbRemoveObjects_CheckedChanged);
             // 
+            // GameEnableExtraReverbPresetsCheckBox
+            // 
+            this.GameEnableExtraReverbPresetsCheckBox.AutoSize = true;
+            this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 76);
+            this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
+            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(156, 17);
+            this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
+            this.GameEnableExtraReverbPresetsCheckBox.Text = "Show FLEP reverb presets";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
+            this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
+            // 
+            // GameEnableExtraBlendingModesCheckBox
+            // 
+            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
+            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
+            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
+            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(196, 17);
+            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
+            this.GameEnableExtraBlendingModesCheckBox.Text = "Show FLEP extra blending modes";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
+            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
+            // 
             // optionsList
             // 
             this.optionsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -583,30 +607,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(772, 349);
             this.panel3.TabIndex = 3;
-            // 
-            // GameEnableExtraReverbPresetsCheckBox
-            // 
-            this.GameEnableExtraReverbPresetsCheckBox.AutoSize = true;
-            this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 76);
-            this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
-            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(190, 17);
-            this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
-            this.GameEnableExtraReverbPresetsCheckBox.Text = "Enable FLEP extra reverb presets";
-            this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
-            this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
-            // 
-            // GameEnableExtraBlendingModesCheckBox
-            // 
-            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
-            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
-            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
-            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(202, 17);
-            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
-            this.GameEnableExtraBlendingModesCheckBox.Text = "Enable FLEP extra blending modes";
-            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
-            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
             // 
             // lblGameEnableQuickStartFeature2
             // 
