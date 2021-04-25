@@ -46,6 +46,8 @@
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.lblGameEnableQuickStartFeature2 = new DarkUI.Controls.DarkLabel();
             this.lblGameEnableQuickStartFeature1 = new DarkUI.Controls.DarkLabel();
             this.GameEnableQuickStartFeatureCheckBox = new DarkUI.Controls.DarkCheckBox();
@@ -183,8 +185,6 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
-            this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
@@ -230,14 +230,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(100, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(99, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -584,11 +584,35 @@
             this.panel3.Size = new System.Drawing.Size(772, 349);
             this.panel3.TabIndex = 3;
             // 
+            // GameEnableExtraReverbPresetsCheckBox
+            // 
+            this.GameEnableExtraReverbPresetsCheckBox.AutoSize = true;
+            this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 76);
+            this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
+            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(190, 17);
+            this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
+            this.GameEnableExtraReverbPresetsCheckBox.Text = "Enable FLEP extra reverb presets";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
+            this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
+            // 
+            // GameEnableExtraBlendingModesCheckBox
+            // 
+            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
+            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
+            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
+            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(202, 17);
+            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
+            this.GameEnableExtraBlendingModesCheckBox.Text = "Enable FLEP extra blending modes";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
+            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
+            // 
             // lblGameEnableQuickStartFeature2
             // 
             this.lblGameEnableQuickStartFeature2.AutoSize = true;
             this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 187);
+            this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 189);
             this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
             this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(698, 13);
             this.lblGameEnableQuickStartFeature2.TabIndex = 5;
@@ -599,7 +623,7 @@
             // 
             this.lblGameEnableQuickStartFeature1.AutoSize = true;
             this.lblGameEnableQuickStartFeature1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblGameEnableQuickStartFeature1.Location = new System.Drawing.Point(42, 116);
+            this.lblGameEnableQuickStartFeature1.Location = new System.Drawing.Point(42, 118);
             this.lblGameEnableQuickStartFeature1.Name = "lblGameEnableQuickStartFeature1";
             this.lblGameEnableQuickStartFeature1.Size = new System.Drawing.Size(268, 65);
             this.lblGameEnableQuickStartFeature1.TabIndex = 5;
@@ -610,7 +634,7 @@
             // GameEnableQuickStartFeatureCheckBox
             // 
             this.GameEnableQuickStartFeatureCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableQuickStartFeatureCheckBox.Location = new System.Drawing.Point(19, 97);
+            this.GameEnableQuickStartFeatureCheckBox.Location = new System.Drawing.Point(19, 99);
             this.GameEnableQuickStartFeatureCheckBox.Name = "GameEnableQuickStartFeatureCheckBox";
             this.GameEnableQuickStartFeatureCheckBox.Size = new System.Drawing.Size(420, 16);
             this.GameEnableQuickStartFeatureCheckBox.TabIndex = 4;
@@ -2129,28 +2153,6 @@
             this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // GameEnableExtraBlendingModesCheckBox
-            // 
-            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
-            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 51);
-            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
-            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(176, 17);
-            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
-            this.GameEnableExtraBlendingModesCheckBox.Text = "Enable extra blending modes";
-            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
-            // 
-            // GameEnableExtraReverbPresetsCheckBox
-            // 
-            this.GameEnableExtraReverbPresetsCheckBox.AutoSize = true;
-            this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 74);
-            this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
-            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(164, 17);
-            this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
-            this.GameEnableExtraReverbPresetsCheckBox.Text = "Enable extra reverb presets";
-            this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
             // 
             // FormLevelSettings
             // 

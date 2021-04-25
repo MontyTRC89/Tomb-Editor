@@ -393,6 +393,12 @@ namespace TombEditor.ToolWindows
             if (_editor.SelectedRoom.Properties.Reverberation == comboReverberation.SelectedIndex)
                 return;
 
+            // Show extra tooltips in case reverb modes are extended
+            if (_editor.Level.Settings.GameEnableExtraReverbPresets && comboReverberation.SelectedIndex > 0)
+                toolTip.SetToolTip(comboReverberation, comboReverberation.Text);
+            else
+                toolTip.SetToolTip(comboReverberation, string.Empty);
+
             _editor.SelectedRoom.Properties.Reverberation = (byte)comboReverberation.SelectedIndex;
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
