@@ -42,7 +42,7 @@
       <Link>GlobalPaths.cs</Link>
     </Compile>
     <Compile Include="Enumerations.cs" />
-    <Compile Include="Localization\Localization.cs" />
+    <Compile Include="Resources\Localization\Localization.cs" />
     <Compile Include="SharedClasses\TemplatePaths.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="SharedClasses\PathHelper.cs" />
@@ -79,10 +79,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Localization\EN\TombIDE.xml">
+    <Content Include="Resources\Localization\EN\TombIDE.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Localization\PL\TombIDE.xml">
+    <Content Include="Resources\Localization\PL\TombIDE.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="TIDE\NGC\!~~DO_NOT_USE_THIS_NG_CENTER.txt">

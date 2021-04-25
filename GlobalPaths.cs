@@ -21,7 +21,7 @@ internal static class DefaultPaths
 
 	#region Localization
 
-	public static string LocalizationDirectory => Path.Combine(ProgramDirectory, "Localization");
+	public static string LocalizationDirectory => Path.Combine(ResourcesDirectory, "Localization");
 
 	#endregion Localization
 
@@ -56,7 +56,7 @@ internal static class DefaultPaths
 	public static string TombIDEExecutable => Path.Combine(ProgramDirectory, "TombIDE.exe");
 
 	public static string LibraryRegistrationExecutable => Path.Combine(ProgramDirectory, "TombIDE Library Registration.exe");
-	public static string FileAssociationExecutable => Path.Combine(ProgramDirectory, "TombLib File Association.exe");
+	public static string FileAssociationExecutable => Path.Combine(ProgramDirectory, "File Association.exe");
 
 	public static string NGCExecutable => Path.Combine(InternalNGCDirectory, "NG_Center.exe");
 

@@ -7,7 +7,7 @@
     <ProjectGuid>{934E79A8-2B20-4E0E-A145-08404493A7F6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>FileAssociation</RootNamespace>
-    <AssemblyName>FileAssociation</AssemblyName>
+    <AssemblyName>File Association</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
