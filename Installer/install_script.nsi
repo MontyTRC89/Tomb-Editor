@@ -627,6 +627,8 @@ Section "Uninstall"
   
   ; Remove settings
   RMDir /r "$LOCALAPPDATA\TombEditor"
+  RMDir /r "$LOCALAPPDATA\SoundTool"
+  RMDir /r "$LOCALAPPDATA\WadTool"
 
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\TombEditor"
