@@ -342,6 +342,14 @@ namespace TombEditor
                     EditorActions.MoveObjectRelative((PositionBasedObjectInstance)args.Editor.SelectedObject, new Vector3(0, -1024, 0), new Vector3(), true);
             });
 
+            AddCommand("SelectFloorBelowObject", "Select floor below current object", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (args.Editor.SelectedObject is PositionBasedObjectInstance)
+                    EditorActions.SelectFloorBelowObject(args.Editor.SelectedObject as PositionBasedObjectInstance);
+                else
+                    args.Editor.SendMessage("Please select an object.", PopupType.Error);
+            });
+
             AddCommand("SelectPreviousRoom", "Select previous room", CommandType.Rooms, delegate (CommandArgs args)
             {
                 var prevRoom = args.Editor.PreviousRoom;

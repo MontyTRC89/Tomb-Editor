@@ -124,6 +124,7 @@ namespace TombEditor.Forms
             this.toolStripMenuSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.findObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveLaraToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectFloorBelowObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitSectorObjectOnSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.setStaticMeshColorToRoomLightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1049,6 +1050,7 @@ namespace TombEditor.Forms
             this.toolStripMenuSeparator8,
             this.findObjectToolStripMenuItem,
             this.moveLaraToolStripMenuItem,
+            this.selectFloorBelowObjectToolStripMenuItem,
             this.splitSectorObjectOnSelectionToolStripMenuItem,
             this.toolStripSeparator3,
             this.setStaticMeshColorToRoomLightToolStripMenuItem,
@@ -1340,6 +1342,16 @@ namespace TombEditor.Forms
             this.moveLaraToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.moveLaraToolStripMenuItem.Tag = "MoveLara";
             this.moveLaraToolStripMenuItem.Text = "MoveLara";
+            // 
+            // selectFloorBelowObjectToolStripMenuItem
+            // 
+            this.selectFloorBelowObjectToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.selectFloorBelowObjectToolStripMenuItem.Enabled = false;
+            this.selectFloorBelowObjectToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(153)))), ((int)(((byte)(153)))));
+            this.selectFloorBelowObjectToolStripMenuItem.Name = "selectFloorBelowObjectToolStripMenuItem";
+            this.selectFloorBelowObjectToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.selectFloorBelowObjectToolStripMenuItem.Tag = "SelectFloorBelowObject";
+            this.selectFloorBelowObjectToolStripMenuItem.Text = "SelectFloorBelowObject";
             // 
             // splitSectorObjectOnSelectionToolStripMenuItem
             // 
@@ -2457,5 +2469,6 @@ namespace TombEditor.Forms
 		private ToolStripMenuItem deleteAllLightsToolStripMenuItem;
 		private ToolStripMenuItem toolStripMenuItem2;
 		private ToolStripMenuItem deleteAllTriggersToolStripMenuItem;
-	}
+        private ToolStripMenuItem selectFloorBelowObjectToolStripMenuItem;
+    }
 }

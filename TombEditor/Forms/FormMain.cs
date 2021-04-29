@@ -110,6 +110,8 @@ namespace TombEditor.Forms
                 deleteToolStripMenuItem.Enabled = _editor.Mode == EditorMode.Map2D || selectedObject != null;
 
                 stampToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
+                selectFloorBelowObjectToolStripMenuItem.Enabled = selectedObject is PositionBasedObjectInstance;
+
                 if (obj is Editor.ModeChangedEvent)
                     ClipboardEvents_ClipboardChanged(this, EventArgs.Empty);
 

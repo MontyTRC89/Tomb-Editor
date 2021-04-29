@@ -136,8 +136,8 @@ namespace TombLib.LevelData
 
                     if (oldBlock == null || (useFloor.HasValue && newBlocks[x, z].Type == BlockType.BorderWall))
                         newBlocks[x, z].Type = !useFloor.HasValue || useFloor.Value ? BlockType.Floor : BlockType.Wall;
-                    
-                    if(!useFloor.HasValue)
+
+                    if (!useFloor.HasValue)
                     {
                         oldBlock.Raise(BlockVertical.Floor, floor);
                         oldBlock.Raise(BlockVertical.Ed, floor);
@@ -295,7 +295,7 @@ namespace TombLib.LevelData
                 for (int x = 0; x < NumXSectors; ++x)
                     result.Blocks[x, z] = Blocks[x, z].Clone();
 
-            if(decideToCopy != null)
+            if (decideToCopy != null)
             {
                 // Copy objects
                 result._objects = new List<PositionBasedObjectInstance>();
@@ -350,7 +350,7 @@ namespace TombLib.LevelData
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
-        public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z)*new Vector3(1024.0f,256.0f,1024.0f),
+        public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z) * new Vector3(1024.0f, 256.0f, 1024.0f),
                                                                new Vector3(Position.X + NumXSectors - 1, Position.Y + GetHighestCorner(), Position.Z + NumZSectors - 1) * new Vector3(1024.0f, 256.0f, 1024.0f));
         public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
 
@@ -404,7 +404,7 @@ namespace TombLib.LevelData
             { // No LINQ because it is really slow.
                 var ghosts = new HashSet<GhostBlockInstance>();
                 foreach (var block in Blocks)
-                    if(block.HasGhostBlock)
+                    if (block.HasGhostBlock)
                         ghosts.Add(block.GhostBlock);
                 return ghosts;
             }
@@ -479,8 +479,10 @@ namespace TombLib.LevelData
             return values;
         }
 
-        public RoomBlockPair ProbeLowestBlock(VectorInt2 pos, bool doProbe = true)
+        public RoomBlockPair ProbeLowestBlock(VectorInt2 pos, bool doProbe, out VectorInt2 adjoiningCoordinate)
         {
+            adjoiningCoordinate = pos; // Set to source coordinate by default
+
             Block block = GetBlockTry(pos);
             if (block == null)
                 return new RoomBlockPair();
@@ -495,10 +497,10 @@ namespace TombLib.LevelData
                 return result;
 
             Room adjoiningRoom = result.Block.FloorPortal.AdjoiningRoom;
-            VectorInt2 adjoiningSectorCoordinate = pos + (SectorPos - adjoiningRoom.SectorPos);
-            return adjoiningRoom.ProbeLowestBlock(adjoiningSectorCoordinate);
+            adjoiningCoordinate = pos + (SectorPos - adjoiningRoom.SectorPos);
+            return adjoiningRoom.ProbeLowestBlock(adjoiningCoordinate, true, out adjoiningCoordinate);
         }
-        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true) => ProbeLowestBlock(new VectorInt2(x, z), doProbe);
+        public RoomBlockPair ProbeLowestBlock(int x, int z, bool doProbe = true) { VectorInt2 temp; return ProbeLowestBlock(new VectorInt2(x, z), doProbe, out temp); }
 
         public RoomBlockPair GetBlockTryThroughPortal(VectorInt2 pos)
         {

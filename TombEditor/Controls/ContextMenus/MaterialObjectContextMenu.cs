@@ -94,15 +94,21 @@ namespace TombEditor.Controls.ContextMenus
                 }));
             }
 
-            if (targetObject is PositionBasedObjectInstance && targetObject.Room != _editor.SelectedRoom)
+            if (targetObject is PositionBasedObjectInstance)
             {
                 if (!(Items[Items.Count-1] is ToolStripSeparator))
                     Items.Add(new ToolStripSeparator());
 
-                Items.Add(new ToolStripMenuItem("Move object to current room", null, (o, e) =>
+                Items.Add(new ToolStripMenuItem("Select floor below current object", null, (o, e) =>
                 {
-                    EditorActions.MoveObjectToOtherRoom((PositionBasedObjectInstance)targetObject, _editor.SelectedRoom);
+                    EditorActions.SelectFloorBelowObject((PositionBasedObjectInstance)targetObject);
                 }));
+
+                if (targetObject.Room != _editor.SelectedRoom)
+                    Items.Add(new ToolStripMenuItem("Move object to current room", null, (o, e) =>
+                    {
+                        EditorActions.MoveObjectToOtherRoom((PositionBasedObjectInstance)targetObject, _editor.SelectedRoom);
+                    }));
             }
 
             if (targetObject is PositionBasedObjectInstance && (targetObject is IRotateableY || targetObject is IRotateableYX || targetObject is IRotateableYXRoll))

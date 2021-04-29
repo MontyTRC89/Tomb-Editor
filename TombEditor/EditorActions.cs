@@ -4260,6 +4260,14 @@ namespace TombEditor
 			PlaceObjectWithoutUpdate(targetRoom, block, instance);
 		}
 
+        public static void SelectFloorBelowObject(PositionBasedObjectInstance instance)
+        {
+            VectorInt2 relPos;
+            var pair = instance.Room.ProbeLowestBlock(instance.SectorPosition, true, out relPos);
+            _editor.SelectedRoom = pair.Room;
+            _editor.SelectedSectors = new SectorSelection { Area = new RectangleInt2(relPos) };
+        }
+
 		public static void MoveLara(IWin32Window owner, Room targetRoom, VectorInt2 p)
         {
             // Search for first Lara and remove her

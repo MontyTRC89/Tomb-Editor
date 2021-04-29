@@ -2,6 +2,7 @@ Version 1.4
 ===========
 
 Tomb Editor:
+ * Add hotkey command and context menu entry to select floor below current object.
  * Show toggle opacity portals as hatch highlight in 2D grid.
  * New level settings to show FLEP blending modes and new ChocolateFan's patch reverb presets in UI.
  
