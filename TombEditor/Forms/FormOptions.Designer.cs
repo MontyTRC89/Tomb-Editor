@@ -2108,7 +2108,7 @@
             this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage8.Size = new System.Drawing.Size(386, 511);
             this.tabPage8.TabIndex = 20;
-            this.tabPage8.Text = "Item preview";
+            this.tabPage8.Text = "Item browser";
             // 
             // darkCheckBox43
             // 
