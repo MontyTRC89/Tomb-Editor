@@ -353,10 +353,15 @@ namespace TombEditor.Forms
             this.numTimer.Location = new System.Drawing.Point(82, 72);
             this.numTimer.LoopValues = false;
             this.numTimer.Maximum = new decimal(new int[] {
-            65535,
+            32767,
             0,
             0,
             0});
+            this.numTimer.Minimum = new decimal(new int[] {
+            32768,
+            0,
+            0,
+            -2147483648});
             this.numTimer.Name = "numTimer";
             this.numTimer.Size = new System.Drawing.Size(71, 22);
             this.numTimer.TabIndex = 2;
