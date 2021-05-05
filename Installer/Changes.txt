@@ -16,6 +16,7 @@ TombIDE:
  * Bug fixes.
  
 General:
+ * Update application icons.
  * Installer option and separate utility to associate file types with TE toolchain.
 
 Version 1.3.13
