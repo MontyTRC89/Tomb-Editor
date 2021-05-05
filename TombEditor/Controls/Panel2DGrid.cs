@@ -157,6 +157,14 @@ namespace TombEditor.Controls
                 (int)Math.Max(0, Math.Min(roomSize.Y - 1, (roomArea.Bottom - point.Y) / gridStep)));
         }
 
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                OnMouseDown(new MouseEventArgs(MouseButtons.Right, 1, e.X, e.Y, e.Delta));
+            else
+                base.OnMouseDoubleClick(e);
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
