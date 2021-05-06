@@ -742,7 +742,11 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(light.Color.Green / 255.0f);
                 writer.Write(light.Color.Blue / 255.0f);
 
-                writer.Write(0xcdcdcdcd);
+                // TR5 keeps shadow intensity separately
+                if (light.LightType == 3)
+                    writer.Write((int)((light.Intensity / 8191.0f) * 255.0f));
+                else
+                    writer.Write(0xcdcdcdcd);
 
                 writer.Write(light.In);
                 writer.Write(light.Out);
@@ -759,9 +763,9 @@ namespace TombLib.LevelData.Compilers
                 writer.Write(light.Y);
                 writer.Write(light.Z);
 
-                writer.Write((int)light.DirectionX);
-                writer.Write((int)light.DirectionY);
-                writer.Write((int)light.DirectionZ);
+                writer.Write((int)(light.DirectionX * 16384.0f));
+                writer.Write((int)(light.DirectionY * 16384.0f));
+                writer.Write((int)(light.DirectionZ * 16384.0f));
 
                 writer.Write(light.LightType);
 
