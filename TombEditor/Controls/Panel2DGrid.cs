@@ -159,10 +159,8 @@ namespace TombEditor.Controls
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && ModifierKeys == Keys.None)
                 OnMouseDown(new MouseEventArgs(MouseButtons.Right, 1, e.X, e.Y, e.Delta));
-            else
-                base.OnMouseDoubleClick(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -185,7 +183,7 @@ namespace TombEditor.Controls
             SectorBasedObjectInstance selectedSectorObject = _editor.SelectedObject as SectorBasedObjectInstance;
 
             // Choose action
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && ModifierKeys == Keys.None)
             {
                 if (selectedSectorObject != null &&
                     selectedSectorObject.Room == Room &&
@@ -220,7 +218,8 @@ namespace TombEditor.Controls
                     _doSectorSelection = true;
                 }
             }
-            else if (e.Button == MouseButtons.Right)
+            else if ((e.Button == MouseButtons.Left && ModifierKeys == Keys.Alt) ||
+                      e.Button == MouseButtons.Right)
             {
                 // Find next object
                 var portalsInRoom = Room.Portals.Cast<SectorBasedObjectInstance>();
