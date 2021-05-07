@@ -10,8 +10,8 @@ Tomb Editor:
  
 TombIDE:
  * Added a brand new String Editor for language files (e.g. ENGLISH.TXT).
- * Implemented "plugins.parc", which is an archive that stores a copy of all plugin a project is using.
- * Fixed issues with plugin installtion and scripts not being properly generated.
+ * Implemented "plugins.parc", which is an archive that stores a copy of all plugins a project is using.
+ * Fixed issues with plugin installation and scripts not being properly generated.
  * Some UI adjustments.
  * Bug fixes.
  
