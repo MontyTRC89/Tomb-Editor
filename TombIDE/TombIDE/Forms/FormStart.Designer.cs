@@ -221,7 +221,7 @@
 			this.checkBox_Remember.Location = new System.Drawing.Point(11, 5);
 			this.checkBox_Remember.Margin = new System.Windows.Forms.Padding(3, 3, 3, 6);
 			this.checkBox_Remember.Name = "checkBox_Remember";
-			this.checkBox_Remember.Size = new System.Drawing.Size(200, 28);
+			this.checkBox_Remember.Size = new System.Drawing.Size(215, 28);
 			this.checkBox_Remember.TabIndex = 0;
 			this.checkBox_Remember.Text = "Remember project choice on startup";
 			// 
@@ -277,6 +277,7 @@
 			this.toolStrip.AutoSize = false;
 			this.toolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
 			this.toolStrip.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+			this.toolStrip.GripStyle  = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.button_New,
             this.button_Open,
