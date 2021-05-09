@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
+using TombLib;
 
 namespace TombEditor.Forms
 {
@@ -169,7 +170,7 @@ namespace TombEditor.Forms
             if (cbScalable.Checked)
             {
                 numScalable.Visible = true;
-                numScalable.Value = (decimal)((newOCB & 4095) / 4.0f);
+                numScalable.Value = (decimal)MathC.Clamp((newOCB & 4095) / 4.0f, 0.0f, 1023.0f);
             }
             else
             {
@@ -181,10 +182,7 @@ namespace TombEditor.Forms
         {
             short ocb;
             if (!short.TryParse(tbOCB.Text, out ocb))
-            {
-                DarkMessageBox.Show(this, "The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
-            }
 
             newOCB = ocb;
             return true;
