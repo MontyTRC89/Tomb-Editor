@@ -49,8 +49,11 @@ namespace TombIDE.ProjectMaster
 		private void OnIDEEventRaised(IIDEEvent obj)
 		{
 			if (obj is IDE.PluginListsUpdatedEvent)
+			{
 				UpdateTreeView();
-			else if (obj is IDE.PluginListsUpdatedEvent)
+				CreatePARCFile();
+			}
+			else if (obj is IDE.ProgramClosingEvent)
 				CreatePARCFile();
 		}
 
