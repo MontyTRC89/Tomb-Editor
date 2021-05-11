@@ -199,7 +199,7 @@ namespace TombLib.Wad.TrLevels
             }
 
             // In original wad/tr formats, negative normals count means that light type is static
-            if (oldMesh.NumNormals <= 0)
+            if (oldMesh.NumNormals < 0)
                 mesh.LightingType = WadMeshLightingType.VertexColors;
             else
                 mesh.LightingType = WadMeshLightingType.Normals;
