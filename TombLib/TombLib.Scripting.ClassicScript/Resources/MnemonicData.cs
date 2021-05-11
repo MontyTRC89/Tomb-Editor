@@ -81,29 +81,41 @@ namespace TombLib.Scripting.ClassicScript.Resources
 						if (line.StartsWith("<end>", StringComparison.OrdinalIgnoreCase))
 							break;
 
-						if (!string.IsNullOrWhiteSpace(line) && line.Contains(":"))
+						if (!string.IsNullOrWhiteSpace(line))
 						{
-							string description = string.Empty;
-							string decimalString = string.Empty;
+							int decimalStart = line.IndexOf(':');
 
-							if (line.Contains(";"))
+							if (decimalStart != -1)
 							{
-								description = string.Join(Environment.NewLine, BasicCleaner.TrimEndingWhitespaceOnLines(line.Split(';')[1].Trim().Split('>')));
-								decimalString = line.Split(';')[0].Trim().Split(':')[1].Trim();
+								int descriptionStart = line.IndexOf(';');
+
+								string decimalString = string.Empty;
+								string description = string.Empty;
+
+								if (descriptionStart != -1)
+								{
+									string[] descriptionLines = line.Substring(descriptionStart + 1).Trim().Split('>');
+									description = string.Join(Environment.NewLine, BasicCleaner.TrimEndingWhitespaceOnLines(descriptionLines));
+
+									int decimalLength = descriptionStart - decimalStart - 1;
+
+									if (decimalLength > 0)
+										decimalString = line.Substring(decimalStart + 1, decimalLength).Trim();
+								}
+								else
+									decimalString = line.Substring(decimalStart + 1).Trim();
+
+								try
+								{
+									short decimalValue = 0;
+
+									if (!short.TryParse(decimalString, out decimalValue))
+										decimalValue = Convert.ToInt16(decimalString.Replace("$", string.Empty), 16);
+
+									pluginMnemonics.Add(new PluginConstant(line.Substring(0, decimalStart).Trim(), description, decimalValue));
+								}
+								catch (Exception) { } // https://youtu.be/T9NjXekZ8kA
 							}
-							else
-								decimalString = line.Split(':')[1].Trim();
-
-							try
-							{
-								short decimalValue = 0;
-
-								if (!short.TryParse(decimalString, out decimalValue))
-									decimalValue = Convert.ToInt16(decimalString.Replace("$", string.Empty), 16);
-
-								pluginMnemonics.Add(new PluginConstant(line.Split(':')[0].Trim(), description, decimalValue));
-							}
-							catch (Exception) { } // https://youtu.be/T9NjXekZ8kA
 						}
 					}
 				}
