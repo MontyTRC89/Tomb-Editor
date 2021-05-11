@@ -6,6 +6,7 @@ Tomb Editor:
  * Show toggle opacity portals as hatch highlight in 2D grid.
  * New level settings to show FLEP blending modes and new ChocolateFan's patch reverb presets in UI.
  * Select portals and triggers in 2D grid window by double-click or alt+click.
+ * Fix exception if a room with empty imported geometry was copypasted.
  * Fix potential timer overflow in flyby camera dialog.
  * Fix static mesh OCB text field issues.
  

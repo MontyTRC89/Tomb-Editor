@@ -63,10 +63,14 @@ namespace TombLib.LevelData
 
         public override void CopyDependentLevelSettings(Room.CopyDependentLevelSettingsArgs args)
         {
+            // If geometry has no model assigned, do nothing
+            if (Model == null)
+                return;
+
             base.CopyDependentLevelSettings(args);
             if (args.UnifyData)
             {
-                foreach (ImportedGeometry importedGeometry in args.DestinationLevelSettings.ImportedGeometries)
+                foreach (var importedGeometry in args.DestinationLevelSettings.ImportedGeometries)
                     if (importedGeometry.Info.Equals(Model.Info))
                     {
                         Model = importedGeometry;
