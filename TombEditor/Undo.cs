@@ -102,7 +102,7 @@ namespace TombEditor
                 if (UndoObject is ImportedGeometryInstance)
                 {
                     var geo = UndoObject as ImportedGeometryInstance;
-                    if (!Room.Level.Settings.ImportedGeometries.Contains(geo.Model))
+                    if (geo.Model != null && !Room.Level.Settings.ImportedGeometries.Contains(geo.Model))
                         return false;
                 }
                 return result;
