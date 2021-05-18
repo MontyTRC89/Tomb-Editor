@@ -1286,7 +1286,7 @@ namespace TombEditor.Forms
             this.deleteAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteAllToolStripMenuItem.Name = "deleteAllToolStripMenuItem";
             this.deleteAllToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.deleteAllToolStripMenuItem.Text = "Delete ...";
+            this.deleteAllToolStripMenuItem.Text = "Delete...";
             // 
             // deleteAllLightsToolStripMenuItem
             // 
