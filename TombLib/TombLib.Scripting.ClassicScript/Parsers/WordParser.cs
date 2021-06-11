@@ -13,7 +13,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			int wordStart = -1;
 			int wordEnd = -1;
 
-			for (int i = offset; i <= lineEndOffset; i++)
+			for (int i = offset; i < lineEndOffset; i++)
 			{
 				char c = document.GetCharAt(i);
 
@@ -51,7 +51,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			DocumentLine line = document.GetLineByOffset(offset);
 			int lineEndOffset = line.Offset + line.Length;
 
-			for (int i = offset; i <= lineEndOffset; i++)
+			for (int i = offset; i < lineEndOffset; i++)
 				switch (document.GetCharAt(i))
 				{
 					case ']':
