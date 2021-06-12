@@ -8,6 +8,7 @@ Tomb Editor:
  
 WadTool:
  * Fix occasional state ID textbox autocomplete mistakes.
+ * Fix sprite transparency issues with faulty TRNG draw routines (use TGA format).
  
 TombIDE:
  * Fix random exceptions for out of range values in text editor.
