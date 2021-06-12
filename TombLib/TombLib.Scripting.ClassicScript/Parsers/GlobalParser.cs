@@ -36,7 +36,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					takenIndicesList = GetTakenIndicesList(document, commandKey, sectionStartLineNumber + 1);
 				}
 				else
-					takenIndicesList = GetTakenIndicesList(document, commandKey, 0);
+					takenIndicesList = GetTakenIndicesList(document, commandKey, 1);
 
 				int nextFreeIndex = 1;
 
