@@ -91,6 +91,7 @@ namespace WadTool
                     {
                         var newSprite = new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileName)) };
                         newSprite.RecalculateAlignment();
+                        newSprite.Texture.Image.SetColorDataForTransparentPixels(new ColorC(0, 0, 0));
                         sprites.Add(newSprite);
                     }
                     catch (Exception exc)
@@ -266,6 +267,7 @@ namespace WadTool
                 {
                     sprite = new WadSprite { Texture = new WadTexture(ImageC.FromFile(fileDialog.FileName)) };
                     sprite.RecalculateAlignment();
+                    sprite.Texture.Image.SetColorDataForTransparentPixels(new ColorC(0, 0, 0));
                     dataGridView.EditableRowCollection[row.Index] = sprite;
                     dataGridView.Refresh();
                     dataGridView.Invalidate();
