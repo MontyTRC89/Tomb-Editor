@@ -13,6 +13,7 @@ WadTool:
 TombIDE:
  * Fix random exceptions for out of range values in text editor.
  * Fix exception when selecting "Open containing folder" context menu entry.
+ * Fix exception when using F1 to autocomplete the ID of a parameter in external .txt files.
 
 Version 1.3.14
 ==============
