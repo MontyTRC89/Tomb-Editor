@@ -116,8 +116,10 @@
             // 
             // FormRoomProperties
             // 
+            this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(264, 412);
             this.Controls.Add(this.dgvPropertyList);
             this.Controls.Add(this.darkLabel1);
