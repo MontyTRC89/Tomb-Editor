@@ -55,6 +55,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			{
 				DocumentLine processedLine = document.GetLineByNumber(i);
 				string processedLineText = document.GetText(processedLine.Offset, processedLine.Length);
+				processedLineText = LineParser.EscapeComments(processedLineText);
 
 				string command = CommandParser.GetCommandKey(document, processedLine.Offset);
 

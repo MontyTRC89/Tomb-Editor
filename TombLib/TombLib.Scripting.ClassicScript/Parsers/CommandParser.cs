@@ -88,6 +88,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 				return null;
 
 			string commandStartLineText = document.GetText(commandStartLine.Offset, commandStartLine.Length);
+			commandStartLineText = LineParser.EscapeComments(commandStartLineText);
 
 			if (commandStartLineText.Contains("="))
 				return GetCorrectCommandVariation(document, commandStartLine.Offset, commandStartLineText.Split('=')[0].Trim());
