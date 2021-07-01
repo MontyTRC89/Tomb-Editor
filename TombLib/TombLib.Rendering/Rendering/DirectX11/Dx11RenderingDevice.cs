@@ -49,7 +49,7 @@ namespace TombLib.Rendering.DirectX11
         public Dx11RenderingDevice()
         {
             logger.Info("Dx11 rendering device creating.");
-#if !DEBUG
+#if DEBUG
             const DeviceCreationFlags DebugFlags = DeviceCreationFlags.Debug;
 #else
             const DeviceCreationFlags DebugFlags = DeviceCreationFlags.None;
@@ -100,7 +100,7 @@ namespace TombLib.Rendering.DirectX11
                 throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
             }
 
-#if !DEBUG
+#if DEBUG
             using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
             {
                 DeviceInfoQueue.SetBreakOnSeverity(MessageSeverity.Warning, true);

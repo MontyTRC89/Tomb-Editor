@@ -54,6 +54,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TombLib.Scripting.Lua", "To
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileAssociation", "FileAssociation\FileAssociation.csproj", "{934E79A8-2B20-4E0E-A145-08404493A7F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectConverter", "ProjectConverter\ProjectConverter.csproj", "{8A070E56-E472-4FD3-A753-ED668FB25760}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -280,6 +282,18 @@ Global
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x64.Build.0 = Release|Any CPU
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x86.ActiveCfg = Release|Any CPU
 		{934E79A8-2B20-4E0E-A145-08404493A7F6}.Release|x86.Build.0 = Release|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x64.Build.0 = Debug|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Debug|x86.Build.0 = Debug|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x64.ActiveCfg = Release|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x64.Build.0 = Release|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x86.ActiveCfg = Release|Any CPU
+		{8A070E56-E472-4FD3-A753-ED668FB25760}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
