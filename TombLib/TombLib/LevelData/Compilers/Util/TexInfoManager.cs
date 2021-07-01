@@ -504,7 +504,7 @@ namespace TombLib.LevelData.Compilers.Util
 
                     // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
                     // Otherwise use original unpadded correction offsets.
-                    if (version >= TRVersion.Game.TR4 && version != TRVersion.Game.TombEngine)
+                    if (version >= TRVersion.Game.TR4)
                     {
                         if (parent.Padding.All(p => p == 0))
                             coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
@@ -551,10 +551,7 @@ namespace TombLib.LevelData.Compilers.Util
                 MaxTileSize = (ushort)maxTileSize;
             else
             {
-                if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
-                    MaxTileSize = 256; // FIXME: change later...
-                else
-                    MaxTileSize = _minimumTileSize;
+                MaxTileSize = _minimumTileSize;
             }
 
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
@@ -770,7 +767,7 @@ namespace TombLib.LevelData.Compilers.Util
 
             // UVRotate hack is needed for TR4-5, because we couldn't figure real Core's UVRotate approach. 
             // For TombEngine, hopefully no such hack will be needed.
-            var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3 && _level.Settings.GameVersion != TRVersion.Game.TombEngine;
+            var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3;
 
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
             var refQuad = uvRotateHack && isForTriangle ? texture.RestoreQuadWithRotation() : texture;
@@ -1481,7 +1478,7 @@ namespace TombLib.LevelData.Compilers.Util
                     writer.Write(rect.Height - 1);
                 }
 
-                if (level.Settings.GameVersion == TRVersion.Game.TR5 || level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                if (level.Settings.GameVersion == TRVersion.Game.TR5)
                     writer.Write((ushort)0);
             }
         }

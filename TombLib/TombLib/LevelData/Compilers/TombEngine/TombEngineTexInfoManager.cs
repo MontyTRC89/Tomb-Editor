@@ -325,9 +325,9 @@ namespace TombLib.LevelData.Compilers
 
             // Check if bumpmapping could be assigned to parent.
             // NOTE: This function is only used to check if bumpmap is possible, DO NOT use it to check ACTUAL bumpmap level!
-            public BumpMappingLevel BumpLevel(TRVersion.Game version)
+            public BumpMappingLevel BumpLevel()
             {
-                if (Texture is LevelTexture && version > TRVersion.Game.TR3)
+                if (Texture is LevelTexture)
                 {
                     var tex = Texture as LevelTexture;
                     if (!String.IsNullOrEmpty(tex.BumpPath))
@@ -528,15 +528,15 @@ namespace TombLib.LevelData.Compilers
             public VectorInt2 PositionInAtlas;
             public Vector2[] TexCoordFloat = new Vector2[4];
 
-            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, TRVersion.Game version, float maxTextureSize)
+            public ObjectTexture(ParentTextureArea parent, ChildTextureArea child, float maxTextureSize)
             {
                 BlendMode = child.BlendMode;
-                BumpLevel = parent.BumpLevel(version);
+                BumpLevel = parent.BumpLevel();
                 Destination = parent.Destination;
                 IsForTriangle = child.IsForTriangle;
                 Tile = parent.Page;
                 UVAdjustmentFlag = (ushort)TextureExtensions.GetTextureShapeType(child.RelCoord, IsForTriangle);
-                
+
                 for (int i = 0; i < child.RelCoord.Length; i++)
                 {
                     var coord = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
@@ -544,39 +544,26 @@ namespace TombLib.LevelData.Compilers
 
                     // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
                     // Otherwise use original unpadded correction offsets.
-                    if (version >= TRVersion.Game.TR4)
-                    {
-                        if (parent.Padding.All(p => p == 0))
-                            coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
-                        else
-                            coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
-                    }
-                    else if (version == TRVersion.Game.TR3) 
-                    {
-                        // For some reason texel alignment without padding 
-                        // breaks adjacent textures in TR3, so bypass it for such cases.
-                        if (parent.Padding.All(p => p != 0))
-                            coord -= new Vector2(0.5f);
-                    }
+                    if (parent.Padding.All(p => p == 0))
+                        coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
+                    else
+                        coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
 
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
                     coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
 
-                    if (version == TRVersion.Game.TombEngine)
-                    {
-                        AtlasIndex = parent.AtlasIndex;
-                        AtlasDimensions = parent.AtlasDimensions;
-                        PositionInAtlas = parent.PositionInAtlas;
+                    AtlasIndex = parent.AtlasIndex;
+                    AtlasDimensions = parent.AtlasDimensions;
+                    PositionInAtlas = parent.PositionInAtlas;
 
-                        int atlasX = PositionInAtlas.X;
-                        int atlasY = PositionInAtlas.Y;
+                    int atlasX = PositionInAtlas.X;
+                    int atlasY = PositionInAtlas.Y;
 
-                        // Float coordinates must be in 0.0f ... 1.0f range
-                        TexCoordFloat[i] = (coord + new Vector2(atlasX * 256.0f, atlasY * 256.0f));
-                        TexCoordFloat[i].X /= (float)AtlasDimensions.X;
-                        TexCoordFloat[i].Y /= (float)AtlasDimensions.Y;
-                    }
+                    // Float coordinates must be in 0.0f ... 1.0f range
+                    TexCoordFloat[i] = (coord + new Vector2(atlasX * 256.0f, atlasY * 256.0f));
+                    TexCoordFloat[i].X /= (float)AtlasDimensions.X;
+                    TexCoordFloat[i].Y /= (float)AtlasDimensions.Y;
 
                     // Pack coordinates into 2-byte set (whole and frac parts)
                     TexCoord[i] = new VectorInt2((((int)Math.Truncate(coord.X)) << 8) + (int)(Math.Floor(coord.X % 1.0f * 255.0f)),
@@ -606,10 +593,7 @@ namespace TombLib.LevelData.Compilers
                 MaxTileSize = (ushort)maxTileSize;
             else
             {
-                if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
-                    MaxTileSize = 256; // FIXME: change later...
-                else
-                    MaxTileSize = _minimumTileSize;
+                MaxTileSize = 256;
             }
 
             GenerateAnimLookups(_level.Settings.AnimatedTextureSets);  // Generate anim texture lookup table
@@ -903,7 +887,7 @@ namespace TombLib.LevelData.Compilers
 
             // UVRotate hack is needed for TR4-5, because we couldn't figure real Core's UVRotate approach. 
             // For TombEngine, hopefully no such hack will be needed.
-            var uvRotateHack = _level.Settings.GameVersion > TRVersion.Game.TR3 && _level.Settings.GameVersion != TRVersion.Game.TombEngine;
+            var uvRotateHack = false;
 
             // If UVRotate hack is needed and texture is triangle, prepare a quad substitute reference for animation lookup.
             var refQuad = uvRotateHack && isForTriangle ? texture.RestoreQuadWithRotation() : texture;
@@ -1604,7 +1588,7 @@ namespace TombLib.LevelData.Compilers
             var y = customY.HasValue ? customY.Value : (int)p.Area.Start.Y;
             var width = (int)p.Area.Width;
             var height = (int)p.Area.Height;
-            var dataOffset = (_level.Settings.GameVersion != TRVersion.Game.TombEngine ? (p.Page + pageOffset) * 256 : 0);
+            var dataOffset = 0;
 
             // Add actual padding (ported code from OT bordered_texture_atlas.cpp)
 
@@ -1654,7 +1638,7 @@ namespace TombLib.LevelData.Compilers
 
         // Groups all textures by their attributes, cleans them up and builds actual texture data.
 
-        public void LayOutAllData(TRVersion.Game version)
+        public void LayOutAllData()
         {
             if (_dataHasBeenLaidOut) return;
             _dataHasBeenLaidOut = true;
@@ -1673,54 +1657,24 @@ namespace TombLib.LevelData.Compilers
 
             for (int i = 0; i < _parentTextures.Count; i++)
             {
-                if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
-                {
-                    if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
-                        roomTextures.Add(_parentTextures[i]);
-                    else if (_parentTextures[i].Destination == TextureDestination.Moveable)
-                        moveablesTextures.Add(_parentTextures[i]);
-                    else
-                        staticsTextures.Add(_parentTextures[i]);
-                }
+                if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
+                    roomTextures.Add(_parentTextures[i]);
+                else if (_parentTextures[i].Destination == TextureDestination.Moveable)
+                    moveablesTextures.Add(_parentTextures[i]);
                 else
-                {
-                    if (_parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
-                    {
-                        if (_parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
-                            bumpedTextures.Add(_parentTextures[i]);
-                        else
-                            roomTextures.Add(_parentTextures[i]);
-                    }
-                    else
-                        objectsTextures.Add(_parentTextures[i]);
-                }
+                    staticsTextures.Add(_parentTextures[i]);
             }
 
             for (int n = 0; n < _actualAnimTextures.Count; n++)
             {
                 var parentTextures = _actualAnimTextures[n].CompiledAnimation;
-                
+
                 animatedTextures.Add(new List<ParentTextureArea>());
                 numAnimatedPages.Add(0);
 
                 for (int i = 0; i < parentTextures.Count; i++)
                 {
-                    if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
-                    {
-                        animatedTextures[n].Add(parentTextures[i]);
-                    }
-                    else
-                    {
-                        if (parentTextures[i].Destination == TextureDestination.RoomOrAggressive)
-                        {
-                            if (parentTextures[i].BumpLevel(_level.Settings.GameVersion) != BumpMappingLevel.None)
-                                bumpedTextures.Add(parentTextures[i]);
-                            else
-                                roomTextures.Add(parentTextures[i]);
-                        }
-                        else
-                            objectsTextures.Add(parentTextures[i]);
-                    }
+                    animatedTextures[n].Add(parentTextures[i]);
                 }
             }
 
@@ -1738,61 +1692,45 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Sort textures by their TopmostAndUnpadded property (waterfalls first!)
-            if (_level.Settings.AgressiveTexturePacking && _level.Settings.GameVersion != TRVersion.Game.TombEngine)
-                roomTextures = roomTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
-            else
-                objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
+            objectsTextures = objectsTextures.OrderBy(item => !item.TopmostAndUnpadded).ThenByDescending(item => item.Area.Size.X * item.Area.Size.Y).ToList();
 
             // Calculate new X, Y of each texture area
             NumRoomPages = PlaceTexturesInMap(ref roomTextures);
             NumObjectsPages = PlaceTexturesInMap(ref objectsTextures, true);
             NumBumpPages = PlaceTexturesInMap(ref bumpedTextures);
-
-            if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            NumMoveablesPages = PlaceTexturesInMap(ref moveablesTextures, true);
+            NumStaticsPages = PlaceTexturesInMap(ref staticsTextures, true);
+            for (int n = 0; n < numAnimatedPages.Count; n++)
             {
-                NumMoveablesPages = PlaceTexturesInMap(ref moveablesTextures, true);
-                NumStaticsPages = PlaceTexturesInMap(ref staticsTextures, true);
-                for (int n = 0; n < numAnimatedPages.Count; n++)
-                {
-                    var textures = animatedTextures[n];
-                    numAnimatedPages[n] = PlaceTexturesInMap(ref textures, true);
-                }
+                var textures = animatedTextures[n];
+                numAnimatedPages[n] = PlaceTexturesInMap(ref textures, true);
             }
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            // In TombEngine, we have only 4K texture atlases
+            // We pack pages like in old games, but then we pack them quickly in big atlases
+            RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false, 0);
+            MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true, 0);
+            StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true, 0);
+            AnimatedAtlas = new List<TombEngine_atlas>();
+            //RoomsAtlas[0].ColorMap.Save("H:\\maya.png");
+            for (int n = 0; n < numAnimatedPages.Count; n++)
             {
-                // In TombEngine, we have only 4K texture atlases
-                // We pack pages like in old games, but then we pack them quickly in big atlases
-                RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false, 0);
-                MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true, 0);
-                StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true, 0);
-                AnimatedAtlas = new List<TombEngine_atlas>();
-                //RoomsAtlas[0].ColorMap.Save("H:\\maya.png");
-                for (int n = 0; n < numAnimatedPages.Count; n++)
-                {
-                    var textures = animatedTextures[n];
-                    AnimatedAtlas.AddRange(CreateAtlas(ref textures, numAnimatedPages[n], false, false, AnimatedAtlas.Count));                    
-                }
-
-                for (int n = 0; n < RoomsAtlas.Count; n++)
-                {
-                    //RoomsAtlas[n].ColorMap.Save("h:\\RoomsAtlas" + n + ".png");
-                }
+                var textures = animatedTextures[n];
+                AnimatedAtlas.AddRange(CreateAtlas(ref textures, numAnimatedPages[n], false, false, AnimatedAtlas.Count));
             }
-            else
+
+            for (int n = 0; n < RoomsAtlas.Count; n++)
             {
-                RoomsPagesPacked = BuildTextureMap(ref roomTextures, NumRoomPages, false);
-                ObjectsPagesPacked = BuildTextureMap(ref objectsTextures, NumObjectsPages, false, true);
-                BumpPagesPacked = BuildTextureMap(ref bumpedTextures, NumBumpPages, true);
+                //RoomsAtlas[n].ColorMap.Save("h:\\RoomsAtlas" + n + ".png");
             }
 
             // Finally compile all texinfos
-            BuildTextureInfos(version);
+            BuildTextureInfos();
         }
 
         // Compiles all final texture infos into final list to be written into level file.
 
-        private void BuildTextureInfos(TRVersion.Game version)
+        private void BuildTextureInfos()
         {
             float maxSize = (float)MaxTileSize - (1.0f / 255.0f);
 
@@ -1803,7 +1741,7 @@ namespace TombLib.LevelData.Compilers
                 foreach (var child in parent.Children)
                     if (!_objectTextures.ContainsKey(child.TexInfoIndex))
                     {
-                        var newObjectTexture = new ObjectTexture(parent, child, version, maxSize);
+                        var newObjectTexture = new ObjectTexture(parent, child,  maxSize);
 
                         if (newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[1] ||
                             newObjectTexture.TexCoord[0] == newObjectTexture.TexCoord[2] ||
@@ -1828,7 +1766,7 @@ namespace TombLib.LevelData.Compilers
                 foreach (var parent in animTexture.CompiledAnimation)
                     foreach (var child in parent.Children)
                         if (!_objectTextures.ContainsKey(child.TexInfoIndex))
-                            _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, version, maxSize));
+                            _objectTextures.Add(child.TexInfoIndex, new ObjectTexture(parent, child, maxSize));
             }
         }
 
@@ -1856,137 +1794,27 @@ namespace TombLib.LevelData.Compilers
 
         public void WriteAnimatedTextures(BinaryWriterEx writer)
         {
-            if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            writer.Write((int)_actualAnimTextures.Count);
+            for (int i = 0; i < _actualAnimTextures.Count; i++)
             {
-                writer.Write((int)_actualAnimTextures.Count);
-                for (int i = 0; i < _actualAnimTextures.Count; i++)
+                var sequence = _actualAnimTextures[i].CompiledAnimation;
+
+                writer.Write(i); // Atlas index
+                                 //AnimatedAtlas[i].ColorMap.Save("F:\\ANIMATEDATLAS_" + i + ".png");
+                writer.Write(_animTextureIndices[i].Count); // Number of frames
+                foreach (var frame in _animTextureIndices[i])
                 {
-                    var sequence = _actualAnimTextures[i].CompiledAnimation;
+                    var texture = _objectTextures[frame];
 
-                    writer.Write(i); // Atlas index
-                    //AnimatedAtlas[i].ColorMap.Save("F:\\ANIMATEDATLAS_" + i + ".png");
-                    writer.Write(_animTextureIndices[i].Count); // Number of frames
-                    foreach (var frame in _animTextureIndices[i])
-                    {
-                        var texture = _objectTextures[frame];
-
-                        // Coordinates of each frame
-                        writer.Write(texture.TexCoordFloat[0].X);
-                        writer.Write(texture.TexCoordFloat[0].Y);
-                        writer.Write(texture.TexCoordFloat[1].X);
-                        writer.Write(texture.TexCoordFloat[1].Y);
-                        writer.Write(texture.TexCoordFloat[2].X);
-                        writer.Write(texture.TexCoordFloat[2].Y);
-                        writer.Write(texture.TexCoordFloat[3].X);
-                        writer.Write(texture.TexCoordFloat[3].Y);
-                    }
-                }
-            }
-            else
-            {
-                int numAnimatedTextures = 1;
-                foreach (var list in _animTextureIndices)
-                    numAnimatedTextures += list.Count + 1;
-                writer.Write((uint)numAnimatedTextures);
-
-                writer.Write((ushort)_animTextureIndices.Count);
-                foreach (var list in _animTextureIndices)
-                {
-                    writer.Write((ushort)(list.Count - 1));
-                    foreach (var frame in list)
-                        writer.Write((ushort)frame);
-                }
-            }
-        }
-
-        public void WriteTextureInfos(BinaryWriterEx writer, Level level)
-        {
-            writer.Write((int)_objectTextures.Count);
-            for (int i = 0; i < _objectTextures.Count; i++)
-            {
-                var texture = _objectTextures.ElementAt(i).Value;
-
-                // Tile and flags
-                ushort tile = (ushort)(_level.Settings.GameVersion != TRVersion.Game.TombEngine ? texture.Tile : texture.AtlasIndex);
-                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
-
-                // Blend mode
-                ushort attribute = (ushort)texture.BlendMode;
-
-                // Clamp blend modes according to game version
-                if (level.Settings.GameVersion <= TRVersion.Game.TR2 && attribute > 1)
-                    attribute = 1;
-                if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5) && attribute > 2)
-                    attribute = 2;
-
-                // Now write the texture
-                writer.Write(attribute);
-                writer.Write(tile);
-
-                // New flags from >= TR4
-                if (level.Settings.GameVersion >= TRVersion.Game.TR4)
-                {
-                    // Built-in TR4-5 mapping correction is not used. Dummy mapping type is used
-                    // together with compensation coordinate distortion.
-                    ushort newFlags = texture.UVAdjustmentFlag;
-
-                    if (texture.Destination == TextureDestination.RoomOrAggressive) newFlags |= 0x8000;
-
-                    if      (texture.BumpLevel == BumpMappingLevel.Level1) newFlags |= (1 << 9);
-                    else if (texture.BumpLevel == BumpMappingLevel.Level2) newFlags |= (2 << 9);
-                    else if (texture.BumpLevel == BumpMappingLevel.Level3) newFlags |= (3 << 9);
-
-                    writer.Write(newFlags);
-                }
-
-                if (_level.Settings.GameVersion != TRVersion.Game.TombEngine)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (texture.IsForTriangle && j == 3)
-                        {
-                            writer.Write((ushort)0);
-                            writer.Write((ushort)0);
-                        }
-                        else
-                        {
-                            writer.Write((ushort)(texture.TexCoord[j].X));
-                            writer.Write((ushort)(texture.TexCoord[j].Y));
-                        }
-                    }
-                }
-                else
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (texture.IsForTriangle && j == 3)
-                        {
-                            writer.Write((float)0);
-                            writer.Write((float)0);
-                        }
-                        else
-                        {
-                            writer.Write(texture.TexCoordFloat[j].X);
-                            writer.Write(texture.TexCoordFloat[j].Y);
-                        }
-                    }
-                }
-
-                if (level.Settings.GameVersion >= TRVersion.Game.TR4 && level.Settings.GameVersion != TRVersion.Game.TombEngine)
-                {
-                    var rect = texture.GetRect();
-                    writer.Write((int)0);
-                    writer.Write((int)0);
-                    writer.Write(rect.Width - 1);
-                    writer.Write(rect.Height - 1);
-                }
-
-                if (level.Settings.GameVersion == TRVersion.Game.TR5)
-                    writer.Write((ushort)0);
-
-                if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
-                {
-                    writer.Write((int)texture.Destination);
+                    // Coordinates of each frame
+                    writer.Write(texture.TexCoordFloat[0].X);
+                    writer.Write(texture.TexCoordFloat[0].Y);
+                    writer.Write(texture.TexCoordFloat[1].X);
+                    writer.Write(texture.TexCoordFloat[1].Y);
+                    writer.Write(texture.TexCoordFloat[2].X);
+                    writer.Write(texture.TexCoordFloat[2].Y);
+                    writer.Write(texture.TexCoordFloat[3].X);
+                    writer.Write(texture.TexCoordFloat[3].Y);
                 }
             }
         }
@@ -2000,16 +1828,10 @@ namespace TombLib.LevelData.Compilers
 
                 // Tile and flags
                 int tile = texture.AtlasIndex;
-                if (texture.IsForTriangle && level.Settings.GameVersion > TRVersion.Game.TR3) tile |= 0x8000;
+                if (texture.IsForTriangle) tile |= 0x8000;
 
                 // Blend mode
                 int attribute = (int)texture.BlendMode;
-
-                // Clamp blend modes according to game version
-                if (level.Settings.GameVersion <= TRVersion.Game.TR2 && attribute > 1)
-                    attribute = 1;
-                if ((level.Settings.GameVersion == TRVersion.Game.TR3 || level.Settings.GameVersion == TRVersion.Game.TR5) && attribute > 2)
-                    attribute = 2;
 
                 // Now write the texture
                 writer.Write(attribute);
