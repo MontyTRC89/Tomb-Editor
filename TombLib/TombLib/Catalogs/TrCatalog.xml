@@ -4622,7 +4622,7 @@
       <state item="0" id="137" name="PICKUP_FROM_CHEST" />
     </states>
   </game>
-  <game id="TR5Main">
+  <game id="TombEngine">
     <limits>
 	  <limit name="TexPages" value="32768" />
 	  <limit name="TexInfos" value="2147483647" />

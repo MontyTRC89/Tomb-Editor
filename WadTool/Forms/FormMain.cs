@@ -633,9 +633,9 @@ namespace WadTool
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) => Close();
 
-        private void ConvertSourceToTR5MainToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ConvertSourceToTombEngineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Wad2 dest = WadActions.ConvertWad2ToTR5Main(_tool, this, _tool.SourceWad);
+            Wad2 dest = WadActions.ConvertWad2ToTombEngine(_tool, this, _tool.SourceWad);
             Wad2Writer.SaveToFile(dest, "F:\\temp.wad2");
             WadActions.LoadWad(_tool, this, true, "F:\\temp.wad2");
         }

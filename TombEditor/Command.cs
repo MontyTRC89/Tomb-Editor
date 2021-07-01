@@ -1117,21 +1117,21 @@ namespace TombEditor
 
             AddCommand("AddBoxVolume", "Add box volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Box);
             });
 
             AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Prism);
             });
 
             AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Sphere);
             });

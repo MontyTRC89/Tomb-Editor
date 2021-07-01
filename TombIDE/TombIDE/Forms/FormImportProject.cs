@@ -361,7 +361,7 @@ namespace TombIDE
 					break;
 
 				case "pctomb5.exe":
-					gameVersion = TRVersion.Game.TR5Main;
+					gameVersion = TRVersion.Game.TombEngine;
 					break;
 			}
 

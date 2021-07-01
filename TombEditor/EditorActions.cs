@@ -18,6 +18,7 @@ using TombLib.Forms;
 using TombLib.GeometryIO;
 using TombLib.LevelData;
 using TombLib.LevelData.Compilers;
+using TombLib.LevelData.Compilers.TombEngine;
 using TombLib.LevelData.IO;
 using TombLib.Rendering;
 using TombLib.Utils;
@@ -651,8 +652,8 @@ namespace TombEditor
 
         public static void AddVolume(VolumeShape shape)
         {
-            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main)
-                _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TR5Main.", PopupType.Info);
+            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
+                _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TombEngine.", PopupType.Info);
             else
             {
                 switch (shape)
@@ -923,7 +924,7 @@ namespace TombEditor
             }
             else if (instance is VolumeInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main, "Trigger volume"))
+                if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Trigger volume"))
                     return;
 
                 // TODO: Add a function selection window.
@@ -1205,7 +1206,7 @@ namespace TombEditor
                 case BlockFace.CeilingTriangle2:
                     return room.Blocks[pos.X, pos.Y].CeilingPortal != null;
 
-                // TODO: In TR5Main, possibly diagonal portals can be implemented?
+                // TODO: In TombEngine, possibly diagonal portals can be implemented?
 
                 case BlockFace.DiagonalQA:
                 case BlockFace.DiagonalWS:
@@ -3617,22 +3618,45 @@ namespace TombEditor
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
-                    using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
+                    if (level.Settings.GameVersion <= TRVersion.Game.TRNG)
                     {
-                        var watch = new Stopwatch();
-                        watch.Start();
-                        var statistics = compiler.CompileLevel();
-                        watch.Stop();
-                        progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
-
-                        // Raise an event for statistics update
-                        _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent 
+                        using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
                         {
-                            BoxCount = statistics.BoxCount,
-                            OverlapCount = statistics.OverlapCount,
-                            TextureCount = statistics.ObjectTextureCount,
-                            InfoString = statistics.ToString() 
-                        });
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel();
+                            watch.Stop();
+                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
+                            // Raise an event for statistics update
+                            _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
+                            {
+                                BoxCount = statistics.BoxCount,
+                                OverlapCount = statistics.OverlapCount,
+                                TextureCount = statistics.ObjectTextureCount,
+                                InfoString = statistics.ToString()
+                            });
+                        }
+                    }
+                    else
+                    {
+                        using (var compiler = new LevelCompilerTombEngine(level, fileName, progressReporter))
+                        {
+                            var watch = new Stopwatch();
+                            watch.Start();
+                            var statistics = compiler.CompileLevel();
+                            watch.Stop();
+                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+
+                            // Raise an event for statistics update
+                            _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
+                            {
+                                BoxCount = statistics.BoxCount,
+                                OverlapCount = statistics.OverlapCount,
+                                TextureCount = statistics.ObjectTextureCount,
+                                InfoString = statistics.ToString()
+                            });
+                        }
                     }
 
                     // Force garbage collector to compact memory

@@ -2347,7 +2347,7 @@ namespace TombEditor.Controls
             if (volumesToDraw.Count == 0)
                 return;
 
-            var drawVolume = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+            var drawVolume = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
             var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.45f);
             var selectColor = new Vector4(baseColor.To3(), 0.7f);
@@ -2396,7 +2396,7 @@ namespace TombEditor.Controls
             // Reset last index back to default
             lastIndex = -1;
 
-            // Draw 3D volumes (only for TR5Main version, otherwise we show only disabled center cube)
+            // Draw 3D volumes (only for TombEngine version, otherwise we show only disabled center cube)
             if (drawVolume)
             {
                 _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
@@ -2917,7 +2917,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+            skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine);
             skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
@@ -3151,7 +3151,7 @@ namespace TombEditor.Controls
             _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-            staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+            staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine);
             staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
             staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
@@ -3755,7 +3755,7 @@ namespace TombEditor.Controls
                 case TRVersion.Game.TR2:
                     return new Vector3(originalColor.GetLuma());
 
-                case TRVersion.Game.TR5Main:
+                case TRVersion.Game.TombEngine:
                     return originalColor;
 
                 // All engine versions up to TR5 use 15-bit color as static mesh tint

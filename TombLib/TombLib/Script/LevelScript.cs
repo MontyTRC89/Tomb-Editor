@@ -32,7 +32,7 @@ namespace TombLib.Script
         public bool Lightning { get; set; }
         public byte UVRotate { get; set; }
 
-        // TR5Main only
+        // TombEngine only
         public bool Sky { get; set; }
         public int LaraType { get; set; } = 0;
         public int LevelFarView { get; set; } = 200;

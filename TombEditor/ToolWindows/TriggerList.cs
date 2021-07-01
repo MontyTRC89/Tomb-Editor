@@ -41,7 +41,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.GameVersionChangedEvent)
             {
-                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
                     DockText = "Legacy triggers";
                 else
                     DockText = "Triggers";

@@ -9,7 +9,7 @@ using TombLib.IO;
 
 namespace TombLib.Script
 {
-    public class ScriptCompilerTR5Main : IScriptCompiler
+    public class ScriptCompilerTombEngine : IScriptCompiler
     {
         private class LanguageStrings
         {
@@ -25,23 +25,23 @@ namespace TombLib.Script
             }
         }
 
-        private static readonly ChunkId Tr5MainFlags = ChunkId.FromString("Tr5MainFlags");
-        private static readonly ChunkId Tr5MainLevel = ChunkId.FromString("Tr5MainLevel");
-        private static readonly ChunkId Tr5MainLevelFlags = ChunkId.FromString("Tr5MainLevelFlags");
-        private static readonly ChunkId Tr5MainLevelInfo = ChunkId.FromString("Tr5MainLevelInfo");
-        private static readonly ChunkId Tr5MainTitleBackground = ChunkId.FromString("Tr5MainTitleBackground");
-        private static readonly ChunkId Tr5MainLevelPuzzle = ChunkId.FromString("Tr5MainLevelPuzzle");
-        private static readonly ChunkId Tr5MainLevelKey = ChunkId.FromString("Tr5MainLevelKey");
-        private static readonly ChunkId Tr5MainLevelPuzzleCombo = ChunkId.FromString("Tr5MainLevelPuzzleCombo");
-        private static readonly ChunkId Tr5MainLevelKeyCombo = ChunkId.FromString("Tr5MainLevelKeyCombo");
-        private static readonly ChunkId Tr5MainLevelPickup = ChunkId.FromString("Tr5MainLevelPickup");
-        private static readonly ChunkId Tr5MainLevelPickupCombo = ChunkId.FromString("Tr5MainLevelPickupCombo");
-        private static readonly ChunkId Tr5MainLevelExamine = ChunkId.FromString("Tr5MainLevelExamine");
-        private static readonly ChunkId Tr5MainLevelLayer = ChunkId.FromString("Tr5MainLevelLayer");
-        private static readonly ChunkId Tr5MainLevelLuaEvent = ChunkId.FromString("Tr5MainLevelLuaEvent");
-        private static readonly ChunkId Tr5MainLevelLegend = ChunkId.FromString("Tr5MainLevelLegend");
-        private static readonly ChunkId Tr5MainAudioTracks = ChunkId.FromString("Tr5MainAudioTracks");
-        private static readonly ChunkId Tr5MainStrings = ChunkId.FromString("Tr5MainStrings");
+        private static readonly ChunkId TombEngineFlags = ChunkId.FromString("TombEngineFlags");
+        private static readonly ChunkId TombEngineLevel = ChunkId.FromString("TombEngineLevel");
+        private static readonly ChunkId TombEngineLevelFlags = ChunkId.FromString("TombEngineLevelFlags");
+        private static readonly ChunkId TombEngineLevelInfo = ChunkId.FromString("TombEngineLevelInfo");
+        private static readonly ChunkId TombEngineTitleBackground = ChunkId.FromString("TombEngineTitleBackground");
+        private static readonly ChunkId TombEngineLevelPuzzle = ChunkId.FromString("TombEngineLevelPuzzle");
+        private static readonly ChunkId TombEngineLevelKey = ChunkId.FromString("TombEngineLevelKey");
+        private static readonly ChunkId TombEngineLevelPuzzleCombo = ChunkId.FromString("TombEngineLevelPuzzleCombo");
+        private static readonly ChunkId TombEngineLevelKeyCombo = ChunkId.FromString("TombEngineLevelKeyCombo");
+        private static readonly ChunkId TombEngineLevelPickup = ChunkId.FromString("TombEngineLevelPickup");
+        private static readonly ChunkId TombEngineLevelPickupCombo = ChunkId.FromString("TombEngineLevelPickupCombo");
+        private static readonly ChunkId TombEngineLevelExamine = ChunkId.FromString("TombEngineLevelExamine");
+        private static readonly ChunkId TombEngineLevelLayer = ChunkId.FromString("TombEngineLevelLayer");
+        private static readonly ChunkId TombEngineLevelLuaEvent = ChunkId.FromString("TombEngineLevelLuaEvent");
+        private static readonly ChunkId TombEngineLevelLegend = ChunkId.FromString("TombEngineLevelLegend");
+        private static readonly ChunkId TombEngineAudioTracks = ChunkId.FromString("TombEngineAudioTracks");
+        private static readonly ChunkId TombEngineStrings = ChunkId.FromString("TombEngineStrings");
 
         private string _srcPath;
         private string _dstPath;
@@ -59,7 +59,7 @@ namespace TombLib.Script
         private int _levelFarView;
         private string _intro;
 
-        public ScriptCompilerTR5Main()
+        public ScriptCompilerTombEngine()
         {
 
         }
@@ -334,7 +334,7 @@ namespace TombLib.Script
                 var chunkIO = new ChunkWriter(new byte[] { 0x54, 0x52, 0x35, 0x4D }, new BinaryWriterFast(stream));
 
                 // Main flags
-                chunkIO.WriteChunk(Tr5MainFlags, () =>
+                chunkIO.WriteChunk(TombEngineFlags, () =>
                 {
                     LEB128.Write(chunkIO.Raw, (_loadSave ? 1 : 0));
                     LEB128.Write(chunkIO.Raw, (_playAnyLevel ? 1 : 0));
@@ -347,7 +347,7 @@ namespace TombLib.Script
                 // Game strings
                 foreach (var stringsObj in _languageStrings)
                 {
-                    chunkIO.WriteChunk(Tr5MainStrings, () =>
+                    chunkIO.WriteChunk(TombEngineStrings, () =>
                     {
                         chunkIO.Raw.WriteStringUTF8(stringsObj.Name);
                         LEB128.Write(chunkIO.Raw, stringsObj.Strings.Count);
@@ -357,7 +357,7 @@ namespace TombLib.Script
                 }
 
                 // Audio tracks
-                chunkIO.WriteChunk(Tr5MainAudioTracks, () =>
+                chunkIO.WriteChunk(TombEngineAudioTracks, () =>
                 {
                     LEB128.Write(chunkIO.Raw, _tracks.Count);
                     foreach (var track in _tracks)
@@ -367,10 +367,10 @@ namespace TombLib.Script
                 // Levels
                 foreach (var level in _levels)
                 {
-                    chunkIO.WriteChunkWithChildren(Tr5MainLevel, () =>
+                    chunkIO.WriteChunkWithChildren(TombEngineLevel, () =>
                     {
                         // Level informations
-                        chunkIO.WriteChunk(Tr5MainLevelInfo, () =>
+                        chunkIO.WriteChunk(TombEngineLevelInfo, () =>
                         {
                             chunkIO.Raw.WriteStringUTF8(level.FileName);
                             chunkIO.Raw.WriteStringUTF8(level.LoadScreen);
@@ -380,7 +380,7 @@ namespace TombLib.Script
                         });
 
                         // Level flags
-                        chunkIO.WriteChunk(Tr5MainLevelFlags, () =>
+                        chunkIO.WriteChunk(TombEngineLevelFlags, () =>
                         {
                             LEB128.Write(chunkIO.Raw, (level.Horizon ? 1 : 0));
                             LEB128.Write(chunkIO.Raw, (level.Sky ? 1 : 0));
@@ -400,7 +400,7 @@ namespace TombLib.Script
                         {
                             if (entry.Command.Name == "Puzzle")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelPuzzle, () =>
+                                chunkIO.WriteChunk(TombEngineLevelPuzzle, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, (int)GetStringIndex(entry.Parameters[1].ToString()));
@@ -410,7 +410,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "Key")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelKey, () =>
+                                chunkIO.WriteChunk(TombEngineLevelKey, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, (int)GetStringIndex(entry.Parameters[1].ToString()));
@@ -420,7 +420,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "Pickup")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelPickup, () =>
+                                chunkIO.WriteChunk(TombEngineLevelPickup, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, (int)GetStringIndex(entry.Parameters[1].ToString()));
@@ -430,7 +430,7 @@ namespace TombLib.Script
                             }
                             if (entry.Command.Name == "Examine")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelExamine, () =>
+                                chunkIO.WriteChunk(TombEngineLevelExamine, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, (int)GetStringIndex(entry.Parameters[1].ToString()));
@@ -440,7 +440,7 @@ namespace TombLib.Script
                             }
                             if (entry.Command.Name == "PuzzleCombo")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelPuzzleCombo, () =>
+                                chunkIO.WriteChunk(TombEngineLevelPuzzleCombo, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[1].ToString()));
@@ -451,7 +451,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "KeyCombo")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelKeyCombo, () =>
+                                chunkIO.WriteChunk(TombEngineLevelKeyCombo, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[1].ToString()));
@@ -462,7 +462,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "PickupCombo")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelPickupCombo, () =>
+                                chunkIO.WriteChunk(TombEngineLevelPickupCombo, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[1].ToString()));
@@ -473,7 +473,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "Layer1")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelLayer, () =>
+                                chunkIO.WriteChunk(TombEngineLevelLayer, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, 1);
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
@@ -484,7 +484,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "Layer2")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelLayer, () =>
+                                chunkIO.WriteChunk(TombEngineLevelLayer, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, 2);
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
@@ -495,7 +495,7 @@ namespace TombLib.Script
                             }
                             else if (entry.Command.Name == "DistantFog")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelLayer, () =>
+                                chunkIO.WriteChunk(TombEngineLevelLayer, () =>
                                 {
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[0].ToString()));
                                     LEB128.Write(chunkIO.Raw, byte.Parse(entry.Parameters[1].ToString()));
@@ -511,7 +511,7 @@ namespace TombLib.Script
                                      entry.Command.Name == "OnLevelControl" ||
                                      entry.Command.Name == "OnBeginFrame")
                             {
-                                chunkIO.WriteChunk(Tr5MainLevelLuaEvent, () =>
+                                chunkIO.WriteChunk(TombEngineLevelLuaEvent, () =>
                                 {
                                     chunkIO.Raw.WriteStringUTF8(entry.Command.Name);
                                     chunkIO.Raw.WriteStringUTF8(entry.Parameters[0].ToString());

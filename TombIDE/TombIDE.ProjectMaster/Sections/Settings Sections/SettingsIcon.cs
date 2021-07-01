@@ -92,7 +92,7 @@ namespace TombIDE.ProjectMaster
 					else
 						icoFilePath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
 				}
-				else if (_ide.Project.GameVersion == TRVersion.Game.TR5Main)
+				else if (_ide.Project.GameVersion == TRVersion.Game.TombEngine)
 					icoFilePath = Path.Combine(TemplatePaths.GetDefaultTemplatesPath(_ide.Project.GameVersion), _ide.Project.GameVersion + ".ico");
 
 				ApplyIconToExe(icoFilePath);

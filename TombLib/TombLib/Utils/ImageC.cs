@@ -11,6 +11,12 @@ using ColorThiefDotNet;
 
 namespace TombLib.Utils
 {
+    public enum SobelFilterType
+    {
+        Sobel,
+        Scharr
+    }
+ 
     public struct ColorC
     {
         public byte B;
@@ -718,6 +724,94 @@ namespace TombLib.Utils
         public void RawCopyTo(byte[] destination, int offset)
         {
             Array.Copy(_data, 0, destination, offset, _data.GetLength(0));
+        }
+
+        public static ImageC SobelFilter(ImageC source, double strength, double level, SobelFilterType type, int posX, int posY, int w, int h)
+        {
+            ImageC result = ImageC.CreateNew(w, h);
+
+            strength = Math.Max(strength, 0.0001f);
+            double dX = 0;
+            double dY = 0;
+            double dZ = 1.0f / strength * (1.0f + Math.Pow(2.0f, level));
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    float tl = source.GetPixel(posX + x - 1, posY + y - 1).R;
+                    float l = source.GetPixel(posX + x - 1, posY + y).R;
+                    float bl = source.GetPixel(posX + x - 1, posY + y + 1).R;
+                    float t = source.GetPixel(posX + x, posY + y - 1).R;
+                    float b = source.GetPixel(posX + x, posY + y + 1).R;
+                    float tr = source.GetPixel(posX + x + 1, posY + y - 1).R;
+                    float r = source.GetPixel(posX + x + 1, posY + y).R;
+                    float br = source.GetPixel(posX + x + 1, posY + y + 1).R;
+
+                    if (type == SobelFilterType.Sobel)
+                    {
+                        dX = tl + l * 2.0f + bl - tr - r * 2.0f - br;
+                        dY = tl + t * 2.0f + tr - bl - b * 2.0f - br;
+                    }
+                    else if (type == SobelFilterType.Scharr)
+                    {
+                        dX = tl * 3.0f + l * 10.0f + bl * 3.0f - tr * 3.0f - r * 10.0f - br * 3.0f;
+                        dY = tl * 3.0f + t * 10.0f + tr * 3.0f - bl * 3.0f - b * 10.0f - br * 3.0f;
+                    }
+
+                    Vector3 normal = Vector3.Normalize(new Vector3((float)dX, (float)dY, (float)dZ));
+
+                    byte red = (byte)((normal.X * 0.5f + 0.5f) * 255.0f);
+                    byte green = (byte)((normal.Y * 0.5f + 0.5f) * 255.0f);
+                    byte blue = (byte)(normal.Z * 255.0f);
+                    byte alpha = source.GetPixel(posX + x, posY + y).A;
+
+                    result.SetPixel(x, y, red, green, blue, alpha);
+                }
+            }
+
+            return result;
+        }
+
+        public static ImageC GrayScaleFilter(ImageC source, bool invert, int posX, int posY, int w, int h)
+        {
+            ImageC result = ImageC.CreateNew(w, h);
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var c = source.GetPixel(posX + x, posY + y);
+                    double gray = 0.2126f * c.R + 0.7152f * c.G + 0.0722f * c.B;
+                    gray = (invert ? (255.0f - gray) : gray);
+                    result.SetPixel(x, y, (byte)gray, (byte)gray, (byte)gray);
+                }
+            }
+
+            return result;
+        }
+
+        public bool HasAlphaInArea(Rectangle2 area)
+        {
+            RectangleInt2 rectArea = new RectangleInt2
+            {
+                X0 = (int)(area.TopLeft.X),
+                X1 = (int)(area.BottomRight.X),
+                Y0 = (int)(area.TopLeft.Y),
+                Y1 = (int)(area.BottomRight.Y),
+            };
+            for (int x = rectArea.X0; x <= rectArea.X1; x++)
+            {
+                for (int y = rectArea.Y0; y <= rectArea.Y1; y++)
+                {
+                    ColorC color = this.GetPixel(x, y);
+                    if (color.A < 255)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

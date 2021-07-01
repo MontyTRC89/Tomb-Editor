@@ -655,8 +655,8 @@ namespace TombEditor.Forms
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
 
-            // TR4 and TR5Main platforms
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4 || _levelSettings.GameVersion == TRVersion.Game.TR5Main);
+            // TR4 and TombEngine platforms
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4 || _levelSettings.GameVersion == TRVersion.Game.TombEngine);
             GameEnableExtraBlendingModesCheckBox.Visible = currentVersionToCheck;
 
             // TR4 and above

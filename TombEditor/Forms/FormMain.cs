@@ -128,7 +128,7 @@ namespace TombEditor.Forms
                 addFlybyCameraToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
-                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
                 addPrismVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
                 addSphereVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
                 toolStripMenuSeparator7.Visible = addBoxVolumeToolStripMenuItem.Visible;
@@ -172,7 +172,7 @@ namespace TombEditor.Forms
                 obj is Editor.GameVersionChangedEvent)
             {
                 bool isNG  = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
-                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main;
+                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
 
                 addSphereVolumeToolStripMenuItem.Enabled    = isT5M;
                 addPrismVolumeToolStripMenuItem.Enabled     = isT5M;

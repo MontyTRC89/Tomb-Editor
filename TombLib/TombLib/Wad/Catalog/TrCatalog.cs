@@ -43,7 +43,7 @@ namespace TombLib.Wad.Catalog
             public int SubstituteId { get; set; }
             public bool AIObject { get; set; }
             public bool Shatterable { get; set; }
-            public string TR5MainSlot { get; set; }
+            public string TombEngineSlot { get; set; }
             public bool IsHidden { get; set; }
 			public bool IsEssential { get; set; }
         }
@@ -107,7 +107,7 @@ namespace TombLib.Wad.Catalog
             return game.Moveables[id].Names.LastOrDefault();
         }
 
-        public static string GetMoveableTR5MainSlot(TRVersion.Game version, uint id)
+        public static string GetMoveableTombEngineSlot(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
@@ -115,10 +115,10 @@ namespace TombLib.Wad.Catalog
             Item entry;
             if (!game.Moveables.TryGetValue(id, out entry))
                 return "";
-            return game.Moveables[id].TR5MainSlot;
+            return game.Moveables[id].TombEngineSlot;
         }
 
-        public static string GetSpriteSequenceTR5MainSlot(TRVersion.Game version, uint id)
+        public static string GetSpriteSequenceTombEngineSlot(TRVersion.Game version, uint id)
         {
             Game game;
             if (!Games.TryGetValue(version.Native(), out game))
@@ -126,10 +126,10 @@ namespace TombLib.Wad.Catalog
             Item entry;
             if (!game.SpriteSequences.TryGetValue(id, out entry))
                 return "";
-            return game.SpriteSequences[id].TR5MainSlot;
+            return game.SpriteSequences[id].TombEngineSlot;
         }
 
-        public static int GetTR5MainSoundMapStart(TRVersion.Game version)
+        public static int GetTombEngineSoundMapStart(TRVersion.Game version)
         {
             switch (version)
             {
@@ -444,8 +444,8 @@ namespace TombLib.Wad.Catalog
                     return "TRNG";
                 case TRVersion.Game.TR5:
                     return "Tomb Raider 5";
-                case TRVersion.Game.TR5Main:
-                    return "TR5Main";
+                case TRVersion.Game.TombEngine:
+                    return "TombEngine";
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -474,8 +474,8 @@ namespace TombLib.Wad.Catalog
                     version = TRVersion.Game.TR4;
                 else if (stringVersion == "TR5")
                     version = TRVersion.Game.TR5;
-                else if (stringVersion == "TR5Main")
-                    version = TRVersion.Game.TR5Main;
+                else if (stringVersion == "TombEngine")
+                    version = TRVersion.Game.TombEngine;
                 else
                     continue;
 
@@ -528,9 +528,9 @@ namespace TombLib.Wad.Catalog
 
                         bool isAI = bool.Parse(moveableNode.Attributes["ai"]?.Value ?? "false");
 
-                        var tr5MainSlot = "";
+                        var TombEngineSlot = "";
                         if (moveableNode.Attributes["t5m"] != null)
-                            tr5MainSlot = moveableNode.Attributes["t5m"].Value;
+                            TombEngineSlot = moveableNode.Attributes["t5m"].Value;
 
 						var hidden = false;
 						if (moveableNode.Attributes["hidden"] != null)
@@ -540,7 +540,7 @@ namespace TombLib.Wad.Catalog
 							essential = moveableNode.Attributes["essential"].Value.Equals("true", StringComparison.OrdinalIgnoreCase);
 
 						game.Moveables.Add(id, new Item { Names = new List<string>(names), 
-                            SkinId = skinId, SubstituteId = substituteId, AIObject = isAI, TR5MainSlot = tr5MainSlot, IsHidden = hidden,IsEssential = essential });
+                            SkinId = skinId, SubstituteId = substituteId, AIObject = isAI, TombEngineSlot = TombEngineSlot, IsHidden = hidden,IsEssential = essential });
                     }
 
                 // Parse statics
@@ -580,13 +580,13 @@ namespace TombLib.Wad.Catalog
                         if (spriteSequenceNode.Name != "sprite_sequence")
                             continue;
 
-                        var tr5MainSlot = "";
+                        var TombEngineSlot = "";
                         if (spriteSequenceNode.Attributes["t5m"] != null)
-                            tr5MainSlot = spriteSequenceNode.Attributes["t5m"].Value;
+                            TombEngineSlot = spriteSequenceNode.Attributes["t5m"].Value;
 
                         uint id = uint.Parse(spriteSequenceNode.Attributes["id"].Value);
                         var names = (spriteSequenceNode.Attributes["name"]?.Value ?? "").Split('|');
-                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TR5MainSlot = tr5MainSlot });
+                        game.SpriteSequences.Add(id, new Item { Names = new List<string>(names), TombEngineSlot = TombEngineSlot });
                     }
 
                 // Parse animations

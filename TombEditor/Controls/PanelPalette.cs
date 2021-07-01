@@ -147,7 +147,7 @@ namespace TombEditor.Controls
                         colorDialog.Color = ((obj as LightInstance).Color * 0.5f).ToWinFormsColor();
                     else if (obj is StaticInstance)
                         colorDialog.Color = ((obj as StaticInstance).Color * 0.5f).ToWinFormsColor();
-                    else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main && obj is MoveableInstance)
+                    else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine && obj is MoveableInstance)
                         colorDialog.Color = (obj as MoveableInstance).Color.ToWinFormsColor();
                 }
 

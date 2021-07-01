@@ -45,7 +45,7 @@ namespace TombEditor.Forms
             this.LockHeight();
             this.butOK.Select();
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TR5Main)
+            if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
                 Text = "Legacy trigger editor";
             else
                 Text = "Trigger editor";

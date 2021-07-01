@@ -23,7 +23,7 @@ namespace TombLib.Script
         TRLENew = 1,
         NGCenter = 2,
         TR5New = 3,
-        TR5Main = 4
+        TombEngine = 4
     }
 
     public enum Weather

@@ -430,7 +430,7 @@ namespace TombLib.LevelData
                 bool changeColor = true;
 
                 // Discard color editing if conditions aren't met
-                // FIXME: For TR5Main, it may be considered to apply dynamic lighting in addition to tint, so those conditions can be then changed.
+                // FIXME: For TombEngine, it may be considered to apply dynamic lighting in addition to tint, so those conditions can be then changed.
 
                 if (obj is MoveableInstance)
                 {

@@ -128,7 +128,7 @@
 "TRNG + FLEP" - Same as above, but with FLEP* already
                 included in the package.
 
-"TR5Main" - A powerful new Tomb Raider 5 engine
+"TombEngine" - A powerful new Tomb Raider 5 engine
             with the highest amount of features for builders.
 
 *FLEP is a tool which helps modifying some hardcoded

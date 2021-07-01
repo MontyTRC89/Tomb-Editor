@@ -14,16 +14,16 @@ namespace TombLib.LevelData
             TR4 = 4,
             TR5 = 5,
             TRNG = 16,
-            TR5Main = 18
+            TombEngine = 18
         }
 
-        /// <summary> Wrapper for getting native game version, excluding TR5Main. Equal to deprecated WadGameVersion enum.</summary>
+        /// <summary> Wrapper for getting native game version, excluding TombEngine. Equal to deprecated WadGameVersion enum.</summary>
         public static Game Native(this Game ver) => ver == Game.TRNG ? Game.TR4 : ver;
 
-        /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TR5Main. Equal to deprecated TRVersion enum. </summary>
-        public static Game Legacy(this Game ver) => ver == Game.TRNG ? Game.TR4 : (ver == Game.TR5Main ? Game.TR5 : ver);
+        /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TombEngine. Equal to deprecated TRVersion enum. </summary>
+        public static Game Legacy(this Game ver) => ver == Game.TRNG ? Game.TR4 : (ver == Game.TombEngine ? Game.TR5 : ver);
 
-        /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TR5Main. Equal to deprecated TRVersion enum. </summary>
+        /// <summary> Wrapper for getting legacy game version, omitting both TRNG and TombEngine. Equal to deprecated TRVersion enum. </summary>
         public static bool UsesMainSfx(this Game ver) => ver == Game.TR2  || ver == Game.TR3;
 
         /// <summary> Base enumeration. Contains all possible game versions.
@@ -33,13 +33,13 @@ namespace TombLib.LevelData
         public static List<Game> NativeVersions => AllVersions.Where(item => item != Game.TRNG).ToList();
 
         /// <summary> Helper legacy (aka TRVersion) enumeration list. Can be used to populate various controls, like listbox. </summary>
-        public static List<Game> LegacyVersions => NativeVersions.Where(item => item != Game.TR5Main).ToList();
+        public static List<Game> LegacyVersions => NativeVersions.Where(item => item != Game.TombEngine).ToList();
 
         /// <summary> Helper compilable version enumeration list. Can be used to populate various controls, like listbox. </summary>
         public static List<Game> CompilableVersions(bool experimental)
         {
             if (experimental)
-                return AllVersions.Where(item => item != Game.TR5Main).ToList();
+                return AllVersions.Where(item => item != Game.TombEngine).ToList();
             else
                 return AllVersions.Where(item => item.Legacy() != Game.TR5).ToList();
         }

@@ -200,7 +200,7 @@ namespace WadTool.Controls
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                 effect.Parameters["Color"].SetValue(Vector4.One);
                 effect.Parameters["StaticLighting"].SetValue(Static.Mesh.LightingType != WadMeshLightingType.Normals);
-                effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TombLib.LevelData.TRVersion.Game.TR5Main);
+                effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine);
                 effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                 effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
 

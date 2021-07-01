@@ -139,6 +139,16 @@
     </Compile>
     <Compile Include="GeometryIO\RoomGeometryExporter.cs" />
     <Compile Include="Graphics\Frustum.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\FloorData.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\LevelCompilerTombEngine.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\Pathfinding.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\PathfindingDecompiled.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\Rooms.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\Structs.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\TombEngineTexInfoManager.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\Textures.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\TombEngine.cs" />
+    <Compile Include="LevelData\Compilers\TombEngine\Wad.cs" />
     <Compile Include="LevelData\Compilers\Tr1.cs" />
     <Compile Include="LevelData\Compilers\Util\BatchCompileList.cs" />
     <Compile Include="LevelData\Instances\MemoInstance.cs" />

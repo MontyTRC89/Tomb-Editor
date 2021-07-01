@@ -225,7 +225,7 @@ namespace TombEditor.ToolWindows
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR3 ||
                 _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main)
+                _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
                 comboRoomType.Items.Add("Quicksand");
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
@@ -298,13 +298,13 @@ namespace TombEditor.ToolWindows
             var room = _editor.SelectedRoom;
 
             // Cleverly switch room types dependent on game version.
-            // We disable rain/snow types for TR5Main because it is expected to set these options with triggers and/or script.
+            // We disable rain/snow types for TombEngine because it is expected to set these options with triggers and/or script.
 
             int roomType = -1;
             if (room.Properties.Type == RoomType.Quicksand &&
                 (_editor.Level.Settings.GameVersion != TRVersion.Game.TR3 &&
                  _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG &&
-                 _editor.Level.Settings.GameVersion != TRVersion.Game.TR5Main))
+                 _editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine))
                 roomType = -1;
             else if ((room.Properties.Type == RoomType.Rain || room.Properties.Type == RoomType.Snow) &&
                      _editor.Level.Settings.GameVersion != TRVersion.Game.TRNG)

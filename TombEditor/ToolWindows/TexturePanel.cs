@@ -141,7 +141,7 @@ namespace TombEditor.ToolWindows
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
                 (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
-                 _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main);
+                 _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine);
 
             cmbBlending.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR2;
 
@@ -152,10 +152,10 @@ namespace TombEditor.ToolWindows
         {
             cmbBlending.Items.Clear();
 
-            // For TR4, TRNG and TR5Main we can add all types (if extra blending modes are enabled)
+            // For TR4, TRNG and TombEngine we can add all types (if extra blending modes are enabled)
             if ((_editor.Level.Settings.GameEnableExtraBlendingModes ?? false) &&
                (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
-                _editor.Level.Settings.GameVersion == TRVersion.Game.TR5Main))
+                _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine))
             {
                 _blendingModeDescriptions.ForEach(item => cmbBlending.Items.Add(item));
             }

@@ -15,7 +15,7 @@ namespace TombIDE.Shared
 		public string Name { get; set; }
 
 		/// <summary>
-		/// Game engine version. (TR4, TRNG, TR5Main, ...)
+		/// Game engine version. (TR4, TRNG, TombEngine, ...)
 		/// </summary>
 		public TRVersion.Game GameVersion { get; set; }
 
@@ -165,7 +165,7 @@ namespace TombIDE.Shared
 				foreach (string file in Directory.GetFiles(engineDirectory, "*.exe", SearchOption.TopDirectoryOnly))
 				{
 					if (((GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
-						|| (GameVersion == TRVersion.Game.TR5Main && Path.GetFileName(file).ToLower() == "pctomb5.exe"))
+						|| (GameVersion == TRVersion.Game.TombEngine && Path.GetFileName(file).ToLower() == "pctomb5.exe"))
 					{
 						EnginePath = engineDirectory;
 						break;
@@ -222,7 +222,7 @@ namespace TombIDE.Shared
 			{
 				if ((GameVersion == TRVersion.Game.TR4 || GameVersion == TRVersion.Game.TRNG) && Path.GetFileName(file).ToLower() == "tomb4.exe")
 					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
-				else if ((GameVersion == TRVersion.Game.TR5Main) && Path.GetFileName(file).ToLower() == "pctomb5.exe")
+				else if ((GameVersion == TRVersion.Game.TombEngine) && Path.GetFileName(file).ToLower() == "pctomb5.exe")
 					return Path.Combine(ProjectPath, Path.GetFileNameWithoutExtension(file) + ".trproj");
 			}
 
@@ -242,7 +242,7 @@ namespace TombIDE.Shared
 				case TRVersion.Game.TRNG:
 					return "tomb4.exe";
 
-				case TRVersion.Game.TR5Main:
+				case TRVersion.Game.TombEngine:
 					return "PCTomb5.exe";
 
 				default:
@@ -263,7 +263,7 @@ namespace TombIDE.Shared
 				case TRVersion.Game.TRNG:
 					return ".tr4";
 
-				case TRVersion.Game.TR5Main:
+				case TRVersion.Game.TombEngine:
 					return ".trc";
 
 				default:

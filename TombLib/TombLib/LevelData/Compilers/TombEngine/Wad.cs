@@ -5,17 +5,16 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
+using TombLib.LevelData.Compilers.Util;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
 
-namespace TombLib.LevelData.Compilers
+namespace TombLib.LevelData.Compilers.TombEngine
 {
-    public partial class LevelCompilerClassicTR
+    public sealed partial class LevelCompilerTombEngine
     {
         private static readonly bool _writeDbgWadTxt = false;
-        private readonly Dictionary<Hash, int> _meshPointerLookup = new Dictionary<Hash, int>();
-        private int _totalMeshSize = 0;
         private List<int> _finalSelectedSoundsList;
         private List<int> _finalSoundIndicesList;
         private List<WadSoundInfo> _finalSoundInfosList;
@@ -47,48 +46,16 @@ namespace TombLib.LevelData.Compilers
             }
         }
 
-        private void ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
-                                       bool isWaterfall = false, bool isOptics = false)
+        private TombEngine_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
+                                            bool isWaterfall = false, bool isOptics = false)
         {
-            // Don't add already existing meshes
-            var hash = oldMesh.Hash;
-            if (_meshPointerLookup.ContainsKey(hash))
+            var newMesh = new TombEngine_mesh
             {
-                _meshPointers.Add((uint)_meshPointerLookup[hash]);
-                return;
-            }
-
-            int currentMeshSize = 0;
-
-            var newMesh = new tr_mesh
-            {
-                Center = new tr_vertex
-                {
-                    X = (short)oldMesh.BoundingSphere.Center.X,
-                    Y = (short)-oldMesh.BoundingSphere.Center.Y,
-                    Z = (short)oldMesh.BoundingSphere.Center.Z
-                },
-                Radius = (short)oldMesh.BoundingSphere.Radius
+                Sphere = oldMesh.BoundingSphere
             };
-
-            currentMeshSize += 10;
-
-            newMesh.NumVertices = (short)oldMesh.VerticesPositions.Count;
-            currentMeshSize += 2;
-
-            newMesh.Vertices = new tr_vertex[oldMesh.VerticesPositions.Count];
-
-            for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
-            {
-                var vertex = oldMesh.VerticesPositions[j];
-                newMesh.Vertices[j] = new tr_vertex((short)vertex.X, (short)-vertex.Y, (short)vertex.Z);
-
-                currentMeshSize += 6;
-            }
 
             // FIX: the following code will check for valid normals and shades combinations.
             // As last chance, I recalculate the normals on the fly.
-
             bool useShades = false;
             bool flatLighting = false;
             var objectString = isStatic ? "Static" : "Moveable";
@@ -111,67 +78,40 @@ namespace TombLib.LevelData.Compilers
                 useShades = true;
             }
 
-            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesPositions.Count : oldMesh.VerticesNormals.Count);
-            currentMeshSize += 2;
-
-            if (!useShades)
+            // Add vertices components
+            foreach (var pos in oldMesh.VerticesPositions)
             {
-                newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
-
-                for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
-                {
-                    Vector3 normal = oldMesh.VerticesNormals[j];
-                    normal = Vector3.Normalize(normal);
-                    normal *= 16300.0f;
-                    newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
-
-                    currentMeshSize += 6;
-                }
+                newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
+                newMesh.Vertices.Add(new TombEngine_vertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
             }
-            else
+            foreach (var normal in oldMesh.VerticesNormals)
+                newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
+            if (useShades)
             {
-                newMesh.Lights = new short[oldMesh.VerticesPositions.Count];
-
                 for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
                 {
                     // HACK: Because of inconsistent TE light model (0.0f-2.0f), clamp luma to 1.0f to avoid issues with
                     // incorrect shade translations in room meshes reimported as statics.
                     var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VerticesColors[j].GetLuma(), 1.0f);
 
-                    newMesh.Lights[j] = (short)(8191.0f - lightValue * 8191.0f);
-                    currentMeshSize += 2;
+                    newMesh.Colors.Add(new Vector3(lightValue));
                 }
             }
-
-            short numQuads = 0;
-            short numTriangles = 0;
-
-            foreach (var poly in oldMesh.Polys)
+            else
             {
-                if (poly.Shape == WadPolygonShape.Quad)
-                    numQuads++;
-                else
-                    numTriangles++;
+                for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                    newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
             }
-
-            newMesh.NumTexturedQuads = numQuads;
-            currentMeshSize += 2;
-
-            newMesh.NumTexturedTriangles = numTriangles;
-            currentMeshSize += 2;
-
-            int lastQuad = 0;
-            int lastTriangle = 0;
-
-            newMesh.TexturedQuads = new tr_face4[numQuads];
-            newMesh.TexturedTriangles = new tr_face3[numTriangles];
+            for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                newMesh.Bones.Add(meshIndex);
 
             for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
                 var poly = oldMesh.Polys[j];
+                TombEngine_polygon newPoly;
 
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
-                if(poly.ShineStrength > 0)
+                if (poly.ShineStrength > 0)
                 {
                     if (useShades && isStatic)
                         _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
@@ -186,48 +126,157 @@ namespace TombLib.LevelData.Compilers
                 bool topmostAndUnpadded = (j == 0) ? isWaterfall : false;
 
                 // Check if we should merge object and room textures in same texture tiles.
-                bool agressivePacking = _level.Settings.AgressiveTexturePacking;
+                TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
+
+                int index0 = poly.Index0;
+                int index1 = poly.Index1;
+                int index2 = poly.Index2;
+                int index3 = poly.Index3;
 
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
                     FixWadTextureCoordinates(ref poly.Texture);
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, false, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(poly.Texture, destination, false, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
-                        poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 10 : 12;
+                    newPoly = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, null);
                 }
                 else
                 {
                     FixWadTextureCoordinates(ref poly.Texture);
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, true, topmostAndUnpadded);
+                    var result = _textureInfoManager.AddTexture(poly.Texture, destination, true, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
-                        poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
+                    newPoly = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, null);
+                }
+
+                newMesh.Polygons.Add(newPoly);
+
+                newMesh.Vertices[index0].Polygons.Add(new NormalHelper(newPoly));
+                newMesh.Vertices[index1].Polygons.Add(new NormalHelper(newPoly));
+                newMesh.Vertices[index2].Polygons.Add(new NormalHelper(newPoly));
+                if (poly.Shape == WadPolygonShape.Quad)
+                    newMesh.Vertices[index3].Polygons.Add(new NormalHelper(newPoly));
+
+                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[0]]);
+                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[1]]);
+                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[2]]);
+                if (poly.Shape == WadPolygonShape.Quad)
+                    newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[3]]);
+            }
+
+            _meshes.Add(newMesh);
+
+            return newMesh;
+        }
+
+        private void PrepareMeshBuckets()
+        {
+            for (int i = 0; i < _meshes.Count; i++)
+                PrepareMeshBuckets(_meshes[i]);
+        }
+
+        private void PrepareMeshBuckets(TombEngine_mesh mesh)
+        {
+            var textures = _textureInfoManager.GetObjectTextures();
+            mesh.Buckets = new Dictionary<TombEngine_material, TombEngine_bucket>(new TombEngine_material.TombEngineMaterialComparer());
+            foreach (var poly in mesh.Polygons)
+            {
+                var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, 0, mesh.Buckets);
+
+                var texture = textures[poly.TextureId];
+
+                poly.AnimatedSequence = -1;
+                poly.AnimatedFrame = -1;
+
+                // We output only triangles, no quads anymore
+                if (poly.Shape == TombEngine_polygon_shape.Quad)
+                {
+                    for (int n = 0; n < 4; n++)
+                    {
+                        poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.Tangents.Add(Vector3.Zero);
+                        poly.Bitangents.Add(Vector3.Zero);
+                    }
+
+                    bucket.Polygons.Add(poly);
+                }
+                else
+                {
+                    for (int n = 0; n < 3; n++)
+                    {
+                        poly.TextureCoordinates.Add(texture.TexCoordFloat[n]);
+                        poly.Tangents.Add(poly.Tangent);
+                        poly.Bitangents.Add(poly.Bitangent);
+                    }
+
+                    bucket.Polygons.Add(poly);
                 }
             }
 
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                currentMeshSize += 4; // Num colored quads and triangles
-
-            if (currentMeshSize % 4 != 0)
+            // Calculate tangents and bitangents
+            for (int i = 0; i < mesh.Vertices.Count; i++)
             {
-                currentMeshSize += 2;
+                var vertex = mesh.Vertices[i];
+                var polygons = vertex.Polygons;
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+
+                    var e1 = mesh.Positions[poly.Polygon.Indices[1]] - mesh.Positions[poly.Polygon.Indices[0]];
+                    var e2 = mesh.Positions[poly.Polygon.Indices[2]] - mesh.Positions[poly.Polygon.Indices[0]];
+
+                    var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
+                    var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
+
+                    float r = 1.0f / (uv1.X * uv2.Y - uv1.Y * uv2.X);
+                    poly.Polygon.Tangent = Vector3.Normalize((e1 * uv2.Y - e2 * uv1.Y) * r);
+                    poly.Polygon.Bitangent = Vector3.Normalize((e2 * uv1.X - e1 * uv2.X) * r);
+                }
             }
 
-            newMesh.MeshSize = currentMeshSize;
-            newMesh.MeshPointer = _totalMeshSize;
-            _meshPointers.Add((uint)_totalMeshSize);
-            _meshPointerLookup.Add(hash, _totalMeshSize);
+            // Average everything
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                var vertex = mesh.Vertices[i];
+                var polygons = vertex.Polygons;
 
-            _totalMeshSize += currentMeshSize;
+                var tangent = Vector3.Zero;
+                var bitangent = Vector3.Zero;
 
-            _meshes.Add(newMesh);
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+                    tangent += poly.Polygon.Tangent;
+                    bitangent += poly.Polygon.Bitangent;
+                }
+
+                if (polygons.Count > 0)
+                {
+                    tangent = Vector3.Normalize(tangent / (float)polygons.Count);
+                    bitangent = Vector3.Normalize(bitangent / (float)polygons.Count);
+                }
+
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    var poly = polygons[j];
+
+                    // TODO: for now we smooth all tangents and bitangents
+                    for (int k = 0; k < poly.Polygon.Indices.Count; k++)
+                    {
+                        int index = poly.Polygon.Indices[k];
+                        if (index == i)
+                        {
+                            poly.Polygon.Tangents[k] = tangent;
+                            poly.Polygon.Bitangents[k] = bitangent;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         private class AnimationTr4HelperData
@@ -236,121 +285,53 @@ namespace TombLib.LevelData.Compilers
             public int KeyFrameSize { get; set; }
         }
 
-        public void ConvertWad2DataToTrData(Level l)
+        public void ConvertWad2DataToTr4()
         {
             ReportProgress(0, "Preparing WAD data");
 
             SortedList<WadMoveableId, WadMoveable> moveables = _level.Settings.WadGetAllMoveables();
             SortedList<WadStaticId, WadStatic> statics = _level.Settings.WadGetAllStatics();
 
-			if (l.Settings.RemoveUnusedObjects)
-            {
-				ReportProgress(1, "Removing unused moveables and statics");
-
-				// List all Moveables that have been placed in the level
-				ISet<WadMoveableId> placedMoveables = new HashSet<WadMoveableId>();
-				ISet<WadStaticId> placedStatics = new HashSet<WadStaticId>();
-				foreach (var room in l.Rooms.Where(r => r != null)) {
-					foreach (var o in room.Objects) {
-						if (o is MoveableInstance) {
-							placedMoveables.Add((o as MoveableInstance).WadObjectId);
-						}
-						if (o is StaticInstance) {
-							placedStatics.Add((o as StaticInstance).WadObjectId);
-						}
-					}
-				}
-				IList<WadMoveableId> moveablesToRemove = new List<WadMoveableId>();
-				IList<WadStaticId> staticsToRemove = new List<WadStaticId>();
-				//List all moveables and statics that aren't placed and are not essential
-				foreach (var kvp in moveables) {
-					if (!placedMoveables.Contains(kvp.Key) && !TrCatalog.IsEssential(_level.Settings.GameVersion, kvp.Key.TypeId)) {
-						moveablesToRemove.Add(kvp.Key);
-					}
-				}
-				foreach (var kvp in statics) {
-					if (!placedStatics.Contains(kvp.Key)) {
-						staticsToRemove.Add(kvp.Key);
-					}
-				}
-
-				// Remove all moveables and statics that were found to be not essential and not placed
-
-				foreach (var id in moveablesToRemove)
-                {
-					moveables.Remove(id);
-					_progressReporter.ReportInfo("    Removed unused Moveable: " + TrCatalog.GetMoveableName(l.Settings.GameVersion, id.TypeId));
-				}
-				foreach (var id in staticsToRemove)
-                {
-					statics.Remove(id);
-					_progressReporter.ReportInfo("    Removed unused Static: " + TrCatalog.GetStaticName(l.Settings.GameVersion, id.TypeId));
-				}
-			}
-			
-			// First thing build frames
-			ReportProgress(5, "Building meshes and animations");
-            var animationDictionary = new Dictionary<WadAnimation, AnimationTr4HelperData>(new ReferenceEqualityComparer<WadAnimation>());
+            // First thing build frames
+            ReportProgress(1, "Building animations");
+            var animationDictionary = new Dictionary<WadAnimation, int>(new ReferenceEqualityComparer<WadAnimation>());
             foreach (WadMoveable moveable in moveables.Values)
                 foreach (var animation in moveable.Animations)
-                {
-                    AnimationTr4HelperData animationHelper = animationDictionary.TryAdd(animation, new AnimationTr4HelperData());
-                    animationHelper.KeyFrameOffset = _frames.Count * 2;
+                { 
+                    animationDictionary.Add(animation, _frames.Count);
 
-                    // Store the frames in an intermediate data structure to pad them to the same size in the next step.
-                    var unpaddedFrames = new List<short>[animation.KeyFrames.Count];
-                    for (int i = 0; i < animation.KeyFrames.Count; ++i)
+                    foreach (var wadFrame in animation.KeyFrames)
                     {
-                        var unpaddedFrame = new List<short>();
-                        WadKeyFrame wadFrame = animation.KeyFrames[i];
-                        unpaddedFrames[i] = unpaddedFrame;
+                        var newFrame = new TombEngine_keyframe
+                        {
+                            Angles = new List<Quaternion>()
+                        };
 
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.X)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.X)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.BoundingBox.Minimum.Y)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.BoundingBox.Maximum.Y)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Z)));
-                        unpaddedFrame.Add((short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Z)));
+                        newFrame.BoundingBox.X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.X));
+                        newFrame.BoundingBox.Y1 = (short)-Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Y));
+                        newFrame.BoundingBox.Z1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Minimum.Z));
+                        newFrame.BoundingBox.X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.X));
+                        newFrame.BoundingBox.Y2 = (short)-Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Y));
+                        newFrame.BoundingBox.Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.BoundingBox.Maximum.Z));
+                        newFrame.Offset = new Vector3(wadFrame.Offset.X, -wadFrame.Offset.Y, wadFrame.Offset.Z);
 
-                        unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.X))));
-                        unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, -wadFrame.Offset.Y))));
-                        unpaddedFrame.Add((short)Math.Round(Math.Max(short.MinValue, Math.Min(short.MaxValue, wadFrame.Offset.Z))));
+                        foreach (var oldRot in wadFrame.Angles)
+                        {
+                            newFrame.Angles.Add(oldRot.Quaternion);
+                        }
 
-                        // TR1 has also the number of angles to follow
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
-                            unpaddedFrame.Add((short)wadFrame.Angles.Count);
-
-                        foreach (var angle in wadFrame.Angles)
-                            WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
-                                _level.Settings.GameVersion == TRVersion.Game.TR1,
-                                _level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                                _level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                                _level.Settings.GameVersion == TRVersion.Game.TR5);
+                        _frames.Add(newFrame);
                     }
-
-                    // Figure out padding of the frames
-                    int longestFrame = 0;
-                    foreach (List<short> unpaddedFrame in unpaddedFrames)
-                        longestFrame = Math.Max(longestFrame, unpaddedFrame.Count);
-
-                    // Add frames
-                    foreach (List<short> unpaddedFrame in unpaddedFrames)
-                    {
-                        _frames.AddRange(unpaddedFrame);
-                        if (_level.Settings.GameVersion != TRVersion.Game.TR1)
-                            _frames.AddRange(Enumerable.Repeat((short)0, longestFrame - unpaddedFrame.Count));
-                    }
-                    animationHelper.KeyFrameSize = longestFrame;
                 }
 
             int lastAnimation = 0;
             int lastAnimDispatch = 0;
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
-                var newMoveable = new tr_moveable();
-                newMoveable.Animation = checked((ushort)(oldMoveable.Animations.Count != 0 ? lastAnimation : 0xffff));
-                newMoveable.NumMeshes = checked((ushort)oldMoveable.Meshes.Count());
-                newMoveable.ObjectID = oldMoveable.Id.TypeId;
+                var newMoveable = new TombEngine_moveable();
+                newMoveable.Animation = (short)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
+                newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
+                newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
                 newMoveable.FrameOffset = 0;
 
                 // Add animations
@@ -358,8 +339,8 @@ namespace TombLib.LevelData.Compilers
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
-                    var newAnimation = new tr_animation();
-                    var animationHelper = animationDictionary[oldAnimation];
+                    var newAnimation = new TombEngine_animation();
+                    var offset = animationDictionary[oldAnimation];
 
                     // Calculate accelerations from velocities
                     int acceleration = 0;
@@ -380,16 +361,13 @@ namespace TombLib.LevelData.Compilers
                     // Clamp EndFrame to max. frame count as a last resort to prevent glitching animations.
 
                     var frameCount = oldAnimation.EndFrame + 1;
-                    var maxFrame = oldAnimation.GetRealNumberOfFrames();
+                    var maxFrame   = oldAnimation.GetRealNumberOfFrames(oldAnimation.KeyFrames.Count);
                     if (frameCount > maxFrame)
                         frameCount = maxFrame;
 
                     // Setup the final animation
-                    if (j == 0)
-                        newMoveable.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
-                    newAnimation.FrameOffset = checked((uint)animationHelper.KeyFrameOffset);
+                    newAnimation.FrameOffset = checked(offset);
                     newAnimation.FrameRate = oldAnimation.FrameRate;
-                    newAnimation.FrameSize = checked((byte)animationHelper.KeyFrameSize);
                     newAnimation.Speed = speed;
                     newAnimation.Accel = acceleration;
                     newAnimation.SpeedLateral = lateralSpeed;
@@ -486,14 +464,18 @@ namespace TombLib.LevelData.Compilers
                 }
                 lastAnimation += oldMoveable.Animations.Count;
 
-                newMoveable.MeshTree = (uint)_meshTrees.Count;
-                newMoveable.StartingMesh = (ushort)_meshPointers.Count;
+                newMoveable.MeshTree = _meshTrees.Count;
+                newMoveable.StartingMesh = (short)_meshes.Count;
 
-                for (int i = 0; i < oldMoveable.Meshes.Count; i++)
-                {
+                for (int i = 0; i < oldMoveable.Meshes.Count; i++) {
                     var wadMesh = oldMoveable.Meshes[i];
-                    ConvertWadMesh(wadMesh, false, oldMoveable.Id.ShortName(_level.Settings.GameVersion), i, 
-                        oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
+                    ConvertWadMesh(
+                        wadMesh, 
+                        false, 
+                        oldMoveable.Id.ShortName(_level.Settings.GameVersion), 
+                        i, 
+                        oldMoveable.Id.IsWaterfall(_level.Settings.GameVersion), 
+                        oldMoveable.Id.IsOptics(_level.Settings.GameVersion));
                 }
 
                 var meshTrees = new List<tr_meshtree>();
@@ -541,18 +523,18 @@ namespace TombLib.LevelData.Compilers
             }
 
             _progressReporter.ReportInfo("    Number of model mesh references: " + _meshPointers.Count);
-            _progressReporter.ReportInfo("    Number of unique model meshes: " + _meshPointerLookup.Count);
+            //_progressReporter.ReportInfo("    Number of unique model meshes: " + _meshPointerLookup.Count);
 
             // Convert static meshes
             int convertedStaticsCount = 0;
             ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
-                var newStaticMesh = new tr_staticmesh();
+                var newStaticMesh = new TombEngine_staticmesh();
 
-                newStaticMesh.ObjectID = oldStaticMesh.Id.TypeId;
+                newStaticMesh.ObjectID = checked((int)oldStaticMesh.Id.TypeId);
 
-                newStaticMesh.CollisionBox = new tr_bounding_box
+                newStaticMesh.CollisionBox = new TombEngine_bounding_box
                 {
                     X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Minimum.X)),
                     X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.X)),
@@ -562,7 +544,7 @@ namespace TombLib.LevelData.Compilers
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.Z))
                 };
 
-                newStaticMesh.VisibilityBox = new tr_bounding_box
+                newStaticMesh.VisibilityBox = new TombEngine_bounding_box
                 {
                     X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Minimum.X)),
                     X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.X)),
@@ -572,17 +554,24 @@ namespace TombLib.LevelData.Compilers
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.Z))
                 };
 
-                if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-                    newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
-                else
-                    newStaticMesh.Flags = 2; // bit 0: no collision, bit 1: visibility
+                
+                newStaticMesh.Flags = (ushort)oldStaticMesh.Flags;
+                newStaticMesh.Mesh = (short)_meshes.Count;
 
-                newStaticMesh.Mesh = (ushort)_meshPointers.Count;
+                newStaticMesh.ShatterType = 0; // (short)oldStaticMesh.ShatterType;
+                newStaticMesh.ShatterDamage = 0; //  (short)Math.Max(1, oldStaticMesh.HitPoints);
+                newStaticMesh.ShatterSound = 0; //  (short)oldStaticMesh.ShatterSound;
 
                 // Do not add faces and vertices to the wad, instead keep only the bounding boxes when we automatically merge the Mesh
                 if (_level.Settings.FastMode || !_level.Settings.AutoStaticMeshMergeContainsStaticMesh(oldStaticMesh))
                 {
-                    ConvertWadMesh(oldStaticMesh.Mesh, true, oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 0, false, false);
+                    ConvertWadMesh(
+                        oldStaticMesh.Mesh, 
+                        true,
+                        oldStaticMesh.Id.ShortName(_level.Settings.GameVersion), 
+                        0,
+                        false, 
+                        false);
                 }
                 else
                 {
@@ -608,7 +597,6 @@ namespace TombLib.LevelData.Compilers
                         writer.WriteLine("Anim #" + n);
                         writer.WriteLine("    KeyframeOffset: " + anim.FrameOffset);
                         writer.WriteLine("    FrameRate: " + anim.FrameRate);
-                        writer.WriteLine("    KeyFrameSize: " + anim.FrameSize);
                         writer.WriteLine("    FrameStart: " + anim.FrameStart);
                         writer.WriteLine("    FrameEnd: " + anim.FrameEnd);
                         writer.WriteLine("    StateChangeOffset: " + anim.StateChangeOffset);
@@ -657,19 +645,6 @@ namespace TombLib.LevelData.Compilers
                     for (int jj = 0; jj < _meshPointers.Count; jj++)
                     {
                         writer.WriteLine("MeshPointer #" + jj + ": " + _meshPointers[jj]);
-
-                        n++;
-                    }
-
-                    n = 0;
-                    foreach (var mesh in _meshes)
-                    {
-                        writer.WriteLine("Mesh #" + n);
-                        writer.WriteLine("    Vertices: " + mesh.NumVertices);
-                        writer.WriteLine("    Normals: " + mesh.NumNormals);
-                        writer.WriteLine("    Polygons: " + (mesh.NumTexturedQuads + mesh.NumTexturedTriangles));
-                        writer.WriteLine("    MeshPointer: " + mesh.MeshPointer);
-                        writer.WriteLine();
 
                         n++;
                     }
@@ -819,11 +794,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Step 3: create the sound map
-            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
-                _soundMapSize = _limits[Limit.NG_SoundMapSize];
-            else
-                _soundMapSize = _limits[Limit.SoundMapSize];
-
+             _soundMapSize = 4096;
             _finalSoundMap = Enumerable.Repeat((short)-1, _soundMapSize).ToArray<short>();
             foreach (var sound in _finalSoundInfosList)
             {
@@ -835,15 +806,6 @@ namespace TombLib.LevelData.Compilers
                 _finalSoundMap[sound.Id] = (short)_finalSoundInfosList.IndexOf(sound);
             }
 
-            // Samples aren't needed for TR2-3, skip next step
-            if (_level.Settings.GameVersion.UsesMainSfx())
-            {
-                // Additionally warn user if he uses several sound catalogs which is incompatible with MAIN.SFX workflow.
-                if (_level.Settings.SoundsCatalogs.Count > 1)
-                    _progressReporter.ReportWarn("Multiple sound catalogs can't be used with TR2 and TR3. Results are unpredictable. Remove all sound catalogs but one.");
-                return;
-            }
-
             // Step 4: load samples
             var loadedSamples = WadSample.CompileSamples(_finalSoundInfosList, _level.Settings, false, _progressReporter);
             _finalSamplesList = loadedSamples.Values.ToList();
@@ -851,11 +813,7 @@ namespace TombLib.LevelData.Compilers
 
         private void WriteSoundMetadata(BinaryWriter writer)
         {
-            if (_level.Settings.GameVersion > TRVersion.Game.TR3)
-            {
-                // In TRNG and TombEngine NumDemoData is used as sound map size
-                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ? _soundMapSize : 0));
-            }
+            writer.Write((ushort)_soundMapSize);
 
             using (var ms = new MemoryStream())
             {
@@ -871,32 +829,11 @@ namespace TombLib.LevelData.Compilers
                     for (int i = 0; i < _finalSoundInfosList.Count; i++)
                     {
                         var soundDetail = _finalSoundInfosList[i];
-                        
+
                         if (soundDetail.Samples.Count > 0x0F)
                             throw new Exception("Too many sound effects for sound info '" + soundDetail.Name + "'.");
 
-                        ushort characteristics;
-
-                        if (_level.Settings.GameVersion == TRVersion.Game.TR1)
-                        {
-                            switch (soundDetail.LoopBehaviour)
-                            {
-                                default:
-                                case WadSoundLoopBehaviour.None:
-                                case WadSoundLoopBehaviour.OneShotRewound:
-                                    characteristics = 1;
-                                    break;
-                                case WadSoundLoopBehaviour.OneShotWait:
-                                    characteristics = 0;
-                                    break;
-                                case WadSoundLoopBehaviour.Looped:
-                                    characteristics = 2;
-                                    break;
-                            }
-                        }
-                        else
-                            characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
-
+                        ushort characteristics = (ushort)(3 & (int)soundDetail.LoopBehaviour);
                         characteristics |= (ushort)(soundDetail.Samples.Count << 2);
                         if (soundDetail.DisablePanning)
                             characteristics |= 0x1000;
@@ -905,40 +842,15 @@ namespace TombLib.LevelData.Compilers
                         if (soundDetail.RandomizeVolume)
                             characteristics |= 0x4000;
 
-                        if (_level.Settings.GameVersion <= TRVersion.Game.TR2)
-                        {
-                            var newSoundDetail = new tr_sound_details();
-                            newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (ushort)Math.Round(soundDetail.Volume / 100.0f * 32767.0f);
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 32767.0f);
-                            newSoundDetail.Characteristics = characteristics;
-                            bw.WriteBlock(newSoundDetail);
-                        }
-                        else
-                        {
-                            var newSoundDetail = new tr3_sound_details();
-                            newSoundDetail.Sample = (ushort)lastSampleIndex;
-                            newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
-                            newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
-                            newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
-                            newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
-                            newSoundDetail.Characteristics = characteristics;
-                            bw.WriteBlock(newSoundDetail);
-                        }
+                        var newSoundDetail = new tr3_sound_details();
+                        newSoundDetail.Sample = (ushort)lastSampleIndex;
+                        newSoundDetail.Volume = (byte)Math.Round(soundDetail.Volume / 100.0f * 255.0f);
+                        newSoundDetail.Range = (byte)soundDetail.RangeInSectors;
+                        newSoundDetail.Chance = (byte)Math.Round((soundDetail.Chance == 100 ? 0 : soundDetail.Chance) / 100.0f * 255.0f);
+                        newSoundDetail.Pitch = (byte)Math.Round(soundDetail.PitchFactor / 100.0f * 127.0f + (soundDetail.PitchFactor < 0 ? 256 : 0));
+                        newSoundDetail.Characteristics = characteristics;
+                        bw.WriteBlock(newSoundDetail);
                         lastSampleIndex += soundDetail.Samples.Count;
-                    }
-
-                    int maxSampleCount = _limits[Limit.SoundSampleCount];
-                    if (lastSampleIndex > maxSampleCount)
-                        _progressReporter.ReportWarn("Level contains " + lastSampleIndex + 
-                            " samples, while maximum is " + maxSampleCount + ". Level may crash. Turn off some sounds to prevent that.");
-
-                    // Write sample indices (not used but parsed in TR4-5)
-                    if (_level.Settings.GameVersion > TRVersion.Game.TR1)
-                    {
-                        bw.Write((uint)_finalSoundIndicesList.Count);
-                        for (int i = 0; i < _finalSoundIndicesList.Count; i++)
-                            bw.Write((uint)_finalSoundIndicesList[i]);
                     }
                 }
 
@@ -950,114 +862,30 @@ namespace TombLib.LevelData.Compilers
         {
             var sampleRate = _limits[Limit.SoundSampleRate];
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TR1)
+            writer.Write((uint)_finalSamplesList.Count); // Write sample count
+
+            // We have to compress the samples first
+            // TR5 uses compressed MS-ADPCM samples
+            byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
+            int[] uncompressedSizes = new int[_finalSamplesList.Count];
+            Parallel.For(0, _finalSamplesList.Count, delegate (int i)
             {
-                // Calculate sum of all sample sizes
-                int sumSize = 0;
-                _finalSamplesList.ForEach(s => sumSize += s.Data.Length);
-                writer.Write(sumSize);
-
-                // Write uncompressed samples
-                foreach (WadSample sample in _finalSamplesList)
-                {
-                    writer.Write(sample.Data, 0, 24);
-                    writer.Write((uint)sampleRate);
-                    writer.Write((uint)sampleRate * 2);
-                    writer.Write(sample.Data, 32, sample.Data.Length - 32);
-                }
-
-                // Write sample count
-                writer.Write(_finalSamplesList.Count);
-
-                // Write offset for every sample
-                sumSize = 0;
-                foreach (var sample in _finalSamplesList)
-                {
-                    writer.Write(sumSize);
-                    sumSize += sample.Data.Length;
-                }
-            }
-            else if (_level.Settings.GameVersion.Native() == TRVersion.Game.TR5)
+                compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm((uint)sampleRate, out uncompressedSizes[i]);
+            });
+            for (int i = 0; i < _finalSamplesList.Count; ++i)
             {
-                // Write sample count
-                writer.Write((uint)_finalSamplesList.Count);
-
-                // TR5 uses compressed MS-ADPCM samples
-                byte[][] compressedSamples = new byte[_finalSamplesList.Count][];
-                int[] uncompressedSizes = new int[_finalSamplesList.Count];
-                Parallel.For(0, _finalSamplesList.Count, delegate (int i)
-                {
-                    compressedSamples[i] = _finalSamplesList[i].CompressToMsAdpcm((uint)sampleRate, out uncompressedSizes[i]);
-                });
-                for (int i = 0; i < _finalSamplesList.Count; ++i)
-                {
-                    writer.Write((uint)uncompressedSizes[i]);
-                    writer.Write((uint)compressedSamples[i].Length);
-                    writer.Write(compressedSamples[i]);
-                }
-            }
-            else
-            {
-                // Write sample count
-                writer.Write((uint)_finalSamplesList.Count);
-
-                // Write uncompressed samples
-                foreach (WadSample sample in _finalSamplesList)
-                {
-                    writer.Write((uint)sample.Data.Length);
-                    writer.Write((uint)sample.Data.Length);
-                    writer.Write(sample.Data, 0, 24);
-                    writer.Write((uint)sampleRate);
-                    writer.Write((uint)sampleRate);
-                    writer.Write(sample.Data, 32, sample.Data.Length - 32);
-                }
+                writer.Write((uint)uncompressedSizes[i]);
+                writer.Write((uint)compressedSamples[i].Length);
+                writer.Write(compressedSamples[i]);
             }
         }
 
-        private tr_mesh CreateDummyWadMesh(WadMesh oldMesh)
+        private TombEngine_mesh CreateDummyWadMesh(WadMesh oldMesh)
         {
-            int currentMeshSize = 0;
-            var newMesh = new tr_mesh
+            var newMesh = new TombEngine_mesh
             {
-                Center = new tr_vertex
-                {
-                    X = (short)oldMesh.BoundingSphere.Center.X,
-                    Y = (short)-oldMesh.BoundingSphere.Center.Y,
-                    Z = (short)oldMesh.BoundingSphere.Center.Z
-                },
-                Radius = (short)oldMesh.BoundingSphere.Radius
+                Sphere = oldMesh.BoundingSphere
             };
-            currentMeshSize += 10;
-            newMesh.NumVertices = 0;
-            currentMeshSize += 2;
-            newMesh.Vertices = new tr_vertex[0];
-
-            newMesh.NumNormals = 0;
-            currentMeshSize += 2;
-            short numQuads = 0;
-            short numTriangles = 0;
-
-            newMesh.NumTexturedQuads = numQuads;
-            currentMeshSize += 2;
-
-            newMesh.NumTexturedTriangles = numTriangles;
-            currentMeshSize += 2;
-
-            newMesh.TexturedQuads = new tr_face4[numQuads];
-            newMesh.TexturedTriangles = new tr_face3[numTriangles];
-            if (_level.Settings.GameVersion <= TRVersion.Game.TR3)
-                currentMeshSize += 4; // Num colored quads and triangles
-
-            if (currentMeshSize % 4 != 0)
-            {
-                currentMeshSize += 2;
-            }
-
-            newMesh.MeshSize = currentMeshSize;
-            newMesh.MeshPointer = _totalMeshSize;
-            _meshPointers.Add((uint)_totalMeshSize);
-
-            _totalMeshSize += currentMeshSize;
 
             _meshes.Add(newMesh);
 

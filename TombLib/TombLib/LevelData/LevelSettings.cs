@@ -248,7 +248,7 @@ namespace TombLib.LevelData
                 case TRVersion.Game.TR5:
                     result = ".trc";
                     break;
-                case TRVersion.Game.TR5Main:
+                case TRVersion.Game.TombEngine:
                     result = ".t5m";
                     break;
             }
@@ -562,7 +562,7 @@ namespace TombLib.LevelData
             new FileFormat("Tomb Raider II/III level", "tr2"),
             new FileFormat("Tomb Raider The Last Revelation level", "tr4"),
             new FileFormat("Tomb Raider Chronicles level", "trc"),
-            new FileFormat("TR5Main level", "t5m")
+            new FileFormat("TombEngine level", "t5m")
         };
 
         public static readonly IReadOnlyCollection<FileFormat> FileFormatsSoundsCatalogs = new[]

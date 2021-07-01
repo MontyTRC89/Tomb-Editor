@@ -561,20 +561,20 @@ namespace WadTool
             }
         }
 
-        public static Wad2 ConvertWad2ToTR5Main(WadToolClass tool, IWin32Window owner, Wad2 src)
+        public static Wad2 ConvertWad2ToTombEngine(WadToolClass tool, IWin32Window owner, Wad2 src)
         {
             Wad2 dest = new Wad2();
-            dest.GameVersion = TRVersion.Game.TR5Main;
+            dest.GameVersion = TRVersion.Game.TombEngine;
             dest.SoundSystem = SoundSystem.Xml;
 
             foreach (var moveable in src.Moveables)
             {
-                var compatibleSlot = TrCatalog.GetMoveableTR5MainSlot(src.GameVersion, moveable.Key.TypeId);
+                var compatibleSlot = TrCatalog.GetMoveableTombEngineSlot(src.GameVersion, moveable.Key.TypeId);
                 if (compatibleSlot == "")
                     continue;
 
                 bool isMoveable = false;
-                var destId = TrCatalog.GetItemIndex(TRVersion.Game.TR5Main, compatibleSlot, out isMoveable);
+                var destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out isMoveable);
                 if (!destId.HasValue)
                     continue;
 
@@ -585,7 +585,7 @@ namespace WadTool
                         if (command.Type == WadAnimCommandType.PlaySound)
                         {
                             int id = command.Parameter2 & 0x3FFF;
-                            id += TrCatalog.GetTR5MainSoundMapStart(src.GameVersion);
+                            id += TrCatalog.GetTombEngineSoundMapStart(src.GameVersion);
                             command.Parameter2 = (short)((command.Parameter2 & 0xC000) | (id & 0x3FFF));
                         }
 
@@ -594,12 +594,12 @@ namespace WadTool
 
             foreach (var sequence in src.SpriteSequences)
             {
-                var compatibleSlot = TrCatalog.GetSpriteSequenceTR5MainSlot(src.GameVersion, sequence.Key.TypeId);
+                var compatibleSlot = TrCatalog.GetSpriteSequenceTombEngineSlot(src.GameVersion, sequence.Key.TypeId);
                 if (compatibleSlot == "")
                     continue;
 
                 bool isMoveable = false;
-                var destId = TrCatalog.GetItemIndex(TRVersion.Game.TR5Main, compatibleSlot, out isMoveable);
+                var destId = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, compatibleSlot, out isMoveable);
                 if (!destId.HasValue)
                     continue;
 
@@ -632,8 +632,8 @@ namespace WadTool
             // Figure out the new ids if there are any id collisions
             IWadObjectId[] newIds = objectIdsToMove.ToArray();
 
-            // If destination is TR5Main, try to remap object IDs
-            if (destinationWad.GameVersion == TRVersion.Game.TR5Main)
+            // If destination is TombEngine, try to remap object IDs
+            if (destinationWad.GameVersion == TRVersion.Game.TombEngine)
             {
                 for (int i = 0; i < objectIdsToMove.Count; ++i)
                 {
@@ -643,7 +643,7 @@ namespace WadTool
                         var moveableId = (WadMoveableId)objectId;
 
                         // Try to get a compatible slot
-                        var newSlot = TrCatalog.GetMoveableTR5MainSlot(sourceWad.GameVersion, moveableId.TypeId);
+                        var newSlot = TrCatalog.GetMoveableTombEngineSlot(sourceWad.GameVersion, moveableId.TypeId);
                         if (newSlot == "")
                             continue;
 
@@ -738,7 +738,7 @@ namespace WadTool
                 {
                     destinationWad.Add(newIds[i], obj);
 
-                    if (destinationWad.GameVersion == TRVersion.Game.TR5Main && obj is WadMoveable)
+                    if (destinationWad.GameVersion == TRVersion.Game.TombEngine && obj is WadMoveable)
                     {
                         var moveable = obj as WadMoveable;
                         foreach (var animation in moveable.Animations)
@@ -746,7 +746,7 @@ namespace WadTool
                                 if (command.Type == WadAnimCommandType.PlaySound)
                                 {
                                     int id = command.Parameter2 & 0x3FFF;
-                                    id += TrCatalog.GetTR5MainSoundMapStart(sourceWad.GameVersion);
+                                    id += TrCatalog.GetTombEngineSoundMapStart(sourceWad.GameVersion);
                                     command.Parameter2 = (short)((command.Parameter2 & 0xC000) | (id & 0x3FFF));
                                 }
                     }

@@ -53,7 +53,8 @@ namespace TombLib.Utils
         Wireframe = 6,
         Exclude = 8,
         Screen = 9,
-        Lighten = 10
+        Lighten = 10,
+        AlphaBlend = 11
     }
 
     public enum BumpMappingLevel
