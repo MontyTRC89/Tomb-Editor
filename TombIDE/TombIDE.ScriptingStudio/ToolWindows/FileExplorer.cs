@@ -86,10 +86,7 @@ namespace TombIDE.ScriptingStudio.ToolWindows
 
 		public event FileSystemEventHandler FileChanged;
 		protected virtual void OnFileChanged(object sender, FileSystemEventArgs e)
-		{
-			UpdateFileList();
-			FileChanged?.Invoke(sender, e);
-		}
+			=> FileChanged?.Invoke(sender, e);
 
 		public event FileSystemEventHandler FileCreated;
 		protected virtual void OnFileCreated(object sender, FileSystemEventArgs e)

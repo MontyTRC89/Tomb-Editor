@@ -73,6 +73,7 @@ namespace TombLib.Controls
         {
             _listBox.SelectedIndex = _listBox.IndexFromPoint(e.Location);
             AddWordFromList();
+            Focus();
         }
 
         private void listbox_MouseMove(object sender, MouseEventArgs e)

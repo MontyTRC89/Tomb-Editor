@@ -790,6 +790,29 @@ namespace TombEditor
                 }
             });
 
+            AddCommand("DeleteMissingObjects", "Delete missing objects", CommandType.Edit, delegate (CommandArgs args)
+            {
+                if (DarkMessageBox.Show(args.Window, "Do you want to delete all missing objects in all rooms?\nThis action can't be undone and will also remove associated triggers.",
+                                       "Delete all missing objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    foreach (var room in args.Editor.Level.ExistingRooms)
+                    {
+                        var objects = room.Objects.Where(obj => obj is PositionBasedObjectInstance &&
+                                      ((obj is ImportedGeometryInstance && ((ImportedGeometryInstance)obj).Model == null) ||
+                                       (obj is MoveableInstance && args.Editor.Level.Settings.WadTryGetMoveable(((MoveableInstance)obj).WadObjectId) == null) ||
+                                       (obj is StaticInstance && args.Editor.Level.Settings.WadTryGetStatic(((StaticInstance)obj).WadObjectId) == null))).ToList();
+
+                        if (objects.Count > 0)
+                            for (int i = objects.Count - 1; i >= 0; i--)
+                            {
+                                var obj = objects[i];
+                                EditorActions.DeleteObjectWithoutUpdate(obj);
+                                objects.RemoveAt(i);
+                            }
+                    }
+                }
+            });
+
             AddCommand("DeleteAllObjects", "Delete objects in selected rooms", CommandType.Edit, delegate (CommandArgs args)
             {
                 if (DarkMessageBox.Show(args.Window, "Do you want to delete all objects in selected rooms? This action can't be undone.",

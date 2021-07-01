@@ -2673,7 +2673,7 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
                 }
 
-                if (group.Key == typeof(MoveableInstance))
+                if (ShowMoveables && group.Key == typeof(MoveableInstance))
                 foreach (MoveableInstance instance in group)
                 {
                     if (_editor?.Level?.Settings?.WadTryGetMoveable(instance.WadObjectId) != null)
@@ -2700,7 +2700,7 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
                 }
 
-                if (group.Key == typeof(StaticInstance))
+                if (ShowStatics && group.Key == typeof(StaticInstance))
                 foreach (StaticInstance instance in group)
                 {
                     if (_editor?.Level?.Settings?.WadTryGetStatic(instance.WadObjectId) != null)
@@ -2726,7 +2726,7 @@ namespace TombEditor.Controls
                     RenderOrQueueServiceObject(instance, _littleCube, color, effect, sprites);
                 }
 
-                if (group.Key == typeof(ImportedGeometryInstance))
+                if (ShowImportedGeometry && group.Key == typeof(ImportedGeometryInstance))
                 foreach (ImportedGeometryInstance instance in group)
                 {
                     if (instance.Model?.DirectXModel == null || instance.Model?.DirectXModel.Meshes.Count == 0 || instance.Hidden)

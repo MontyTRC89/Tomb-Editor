@@ -36,7 +36,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 					takenIndicesList = GetTakenIndicesList(document, commandKey, sectionStartLineNumber + 1);
 				}
 				else
-					takenIndicesList = GetTakenIndicesList(document, commandKey, 0);
+					takenIndicesList = GetTakenIndicesList(document, commandKey, 1);
 
 				int nextFreeIndex = 1;
 
@@ -55,6 +55,7 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 			{
 				DocumentLine processedLine = document.GetLineByNumber(i);
 				string processedLineText = document.GetText(processedLine.Offset, processedLine.Length);
+				processedLineText = LineParser.EscapeComments(processedLineText);
 
 				string command = CommandParser.GetCommandKey(document, processedLine.Offset);
 

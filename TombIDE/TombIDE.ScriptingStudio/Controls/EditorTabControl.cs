@@ -580,7 +580,17 @@ namespace TombIDE.ScriptingStudio.Controls
 			=> CloseTab(((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl as TabPage);
 
 		private void MenuItem_OpenFolder_Click(object sender, EventArgs e)
-			=> SharedMethods.OpenInExplorer(((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl.Tag.ToString());
+		{
+			var tabPage = ((sender as ToolStripMenuItem).Owner as DarkContextMenu).SourceControl as TabPage;
+
+			if (tabPage != null)
+			{
+				IEditorControl tabEditor = GetEditorOfTab(tabPage);
+
+				if (!string.IsNullOrWhiteSpace(tabEditor.FilePath))
+					SharedMethods.OpenInExplorer(tabEditor.FilePath);
+			}
+		}
 
 		private void Editor_ContentChangedWorkerRunCompleted(object sender, EventArgs e)
 		{

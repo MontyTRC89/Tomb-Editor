@@ -580,7 +580,7 @@ namespace TombLib.LevelData
             return null;
         }
 
-        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) => AutoStaticMeshMerges.Where(e => e.meshId == staticMesh.Id.TypeId).Any();
+        public bool AutoStaticMeshMergeContainsStaticMesh(WadStatic staticMesh) => AutoStaticMeshMerges.Where(e => staticMesh != null && e.meshId == staticMesh.Id.TypeId).Any();
         public AutoStaticMeshMergeEntry GetStaticMergeEntry(WadStaticId staticMeshId) => AutoStaticMeshMerges.FirstOrDefault(e => e.meshId == staticMeshId.TypeId);
 
         public List<int> SelectedAndAvailableSounds

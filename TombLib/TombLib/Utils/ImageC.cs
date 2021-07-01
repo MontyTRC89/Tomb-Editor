@@ -198,6 +198,16 @@ namespace TombLib.Utils
                     SetPixel(x, y, color);
         }
 
+        public void SetColorDataForTransparentPixels(ColorC color)
+        {
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                {
+                    if (GetPixel(x, y).A == 0)
+                        SetPixel(x, y, new ColorC(color.R, color.G, color.B, 0));
+                }
+        }
+
         public void CalculatePalette(int colorCount = 256)
         {
             if (colorCount > 256) colorCount = 256; // For some reason it fails with more...

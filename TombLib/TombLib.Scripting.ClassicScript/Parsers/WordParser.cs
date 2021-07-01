@@ -7,17 +7,19 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 	{
 		public static string GetWordFromOffset(TextDocument document, int offset)
 		{
+			if (offset >= document.TextLength)
+				return null;
+
 			DocumentLine line = document.GetLineByOffset(offset);
-			int lineEndOffset = line.Offset + line.Length;
 
 			int wordStart = -1;
 			int wordEnd = -1;
 
-			for (int i = offset; i <= lineEndOffset; i++)
+			for (int i = offset; i < line.EndOffset; i++)
 			{
 				char c = document.GetCharAt(i);
 
-				if (c == ',' || c == '=' || c == ']' || i == lineEndOffset)
+				if (c == ',' || c == '=' || c == ']')
 				{
 					wordEnd = i;
 					break;
@@ -48,10 +50,12 @@ namespace TombLib.Scripting.ClassicScript.Parsers
 
 		public static WordType GetWordTypeFromOffset(TextDocument document, int offset)
 		{
-			DocumentLine line = document.GetLineByOffset(offset);
-			int lineEndOffset = line.Offset + line.Length;
+			if (offset >= document.TextLength)
+				return WordType.Unknown;
 
-			for (int i = offset; i <= lineEndOffset; i++)
+			DocumentLine line = document.GetLineByOffset(offset);
+
+			for (int i = offset; i < line.EndOffset; i++)
 				switch (document.GetCharAt(i))
 				{
 					case ']':

@@ -214,6 +214,7 @@ namespace TombEditor.Forms
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.assToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteMissingObjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1282,18 +1283,19 @@ namespace TombEditor.Forms
             this.deleteAllToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteAllLightsToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.deleteAllTriggersToolStripMenuItem});
+            this.deleteAllTriggersToolStripMenuItem,
+            this.deleteMissingObjectsToolStripMenuItem});
             this.deleteAllToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteAllToolStripMenuItem.Name = "deleteAllToolStripMenuItem";
             this.deleteAllToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.deleteAllToolStripMenuItem.Text = "Delete ...";
+            this.deleteAllToolStripMenuItem.Text = "Delete...";
             // 
             // deleteAllLightsToolStripMenuItem
             // 
             this.deleteAllLightsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.deleteAllLightsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteAllLightsToolStripMenuItem.Name = "deleteAllLightsToolStripMenuItem";
-            this.deleteAllLightsToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.deleteAllLightsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.deleteAllLightsToolStripMenuItem.Tag = "DeleteAllLights";
             this.deleteAllLightsToolStripMenuItem.Text = "DeleteAllLights";
             // 
@@ -1302,7 +1304,7 @@ namespace TombEditor.Forms
             this.toolStripMenuItem2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.toolStripMenuItem2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(141, 22);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(163, 22);
             this.toolStripMenuItem2.Tag = "DeleteAllObjects";
             this.toolStripMenuItem2.Text = "DeleteAllObjects";
             // 
@@ -1311,7 +1313,7 @@ namespace TombEditor.Forms
             this.deleteAllTriggersToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.deleteAllTriggersToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.deleteAllTriggersToolStripMenuItem.Name = "deleteAllTriggersToolStripMenuItem";
-            this.deleteAllTriggersToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.deleteAllTriggersToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
             this.deleteAllTriggersToolStripMenuItem.Tag = "DeleteAllTriggers";
             this.deleteAllTriggersToolStripMenuItem.Text = "DeleteAllTriggers";
             // 
@@ -2247,6 +2249,15 @@ namespace TombEditor.Forms
             this.assToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assToolStripMenuItem.Text = "ass";
             // 
+            // deleteMissingObjectsToolStripMenuItem
+            // 
+            this.deleteMissingObjectsToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.deleteMissingObjectsToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.deleteMissingObjectsToolStripMenuItem.Name = "deleteMissingObjectsToolStripMenuItem";
+            this.deleteMissingObjectsToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.deleteMissingObjectsToolStripMenuItem.Tag = "DeleteMissingObjects";
+            this.deleteMissingObjectsToolStripMenuItem.Text = "DeleteMissingObjects";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -2470,5 +2481,6 @@ namespace TombEditor.Forms
 		private ToolStripMenuItem toolStripMenuItem2;
 		private ToolStripMenuItem deleteAllTriggersToolStripMenuItem;
         private ToolStripMenuItem selectFloorBelowObjectToolStripMenuItem;
+        private ToolStripMenuItem deleteMissingObjectsToolStripMenuItem;
     }
 }
