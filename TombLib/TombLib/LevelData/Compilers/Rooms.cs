@@ -16,6 +16,7 @@ namespace TombLib.LevelData.Compilers
         private readonly Dictionary<Room, int> _roomsRemappingDictionary = new Dictionary<Room, int>(new ReferenceEqualityComparer<Room>());
         private readonly List<Room> _roomsUnmapping = new List<Room>();
         private Dictionary<ShadeMatchSignature, ushort> _vertexColors;
+        private Dictionary<ShadeMatchSignature, uint> _vertexColors5;
 
         private void BuildRooms()
         {
@@ -79,6 +80,7 @@ namespace TombLib.LevelData.Compilers
                 ReportProgress(23, "    Matching vertex colors on portals...");
 
                 _vertexColors = new Dictionary<ShadeMatchSignature, ushort>();
+                _vertexColors5 = new Dictionary<ShadeMatchSignature, uint>();
                 var rooms = _tempRooms.Values.ToList();
                 for (int flipped = 0; flipped <= 1; flipped++)
                     foreach (var room in rooms)
@@ -1688,15 +1690,33 @@ namespace TombLib.LevelData.Compilers
                                     for (int j = 0; j < otherRoom.Vertices.Count; j++)
                                     {
                                         var v2 = otherRoom.Vertices[j];
-                                        ushort refColor;
-                                        var isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
-                                        if (!isPresentInLookup) refColor = v1.Lighting2;
+                                        ushort refColor = 0;
+                                        uint refColor5 = 0;
+                                        var isPresentInLookup = false;
+                                        if (_level.Settings.GameVersion!=TRVersion.Game.TR5)
+                                        {
+                                            isPresentInLookup = _vertexColors.TryGetValue(sig, out refColor);
+                                            if (!isPresentInLookup)
+                                            {
+                                                refColor = v1.Lighting2;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            isPresentInLookup = _vertexColors5.TryGetValue(sig, out refColor5);
+                                            if (!isPresentInLookup)
+                                            {
+                                                refColor5 = v1.Color;
+                                            }
+                                        }
+                                        
 
                                         if (room.Info.X + v1.Position.X == otherRoom.Info.X + v2.Position.X &&
                                             v1.Position.Y == v2.Position.Y &&
                                             room.Info.Z + v1.Position.Z == otherRoom.Info.Z + v2.Position.Z)
                                         {
-                                            ushort newColor;
+                                            ushort newColor = 0;
+                                            uint newColor5 = 0;
 
                                             // NOTE: We DON'T INTERPOLATE colours of both rooms in case we're dealing with alternate room and matched room
                                             // isn't alternate room itself. Instead, we simply copy vertex colour from matched base room.
@@ -1705,22 +1725,43 @@ namespace TombLib.LevelData.Compilers
                                             if (flipped && otherRoom.AlternateKind != AlternateKind.AlternateRoom)
                                             {
                                                 var baseSig = new ShadeMatchSignature() { IsWater = sig.IsWater, AlternateGroup = -1, Position = sig.Position };
-                                                if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Lighting2;
+                                                if (_level.Settings.GameVersion != TRVersion.Game.TR5)
+                                                {
+                                                    if (!_vertexColors.TryGetValue(baseSig, out newColor)) newColor = v2.Lighting2;
+                                                }
+                                                else
+                                                {
+                                                    if (!_vertexColors5.TryGetValue(baseSig, out newColor5)) newColor5 = v2.Color;
+                                                }
                                             }
                                             else
                                             {
                                                 if (grayscale)
                                                     newColor = (ushort)(8160 - (((8160 - v2.Lighting2) / 2) + ((8160 - refColor) / 2)));
-                                                else
+                                                else if (_level.Settings.GameVersion != TRVersion.Game.TR5)
                                                     newColor = (ushort)((((v2.Lighting2 & 0x1f) + (refColor & 0x1f)) >> 1) |
                                                                         32 * (((((v2.Lighting2 >> 5) & 0x1f) + ((refColor >> 5) & 0x1f)) >> 1) |
                                                                             32 * ((((v2.Lighting2 >> 10) & 0x1f) + ((refColor >> 10) & 0x1f)) >> 1)));
+                                                else
+                                                    newColor5 = (uint)(0xff000000 | (((((v2.Color & 0xff) + (refColor5 & 0xff)) >> 1) |
+                                                                        256 * (((((v2.Color >> 8) & 0xff) + ((refColor5 >> 8) & 0xff)) >> 1) |
+                                                                            256 * ((((v2.Color >> 16) & 0xff) + ((refColor5 >> 16) & 0xff)) >> 1)))));
                                             }
 
-                                            if (!isPresentInLookup)
-                                                _vertexColors.TryAdd(sig, newColor);
+                                            if (_level.Settings.GameVersion != TRVersion.Game.TR5)
+                                            {
+                                                if (!isPresentInLookup)
+                                                    _vertexColors.TryAdd(sig, newColor);
+                                                else
+                                                    _vertexColors[sig] = newColor;
+                                            }
                                             else
-                                                _vertexColors[sig] = newColor;
+                                            {
+                                                if (!isPresentInLookup)
+                                                    _vertexColors5.TryAdd(sig, newColor5);
+                                                else
+                                                    _vertexColors5[sig] = newColor5;
+                                            }
                                         }
                                     }
                                 }
