@@ -223,6 +223,12 @@
     <Compile Include="Forms\FormToolBarLayout.Designer.cs">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FormTriggerVolume.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormTriggerVolume.Designer.cs">
+      <DependentUpon>FormTriggerVolume.cs</DependentUpon>
+    </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Controls\ContextMenus\BaseContextMenu.cs">
@@ -530,6 +536,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormToolBarLayout.resx">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormTriggerVolume.resx">
+      <DependentUpon>FormTriggerVolume.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ImportedGeometryBrowser.resx">
       <DependentUpon>ImportedGeometryBrowser.cs</DependentUpon>

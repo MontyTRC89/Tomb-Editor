@@ -39,7 +39,7 @@ namespace TombLib.LevelData
         public static List<Game> CompilableVersions(bool experimental)
         {
             if (experimental)
-                return AllVersions.Where(item => item != Game.TombEngine).ToList();
+                return AllVersions.ToList();
             else
                 return AllVersions.Where(item => item.Legacy() != Game.TR5).ToList();
         }

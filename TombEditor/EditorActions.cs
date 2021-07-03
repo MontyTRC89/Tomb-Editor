@@ -927,7 +927,10 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Trigger volume"))
                     return;
 
-                // TODO: Add a function selection window.
+                using (var formTrigger = new FormTriggerVolume((VolumeInstance)instance))
+                    if (formTrigger.ShowDialog(owner) != DialogResult.OK)
+                        return;
+                _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is MemoInstance)
             {

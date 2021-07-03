@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Transactions.Configuration;
 
 namespace TombLib.LevelData
 {
@@ -147,9 +148,21 @@ namespace TombLib.LevelData
 
         public override string ToString()
         {
-            return "Box Volume '" + Scripts.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
+            string message = "Box Volume '" + Scripts.Name + "' (" + Size.X + ", " + Size.Y + ", " + Size.Z + ")" +
                    " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
+                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] \n";
+            message += "Activated by: " +
+                     ((Activators & VolumeActivators.Player) != 0 ? "Lara, " : "") +
+                     ((Activators & VolumeActivators.NPCs) != 0 ? "NPCs, " : "") +
+                     ((Activators & VolumeActivators.OtherMoveables) != 0 ? "Other moveables, " : "") +
+                     ((Activators & VolumeActivators.Statics) != 0 ? "Statics, " : "") +
+                     ((Activators & VolumeActivators.Flybys) != 0 ? "Flybys cameras, " : "");
+            message = message.Substring(0, message.Length - 2) + "\n";
+            message += (Scripts.OnEnter != "" ? "OnEnter: " + Scripts.OnEnter + "\n" : "") +
+                (Scripts.OnInside != "" ? "OnInside: " + Scripts.OnInside + "\n" : "") +
+               (Scripts.OnLeave != "" ? "OnLeave: " + Scripts.OnLeave : "");
+
+            return message;
         }
     }
 
