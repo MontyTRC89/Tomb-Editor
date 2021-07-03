@@ -185,6 +185,10 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panelLuaPath = new System.Windows.Forms.Panel();
+            this.butBrowseLuaPath = new DarkUI.Controls.DarkButton();
+            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+            this.tbLuaPath = new DarkUI.Controls.DarkTextBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
@@ -221,6 +225,7 @@
             this.panel12.SuspendLayout();
             this.tabPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
+            this.panelLuaPath.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -230,14 +235,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -614,7 +619,7 @@
             this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 189);
             this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
-            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(698, 13);
+            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(700, 13);
             this.lblGameEnableQuickStartFeature2.TabIndex = 5;
             this.lblGameEnableQuickStartFeature2.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
     " to enable \'soft fullscreen\' mode in the TRNG settings.";
@@ -1834,6 +1839,7 @@
             // tabMisc
             // 
             this.tabMisc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabMisc.Controls.Add(this.panelLuaPath);
             this.tabMisc.Controls.Add(this.panelTr5Weather);
             this.tabMisc.Controls.Add(this.panelTr5LaraType);
             this.tabMisc.Controls.Add(this.panelScripts);
@@ -2154,6 +2160,47 @@
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
+            // panelLuaPath
+            // 
+            this.panelLuaPath.Controls.Add(this.butBrowseLuaPath);
+            this.panelLuaPath.Controls.Add(this.darkLabel10);
+            this.panelLuaPath.Controls.Add(this.tbLuaPath);
+            this.panelLuaPath.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelLuaPath.Location = new System.Drawing.Point(0, 441);
+            this.panelLuaPath.Name = "panelLuaPath";
+            this.panelLuaPath.Size = new System.Drawing.Size(778, 50);
+            this.panelLuaPath.TabIndex = 98;
+            // 
+            // butBrowseLuaPath
+            // 
+            this.butBrowseLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butBrowseLuaPath.Checked = false;
+            this.butBrowseLuaPath.Location = new System.Drawing.Point(683, 23);
+            this.butBrowseLuaPath.Name = "butBrowseLuaPath";
+            this.butBrowseLuaPath.Size = new System.Drawing.Size(92, 22);
+            this.butBrowseLuaPath.TabIndex = 3;
+            this.butBrowseLuaPath.Text = "Browse";
+            this.butBrowseLuaPath.Click += new System.EventHandler(this.butBrowseLuaPath_Click);
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(0, 3);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel10.TabIndex = 1;
+            this.darkLabel10.Text = "Path of LUA script file:";
+            // 
+            // tbLuaPath
+            // 
+            this.tbLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaPath.Location = new System.Drawing.Point(19, 23);
+            this.tbLuaPath.Name = "tbLuaPath";
+            this.tbLuaPath.Size = new System.Drawing.Size(658, 22);
+            this.tbLuaPath.TabIndex = 2;
+            this.tbLuaPath.TextChanged += new System.EventHandler(this.tbLuaPath_TextChanged);
+            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2223,6 +2270,8 @@
             this.panel12.PerformLayout();
             this.tabPaths.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
+            this.panelLuaPath.ResumeLayout(false);
+            this.panelLuaPath.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2396,5 +2445,9 @@
 		private DarkUI.Controls.DarkCheckBox cbRemoveObjects;
         private DarkUI.Controls.DarkCheckBox GameEnableExtraReverbPresetsCheckBox;
         private DarkUI.Controls.DarkCheckBox GameEnableExtraBlendingModesCheckBox;
+        private System.Windows.Forms.Panel panelLuaPath;
+        private DarkUI.Controls.DarkButton butBrowseLuaPath;
+        private DarkUI.Controls.DarkLabel darkLabel10;
+        private DarkUI.Controls.DarkTextBox tbLuaPath;
     }
 }

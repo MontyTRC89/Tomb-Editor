@@ -102,11 +102,22 @@ namespace TombLib.LevelData.Compilers
                         Position = new VectorInt3(trRoom.Info.X + v.Position.X, v.Position.Y, trRoom.Info.Z + v.Position.Z)
                     };
 
-                    if (_vertexColors.ContainsKey(sig))
+                    if (_level.Settings.GameVersion != TRVersion.Game.TR5)
                     {
-                        v.Lighting1 = _vertexColors[sig];
-                        v.Lighting2 = _vertexColors[sig];
-                        trRoom.Vertices[i] = v;
+                        if (_vertexColors.ContainsKey(sig))
+                        {
+                            v.Lighting1 = _vertexColors[sig];
+                            v.Lighting2 = _vertexColors[sig];
+                            trRoom.Vertices[i] = v;
+                        }
+                    }
+                    else
+                    {
+                        if (_vertexColors5.ContainsKey(sig))
+                        {
+                            v.Color = _vertexColors5[sig];
+                            trRoom.Vertices[i] = v;
+                        }
                     }
                 }
             });

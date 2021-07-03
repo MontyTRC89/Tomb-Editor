@@ -480,6 +480,7 @@ namespace TombEditor.Forms
             tbScriptPath.Text = _levelSettings.ScriptDirectory;
             comboTr5Weather.Text = _levelSettings.Tr5WeatherType.ToString(); // Must also accept none enum values.
             comboLaraType.Text = _levelSettings.Tr5LaraType.ToString(); // Must also accept none enum values.
+            tbLuaPath.Text = _levelSettings.TenLuaScriptFile;
 
             fontTextureFilePathOptAuto.Checked = string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
             fontTextureFilePathOptCustom.Checked = !string.IsNullOrEmpty(_levelSettings.FontTextureFilePath);
@@ -513,12 +514,12 @@ namespace TombEditor.Forms
             string gameDirectory = _levelSettings.MakeAbsolute(_levelSettings.GameDirectory);
             string gameLevelFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameLevelFilePath);
             string gameExecutableFilePath = _levelSettings.MakeAbsolute(_levelSettings.GameExecutableFilePath);
-
+          
             levelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(levelFilePath)) ? _correctColor : _wrongColor;
             gameDirectoryTxt.BackColor = Directory.Exists(gameDirectory) ? _correctColor : _wrongColor;
             gameLevelFilePathTxt.BackColor = Directory.Exists(PathC.GetDirectoryNameTry(gameLevelFilePath)) && !string.IsNullOrEmpty(Path.GetExtension(gameLevelFilePath)) ? _correctColor : _wrongColor;
             gameExecutableFilePathTxt.BackColor = File.Exists(gameExecutableFilePath) ? _correctColor : _wrongColor;
-
+           
             pathToolTip.SetToolTip(levelFilePathTxt, levelFilePath);
             pathToolTip.SetToolTip(gameDirectoryTxt, gameDirectory);
             pathToolTip.SetToolTip(gameLevelFilePathTxt, gameLevelFilePath);
@@ -654,6 +655,15 @@ namespace TombEditor.Forms
             panelTr5LaraType.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
+
+            // TombEngine
+            currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TombEngine);
+            panelLuaPath.Visible = currentVersionToCheck;
+            if (currentVersionToCheck)
+            {
+                string luaScriptPath = _levelSettings.MakeAbsolute(_levelSettings.TenLuaScriptFile);
+                tbLuaPath.BackColor = File.Exists(luaScriptPath) ? _correctColor : _wrongColor;
+            }
 
             // TR4 and TombEngine platforms
             currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4 || _levelSettings.GameVersion == TRVersion.Game.TombEngine);
@@ -1652,5 +1662,25 @@ namespace TombEditor.Forms
         private void butDeselectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(false);
         private void butSelectAllButShatterStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true);
         private void butSelectAllStatics_Click(object sender, EventArgs e) => ToggleSelectionForStatics(true, false);
+
+        private void butBrowseLuaPath_Click(object sender, EventArgs e)
+        {
+            string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.TenLuaScriptFile,
+               "Select the LUA script file for this levl", new[] { new FileFormat("LUA script file", "lua") }, 
+               VariableType.LevelDirectory, false);
+            if (result != null)
+            {
+                _levelSettings.TenLuaScriptFile = result;
+                UpdateDialog();
+            }
+        }
+
+        private void tbLuaPath_TextChanged(object sender, EventArgs e)
+        {
+            if (_levelSettings.TenLuaScriptFile == tbLuaPath.Text)
+                return;
+            _levelSettings.TenLuaScriptFile = tbLuaPath.Text;
+            UpdateDialog();
+        }
     }
 }

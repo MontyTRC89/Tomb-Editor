@@ -143,7 +143,7 @@
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
-            this.toolStrip.Size = new System.Drawing.Size(839, 28);
+            this.toolStrip.Size = new System.Drawing.Size(1290, 28);
             this.toolStrip.TabIndex = 12;
             this.toolStrip.Text = "darkToolStrip1";
             this.toolStrip.MouseClick += new System.Windows.Forms.MouseEventHandler(this.toolStrip_MouseClick);
@@ -646,7 +646,7 @@
             this.butAddMemo.Image = global::TombEditor.Properties.Resources.objects_Memo_16;
             this.butAddMemo.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddMemo.Name = "butAddMemo";
-            this.butAddMemo.Size = new System.Drawing.Size(24, 24);
+            this.butAddMemo.Size = new System.Drawing.Size(23, 25);
             this.butAddMemo.Tag = "AddMemo";
             // 
             // butCompileLevel
@@ -657,7 +657,7 @@
             this.butCompileLevel.Image = global::TombEditor.Properties.Resources.actions_compile_16;
             this.butCompileLevel.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileLevel.Name = "butCompileLevel";
-            this.butCompileLevel.Size = new System.Drawing.Size(24, 24);
+            this.butCompileLevel.Size = new System.Drawing.Size(23, 25);
             this.butCompileLevel.Tag = "BuildLevel";
             // 
             // butCompileLevelAndPlay
@@ -668,7 +668,7 @@
             this.butCompileLevelAndPlay.Image = global::TombEditor.Properties.Resources.actions_play_16;
             this.butCompileLevelAndPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileLevelAndPlay.Name = "butCompileLevelAndPlay";
-            this.butCompileLevelAndPlay.Size = new System.Drawing.Size(24, 24);
+            this.butCompileLevelAndPlay.Size = new System.Drawing.Size(23, 25);
             this.butCompileLevelAndPlay.Tag = "BuildAndPlay";
             // 
             // butCompileAndPlayPreview
@@ -679,7 +679,7 @@
             this.butCompileAndPlayPreview.Image = global::TombEditor.Properties.Resources.actions_play_fast_16;
             this.butCompileAndPlayPreview.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butCompileAndPlayPreview.Name = "butCompileAndPlayPreview";
-            this.butCompileAndPlayPreview.Size = new System.Drawing.Size(24, 24);
+            this.butCompileAndPlayPreview.Size = new System.Drawing.Size(23, 25);
             this.butCompileAndPlayPreview.Tag = "BuildAndPlayPreview";
             // 
             // butAddBoxVolume
@@ -690,7 +690,7 @@
             this.butAddBoxVolume.Image = global::TombEditor.Properties.Resources.objects_volume_box_16;
             this.butAddBoxVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddBoxVolume.Name = "butAddBoxVolume";
-            this.butAddBoxVolume.Size = new System.Drawing.Size(24, 24);
+            this.butAddBoxVolume.Size = new System.Drawing.Size(23, 25);
             this.butAddBoxVolume.Tag = "AddBoxVolume";
             // 
             // butAddPrismVolume
@@ -701,8 +701,9 @@
             this.butAddPrismVolume.Image = global::TombEditor.Properties.Resources.objects_volume_prism_16;
             this.butAddPrismVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddPrismVolume.Name = "butAddPrismVolume";
-            this.butAddPrismVolume.Size = new System.Drawing.Size(24, 24);
+            this.butAddPrismVolume.Size = new System.Drawing.Size(23, 25);
             this.butAddPrismVolume.Tag = "AddPrismVolume";
+            this.butAddPrismVolume.Visible = false;
             // 
             // butAddSphereVolume
             // 
@@ -712,8 +713,9 @@
             this.butAddSphereVolume.Image = global::TombEditor.Properties.Resources.objects_volume_sphere_16;
             this.butAddSphereVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddSphereVolume.Name = "butAddSphereVolume";
-            this.butAddSphereVolume.Size = new System.Drawing.Size(24, 24);
+            this.butAddSphereVolume.Size = new System.Drawing.Size(23, 25);
             this.butAddSphereVolume.Tag = "AddSphereVolume";
+            this.butAddSphereVolume.Visible = false;
             // 
             // butTextureFloor
             // 
@@ -723,7 +725,7 @@
             this.butTextureFloor.Image = global::TombEditor.Properties.Resources.texture_Floor2_16;
             this.butTextureFloor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureFloor.Name = "butTextureFloor";
-            this.butTextureFloor.Size = new System.Drawing.Size(24, 24);
+            this.butTextureFloor.Size = new System.Drawing.Size(23, 25);
             this.butTextureFloor.Tag = "TextureFloor";
             // 
             // butTextureCeiling
@@ -734,7 +736,7 @@
             this.butTextureCeiling.Image = global::TombEditor.Properties.Resources.texture_Ceiling2_16;
             this.butTextureCeiling.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureCeiling.Name = "butTextureCeiling";
-            this.butTextureCeiling.Size = new System.Drawing.Size(24, 24);
+            this.butTextureCeiling.Size = new System.Drawing.Size(23, 25);
             this.butTextureCeiling.Tag = "TextureCeiling";
             // 
             // butTextureWalls
@@ -745,7 +747,7 @@
             this.butTextureWalls.Image = global::TombEditor.Properties.Resources.texture_Walls2_16;
             this.butTextureWalls.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTextureWalls.Name = "butTextureWalls";
-            this.butTextureWalls.Size = new System.Drawing.Size(24, 24);
+            this.butTextureWalls.Size = new System.Drawing.Size(23, 25);
             this.butTextureWalls.Tag = "TextureWalls";
             // 
             // butEditLevelSettings
@@ -756,7 +758,7 @@
             this.butEditLevelSettings.Image = global::TombEditor.Properties.Resources.general_settings_16;
             this.butEditLevelSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butEditLevelSettings.Name = "butEditLevelSettings";
-            this.butEditLevelSettings.Size = new System.Drawing.Size(24, 24);
+            this.butEditLevelSettings.Size = new System.Drawing.Size(23, 25);
             this.butEditLevelSettings.Tag = "EditLevelSettings";
             // 
             // butToggleFlyMode
@@ -767,7 +769,7 @@
             this.butToggleFlyMode.Image = global::TombEditor.Properties.Resources.general_airplane_16;
             this.butToggleFlyMode.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butToggleFlyMode.Name = "butToggleFlyMode";
-            this.butToggleFlyMode.Size = new System.Drawing.Size(24, 24);
+            this.butToggleFlyMode.Size = new System.Drawing.Size(23, 25);
             this.butToggleFlyMode.Tag = "ToggleFlyMode";
             // 
             // butSearch
@@ -778,7 +780,7 @@
             this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
             this.butSearch.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butSearch.Name = "butSearch";
-            this.butSearch.Size = new System.Drawing.Size(24, 24);
+            this.butSearch.Size = new System.Drawing.Size(23, 25);
             this.butSearch.Tag = "Search";
             // 
             // butSearchAndReplaceObjects
@@ -789,7 +791,7 @@
             this.butSearchAndReplaceObjects.Image = global::TombEditor.Properties.Resources.general_search_and_replace_16;
             this.butSearchAndReplaceObjects.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butSearchAndReplaceObjects.Name = "butSearchAndReplaceObjects";
-            this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(24, 24);
+            this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(23, 25);
             this.butSearchAndReplaceObjects.Tag = "SearchAndReplaceObjects";
             // 
             // panel3D
@@ -798,7 +800,7 @@
             this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3D.Location = new System.Drawing.Point(0, 0);
             this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(839, 239);
+            this.panel3D.Size = new System.Drawing.Size(1290, 239);
             this.panel3D.TabIndex = 13;
             // 
             // panel2DMap
@@ -806,7 +808,7 @@
             this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2DMap.Location = new System.Drawing.Point(0, 0);
             this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(839, 239);
+            this.panel2DMap.Size = new System.Drawing.Size(1290, 239);
             this.panel2DMap.TabIndex = 14;
             this.panel2DMap.Visible = false;
             this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
@@ -820,7 +822,7 @@
             this.panelStats.Location = new System.Drawing.Point(0, 267);
             this.panelStats.Name = "panelStats";
             this.panelStats.Padding = new System.Windows.Forms.Padding(4, 4, 4, 0);
-            this.panelStats.Size = new System.Drawing.Size(839, 22);
+            this.panelStats.Size = new System.Drawing.Size(1290, 22);
             this.panelStats.TabIndex = 15;
             // 
             // tbStats
@@ -836,7 +838,7 @@
             this.tbStats.ReadOnly = true;
             this.tbStats.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.tbStats.ShortcutsEnabled = false;
-            this.tbStats.Size = new System.Drawing.Size(831, 18);
+            this.tbStats.Size = new System.Drawing.Size(1282, 18);
             this.tbStats.TabIndex = 0;
             this.tbStats.TabStop = false;
             this.tbStats.Text = "";
@@ -849,7 +851,7 @@
             this.panelMainView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMainView.Location = new System.Drawing.Point(0, 28);
             this.panelMainView.Name = "panelMainView";
-            this.panelMainView.Size = new System.Drawing.Size(839, 239);
+            this.panelMainView.Size = new System.Drawing.Size(1290, 239);
             this.panelMainView.TabIndex = 16;
             // 
             // MainView
@@ -862,7 +864,7 @@
             this.DockText = "";
             this.Name = "MainView";
             this.SerializationKey = "MainView";
-            this.Size = new System.Drawing.Size(839, 289);
+            this.Size = new System.Drawing.Size(1290, 289);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.panelStats.ResumeLayout(false);
