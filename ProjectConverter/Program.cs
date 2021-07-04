@@ -68,7 +68,8 @@ namespace ProjectConverter
                         }
                         else
                         {
-                            var found = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, newId, out bool isMoveable);
+                            bool isMoveable;
+                            var found = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, newId, out isMoveable);
                             if (!found.HasValue)
                             {
                                 continue;
@@ -90,7 +91,7 @@ namespace ProjectConverter
                             var mesh = moveable.Value.Bones[14].Mesh.Clone(); ;
                             for (int i = 0; i < mesh.VerticesPositions.Count; i++)
                             {
-                                Vector3 pos = mesh.VerticesPositions[i];
+                                var pos = mesh.VerticesPositions[i];
                                 pos.Y += 256;
                                 mesh.VerticesPositions[i] = pos;
                             }
@@ -177,7 +178,8 @@ namespace ProjectConverter
                         }
                         else
                         {
-                            var found = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, newId, out bool isMoveable);
+                            bool isMoveable;
+                            var found = TrCatalog.GetItemIndex(TRVersion.Game.TombEngine, newId, out isMoveable);
                             if (!found.HasValue)
                             {
                                 continue;
