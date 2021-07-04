@@ -12,17 +12,6 @@ namespace TombLib.LevelData.Compilers
 {
     public sealed partial class LevelCompilerClassicTR : LevelCompiler
     {
-        public class CompilerStatistics
-        {
-            public int BoxCount { get; set; }
-            public int OverlapCount { get; set; }
-            public int ObjectTextureCount { get; set; }
-            public override string ToString()
-            {
-                return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | TexInfos: " + ObjectTextureCount;
-            }
-        }
-
         private Room[] _sortedRooms;
         private readonly Dictionary<Room, tr_room> _tempRooms = new Dictionary<Room, tr_room>(new ReferenceEqualityComparer<Room>());
 
@@ -90,7 +79,7 @@ namespace TombLib.LevelData.Compilers
                 _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
-        public CompilerStatistics CompileLevel()
+        public override CompilerStatistics CompileLevel()
         {
             ReportProgress(0, "Tomb Raider Level Compiler");
 
