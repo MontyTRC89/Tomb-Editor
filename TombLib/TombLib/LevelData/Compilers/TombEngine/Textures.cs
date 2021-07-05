@@ -105,7 +105,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Now build data structures
             var tempSequences = new List<tr_sprite_sequence>();
-            var tempSprites = new List<TombEngine_sprite_texture>();
+            var tempSprites = new List<TombEngineSpriteTexture>();
             var lastOffset = 0;
 
             foreach (var sequence in spriteSequences.Values)
@@ -132,7 +132,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     float w = (sprite.Texture.Image.Width - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Width;
                     float h = (sprite.Texture.Image.Height - 1) / (float)_spritesTexturesPages[packInfo.OutputTextureID].Height;*/
 
-                    var newTexture = new TombEngine_sprite_texture();
+                    var newTexture = new TombEngineSpriteTexture();
 
                     newTexture.Tile = _spritesTexturesPages.Count; // packInfo.OutputTextureID;
                     newTexture.X1 = 0.0f;

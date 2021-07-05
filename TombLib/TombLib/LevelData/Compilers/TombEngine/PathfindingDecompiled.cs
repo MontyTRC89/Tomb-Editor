@@ -37,7 +37,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private short dec_q2 = -1;
         private short dec_q3 = -1;
         private List<dec_TombEngine_box_aux> dec_boxes;
-        private List<TombEngine_overlap> dec_overlaps;
+        private List<TombEngineOverlap> dec_overlaps;
         private bool dec_boxExtendsInAnotherRoom;
 
         private void Dec_BuildBoxesAndOverlaps()
@@ -57,7 +57,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     // Room must be defined and also must be base room or the flipped version
                     if (room != null && (flipped == 0 && room.AlternateBaseRoom == null || flipped == 1 && room.AlternateBaseRoom != null))
                     {
-                        TombEngine_room tempRoom = _tempRooms[room];
+                        TombEngineRoom tempRoom = _tempRooms[room];
                         for (int z = 0; z < room.NumZSectors; z++)
                         {
                             for (int x = 0; x < room.NumXSectors; x++)
@@ -111,7 +111,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private bool Dec_BuildOverlaps()
         {
-            dec_overlaps = new List<TombEngine_overlap>();
+            dec_overlaps = new List<TombEngineOverlap>();
 
             int i = 0;
             int j = 0;
@@ -160,7 +160,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 {
                                     if (dec_boxes[i].OverlapIndex == -1) dec_boxes[i].OverlapIndex = dec_overlaps.Count;
 
-                                    var overlap = new TombEngine_overlap
+                                    var overlap = new TombEngineOverlap
                                     {
                                         Box = j
                                     };
@@ -205,7 +205,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                     {
                                         if (dec_boxes[i].OverlapIndex == -1) dec_boxes[i].OverlapIndex = dec_overlaps.Count;
 
-                                        var overlap = new TombEngine_overlap
+                                        var overlap = new TombEngineOverlap
                                         {
                                             Box = j
                                         };

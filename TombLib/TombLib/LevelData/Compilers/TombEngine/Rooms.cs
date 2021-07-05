@@ -42,9 +42,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _tempRooms.Add(room, BuildRoom(room));
 
             // Remove WaterScheme values for water rooms
-            Parallel.ForEach(_tempRooms.Values, (TombEngine_room trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
+            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) => { if ((trRoom.Flags & 0x0001) != 0) trRoom.WaterScheme = 0; });
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngine_room trRoom) => { 
+            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) => { 
                 for (int i=0;i<trRoom.Polygons.Count;i++)
                 {
                     if (trRoom.Polygons[i].Animated)
@@ -67,7 +67,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         MatchDoorShades(rooms, room, false, flipped == 1);
             }
 
-            Parallel.ForEach(_tempRooms.Values, (TombEngine_room trRoom) =>
+            Parallel.ForEach(_tempRooms.Values, (TombEngineRoom trRoom) =>
             {
                 for (int i = 0; i < trRoom.Vertices.Count; i++)
                 {
@@ -118,7 +118,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
         }
 
-        private TombEngine_room BuildRoom(Room room)
+        private TombEngineRoom BuildRoom(Room room)
         {
             tr_color roomAmbientColor = PackColorTo24Bit(room.Properties.AmbientLight);
 
@@ -126,11 +126,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             if (room.NumXSectors >= maxDimensions || room.NumZSectors >= maxDimensions)
                 _progressReporter.ReportWarn("Room '" + room + "' is very big! Rooms bigger than " + maxDimensions + " sectors per side may cause trouble with rendering.");
 
-            var newRoom = new TombEngine_room
+            var newRoom = new TombEngineRoom
             {
                 OriginalRoom = room,
-                Lights = new List<TombEngine_room_light>(),
-                StaticMeshes = new List<TombEngine_room_staticmesh>(),
+                Lights = new List<TombEngineRoomLight>(),
+                StaticMeshes = new List<TombEngineRoomStaticMesh>(),
                 Portals = new List<tr_room_portal>(),
                 Info = new tr_room_info
                 {
@@ -284,8 +284,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var vertexColors = room.RoomGeometry.VertexColors;
 
                 var roomVerticesDictionary = new Dictionary<int, int>();
-                var roomVertices = new List<TombEngine_vertex>();
-                var roomPolygons = new List<TombEngine_polygon>();
+                var roomVertices = new List<TombEngineVertex>();
+                var roomPolygons = new List<TombEnginePolygon>();
 
                 // Add room's own geometry
 
@@ -459,7 +459,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 color *= shade;
                             }
 
-                            var trVertex = new TombEngine_vertex
+                            var trVertex = new TombEngineVertex
                             {
                                 Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
                                 Color = color,
@@ -558,7 +558,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Vector3 normal = MathC.HomogenousTransform(vertex.Normal, normalTransform);
                             normal = Vector3.Normalize(normal);
 
-                            var trVertex = new TombEngine_vertex
+                            var trVertex = new TombEngineVertex
                             {
                                 Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), position.Z),
                                 Normal = normal
@@ -682,7 +682,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _staticsTable.Add(instance, newRoom.StaticMeshes.Count);
 
                 var sm = _level.Settings?.WadTryGetStatic(instance.WadObjectId);
-                newRoom.StaticMeshes.Add(new TombEngine_room_staticmesh
+                newRoom.StaticMeshes.Add(new TombEngineRoomStaticMesh
                 {
                     X = (int)Math.Round(newRoom.Info.X + instance.Position.X),
                     Y = (int)-Math.Round(room.WorldPos.Y + instance.Position.Y),
@@ -701,10 +701,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return newRoom;
         }
 
-        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngine_vertex> roomVertices,
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
             Vector3 Position, Vector3 color, int index)
         {
-            var trVertex = new TombEngine_vertex();
+            var trVertex = new TombEngineVertex();
 
             trVertex.Position = new Vector3(Position.X, -(Position.Y + room.WorldPos.Y), Position.Z);
             trVertex.Color = color / 2.0f;
@@ -721,7 +721,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return vertexIndex;
         }
 
-        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngine_vertex> roomVertices, TombEngine_vertex trVertex)
+        private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices, TombEngineVertex trVertex)
         {
             // Do the check here, so we can save some time with unuseful calculations
             int vertexIndex;
@@ -735,7 +735,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return vertexIndex;
         }
 
-        private void ConvertLights(Room room, TombEngine_room newRoom)
+        private void ConvertLights(Room room, TombEngineRoom newRoom)
         {
             int lightCount = 0;
 
@@ -749,7 +749,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 lightCount += 1;
 
-                var newLight = new TombEngine_room_light
+                var newLight = new TombEngineRoomLight
                 {
                     Position = new VectorInt3(
                         (int)Math.Round(newRoom.Info.X + light.Position.X),
@@ -808,9 +808,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private void ConvertSectors(Room room, TombEngine_room newRoom)
+        private void ConvertSectors(Room room, TombEngineRoom newRoom)
         {
-            newRoom.Sectors = new TombEngine_room_sector[room.NumXSectors * room.NumZSectors];
+            newRoom.Sectors = new TombEngineRoomSector[room.NumXSectors * room.NumZSectors];
             newRoom.AuxSectors = new TrSectorAux[room.NumXSectors, room.NumZSectors];
 
             for (var z = 0; z < room.NumZSectors; z++)
@@ -818,13 +818,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 for (var x = 0; x < room.NumXSectors; x++)
                 {
                     var block = room.Blocks[x, z];
-                    var sector = new TombEngine_room_sector();
+                    var sector = new TombEngineRoomSector();
                     var aux = new TrSectorAux();
 
-                    sector.FloorCollision = new TombEngine_collision_info();
+                    sector.FloorCollision = new TombEngineCollisionInfo();
                     sector.FloorCollision.Portals = new int[2] {-1, -1};
                     sector.FloorCollision.Planes = new Vector3[2];
-                    sector.CeilingCollision = new TombEngine_collision_info();
+                    sector.CeilingCollision = new TombEngineCollisionInfo();
                     sector.CeilingCollision.Portals = new int[2] {-1, -1};
                     sector.CeilingCollision.Planes = new Vector3[2];
                     sector.WallPortal = -1;
@@ -915,7 +915,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, TombEngine_room newRoom)
+        private void ConvertPortals(Room room, IEnumerable<PortalInstance> portals, TombEngineRoom newRoom)
         {
             foreach (var portal in portals)
             {
@@ -1266,7 +1266,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private void MatchDoorShades(List<TombEngine_room> roomList, TombEngine_room room, bool grayscale, bool flipped)
+        private void MatchDoorShades(List<TombEngineRoom> roomList, TombEngineRoom room, bool grayscale, bool flipped)
         {
             // Do we want to interpolate?
             if (room.OriginalRoom.Properties.LightInterpolationMode == RoomLightInterpolationMode.NoInterpolate)
@@ -1520,9 +1520,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             return result;
         }
 
-        private TombEngine_bucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngine_material, TombEngine_bucket> buckets)
+        private TombEngineBucket GetOrAddBucket(int texture, byte blendMode, bool animated, int sequence, Dictionary<TombEngineMaterial, TombEngineBucket> buckets)
         {
-            var material = new TombEngine_material
+            var material = new TombEngineMaterial
             {
                 Texture = texture,
                 BlendMode = blendMode,
@@ -1531,7 +1531,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             };
 
             if (!buckets.ContainsKey(material))
-                buckets.Add(material, new TombEngine_bucket { Material = material });
+                buckets.Add(material, new TombEngineBucket { Material = material });
 
             return buckets[material];
         }
@@ -1542,7 +1542,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 PrepareRoomBuckets(_tempRooms.ElementAt(i).Value);
         }
 
-        private void PrepareRoomBuckets(TombEngine_room room)
+        private void PrepareRoomBuckets(TombEngineRoom room)
         {
             // Add main vertex channels
             foreach (var vertex in room.Vertices)
@@ -1553,7 +1553,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
-            room.Buckets = new Dictionary<TombEngine_material, TombEngine_bucket>(new TombEngine_material.TombEngineMaterialComparer());
+            room.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
             foreach (var poly in room.Polygons)
             {
                 poly.AnimatedSequence = -1;
@@ -1575,7 +1575,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var texture = textures[poly.TextureId];
 
                 // We output only triangles, no quads anymore
-                if (poly.Shape == TombEngine_polygon_shape.Quad)
+                if (poly.Shape == TombEnginePolygonShape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
                     {

@@ -95,22 +95,22 @@ namespace TombLib.LevelData.Compilers
 
         public int NumRoomPages { get; private set; }
         public ImageC RoomsPagesPacked { get; private set; }
-        public List<TombEngine_atlas> RoomsAtlas { get; private set; }
+        public List<TombEngineAtlas> RoomsAtlas { get; private set; }
 
         public int NumObjectsPages { get; private set; }
         public ImageC ObjectsPagesPacked { get; private set; }
 
         public int NumMoveablesPages { get; private set; }
-        public List<TombEngine_atlas> MoveablesAtlas { get; private set; }
+        public List<TombEngineAtlas> MoveablesAtlas { get; private set; }
 
         public int NumStaticsPages { get; private set; }
-        public List<TombEngine_atlas> StaticsAtlas { get; private set; }
+        public List<TombEngineAtlas> StaticsAtlas { get; private set; }
 
         public int NumBumpPages { get; private set; }
         public ImageC BumpPagesPacked { get; private set; }
 
         public int NumAnimatedPages { get; private set; }
-        public List<TombEngine_atlas> AnimatedAtlas { get; private set; }
+        public List<TombEngineAtlas> AnimatedAtlas { get; private set; }
 
         // Precompiled object textures are kept in this dictionary.
 
@@ -706,7 +706,7 @@ namespace TombLib.LevelData.Compilers
                 return new tr_face4 { Vertices = new ushort[4] { transformedIndices[0], transformedIndices[1], transformedIndices[2], transformedIndices[3] }, Texture = objectTextureIndex, LightingEffect = lightingEffect };
             }
 
-            public TombEngine_polygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngine_vertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon3(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 3)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -725,8 +725,8 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-                var polygon = new TombEngine_polygon();
-                polygon.Shape = TombEngine_polygon_shape.Triangle;
+                var polygon = new TombEnginePolygon();
+                polygon.Shape = TombEnginePolygonShape.Triangle;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
                 polygon.BlendMode = blendMode;
@@ -743,7 +743,7 @@ namespace TombLib.LevelData.Compilers
                 return polygon;
             }
 
-            public TombEngine_polygon CreateTombEnginePolygon4(int[] indices, byte blendMode, List<TombEngine_vertex> vertices)
+            public TombEnginePolygon CreateTombEnginePolygon4(int[] indices, byte blendMode, List<TombEngineVertex> vertices)
             {
                 if (indices.Length != 4)
                     throw new ArgumentOutOfRangeException(nameof(indices.Length));
@@ -763,8 +763,8 @@ namespace TombLib.LevelData.Compilers
                     }
                 }
 
-                var polygon = new TombEngine_polygon();
-                polygon.Shape = TombEngine_polygon_shape.Quad;
+                var polygon = new TombEnginePolygon();
+                polygon.Shape = TombEnginePolygonShape.Quad;
                 polygon.Indices.AddRange(transformedIndices);
                 polygon.TextureId = objectTextureIndex;
                 polygon.BlendMode = blendMode;
@@ -1334,7 +1334,7 @@ namespace TombLib.LevelData.Compilers
             return image;
         }
 
-        private List<TombEngine_atlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex)
+        private List<TombEngineAtlas> CreateAtlas(ref List<ParentTextureArea> textures, int numPages, bool bump, bool forceMinimumPadding, int baseIndex)
         {
             var customBumpmaps = new Dictionary<string, ImageC>();
             var texturePages = new List<TexturePage>();
@@ -1487,7 +1487,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Calculate how many atlases we need
-            var atlasList = new List<TombEngine_atlas>();
+            var atlasList = new List<TombEngineAtlas>();
             int totalPages = numPages;
             int numAtlases = (int)Math.Floor((float)totalPages / PagesPerAtlas);
             if (totalPages % PagesPerAtlas != 0) numAtlases++;
@@ -1495,7 +1495,7 @@ namespace TombLib.LevelData.Compilers
             // Build a list of all packed pages in the previous step
             var pages = texturePages;
 
-            var currentAtlas = new TombEngine_atlas();
+            var currentAtlas = new TombEngineAtlas();
             x = 0;
             y = 0;
             int pagesProcessed = 0;
@@ -1529,7 +1529,7 @@ namespace TombLib.LevelData.Compilers
                     x = 0;
                     y = 0;
                     pagesPerAtlas = GetOptimalSizeForAtlas(pages.Count - pagesProcessed);
-                    currentAtlas = new TombEngine_atlas();
+                    currentAtlas = new TombEngineAtlas();
                     currentAtlas.ColorMap = ImageC.CreateNew(pagesPerAtlas.X * 256, pagesPerAtlas.Y * 256);
                     if (page.HasNormalMap)
                     {
@@ -1711,7 +1711,7 @@ namespace TombLib.LevelData.Compilers
             RoomsAtlas = CreateAtlas(ref roomTextures, NumRoomPages, true, false, 0);
             MoveablesAtlas = CreateAtlas(ref moveablesTextures, NumMoveablesPages, false, true, 0);
             StaticsAtlas = CreateAtlas(ref staticsTextures, NumStaticsPages, false, true, 0);
-            AnimatedAtlas = new List<TombEngine_atlas>();
+            AnimatedAtlas = new List<TombEngineAtlas>();
             //RoomsAtlas[0].ColorMap.Save("H:\\maya.png");
             for (int n = 0; n < numAnimatedPages.Count; n++)
             {

@@ -12,18 +12,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         private const string _indent = "    ";
 
-        // Collections for volumes
-        private List<VolumeScriptInstance> _volumeScripts;
-
-        /**/ private static readonly ChunkId TombEngineExtraRoomData = ChunkId.FromString("Tr5ExtraRoomData");
-        /***/ private static readonly ChunkId TombEngineChunkVolumeList = ChunkId.FromString("Tr5Volumes");
-        /***/ private static readonly ChunkId TombEngineChunkVolume = ChunkId.FromString("Tr5Volume");
-        /**/ private static readonly ChunkId TombEngineExtraData = ChunkId.FromString("Tr5ExtraData");
-        /***/ private static readonly ChunkId TombEngineChunkVolumeScriptList = ChunkId.FromString("Tr5VolumeScripts");
-        /***/ private static readonly ChunkId TombEngineChunkVolumeScript = ChunkId.FromString("Tr5VolumeScript");
-        /***/ private static readonly ChunkId TombEngineChunkLuaIds = ChunkId.FromString("Tr5LuaIds");
-        /***/ private static readonly ChunkId TombEngineChunkLuaId = ChunkId.FromString("Tr5LuaId");
-        
         private void WriteLevelTombEngine()
         {
             // Now begin to compile the geometry block in a MemoryStream

@@ -42,6 +42,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public override bool Equals(object obj) => (obj != null) && (obj is FloordataSequence) && (((FloordataSequence)obj)._hash == _hash);
         }
 
+        // Triggers data
+        private List<VolumeScriptInstance> _volumeScripts;
+        private List<string> _luaFunctions;
+
         private bool IsWallSurroundedByWalls(int x, int z, Room room)
         {
             if (x > 0 && !room.Blocks[x - 1, z].IsAnyWall)
@@ -58,6 +62,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private void BuildFloorData()
         {
             ReportProgress(53, "Building floordata");
+
+            // Collect all LUA functions
+            _luaFunctions = new List<string>();
+            foreach (var room in _level.Rooms.Where(r => r!= null).ToList())
+                foreach (var volume in room.Volumes)
+                {
+                    if (volume.Scripts.OnEnter != null && !_luaFunctions.Contains(volume.Scripts.OnEnter))
+                        _luaFunctions.Add(volume.Scripts.OnEnter);
+                    if (volume.Scripts.OnInside != null && !_luaFunctions.Contains(volume.Scripts.OnInside))
+                        _luaFunctions.Add(volume.Scripts.OnInside);
+                    if (volume.Scripts.OnLeave != null && !_luaFunctions.Contains(volume.Scripts.OnLeave))
+                        _luaFunctions.Add(volume.Scripts.OnLeave);
+                }
 
             // Floordata sequence dictionary is used OPTIONALLY, if agressive floordata packing is on!
             var floorDataDictionary = new Dictionary<FloordataSequence, ushort>();
@@ -877,8 +894,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void BuildFloorDataCollision(RoomSectorShape shape, int oppositeExtreme, bool isCeiling, List<ushort> outFloorData, ref int lastFloorDataFunction, Room reportRoom, VectorInt2 reportPos)
         {
-            TombEngine_room newRoom = _tempRooms[reportRoom];
-            TombEngine_room_sector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
+            TombEngineRoom newRoom = _tempRooms[reportRoom];
+            TombEngineRoomSector newSector = newRoom.Sectors[newRoom.NumZSectors * reportPos.X + reportPos.Y];
             Block sector = reportRoom.GetBlock(reportPos);
             var newCollision = isCeiling ? newSector.CeilingCollision : newSector.FloorCollision;
             var portal = isCeiling ? sector.CeilingPortal : sector.FloorPortal;

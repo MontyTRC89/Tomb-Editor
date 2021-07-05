@@ -176,6 +176,7 @@ namespace TombLib.LevelData
             return VolumeShape.Undefined;
         }
 
+        public bool OneShot { get; set; } = false;
         public VolumeActivators Activators { get; set; } = VolumeActivators.Player;
         public VolumeScriptInstance Scripts { get; set; } = new VolumeScriptInstance() { Name = "New volume script" };
     }

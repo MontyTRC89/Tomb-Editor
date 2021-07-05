@@ -24,7 +24,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private readonly Dictionary<Room, TombEngine_room> _tempRooms = new Dictionary<Room, TombEngine_room>(new ReferenceEqualityComparer<Room>());
+        private readonly Dictionary<Room, TombEngineRoom> _tempRooms = new Dictionary<Room, TombEngineRoom>(new ReferenceEqualityComparer<Room>());
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
         {
@@ -42,25 +42,25 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private readonly ScriptIdTable<IHasScriptID> _scriptingIdsTable;
         private readonly List<ushort> _floorData = new List<ushort>();
-        private readonly List<TombEngine_mesh> _meshes = new List<TombEngine_mesh>();
+        private readonly List<TombEngineMesh> _meshes = new List<TombEngineMesh>();
         private readonly List<uint> _meshPointers = new List<uint>();
-        private readonly List<TombEngine_animation> _animations = new List<TombEngine_animation>();
+        private readonly List<TombEngineAnimation> _animations = new List<TombEngineAnimation>();
         private readonly List<tr_state_change> _stateChanges = new List<tr_state_change>();
         private readonly List<tr_anim_dispatch> _animDispatches = new List<tr_anim_dispatch>();
         private readonly List<short> _animCommands = new List<short>();
         private readonly List<int> _meshTrees = new List<int>();
-        private readonly List<TombEngine_keyframe> _frames = new List<TombEngine_keyframe>();
-        private List<TombEngine_moveable> _moveables = new List<TombEngine_moveable>();
-        private readonly List<TombEngine_staticmesh> _staticMeshes = new List<TombEngine_staticmesh>();
+        private readonly List<TombEngineKeyFrame> _frames = new List<TombEngineKeyFrame>();
+        private List<TombEngineMoveable> _moveables = new List<TombEngineMoveable>();
+        private readonly List<TombEngineStaticMesh> _staticMeshes = new List<TombEngineStaticMesh>();
 
-        private List<TombEngine_sprite_texture> _spriteTextures = new List<TombEngine_sprite_texture>();
+        private List<TombEngineSpriteTexture> _spriteTextures = new List<TombEngineSpriteTexture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();
-        private readonly List<TombEngine_camera> _cameras = new List<TombEngine_camera>();
+        private readonly List<TombEngineCamera> _cameras = new List<TombEngineCamera>();
         private readonly List<tr4_flyby_camera> _flyByCameras = new List<tr4_flyby_camera>();
-        private readonly List<TombEngine_sound_source> _soundSources = new List<TombEngine_sound_source>();
-        private List<TombEngine_box> _boxes = new List<TombEngine_box>();
-        private List<TombEngine_overlap> _overlaps = new List<TombEngine_overlap>();
-        private List<TombEngine_zone> _zones = new List<TombEngine_zone>();
+        private readonly List<TombEngineSoundSource> _soundSources = new List<TombEngineSoundSource>();
+        private List<TombEngineBox> _boxes = new List<TombEngineBox>();
+        private List<TombEngineOverlap> _overlaps = new List<TombEngineOverlap>();
+        private List<TombEngineZone> _zones = new List<TombEngineZone>();
 
         private readonly List<tr_item> _items = new List<tr_item>();
         private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
@@ -180,7 +180,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                _soundSources.Add(new TombEngine_sound_source
+                _soundSources.Add(new TombEngineSoundSource
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
@@ -220,7 +220,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var instance in _cameraTable.Keys)
             {
                 Vector3 position = instance.Room.WorldPos + instance.Position;
-                _cameras.Add(new TombEngine_camera
+                _cameras.Add(new TombEngineCamera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
@@ -241,7 +241,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 int boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
                 
-                _cameras.Add(new TombEngine_camera
+                _cameras.Add(new TombEngineCamera
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
@@ -298,12 +298,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(47, "    Number of sinks: " + _sinkTable.Count);
         }
 
-        private static TombEngine_room_sector GetSector(TombEngine_room room, int x, int z)
+        private static TombEngineRoomSector GetSector(TombEngineRoom room, int x, int z)
         {
             return room.Sectors[room.NumZSectors * x + z];
         }
 
-        private static void SaveSector(TombEngine_room room, int x, int z, TombEngine_room_sector sector)
+        private static void SaveSector(TombEngineRoom room, int x, int z, TombEngineRoomSector sector)
         {
             room.Sectors[room.NumZSectors * x + z] = sector;
         }

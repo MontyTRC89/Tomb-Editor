@@ -27,15 +27,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
             Dec_BuildBoxesAndOverlaps();
 
             // Convert ovelaps to TR format
-            _overlaps = new List<TombEngine_overlap>();
+            _overlaps = new List<TombEngineOverlap>();
             _overlaps.AddRange(dec_overlaps);
 
             // Convert boxes to TR format
-            _boxes = new List<TombEngine_box>();
-            _zones = new List<TombEngine_zone>();
+            _boxes = new List<TombEngineBox>();
+            _zones = new List<TombEngineZone>();
             for (var i = 0; i < dec_boxes.Count; i++)
             {
-                var box = new TombEngine_box()
+                var box = new TombEngineBox()
                 {
                     Xmin = dec_boxes[i].Xmin,
                     Xmax = dec_boxes[i].Xmax,
@@ -47,7 +47,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 };
                 _boxes.Add(box);
 
-                var zone = new TombEngine_zone()
+                var zone = new TombEngineZone()
                 {
                     GroundZone1_Normal = int.MaxValue,
                     GroundZone2_Normal = int.MaxValue,

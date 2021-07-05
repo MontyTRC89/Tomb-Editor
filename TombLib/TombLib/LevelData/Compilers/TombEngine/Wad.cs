@@ -46,10 +46,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private TombEngine_mesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
+        private TombEngineMesh ConvertWadMesh(WadMesh oldMesh, bool isStatic, string objectName, int meshIndex,
                                             bool isWaterfall = false, bool isOptics = false)
         {
-            var newMesh = new TombEngine_mesh
+            var newMesh = new TombEngineMesh
             {
                 Sphere = oldMesh.BoundingSphere
             };
@@ -82,7 +82,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var pos in oldMesh.VerticesPositions)
             {
                 newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
-                newMesh.Vertices.Add(new TombEngine_vertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
+                newMesh.Vertices.Add(new TombEngineVertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
             }
             foreach (var normal in oldMesh.VerticesNormals)
                 newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
@@ -108,7 +108,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
                 var poly = oldMesh.Polys[j];
-                TombEngine_polygon newPoly;
+                TombEnginePolygon newPoly;
 
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if (poly.ShineStrength > 0)
@@ -178,10 +178,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 PrepareMeshBuckets(_meshes[i]);
         }
 
-        private void PrepareMeshBuckets(TombEngine_mesh mesh)
+        private void PrepareMeshBuckets(TombEngineMesh mesh)
         {
             var textures = _textureInfoManager.GetObjectTextures();
-            mesh.Buckets = new Dictionary<TombEngine_material, TombEngine_bucket>(new TombEngine_material.TombEngineMaterialComparer());
+            mesh.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
             foreach (var poly in mesh.Polygons)
             {
                 var bucket = GetOrAddBucket(textures[poly.TextureId].AtlasIndex, poly.BlendMode, poly.Animated, 0, mesh.Buckets);
@@ -192,7 +192,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 poly.AnimatedFrame = -1;
 
                 // We output only triangles, no quads anymore
-                if (poly.Shape == TombEngine_polygon_shape.Quad)
+                if (poly.Shape == TombEnginePolygonShape.Quad)
                 {
                     for (int n = 0; n < 4; n++)
                     {
@@ -302,7 +302,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                     foreach (var wadFrame in animation.KeyFrames)
                     {
-                        var newFrame = new TombEngine_keyframe
+                        var newFrame = new TombEngineKeyFrame
                         {
                             Angles = new List<Quaternion>()
                         };
@@ -328,7 +328,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             int lastAnimDispatch = 0;
             foreach (WadMoveable oldMoveable in moveables.Values)
             {
-                var newMoveable = new TombEngine_moveable();
+                var newMoveable = new TombEngineMoveable();
                 newMoveable.Animation = (short)(oldMoveable.Animations.Count != 0 ? lastAnimation : -1);
                 newMoveable.NumMeshes = (short)(oldMoveable.Meshes.Count());
                 newMoveable.ObjectID = checked((int)oldMoveable.Id.TypeId);
@@ -339,7 +339,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 for (int j = 0; j < oldMoveable.Animations.Count; ++j)
                 {
                     var oldAnimation = oldMoveable.Animations[j];
-                    var newAnimation = new TombEngine_animation();
+                    var newAnimation = new TombEngineAnimation();
                     var offset = animationDictionary[oldAnimation];
 
                     // Calculate accelerations from velocities
@@ -530,11 +530,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(10, "Converting static meshes");
             foreach (WadStatic oldStaticMesh in statics.Values)
             {
-                var newStaticMesh = new TombEngine_staticmesh();
+                var newStaticMesh = new TombEngineStaticMesh();
 
                 newStaticMesh.ObjectID = checked((int)oldStaticMesh.Id.TypeId);
 
-                newStaticMesh.CollisionBox = new TombEngine_bounding_box
+                newStaticMesh.CollisionBox = new TombEngineBoundingBox
                 {
                     X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Minimum.X)),
                     X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.X)),
@@ -544,7 +544,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.CollisionBox.Maximum.Z))
                 };
 
-                newStaticMesh.VisibilityBox = new TombEngine_bounding_box
+                newStaticMesh.VisibilityBox = new TombEngineBoundingBox
                 {
                     X1 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Minimum.X)),
                     X2 = (short)Math.Max(short.MinValue, Math.Min(short.MaxValue, oldStaticMesh.VisibilityBox.Maximum.X)),
@@ -880,9 +880,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
         }
 
-        private TombEngine_mesh CreateDummyWadMesh(WadMesh oldMesh)
+        private TombEngineMesh CreateDummyWadMesh(WadMesh oldMesh)
         {
-            var newMesh = new TombEngine_mesh
+            var newMesh = new TombEngineMesh
             {
                 Sphere = oldMesh.BoundingSphere
             };

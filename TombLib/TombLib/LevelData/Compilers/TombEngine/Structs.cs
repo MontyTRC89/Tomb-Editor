@@ -4,15 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TombLib.IO;
 using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers.TombEngine
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_sprite_texture
+    public struct TombEngineSpriteTexture
     {
         public int Tile;
         public float X1;
@@ -25,14 +27,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public float Y4;
     }
 
-    public enum TombEngine_polygon_shape : int
+    public enum TombEnginePolygonShape : int
     {
         Quad,
         Triangle
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_atlas
+    public class TombEngineAtlas
     {
         public ImageC ColorMap;
         public ImageC NormalMap;
@@ -41,7 +43,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_collision_info
+    public class TombEngineCollisionInfo
     {
         public float SplitAngle;
         public int[] Portals;
@@ -49,7 +51,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_room_sector
+    public struct TombEngineRoomSector
     {
         public int FloorDataIndex;
         public int BoxIndex;
@@ -59,15 +61,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Floor;
         public int RoomAbove;
         public int Ceiling;
-        public TombEngine_collision_info FloorCollision;
-        public TombEngine_collision_info CeilingCollision;
+        public TombEngineCollisionInfo FloorCollision;
+        public TombEngineCollisionInfo CeilingCollision;
         public int WallPortal;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_polygon
+    public class TombEnginePolygon
     {
-        public TombEngine_polygon_shape Shape;
+        public TombEnginePolygonShape Shape;
         public List<int> Indices = new List<int>();
         public List<int> VerticesIds = new List<int>();
         public List<Vector2> TextureCoordinates = new List<Vector2>();
@@ -85,7 +87,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_room_staticmesh
+    public struct TombEngineRoomStaticMesh
     {
         public int X;
         public int Y;
@@ -99,17 +101,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
     public class NormalHelper
     {
-        public TombEngine_polygon Polygon;
+        public TombEnginePolygon Polygon;
         public bool Smooth;
 
-        public NormalHelper(TombEngine_polygon poly)
+        public NormalHelper(TombEnginePolygon poly)
         {
             Polygon = poly;
         }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_vertex
+    public class TombEngineVertex
     {
         public Vector3 Position;
         public Vector3 Normal;
@@ -127,26 +129,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         // Custom implementation of these because default implementation is *insanely* slow.
         // Its not just a quite a bit slow, it really is *insanely* *crazy* slow so we need those functions :/
-        public static bool operator ==(TombEngine_vertex first, TombEngine_vertex second)
+        public static bool operator ==(TombEngineVertex first, TombEngineVertex second)
         {
             return first.Position.X == second.Position.X && first.Position.Y == second.Position.Y && first.Position.Z == second.Position.Z;
         }
 
-        public static bool operator !=(TombEngine_vertex first, TombEngine_vertex second)
+        public static bool operator !=(TombEngineVertex first, TombEngineVertex second)
         {
             return !(first == second);
         }
 
-        public bool Equals(TombEngine_vertex other)
+        public bool Equals(TombEngineVertex other)
         {
             return this == other;
         }
 
         public override bool Equals(object obj)
         {
-            if (!(obj is TombEngine_vertex))
+            if (!(obj is TombEngineVertex))
                 return false;
-            return this == (TombEngine_vertex)obj;
+            return this == (TombEngineVertex)obj;
         }
 
         public override int GetHashCode()
@@ -156,17 +158,17 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_material
+    public class TombEngineMaterial
     {
-        public class TombEngineMaterialComparer : IEqualityComparer<TombEngine_material>
+        public class TombEngineMaterialComparer : IEqualityComparer<TombEngineMaterial>
         {
-            public bool Equals(TombEngine_material x, TombEngine_material y)
+            public bool Equals(TombEngineMaterial x, TombEngineMaterial y)
             {
                 return (x.Texture == y.Texture && x.BlendMode == y.BlendMode && x.Animated == y.Animated && x.NormalMapping == y.NormalMapping && 
                     x.AnimatedSequence == y.AnimatedSequence);
             }
 
-            public int GetHashCode(TombEngine_material obj)
+            public int GetHashCode(TombEngineMaterial obj)
             {
                 unchecked
                 {
@@ -189,19 +191,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_bucket
+    public class TombEngineBucket
     {
-        public TombEngine_material Material;
-        public List<TombEngine_polygon> Polygons;
+        public TombEngineMaterial Material;
+        public List<TombEnginePolygon> Polygons;
 
-        public TombEngine_bucket()
+        public TombEngineBucket()
         {
-            Polygons = new List<TombEngine_polygon>();
+            Polygons = new List<TombEnginePolygon>();
         }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_room
+    public class TombEngineRoom
     {
         public tr_room_info Info;
         public int NumDataWords;
@@ -210,15 +212,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public List<Vector3> Tangents = new List<Vector3>();
         public List<Vector3> Bitangents = new List<Vector3>();
         public List<Vector3> Colors = new List<Vector3>();
-        public List<TombEngine_vertex> Vertices = new List<TombEngine_vertex>();
-        public Dictionary<TombEngine_material, TombEngine_bucket> Buckets;
+        public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
+        public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets;
         public List<tr_room_portal> Portals;
         public int NumZSectors;
         public int NumXSectors;
-        public TombEngine_room_sector[] Sectors;
+        public TombEngineRoomSector[] Sectors;
         public Vector3 AmbientLight;
-        public List<TombEngine_room_light> Lights;
-        public List<TombEngine_room_staticmesh> StaticMeshes;
+        public List<TombEngineRoomLight> Lights;
+        public List<TombEngineRoomStaticMesh> StaticMeshes;
         public int AlternateRoom;
         public int Flags;
         public int WaterScheme;
@@ -226,7 +228,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int AlternateGroup;
 
         // Helper data
-        public List<TombEngine_polygon> Polygons;
+        public List<TombEnginePolygon> Polygons;
         public TrSectorAux[,] AuxSectors;
         public AlternateKind AlternateKind;
         public List<Room> ReachableRooms;
@@ -336,6 +338,22 @@ namespace TombLib.LevelData.Compilers.TombEngine
             if (StaticMeshes.Count != 0)
                 writer.WriteBlockArray(StaticMeshes);
 
+            // Write volumes
+            writer.Write(OriginalRoom.Volumes.Count());
+            foreach (var volume in OriginalRoom.Volumes)
+            {
+                var bv = volume as BoxVolumeInstance;
+
+                writer.Write(bv.Position);
+                writer.Write(Quaternion.CreateFromYawPitchRoll(bv.RotationY, bv.RotationX, 0));
+                writer.Write(bv.Size);
+                writer.Write((int)volume.Activators);
+                writer.Write(volume.Scripts.OnEnter);
+                writer.Write(volume.Scripts.OnInside);
+                writer.Write(volume.Scripts.OnLeave);
+                writer.Write(volume.OneShot);
+            }
+
             // Write final data
             writer.Write(AlternateRoom);
             writer.Write(Flags);
@@ -346,7 +364,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_room_light
+    public struct TombEngineRoomLight
     {
         public VectorInt3 Position;
         public Vector3 Direction;
@@ -361,20 +379,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_mesh
+    public class TombEngineMesh
     {
         public BoundingSphere Sphere;
         public List<Vector3> Positions = new List<Vector3>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<Vector3> Colors = new List<Vector3>();
         public List<int> Bones = new List<int>();
-        public List<TombEngine_polygon> Polygons = new List<TombEngine_polygon>();
-        public Dictionary<TombEngine_material, TombEngine_bucket> Buckets = new Dictionary<TombEngine_material, TombEngine_bucket>();
-        public List<TombEngine_vertex> Vertices = new List<TombEngine_vertex>();
+        public List<TombEnginePolygon> Polygons = new List<TombEnginePolygon>();
+        public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>();
+        public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_box
+    public struct TombEngineBox
     {
         public int Zmin;
         public int Zmax;
@@ -386,14 +404,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_overlap
+    public class TombEngineOverlap
     {
         public int Box;
         public int Flags;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_zone
+    public class TombEngineZone
     {
         public int GroundZone1_Normal;
         public int GroundZone2_Normal;
@@ -410,7 +428,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_camera
+    public struct TombEngineCamera
     {
         public int X;
         public int Y;
@@ -420,7 +438,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_sound_source
+    public struct TombEngineSoundSource
     {
         public int X;
         public int Y;
@@ -430,12 +448,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_staticmesh
+    public struct TombEngineStaticMesh
     {
         public int ObjectID;
         public int Mesh;
-        public TombEngine_bounding_box VisibilityBox;
-        public TombEngine_bounding_box CollisionBox;
+        public TombEngineBoundingBox VisibilityBox;
+        public TombEngineBoundingBox CollisionBox;
         public ushort Flags;
         public short ShatterType;
         public short ShatterDamage;
@@ -443,7 +461,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_moveable
+    public struct TombEngineMoveable
     {
         public int ObjectID;
         public short NumMeshes;
@@ -454,7 +472,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_animation
+    public struct TombEngineAnimation
     {
         public int FrameOffset;
         public short FrameRate;
@@ -474,15 +492,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public class TombEngine_keyframe
+    public class TombEngineKeyFrame
     {
-        public TombEngine_bounding_box BoundingBox;
+        public TombEngineBoundingBox BoundingBox;
         public Vector3 Offset;
         public List<Quaternion> Angles;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct TombEngine_bounding_box
+    public struct TombEngineBoundingBox
     {
         public short X1;
         public short X2;
