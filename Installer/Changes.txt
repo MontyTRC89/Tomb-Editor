@@ -5,6 +5,7 @@ Tomb Editor:
  * An option to remove missing wad objects from level.
  * Hide missing wad objects too when hide option is set.
  * Fix exception in context menus for missing wad objects.
+ * Fix TR5 compiler incorrectly matching portal shades.
  
 WadTool:
  * Fix occasional state ID textbox autocomplete mistakes.

@@ -4,6 +4,17 @@ using TombLib.Utils;
 
 namespace TombLib.LevelData.Compilers
 {
+    public class CompilerStatistics
+    {
+        public int BoxCount { get; set; }
+        public int OverlapCount { get; set; }
+        public int ObjectTextureCount { get; set; }
+        public override string ToString()
+        {
+            return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | TexInfos: " + ObjectTextureCount;
+        }
+    }
+
     public abstract class LevelCompiler : IDisposable
     {
         protected readonly Level _level;
@@ -22,6 +33,7 @@ namespace TombLib.LevelData.Compilers
 
             _compiledSuccessfully = false;
         }
+
         public void Dispose()
         {
             Dispose(true);
@@ -48,5 +60,7 @@ namespace TombLib.LevelData.Compilers
         {
             _progressReporter.ReportProgress(percentage, message);
         }
+
+        public abstract CompilerStatistics CompileLevel();
     }
 }

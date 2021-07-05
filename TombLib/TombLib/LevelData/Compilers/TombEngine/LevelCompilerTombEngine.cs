@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
@@ -13,17 +12,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 {
     public sealed partial class LevelCompilerTombEngine : LevelCompiler
     {
-        public class CompilerStatistics
-        {
-            public int BoxCount { get; set; }
-            public int OverlapCount { get; set; }
-            public int ObjectTextureCount { get; set; }
-            public override string ToString()
-            {
-                return "Boxes: " + BoxCount + " | Overlaps: " + OverlapCount + " | TexInfos: " + ObjectTextureCount;
-            }
-        }
-
         private readonly Dictionary<Room, TombEngineRoom> _tempRooms = new Dictionary<Room, TombEngineRoom>(new ReferenceEqualityComparer<Room>());
 
         private class ComparerFlyBy : IComparer<tr4_flyby_camera>
@@ -89,9 +77,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 _limits.Add(limit, TrCatalog.GetLimit(level.Settings.GameVersion, limit));
         }
 
-        public CompilerStatistics CompileLevel()
+        public override CompilerStatistics CompileLevel()
         {
-            ReportProgress(0, "Tomb Raider Level Compiler");
+            ReportProgress(0, "Tomb Engine Level Compiler");
 
             if (_level.Settings.Wads.All(wad => wad.Wad == null))
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");

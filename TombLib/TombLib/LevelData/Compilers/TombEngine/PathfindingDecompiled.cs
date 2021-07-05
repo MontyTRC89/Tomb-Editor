@@ -1433,7 +1433,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             if (box1.Xmax <= box2.Xmin || box1.Xmin >= box2.Xmax)
             {
-                if (box1.Zmax > box2.Zmin && box1.Zmin < box2.Zmax && Dec_CheckIfCanJumpZ(box1, box2, out bool longjmp))
+                bool longjmp;
+                if (box1.Zmax > box2.Zmin && box1.Zmin < box2.Zmax && Dec_CheckIfCanJumpZ(box1, box2, out longjmp))
                 {
                     dec_longJump = longjmp;
                     dec_jump = true;
@@ -1462,7 +1463,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 return true;
             }
 
-            if (Dec_CheckIfCanJumpX(box2, box1, out bool longJump))
+            bool longJump;
+            if (Dec_CheckIfCanJumpX(box2, box1, out longJump))
             {
                 dec_longJump = longJump;
                 dec_jump = true;

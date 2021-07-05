@@ -3621,45 +3621,24 @@ namespace TombEditor
             using (var form = new FormOperationDialog("Build level", autoCloseWhenDone, false,
                 progressReporter =>
                 {
-                    if (level.Settings.GameVersion <= TRVersion.Game.TRNG)
+                    using (var compiler = level.Settings.GameVersion <= TRVersion.Game.TRNG ?
+                            (LevelCompiler)(new LevelCompilerClassicTR(level, fileName, progressReporter)) :
+                            (LevelCompiler)(new LevelCompilerTombEngine(level, fileName, progressReporter)))
                     {
-                        using (var compiler = new LevelCompilerClassicTR(level, fileName, progressReporter))
-                        {
-                            var watch = new Stopwatch();
-                            watch.Start();
-                            var statistics = compiler.CompileLevel();
-                            watch.Stop();
-                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
+                        var watch = new Stopwatch();
+                        watch.Start();
+                        var statistics = compiler.CompileLevel();
+                        watch.Stop();
+                        progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
 
-                            // Raise an event for statistics update
-                            _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
-                            {
-                                BoxCount = statistics.BoxCount,
-                                OverlapCount = statistics.OverlapCount,
-                                TextureCount = statistics.ObjectTextureCount,
-                                InfoString = statistics.ToString()
-                            });
-                        }
-                    }
-                    else
-                    {
-                        using (var compiler = new LevelCompilerTombEngine(level, fileName, progressReporter))
+                        // Raise an event for statistics update
+                        _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
                         {
-                            var watch = new Stopwatch();
-                            watch.Start();
-                            var statistics = compiler.CompileLevel();
-                            watch.Stop();
-                            progressReporter.ReportProgress(100, "Elapsed time: " + watch.Elapsed.TotalMilliseconds + "ms");
-
-                            // Raise an event for statistics update
-                            _editor.RaiseEvent(new Editor.LevelCompilationCompletedEvent
-                            {
-                                BoxCount = statistics.BoxCount,
-                                OverlapCount = statistics.OverlapCount,
-                                TextureCount = statistics.ObjectTextureCount,
-                                InfoString = statistics.ToString()
-                            });
-                        }
+                            BoxCount = statistics.BoxCount,
+                            OverlapCount = statistics.OverlapCount,
+                            TextureCount = statistics.ObjectTextureCount,
+                            InfoString = statistics.ToString()
+                        });
                     }
 
                     // Force garbage collector to compact memory
