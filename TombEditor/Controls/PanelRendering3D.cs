@@ -2349,7 +2349,7 @@ namespace TombEditor.Controls
 
             var drawVolume = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
             var baseColor = _editor.Configuration.UI_ColorScheme.ColorTrigger;
-            var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.45f);
+            var normalColor = new Vector4(baseColor.To3() * 0.6f, 0.55f);
             var selectColor = new Vector4(baseColor.To3(), 0.7f);
 
             var currentShape = VolumeShape.Box;
@@ -2366,7 +2366,7 @@ namespace TombEditor.Controls
             // Draw center cubes
             for (int i = 0; i < volumesToDraw.Count; i++)
             {
-                Vector4 color = Vector4.One;
+                Vector4 color = normalColor;
 
                 var instance = volumesToDraw[i];
                 if (_editor.SelectedObject == instance)

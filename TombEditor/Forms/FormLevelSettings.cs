@@ -1666,7 +1666,7 @@ namespace TombEditor.Forms
         private void butBrowseLuaPath_Click(object sender, EventArgs e)
         {
             string result = LevelFileDialog.BrowseFile(this, _levelSettings, _levelSettings.TenLuaScriptFile,
-               "Select the LUA script file for this levl", new[] { new FileFormat("LUA script file", "lua") }, 
+               "Select the LUA script file for this level", new[] { new FileFormat("LUA script file", "lua") }, 
                VariableType.LevelDirectory, false);
             if (result != null)
             {
