@@ -33,6 +33,8 @@
             this.ckFixed = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.nudMoveTimer = new DarkUI.Controls.DarkNumericUpDown();
+            this.tbLuaId = new DarkUI.Controls.DarkTextBox();
+            this.labelLuaId = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMoveTimer)).BeginInit();
             this.SuspendLayout();
             // 
@@ -41,7 +43,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(124, 67);
+            this.butCancel.Location = new System.Drawing.Point(238, 105);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -53,7 +55,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(38, 67);
+            this.butOk.Location = new System.Drawing.Point(152, 105);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -88,7 +90,7 @@
             0,
             0,
             65536});
-            this.nudMoveTimer.Location = new System.Drawing.Point(124, 12);
+            this.nudMoveTimer.Location = new System.Drawing.Point(238, 12);
             this.nudMoveTimer.LoopValues = false;
             this.nudMoveTimer.Maximum = new decimal(new int[] {
             31,
@@ -99,13 +101,34 @@
             this.nudMoveTimer.Size = new System.Drawing.Size(80, 22);
             this.nudMoveTimer.TabIndex = 8;
             // 
+            // tbLuaId
+            // 
+            this.tbLuaId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaId.Location = new System.Drawing.Point(88, 66);
+            this.tbLuaId.Name = "tbLuaId";
+            this.tbLuaId.Size = new System.Drawing.Size(230, 22);
+            this.tbLuaId.TabIndex = 19;
+            // 
+            // labelLuaId
+            // 
+            this.labelLuaId.AutoSize = true;
+            this.labelLuaId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLuaId.Location = new System.Drawing.Point(7, 68);
+            this.labelLuaId.Name = "labelLuaId";
+            this.labelLuaId.Size = new System.Drawing.Size(75, 13);
+            this.labelLuaId.TabIndex = 20;
+            this.labelLuaId.Text = "LUA Script Id:";
+            // 
             // FormCamera
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(212, 98);
+            this.ClientSize = new System.Drawing.Size(326, 136);
+            this.Controls.Add(this.tbLuaId);
+            this.Controls.Add(this.labelLuaId);
             this.Controls.Add(this.nudMoveTimer);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
@@ -131,5 +154,7 @@
         private DarkUI.Controls.DarkCheckBox ckFixed;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkNumericUpDown nudMoveTimer;
+        private DarkUI.Controls.DarkTextBox tbLuaId;
+        private DarkUI.Controls.DarkLabel labelLuaId;
     }
 }

@@ -45,6 +45,16 @@ namespace TombEditor.Forms
             cbInvisible.Checked = _movable.Invisible;
             cbClearBody.Checked = _movable.ClearBody;
             tbOCB.Text = _movable.Ocb.ToString();
+            
+            if (_editor.Level.Settings.GameVersion==TRVersion.Game.TombEngine)
+            {
+                tbLuaId.Text = _movable.LuaScriptId;
+            }
+            else
+            {
+                labelLuaId.Visible = false;
+                tbLuaId.Visible = false;
+            }
 
             // Disable mesh-specific controls
             var canBeColored = _movable.CanBeColored();
@@ -62,6 +72,21 @@ namespace TombEditor.Forms
                 return;
             }
 
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                foreach (var room in _editor.Level.Rooms.Where(r => r != null))
+                    foreach (var instance in room.Objects)
+                        if (instance is MoveableInstance)
+                        {
+                            var movInstance = instance as MoveableInstance;
+                            if (movInstance != _movable && movInstance.LuaScriptId == tbLuaId.Text)
+                            {
+                                DarkMessageBox.Show(this, "The value of LUA Script ID is already taken by another moveable", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+            }
+
             _editor.UndoManager.PushObjectPropertyChanged(_movable);
 
             byte CodeBits = 0;
@@ -76,6 +101,11 @@ namespace TombEditor.Forms
             _movable.ClearBody = cbClearBody.Checked;
 
             _movable.Ocb = ocb;
+
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                _movable.LuaScriptId = tbLuaId.Text;
+            }
 
             DialogResult = DialogResult.OK;
             Close();

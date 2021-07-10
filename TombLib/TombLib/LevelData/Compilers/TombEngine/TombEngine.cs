@@ -141,13 +141,40 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Write camera, flyby and sound sources
                 writer.Write((uint)_cameras.Count);
-                writer.WriteBlockArray(_cameras);
+                foreach (var camera in _cameras)
+                {
+                    writer.Write(camera.X);
+                    writer.Write(camera.Y);
+                    writer.Write(camera.Z);
+                    writer.Write(camera.Room);
+                    writer.Write(camera.Flags);
+                    writer.Write(camera.ScriptId);
+                }
 
                 writer.Write((uint)_flyByCameras.Count);
                 writer.WriteBlockArray(_flyByCameras);
 
                 writer.Write((uint)_soundSources.Count);
-                writer.WriteBlockArray(_soundSources);
+                foreach (var source in _soundSources)
+                {
+                    writer.Write(source.X);
+                    writer.Write(source.Y);
+                    writer.Write(source.Z);
+                    writer.Write(source.SoundID);
+                    writer.Write(source.Flags);
+                    writer.Write(source.ScriptId);
+                }
+
+                writer.Write((uint)_sinks.Count);
+                foreach (var sink in _sinks)
+                {
+                    writer.Write(sink.X);
+                    writer.Write(sink.Y);
+                    writer.Write(sink.Z);
+                    writer.Write(sink.Strength);
+                    writer.Write(sink.BoxIndex);
+                    writer.Write(sink.ScriptId);
+                }
 
                 // Write pathfinding data
                 writer.Write((uint)_boxes.Count);
@@ -192,10 +219,34 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Write items and AI objects
                 writer.Write((uint)_items.Count);
-                writer.WriteBlockArray(_items);
+                foreach (var item in _items)
+                {
+                    writer.Write(item.ObjectID);
+                    writer.Write(item.Room);
+                    writer.Write(item.X);
+                    writer.Write(item.Y);
+                    writer.Write(item.Z);
+                    writer.Write(item.Angle);
+                    writer.Write(item.Intensity1);
+                    writer.Write(item.Ocb);
+                    writer.Write(item.Flags);
+                    writer.Write(item.ScriptId != null ? item.ScriptId : "");
+                }
 
                 writer.Write((uint)_aiItems.Count);
-                writer.WriteBlockArray(_aiItems);
+                foreach (var item in _aiItems)
+                {
+                    writer.Write(item.ObjectID);
+                    writer.Write(item.Room);
+                    writer.Write(item.X);
+                    writer.Write(item.Y);
+                    writer.Write(item.Z);
+                    writer.Write(item.OCB);
+                    writer.Write(item.Flags);
+                    writer.Write(item.Angle);
+                    writer.Write(item.Unknown);
+                    writer.Write(item.ScriptId != null ? item.ScriptId : "");
+                }
 
                 // Write sound meta data
                 PrepareSoundsData();

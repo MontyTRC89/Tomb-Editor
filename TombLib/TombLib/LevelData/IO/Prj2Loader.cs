@@ -974,6 +974,22 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectMovableTombEngine)
+                {
+                    var instance = new MoveableInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.Invisible = chunkIO.Raw.ReadBoolean();
+                    instance.ClearBody = chunkIO.Raw.ReadBoolean();
+                    instance.CodeBits = chunkIO.Raw.ReadByte();
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.LuaScriptId = chunkIO.Raw.ReadStringUTF8();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectStatic ||
                          id3 == Prj2Chunks.ObjectStatic2)
                 {
@@ -1016,6 +1032,17 @@ namespace TombLib.LevelData.IO
                     instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
                     instance.Fixed = chunkIO.Raw.ReadBoolean();
                     instance.MoveTimer = chunkIO.Raw.ReadByte();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectCameraTombEngine)
+                {
+                    var instance = new CameraInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Fixed = chunkIO.Raw.ReadBoolean();
+                    instance.MoveTimer = chunkIO.Raw.ReadByte();
+                    instance.LuaScriptId = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

@@ -352,7 +352,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public abstract class PositionAndScriptBasedObjectInstance : PositionBasedObjectInstance, IHasScriptID
+    public abstract class PositionAndScriptBasedObjectInstance : PositionBasedObjectInstance, IHasScriptID, IHasLuaScriptID
     {
         private ScriptIdTable<IHasScriptID> _scriptTable;
         private uint? _scriptId;
@@ -366,6 +366,34 @@ namespace TombLib.LevelData
             {
                 _scriptTable?.Update(this, _scriptId, value);
                 _scriptId = value;
+            }
+        }
+
+        private string _luaScriptId;
+        public string LuaScriptId
+        {
+            get
+            {
+                return _luaScriptId;
+            }
+            set
+            {
+                foreach (var room in Room.Level.Rooms.Where(r => r!=null))
+                {
+                    foreach (var obj in room.Objects)
+                    {
+                        if (this is MoveableInstance && obj is MoveableInstance && this != obj && (obj as MoveableInstance).LuaScriptId == value)
+                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                        else if (this is StaticInstance && obj is StaticInstance && this != obj && (obj as StaticInstance).LuaScriptId == value)
+                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                        else if (this is CameraInstance && obj is CameraInstance && this != obj && (obj as CameraInstance).LuaScriptId == value)
+                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                        else if (this is FlybyCameraInstance && obj is FlybyCameraInstance && this != obj && (obj as FlybyCameraInstance).LuaScriptId == value)
+                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                    }
+                }
+
+                _luaScriptId = value;
             }
         }
 
@@ -418,6 +446,57 @@ namespace TombLib.LevelData
                 throw;
             }
             _scriptTable = null;
+        }
+
+        public void AllocateNewLuaScriptId()
+        {
+            int numObjects = 0;
+            foreach (var room in Room.Level.Rooms.Where(r => r != null))
+            {
+                numObjects += room.Objects.Count;
+            }
+
+            while(true)
+            {
+                string luaId = this.ToShortString().ToLower() + "_" + numObjects;
+                
+                foreach (var room in Room.Level.Rooms.Where(r => r != null))
+                {
+                    foreach (var obj in room.Objects)
+                    {
+                        if (this is MoveableInstance && obj is MoveableInstance && this != obj && (obj as MoveableInstance).LuaScriptId == luaId)
+                        {
+                            numObjects++;
+                            continue;
+                        }
+                        else if (this is StaticInstance && obj is StaticInstance && this != obj && (obj as StaticInstance).LuaScriptId == luaId)
+                        {
+                            numObjects++;
+                            continue;
+                        }
+                        else if (this is CameraInstance && obj is CameraInstance && this != obj && (obj as CameraInstance).LuaScriptId == luaId)
+                        {
+                            numObjects++;
+                            continue;
+                        }
+                        else if (this is FlybyCameraInstance && obj is FlybyCameraInstance && this != obj && (obj as FlybyCameraInstance).LuaScriptId == luaId)
+                        {
+                            numObjects++;
+                            continue;
+                        }
+
+                        _luaScriptId = luaId;
+                        return;
+                    }
+                }
+            }
+
+           
+        }
+
+        public bool TrySetLuaScriptId(string newScriptId)
+        {
+            throw new NotImplementedException();
         }
     }
 

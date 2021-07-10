@@ -1896,9 +1896,13 @@ namespace TombEditor
         {
             if (instance is IHasScriptID &&
                 (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                 _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG))
+                 _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG))
             {
                 (instance as IHasScriptID).AllocateNewScriptId();
+            }
+            else if (instance is IHasLuaScriptID && _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                (instance as IHasLuaScriptID).AllocateNewLuaScriptId();
             }
         }
 

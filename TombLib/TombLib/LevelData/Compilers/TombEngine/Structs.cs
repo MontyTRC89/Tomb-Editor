@@ -435,6 +435,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Z;
         public int Room;
         public int Flags;
+        public string ScriptId;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineSink
+    {
+        public int X;
+        public int Y;
+        public int Z;
+        public int Strength;
+        public int BoxIndex;
+        public string ScriptId;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -445,6 +457,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Z;
         public int SoundID;
         public int Flags;
+        public string ScriptId;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -508,5 +521,35 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public short Y2;
         public short Z1;
         public short Z2;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineAiItem
+    {
+        public ushort ObjectID;
+        public ushort Room;
+        public int X;
+        public int Y;
+        public int Z;
+        public short OCB;
+        public ushort Flags;
+        public ushort Angle;
+        public ushort Unknown;
+        public string ScriptId;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct TombEngineItem
+    {
+        public ushort ObjectID;
+        public short Room;
+        public int X;
+        public int Y;
+        public int Z;
+        public ushort Angle;
+        public ushort Intensity1;
+        public short Ocb;
+        public ushort Flags;
+        public string ScriptId;
     }
 }

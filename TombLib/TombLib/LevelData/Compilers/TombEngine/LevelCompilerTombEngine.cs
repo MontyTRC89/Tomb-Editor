@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,14 +45,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private List<TombEngineSpriteTexture> _spriteTextures = new List<TombEngineSpriteTexture>();
         private List<tr_sprite_sequence> _spriteSequences = new List<tr_sprite_sequence>();
         private readonly List<TombEngineCamera> _cameras = new List<TombEngineCamera>();
+        private readonly List<TombEngineSink> _sinks = new List<TombEngineSink>();
         private readonly List<tr4_flyby_camera> _flyByCameras = new List<tr4_flyby_camera>();
         private readonly List<TombEngineSoundSource> _soundSources = new List<TombEngineSoundSource>();
         private List<TombEngineBox> _boxes = new List<TombEngineBox>();
         private List<TombEngineOverlap> _overlaps = new List<TombEngineOverlap>();
         private List<TombEngineZone> _zones = new List<TombEngineZone>();
 
-        private readonly List<tr_item> _items = new List<tr_item>();
-        private List<tr_ai_item> _aiItems = new List<tr_ai_item>();
+        private readonly List<TombEngineItem> _items = new List<TombEngineItem>();
+        private List<TombEngineAiItem> _aiItems = new List<TombEngineAiItem>();
 
         private TombEngineTexInfoManager _textureInfoManager;
 
@@ -174,7 +176,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     SoundID = (ushort)instance.SoundId,
-                    Flags = flags
+                    Flags = flags,
+                    ScriptId = "" /*(instance.LuaScriptId != null ? instance.LuaScriptId : "")*/
                 });
             }
 
@@ -214,7 +217,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
-                    Flags = instance.Fixed ? 1 : 0
+                    Flags = instance.Fixed ? 1 : 0,
+                    ScriptId = (instance.LuaScriptId != null ? instance.LuaScriptId : "")
                 });
             }
 
@@ -229,13 +233,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 int boxIndex = tempRoom.Sectors[tempRoom.NumZSectors * xSector + zSector].BoxIndex;
                 
-                _cameras.Add(new TombEngineCamera
+                _sinks.Add(new TombEngineSink
                 {
                     X = (int)Math.Round(position.X),
                     Y = (int)-Math.Round(position.Y),
                     Z = (int)Math.Round(position.Z),
-                    Room = instance.Strength,
-                    Flags = boxIndex
+                    Strength = instance.Strength,
+                    BoxIndex = boxIndex,
+                    ScriptId = (instance.LuaScriptId != null ? instance.LuaScriptId : "")
                 });
             }
 
@@ -388,8 +393,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void PrepareItems()
         {
-            bool isNewTR = _level.Settings.GameVersion > TRVersion.Game.TR3;
-
             ReportProgress(42, "Building items table");
 
             _moveablesTable = new Dictionary<MoveableInstance, int>(new ReferenceEqualityComparer<MoveableInstance>());
@@ -409,10 +412,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     double angle = Math.Round(instance.RotationY * (65536.0 / 360.0));
                     ushort angleInt = unchecked((ushort)Math.Max(0, Math.Min(ushort.MaxValue, angle)));
 
-                    // Split AI objects and normal objects (only for TR4+)
-                    if (isNewTR && TrCatalog.IsMoveableAI(_level.Settings.GameVersion, wadMoveable.Id.TypeId))
+                    // Split AI objects and normal objects
+                    if (TrCatalog.IsMoveableAI(TRVersion.Game.TombEngine, wadMoveable.Id.TypeId))
                     {
-                        _aiItems.Add(new tr_ai_item
+                        _aiItems.Add(new TombEngineAiItem
                         {
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
@@ -421,7 +424,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Room = (ushort)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             OCB = instance.Ocb,
-                            Flags = (ushort)(instance.CodeBits << 1)
+                            Flags = (ushort)(instance.CodeBits << 1),
+                            ScriptId = instance.LuaScriptId
                         });
                         _aiObjectsTable.Add(instance, _aiObjectsTable.Count);
                     }
@@ -433,7 +437,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         // Substitute ID is needed to convert visible menu items to pick-up sprites in TR1-2
                         var realID = TrCatalog.GetSubstituteID(_level.Settings.GameVersion, instance.WadObjectId.TypeId);
 
-                        _items.Add(new tr_item
+                        _items.Add(new TombEngineItem
                         {
                             X = (int)Math.Round(position.X),
                             Y = (int)-Math.Round(position.Y),
@@ -442,8 +446,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Room = (short)_roomsRemappingDictionary[instance.Room],
                             Angle = angleInt,
                             Intensity1 = color,
-                            Ocb = isNewTR ? instance.Ocb : unchecked((short)color),
-                            Flags = unchecked((ushort)flags)
+                            Ocb = instance.Ocb,
+                            Flags = unchecked((ushort)flags),
+                            ScriptId = instance.LuaScriptId
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
                     }
@@ -459,48 +464,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ReportProgress(45, "    Number of items: " + _items.Count);
 
             int maxSafeItemCount, maxItemCount;
-            switch(_level.Settings.GameVersion)
-            {
-                case TRVersion.Game.TRNG:
-                    maxSafeItemCount = 255;
-                    maxItemCount = 1023;
-                    break;
-                case TRVersion.Game.TombEngine:
-                    maxSafeItemCount = 1023;
-                    maxItemCount = 32767;
-                    break;
-                default:
-                    maxSafeItemCount = 255;
-                    maxItemCount = 255;
-                    break;
-            }
+            maxSafeItemCount = 1023;
+            maxItemCount = 32767;
 
             if (_items.Count > maxItemCount)
             {
-                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash" +
-                                 (_level.Settings.GameVersion == TRVersion.Game.TR4 ? ", unless you're using TREP." : ".");
+                var warnString = "Level has more than " + maxItemCount + " moveables. This will lead to crash.";
                 _progressReporter.ReportWarn(warnString);
             }
 
             if (_items.Count > maxSafeItemCount)
                 _progressReporter.ReportWarn("Moveable count is beyond " + maxSafeItemCount + ", which may lead to savegame handling issues.");
-        }
 
-
-        public string GetTRNGVersion()
-        {
-            var buffer = PathC.GetDirectoryNameTry(_level.Settings.MakeAbsolute(_level.Settings.GameExecutableFilePath)) + "\\Tomb_NextGeneration.dll";
-            if (File.Exists(buffer))
-            {
-                buffer = (FileVersionInfo.GetVersionInfo(buffer)).ProductVersion;
-                _progressReporter.ReportInfo("TRNG found, version is " + buffer);
-            }
-            else
-            {
-                buffer = "1,3,0,6";
-                _progressReporter.ReportWarn("Tomb_NextGeneration.dll wasn't found in game directory. Probably you're using TRNG target on vanilla TR4/TRLE?");
-            }
-            return buffer;
         }
     }
 }

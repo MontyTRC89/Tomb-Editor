@@ -17,6 +17,6 @@
         }
 
         public string ShortName() => (Fixed ? "Locked camera" : "Camera") + " (Room " + (Room?.ToString() ?? "NULL") + ")" + 
-            (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "");
+            (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") + (LuaScriptId != null ? " <" + LuaScriptId + ">" : "");
     }
 }

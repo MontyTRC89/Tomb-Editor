@@ -170,7 +170,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 chunkIO.WriteChunkInt(Prj2Chunks.LastRoom, settings.LastSelectedRoom);
-                if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                if (settings.GameVersion == TRVersion.Game.TombEngine)
                 {
                     chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? "");
                 }
@@ -442,20 +442,44 @@ namespace TombLib.LevelData.IO
                 foreach (var o in objects)
                 {
                     if (o is MoveableInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovable4, LEB128.MaximumSize2Byte))
+                    {
+                        if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         {
-                            var instance = (MoveableInstance)o;
-                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.RotationY);
-                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                            chunkIO.Raw.Write(instance.WadObjectId.TypeId);
-                            chunkIO.Raw.Write(instance.Ocb);
-                            chunkIO.Raw.Write(instance.Invisible);
-                            chunkIO.Raw.Write(instance.ClearBody);
-                            chunkIO.Raw.Write(instance.CodeBits);
-                            chunkIO.Raw.Write(instance.Color);
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTombEngine, LEB128.MaximumSize2Byte))
+                            {
+                                var instance = (MoveableInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.RotationY);
+                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                chunkIO.Raw.Write(instance.WadObjectId.TypeId);
+                                chunkIO.Raw.Write(instance.Ocb);
+                                chunkIO.Raw.Write(instance.Invisible);
+                                chunkIO.Raw.Write(instance.ClearBody);
+                                chunkIO.Raw.Write(instance.CodeBits);
+                                chunkIO.Raw.Write(instance.Color);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaScriptId);
+                            }
                         }
+                        else
+                        {
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovable4, LEB128.MaximumSize2Byte))
+                            {
+                                var instance = (MoveableInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.RotationY);
+                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                chunkIO.Raw.Write(instance.WadObjectId.TypeId);
+                                chunkIO.Raw.Write(instance.Ocb);
+                                chunkIO.Raw.Write(instance.Invisible);
+                                chunkIO.Raw.Write(instance.ClearBody);
+                                chunkIO.Raw.Write(instance.CodeBits);
+                                chunkIO.Raw.Write(instance.Color);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaScriptId);
+                            }
+                        }
+                    }
                     else if (o is StaticInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic3, LEB128.MaximumSize2Byte))
                         {
@@ -469,15 +493,33 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.Write(instance.Ocb);
                         }
                     else if (o is CameraInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera2, LEB128.MaximumSize1Byte))
+                    {
+                        if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         {
-                            var instance = (CameraInstance)o;
-                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write(instance.Position);
-                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                            chunkIO.Raw.Write(instance.Fixed);
-                            chunkIO.Raw.Write(instance.MoveTimer);
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCameraTombEngine, LEB128.MaximumSize1Byte))
+                            {
+                                var instance = (CameraInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                chunkIO.Raw.Write(instance.Fixed);
+                                chunkIO.Raw.Write(instance.MoveTimer);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaScriptId);
+                            }
                         }
+                        else
+                        {
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCamera2, LEB128.MaximumSize1Byte))
+                            {
+                                var instance = (CameraInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                chunkIO.Raw.Write(instance.Fixed);
+                                chunkIO.Raw.Write(instance.MoveTimer);
+                            }
+                        }
+                    }
                     else if (o is SpriteInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSprite2, LEB128.MaximumSize1Byte))
                         {
