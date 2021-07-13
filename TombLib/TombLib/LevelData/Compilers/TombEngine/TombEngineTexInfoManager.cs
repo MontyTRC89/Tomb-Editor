@@ -1084,7 +1084,6 @@ namespace TombLib.LevelData.Compilers
                 }
             }
         }
-        private Dictionary<int, ParentAnimatedTexture> _animatedTexturesLookUp;
 
         // Generates real animated texture sequence from reference lookup.
 
@@ -1104,7 +1103,6 @@ namespace TombLib.LevelData.Compilers
             foreach (var frame in orderedFrameList)
             { 
                 frame.TexInfoIndex = GetNewTexInfoIndex();
-                //_animatedTexturesLookUp.Add(frame.TexInfoIndex, refCopy);
             }
 
             _actualAnimTextures.Add(refCopy);

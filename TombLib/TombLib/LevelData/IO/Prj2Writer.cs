@@ -170,10 +170,7 @@ namespace TombLib.LevelData.IO
                 chunkIO.WriteChunkString(Prj2Chunks.ScriptDirectory, settings.ScriptDirectory ?? "");
                 chunkIO.WriteChunkInt(Prj2Chunks.SoundSystem, (int)settings.SoundSystem);
                 chunkIO.WriteChunkInt(Prj2Chunks.LastRoom, settings.LastSelectedRoom);
-                if (settings.GameVersion == TRVersion.Game.TombEngine)
-                {
-                    chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? "");
-                }
+                chunkIO.WriteChunkString(Prj2Chunks.TenLuaScriptFile, settings.TenLuaScriptFile ?? "");
 
                 using (var chunkWads = chunkIO.WriteChunk(Prj2Chunks.Wads, long.MaxValue))
                 {
