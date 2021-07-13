@@ -128,6 +128,7 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectStatic = ChunkId.FromString("TeSta");
         /**********/public static readonly ChunkId ObjectStatic2 = ChunkId.FromString("TeSta2");
         /**********/public static readonly ChunkId ObjectStatic3 = ChunkId.FromString("TeSta3");
+        /**********/public static readonly ChunkId ObjectStaticTombEngine = ChunkId.FromString("TeStaTen");
         /**********/public static readonly ChunkId ObjectCamera = ChunkId.FromString("TeCam");
         /**********/public static readonly ChunkId ObjectCamera2 = ChunkId.FromString("TeCam2");
         /**********/public static readonly ChunkId ObjectCameraTombEngine = ChunkId.FromString("TeCamTen");
@@ -138,11 +139,13 @@ namespace TombLib.LevelData.IO
         /**********/public static readonly ChunkId ObjectFlyBy2LuaScript = ChunkId.FromString("TeFly2Lua");
         /**********/public static readonly ChunkId ObjectMemo = ChunkId.FromString("TeMemo");
         /**********/public static readonly ChunkId ObjectSink = ChunkId.FromString("TeSin");
+        /**********/public static readonly ChunkId ObjectSinkTombEngine = ChunkId.FromString("TeSinTen");
         /**********/public static readonly ChunkId ObjectSoundSource1 = ChunkId.FromString("TeSou");
         /**********/public static readonly ChunkId ObjectSoundSource2 = ChunkId.FromString("TeSou2");
         /**********/public static readonly ChunkId ObjectSoundSource3 = ChunkId.FromString("TeSou3");
         /**********/public static readonly ChunkId ObjectSoundSource4 = ChunkId.FromString("TeSou4");
         /**********/public static readonly ChunkId ObjectSoundSourceFinal = ChunkId.FromString("TeSndSrc");
+        /**********/public static readonly ChunkId ObjectSoundSourceTombEngine = ChunkId.FromString("TeSoundTen");
         /**********/public static readonly ChunkId ObjectSoundSource = ChunkId.FromString("TeSound");
         /**********/public static readonly ChunkId ObjectImportedGeometry = ChunkId.FromString("TeImp");
         /**********/public static readonly ChunkId ObjectImportedGeometry2 = ChunkId.FromString("TeImp2");

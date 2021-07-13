@@ -109,7 +109,7 @@ namespace TombLib.LevelData.IO
                 LevelSettingsIds levelSettingIds = WriteLevelSettings(chunkIO, settingsToSave);
 
                 // Write objects
-                WriteObjects(chunkIO, objects, roomLookup, levelSettingIds, objectInstanceLookup);
+                WriteObjects(chunkIO, objects, roomLookup, levelSettingIds, objectInstanceLookup, level);
                 chunkIO.WriteChunkEnd();
             }
         }
@@ -426,7 +426,7 @@ namespace TombLib.LevelData.IO
                             }
 
                         // Write room objects
-                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup);
+                        WriteObjects(chunkIO, room.AnyObjects, rooms, levelSettingIds, objectInstanceLookup, _level);
                         chunkIO.WriteChunkEnd();
                     }
                 chunkIO.WriteChunkEnd();
@@ -435,7 +435,7 @@ namespace TombLib.LevelData.IO
 
         private static void WriteObjects(ChunkWriter chunkIO, IEnumerable<ObjectInstance> objects,
             IDictionary<Room, int> rooms, LevelSettingsIds levelSettingIds,
-            IDictionary<ObjectInstance, int> objectInstanceLookup)
+            IDictionary<ObjectInstance, int> objectInstanceLookup, Level level)
         {
             using (var chunkObjects = chunkIO.WriteChunk(Prj2Chunks.Objects, long.MaxValue))
             {
@@ -443,7 +443,7 @@ namespace TombLib.LevelData.IO
                 {
                     if (o is MoveableInstance)
                     {
-                        if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTombEngine, LEB128.MaximumSize2Byte))
                             {
@@ -451,14 +451,14 @@ namespace TombLib.LevelData.IO
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
                                 chunkIO.Raw.Write(instance.RotationY);
-                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                LEB128.Write(chunkIO.Raw, (long)-1);
                                 chunkIO.Raw.Write(instance.WadObjectId.TypeId);
                                 chunkIO.Raw.Write(instance.Ocb);
                                 chunkIO.Raw.Write(instance.Invisible);
                                 chunkIO.Raw.Write(instance.ClearBody);
                                 chunkIO.Raw.Write(instance.CodeBits);
                                 chunkIO.Raw.Write(instance.Color);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaScriptId);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
                             }
                         }
                         else
@@ -476,22 +476,42 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.ClearBody);
                                 chunkIO.Raw.Write(instance.CodeBits);
                                 chunkIO.Raw.Write(instance.Color);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaScriptId);
                             }
                         }
                     }
                     else if (o is StaticInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic3, LEB128.MaximumSize2Byte))
+                    {
+                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         {
-                            var instance = (StaticInstance)o;
-                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.RotationY);
-                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                            chunkIO.Raw.Write(instance.WadObjectId.TypeId);
-                            chunkIO.Raw.Write(instance.Color);
-                            chunkIO.Raw.Write(instance.Ocb);
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStaticTombEngine, LEB128.MaximumSize2Byte))
+                            {
+                                var instance = (StaticInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.RotationY);
+                                LEB128.Write(chunkIO.Raw, (long)-1);
+                                chunkIO.Raw.Write(instance.WadObjectId.TypeId);
+                                chunkIO.Raw.Write(instance.Color);
+                                chunkIO.Raw.Write(instance.Ocb);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                            }
                         }
+                        else
+                        {
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStatic3, LEB128.MaximumSize2Byte))
+                            {
+                                var instance = (StaticInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.RotationY);
+                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                chunkIO.Raw.Write(instance.WadObjectId.TypeId);
+                                chunkIO.Raw.Write(instance.Color);
+                                chunkIO.Raw.Write(instance.Ocb);
+                            }
+
+                        }
+                    }
                     else if (o is CameraInstance)
                     {
                         if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
@@ -501,10 +521,10 @@ namespace TombLib.LevelData.IO
                                 var instance = (CameraInstance)o;
                                 LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
                                 chunkIO.Raw.Write(instance.Position);
-                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                LEB128.Write(chunkIO.Raw, (long)-1);
                                 chunkIO.Raw.Write(instance.Fixed);
                                 chunkIO.Raw.Write(instance.MoveTimer);
-                                chunkIO.Raw.WriteStringUTF8(instance.LuaScriptId);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
                             }
                         }
                         else
@@ -555,23 +575,57 @@ namespace TombLib.LevelData.IO
                             chunkIO.Raw.WriteStringUTF8(instance.Text);
                         }
                     else if (o is SinkInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))
+                    {
+                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         {
-                            var instance = (SinkInstance)o;
-                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write(instance.Position);
-                            LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
-                            chunkIO.Raw.Write(instance.Strength);
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSinkTombEngine, LEB128.MaximumSize1Byte))
+                            {
+                                var instance = (SinkInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                LEB128.Write(chunkIO.Raw, (long)-1);
+                                chunkIO.Raw.Write(instance.Strength);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                            }
                         }
+                        else
+                        {
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSink, LEB128.MaximumSize1Byte))
+                            {
+                                var instance = (SinkInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                LEB128.Write(chunkIO.Raw, (long?)instance.ScriptId ?? -1);
+                                chunkIO.Raw.Write(instance.Strength);
+                            }
+                        }
+                    }
                     else if (o is SoundSourceInstance)
-                        using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, LEB128.MaximumSize1Byte))
+                    {
+                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
                         {
-                            var instance = (SoundSourceInstance)o;
-                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.SoundId);
-                            chunkIO.Raw.Write((int)instance.PlayMode);
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSourceTombEngine, LEB128.MaximumSize1Byte))
+                            {
+                                var instance = (SoundSourceInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.SoundId);
+                                chunkIO.Raw.Write((int)instance.PlayMode);
+                                chunkIO.Raw.WriteStringUTF8(instance.LuaName != null ? instance.LuaName : "");
+                            }
                         }
+                        else
+                        {
+                            using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSource, LEB128.MaximumSize1Byte))
+                            {
+                                var instance = (SoundSourceInstance)o;
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.SoundId);
+                                chunkIO.Raw.Write((int)instance.PlayMode);
+                            }
+                        }
+                    }
                     else if (o is LightInstance)
                         using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectLight4, LEB128.MaximumSize2Byte))
                         {

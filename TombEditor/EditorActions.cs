@@ -1900,9 +1900,9 @@ namespace TombEditor
             {
                 (instance as IHasScriptID).AllocateNewScriptId();
             }
-            else if (instance is IHasLuaScriptID && _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            else if (instance is IHasLuaName && _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                (instance as IHasLuaScriptID).AllocateNewLuaScriptId();
+                (instance as IHasLuaName).AllocateNewLuaName();
             }
         }
 

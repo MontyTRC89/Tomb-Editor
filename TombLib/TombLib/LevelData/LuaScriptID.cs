@@ -2,10 +2,10 @@
 
 namespace TombLib.LevelData
 {
-    public interface IHasLuaScriptID
+    public interface IHasLuaName
     {
-        string LuaScriptId { get; set; }
-        void AllocateNewLuaScriptId();
-        bool TrySetLuaScriptId(string newScriptId);
+        string LuaName { get; set; }
+        void AllocateNewLuaName();
+        bool TrySetLuaName(string newScriptId);
     }
 }

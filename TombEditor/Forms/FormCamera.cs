@@ -24,7 +24,7 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                tbLuaId.Text = _instance.LuaScriptId;
+                tbLuaId.Text = _instance.LuaName;
             }
         }
 
@@ -32,17 +32,11 @@ namespace TombEditor.Forms
         {
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                foreach (var room in _editor.Level.Rooms.Where(r => r != null))
-                    foreach (var instance in room.Objects)
-                        if (instance is CameraInstance)
-                        {
-                            var cameraInstance = instance as CameraInstance;
-                            if (cameraInstance != _instance && cameraInstance.LuaScriptId == tbLuaId.Text)
-                            {
-                                DarkMessageBox.Show(this, "The value of LUA Script ID is already taken by another camera", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                        }
+                if (!_instance.TrySetLuaName(tbLuaId.Text))
+                {
+                    DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
             _instance.Fixed = ckFixed.Checked;
@@ -50,7 +44,7 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                _instance.LuaScriptId = tbLuaId.Text;
+                _instance.LuaName = tbLuaId.Text;
             }
 
             DialogResult = DialogResult.OK;

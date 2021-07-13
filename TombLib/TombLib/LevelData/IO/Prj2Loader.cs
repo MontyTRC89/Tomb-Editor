@@ -979,14 +979,14 @@ namespace TombLib.LevelData.IO
                     var instance = new MoveableInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.RotationY = chunkIO.Raw.ReadSingle();
-                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    ReadOptionalLEB128Int(chunkIO.Raw);
                     instance.WadObjectId = new WadMoveableId(chunkIO.Raw.ReadUInt32());
                     instance.Ocb = chunkIO.Raw.ReadInt16();
                     instance.Invisible = chunkIO.Raw.ReadBoolean();
                     instance.ClearBody = chunkIO.Raw.ReadBoolean();
                     instance.CodeBits = chunkIO.Raw.ReadByte();
                     instance.Color = chunkIO.Raw.ReadVector3();
-                    instance.LuaScriptId = chunkIO.Raw.ReadStringUTF8();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1016,6 +1016,19 @@ namespace TombLib.LevelData.IO
                     instance.Ocb = chunkIO.Raw.ReadInt16();
                     addObject(instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectStaticTombEngine)
+                {
+                    var instance = new StaticInstance();
+                    newObjects.TryAdd(objectID, instance);
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.RotationY = chunkIO.Raw.ReadSingle();
+                    ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.WadObjectId = new WadStaticId(chunkIO.Raw.ReadUInt32());
+                    instance.Color = chunkIO.Raw.ReadVector3();
+                    instance.Ocb = chunkIO.Raw.ReadInt16();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
+                    addObject(instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectCamera)
                 {
                     var instance = new CameraInstance();
@@ -1039,10 +1052,10 @@ namespace TombLib.LevelData.IO
                 {
                     var instance = new CameraInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
-                    instance.ScriptId = ReadOptionalLEB128Int(chunkIO.Raw);
+                    ReadOptionalLEB128Int(chunkIO.Raw);
                     instance.Fixed = chunkIO.Raw.ReadBoolean();
                     instance.MoveTimer = chunkIO.Raw.ReadByte();
-                    instance.LuaScriptId = chunkIO.Raw.ReadStringUTF8();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
@@ -1123,6 +1136,16 @@ namespace TombLib.LevelData.IO
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }
+                else if (id3 == Prj2Chunks.ObjectSinkTombEngine)
+                {
+                    var instance = new SinkInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    ReadOptionalLEB128Int(chunkIO.Raw);
+                    instance.Strength = chunkIO.Raw.ReadInt16();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
                 else if (id3 == Prj2Chunks.ObjectSoundSource1 ||
                          id3 == Prj2Chunks.ObjectSoundSource2 ||
                          id3 == Prj2Chunks.ObjectSoundSource3 ||
@@ -1176,6 +1199,16 @@ namespace TombLib.LevelData.IO
                     instance.Position = chunkIO.Raw.ReadVector3();
                     instance.SoundId  = chunkIO.Raw.ReadInt32();
                     instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
+                    addObject(instance);
+                    newObjects.TryAdd(objectID, instance);
+                }
+                else if (id3 == Prj2Chunks.ObjectSoundSourceTombEngine)
+                {
+                    var instance = new SoundSourceInstance();
+                    instance.Position = chunkIO.Raw.ReadVector3();
+                    instance.SoundId = chunkIO.Raw.ReadInt32();
+                    instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
+                    instance.LuaName = chunkIO.Raw.ReadStringUTF8();
                     addObject(instance);
                     newObjects.TryAdd(objectID, instance);
                 }

@@ -177,7 +177,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     SoundID = (ushort)instance.SoundId,
                     Flags = flags,
-                    ScriptId = "" /*(instance.LuaScriptId != null ? instance.LuaScriptId : "")*/
+                    LuaName = instance.LuaName ?? ""
                 });
             }
 
@@ -218,7 +218,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
                     Flags = instance.Fixed ? 1 : 0,
-                    ScriptId = (instance.LuaScriptId != null ? instance.LuaScriptId : "")
+                    LuaName = (instance.LuaName != null ? instance.LuaName : "")
                 });
             }
 
@@ -240,7 +240,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     Strength = instance.Strength,
                     BoxIndex = boxIndex,
-                    ScriptId = (instance.LuaScriptId != null ? instance.LuaScriptId : "")
+                    LuaName = (instance.LuaName != null ? instance.LuaName : "")
                 });
             }
 
@@ -425,7 +425,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Angle = angleInt,
                             OCB = instance.Ocb,
                             Flags = (ushort)(instance.CodeBits << 1),
-                            ScriptId = instance.LuaScriptId
+                            LuaName = instance.LuaName
                         });
                         _aiObjectsTable.Add(instance, _aiObjectsTable.Count);
                     }
@@ -448,7 +448,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Intensity1 = color,
                             Ocb = instance.Ocb,
                             Flags = unchecked((ushort)flags),
-                            ScriptId = instance.LuaScriptId
+                            LuaName = instance.LuaName
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
                     }

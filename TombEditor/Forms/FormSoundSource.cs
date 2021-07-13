@@ -32,6 +32,16 @@ namespace TombEditor.Forms
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Id))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
 
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                tbLuaId.Text = _soundSource.LuaName;
+            }
+            else
+            {
+                labelLuaId.Visible = false;
+                tbLuaId.Visible = false;
+            }
+
             SelectSound(_soundSource.SoundId);
         }
 
@@ -68,8 +78,22 @@ namespace TombEditor.Forms
 
         private void butOK_Click(object sender, EventArgs e)
         {
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                if (!_soundSource.TrySetLuaName(tbLuaId.Text))
+                {
+                    DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             _soundSource.SoundId = _soundId;
             _soundSource.PlayMode = (SoundSourcePlayMode)comboPlayMode.SelectedIndex;
+
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                _soundSource.LuaName = tbLuaId.Text;
+            }
 
             DialogResult = DialogResult.OK;
             WadSoundPlayer.StopSample();

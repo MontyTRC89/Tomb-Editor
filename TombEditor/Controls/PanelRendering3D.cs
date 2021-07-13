@@ -3001,8 +3001,10 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.MoveableId.ShortName(_editor.Level.Settings.GameVersion) +
-                                (_editor.Level.Settings.GameVersion < TRVersion.Game.TRNG ?
-                                "" : " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                                (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG ?
+                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
+                                (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine ?
+                                " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) +
                                 "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
                                 (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +

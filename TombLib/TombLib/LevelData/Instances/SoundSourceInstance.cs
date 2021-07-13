@@ -1,4 +1,6 @@
-﻿using TombLib.Wad;
+﻿using System;
+using System.Linq;
+using TombLib.Wad;
 
 namespace TombLib.LevelData
 {
@@ -10,7 +12,7 @@ namespace TombLib.LevelData
         Automatic = 3
     }
 
-    public class SoundSourceInstance : PositionBasedObjectInstance, IReplaceable
+    public class SoundSourceInstance : PositionAndScriptBasedObjectInstance, IReplaceable
     {
         public int SoundId { get; set; } = -1;
         public SoundSourcePlayMode PlayMode { get; set; } = SoundSourcePlayMode.Automatic;

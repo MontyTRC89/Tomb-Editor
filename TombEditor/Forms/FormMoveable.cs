@@ -48,7 +48,7 @@ namespace TombEditor.Forms
             
             if (_editor.Level.Settings.GameVersion==TRVersion.Game.TombEngine)
             {
-                tbLuaId.Text = _movable.LuaScriptId;
+                tbLuaId.Text = _movable.LuaName;
             }
             else
             {
@@ -57,10 +57,10 @@ namespace TombEditor.Forms
             }
 
             // Disable mesh-specific controls
-            var canBeColored = _movable.CanBeColored();
+            /*var canBeColored = _movable.CanBeColored();
             Size = new System.Drawing.Size(Size.Width, canBeColored ? 254 : 226);
             lblColor.Visible = canBeColored;
-            panelColor.Visible = canBeColored;
+            panelColor.Visible = canBeColored;*/
         }
 
         private void butOK_Click(object sender, EventArgs e)
@@ -74,17 +74,11 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                foreach (var room in _editor.Level.Rooms.Where(r => r != null))
-                    foreach (var instance in room.Objects)
-                        if (instance is MoveableInstance)
-                        {
-                            var movInstance = instance as MoveableInstance;
-                            if (movInstance != _movable && movInstance.LuaScriptId == tbLuaId.Text)
-                            {
-                                DarkMessageBox.Show(this, "The value of LUA Script ID is already taken by another moveable", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                        }
+                if (!_movable.TrySetLuaName(tbLuaId.Text))
+                {
+                    DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
             _editor.UndoManager.PushObjectPropertyChanged(_movable);
@@ -104,7 +98,7 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                _movable.LuaScriptId = tbLuaId.Text;
+                _movable.LuaName = tbLuaId.Text;
             }
 
             DialogResult = DialogResult.OK;

@@ -423,5 +423,12 @@ namespace TombLib.LevelData
             }
         }
         public void ApplyNewLevelSettings(LevelSettings newSettings) => ApplyNewLevelSettings(newSettings, s => { });
+
+        public List<PositionBasedObjectInstance> GetAllObjects()
+        {
+            var result = new List<PositionBasedObjectInstance>();
+            ExistingRooms.ForEach(r => result.AddRange(r.Objects));
+            return result;
+        }
     }
 }

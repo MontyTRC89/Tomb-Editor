@@ -692,7 +692,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     ObjectID = checked((ushort)instance.WadObjectId.TypeId),
                     Flags = (ushort)(0x0001),
                     Color = new Vector4(instance.Color.X,instance.Color.Y,instance.Color.Z,1.0f),
-                    HitPoints = 0 //(short)(sm != null ? sm.HitPoints : (short)1)
+                    HitPoints = 0, //(short)(sm != null ? sm.HitPoints : (short)1)
+                    LuaName = instance.LuaName ?? ""
                 }) ;
             }
 

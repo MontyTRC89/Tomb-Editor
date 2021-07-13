@@ -115,18 +115,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write((ushort)0xfeff);
                 }
 
-                for (var k = 0; k < _scriptingIdsTable.Length; ++k)
-                {
-                    var instance = _scriptingIdsTable[k];
-                    if (instance is MoveableInstance && _moveablesTable.ContainsKey(instance as MoveableInstance))
-                    {
-                        writer.Write((short) _moveablesTable[instance as MoveableInstance]);
-                        writer.Write(k);
-                    }
-                }
-
-                writer.Write((short) -1);
-
                 writer.Write((uint)_staticMeshes.Count);
                 writer.WriteBlockArray(_staticMeshes);
 
@@ -148,22 +136,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(camera.Z);
                     writer.Write(camera.Room);
                     writer.Write(camera.Flags);
-                    writer.Write(camera.ScriptId);
+                    writer.Write(camera.LuaName);
                 }
 
                 writer.Write((uint)_flyByCameras.Count);
                 writer.WriteBlockArray(_flyByCameras);
-
-                writer.Write((uint)_soundSources.Count);
-                foreach (var source in _soundSources)
-                {
-                    writer.Write(source.X);
-                    writer.Write(source.Y);
-                    writer.Write(source.Z);
-                    writer.Write(source.SoundID);
-                    writer.Write(source.Flags);
-                    writer.Write(source.ScriptId);
-                }
 
                 writer.Write((uint)_sinks.Count);
                 foreach (var sink in _sinks)
@@ -173,7 +150,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(sink.Z);
                     writer.Write(sink.Strength);
                     writer.Write(sink.BoxIndex);
-                    writer.Write(sink.ScriptId);
+                    writer.Write(sink.LuaName);
+                }
+
+                writer.Write((uint)_soundSources.Count);
+                foreach (var source in _soundSources)
+                {
+                    writer.Write(source.X);
+                    writer.Write(source.Y);
+                    writer.Write(source.Z);
+                    writer.Write(source.SoundID);
+                    writer.Write(source.Flags);
+                    writer.Write(source.LuaName);
                 }
 
                 // Write pathfinding data
@@ -230,7 +218,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.Intensity1);
                     writer.Write(item.Ocb);
                     writer.Write(item.Flags);
-                    writer.Write(item.ScriptId != null ? item.ScriptId : "");
+                    writer.Write(item.LuaName);
                 }
 
                 writer.Write((uint)_aiItems.Count);
@@ -244,8 +232,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(item.OCB);
                     writer.Write(item.Flags);
                     writer.Write(item.Angle);
-                    writer.Write(item.Unknown);
-                    writer.Write(item.ScriptId != null ? item.ScriptId : "");
+                    writer.Write(item.BoxIndex);
+                    writer.Write(item.LuaName);
                 }
 
                 // Write sound meta data

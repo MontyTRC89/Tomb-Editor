@@ -118,7 +118,7 @@
             this.labelLuaId.Name = "labelLuaId";
             this.labelLuaId.Size = new System.Drawing.Size(75, 13);
             this.labelLuaId.TabIndex = 20;
-            this.labelLuaId.Text = "LUA Script Id:";
+            this.labelLuaId.Text = "Lua Name:";
             // 
             // FormCamera
             // 

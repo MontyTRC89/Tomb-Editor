@@ -97,6 +97,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Vector4 Color;
         public ushort ObjectID;
         public short HitPoints;
+        public string LuaName;
     }
 
     public class NormalHelper
@@ -335,8 +336,18 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             // Write static meshes
             writer.WriteBlock(StaticMeshes.Count);
-            if (StaticMeshes.Count != 0)
-                writer.WriteBlockArray(StaticMeshes);
+            foreach (var sm in StaticMeshes)
+            {
+                writer.Write(sm.X);
+                writer.Write(sm.Y);
+                writer.Write(sm.Z);
+                writer.Write(sm.Rotation);
+                writer.Write(sm.Flags);
+                writer.Write(sm.Color);
+                writer.Write(sm.ObjectID);
+                writer.Write(sm.HitPoints);
+                writer.Write(sm.LuaName);
+            }
 
             // Write volumes
             writer.Write(OriginalRoom.Volumes.Count());
@@ -435,7 +446,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Z;
         public int Room;
         public int Flags;
-        public string ScriptId;
+        public string LuaName;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -446,7 +457,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Z;
         public int Strength;
         public int BoxIndex;
-        public string ScriptId;
+        public string LuaName;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -457,7 +468,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public int Z;
         public int SoundID;
         public int Flags;
-        public string ScriptId;
+        public string LuaName;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -534,8 +545,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public short OCB;
         public ushort Flags;
         public ushort Angle;
-        public ushort Unknown;
-        public string ScriptId;
+        public ushort BoxIndex;
+        public string LuaName;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -550,6 +561,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public ushort Intensity1;
         public short Ocb;
         public ushort Flags;
-        public string ScriptId;
+        public string LuaName;
     }
 }

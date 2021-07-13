@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -352,7 +353,7 @@ namespace TombLib.LevelData
         }
     }
 
-    public abstract class PositionAndScriptBasedObjectInstance : PositionBasedObjectInstance, IHasScriptID, IHasLuaScriptID
+    public abstract class PositionAndScriptBasedObjectInstance : PositionBasedObjectInstance, IHasScriptID, IHasLuaName
     {
         private ScriptIdTable<IHasScriptID> _scriptTable;
         private uint? _scriptId;
@@ -369,31 +370,41 @@ namespace TombLib.LevelData
             }
         }
 
-        private string _luaScriptId;
-        public string LuaScriptId
+        private string _luaName;
+        public string LuaName
         {
             get
             {
-                return _luaScriptId;
+                return _luaName;
             }
             set
             {
-                foreach (var room in Room.Level.Rooms.Where(r => r!=null))
+                if (Room == null || Room.Level == null)
                 {
-                    foreach (var obj in room.Objects)
-                    {
-                        if (this is MoveableInstance && obj is MoveableInstance && this != obj && (obj as MoveableInstance).LuaScriptId == value)
-                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                        else if (this is StaticInstance && obj is StaticInstance && this != obj && (obj as StaticInstance).LuaScriptId == value)
-                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                        else if (this is CameraInstance && obj is CameraInstance && this != obj && (obj as CameraInstance).LuaScriptId == value)
-                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                        else if (this is FlybyCameraInstance && obj is FlybyCameraInstance && this != obj && (obj as FlybyCameraInstance).LuaScriptId == value)
-                            throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                    }
+                    _luaName = value;
                 }
-
-                _luaScriptId = value;
+                else
+                {
+                    foreach (var room in Room.Level.ExistingRooms)
+                    {
+                        foreach (var obj in room.Objects)
+                        {
+                            if (this is MoveableInstance && obj is MoveableInstance && this != obj && (obj as IHasLuaName).LuaName == value)
+                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                            else if (this is StaticInstance && obj is StaticInstance && this != obj && (obj as IHasLuaName).LuaName == value)
+                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                            else if (this is CameraInstance && obj is CameraInstance && this != obj && (obj as IHasLuaName).LuaName == value)
+                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                            else if (this is FlybyCameraInstance && obj is FlybyCameraInstance && this != obj && (obj as IHasLuaName).LuaName == value)
+                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                            else if (this is SinkInstance && obj is SinkInstance && this != obj && (obj as IHasLuaName).LuaName == value)
+                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                            else if (this is SoundSourceInstance && obj is SoundSourceInstance && this != obj && (obj as IHasLuaName).LuaName == value)
+                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
+                        }
+                    }
+                    _luaName = value;
+                }
             }
         }
 
@@ -448,55 +459,44 @@ namespace TombLib.LevelData
             _scriptTable = null;
         }
 
-        public void AllocateNewLuaScriptId()
+        public void AllocateNewLuaName()
         {
-            int numObjects = 0;
-            foreach (var room in Room.Level.Rooms.Where(r => r != null))
-            {
-                numObjects += room.Objects.Count;
-            }
+            var objects = Room.Level.GetAllObjects().Where(o => o is IHasLuaName);
+            int numObjects = objects.Count();
 
-            while(true)
+            while (true)
             {
-                string luaId = this.ToShortString().ToLower() + "_" + numObjects;
-                
-                foreach (var room in Room.Level.Rooms.Where(r => r != null))
+                string luaId = "";
+                if (this is MoveableInstance)
+                    luaId = (this as MoveableInstance).WadObjectId.ShortName(TRVersion.Game.TombEngine).ToLower() + "_" + numObjects;
+                else if (this is StaticInstance)
+                    luaId = (this as StaticInstance).WadObjectId.ShortName(TRVersion.Game.TombEngine).ToLower() + "_" + numObjects;
+                else if (this is SinkInstance)
+                    luaId = "sink_" + numObjects;
+                else if (this is SoundSourceInstance)
+                    luaId = "sound_source_" + numObjects;
+                else if (this is CameraInstance)
+                    luaId = "camera_" + numObjects;
+                else
+                    return;
+
+                if (objects.Where(o => o is IHasLuaName && (o as IHasLuaName).LuaName == luaId).Count() == 0)
                 {
-                    foreach (var obj in room.Objects)
-                    {
-                        if (this is MoveableInstance && obj is MoveableInstance && this != obj && (obj as MoveableInstance).LuaScriptId == luaId)
-                        {
-                            numObjects++;
-                            continue;
-                        }
-                        else if (this is StaticInstance && obj is StaticInstance && this != obj && (obj as StaticInstance).LuaScriptId == luaId)
-                        {
-                            numObjects++;
-                            continue;
-                        }
-                        else if (this is CameraInstance && obj is CameraInstance && this != obj && (obj as CameraInstance).LuaScriptId == luaId)
-                        {
-                            numObjects++;
-                            continue;
-                        }
-                        else if (this is FlybyCameraInstance && obj is FlybyCameraInstance && this != obj && (obj as FlybyCameraInstance).LuaScriptId == luaId)
-                        {
-                            numObjects++;
-                            continue;
-                        }
-
-                        _luaScriptId = luaId;
-                        return;
-                    }
+                    _luaName = luaId;
+                    return;
+                }
+                else
+                {
+                    numObjects++;
                 }
             }
-
-           
         }
 
-        public bool TrySetLuaScriptId(string newScriptId)
+        public bool TrySetLuaName(string newScriptId)
         {
-            throw new NotImplementedException();
+            return (Room.Level.GetAllObjects().Where(o => o is IHasLuaName &&
+                                                    (o as IHasLuaName).LuaName == newScriptId &&
+                                                    o != this).Count() == 0);
         }
     }
 

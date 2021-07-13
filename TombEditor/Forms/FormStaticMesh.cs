@@ -14,6 +14,7 @@ namespace TombEditor.Forms
         private short newOCB;
         private Vector3 oldColor;
         private bool locked;
+        private readonly Editor _editor = Editor.Instance;
 
         public FormStaticMesh(StaticInstance staticMesh)
         {
@@ -39,14 +40,40 @@ namespace TombEditor.Forms
             Size = new System.Drawing.Size(Size.Width, canBeColored ? 422 : 393);
             lblColor.Visible = canBeColored;
             panelColor.Visible = canBeColored;
+
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                tbLuaId.Text = _staticMesh.LuaName;
+            }
+            else
+            {
+                labelLuaId.Visible = false;
+                tbLuaId.Visible = false;
+            }
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                if (!_staticMesh.TrySetLuaName(tbLuaId.Text))
+                {
+                    DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
             if (ParseOCB())
             {
                 Editor.Instance.UndoManager.PushObjectPropertyChanged(_staticMesh);
+                
                 _staticMesh.Ocb = newOCB;
+
+                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                {
+                    _staticMesh.LuaName = tbLuaId.Text;
+                }
+
                 DialogResult = DialogResult.OK;
                 Close();
             }
