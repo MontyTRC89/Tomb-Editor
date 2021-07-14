@@ -48,12 +48,12 @@ namespace TombEditor.Forms
             
             if (_editor.Level.Settings.GameVersion==TRVersion.Game.TombEngine)
             {
-                tbLuaId.Text = _movable.LuaName;
+                tbLuaName.Text = _movable.LuaName;
             }
             else
             {
-                labelLuaId.Visible = false;
-                tbLuaId.Visible = false;
+                labelLuaName.Visible = false;
+                tbLuaName.Visible = false;
             }
 
             // Disable mesh-specific controls
@@ -74,7 +74,7 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                if (!_movable.TrySetLuaName(tbLuaId.Text))
+                if (!_movable.TrySetLuaName(tbLuaName.Text))
                 {
                     DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -98,7 +98,7 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                _movable.LuaName = tbLuaId.Text;
+                _movable.LuaName = tbLuaName.Text;
             }
 
             DialogResult = DialogResult.OK;

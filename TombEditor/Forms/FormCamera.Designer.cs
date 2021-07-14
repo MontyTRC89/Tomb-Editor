@@ -33,8 +33,8 @@
             this.ckFixed = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.nudMoveTimer = new DarkUI.Controls.DarkNumericUpDown();
-            this.tbLuaId = new DarkUI.Controls.DarkTextBox();
-            this.labelLuaId = new DarkUI.Controls.DarkLabel();
+            this.tbLuaName = new DarkUI.Controls.DarkTextBox();
+            this.labelLuaName = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMoveTimer)).BeginInit();
             this.SuspendLayout();
             // 
@@ -101,24 +101,24 @@
             this.nudMoveTimer.Size = new System.Drawing.Size(80, 22);
             this.nudMoveTimer.TabIndex = 8;
             // 
-            // tbLuaId
+            // tbLuaName
             // 
-            this.tbLuaId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaId.Location = new System.Drawing.Point(88, 66);
-            this.tbLuaId.Name = "tbLuaId";
-            this.tbLuaId.Size = new System.Drawing.Size(230, 22);
-            this.tbLuaId.TabIndex = 19;
+            this.tbLuaName.Location = new System.Drawing.Point(88, 66);
+            this.tbLuaName.Name = "tbLuaName";
+            this.tbLuaName.Size = new System.Drawing.Size(230, 22);
+            this.tbLuaName.TabIndex = 19;
             // 
-            // labelLuaId
+            // labelLuaName
             // 
-            this.labelLuaId.AutoSize = true;
-            this.labelLuaId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelLuaId.Location = new System.Drawing.Point(7, 68);
-            this.labelLuaId.Name = "labelLuaId";
-            this.labelLuaId.Size = new System.Drawing.Size(75, 13);
-            this.labelLuaId.TabIndex = 20;
-            this.labelLuaId.Text = "Lua Name:";
+            this.labelLuaName.AutoSize = true;
+            this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLuaName.Location = new System.Drawing.Point(7, 68);
+            this.labelLuaName.Name = "labelLuaName";
+            this.labelLuaName.Size = new System.Drawing.Size(75, 13);
+            this.labelLuaName.TabIndex = 20;
+            this.labelLuaName.Text = "Lua Name:";
             // 
             // FormCamera
             // 
@@ -127,8 +127,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(326, 136);
-            this.Controls.Add(this.tbLuaId);
-            this.Controls.Add(this.labelLuaId);
+            this.Controls.Add(this.tbLuaName);
+            this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.nudMoveTimer);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
@@ -154,7 +154,7 @@
         private DarkUI.Controls.DarkCheckBox ckFixed;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkNumericUpDown nudMoveTimer;
-        private DarkUI.Controls.DarkTextBox tbLuaId;
-        private DarkUI.Controls.DarkLabel labelLuaId;
+        private DarkUI.Controls.DarkTextBox tbLuaName;
+        private DarkUI.Controls.DarkLabel labelLuaName;
     }
 }

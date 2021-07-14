@@ -430,5 +430,9 @@ namespace TombLib.LevelData
             ExistingRooms.ForEach(r => result.AddRange(r.Objects));
             return result;
         }
+
+        public bool IsNG() => Settings?.GameVersion == TRVersion.Game.TRNG;
+
+        public bool IsTombEngine() => Settings?.GameVersion == TRVersion.Game.TombEngine;
     }
 }

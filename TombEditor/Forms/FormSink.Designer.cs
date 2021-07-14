@@ -34,8 +34,8 @@ namespace TombEditor.Forms
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOK = new DarkUI.Controls.DarkButton();
             this.nudStrength = new DarkUI.Controls.DarkNumericUpDown();
-            this.tbLuaId = new DarkUI.Controls.DarkTextBox();
-            this.labelLuaId = new DarkUI.Controls.DarkLabel();
+            this.tbLuaName = new DarkUI.Controls.DarkTextBox();
+            this.labelLuaName = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.nudStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -100,24 +100,24 @@ namespace TombEditor.Forms
             0,
             0});
             // 
-            // tbLuaId
+            // tbLuaName
             // 
-            this.tbLuaId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaId.Location = new System.Drawing.Point(108, 41);
-            this.tbLuaId.Name = "tbLuaId";
-            this.tbLuaId.Size = new System.Drawing.Size(203, 22);
-            this.tbLuaId.TabIndex = 24;
+            this.tbLuaName.Location = new System.Drawing.Point(108, 41);
+            this.tbLuaName.Name = "tbLuaName";
+            this.tbLuaName.Size = new System.Drawing.Size(203, 22);
+            this.tbLuaName.TabIndex = 24;
             // 
-            // labelLuaId
+            // labelLuaName
             // 
-            this.labelLuaId.AutoSize = true;
-            this.labelLuaId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelLuaId.Location = new System.Drawing.Point(6, 43);
-            this.labelLuaId.Name = "labelLuaId";
-            this.labelLuaId.Size = new System.Drawing.Size(75, 13);
-            this.labelLuaId.TabIndex = 25;
-            this.labelLuaId.Text = "Lua Name:";
+            this.labelLuaName.AutoSize = true;
+            this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLuaName.Location = new System.Drawing.Point(6, 43);
+            this.labelLuaName.Name = "labelLuaName";
+            this.labelLuaName.Size = new System.Drawing.Size(75, 13);
+            this.labelLuaName.TabIndex = 25;
+            this.labelLuaName.Text = "Lua Name:";
             // 
             // FormSink
             // 
@@ -126,8 +126,8 @@ namespace TombEditor.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(323, 117);
-            this.Controls.Add(this.tbLuaId);
-            this.Controls.Add(this.labelLuaId);
+            this.Controls.Add(this.tbLuaName);
+            this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.nudStrength);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.butCancel);
@@ -153,7 +153,7 @@ namespace TombEditor.Forms
         private DarkButton butCancel;
         private DarkLabel label5;
         private DarkNumericUpDown nudStrength;
-        private DarkTextBox tbLuaId;
-        private DarkLabel labelLuaId;
+        private DarkTextBox tbLuaName;
+        private DarkLabel labelLuaName;
     }
 }

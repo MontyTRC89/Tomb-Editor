@@ -2570,7 +2570,8 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
                             "Camera " + (instance.Fixed ? "(Locked)" : "") +
-                                " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                            (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2595,7 +2596,8 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
                             "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
-                                "[ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" +
+                            (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2640,7 +2642,8 @@ namespace TombEditor.Controls
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
-                            "Sink [ID = " + (instance.ScriptId?.ToString() ?? " < None > ") + "]" +
+                            (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2664,7 +2667,9 @@ namespace TombEditor.Controls
                         // Add text message
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
-                            "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") + "\n" + GetObjectPositionString(instance.Room, instance)));
+                            "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") + 
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                            "\n" + GetObjectPositionString(instance.Room, instance)));
 
                         // Add the line height of the object
                         AddObjectHeightLine(instance.Room, instance.Position);
@@ -2691,6 +2696,7 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
                             instance.ShortName() + "\nUnavailable " + instance.ItemType +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -3223,8 +3229,8 @@ namespace TombEditor.Controls
                             textToDraw.Add(CreateTextTagForObject(
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.StaticId.ToString(_editor.Level.Settings.GameVersion) +
-                                (_editor.Level.Settings.GameVersion < TRVersion.Game.TRNG ?
-                                "" : " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]") +
+                                (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
+                                (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
                                 "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
                                 BuildTriggeredByMessage(instance)));

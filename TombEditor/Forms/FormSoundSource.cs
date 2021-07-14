@@ -34,12 +34,12 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                tbLuaId.Text = _soundSource.LuaName;
+                tbLuaName.Text = _soundSource.LuaName;
             }
             else
             {
-                labelLuaId.Visible = false;
-                tbLuaId.Visible = false;
+                labelLuaName.Visible = false;
+                tbLuaName.Visible = false;
             }
 
             SelectSound(_soundSource.SoundId);
@@ -80,7 +80,7 @@ namespace TombEditor.Forms
         {
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                if (!_soundSource.TrySetLuaName(tbLuaId.Text))
+                if (!_soundSource.TrySetLuaName(tbLuaName.Text))
                 {
                     DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -92,7 +92,7 @@ namespace TombEditor.Forms
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
             {
-                _soundSource.LuaName = tbLuaId.Text;
+                _soundSource.LuaName = tbLuaName.Text;
             }
 
             DialogResult = DialogResult.OK;

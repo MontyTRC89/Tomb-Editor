@@ -470,7 +470,7 @@ namespace TombLib.LevelData
                 if (this is MoveableInstance)
                     luaId = (this as MoveableInstance).WadObjectId.ShortName(TRVersion.Game.TombEngine).ToLower() + "_" + numObjects;
                 else if (this is StaticInstance)
-                    luaId = (this as StaticInstance).WadObjectId.ShortName(TRVersion.Game.TombEngine).ToLower() + "_" + numObjects;
+                    luaId = "static_mesh_" + numObjects;
                 else if (this is SinkInstance)
                     luaId = "sink_" + numObjects;
                 else if (this is SoundSourceInstance)

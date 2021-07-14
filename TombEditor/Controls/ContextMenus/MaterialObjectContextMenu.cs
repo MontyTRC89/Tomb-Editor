@@ -8,17 +8,33 @@ namespace TombEditor.Controls.ContextMenus
         public MaterialObjectContextMenu(Editor editor, IWin32Window owner, ObjectInstance targetObject)
             : base(editor, owner)
         {
-            if (targetObject == editor.SelectedObject && targetObject is IHasScriptID)
+            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
             {
-                var obj = (targetObject as IHasScriptID);
-                var startString = obj.ScriptId.HasValue ?
-                    "(ScriptID = " + obj.ScriptId.ToString() + ") Copy " : "Assign and copy ";
-
-                Items.Add(new ToolStripMenuItem(startString + "script ID to clipboard", null, (o, e) =>
+                if (targetObject == editor.SelectedObject && targetObject is IHasScriptID)
                 {
-                    CommandHandler.GetCommand("AssignAndClipboardScriptId").Execute(new CommandArgs { Editor = editor, Window = owner });
-                }));
-                Items.Add(new ToolStripSeparator());
+                    var obj = (targetObject as IHasScriptID);
+                    var startString = obj.ScriptId.HasValue ?
+                        "(ScriptID = " + obj.ScriptId.ToString() + ") Copy " : "Assign and copy ";
+
+                    Items.Add(new ToolStripMenuItem(startString + "script ID to clipboard", null, (o, e) =>
+                    {
+                        CommandHandler.GetCommand("AssignAndClipboardScriptId").Execute(new CommandArgs { Editor = editor, Window = owner });
+                    }));
+                    Items.Add(new ToolStripSeparator());
+                }
+            }
+            else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                if (targetObject == editor.SelectedObject && targetObject is IHasLuaName)
+                {
+                    var obj = (targetObject as IHasLuaName);
+
+                    Items.Add(new ToolStripMenuItem("(Lua Name = " + obj.LuaName + ")", null, (o, e) =>
+                    {
+                        //CommandHandler.GetCommand("AssignAndClipboardScriptId").Execute(new CommandArgs { Editor = editor, Window = owner });
+                    }));
+                    Items.Add(new ToolStripSeparator());
+                }
             }
 
             if (!(targetObject is LightInstance ||  targetObject is GhostBlockInstance))

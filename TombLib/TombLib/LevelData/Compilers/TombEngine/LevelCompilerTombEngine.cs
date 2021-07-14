@@ -218,7 +218,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     Room = (short)_roomsRemappingDictionary[instance.Room],
                     Flags = instance.Fixed ? 1 : 0,
-                    LuaName = (instance.LuaName != null ? instance.LuaName : "")
+                    LuaName = instance.LuaName ?? ""
                 });
             }
 
@@ -240,7 +240,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Z = (int)Math.Round(position.Z),
                     Strength = instance.Strength,
                     BoxIndex = boxIndex,
-                    LuaName = (instance.LuaName != null ? instance.LuaName : "")
+                    LuaName = instance.LuaName ?? ""
                 });
             }
 
@@ -425,7 +425,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Angle = angleInt,
                             OCB = instance.Ocb,
                             Flags = (ushort)(instance.CodeBits << 1),
-                            LuaName = instance.LuaName
+                            LuaName = instance.LuaName ?? ""
                         });
                         _aiObjectsTable.Add(instance, _aiObjectsTable.Count);
                     }
@@ -448,7 +448,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Intensity1 = color,
                             Ocb = instance.Ocb,
                             Flags = unchecked((ushort)flags),
-                            LuaName = instance.LuaName
+                            LuaName = instance.LuaName ?? ""
                         });
                         _moveablesTable.Add(instance, _moveablesTable.Count);
                     }

@@ -37,8 +37,8 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
             this.lstSounds = new DarkUI.Controls.DarkListView();
-            this.tbLuaId = new DarkUI.Controls.DarkTextBox();
-            this.labelLuaId = new DarkUI.Controls.DarkLabel();
+            this.tbLuaName = new DarkUI.Controls.DarkTextBox();
+            this.labelLuaName = new DarkUI.Controls.DarkLabel();
             this.optionPlaySoundFromWadGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -158,24 +158,24 @@
             this.lstSounds.Click += new System.EventHandler(this.lstSounds_Click);
             this.lstSounds.DoubleClick += new System.EventHandler(this.lstSounds_DoubleClick);
             // 
-            // tbLuaId
+            // tbLuaName
             // 
-            this.tbLuaId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaId.Location = new System.Drawing.Point(102, 544);
-            this.tbLuaId.Name = "tbLuaId";
-            this.tbLuaId.Size = new System.Drawing.Size(370, 22);
-            this.tbLuaId.TabIndex = 67;
+            this.tbLuaName.Location = new System.Drawing.Point(102, 544);
+            this.tbLuaName.Name = "tbLuaName";
+            this.tbLuaName.Size = new System.Drawing.Size(370, 22);
+            this.tbLuaName.TabIndex = 67;
             // 
-            // labelLuaId
+            // labelLuaName
             // 
-            this.labelLuaId.AutoSize = true;
-            this.labelLuaId.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.labelLuaId.Location = new System.Drawing.Point(21, 546);
-            this.labelLuaId.Name = "labelLuaId";
-            this.labelLuaId.Size = new System.Drawing.Size(75, 13);
-            this.labelLuaId.TabIndex = 68;
-            this.labelLuaId.Text = "Lua Name:";
+            this.labelLuaName.AutoSize = true;
+            this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLuaName.Location = new System.Drawing.Point(21, 546);
+            this.labelLuaName.Name = "labelLuaName";
+            this.labelLuaName.Size = new System.Drawing.Size(75, 13);
+            this.labelLuaName.TabIndex = 68;
+            this.labelLuaName.Text = "Lua Name:";
             // 
             // FormSoundSource
             // 
@@ -183,8 +183,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(484, 607);
-            this.Controls.Add(this.tbLuaId);
-            this.Controls.Add(this.labelLuaId);
+            this.Controls.Add(this.tbLuaName);
+            this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.butOK);
             this.Controls.Add(this.butCancel);
             this.Controls.Add(this.optionPlaySoundFromWadGroupBox);
@@ -213,7 +213,7 @@
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkTextBox tbSearch;
-        private DarkUI.Controls.DarkTextBox tbLuaId;
-        private DarkUI.Controls.DarkLabel labelLuaId;
+        private DarkUI.Controls.DarkTextBox tbLuaName;
+        private DarkUI.Controls.DarkLabel labelLuaName;
     }
 }
