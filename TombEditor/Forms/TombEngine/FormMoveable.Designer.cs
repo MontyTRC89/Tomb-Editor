@@ -1,6 +1,6 @@
 ﻿using DarkUI.Controls;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
     partial class FormMoveable
     {
@@ -44,13 +44,15 @@ namespace TombEditor.Forms
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.lblColor = new DarkUI.Controls.DarkLabel();
             this.panelColor = new System.Windows.Forms.Panel();
+            this.tbLuaName = new DarkUI.Controls.DarkTextBox();
+            this.labelLuaName = new DarkUI.Controls.DarkLabel();
             this.SuspendLayout();
             // 
             // butOK
             // 
             this.butOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOK.Checked = false;
-            this.butOK.Location = new System.Drawing.Point(39, 182);
+            this.butOK.Location = new System.Drawing.Point(107, 211);
             this.butOK.Name = "butOK";
             this.butOK.Size = new System.Drawing.Size(80, 23);
             this.butOK.TabIndex = 8;
@@ -63,7 +65,7 @@ namespace TombEditor.Forms
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(125, 182);
+            this.butCancel.Location = new System.Drawing.Point(193, 211);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 9;
@@ -138,9 +140,9 @@ namespace TombEditor.Forms
             // 
             this.tbOCB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbOCB.Location = new System.Drawing.Point(39, 126);
+            this.tbOCB.Location = new System.Drawing.Point(86, 126);
             this.tbOCB.Name = "tbOCB";
-            this.tbOCB.Size = new System.Drawing.Size(166, 22);
+            this.tbOCB.Size = new System.Drawing.Size(187, 22);
             this.tbOCB.TabIndex = 7;
             this.tbOCB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbOCB_KeyPress);
             // 
@@ -156,10 +158,9 @@ namespace TombEditor.Forms
             // 
             // lblColor
             // 
-            this.lblColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblColor.AutoSize = true;
             this.lblColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblColor.Location = new System.Drawing.Point(8, 158);
+            this.lblColor.Location = new System.Drawing.Point(5, 185);
             this.lblColor.Name = "lblColor";
             this.lblColor.Size = new System.Drawing.Size(29, 13);
             this.lblColor.TabIndex = 15;
@@ -167,14 +168,33 @@ namespace TombEditor.Forms
             // 
             // panelColor
             // 
-            this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelColor.BackColor = System.Drawing.Color.White;
-            this.panelColor.Location = new System.Drawing.Point(39, 154);
+            this.panelColor.Location = new System.Drawing.Point(86, 183);
             this.panelColor.Name = "panelColor";
-            this.panelColor.Size = new System.Drawing.Size(166, 22);
+            this.panelColor.Size = new System.Drawing.Size(187, 22);
             this.panelColor.TabIndex = 16;
             this.panelColor.Click += new System.EventHandler(this.panelColor_Click);
+            // 
+            // tbLuaName
+            // 
+            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaName.Location = new System.Drawing.Point(86, 154);
+            this.tbLuaName.Name = "tbLuaName";
+            this.tbLuaName.Size = new System.Drawing.Size(187, 22);
+            this.tbLuaName.TabIndex = 17;
+            // 
+            // labelLuaName
+            // 
+            this.labelLuaName.AutoSize = true;
+            this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLuaName.Location = new System.Drawing.Point(5, 156);
+            this.labelLuaName.Name = "labelLuaName";
+            this.labelLuaName.Size = new System.Drawing.Size(60, 13);
+            this.labelLuaName.TabIndex = 18;
+            this.labelLuaName.Text = "Lua Name:";
             // 
             // FormMoveable
             // 
@@ -182,7 +202,9 @@ namespace TombEditor.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(212, 212);
+            this.ClientSize = new System.Drawing.Size(280, 241);
+            this.Controls.Add(this.tbLuaName);
+            this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.panelColor);
             this.Controls.Add(this.lblColor);
             this.Controls.Add(this.cbBit5);
@@ -226,5 +248,7 @@ namespace TombEditor.Forms
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private DarkLabel lblColor;
         private System.Windows.Forms.Panel panelColor;
+        private DarkTextBox tbLuaName;
+        private DarkLabel labelLuaName;
     }
 }

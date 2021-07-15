@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Windows.Forms;
 using DarkUI.Forms;
 using TombLib.LevelData;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
     public partial class FormCamera : DarkForm
     {
         private readonly CameraInstance _instance;
+        private readonly Editor _editor = Editor.Instance;
 
         public FormCamera(CameraInstance instance)
         {
@@ -16,13 +18,14 @@ namespace TombEditor.Forms
             _instance = instance;
             ckFixed.Checked = _instance.Fixed;
             nudMoveTimer.Value = _instance.MoveTimer;
-
-            ckFixed.Enabled      = (instance.Room.Level.Settings.GameVersion >= TRVersion.Game.TR4);
-            nudMoveTimer.Enabled = (instance.Room.Level.Settings.GameVersion <= TRVersion.Game.TR2);
+            tbLuaName.Text = _instance.LuaName;
         }
 
         private void butOk_Click(object sender, EventArgs e)
         {
+            if (!_instance.TrySetLuaName(tbLuaName.Text, this)) 
+                return;
+
             _instance.Fixed = ckFixed.Checked;
             _instance.MoveTimer = (byte)nudMoveTimer.Value;
 

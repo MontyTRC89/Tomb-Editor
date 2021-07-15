@@ -97,6 +97,6 @@ namespace TombLib.LevelData
                 return false;
         }
 
-        public string ShortName => "Sound source (ID = " + SoundId + ")";
+        public string ShortName => "Sound source (ID = " + SoundId + ")" + GetScriptIDOrName();
     }
 }

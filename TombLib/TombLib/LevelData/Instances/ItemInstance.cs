@@ -33,7 +33,7 @@ namespace TombLib.LevelData
                    (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
         }
 
-        public string ShortName() => ItemType.ShortName() + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") + (LuaName != null ? " <" + LuaName + ">" : "");
+        public string ShortName() => ItemType.ShortName() + GetScriptIDOrName();
 
         public static ItemInstance FromItemType(ItemType item)
         {

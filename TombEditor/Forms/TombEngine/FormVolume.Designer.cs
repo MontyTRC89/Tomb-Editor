@@ -1,6 +1,6 @@
-﻿namespace TombEditor.Forms
+﻿namespace TombEditor.Forms.TombEngine
 {
-    partial class FormTriggerVolume
+    partial class FormVolume
     {
         /// <summary>
         /// Required designer variable.

@@ -1,8 +1,8 @@
 ﻿using DarkUI.Controls;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
-    partial class FormStaticMesh
+    partial class FormStatic
     {
         /// <summary>
         /// Required designer variable.
@@ -154,7 +154,7 @@ namespace TombEditor.Forms
             this.cbBurnLaraOnCollision.AutoSize = true;
             this.cbBurnLaraOnCollision.Location = new System.Drawing.Point(10, 104);
             this.cbBurnLaraOnCollision.Name = "cbBurnLaraOnCollision";
-            this.cbBurnLaraOnCollision.Size = new System.Drawing.Size(137, 17);
+            this.cbBurnLaraOnCollision.Size = new System.Drawing.Size(138, 17);
             this.cbBurnLaraOnCollision.TabIndex = 4;
             this.cbBurnLaraOnCollision.Text = "Burn Lara on collision";
             this.cbBurnLaraOnCollision.CheckedChanged += new System.EventHandler(this.anyCheckbox_CheckedChanged);
@@ -226,7 +226,7 @@ namespace TombEditor.Forms
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.label1.Location = new System.Drawing.Point(7, 294);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.Size = new System.Drawing.Size(33, 13);
             this.label1.TabIndex = 27;
             this.label1.Text = "OCB:";
             // 
@@ -245,9 +245,9 @@ namespace TombEditor.Forms
             this.lblColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblColor.AutoSize = true;
             this.lblColor.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.lblColor.Location = new System.Drawing.Point(7, 354);
+            this.lblColor.Location = new System.Drawing.Point(7, 351);
             this.lblColor.Name = "lblColor";
-            this.lblColor.Size = new System.Drawing.Size(33, 13);
+            this.lblColor.Size = new System.Drawing.Size(32, 13);
             this.lblColor.TabIndex = 28;
             this.lblColor.Text = "Tint: ";
             // 
@@ -280,7 +280,7 @@ namespace TombEditor.Forms
             this.labelLuaName.TabIndex = 31;
             this.labelLuaName.Text = "Lua Name:";
             // 
-            // FormStaticMesh
+            // FormStatic
             // 
             this.AcceptButton = this.butOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -311,7 +311,7 @@ namespace TombEditor.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FormStaticMesh";
+            this.Name = "FormStatic";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

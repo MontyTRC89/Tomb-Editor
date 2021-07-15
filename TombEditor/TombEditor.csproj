@@ -223,11 +223,47 @@
     <Compile Include="Forms\FormToolBarLayout.Designer.cs">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormTriggerVolume.cs">
+    <Compile Include="Forms\TombEngine\FormFlybyCamera.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormTriggerVolume.Designer.cs">
-      <DependentUpon>FormTriggerVolume.cs</DependentUpon>
+    <Compile Include="Forms\TombEngine\FormFlybyCamera.Designer.cs">
+      <DependentUpon>FormFlybyCamera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormVolume.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormVolume.Designer.cs">
+      <DependentUpon>FormVolume.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormCamera.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormCamera.Designer.cs">
+      <DependentUpon>FormCamera.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormMoveable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormMoveable.Designer.cs">
+      <DependentUpon>FormMoveable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormSink.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormSink.Designer.cs">
+      <DependentUpon>FormSink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormSoundSource.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormSoundSource.Designer.cs">
+      <DependentUpon>FormSoundSource.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormStatic.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TombEngine\FormStatic.Designer.cs">
+      <DependentUpon>FormStatic.cs</DependentUpon>
     </Compile>
     <Compile Include="Hotkey.cs" />
     <Compile Include="Configuration.cs" />
@@ -329,11 +365,11 @@
     <Compile Include="Forms\FormSearch.Designer.cs">
       <DependentUpon>FormSearch.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormStaticMesh.cs">
+    <Compile Include="Forms\FormStatic.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormStaticMesh.Designer.cs">
-      <DependentUpon>FormStaticMesh.cs</DependentUpon>
+    <Compile Include="Forms\FormStatic.Designer.cs">
+      <DependentUpon>FormStatic.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormOperationDialog.cs">
       <SubType>Form</SubType>
@@ -537,8 +573,26 @@
     <EmbeddedResource Include="Forms\FormToolBarLayout.resx">
       <DependentUpon>FormToolBarLayout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormTriggerVolume.resx">
-      <DependentUpon>FormTriggerVolume.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\TombEngine\FormFlybyCamera.resx">
+      <DependentUpon>FormFlybyCamera.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TombEngine\FormVolume.resx">
+      <DependentUpon>FormVolume.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TombEngine\FormCamera.resx">
+      <DependentUpon>FormCamera.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TombEngine\FormMoveable.resx">
+      <DependentUpon>FormMoveable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TombEngine\FormSink.resx">
+      <DependentUpon>FormSink.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TombEngine\FormSoundSource.resx">
+      <DependentUpon>FormSoundSource.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TombEngine\FormStatic.resx">
+      <DependentUpon>FormStatic.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ToolWindows\ImportedGeometryBrowser.resx">
       <DependentUpon>ImportedGeometryBrowser.cs</DependentUpon>
@@ -581,8 +635,8 @@
     <EmbeddedResource Include="Forms\FormLevelSettings.resx">
       <DependentUpon>FormLevelSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormStaticMesh.resx">
-      <DependentUpon>FormStaticMesh.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormStatic.resx">
+      <DependentUpon>FormStatic.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormOperationDialog.resx">
       <DependentUpon>FormOperationDialog.cs</DependentUpon>

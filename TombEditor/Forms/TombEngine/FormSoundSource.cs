@@ -8,7 +8,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using System.Collections.Generic;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
     public partial class FormSoundSource : DarkForm
     {
@@ -31,6 +31,8 @@ namespace TombEditor.Forms
 
             foreach (var sound in _soundInfos.OrderBy(soundInfo => soundInfo.Id))
                 lstSounds.Items.Add(new DarkUI.Controls.DarkListItem(sound.Id.ToString().PadLeft(4, '0') + ": " + sound.Name) { Tag = sound });
+
+            tbLuaName.Text = _soundSource.LuaName;
 
             SelectSound(_soundSource.SoundId);
         }
@@ -68,6 +70,9 @@ namespace TombEditor.Forms
 
         private void butOK_Click(object sender, EventArgs e)
         {
+            if (!_soundSource.TrySetLuaName(tbLuaName.Text, this))
+                return;
+
             _soundSource.SoundId = _soundId;
             _soundSource.PlayMode = (SoundSourcePlayMode)comboPlayMode.SelectedIndex;
 

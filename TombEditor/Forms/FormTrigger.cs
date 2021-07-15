@@ -21,7 +21,7 @@ namespace TombEditor.Forms
 
         private bool _dialogIsUpdating = false;
 
-        public FormTrigger(Level level, TriggerInstance trigger, Action<ObjectInstance> selectObject,
+        public FormTrigger(TriggerInstance trigger, Level level, Action<ObjectInstance> selectObject,
                            Action<Room> selectRoom)
         {
             InitializeComponent();

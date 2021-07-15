@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using TombLib.Utils;
 
 namespace TombLib.LevelData
@@ -369,44 +370,7 @@ namespace TombLib.LevelData
                 _scriptId = value;
             }
         }
-
-        private string _luaName;
-        public string LuaName
-        {
-            get
-            {
-                return _luaName;
-            }
-            set
-            {
-                if (Room == null || Room.Level == null)
-                {
-                    _luaName = value;
-                }
-                else
-                {
-                    foreach (var room in Room.Level.ExistingRooms)
-                    {
-                        foreach (var obj in room.Objects)
-                        {
-                            if (this is MoveableInstance && obj is MoveableInstance && this != obj && (obj as IHasLuaName).LuaName == value)
-                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                            else if (this is StaticInstance && obj is StaticInstance && this != obj && (obj as IHasLuaName).LuaName == value)
-                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                            else if (this is CameraInstance && obj is CameraInstance && this != obj && (obj as IHasLuaName).LuaName == value)
-                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                            else if (this is FlybyCameraInstance && obj is FlybyCameraInstance && this != obj && (obj as IHasLuaName).LuaName == value)
-                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                            else if (this is SinkInstance && obj is SinkInstance && this != obj && (obj as IHasLuaName).LuaName == value)
-                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                            else if (this is SoundSourceInstance && obj is SoundSourceInstance && this != obj && (obj as IHasLuaName).LuaName == value)
-                                throw new ArgumentException("The ID is already in use by " + obj.ToShortString());
-                        }
-                    }
-                    _luaName = value;
-                }
-            }
-        }
+        public string LuaName { get; set; }
 
         public void AllocateNewScriptId()
         {
@@ -482,7 +446,7 @@ namespace TombLib.LevelData
 
                 if (objects.Where(o => o is IHasLuaName && (o as IHasLuaName).LuaName == luaId).Count() == 0)
                 {
-                    _luaName = luaId;
+                    LuaName = luaId;
                     return;
                 }
                 else
@@ -492,12 +456,24 @@ namespace TombLib.LevelData
             }
         }
 
-        public bool TrySetLuaName(string newScriptId)
+        public bool TrySetLuaName(string newName, IWin32Window owner = null)
         {
-            return (Room.Level.GetAllObjects().Where(o => o is IHasLuaName &&
-                                                    (o as IHasLuaName).LuaName == newScriptId &&
-                                                    o != this).Count() == 0);
+            var result = (string.IsNullOrEmpty(newName) ||
+                          Room.Level.GetAllObjects().Where(o => o is IHasLuaName &&
+                                                          (o as IHasLuaName).LuaName == newName &&
+                                                           o != this).Count() == 0);
+            if (!result && owner != null)
+                DarkMessageBox.Show(owner, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            if (result)
+                LuaName = newName;
+
+            return result;
         }
+
+        public string GetScriptIDOrName() =>
+            (Room.Level.IsNG() ? (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") : "") +
+            (Room.Level.IsTombEngine() ? (LuaName != null ? " [" + LuaName + "]" : "") : "");
     }
 
     public static class ColorableExtensions
