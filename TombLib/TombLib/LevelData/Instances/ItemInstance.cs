@@ -29,8 +29,8 @@ namespace TombLib.LevelData
                    ", Room = " + (Room?.ToString() ?? "NULL") +
                    ", X = " + SectorPosition.X +
                    ", Z = " + SectorPosition.Y +
-                   ", Ocb = " + Ocb + 
-                   (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
+                   ", Ocb = " + Ocb +
+                   GetScriptIDOrName(false);
         }
 
         public string ShortName() => ItemType.ShortName() + GetScriptIDOrName();

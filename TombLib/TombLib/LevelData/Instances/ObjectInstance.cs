@@ -471,9 +471,16 @@ namespace TombLib.LevelData
             return result;
         }
 
-        public string GetScriptIDOrName() =>
-            (Room.Level.IsNG() ? (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") : "") +
-            (Room.Level.IsTombEngine() ? (LuaName != null ? " [" + LuaName + "]" : "") : "");
+        public string GetScriptIDOrName(bool shortened = true)
+        {
+            if (shortened)
+                return (Room.Level.IsNG() ? (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") : "") +
+                       (Room.Level.IsTombEngine() ? (!string.IsNullOrEmpty(LuaName) ? " [" + LuaName + "]" : "") : "");
+            else
+                return (Room.Level.IsNG() ? (ScriptId.HasValue ? ", Script ID = " + ScriptId.Value : "") : "") +
+                       (Room.Level.IsTombEngine() ? (!string.IsNullOrEmpty(LuaName) ? ", Lua name = " + LuaName : "") : "");
+        }
+
     }
 
     public static class ColorableExtensions

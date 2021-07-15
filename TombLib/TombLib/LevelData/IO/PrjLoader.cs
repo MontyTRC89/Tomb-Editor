@@ -600,6 +600,7 @@ namespace TombLib.LevelData.IO
                             case 0x4c00:
                                 var sound = new SoundSourceInstance()
                                 {
+                                    ScriptId = unchecked((ushort)objectsThings2[j]),
                                     SoundId = objSlot,
                                     Position = position
                                 };
