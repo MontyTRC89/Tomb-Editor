@@ -357,7 +357,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 writer.Write(bv.Position);
                 writer.Write(Quaternion.CreateFromYawPitchRoll(bv.RotationY, bv.RotationX, 0));
-                writer.Write(bv.Size);
+                writer.Write(bv.Size / 2.0f);
                 writer.Write((int)volume.Activators);
                 writer.Write(volume.Scripts.OnEnter);
                 writer.Write(volume.Scripts.OnInside);

@@ -27,7 +27,7 @@ namespace TombLib.Utils
                             line = line.Substring(0, line.IndexOf("--") - 1);
                         }
 
-                        string functionName = line.Substring(line.IndexOf(" "), line.IndexOf("(") - line.IndexOf(" "));
+                        string functionName = line.Substring(line.IndexOf(" "), line.IndexOf("(") - line.IndexOf(" ")).Trim();
                         if (!result.Contains(functionName))
                         {
                             result.Add(functionName);
