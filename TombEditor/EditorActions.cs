@@ -614,8 +614,8 @@ namespace TombEditor
             }
 
             // Display form
-            using (var formTrigger = new FormTrigger(_editor.Level, trigger, obj => _editor.ShowObject(obj),
-                                                     r => _editor.SelectRoom(r)))
+            using (var formTrigger = GetObjectSetupWindow(trigger, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
+                                                     new Action<Room>(r => _editor.SelectRoom(r))))
             {
                 if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                     return;
@@ -824,6 +824,48 @@ namespace TombEditor
             _editor.ObjectChange(instance, ObjectChangeType.Change);
         }
 
+        public static DarkForm GetObjectSetupWindow(params object[] args)
+        {
+            // This function decides on which window version to use based on game version.
+            // Right now it is primarily future-proof setup for TEN objects which will feature
+            // completely different set of options and using legacy object window layouts won't make any sense.
+
+            // Algorithm:
+            // 1. If game version set to TEN, try to find window version from "TombEditor.Forms.TombEngine" namespace
+            // 2. If game version set to TEN and no window version is found in that namespace, fall back to "TombEditor.Forms" namespace
+            // 3. If game version is NOT TEN, always use "TombEditor.Forms" namespace
+            // 4. If no window was found in either namespace, throw an exception, since there's no setup window for such object.
+            
+            if (args.Count() == 0 || !(args[0] is ObjectInstance))
+                throw new ArgumentException("Object instance was not provided as first argument for this function.");
+
+            var triedAlternateNamespace = false;
+            var objectName = (args[0] as ObjectInstance).GetType().Name.Replace("Instance", string.Empty);
+
+            // Additional filter for volume types
+            if (objectName.Contains("Volume")) objectName = "Volume";
+
+            // If version is TEN, try to search for new versions of setup window.
+            // If no new form version is found, fall back to legacy form.
+            // If no legacy form is found, this is clearly user fault and we throw exception.
+
+            while (true)
+            {
+                var formType = Type.GetType("TombEditor.Forms" + (_editor.Level.IsTombEngine() && !triedAlternateNamespace ? ".TombEngine" : "") + ".Form" + objectName);
+
+                if (formType != null)
+                {
+                    var form = Activator.CreateInstance(formType, args);
+                    if (form is DarkForm) return (DarkForm)form;
+                }
+
+                if (triedAlternateNamespace)
+                    throw new MissingMemberException("Object instance which was called with this function has no associated setup window.");
+
+                triedAlternateNamespace = true;
+            }
+        }
+
         public static void EditObject(ObjectInstance instance, IWin32Window owner)
         {
             if (instance is MoveableInstance)
@@ -832,7 +874,7 @@ namespace TombEditor
                     EditColor(owner, (MoveableInstance)instance);
                 else
                 {
-                    using (var formMoveable = new FormMoveable((MoveableInstance)instance))
+                    using (var formMoveable = GetObjectSetupWindow((MoveableInstance)instance))
                         if (formMoveable.ShowDialog(owner) != DialogResult.OK)
                             return;
                 }
@@ -847,7 +889,7 @@ namespace TombEditor
                     EditColor(owner, (StaticInstance)instance);
                 else if (_editor.Level.IsNG() || _editor.Level.IsTombEngine())
                 {
-                    using (var formStaticMesh = new FormStaticMesh((StaticInstance)instance))
+                    using (var formStaticMesh = GetObjectSetupWindow((StaticInstance)instance))
                         if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
                             return;
                 }
@@ -861,14 +903,14 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion > TRVersion.Game.TR3, "Flyby camera"))
                     return;
 
-                using (var formFlyby = new FormFlybyCamera((FlybyCameraInstance)instance))
+                using (var formFlyby = GetObjectSetupWindow((FlybyCameraInstance)instance))
                     if (formFlyby.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is CameraInstance)
             {
-                using (var formCamera = new FormCamera((CameraInstance)instance))
+                using (var formCamera = GetObjectSetupWindow((CameraInstance)instance))
                     if (formCamera.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -878,29 +920,29 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion <= TRVersion.Game.TR2, "Room sprite"))
                     return;
                     
-                using (var formSprite = new FormSprite((SpriteInstance)instance))
+                using (var formSprite = GetObjectSetupWindow((SpriteInstance)instance))
                     if (formSprite.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SinkInstance)
             {
-                using (var formSink = new FormSink((SinkInstance)instance))
+                using (var formSink = GetObjectSetupWindow((SinkInstance)instance))
                     if (formSink.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is SoundSourceInstance)
             {
-                using (var formSoundSource = new FormSoundSource((SoundSourceInstance)instance, _editor.Level.Settings.GlobalSoundMap))
+                using (var formSoundSource = GetObjectSetupWindow((SoundSourceInstance)instance))
                     if (formSoundSource.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }
             else if (instance is TriggerInstance)
             {
-                using (var formTrigger = new FormTrigger(_editor.Level, (TriggerInstance)instance, obj => _editor.ShowObject(obj),
-                                                         r => _editor.SelectRoom(r)))
+                using (var formTrigger = GetObjectSetupWindow((TriggerInstance)instance, _editor.Level, new Action<ObjectInstance>(obj => _editor.ShowObject(obj)),
+                                                         new Action<Room>(r => _editor.SelectRoom(r))))
                     if (formTrigger.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
@@ -927,8 +969,8 @@ namespace TombEditor
                 if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Trigger volume"))
                     return;
 
-                using (var formTrigger = new FormTriggerVolume((VolumeInstance)instance))
-                    if (formTrigger.ShowDialog(owner) != DialogResult.OK)
+                using (var formVolume = GetObjectSetupWindow((VolumeInstance)instance))
+                    if (formVolume.ShowDialog(owner) != DialogResult.OK)
                         return;
                 _editor.ObjectChange(instance, ObjectChangeType.Change);
             }

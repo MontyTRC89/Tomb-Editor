@@ -29,11 +29,11 @@ namespace TombLib.LevelData
                    ", Room = " + (Room?.ToString() ?? "NULL") +
                    ", X = " + SectorPosition.X +
                    ", Z = " + SectorPosition.Y +
-                   ", Ocb = " + Ocb + 
-                   (ScriptId.HasValue ? ", ScriptId = " + ScriptId.Value : "");
+                   ", Ocb = " + Ocb +
+                   GetScriptIDOrName(false);
         }
 
-        public string ShortName() => ItemType.ShortName() + (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") + (LuaName != null ? " <" + LuaName + ">" : "");
+        public string ShortName() => ItemType.ShortName() + GetScriptIDOrName();
 
         public static ItemInstance FromItemType(ItemType item)
         {

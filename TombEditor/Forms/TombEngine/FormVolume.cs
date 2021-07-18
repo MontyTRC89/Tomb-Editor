@@ -4,14 +4,14 @@ using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
-    public partial class FormTriggerVolume : DarkForm
+    public partial class FormVolume : DarkForm
     {
         private readonly VolumeInstance _instance;
         private readonly Editor _editor;
 
-        public FormTriggerVolume(VolumeInstance instance)
+        public FormVolume(VolumeInstance instance)
         {
             InitializeComponent();
 

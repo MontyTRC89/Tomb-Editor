@@ -128,10 +128,11 @@ namespace TombEditor.Forms
                 addFlybyCameraToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
-                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
-                addPrismVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
-                addSphereVolumeToolStripMenuItem.Visible = addBoxVolumeToolStripMenuItem.Visible;
-                toolStripMenuSeparator7.Visible = addBoxVolumeToolStripMenuItem.Visible;
+                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
+                addPrismVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
+                addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
+                toolStripMenuSeparator7.Visible = _editor.Level.IsTombEngine();
+                generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
             }
 
             // Clear autosave information

@@ -23,19 +23,6 @@ namespace TombEditor.Controls.ContextMenus
                     Items.Add(new ToolStripSeparator());
                 }
             }
-            else if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
-            {
-                if (targetObject == editor.SelectedObject && targetObject is IHasLuaName)
-                {
-                    var obj = (targetObject as IHasLuaName);
-
-                    Items.Add(new ToolStripMenuItem("(Lua Name = " + obj.LuaName + ")", null, (o, e) =>
-                    {
-                        //CommandHandler.GetCommand("AssignAndClipboardScriptId").Execute(new CommandArgs { Editor = editor, Window = owner });
-                    }));
-                    Items.Add(new ToolStripSeparator());
-                }
-            }
 
             if (!(targetObject is LightInstance ||  targetObject is GhostBlockInstance))
             { 

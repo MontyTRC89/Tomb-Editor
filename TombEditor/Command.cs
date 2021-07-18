@@ -1210,6 +1210,29 @@ namespace TombEditor
                 args.Editor.SendMessage("Script ID for selected object is " + selectedObj.ScriptId + ".\nCopied to clipboard.", PopupType.Info);
             });
 
+            AddCommand("GenerateObjectNames", "Generate Lua names for unnamed objects", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TombEngine, "Object naming"))
+                    return;
+
+                int count = 0;
+
+                foreach (PositionAndScriptBasedObjectInstance obj in args.Editor.Level.GetAllObjects().Where(o => o is PositionAndScriptBasedObjectInstance))
+                    if (string.IsNullOrEmpty(obj.LuaName))
+                    {
+                        obj.AllocateNewLuaName();
+                        count++;
+                    }
+
+                if (args.Editor.SelectedObject != null)
+                    args.Editor.ObjectChange(args.Editor.SelectedObject, ObjectChangeType.Change);
+
+                if (count > 0)
+                    args.Editor.SendMessage("Generated Lua names for " + count + " unnamed objects in level.", PopupType.Info);
+                else
+                    args.Editor.SendMessage("No unnamed objects were found in level. No names were generated.", PopupType.Info);
+            });
+
             AddCommand("SplitSectorObjectOnSelection", "Split sector based object on selection", CommandType.Objects, delegate (CommandArgs args)
             {
                 EditorActions.SplitSectorObjectOnSelection(args.Editor.SelectedObject as SectorBasedObjectInstance);

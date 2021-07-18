@@ -1,4 +1,4 @@
-﻿namespace TombEditor.Forms
+﻿namespace TombEditor.Forms.TombEngine
 {
     partial class FormCamera
     {
@@ -33,6 +33,8 @@
             this.ckFixed = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.nudMoveTimer = new DarkUI.Controls.DarkNumericUpDown();
+            this.tbLuaName = new DarkUI.Controls.DarkTextBox();
+            this.labelLuaName = new DarkUI.Controls.DarkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMoveTimer)).BeginInit();
             this.SuspendLayout();
             // 
@@ -41,7 +43,7 @@
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
             this.butCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.butCancel.Location = new System.Drawing.Point(124, 67);
+            this.butCancel.Location = new System.Drawing.Point(238, 105);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(80, 23);
             this.butCancel.TabIndex = 2;
@@ -53,7 +55,7 @@
             // 
             this.butOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butOk.Checked = false;
-            this.butOk.Location = new System.Drawing.Point(38, 67);
+            this.butOk.Location = new System.Drawing.Point(152, 105);
             this.butOk.Name = "butOk";
             this.butOk.Size = new System.Drawing.Size(80, 23);
             this.butOk.TabIndex = 1;
@@ -88,7 +90,7 @@
             0,
             0,
             65536});
-            this.nudMoveTimer.Location = new System.Drawing.Point(124, 12);
+            this.nudMoveTimer.Location = new System.Drawing.Point(238, 12);
             this.nudMoveTimer.LoopValues = false;
             this.nudMoveTimer.Maximum = new decimal(new int[] {
             31,
@@ -99,13 +101,34 @@
             this.nudMoveTimer.Size = new System.Drawing.Size(80, 22);
             this.nudMoveTimer.TabIndex = 8;
             // 
+            // tbLuaName
+            // 
+            this.tbLuaName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaName.Location = new System.Drawing.Point(88, 66);
+            this.tbLuaName.Name = "tbLuaName";
+            this.tbLuaName.Size = new System.Drawing.Size(230, 22);
+            this.tbLuaName.TabIndex = 19;
+            // 
+            // labelLuaName
+            // 
+            this.labelLuaName.AutoSize = true;
+            this.labelLuaName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.labelLuaName.Location = new System.Drawing.Point(7, 68);
+            this.labelLuaName.Name = "labelLuaName";
+            this.labelLuaName.Size = new System.Drawing.Size(75, 13);
+            this.labelLuaName.TabIndex = 20;
+            this.labelLuaName.Text = "Lua Name:";
+            // 
             // FormCamera
             // 
             this.AcceptButton = this.butOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
-            this.ClientSize = new System.Drawing.Size(212, 98);
+            this.ClientSize = new System.Drawing.Size(326, 136);
+            this.Controls.Add(this.tbLuaName);
+            this.Controls.Add(this.labelLuaName);
             this.Controls.Add(this.nudMoveTimer);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.butCancel);
@@ -131,5 +154,7 @@
         private DarkUI.Controls.DarkCheckBox ckFixed;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkNumericUpDown nudMoveTimer;
+        private DarkUI.Controls.DarkTextBox tbLuaName;
+        private DarkUI.Controls.DarkLabel labelLuaName;
     }
 }

@@ -6,9 +6,9 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
-    public partial class FormStaticMesh : DarkForm
+    public partial class FormStatic : DarkForm
     {
         private readonly StaticInstance _staticMesh;
         private short newOCB;
@@ -16,7 +16,7 @@ namespace TombEditor.Forms
         private bool locked;
         private readonly Editor _editor = Editor.Instance;
 
-        public FormStaticMesh(StaticInstance staticMesh)
+        public FormStatic(StaticInstance staticMesh)
         {
             _staticMesh = staticMesh;
             newOCB = _staticMesh.Ocb;
@@ -35,44 +35,25 @@ namespace TombEditor.Forms
             DecodeOCB();
             locked = false;
 
+            tbLuaName.Text = _staticMesh.LuaName;
+
             // Disable mesh-specific controls
             var canBeColored = _staticMesh.CanBeColored();
-            Size = new System.Drawing.Size(Size.Width, canBeColored ? 422 : 393);
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 451 : 422);
             lblColor.Visible = canBeColored;
             panelColor.Visible = canBeColored;
-
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
-            {
-                tbLuaName.Text = _staticMesh.LuaName;
-            }
-            else
-            {
-                labelLuaName.Visible = false;
-                tbLuaName.Visible = false;
-            }
         }
 
         private void butOK_Click(object sender, EventArgs e)
         {
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
-            {
-                if (!_staticMesh.TrySetLuaName(tbLuaName.Text))
-                {
-                    DarkMessageBox.Show(this, "The value of Lua Name is already taken by another object", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
+            if (!_staticMesh.TrySetLuaName(tbLuaName.Text, this))
+                return;
 
             if (ParseOCB())
             {
                 Editor.Instance.UndoManager.PushObjectPropertyChanged(_staticMesh);
                 
                 _staticMesh.Ocb = newOCB;
-
-                if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
-                {
-                    _staticMesh.LuaName = tbLuaName.Text;
-                }
 
                 DialogResult = DialogResult.OK;
                 Close();

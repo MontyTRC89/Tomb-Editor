@@ -1,11 +1,10 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows.Forms;
 using TombLib.Graphics;
 using TombLib.Utils;
-using TombLib.Wad;
+using TombLib.Wad.Catalog;
 
 namespace WadTool
 {
@@ -28,7 +27,7 @@ namespace WadTool
             Configuration.ConfigureWindow(this, _editor.Tool.Configuration);
         }
 
-        private bool FixAnimation(AnimationNode animation, bool fixEndFrame, bool fixNextAnim, bool fixNextFrame, bool fixStateChangeRanges, bool fixStateChangeNextAnim, bool fixStateChangeNextFrame)
+        private bool FixAnimation(AnimationNode animation, bool fixEndFrame, bool fixNextAnim, bool fixNextFrame, bool fixStateChangeRanges, bool fixStateChangeNextAnim, bool fixStateChangeNextFrame, bool fixName)
         {
             bool anyChange = false;
 
@@ -53,6 +52,12 @@ namespace WadTool
                 wadAnim.NextFrame > _editor.Animations[wadAnim.NextAnimation].WadAnimation.EndFrame)
             {
                 wadAnim.NextFrame = _editor.Animations[wadAnim.NextAnimation].WadAnimation.EndFrame;
+                anyChange = true;
+            }
+
+            if (fixName)
+            {
+                wadAnim.Name = TrCatalog.GetAnimationName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, (uint)animation.Index);
                 anyChange = true;
             }
 
@@ -112,7 +117,7 @@ namespace WadTool
                 {
                     undoList.Add(new AnimationUndoInstance(_editor, anim));
 
-                    if (FixAnimation(anim, cbEndFrame.Checked, cbNextAnim.Checked, cbNextFrame.Checked, cbSchRanges.Checked, cbSchNextAnim.Checked, cbSchNextFrame.Checked))
+                    if (FixAnimation(anim, cbEndFrame.Checked, cbNextAnim.Checked, cbNextFrame.Checked, cbSchRanges.Checked, cbSchNextAnim.Checked, cbSchNextFrame.Checked, cbFixName.Checked))
                         _editor.Tool.AnimationEditorAnimationChanged(anim, false);
                     else
                         undoList.RemoveAt(undoList.Count - 1);

@@ -6,7 +6,7 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using System.Linq;
 
-namespace TombEditor.Forms
+namespace TombEditor.Forms.TombEngine
 {
     public partial class FormMoveable : DarkForm
     {
@@ -32,9 +32,6 @@ namespace TombEditor.Forms
 
         private void FormObject_Load(object sender, EventArgs e)
         {
-            // Disable version-specific controls
-            tbOCB.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR3;
-
             oldColor = _movable.Color;
             cbBit1.Checked = (_movable.CodeBits & (1 << 0)) != 0;
             cbBit2.Checked = (_movable.CodeBits & (1 << 1)) != 0;
@@ -45,10 +42,11 @@ namespace TombEditor.Forms
             cbInvisible.Checked = _movable.Invisible;
             cbClearBody.Checked = _movable.ClearBody;
             tbOCB.Text = _movable.Ocb.ToString();
+            tbLuaName.Text = _movable.LuaName;
 
             // Disable mesh-specific controls
             var canBeColored = _movable.CanBeColored();
-            Size = new System.Drawing.Size(Size.Width, canBeColored ? 254 : 226);
+            Size = new System.Drawing.Size(Size.Width, canBeColored ? 284 : 257);
             lblColor.Visible = canBeColored;
             panelColor.Visible = canBeColored;
         }
@@ -61,6 +59,9 @@ namespace TombEditor.Forms
                 DarkMessageBox.Show(this, "The value of OCB field is not valid", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            if (!_movable.TrySetLuaName(tbLuaName.Text, this))
+                return;
 
             _editor.UndoManager.PushObjectPropertyChanged(_movable);
 

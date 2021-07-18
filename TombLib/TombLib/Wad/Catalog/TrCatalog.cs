@@ -318,7 +318,7 @@ namespace TombLib.Wad.Catalog
             
             if (entry.Name == null)
             {
-                var otherGames = Games.Where(g => g.Key != version.Native()).ToList();
+                var otherGames = Games.Where(g => g.Key <= version.Native()).ToList();
                 otherGames.Reverse();
 
                 foreach (var otherGame in otherGames)
@@ -343,7 +343,7 @@ namespace TombLib.Wad.Catalog
 
             if (entry.Name == null)
             {
-                var otherGames = Games.Where(g => g.Key != version.Native()).ToList();
+                var otherGames = Games.Where(g => g.Key <= version.Native()).ToList();
                 otherGames.Reverse();
 
                 foreach (var otherGame in otherGames)
@@ -367,7 +367,7 @@ namespace TombLib.Wad.Catalog
                 entry = game.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
 
             if (entry.Name == null)
-                foreach (var otherGame in Games.Where(g => g.Key != version.Native()))
+                foreach (var otherGame in Games.Where(g => g.Key <= version.Native()))
                 {
                     entry = otherGame.Value.States.FirstOrDefault(item => item.Item == objectId && item.Name.ToLower().Contains(stateName.ToLower()));
                     if (entry.Name != null) break;
@@ -388,7 +388,7 @@ namespace TombLib.Wad.Catalog
 
             if (value == int.MinValue)
             {
-                var otherGames = Games.Where(g => g.Key != version.Native()).ToList();
+                var otherGames = Games.Where(g => g.Key <= version.Native()).ToList();
                 otherGames.Reverse();
 
                 foreach (var otherGame in otherGames)

@@ -31,6 +31,7 @@
             this.cbSchNextAnim = new DarkUI.Controls.DarkCheckBox();
             this.cbSchNextFrame = new DarkUI.Controls.DarkCheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.cbFixName = new DarkUI.Controls.DarkCheckBox();
             this.SuspendLayout();
             // 
             // btCancel
@@ -38,7 +39,7 @@
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.Checked = false;
             this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(159, 194);
+            this.btCancel.Location = new System.Drawing.Point(159, 212);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(80, 23);
             this.btCancel.TabIndex = 50;
@@ -50,7 +51,7 @@
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOk.Checked = false;
             this.btOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btOk.Location = new System.Drawing.Point(73, 194);
+            this.btOk.Location = new System.Drawing.Point(73, 212);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(80, 23);
             this.btOk.TabIndex = 51;
@@ -133,11 +134,23 @@
             this.toolTip1.SetToolTip(this.cbSchNextFrame, "Clamp next frame to next animation\'s end frame for all state changes.\r\nThis may h" +
         "elp in cases when end frame was manually edited for next animation.");
             // 
+            // cbFixName
+            // 
+            this.cbFixName.AutoSize = true;
+            this.cbFixName.Location = new System.Drawing.Point(10, 181);
+            this.cbFixName.Name = "cbFixName";
+            this.cbFixName.Size = new System.Drawing.Size(194, 17);
+            this.cbFixName.TabIndex = 59;
+            this.cbFixName.Text = "Restore original animation name";
+            this.toolTip1.SetToolTip(this.cbFixName, "If object was imported from legacy wad with incorrect game version,\r\nthis feature" +
+        " will restore animation name according to current destination wad2 version.");
+            // 
             // FormAnimationFixer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(244, 222);
+            this.ClientSize = new System.Drawing.Size(244, 240);
+            this.Controls.Add(this.cbFixName);
             this.Controls.Add(this.cbSchNextFrame);
             this.Controls.Add(this.cbSchNextAnim);
             this.Controls.Add(this.cbSchRanges);
@@ -150,6 +163,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(260, 279);
             this.Name = "FormAnimationFixer";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -172,5 +186,6 @@
         private DarkUI.Controls.DarkCheckBox cbSchNextAnim;
         private DarkUI.Controls.DarkCheckBox cbSchNextFrame;
         private System.Windows.Forms.ToolTip toolTip1;
+        private DarkUI.Controls.DarkCheckBox cbFixName;
     }
 }

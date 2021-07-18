@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Windows.Forms;
 
 namespace TombLib.LevelData
 {
@@ -6,6 +6,6 @@ namespace TombLib.LevelData
     {
         string LuaName { get; set; }
         void AllocateNewLuaName();
-        bool TrySetLuaName(string newScriptId);
+        bool TrySetLuaName(string newScriptId, IWin32Window owner);
     }
 }

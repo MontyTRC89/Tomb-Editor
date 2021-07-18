@@ -2571,7 +2571,7 @@ namespace TombEditor.Controls
                             instance.RotationPositionMatrix * _viewProjection,
                             "Camera " + (instance.Fixed ? "(Locked)" : "") +
                             (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
-                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2597,7 +2597,7 @@ namespace TombEditor.Controls
                             instance.RotationPositionMatrix * _viewProjection,
                             "Flyby cam (" + instance.Sequence + ":" + instance.Number + ") " +
                             (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
-                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2643,7 +2643,7 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
                             (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
-                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -2668,7 +2668,7 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
                             "Sound source ID " + (instance.SoundId != -1 ? instance.SoundId + ": " + instance.SoundNameToDisplay : "No sound assigned yet") + 
-                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                             "\n" + GetObjectPositionString(instance.Room, instance)));
 
                         // Add the line height of the object
@@ -2696,7 +2696,7 @@ namespace TombEditor.Controls
                         textToDraw.Add(CreateTextTagForObject(
                             instance.RotationPositionMatrix * _viewProjection,
                             instance.ShortName() + "\nUnavailable " + instance.ItemType +
-                            (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                            (_editor.Level.IsTombEngine() ? " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) + BuildTriggeredByMessage(instance)));
 
                         // Add the line height of the object
@@ -3010,7 +3010,7 @@ namespace TombEditor.Controls
                                 (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG ?
                                 " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
                                 (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine ?
-                                " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                                " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(instance.Room, instance) +
                                 "\nRotation Y: " + Math.Round(instance.RotationY, 2) +
                                 (instance.Ocb == 0 ? "" : "\nOCB: " + instance.Ocb) +
@@ -3230,7 +3230,7 @@ namespace TombEditor.Controls
                                 instance.RotationPositionMatrix * _viewProjection,
                                 instance.ItemType.StaticId.ToString(_editor.Level.Settings.GameVersion) +
                                 (_editor.Level.IsNG() ? " [ID = " + (instance.ScriptId?.ToString() ?? "<None>") + "]" : "") +
-                                (_editor.Level.IsTombEngine() ? " [Name = " + (instance.LuaName != "" ? instance.LuaName : "<None>") + "]" : "") +
+                                (_editor.Level.IsTombEngine() ? " [Name = " + (!string.IsNullOrEmpty(instance.LuaName) ? instance.LuaName : "<None>") + "]" : "") +
                                 "\n" + GetObjectPositionString(_editor.SelectedRoom, instance) +
                                 "\n" + "Rotation Y: " + Math.Round(instance.RotationY, 2) +
                                 BuildTriggeredByMessage(instance)));
