@@ -1140,28 +1140,28 @@ namespace TombEditor
 
             AddCommand("AddBoxVolumeInSelectedArea", "Add box volume in selected area", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddBoxVolumeInSelectedArea(args.Window);
             });
 
             AddCommand("AddBoxVolume", "Add box volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Box);
             });
 
             AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Prism);
             });
 
             AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Sphere);
             });

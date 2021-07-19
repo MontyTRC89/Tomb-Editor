@@ -652,7 +652,7 @@ namespace TombEditor
 
         public static void AddVolume(VolumeShape shape)
         {
-            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                 return;
 
             switch (shape)
@@ -671,7 +671,7 @@ namespace TombEditor
 
         public static void AddBoxVolumeInSelectedArea(IWin32Window owner)
         {
-            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
                 return;
 
             if (!CheckForRoomAndBlockSelection(owner))
