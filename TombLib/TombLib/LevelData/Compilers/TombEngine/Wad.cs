@@ -762,7 +762,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
             // There is no other way of guessing it except looking if there is a specific object in any of wads.
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+            if (_level.IsNG)
             {
                 Action<int, int, int> AddRemappedNGSound = delegate (int moveableTypeToCheck, int originalId, int remappedId)
                 {

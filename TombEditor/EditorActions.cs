@@ -606,7 +606,7 @@ namespace TombEditor
                 trigger.TargetType = TriggerTargetType.Sink;
                 trigger.Target = @object;
             }
-            else if (@object is StaticInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
+            else if (@object is StaticInstance && _editor.Level.IsNG)
             {
                 trigger.TargetType = TriggerTargetType.FlipEffect;
                 trigger.Target = new TriggerParameterUshort(160);
@@ -652,7 +652,7 @@ namespace TombEditor
 
         public static void AddVolume(VolumeShape shape)
         {
-            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
+            if (!VersionCheck(_editor.Level.IsTombEngine, "Volume"))
                 return;
 
             switch (shape)
@@ -671,7 +671,7 @@ namespace TombEditor
 
         public static void AddBoxVolumeInSelectedArea(IWin32Window owner)
         {
-            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
+            if (!VersionCheck(_editor.Level.IsTombEngine, "Volume"))
                 return;
 
             if (!CheckForRoomAndBlockSelection(owner))
@@ -878,7 +878,7 @@ namespace TombEditor
 
             while (true)
             {
-                var formType = Type.GetType("TombEditor.Forms" + (_editor.Level.IsTombEngine() && !triedAlternateNamespace ? ".TombEngine" : "") + ".Form" + objectName);
+                var formType = Type.GetType("TombEditor.Forms" + (_editor.Level.IsTombEngine && !triedAlternateNamespace ? ".TombEngine" : "") + ".Form" + objectName);
 
                 if (formType != null)
                 {
@@ -912,9 +912,9 @@ namespace TombEditor
             {
                 // Use static editing dialog only for NG levels for now (bypass it if Ctrl/Alt key is pressed)
                 if (instance.CanBeColored() &&
-                    (!_editor.Level.IsNG() && !_editor.Level.IsTombEngine() || Control.ModifierKeys.HasFlag(Keys.Control)))
+                    (!_editor.Level.IsNG && !_editor.Level.IsTombEngine || Control.ModifierKeys.HasFlag(Keys.Control)))
                     EditColor(owner, (StaticInstance)instance);
-                else if (_editor.Level.IsNG() || _editor.Level.IsTombEngine())
+                else if (_editor.Level.IsNG || _editor.Level.IsTombEngine)
                 {
                     using (var formStaticMesh = GetObjectSetupWindow((StaticInstance)instance))
                         if (formStaticMesh.ShowDialog(owner) != DialogResult.OK)
@@ -993,7 +993,7 @@ namespace TombEditor
             }
             else if (instance is VolumeInstance)
             {
-                if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Trigger volume"))
+                if (!VersionCheck(_editor.Level.IsTombEngine, "Trigger volume"))
                     return;
 
                 using (var formVolume = GetObjectSetupWindow((VolumeInstance)instance))
@@ -1964,12 +1964,11 @@ namespace TombEditor
         private static void AllocateScriptIds(PositionBasedObjectInstance instance)
         {
             if (instance is IHasScriptID &&
-                (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                 _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG))
+                (_editor.Level.Settings.GameVersion == TRVersion.Game.TR4 || _editor.Level.IsNG))
             {
                 (instance as IHasScriptID).AllocateNewScriptId();
             }
-            else if (instance is IHasLuaName && _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            else if (instance is IHasLuaName && _editor.Level.IsTombEngine)
             {
                 (instance as IHasLuaName).AllocateNewLuaName();
             }
@@ -5343,8 +5342,7 @@ namespace TombEditor
 
         public static void AssignTriggerSounds(LevelSettings settings)
         {
-            bool isTR4 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                         _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+            bool isTR4 = _editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4;
 
             foreach (var room in _editor.Level.Rooms)
                 if (room != null)

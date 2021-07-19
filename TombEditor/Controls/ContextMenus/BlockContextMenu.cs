@@ -72,7 +72,7 @@ namespace TombEditor.Controls.ContextMenus
                 EditorActions.PlaceObject(targetRoom, targetBlock, new MemoInstance());
             }));
 
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            if (_editor.Level.IsTombEngine)
             {
                 Items.Add(new ToolStripMenuItem("Add box volume", Properties.Resources.objects_volume_box_16, (o, e) =>
                 {

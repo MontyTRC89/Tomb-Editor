@@ -474,11 +474,11 @@ namespace TombLib.LevelData
         public string GetScriptIDOrName(bool shortened = true)
         {
             if (shortened)
-                return (Room.Level.IsNG() ? (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") : "") +
-                       (Room.Level.IsTombEngine() ? (!string.IsNullOrEmpty(LuaName) ? " [" + LuaName + "]" : "") : "");
+                return (Room.Level.IsNG ? (ScriptId.HasValue ? " <" + ScriptId.Value + ">" : "") : "") +
+                       (Room.Level.IsTombEngine ? (!string.IsNullOrEmpty(LuaName) ? " [" + LuaName + "]" : "") : "");
             else
-                return (Room.Level.IsNG() ? (ScriptId.HasValue ? ", Script ID = " + ScriptId.Value : "") : "") +
-                       (Room.Level.IsTombEngine() ? (!string.IsNullOrEmpty(LuaName) ? ", Lua name = " + LuaName : "") : "");
+                return (Room.Level.IsNG ? (ScriptId.HasValue ? ", Script ID = " + ScriptId.Value : "") : "") +
+                       (Room.Level.IsTombEngine ? (!string.IsNullOrEmpty(LuaName) ? ", Lua name = " + LuaName : "") : "");
         }
 
     }

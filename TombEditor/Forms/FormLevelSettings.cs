@@ -635,7 +635,7 @@ namespace TombEditor.Forms
 
             // Hide version-specific controls
             // TRNG only
-            bool currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TRNG);
+            bool currentVersionToCheck = (_levelSettings.GameVersion == Game.TRNG);
             lblGameEnableQuickStartFeature2.Visible = currentVersionToCheck;
             panelScripts.Visible = currentVersionToCheck;
             if (selectedSoundsDataGridView.Columns.Count >= 7)
@@ -666,7 +666,7 @@ namespace TombEditor.Forms
             }
 
             // TR4 and TombEngine platforms
-            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == TRVersion.Game.TR4 || _levelSettings.GameVersion == TRVersion.Game.TombEngine);
+            currentVersionToCheck = (_levelSettings.GameVersion.Legacy() == Game.TR4 || _levelSettings.GameVersion == Game.TombEngine);
             GameEnableExtraBlendingModesCheckBox.Visible = currentVersionToCheck;
 
             // TR4 and above
@@ -1393,7 +1393,7 @@ namespace TombEditor.Forms
             string result = "";
             originalId = id;
 
-            if (_levelSettings.GameVersion == TRVersion.Game.TRNG)
+            if (_levelSettings.GameVersion == Game.TRNG)
             {
                 if (id < 370)
                 {

@@ -1140,28 +1140,28 @@ namespace TombEditor
 
             AddCommand("AddBoxVolumeInSelectedArea", "Add box volume in selected area", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
                     return;
                 EditorActions.AddBoxVolumeInSelectedArea(args.Window);
             });
 
             AddCommand("AddBoxVolume", "Add box volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Box);
             });
 
             AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Prism);
             });
 
             AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volume"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
                     return;
                 EditorActions.AddVolume(VolumeShape.Sphere);
             });
@@ -1219,7 +1219,7 @@ namespace TombEditor
 
             AddCommand("GenerateObjectNames", "Generate Lua names for unnamed objects", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion >= TRVersion.Game.TombEngine, "Object naming"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Object naming"))
                     return;
 
                 int count = 0;
@@ -2055,7 +2055,7 @@ namespace TombEditor
 
             AddCommand("MakeQuickItemGroup", "Make quick itemgroup", CommandType.Objects, delegate (CommandArgs args)
             {
-                if (!EditorActions.VersionCheck(args.Editor.Level.Settings.GameVersion == TRVersion.Game.TRNG, "Item grouping"))
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsNG, "Item grouping"))
                     return;
                 EditorActions.MakeQuickItemGroup(args.Window);
             });

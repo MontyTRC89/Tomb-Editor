@@ -179,7 +179,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.GameVersionChangedEvent)
             {
-                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
+                bool isT5M = _editor.Level.IsTombEngine;
 
                 butAddBoxVolume.Enabled = isT5M;
                 butAddSphereVolume.Enabled = isT5M;

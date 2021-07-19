@@ -440,7 +440,7 @@ namespace TombLib.LevelData.IO
                 {
                     if (o is MoveableInstance)
                     {
-                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        if (level.IsTombEngine)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectMovableTombEngine, LEB128.MaximumSize2Byte))
                             {
@@ -478,7 +478,7 @@ namespace TombLib.LevelData.IO
                     }
                     else if (o is StaticInstance)
                     {
-                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        if (level.IsTombEngine)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectStaticTombEngine, LEB128.MaximumSize2Byte))
                             {
@@ -506,12 +506,11 @@ namespace TombLib.LevelData.IO
                                 chunkIO.Raw.Write(instance.Color);
                                 chunkIO.Raw.Write(instance.Ocb);
                             }
-
                         }
                     }
                     else if (o is CameraInstance)
                     {
-                        if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        if (_level.IsTombEngine)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectCameraTombEngine, LEB128.MaximumSize1Byte))
                             {
@@ -573,7 +572,7 @@ namespace TombLib.LevelData.IO
                         }
                     else if (o is SinkInstance)
                     {
-                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        if (level.IsTombEngine)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSinkTombEngine, LEB128.MaximumSize1Byte))
                             {
@@ -599,7 +598,7 @@ namespace TombLib.LevelData.IO
                     }
                     else if (o is SoundSourceInstance)
                     {
-                        if (level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                        if (level.IsTombEngine)
                         {
                             using (var chunk = chunkIO.WriteChunk(Prj2Chunks.ObjectSoundSourceTombEngine, LEB128.MaximumSize1Byte))
                             {

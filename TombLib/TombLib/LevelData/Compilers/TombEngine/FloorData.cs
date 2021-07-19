@@ -523,10 +523,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Do some warnings in case user switches targets and some incompatible triggers are left behind
 
-                if (_level.Settings.GameVersion != TRVersion.Game.TRNG && setupTrigger.TriggerType == TriggerType.ConditionNg)
+                if (!_level.IsNG && setupTrigger.TriggerType == TriggerType.ConditionNg)
                     _progressReporter.ReportWarn("Level uses 'Condition' trigger type, which is not supported in this game engine.");
 
-                if (_level.Settings.GameVersion == TRVersion.Game.TRNG && setupTrigger.TriggerType == TriggerType.Monkey)
+                if (_level.IsNG && setupTrigger.TriggerType == TriggerType.Monkey)
                     _progressReporter.ReportWarn("Level uses 'Monkey' trigger type, which was replaced with 'Condition' in this game engine.");
 
                 if ((_level.Settings.GameVersion != TRVersion.Game.TR5) &&
@@ -534,7 +534,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     _progressReporter.ReportWarn("Level uses trigger type '" + setupTrigger.TriggerType + "', which is not supported in this game engine.");
 
                 ushort triggerSetup;
-                if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+                if (_level.IsNG)
                 {
                     // NG flipeffects store timer and extra in additional ushort
                     if (setupTrigger.TargetType == TriggerTargetType.FlipEffect && (setupTrigger.Target as TriggerParameterUshort)?.Key > 46)
@@ -627,7 +627,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             outFloorData.Add(trigger2);
 
                             // TRNG stores flipeffect timer as an extra ushort
-                            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+                            if (_level.IsNG)
                             {
                                 trigger3 = GetTriggerRealTimer(trigger, 0xffff);
                                 outFloorData.Add(trigger3);
@@ -641,7 +641,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             break;
                         case TriggerTargetType.ActionNg:
                             // Trigger for action
-                            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+                            if (_level.IsNG)
                             {
                                 trigger2 = (ushort)(GetTriggerParameter(trigger.Target, trigger, 0x3ff) | (11 << 10));
                                 outFloorData.Add(trigger2);

@@ -324,7 +324,7 @@ namespace TombLib.LevelData.Compilers
                             WadKeyFrameRotation.ToTrAngle(angle, unpaddedFrame,
                                 _level.Settings.GameVersion == TRVersion.Game.TR1,
                                 _level.Settings.GameVersion == TRVersion.Game.TR4 ||
-                                _level.Settings.GameVersion == TRVersion.Game.TRNG ||
+                                _level.IsNG ||
                                 _level.Settings.GameVersion == TRVersion.Game.TR5);
                     }
 
@@ -787,7 +787,7 @@ namespace TombLib.LevelData.Compilers
             // HACK: TRNG for some reason remaps certain legacy TR object sounds into extended soundmap array.
             // There is no other way of guessing it except looking if there is a specific object in any of wads.
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+            if (_level.IsNG)
             {
                 Action<int, int, int> AddRemappedNGSound = delegate (int moveableTypeToCheck, int originalId, int remappedId)
                 {
@@ -819,7 +819,7 @@ namespace TombLib.LevelData.Compilers
             }
 
             // Step 3: create the sound map
-            if (_level.Settings.GameVersion == TRVersion.Game.TRNG)
+            if (_level.IsNG)
                 _soundMapSize = _limits[Limit.NG_SoundMapSize];
             else
                 _soundMapSize = _limits[Limit.SoundMapSize];
@@ -854,7 +854,7 @@ namespace TombLib.LevelData.Compilers
             if (_level.Settings.GameVersion > TRVersion.Game.TR3)
             {
                 // In TRNG and TombEngine NumDemoData is used as sound map size
-                writer.Write((ushort)(_level.Settings.GameVersion == TRVersion.Game.TRNG ? _soundMapSize : 0));
+                writer.Write((ushort)(_level.IsNG ? _soundMapSize : 0));
             }
 
             using (var ms = new MemoryStream())

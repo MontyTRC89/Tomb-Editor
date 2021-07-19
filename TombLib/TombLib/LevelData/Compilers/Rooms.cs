@@ -198,7 +198,7 @@ namespace TombLib.LevelData.Compilers
             bool isTR2  = room.Level.Settings.GameVersion == TRVersion.Game.TR2;
             bool isTR23 = isTR2 || room.Level.Settings.GameVersion == TRVersion.Game.TR3;
             bool isNL   = room.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR4;
-            bool isNG   = room.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+            bool isNG   = room.Level.IsNG;
 
             // Room flags
             if (room.Properties.FlagHorizon)

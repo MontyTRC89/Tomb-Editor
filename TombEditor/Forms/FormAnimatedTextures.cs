@@ -110,7 +110,7 @@ namespace TombEditor.Forms
                         subsection._sourceTexCoord3, subsection._destinationSize).ToBitmap();
                 });
 
-            _isNg = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+            _isNg = _editor.Level.IsNG;
 
             // Set window property handlers
             Configuration.ConfigureWindow(this, _editor.Configuration);
@@ -331,7 +331,7 @@ namespace TombEditor.Forms
                 foreach (AnimatedTextureFrame frame in currentSet.Frames)
                     frameCount += frame.Repeat;
 
-            if (tooManyFramesWarning.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG && frameCount > _maxLegacyFrames)
+            if (tooManyFramesWarning.Visible = _editor.Level.IsNG && frameCount > _maxLegacyFrames)
                 toolTip.SetToolTip(tooManyFramesWarning, "This animation uses " + frameCount + " frames which is more than " + _maxLegacyFrames + "!\nThis will cause crash in TRNG!");
 
             comboEffect.SelectedItem = selectedSet.AnimationType;

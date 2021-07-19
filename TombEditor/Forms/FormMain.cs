@@ -126,13 +126,14 @@ namespace TombEditor.Forms
             {
                 addSpriteToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
                 addFlybyCameraToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
-                makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
 
-                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
-                addPrismVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
-                addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
-                toolStripMenuSeparator7.Visible = _editor.Level.IsTombEngine();
-                generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine();
+                makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.IsNG;
+
+                addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                addPrismVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                toolStripMenuSeparator7.Visible = _editor.Level.IsTombEngine;
+                generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
             }
 
             // Clear autosave information
@@ -172,8 +173,8 @@ namespace TombEditor.Forms
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.GameVersionChangedEvent)
             {
-                bool isNG  = _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
-                bool isT5M = _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine;
+                bool isNG  = _editor.Level.IsNG;
+                bool isT5M = _editor.Level.IsTombEngine;
 
                 addSphereVolumeToolStripMenuItem.Enabled    = isT5M;
                 addPrismVolumeToolStripMenuItem.Enabled     = isT5M;

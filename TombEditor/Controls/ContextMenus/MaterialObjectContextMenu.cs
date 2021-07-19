@@ -8,7 +8,7 @@ namespace TombEditor.Controls.ContextMenus
         public MaterialObjectContextMenu(Editor editor, IWin32Window owner, ObjectInstance targetObject)
             : base(editor, owner)
         {
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
+            if (_editor.Level.IsNG)
             {
                 if (targetObject == editor.SelectedObject && targetObject is IHasScriptID)
                 {

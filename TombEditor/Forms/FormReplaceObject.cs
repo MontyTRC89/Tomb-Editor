@@ -147,7 +147,7 @@ namespace TombEditor.Forms
 
             if (instance is MoveableInstance)
                 result += " (" + instance.SecondaryAttribDesc + ": " + ((MoveableInstance)instance).Ocb + ")";
-            else if (instance is StaticInstance && _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
+            else if (instance is StaticInstance && _editor.Level.IsNG)
                 result += " (" + instance.SecondaryAttribDesc + ": " + ((StaticInstance)instance).Ocb + ")";
             else if (instance is SinkInstance)
                 result += " (" + instance.PrimaryAttribDesc + ": " + (((SinkInstance)instance).Strength + 1) + ")";

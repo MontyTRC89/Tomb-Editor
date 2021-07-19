@@ -114,7 +114,7 @@ namespace TombEditor.ToolWindows
                 obj is Editor.GameVersionChangedEvent ||
                 obj is Editor.LevelChangedEvent)
             {
-                bool isTR4orNG = _editor.Level.Settings.GameVersion == TRVersion.Game.TR4 || _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG;
+                bool isTR4orNG = _editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4;
                 bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
                 bool isTR4or5 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
@@ -224,11 +224,11 @@ namespace TombEditor.ToolWindows
             comboRoomType.Items.Add("Water");
 
             if (_editor.Level.Settings.GameVersion == TRVersion.Game.TR3 ||
-                _editor.Level.Settings.GameVersion == TRVersion.Game.TRNG ||
-                _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine)
+                _editor.Level.IsNG ||
+                _editor.Level.IsTombEngine)
                 comboRoomType.Items.Add("Quicksand");
 
-            if (_editor.Level.Settings.GameVersion == TRVersion.Game.TRNG)
+            if (_editor.Level.IsNG)
                 _NGRoomTypes.ForEach(i => comboRoomType.Items.Add(i));
 
             ReadRoomType();

@@ -155,7 +155,7 @@ namespace TombEditor.ToolWindows
             // For TR4, TRNG and TombEngine we can add all types (if extra blending modes are enabled)
             if ((_editor.Level.Settings.GameEnableExtraBlendingModes ?? false) &&
                (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
-                _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine))
+                _editor.Level.IsTombEngine))
             {
                 _blendingModeDescriptions.ForEach(item => cmbBlending.Items.Add(item));
             }

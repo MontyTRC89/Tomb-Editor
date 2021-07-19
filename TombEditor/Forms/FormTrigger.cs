@@ -45,7 +45,7 @@ namespace TombEditor.Forms
             this.LockHeight();
             this.butOK.Select();
 
-            if (_level.Settings.GameVersion == TRVersion.Game.TombEngine)
+            if (_level.IsTombEngine)
                 Text = "Legacy trigger editor";
             else
                 Text = "Trigger editor";
@@ -214,8 +214,8 @@ namespace TombEditor.Forms
 
         private void UpdateExportToTrigger()
         {
-            scriptExportPanel.Visible = _level.Settings.GameVersion == TRVersion.Game.TRNG;
-            if (_level.Settings.GameVersion != TRVersion.Game.TRNG)
+            scriptExportPanel.Visible = _level.IsNG;
+            if (!_level.IsNG)
                 return;
 
             try
