@@ -652,23 +652,41 @@ namespace TombEditor
 
         public static void AddVolume(VolumeShape shape)
         {
-            if (_editor.Level.Settings.GameVersion != TRVersion.Game.TombEngine)
-                _editor.SendMessage("Adding volumes isn't possible for this game version. Switch version to TombEngine.", PopupType.Info);
-            else
+            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+                return;
+
+            switch (shape)
             {
-                switch (shape)
-                {
-                    case VolumeShape.Box:
-                        _editor.Action = new EditorActionPlace(false, (l, r) => new BoxVolumeInstance());
-                        break;
-                    case VolumeShape.Prism:
-                        _editor.Action = new EditorActionPlace(false, (l, r) => new PrismVolumeInstance());
-                        break;
-                    case VolumeShape.Sphere:
-                        _editor.Action = new EditorActionPlace(false, (l, r) => new SphereVolumeInstance());
-                        break;
-                }
+                case VolumeShape.Box:
+                    _editor.Action = new EditorActionPlace(false, (l, r) => new BoxVolumeInstance());
+                    break;
+                case VolumeShape.Prism:
+                    _editor.Action = new EditorActionPlace(false, (l, r) => new PrismVolumeInstance());
+                    break;
+                case VolumeShape.Sphere:
+                    _editor.Action = new EditorActionPlace(false, (l, r) => new SphereVolumeInstance());
+                    break;
             }
+        }
+
+        public static void AddBoxVolumeInSelectedArea(IWin32Window owner)
+        {
+            if (!VersionCheck(_editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine, "Volumes"))
+                return;
+
+            if (!CheckForRoomAndBlockSelection(owner))
+                return;
+
+            var box = new BoxVolumeInstance()
+            {
+                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.WorldUnit, Level.WorldUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.WorldUnit)
+            };
+
+            var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
+            var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
+            PlaceObjectWithoutUpdate(_editor.SelectedRoom, localCenter, box);
+            _editor.UndoManager.PushObjectCreated(box);
+            AllocateScriptIds(box);
         }
 
         public static Vector3 GetMovementPrecision(Keys modifierKeys)
@@ -1980,9 +1998,12 @@ namespace TombEditor
 			}
 		}
 
-		public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance)
+        public static void PlaceObjectWithoutUpdate(Room room, VectorInt2 pos, PositionBasedObjectInstance instance) =>
+            PlaceObjectWithoutUpdate(room, new Vector2(pos.X, pos.Y), instance);
+
+        public static void PlaceObjectWithoutUpdate(Room room, Vector2 pos, PositionBasedObjectInstance instance)
         {
-            Block block = room.GetBlock(pos);
+            Block block = room.GetBlock(new VectorInt2((int)pos.X, (int)pos.Y));
             int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
 
             instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
