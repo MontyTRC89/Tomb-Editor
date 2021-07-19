@@ -679,8 +679,17 @@ namespace TombEditor
 
             var box = new BoxVolumeInstance()
             {
-                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * 1024.0f, 1024.0f, (_editor.SelectedSectors.Area.Size.Y + 1) * 1024.0f)
+                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * 1024.0f, 
+                1024.0f, (_editor.SelectedSectors.Area.Size.Y + 1) * 1024.0f)
             };
+
+
+            // Display form
+            using (var formVolume = GetObjectSetupWindow(box))
+            {
+                if (formVolume.ShowDialog(owner) != DialogResult.OK)
+                    return;
+            }
 
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
             var localCenter = new Vector2(overallArea.X, overallArea.Y) / 2.0f;
