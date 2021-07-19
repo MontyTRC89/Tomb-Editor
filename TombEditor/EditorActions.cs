@@ -679,8 +679,8 @@ namespace TombEditor
 
             var box = new BoxVolumeInstance()
             {
-                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * 1024.0f, 
-                1024.0f, (_editor.SelectedSectors.Area.Size.Y + 1) * 1024.0f)
+                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.WorldUnit,
+                Level.WorldUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.WorldUnit)
             };
 
 
@@ -760,8 +760,8 @@ namespace TombEditor
             // Limit movement area
             if (!canGoOutsideRoom)
             {
-                float x = (float)Math.Floor(pos.X / 1024.0f);
-                float z = (float)Math.Floor(pos.Z / 1024.0f);
+                float x = (float)Math.Floor(pos.X / Level.WorldUnit);
+                float z = (float)Math.Floor(pos.Z / Level.WorldUnit);
 
                 if (x < 0.0f || x > instance.Room.NumXSectors - 1 ||
                     z < 0.0f || z > instance.Room.NumZSectors - 1)
@@ -2015,7 +2015,7 @@ namespace TombEditor
             Block block = room.GetBlock(new VectorInt2((int)pos.X, (int)pos.Y));
             int y = (block.Floor.XnZp + block.Floor.XpZp + block.Floor.XpZn + block.Floor.XnZn) / 4;
 
-            instance.Position = new Vector3(pos.X * 1024 + 512, y * 256, pos.Y * 1024 + 512);
+            instance.Position = new Vector3(pos.X * Level.WorldUnit + Level.HalfWorldUnit, y * Level.QuarterWorldUnit, pos.Y * Level.WorldUnit + Level.HalfWorldUnit);
             room.AddObject(_editor.Level, instance);
             if (instance is LightInstance)
             {

@@ -13,8 +13,13 @@ namespace TombLib.LevelData
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
+        public const float WorldUnit = 1024.0f;
+        public const float HalfWorldUnit = WorldUnit / 2.0f;
+        public const float QuarterWorldUnit = HalfWorldUnit / 2.0f;
+
         public const short MaxRecommendedSectorCoord = 100;
         public const short MaxNumberOfRooms = 1024;
+
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
         public LevelSettings Settings { get; private set; } = new LevelSettings { SoundSystem = SoundSystem.Xml };
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
@@ -230,7 +235,7 @@ namespace TombLib.LevelData
         {
             roomsToRotate = roomsToRotate.SelectMany(room => room.Versions).Distinct();
             Room[] oldRooms = roomsToRotate.ToArray();
-            var worldCenter = new VectorInt3(center.X, 0, center.Y) * 1024;
+            var worldCenter = new VectorInt3(center.X, 0, center.Y) * (int)WorldUnit;
 
             // Copy rooms and sectors
             var newRooms = new Room[oldRooms.Length];

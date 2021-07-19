@@ -157,9 +157,9 @@ namespace TombLib.GeometryIO
                     {
                         // Make room center pivot if we're in single-room export mode
                         offset = -room.GetLocalCenter();
-                        int x = (int)-offset.X / 1024;
-                        int z = (int)-offset.Z / 1024;
-                        offset.Y = -room.GetLowestCorner(new RectangleInt2(x, z, x, z)) * 256;
+                        int x = (int)-offset.X / (int)Level.WorldUnit;
+                        int z = (int)-offset.Z / (int)Level.WorldUnit;
+                        offset.Y = -room.GetLowestCorner(new RectangleInt2(x, z, x, z)) * Level.QuarterWorldUnit;
                     }
 
                     int index = level.Rooms.ReferenceIndexOf(room);

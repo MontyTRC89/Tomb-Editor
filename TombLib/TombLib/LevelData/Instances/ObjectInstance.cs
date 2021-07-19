@@ -237,8 +237,8 @@ namespace TombLib.LevelData
 
         public VectorInt2 SectorPosition
         {
-            get { return new VectorInt2((int)(Position.X / 1024.0f), (int)(Position.Z / 1024.0f)); }
-            set { Position = new Vector3(value.X * 1024.0f, Position.Y, value.Y * 1024.0f); }
+            get { return new VectorInt2((int)(Position.X / Level.WorldUnit), (int)(Position.Z / Level.WorldUnit)); }
+            set { Position = new Vector3(value.X * Level.WorldUnit, Position.Y, value.Y * Level.WorldUnit); }
         }
 
         // All object matrices are precached on any transform, which allows to save some CPU time
@@ -335,13 +335,13 @@ namespace TombLib.LevelData
 
         public Rectangle2 GetViewportRect(RectangleInt2 bounds, Vector3 camPos, Matrix4x4 camViewProjection, Size viewportSize, out float depth)
         {
-            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * 1024.0f;
+            var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * Level.WorldUnit;
             var distance = Vector3.Distance(Position + Room.WorldPos, camPos);
-            var scale = 2048.0f / (distance != 0 ? distance : 1.0f);
+            var scale = (Level.WorldUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
             var pos = (WorldPositionMatrix * camViewProjection).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
-            var start = scale * new Vector2(bounds.Start.X / heightRatio, bounds.Start.Y / 1024.0f);
-            var end = scale * new Vector2(bounds.End.X / heightRatio, bounds.End.Y / 1024.0f);
+            var start = scale * new Vector2(bounds.Start.X / heightRatio, bounds.Start.Y / Level.WorldUnit);
+            var end = scale * new Vector2(bounds.End.X / heightRatio, bounds.End.Y / Level.WorldUnit);
 
             depth = pos.Z;
             return new Rectangle2(screenPos - end, screenPos - start);
@@ -350,7 +350,7 @@ namespace TombLib.LevelData
         public override void Transform(RectTransformation transformation, VectorInt2 oldRoomSize)
         {
             base.Transform(transformation, oldRoomSize);
-            Position = transformation.TransformVec3(Position, oldRoomSize.X * 1024.0f, oldRoomSize.Y * 1024.0f);
+            Position = transformation.TransformVec3(Position, oldRoomSize.X * Level.WorldUnit, oldRoomSize.Y * Level.WorldUnit);
         }
     }
 

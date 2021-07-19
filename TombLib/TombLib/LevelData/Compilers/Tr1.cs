@@ -173,10 +173,10 @@ namespace TombLib.LevelData.Compilers
                 writer.Write((uint)_boxes.Length);
                 for (var i = 0; i < _boxes.Length; i++)
                 {
-                    writer.Write(_boxes[i].Zmin * 1024);
-                    writer.Write(_boxes[i].Zmax * 1024);
-                    writer.Write(_boxes[i].Xmin * 1024);
-                    writer.Write(_boxes[i].Xmax * 1024);
+                    writer.Write(_boxes[i].Zmin * (int)Level.WorldUnit);
+                    writer.Write(_boxes[i].Zmax * (int)Level.WorldUnit);
+                    writer.Write(_boxes[i].Xmin * (int)Level.WorldUnit);
+                    writer.Write(_boxes[i].Xmax * (int)Level.WorldUnit);
                     writer.Write(_boxes[i].TrueFloor);
                     writer.Write(_boxes[i].OverlapIndex);
                 }

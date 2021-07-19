@@ -566,8 +566,8 @@ namespace TombLib.LevelData.IO
                                 {
                                     Position = position,
                                     Color = new Vector3(lightR / 128.0f, lightG / 128.0f, lightB / 128.0f),
-                                    InnerRange = lightIn / 1024.0f,
-                                    OuterRange = lightOut / 1024.0f,
+                                    InnerRange = lightIn  / Level.WorldUnit,
+                                    OuterRange = lightOut / Level.WorldUnit,
                                     Intensity = lightIntensity / 8192.0f
                                 };
 
@@ -582,8 +582,8 @@ namespace TombLib.LevelData.IO
                                 // Spot light's have the inner and outer range swapped with angle in winroomedit
                                 if (lightType == LightType.Spot)
                                 {
-                                    light.InnerRange = lightLen / 1024.0f;
-                                    light.OuterRange = lightCut / 1024.0f;
+                                    light.InnerRange = lightLen / Level.WorldUnit;
+                                    light.OuterRange = lightCut / Level.WorldUnit;
                                     light.OuterAngle = lightOut;
                                     light.InnerAngle = lightIn;
                                 }
@@ -1411,7 +1411,7 @@ namespace TombLib.LevelData.IO
                                 Invisible = currentObj.Invisible,
                                 ClearBody = currentObj.ClearBody,
                                 WadObjectId = new WadMoveableId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.QuarterWorldUnit,
                                 Ocb = currentObj.Ocb,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color
@@ -1424,7 +1424,7 @@ namespace TombLib.LevelData.IO
                             {
                                 ScriptId = currentObj.ScriptId,
                                 WadObjectId = new WadStaticId(index.Value),
-                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * 256.0f,
+                                Position = currentObj.Position - Vector3.UnitY * level.Rooms[i].Position.Y * Level.QuarterWorldUnit,
                                 RotationY = currentObj.RotationY,
                                 Color = currentObj.Color,
                                 Ocb = unchecked((short)currentObj.Ocb)

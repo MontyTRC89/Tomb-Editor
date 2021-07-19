@@ -9,6 +9,7 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
+using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
@@ -587,7 +588,7 @@ namespace WadTool.Controls
                         continue;
 
                     newShade += dot * light.Intensity * (1.0f - (light.Position - p).Length() /
-                                (light.Radius * 1024.0f));
+                                (light.Radius * Level.WorldUnit));
                 }
 
                 Static.Mesh.VerticesColors.Add(new Vector3(Math.Min(newShade, 1.0f)));

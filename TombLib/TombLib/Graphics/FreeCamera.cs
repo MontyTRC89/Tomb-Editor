@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+using TombLib.LevelData;
 
 namespace TombLib.Graphics
 {
@@ -57,7 +54,7 @@ namespace TombLib.Graphics
             Vector3 right = MathC.HomogenousTransform(Vector3.UnitX, rotation);
             Vector3 up = Vector3.Cross(look, right);
 
-            Target = Position + 1024.0f * look;
+            Target = Position + Level.WorldUnit * look;
 
             Matrix4x4 View = MathC.Matrix4x4CreateLookAtLH(Position, Target, up);
 

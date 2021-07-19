@@ -6,7 +6,7 @@ namespace TombLib.Graphics
     public class Frustum
     {
         // Divisor used for position to keep frustum culling in the distance stable
-        private const float FRUSTUM_DIVISOR = 1024.0f; 
+        private const float _frustum_divisor = 1024.0f; 
 
         private BoundingFrustum _frustum;
         private FrustumCameraParams? _frustumParams = null;
@@ -14,8 +14,8 @@ namespace TombLib.Graphics
         public void Update(Camera camera, Size viewportSize)
         {
             // Pre-divide the position to make them small
-            var pos = camera.GetPosition() / FRUSTUM_DIVISOR;
-            var target = camera.Target / FRUSTUM_DIVISOR;
+            var pos = camera.GetPosition() / _frustum_divisor;
+            var target = camera.Target / _frustum_divisor;
             var dir = System.Numerics.Vector3.Normalize(target - pos);
 
             //Extract the up vector from the second column of the rotation matrix
@@ -28,8 +28,8 @@ namespace TombLib.Graphics
                 LookAtDir = dir.ToSharpDX(),
                 UpDir = up.ToSharpDX(),
                 AspectRatio = viewportSize.Width / (float)viewportSize.Height,
-                ZFar = FRUSTUM_DIVISOR * 200,
-                ZNear = 1 / FRUSTUM_DIVISOR,
+                ZFar = _frustum_divisor * 200,
+                ZNear = 1 / _frustum_divisor,
 
                 // Blow up FOV a bit for cases when out-of-bounds objects are used
                 FOV = camera.FieldOfView * 1.2f, 
@@ -48,8 +48,8 @@ namespace TombLib.Graphics
 
         public bool Contains(BoundingBox box)
         {
-            var min = box.Minimum.ToSharpDX() / FRUSTUM_DIVISOR;
-            var max = box.Maximum.ToSharpDX() / FRUSTUM_DIVISOR;
+            var min = box.Minimum.ToSharpDX() / _frustum_divisor;
+            var max = box.Maximum.ToSharpDX() / _frustum_divisor;
             var sharpBox = new SharpDX.BoundingBox(min, max);
             var contains = _frustum.Contains(ref sharpBox);
             return (contains == ContainmentType.Contains || contains == ContainmentType.Intersects);
@@ -57,15 +57,15 @@ namespace TombLib.Graphics
 
         public bool Contains(System.Numerics.Vector3 point)
         {
-            var vec = point.ToSharpDX() / FRUSTUM_DIVISOR;
+            var vec = point.ToSharpDX() / _frustum_divisor;
             var contains = _frustum.Contains(ref vec);
             return (contains == ContainmentType.Contains || contains == ContainmentType.Intersects);
         }
 
         public bool Contains(BoundingSphere sphere)
         {
-            var vec = sphere.Center.ToSharpDX() / FRUSTUM_DIVISOR;
-            var sharpSphere = new SharpDX.BoundingSphere(vec, sphere.Radius / FRUSTUM_DIVISOR);
+            var vec = sphere.Center.ToSharpDX() / _frustum_divisor;
+            var sharpSphere = new SharpDX.BoundingSphere(vec, sphere.Radius / _frustum_divisor);
             var contains = _frustum.Contains(ref sharpSphere);
             return (contains == ContainmentType.Contains || contains == ContainmentType.Intersects);
         }

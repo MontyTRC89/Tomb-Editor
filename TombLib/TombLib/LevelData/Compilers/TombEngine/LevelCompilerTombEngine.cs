@@ -225,8 +225,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var instance in _sinkTable.Keys)
             {
-                int xSector = (int)Math.Floor(instance.Position.X / 1024);
-                int zSector = (int)Math.Floor(instance.Position.Z / 1024);
+                int xSector = (int)Math.Floor(instance.Position.X / Level.WorldUnit);
+                int zSector = (int)Math.Floor(instance.Position.Z / Level.WorldUnit);
 
                 var tempRoom = _tempRooms[instance.Room];
                 Vector3 position = instance.Room.WorldPos + instance.Position;
@@ -262,9 +262,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     Sequence = (byte)instance.Sequence,
                     Index = (byte)instance.Number,
                     Flags = instance.Flags,
-                    DirectionX = (int)Math.Round(position.X + 1024 * direction.X),
-                    DirectionY = (int)-Math.Round(position.Y + 1024 * direction.Y),
-                    DirectionZ = (int)Math.Round(position.Z + 1024 * direction.Z),
+                    DirectionX = (int) Math.Round(position.X + Level.WorldUnit * direction.X),
+                    DirectionY = (int)-Math.Round(position.Y + Level.WorldUnit * direction.Y),
+                    DirectionZ = (int) Math.Round(position.Z + Level.WorldUnit * direction.Z),
                 });
             }
             _flyByCameras.Sort(new ComparerFlyBy());
@@ -382,7 +382,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
         private short GetMostDownFloor(Room room, int x, int z)
         {
             FindBottomFloor(ref room, ref x, ref z);
-            return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * 256);
+            return (short)(_tempRooms[room].AuxSectors[x, z].LowestFloor * (short)Level.QuarterWorldUnit);
         }
 
         private bool FindMonkeyFloor(Room room, int x, int z)

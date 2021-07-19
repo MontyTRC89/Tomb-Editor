@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TombLib.LevelData;
 
 namespace TombLib.GeometryIO
 {
@@ -18,7 +19,7 @@ namespace TombLib.GeometryIO
                 Settings = new IOGeometrySettings
                 {
                     Export = true,
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                     FlipUV_V = true
                 }
             });
@@ -42,7 +43,7 @@ namespace TombLib.GeometryIO
                 Name = "Normal scale to TR scale",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                 }
             });
 
@@ -67,7 +68,7 @@ namespace TombLib.GeometryIO
                 Name = "Metasequoia MQO Scale 1024",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                     FlipZ = true,
                     InvertFaces = false,
                     FlipUV_V = false,
@@ -82,7 +83,7 @@ namespace TombLib.GeometryIO
                 Name = "Metasequoia MQO Scale 1/1024",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1.0f / 1024.0f,
+                    Scale = 1.0f / Level.WorldUnit,
                     FlipZ = true,
                     InvertFaces = false,
                     FlipUV_V = false,
@@ -97,7 +98,7 @@ namespace TombLib.GeometryIO
                 Name = "Metasequoia OBJ",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                     FlipZ = true,
                     InvertFaces = true,
                     FlipUV_V = true,
@@ -111,7 +112,7 @@ namespace TombLib.GeometryIO
                 Name = "Metasequoia PLY",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                     SwapYZ = true,
                     FlipZ = false,
                     FlipUV_V = true,
@@ -125,7 +126,7 @@ namespace TombLib.GeometryIO
                 Name = "Blender DAE",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                     FlipZ = true,
                     FlipUV_V = true,
                     PremultiplyUV = true,
@@ -138,7 +139,7 @@ namespace TombLib.GeometryIO
                 Name = "Blender PLY",
                 Settings = new IOGeometrySettings
                 {
-                    Scale = 1024.0f,
+                    Scale = Level.WorldUnit,
                     SwapYZ = true,
                     FlipZ = false,
                     FlipUV_V = true,

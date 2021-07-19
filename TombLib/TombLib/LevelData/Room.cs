@@ -160,7 +160,7 @@ namespace TombLib.LevelData
             // Move objects
             SectorPos = SectorPos + offset;
             foreach (var instance in _objects)
-                instance.Position -= new Vector3(offset.X * 1024, 0, offset.Y * 1024);
+                instance.Position -= new Vector3(offset.X * Level.WorldUnit, 0, offset.Y * Level.WorldUnit);
 
             // Add sector based objects again
             foreach (var instance in sectorObjects)
@@ -201,7 +201,7 @@ namespace TombLib.LevelData
                 foreach (PortalInstance portal in portals)
                     newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
-                    if (instance.Position.Z < 1024)
+                    if (instance.Position.Z < Level.WorldUnit)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
             else if (area.X0 == 0 && area.Y0 == 0 && area.X1 < NumXSectors - 1 && area.Y1 == NumZSectors - 1)
@@ -214,7 +214,7 @@ namespace TombLib.LevelData
                 foreach (PortalInstance portal in portals)
                     newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
-                    if (instance.Position.X < 1024)
+                    if (instance.Position.X < Level.WorldUnit)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
             else if (area.X0 == 0 && area.Y0 > 0 && area.X1 == NumXSectors - 1 && area.Y1 == NumZSectors - 1)
@@ -227,7 +227,7 @@ namespace TombLib.LevelData
                 foreach (PortalInstance portal in portals)
                     newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
-                    if (instance.Position.Z > (NumZSectors - 1) * 1024)
+                    if (instance.Position.Z > (NumZSectors - 1) * Level.WorldUnit)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
             else if (area.X0 > 0 && area.Y0 == 0 && area.X1 == NumXSectors - 1 && area.Y1 == NumZSectors - 1)
@@ -240,7 +240,7 @@ namespace TombLib.LevelData
                 foreach (PortalInstance portal in portals)
                     newRoom.AddObjectAndSingularPortalCutSectors(level, area, portal);
                 foreach (PositionBasedObjectInstance instance in Objects.ToList())
-                    if (instance.Position.X > (NumXSectors - 1) * 1024)
+                    if (instance.Position.X > (NumXSectors - 1) * Level.WorldUnit)
                         newRoom.MoveObjectFrom(level, this, instance);
             }
             else
@@ -251,8 +251,8 @@ namespace TombLib.LevelData
                         Blocks[x, z].Type = BlockType.Wall;
 
                 // Move objects
-                Vector2 start = (area.Start + new Vector2(1, 1)) * 1024.0f;
-                Vector2 end = (area.End - new Vector2(0, 0)) * 1024.0f;
+                Vector2 start = (area.Start + new Vector2(1, 1)) * Level.WorldUnit;
+                Vector2 end = (area.End - new Vector2(0, 0)) * Level.WorldUnit;
                 foreach (PortalInstance portal in portals)
                 {
                     RemoveObjectAndSingularPortalAndKeepAlive(level, portal);
@@ -350,8 +350,8 @@ namespace TombLib.LevelData
         public Room AlternateOpposite => AlternateRoom ?? AlternateBaseRoom;
         public VectorInt2 SectorSize => new VectorInt2(NumXSectors, NumZSectors);
         public RectangleInt2 WorldArea => new RectangleInt2(Position.X, Position.Z, Position.X + NumXSectors - 1, Position.Z + NumZSectors - 1);
-        public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z) * new Vector3(1024.0f, 256.0f, 1024.0f),
-                                                               new Vector3(Position.X + NumXSectors - 1, Position.Y + GetHighestCorner(), Position.Z + NumZSectors - 1) * new Vector3(1024.0f, 256.0f, 1024.0f));
+        public BoundingBox WorldBoundingBox => new BoundingBox(new Vector3(Position.X, Position.Y + GetLowestCorner(), Position.Z) * new Vector3(Level.WorldUnit, Level.QuarterWorldUnit, Level.WorldUnit),
+                                                               new Vector3(Position.X + NumXSectors - 1, Position.Y + GetHighestCorner(), Position.Z + NumZSectors - 1) * new Vector3(Level.WorldUnit, Level.QuarterWorldUnit, Level.WorldUnit));
         public RectangleInt2 LocalArea => new RectangleInt2(0, 0, NumXSectors - 1, NumZSectors - 1);
 
         public bool CoordinateInvalid(int x, int z) => x < 0 || z < 0 || x >= NumXSectors || z >= NumZSectors;
@@ -923,8 +923,8 @@ namespace TombLib.LevelData
 
         public VectorInt3 WorldPos
         {
-            get { return new VectorInt3(Position.X * 1024, Position.Y * 256, Position.Z * 1024); }
-            set { Position = new VectorInt3(value.X / 1024, value.Y / 256, value.Z / 1024); }
+            get { return new VectorInt3(Position.X * (int)Level.WorldUnit, Position.Y * (int)Level.QuarterWorldUnit, Position.Z * (int)Level.WorldUnit); }
+            set { Position = new VectorInt3(value.X / (int)Level.WorldUnit, value.Y / (int)Level.QuarterWorldUnit, value.Z / (int)Level.WorldUnit); }
         }
 
         public Vector3 GetLocalCenter()
@@ -932,9 +932,9 @@ namespace TombLib.LevelData
             float ceilingHeight = GetHighestCorner();
             float floorHeight = GetLowestCorner();
             return new Vector3(
-                NumXSectors * (0.5f * 1024.0f),
-                (floorHeight + ceilingHeight) * (0.5f * 256.0f),
-                NumZSectors * (0.5f * 1024.0f));
+                NumXSectors * (0.5f * Level.WorldUnit),
+                (floorHeight + ceilingHeight) * (0.5f * Level.QuarterWorldUnit),
+                NumZSectors * (0.5f * Level.WorldUnit));
         }
 
         public int NumXSectors
@@ -989,7 +989,7 @@ namespace TombLib.LevelData
                 }
 
             foreach (var instance in _objects)
-                instance.Position -= new Vector3(0, lowest * 256, 0);
+                instance.Position -= new Vector3(0, lowest * Level.QuarterWorldUnit, 0);
         }
 
         public static bool RemoveOutsidePortals(Level level, IEnumerable<Room> rooms, Func<IReadOnlyList<PortalInstance>, bool> beforeRemovePortals)
