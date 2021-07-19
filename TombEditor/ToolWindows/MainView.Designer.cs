@@ -702,7 +702,6 @@
             this.butAddPrismVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddPrismVolume.Name = "butAddPrismVolume";
             this.butAddPrismVolume.Size = new System.Drawing.Size(23, 25);
-            this.butAddPrismVolume.Tag = "AddPrismVolume";
             this.butAddPrismVolume.Visible = false;
             // 
             // butAddSphereVolume
@@ -714,7 +713,6 @@
             this.butAddSphereVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butAddSphereVolume.Name = "butAddSphereVolume";
             this.butAddSphereVolume.Size = new System.Drawing.Size(23, 25);
-            this.butAddSphereVolume.Tag = "AddSphereVolume";
             this.butAddSphereVolume.Visible = false;
             // 
             // butTextureFloor

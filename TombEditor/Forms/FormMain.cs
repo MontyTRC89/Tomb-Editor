@@ -130,8 +130,8 @@ namespace TombEditor.Forms
                 makeQuickItemGroupToolStripMenuItem.Visible = _editor.Level.IsNG;
 
                 addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                addPrismVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
+                addSphereVolumeToolStripMenuItem.Visible = false; // FIXME: Re-enable for TEN when there will be actual implementation
+                addPrismVolumeToolStripMenuItem.Visible  = false; // FIXME: Re-enable for TEN when there will be actual implementation
                 toolStripMenuSeparator7.Visible = _editor.Level.IsTombEngine;
                 generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
             }
@@ -166,20 +166,6 @@ namespace TombEditor.Forms
                 gridWallsIn3SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 gridWallsIn5SquaresToolStripMenuItem.Enabled = validSectorSelection;
                 splitSectorObjectOnSelectionToolStripMenuItem.Enabled = _editor.SelectedObject is SectorBasedObjectInstance && validSectorSelection;
-            }
-
-            // Update version-specific controls
-            if (obj is Editor.InitEvent ||
-                obj is Editor.LevelChangedEvent ||
-                obj is Editor.GameVersionChangedEvent)
-            {
-                bool isNG  = _editor.Level.IsNG;
-                bool isT5M = _editor.Level.IsTombEngine;
-
-                addSphereVolumeToolStripMenuItem.Enabled    = isT5M;
-                addPrismVolumeToolStripMenuItem.Enabled     = isT5M;
-                addBoxVolumeToolStripMenuItem.Enabled       = isT5M;
-                makeQuickItemGroupToolStripMenuItem.Enabled = isNG;
             }
 
             // Update autosave status
