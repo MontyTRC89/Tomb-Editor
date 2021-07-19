@@ -679,7 +679,7 @@ namespace TombEditor
 
             var box = new BoxVolumeInstance()
             {
-                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * Level.WorldUnit, Level.WorldUnit, (_editor.SelectedSectors.Area.Size.Y + 1) * Level.WorldUnit)
+                Size = new Vector3((_editor.SelectedSectors.Area.Size.X + 1) * 1024.0f, 1024.0f, (_editor.SelectedSectors.Area.Size.Y + 1) * 1024.0f)
             };
 
             var overallArea = _editor.SelectedSectors.Area.Start + _editor.SelectedSectors.Area.End;
