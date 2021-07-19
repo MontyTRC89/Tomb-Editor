@@ -493,10 +493,11 @@
             this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
             this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
-            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(196, 17);
+            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(170, 17);
             this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
-            this.GameEnableExtraBlendingModesCheckBox.Text = "Show FLEP extra blending modes";
-            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch.");
+            this.GameEnableExtraBlendingModesCheckBox.Text = "Show extra blending modes";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch\r\nor" +
+        " should be available by default in Tomb Engine.");
             this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
             // 
             // optionsList
