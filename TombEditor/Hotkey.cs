@@ -361,6 +361,9 @@ namespace TombEditor
             this["AddSink"] = new SortedSet<Hotkey> { Keys.K | Keys.Alt };
             this["AddSoundSource"] = new SortedSet<Hotkey> { Keys.X | Keys.Alt };
             this["AddImportedGeometry"] = new SortedSet<Hotkey> { Keys.I | Keys.Alt };
+            this["AddBoxVolumeInSelectedArea"] = new SortedSet<Hotkey> { Keys.V };
+            this["AddBoxVolume"] = new SortedSet<Hotkey> { Keys.V | Keys.Alt };
+            this["AddSphereVolume"] = new SortedSet<Hotkey> { Keys.V | Keys.Shift };
             this["MoveLara"] = new SortedSet<Hotkey> { Keys.M | Keys.Control };
             this["SplitSectorObjectOnSelection"] = new SortedSet<Hotkey> { Keys.O | Keys.Alt };
             this["TextureFloor"] = new SortedSet<Hotkey> { Keys.T | Keys.Control | Keys.Alt };
