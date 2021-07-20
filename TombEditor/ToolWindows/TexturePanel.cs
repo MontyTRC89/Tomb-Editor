@@ -140,8 +140,7 @@ namespace TombEditor.ToolWindows
                 _editor.Level.Settings.GameVersion.Legacy() >= TRVersion.Game.TR3;
 
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
-                (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
-                 _editor.Level.Settings.GameVersion == TRVersion.Game.TombEngine);
+                (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
 
             cmbBlending.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR2;
 
