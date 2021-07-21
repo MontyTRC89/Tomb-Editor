@@ -112,7 +112,11 @@ namespace WadTool
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
             if (obj is WadToolClass.MeshEditorVertexChangedEvent)
+            {
                 UpdateUI();
+                nudVertexNum.Select(0, 5);
+                nudVertexNum.Focus();
+            }
         }
 
         private void UpdateUI()
