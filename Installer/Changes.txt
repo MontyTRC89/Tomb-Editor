@@ -1,3 +1,10 @@
+Version 1.3.16
+==============
+
+WadTool:
+ * Ability to remap vertices (double-click on meshes in skeleton editor or use "Tools -> Mesh editor" in main window).
+ * New function in animation fixer to restore original animation names for current game version.
+
 Version 1.3.15
 ==============
 
