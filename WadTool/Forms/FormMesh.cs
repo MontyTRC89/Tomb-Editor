@@ -1,19 +1,15 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TombLib.Forms;
 using TombLib.Graphics;
 using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormMesh : DarkUI.Forms.DarkForm
+    public partial class FormMesh : DarkForm
     {
         private class MeshTreeNode
         {
@@ -27,11 +23,14 @@ namespace WadTool
             }
         }
 
+        public bool GenericMode { get; set; }
         public WadMesh SelectedMesh { get; set; }
 
         private Wad2 _wad;
         private DeviceManager _deviceManager;
         private WadToolClass _tool;
+
+        private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
         {
@@ -40,6 +39,7 @@ namespace WadTool
             _tool = tool;
             _wad = wad;
             _deviceManager = deviceManager;
+            _tool.EditorEventRaised += Tool_EditorEventRaised;
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
 
@@ -73,6 +73,30 @@ namespace WadTool
             lstMeshes.Nodes.Add(staticsNode);
         }
 
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            UpdateUI();
+        }
+
+        private void Tool_EditorEventRaised(IEditorEvent obj)
+        {
+            if (obj is WadToolClass.MeshEditorVertexChangedEvent)
+                UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            var enableNud = panelMesh.CurrentVertex != -1;
+            if (enableNud) nudVertexNum.Value = panelMesh.CurrentVertex;
+            butRemapVertex.Enabled = enableNud;
+
+            btCancel.Visible = !GenericMode;
+            cbShowVertices.Checked = _tool.Configuration.MeshEditor_DrawVertices;
+            cbVertexNumbers.Checked = _tool.Configuration.MeshEditor_DrawVertexNumbers;
+            panelMesh.Invalidate();
+        }
+
         private void lstMeshes_Click(object sender, EventArgs e)
         {
             // Update big image view
@@ -91,13 +115,14 @@ namespace WadTool
 
         private void btOk_Click(object sender, EventArgs e)
         {
-            // Update big image view
-            if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
-                return;
+            if (!GenericMode)
+            {
+                if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
+                    return;
 
-            SelectedMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
-
-            _tool.ToggleUnsavedChanges();
+                SelectedMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+                _tool.ToggleUnsavedChanges();
+            }
 
             DialogResult = DialogResult.OK;
             Close();
@@ -105,31 +130,87 @@ namespace WadTool
 
         private void cbShowVertices_CheckedChanged(object sender, EventArgs e)
         {
-            panelMesh.DrawVertices = cbShowVertices.Checked;
+            _tool.Configuration.MeshEditor_DrawVertices = cbShowVertices.Checked;
+            UpdateUI();
         }
 
+        private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_DrawVertexNumbers = cbVertexNumbers.Checked;
+            UpdateUI();
+        }
 
         private void RemapSelectedVertex()
         {
-            if (panelMesh.CurrentVertex == -1 || SelectedMesh.VerticesPositions.Count == 0)
+            if (panelMesh.CurrentVertex == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VerticesPositions.Count == 0)
                 return;
             
             var newVertexIndex = (int)nudVertexNum.Value;
-            if (newVertexIndex >= SelectedMesh.VerticesPositions.Count)
+            if (newVertexIndex >= panelMesh.Mesh.VerticesPositions.Count)
             {
-                DarkMessageBox.Show(this, "Please specify index between 0 and " + (SelectedMesh.VerticesPositions.Count - 1) + ".", "Wrong index", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                popup.ShowError(panelMesh, "Please specify index between 0 and " + (panelMesh.Mesh.VerticesPositions.Count - 1) + ".");
+                nudVertexNum.Value = panelMesh.CurrentVertex;
                 return;
             }
 
-            var oldVertex = SelectedMesh.VerticesPositions[newVertexIndex];
-            SelectedMesh.VerticesPositions[newVertexIndex] = SelectedMesh.VerticesPositions[panelMesh.CurrentVertex];
-            SelectedMesh.VerticesPositions[panelMesh.CurrentVertex] = oldVertex;
-            panelMesh.CurrentVertex = newVertexIndex;
+            var oldVertex = panelMesh.Mesh.VerticesPositions[newVertexIndex];
+            panelMesh.Mesh.VerticesPositions[newVertexIndex] = panelMesh.Mesh.VerticesPositions[panelMesh.CurrentVertex];
+            panelMesh.Mesh.VerticesPositions[panelMesh.CurrentVertex] = oldVertex;
+
+            var ov = panelMesh.CurrentVertex;
+            var nv = newVertexIndex;
+            var count = 0;
+
+            for (int j = 0; j < panelMesh.Mesh.Polys.Count; j++)
+            {
+                var done = false;
+                var poly = panelMesh.Mesh.Polys[j];
+
+                if (poly.Index0 == ov) { poly.Index0 = nv; done = true; } else if (poly.Index0 == nv) { poly.Index0 = ov; done = true; }
+                if (poly.Index1 == ov) { poly.Index1 = nv; done = true; } else if (poly.Index1 == nv) { poly.Index1 = ov; done = true; }
+                if (poly.Index2 == ov) { poly.Index2 = nv; done = true; } else if (poly.Index2 == nv) { poly.Index2 = ov; done = true; }
+                if (poly.Index3 == ov) { poly.Index3 = nv; done = true; } else if (poly.Index3 == nv) { poly.Index3 = ov; done = true; }
+
+                if (done)
+                {
+                    panelMesh.Mesh.Polys[j] = poly;
+                    count++;
+                }
+            }
+
+            if (count > 0)
+            {
+                _tool.ToggleUnsavedChanges();
+                popup.ShowInfo(panelMesh, "Successfully replaced vertex " + panelMesh.CurrentVertex + " with " + newVertexIndex + " in " + count + " faces.");
+                panelMesh.CurrentVertex = newVertexIndex;
+            }
         }
 
         private void butRemapVertex_Click(object sender, EventArgs e)
         {
             RemapSelectedVertex();
+        }
+
+        private void FormMesh_ResizeEnd(object sender, EventArgs e)
+        {
+            panelMesh.ResetCamera();
+        }
+
+        private void butFindVertex_Click(object sender, EventArgs e)
+        {
+            var newVertexIndex = (int)nudVertexNum.Value;
+            if (newVertexIndex >= panelMesh.Mesh.VerticesPositions.Count)
+            {
+                popup.ShowError(panelMesh, "Please specify index between 0 and " + (panelMesh.Mesh.VerticesPositions.Count - 1) + ".");
+                return;
+            }
+            panelMesh.CurrentVertex = newVertexIndex;
+        }
+
+        private void cbWireframe_CheckedChanged(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_DrawWireframe = cbWireframe.Checked;
+            UpdateUI();
         }
     }
 }

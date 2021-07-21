@@ -278,7 +278,7 @@ namespace TombLib.Controls
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(91, 13);
             this.darkLabel1.TabIndex = 3;
-            this.darkLabel1.Text = "Game slot names:";
+            this.darkLabel1.Text = "Game version:";
             // 
             // WadTreeView
             // 

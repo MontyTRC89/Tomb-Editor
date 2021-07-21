@@ -76,11 +76,6 @@ namespace WadTool
                 PopUpInfo.Show(popup, this, panel3D, msg.Message, msg.Type);
             }
 
-            if (obj is WadToolClass.SelectedObjectEditedEvent || obj is InitEvent)
-            {
-                
-            }
-
             if (obj is WadToolClass.DestinationWadChangedEvent || obj is InitEvent)
             {
                 treeDestWad.Wad = _tool.DestinationWad;
@@ -95,10 +90,13 @@ namespace WadTool
                                            "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
                                            "Sprites sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
                                            "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count;
+
+                    meshEditorToolStripMenuItem.Enabled = true;
                 }
                 else
                 {
                     labelStatistics.Text = "";
+                    meshEditorToolStripMenuItem.Enabled = false;
                 }
             }
 
@@ -599,13 +597,6 @@ namespace WadTool
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (FormOptions form = new FormOptions(_tool))
-                form.ShowDialog(this);
-
-            // FIXME: Later, when WT bloats up, move this to events
-
-            _tool.UndoManager.Resize(_tool.Configuration.AnimationEditor_UndoDepth);
-            panel3D.Invalidate();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -638,6 +629,26 @@ namespace WadTool
             Wad2 dest = WadActions.ConvertWad2ToTombEngine(_tool, this, _tool.SourceWad);
             Wad2Writer.SaveToFile(dest, "F:\\temp.wad2");
             WadActions.LoadWad(_tool, this, true, "F:\\temp.wad2");
+        }
+
+        private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            using (FormOptions form = new FormOptions(_tool))
+                form.ShowDialog(this);
+
+            // FIXME: Later, when WT bloats up, move this to events
+
+            _tool.UndoManager.Resize(_tool.Configuration.AnimationEditor_UndoDepth);
+            panel3D.Invalidate();
+        }
+
+        private void meshEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_tool.DestinationWad == null)
+                return;
+
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { GenericMode = true })
+                form.ShowDialog(this);
         }
     }
 }
