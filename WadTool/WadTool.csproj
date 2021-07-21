@@ -157,11 +157,11 @@
     <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormMesh.cs">
+    <Compile Include="Forms\FormMeshEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FormMesh.Designer.cs">
-      <DependentUpon>FormMesh.cs</DependentUpon>
+    <Compile Include="Forms\FormMeshEditor.Designer.cs">
+      <DependentUpon>FormMeshEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\FormNewWad2.cs">
       <SubType>Form</SubType>
@@ -250,8 +250,8 @@
     <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormMesh.resx">
-      <DependentUpon>FormMesh.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FormMeshEditor.resx">
+      <DependentUpon>FormMeshEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormNewWad2.resx">
       <DependentUpon>FormNewWad2.cs</DependentUpon>

@@ -32,7 +32,7 @@ namespace WadTool
 
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
+        public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, IWadObjectId item = null, string meshName = null)
         {
             InitializeComponent();
 
@@ -42,6 +42,8 @@ namespace WadTool
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
+
+            // Populate tree view
 
             var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
             foreach (var moveable in _wad.Moveables)
@@ -71,11 +73,39 @@ namespace WadTool
                 staticsNode.Nodes.Add(staticNode);
             }
             lstMeshes.Nodes.Add(staticsNode);
+
+            // If form is called with specific item and mesh, find it in node list and select it.
+
+            if (item != null)
+            {
+                var allnodes = lstMeshes.GetAllNodes();
+                var existingNodes = allnodes.Where(n => n.Tag is MeshTreeNode && (n.Tag as MeshTreeNode).ObjectId.ToString() == item.ToString()).ToList();
+                if (existingNodes.Count > 0)
+                {
+                    if (string.IsNullOrEmpty(meshName))
+                        lstMeshes.SelectNode(existingNodes[0]);
+                    else
+                    {
+                        var exactMatches = existingNodes.Where(n => (n.Tag as MeshTreeNode).WadMesh.Name == meshName).ToList();
+                        if (exactMatches.Count == 0)
+                            lstMeshes.SelectNode(existingNodes[0]);
+                        else
+                            lstMeshes.SelectNode(exactMatches[0]);
+                    }
+                    LoadMesh();
+                }
+            }
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+
+            // These actions should happen when form is already initialized.
+            // If moved to FormMeshEditor constructor, this code will break.
+
+            if (lstMeshes.SelectedNodes.Count > 0)
+                lstMeshes.EnsureVisible();
             UpdateUI();
         }
 
@@ -92,19 +122,24 @@ namespace WadTool
             butRemapVertex.Enabled = enableNud;
 
             btCancel.Visible = !GenericMode;
+            cbWireframe.Checked = _tool.Configuration.MeshEditor_DrawWireframe;
             cbShowVertices.Checked = _tool.Configuration.MeshEditor_DrawVertices;
             cbVertexNumbers.Checked = _tool.Configuration.MeshEditor_DrawVertexNumbers;
+
             panelMesh.Invalidate();
+        }
+
+        private void LoadMesh()
+        {
+            // Update big image view
+            if (lstMeshes.SelectedNodes.Count > 0 && lstMeshes.SelectedNodes[0].Tag != null)
+                panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
         }
 
         private void lstMeshes_Click(object sender, EventArgs e)
         {
-            // Update big image view
-            if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
-                return;
-
-            panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
-            panelMesh.Invalidate();
+            LoadMesh();
+            UpdateUI();
         }
 
         private void btCancel_Click(object sender, EventArgs e)
@@ -144,6 +179,12 @@ namespace WadTool
         {
             if (panelMesh.CurrentVertex == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VerticesPositions.Count == 0)
                 return;
+
+            if (nudVertexNum.Value == panelMesh.CurrentVertex)
+            {
+                popup.ShowError(panelMesh, "Please specify other vertex number.");
+                return;
+            }
             
             var newVertexIndex = (int)nudVertexNum.Value;
             if (newVertexIndex >= panelMesh.Mesh.VerticesPositions.Count)
@@ -169,7 +210,11 @@ namespace WadTool
                 if (poly.Index0 == ov) { poly.Index0 = nv; done = true; } else if (poly.Index0 == nv) { poly.Index0 = ov; done = true; }
                 if (poly.Index1 == ov) { poly.Index1 = nv; done = true; } else if (poly.Index1 == nv) { poly.Index1 = ov; done = true; }
                 if (poly.Index2 == ov) { poly.Index2 = nv; done = true; } else if (poly.Index2 == nv) { poly.Index2 = ov; done = true; }
-                if (poly.Index3 == ov) { poly.Index3 = nv; done = true; } else if (poly.Index3 == nv) { poly.Index3 = ov; done = true; }
+
+                if (poly.Shape == WadPolygonShape.Quad)
+                {
+                    if (poly.Index3 == ov) { poly.Index3 = nv; done = true; } else if (poly.Index3 == nv) { poly.Index3 = ov; done = true; }
+                }
 
                 if (done)
                 {

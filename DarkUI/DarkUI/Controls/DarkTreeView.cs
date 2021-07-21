@@ -119,6 +119,11 @@ namespace DarkUI.Controls
         }
 
         [Category("Behavior")]
+        [Description("Determines whether parent node should be expanded on mouse double-click.")]
+        [DefaultValue(true)]
+        public bool ExpandOnDoubleClick { get; set; }
+
+        [Category("Behavior")]
         [Description("Determines whether multiple tree nodes can be selected at once.")]
         [DefaultValue(false)]
         public bool MultiSelect { get; set; }
@@ -795,6 +800,17 @@ namespace DarkUI.Controls
             }
 
             Invalidate();
+        }
+
+        public List<DarkTreeNode> GetAllNodes() => GetAllNodes(new List<DarkTreeNode>(), Nodes);
+        private List<DarkTreeNode> GetAllNodes(List<DarkTreeNode> list, ObservableList<DarkTreeNode> source)
+        {
+            foreach (var node in source)
+            {
+                list.Add(node);
+                GetAllNodes(list, node.Nodes);
+            }
+            return list;
         }
 
         private void SelectAnchoredRange(DarkTreeNode node)

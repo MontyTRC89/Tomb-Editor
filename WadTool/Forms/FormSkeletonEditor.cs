@@ -486,6 +486,16 @@ namespace WadTool
             }
         }
 
+        private void EditMesh()
+        {
+            if (treeSkeleton.SelectedNodes.Count == 0)
+                return;
+            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _moveable.Id, theNode.WadMesh.Name) { GenericMode = true })
+                form.ShowDialog(this);
+        }
+
         private void DeleteBone()
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
@@ -821,5 +831,9 @@ namespace WadTool
                 mesh.LightingType = lightType;
             UpdateUI();
         }
+
+        private void treeSkeleton_MouseDoubleClick(object sender, MouseEventArgs e) => EditMesh();
+
+        private void butEditMesh_Click(object sender, EventArgs e) => EditMesh();
     }
 }

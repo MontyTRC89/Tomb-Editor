@@ -159,7 +159,6 @@ namespace WadTool.Controls
                 _device.SetRasterizerState(_device.RasterizerStates.CullBack);
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
             _device.SetBlendState(_device.BlendStates.Opaque);
 
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
@@ -347,7 +346,7 @@ namespace WadTool.Controls
             for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
             {
                 var vertex = _mesh.VerticesPositions[i];
-                var sphere = new BoundingSphere(vertex, _littleSphereRadius * 2);
+                var sphere = new BoundingSphere(vertex, _littleSphereRadius);
                 float newDistance;
 
                 if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormSkeletonEditor));
             this.treeSkeleton = new DarkUI.Controls.DarkTreeView();
             this.cbDrawGizmo = new DarkUI.Controls.DarkCheckBox();
@@ -74,6 +75,8 @@
             this.section3D = new DarkUI.Controls.DarkSectionPanel();
             this.butExportSelectedMesh = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
+            this.butEditMesh = new DarkUI.Controls.DarkButton();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cmBone.SuspendLayout();
             this.sectionCurrentBone.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudTransZ)).BeginInit();
@@ -99,6 +102,7 @@
             this.treeSkeleton.Size = new System.Drawing.Size(310, 354);
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
+            this.treeSkeleton.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDoubleClick);
             this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDown);
             // 
             // cbDrawGizmo
@@ -143,26 +147,26 @@
             // 
             this.butRenameBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRenameBone.Checked = false;
-            this.butRenameBone.Image = global::WadTool.Properties.Resources.edit_16;
-            this.butRenameBone.Location = new System.Drawing.Point(109, 388);
+            this.butRenameBone.Location = new System.Drawing.Point(3, 388);
             this.butRenameBone.Name = "butRenameBone";
-            this.butRenameBone.Size = new System.Drawing.Size(99, 23);
+            this.butRenameBone.Size = new System.Drawing.Size(100, 23);
             this.butRenameBone.TabIndex = 84;
             this.butRenameBone.Text = "Rename";
             this.butRenameBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butRenameBone, "Rename currently selected bone");
             this.butRenameBone.Click += new System.EventHandler(this.butRenameBone_Click);
             // 
             // butDeleteBone
             // 
             this.butDeleteBone.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butDeleteBone.Checked = false;
-            this.butDeleteBone.Image = global::WadTool.Properties.Resources.trash_161;
             this.butDeleteBone.Location = new System.Drawing.Point(214, 388);
             this.butDeleteBone.Name = "butDeleteBone";
             this.butDeleteBone.Size = new System.Drawing.Size(99, 23);
             this.butDeleteBone.TabIndex = 83;
             this.butDeleteBone.Text = "Delete";
             this.butDeleteBone.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butDeleteBone, "Delete currently selected bone");
             this.butDeleteBone.Click += new System.EventHandler(this.butDeleteBone_Click);
             // 
             // butLoadModel
@@ -175,6 +179,7 @@
             this.butLoadModel.TabIndex = 80;
             this.butLoadModel.Text = "Replace model";
             this.butLoadModel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butLoadModel, "Replace all meshes in skeleton from single 3D model");
             this.butLoadModel.Click += new System.EventHandler(this.butLoadModel_Click);
             // 
             // darkStatusStrip1
@@ -192,49 +197,52 @@
             // 
             this.butAddFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromWad2.Checked = false;
-            this.butAddFromWad2.Location = new System.Drawing.Point(3, 417);
+            this.butAddFromWad2.Location = new System.Drawing.Point(109, 417);
             this.butAddFromWad2.Name = "butAddFromWad2";
-            this.butAddFromWad2.Size = new System.Drawing.Size(152, 23);
+            this.butAddFromWad2.Size = new System.Drawing.Size(99, 23);
             this.butAddFromWad2.TabIndex = 87;
-            this.butAddFromWad2.Text = "Add from wad...";
+            this.butAddFromWad2.Text = "Add existing";
             this.butAddFromWad2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddFromWad2, "Make new bone by using existing mesh from current wad");
             this.butAddFromWad2.Click += new System.EventHandler(this.butSelectMesh_Click);
             // 
             // butAddFromFile
             // 
             this.butAddFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddFromFile.Checked = false;
-            this.butAddFromFile.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddFromFile.Location = new System.Drawing.Point(3, 388);
+            this.butAddFromFile.Location = new System.Drawing.Point(3, 417);
             this.butAddFromFile.Name = "butAddFromFile";
             this.butAddFromFile.Size = new System.Drawing.Size(100, 23);
             this.butAddFromFile.TabIndex = 86;
-            this.butAddFromFile.Text = "Add";
+            this.butAddFromFile.Text = "Add new";
             this.butAddFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAddFromFile, "Make new bone by importing 3D model");
             this.butAddFromFile.Click += new System.EventHandler(this.butAddFromFile_Click);
             // 
             // butReplaceFromWad2
             // 
             this.butReplaceFromWad2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromWad2.Checked = false;
-            this.butReplaceFromWad2.Location = new System.Drawing.Point(161, 417);
+            this.butReplaceFromWad2.Location = new System.Drawing.Point(214, 417);
             this.butReplaceFromWad2.Name = "butReplaceFromWad2";
-            this.butReplaceFromWad2.Size = new System.Drawing.Size(152, 23);
+            this.butReplaceFromWad2.Size = new System.Drawing.Size(99, 23);
             this.butReplaceFromWad2.TabIndex = 90;
-            this.butReplaceFromWad2.Text = "Replace from wad...";
+            this.butReplaceFromWad2.Text = "Replace existing";
             this.butReplaceFromWad2.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butReplaceFromWad2, "Replace mesh for currently selected bone with existing one in wad");
             this.butReplaceFromWad2.Click += new System.EventHandler(this.butReplaceFromWad2_Click);
             // 
             // butReplaceFromFile
             // 
             this.butReplaceFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butReplaceFromFile.Checked = false;
-            this.butReplaceFromFile.Location = new System.Drawing.Point(4, 446);
+            this.butReplaceFromFile.Location = new System.Drawing.Point(3, 446);
             this.butReplaceFromFile.Name = "butReplaceFromFile";
-            this.butReplaceFromFile.Size = new System.Drawing.Size(99, 23);
+            this.butReplaceFromFile.Size = new System.Drawing.Size(100, 23);
             this.butReplaceFromFile.TabIndex = 89;
             this.butReplaceFromFile.Text = "Import mesh";
             this.butReplaceFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butReplaceFromFile, "Import new mesh for currently selected bone from 3D model");
             this.butReplaceFromFile.Click += new System.EventHandler(this.butReplaceFromFile_Click);
             // 
             // cmBone
@@ -612,15 +620,16 @@
             // 
             // section3D
             // 
+            this.section3D.Controls.Add(this.butAddFromWad2);
+            this.section3D.Controls.Add(this.butRenameBone);
+            this.section3D.Controls.Add(this.butAddFromFile);
+            this.section3D.Controls.Add(this.butEditMesh);
             this.section3D.Controls.Add(this.butExportSelectedMesh);
             this.section3D.Controls.Add(this.treeSkeleton);
             this.section3D.Controls.Add(this.butLoadModel);
             this.section3D.Controls.Add(this.butDeleteBone);
-            this.section3D.Controls.Add(this.butRenameBone);
             this.section3D.Controls.Add(this.butReplaceFromWad2);
-            this.section3D.Controls.Add(this.butAddFromFile);
             this.section3D.Controls.Add(this.butReplaceFromFile);
-            this.section3D.Controls.Add(this.butAddFromWad2);
             this.section3D.Dock = System.Windows.Forms.DockStyle.Fill;
             this.section3D.Location = new System.Drawing.Point(0, 0);
             this.section3D.Name = "section3D";
@@ -632,12 +641,13 @@
             // 
             this.butExportSelectedMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butExportSelectedMesh.Checked = false;
-            this.butExportSelectedMesh.Location = new System.Drawing.Point(108, 446);
+            this.butExportSelectedMesh.Location = new System.Drawing.Point(109, 446);
             this.butExportSelectedMesh.Name = "butExportSelectedMesh";
-            this.butExportSelectedMesh.Size = new System.Drawing.Size(100, 23);
+            this.butExportSelectedMesh.Size = new System.Drawing.Size(99, 23);
             this.butExportSelectedMesh.TabIndex = 91;
             this.butExportSelectedMesh.Text = "Export mesh";
             this.butExportSelectedMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butExportSelectedMesh, "Export currently selected bone\'s mesh to 3D model");
             this.butExportSelectedMesh.Click += new System.EventHandler(this.butExportSelectedMesh_Click);
             // 
             // butCancel
@@ -651,6 +661,19 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
+            // 
+            // butEditMesh
+            // 
+            this.butEditMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditMesh.Checked = false;
+            this.butEditMesh.Location = new System.Drawing.Point(109, 388);
+            this.butEditMesh.Name = "butEditMesh";
+            this.butEditMesh.Size = new System.Drawing.Size(99, 23);
+            this.butEditMesh.TabIndex = 92;
+            this.butEditMesh.Text = "Edit mesh";
+            this.butEditMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butEditMesh, "Edit mesh for currently selected bone");
+            this.butEditMesh.Click += new System.EventHandler(this.butEditMesh_Click);
             // 
             // FormSkeletonEditor
             // 
@@ -735,5 +758,7 @@
         private DarkUI.Controls.DarkButton butSetToAll;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkComboBox comboLightType;
+        private DarkUI.Controls.DarkButton butEditMesh;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

@@ -71,7 +71,7 @@
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.panelMesh.Location = new System.Drawing.Point(330, 5);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(457, 533);
+            this.panelMesh.Size = new System.Drawing.Size(485, 524);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -224,7 +224,7 @@
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Meshes";
+            this.Text = "Mesh editor";
             this.ResizeEnd += new System.EventHandler(this.FormMesh_ResizeEnd);
             this.darkSectionPanel1.ResumeLayout(false);
             this.darkSectionPanel1.PerformLayout();
