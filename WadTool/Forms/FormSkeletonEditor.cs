@@ -832,8 +832,8 @@ namespace WadTool
             UpdateUI();
         }
 
-        private void treeSkeleton_MouseDoubleClick(object sender, MouseEventArgs e) => EditMesh();
-
         private void butEditMesh_Click(object sender, EventArgs e) => EditMesh();
+
+        private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e) => EditMesh();
     }
 }

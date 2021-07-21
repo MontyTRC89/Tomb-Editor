@@ -73,9 +73,9 @@
             this.panelRendering = new WadTool.Controls.PanelRenderingSkeleton();
             this.panelRight = new DarkUI.Controls.DarkPanel();
             this.section3D = new DarkUI.Controls.DarkSectionPanel();
+            this.butEditMesh = new DarkUI.Controls.DarkButton();
             this.butExportSelectedMesh = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
-            this.butEditMesh = new DarkUI.Controls.DarkButton();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cmBone.SuspendLayout();
             this.sectionCurrentBone.SuspendLayout();
@@ -93,6 +93,7 @@
             this.treeSkeleton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.treeSkeleton.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.treeSkeleton.ExpandOnDoubleClick = false;
             this.treeSkeleton.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.treeSkeleton.Location = new System.Drawing.Point(3, 28);
             this.treeSkeleton.MaxDragChange = 20;
@@ -102,7 +103,6 @@
             this.treeSkeleton.Size = new System.Drawing.Size(310, 354);
             this.treeSkeleton.TabIndex = 0;
             this.treeSkeleton.Click += new System.EventHandler(this.treeSkeleton_Click);
-            this.treeSkeleton.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDoubleClick);
             this.treeSkeleton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeSkeleton_MouseDown);
             // 
             // cbDrawGizmo
@@ -607,6 +607,7 @@
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.Size = new System.Drawing.Size(452, 554);
             this.panelRendering.TabIndex = 0;
+            this.panelRendering.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDoubleClick);
             // 
             // panelRight
             // 
@@ -637,6 +638,19 @@
             this.section3D.Size = new System.Drawing.Size(316, 472);
             this.section3D.TabIndex = 108;
             // 
+            // butEditMesh
+            // 
+            this.butEditMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butEditMesh.Checked = false;
+            this.butEditMesh.Location = new System.Drawing.Point(109, 388);
+            this.butEditMesh.Name = "butEditMesh";
+            this.butEditMesh.Size = new System.Drawing.Size(99, 23);
+            this.butEditMesh.TabIndex = 92;
+            this.butEditMesh.Text = "Edit mesh";
+            this.butEditMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butEditMesh, "Edit mesh for currently selected bone");
+            this.butEditMesh.Click += new System.EventHandler(this.butEditMesh_Click);
+            // 
             // butExportSelectedMesh
             // 
             this.butExportSelectedMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -661,19 +675,6 @@
             this.butCancel.Text = "Cancel";
             this.butCancel.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butCancel.Click += new System.EventHandler(this.butCancel_Click);
-            // 
-            // butEditMesh
-            // 
-            this.butEditMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butEditMesh.Checked = false;
-            this.butEditMesh.Location = new System.Drawing.Point(109, 388);
-            this.butEditMesh.Name = "butEditMesh";
-            this.butEditMesh.Size = new System.Drawing.Size(99, 23);
-            this.butEditMesh.TabIndex = 92;
-            this.butEditMesh.Text = "Edit mesh";
-            this.butEditMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butEditMesh, "Edit mesh for currently selected bone");
-            this.butEditMesh.Click += new System.EventHandler(this.butEditMesh_Click);
             // 
             // FormSkeletonEditor
             // 
