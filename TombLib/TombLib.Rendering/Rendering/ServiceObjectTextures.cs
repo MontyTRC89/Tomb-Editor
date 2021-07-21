@@ -189,7 +189,7 @@ namespace TombLib.Rendering
 
             // Calculate screen-space position
             var heightRatio = ((float)viewportSize.Width / viewportSize.Height) * Level.WorldUnit;
-            var scale = 2048.0f / (distance != 0 ? distance : 1.0f);
+            var scale = (Level.WorldUnit * 2.0f) / (distance != 0 ? distance : 1.0f);
             var pos = (posMatrix * camViewProjection).TransformPerspectively(new Vector3());
             var screenPos = pos.To2();
 
