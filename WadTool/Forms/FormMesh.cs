@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DarkUI.Forms;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -100,6 +101,35 @@ namespace WadTool
 
             DialogResult = DialogResult.OK;
             Close();
+        }
+
+        private void cbShowVertices_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMesh.DrawVertices = cbShowVertices.Checked;
+        }
+
+
+        private void RemapSelectedVertex()
+        {
+            if (panelMesh.CurrentVertex == -1 || SelectedMesh.VerticesPositions.Count == 0)
+                return;
+            
+            var newVertexIndex = (int)nudVertexNum.Value;
+            if (newVertexIndex >= SelectedMesh.VerticesPositions.Count)
+            {
+                DarkMessageBox.Show(this, "Please specify index between 0 and " + (SelectedMesh.VerticesPositions.Count - 1) + ".", "Wrong index", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var oldVertex = SelectedMesh.VerticesPositions[newVertexIndex];
+            SelectedMesh.VerticesPositions[newVertexIndex] = SelectedMesh.VerticesPositions[panelMesh.CurrentVertex];
+            SelectedMesh.VerticesPositions[panelMesh.CurrentVertex] = oldVertex;
+            panelMesh.CurrentVertex = newVertexIndex;
+        }
+
+        private void butRemapVertex_Click(object sender, EventArgs e)
+        {
+            RemapSelectedVertex();
         }
     }
 }

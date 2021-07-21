@@ -310,8 +310,8 @@ namespace TombEditor.Controls
                 _sphere = GeometricPrimitive.Sphere.New(_legacyDevice, 1024, 6);
 
                 //Little cubes and little spheres are used as mesh for lights, cameras, sinks, etc
-                _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleSphereRadius);
-                _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleCubeRadius, 8);
+                _littleCube = GeometricPrimitive.Cube.New(_legacyDevice, 2 * _littleCubeRadius);
+                _littleSphere = GeometricPrimitive.Sphere.New(_legacyDevice, 2 * _littleSphereRadius, 8);
 
                 _cone = GeometricPrimitive.Cone.New(_legacyDevice, _coneRadius, _coneRadius, 18);
 

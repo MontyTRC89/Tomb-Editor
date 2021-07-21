@@ -3,9 +3,11 @@ using System;
 using System.ComponentModel;
 using System.Numerics;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Controls;
 using TombLib.Graphics;
 using TombLib.Graphics.Primitives;
+using TombLib.Utils;
 using TombLib.Wad;
 
 namespace WadTool.Controls
@@ -15,11 +17,69 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Configuration Configuration { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public WadMesh Mesh { get; set; }
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ArcBallCamera Camera { get; set; } = new ArcBallCamera(new Vector3(0.0f, 1536.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 1024.0f, 100, 1000000, (float)Math.PI / 4.0f);
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGrid { get; set; } = true;
+        public WadMesh Mesh
+        {
+            get { return _mesh; }
+            set
+            {
+                if (_mesh == value)
+                    return;
+
+                _mesh = value;
+                CurrentVertex = -1;
+            }
+        }
+        private WadMesh _mesh;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawGrid
+        {
+            get { return _drawGrid; }
+            set
+            {
+                if (_drawGrid == value) return;
+                _drawGrid = value;
+                Invalidate();
+            }
+        }
+        private bool _drawGrid;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawVertices
+        {
+            get { return _drawVertices; }
+            set
+            {
+                if (_drawVertices == value) return;
+                _drawVertices = value;
+                Invalidate();
+            }
+        }
+        private bool _drawVertices;
+
+        public int CurrentVertex
+        {
+            get { return _currentVertex; }
+            set
+            {
+                if (_currentVertex == value)
+                    return;
+
+                if (Mesh.VerticesPositions.Count > value)
+                    _currentVertex = value;
+                else
+                    _currentVertex = -1;
+
+                if (DrawVertices)
+                    Invalidate();
+
+                _tool.MeshEditorVertexChanged(CurrentVertex);
+            }
+        }
+        private int _currentVertex;
 
         // General state
         private WadToolClass _tool;
@@ -28,15 +88,17 @@ namespace WadTool.Controls
         private float _lastX;
         private float _lastY;
 
-        // Rendering state
-
         // Legacy rendering state
         private GraphicsDevice _device;
         private RasterizerState _rasterizerWireframe;
         private VertexInputLayout _layout;
         private GeometricPrimitive _plane;
-        private WadRenderer _wadRenderer; 
-        
+        private GeometricPrimitive _littleSphere;
+        private WadRenderer _wadRenderer;
+
+        // Rendering state
+        private const float _littleSphereRadius = 128.0f;
+
         protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
@@ -68,6 +130,7 @@ namespace WadTool.Controls
                     SlopeScaledDepthBias = 0
                 });
                 _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
+                _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * _littleSphereRadius, 8);
             }
         }
 
@@ -77,6 +140,7 @@ namespace WadTool.Controls
             {
                 _rasterizerWireframe?.Dispose();
                 _plane?.Dispose();
+                _littleSphere?.Dispose();
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
@@ -124,6 +188,34 @@ namespace WadTool.Controls
 
                     foreach (var submesh in mesh_.Submeshes)
                         _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                }
+            }
+
+            if (DrawVertices)
+            {
+                _device.SetVertexBuffer(0, _littleSphere.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleSphere.VertexBuffer));
+                _device.SetIndexBuffer(_littleSphere.IndexBuffer, true);
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+
+                bool hasDrawnCurrentVertex = true;
+
+                for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
+                {
+                    if (hasDrawnCurrentVertex)
+                    {
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 1));
+                        hasDrawnCurrentVertex = false;
+                    }
+
+                    if (i == _currentVertex)
+                    {
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 1));
+                        hasDrawnCurrentVertex = true;
+                    }
+
+                    solidEffect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
                 }
             }
 
@@ -199,6 +291,37 @@ namespace WadTool.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            if (DrawVertices)
+                TryPickVertex(e.X, e.Y);
+        }
+
+        private void TryPickVertex(float x, float y)
+        {
+            var matrix = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
+            var ray = Ray.GetPickRay(new Vector2(x, y), matrix, ClientSize.Width, ClientSize.Height);
+
+            float distance = float.MaxValue;
+            int candidate = -1;
+
+            for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
+            {
+                var vertex = _mesh.VerticesPositions[i];
+                var sphere = new BoundingSphere(vertex, _littleSphereRadius);
+                float newDistance;
+
+                if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))
+                {
+                    if (newDistance < distance || candidate == -1)
+                    {
+                        distance = newDistance;
+                        candidate = i;
+                    }
+                }
+
+                if (candidate != -1)
+                    CurrentVertex = candidate;
+            }
         }
     }
 }

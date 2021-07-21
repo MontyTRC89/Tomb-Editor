@@ -278,6 +278,16 @@ namespace WadTool
             RaiseEvent(new AnimationEditorPlaybackEvent { Playing = playing, Chained = chained });
         }
 
+        // Mesh editor vertex pick
+        public class MeshEditorVertexChangedEvent : IEditorEvent
+        {
+            public int VertexNumber { get; set; }
+        }
+        public void MeshEditorVertexChanged(int vertexNumber)
+        {
+            RaiseEvent(new MeshEditorVertexChangedEvent() { VertexNumber = vertexNumber });
+        }
+
         // Update unsaved changes
         public class UnsavedChangesEvent : IEditorEvent 
         {
