@@ -100,8 +100,14 @@ namespace WadTool.Controls
             _tool = tool;
 
             // Actual "InitializeRendering"
-            _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = Device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 18, FontIsBold = true, TextureAllocator = _fontTexture });
+            _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
+            {
+                FontName = _tool.Configuration.Rendering3D_FontName,
+                FontSize = _tool.Configuration.Rendering3D_FontSize,
+                FontIsBold = _tool.Configuration.Rendering3D_FontIsBold,
+                TextureAllocator = _fontTexture
+            });
 
             // Legacy rendering
             {

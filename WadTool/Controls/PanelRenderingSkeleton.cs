@@ -79,8 +79,14 @@ namespace WadTool.Controls
             _deviceManager = deviceManager;
 
             // Actual "InitializeRendering"
-            _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = Device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 24, FontIsBold = true, TextureAllocator = _fontTexture });
+            _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
+            {
+                FontName = _tool.Configuration.Rendering3D_FontName,
+                FontSize = _tool.Configuration.Rendering3D_FontSize,
+                FontIsBold = _tool.Configuration.Rendering3D_FontIsBold,
+                TextureAllocator = _fontTexture
+            });
 
             // Legacy rendering
             {
@@ -243,6 +249,7 @@ namespace WadTool.Controls
                 SwapChain.RenderText(new Text
                 {
                     Font = _fontDefault,
+                    Overlay = true,
                     Pos = worldViewProjection.TransformPerspectively(SelectedNode.Centre - Vector3.UnitY * 128.0f).To2(),
                     TextAlignment = new Vector2(0, 0),
                     ScreenAlignment = new Vector2(0.5f, 0.5f),

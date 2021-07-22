@@ -93,10 +93,16 @@ namespace WadTool.Controls
 
             if (skin != null)
                 _skinModel = _wadRenderer.GetMoveable(editor.Moveable.ReplaceDummyMeshes(skin));
-           
+
             // Actual "InitializeRendering"
-            _fontTexture = Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
-            _fontDefault = Device.CreateFont(new RenderingFont.Description { FontName = "Segoe UI", FontSize = 24, FontIsBold = true, TextureAllocator = _fontTexture });
+            _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
+            _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
+            {
+                FontName = _editor.Tool.Configuration.Rendering3D_FontName,
+                FontSize = _editor.Tool.Configuration.Rendering3D_FontSize,
+                FontIsBold = _editor.Tool.Configuration.Rendering3D_FontIsBold,
+                TextureAllocator = _fontTexture
+            });
 
             // Legacy rendering
             {
@@ -346,6 +352,7 @@ namespace WadTool.Controls
                 SwapChain.RenderText(new Text
                 {
                     Font = _fontDefault,
+                    Overlay = true,
                     PixelPos = new Vector2(10, 25),
                     Alignment = new Vector2(0, 0),
                     String = debugMessage
