@@ -131,6 +131,14 @@ namespace WadTool
             UpdateUI();
         }
         
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+                panelMesh.CurrentVertex = -1;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        
         private void lstMeshes_Click(object sender, EventArgs e)
         {
             ShowSelectedMesh();
