@@ -47,8 +47,7 @@ namespace TombLib.GeometryIO.Importers
             // Also we disable triangulation because legacy meshes still need quads.
             Scene scene = context.ImportFile(filename,
                 PostProcessPreset.TargetRealTimeMaximumQuality ^ 
-                PostProcessSteps.RemoveRedundantMaterials ^ 
-                PostProcessSteps.Triangulate);
+                PostProcessSteps.RemoveRedundantMaterials);
 
             var newModel = new IOModel();
             var textures = new Dictionary<int, Texture>();

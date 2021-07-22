@@ -32,7 +32,7 @@ namespace WadTool
 
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, IWadObjectId item = null, string meshName = null)
+        public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, IWadObjectId item = null, WadMesh mesh = null)
         {
             InitializeComponent();
 
@@ -76,23 +76,18 @@ namespace WadTool
 
             // If form is called with specific item and mesh, find it in node list and select it.
 
-            if (item != null)
+            if (item != null && mesh != null)
             {
                 var allnodes = lstMeshes.GetAllNodes();
                 var existingNodes = allnodes.Where(n => n.Tag is MeshTreeNode && (n.Tag as MeshTreeNode).ObjectId.ToString() == item.ToString()).ToList();
                 if (existingNodes.Count > 0)
                 {
-                    if (string.IsNullOrEmpty(meshName))
-                        lstMeshes.SelectNode(existingNodes[0]);
-                    else
-                    {
-                        var exactMatches = existingNodes.Where(n => (n.Tag as MeshTreeNode).WadMesh.Name == meshName).ToList();
-                        if (exactMatches.Count == 0)
-                            lstMeshes.SelectNode(existingNodes[0]);
-                        else
-                            lstMeshes.SelectNode(exactMatches[0]);
-                    }
-                    LoadMesh();
+                    var exactMatches = existingNodes.Where(n => (n.Tag as MeshTreeNode).WadMesh.Name == mesh.Name).ToList();
+                    if (exactMatches.Count > 0)
+                        lstMeshes.SelectNode(exactMatches[0]);
+
+                    panelMesh.Mesh = mesh;
+                    lstMeshes.Enabled = false; // Lock up list to prevent wandering around
                 }
             }
         }
@@ -132,17 +127,13 @@ namespace WadTool
 
             panelMesh.Invalidate();
         }
-
-        private void LoadMesh()
+        
+        private void lstMeshes_Click(object sender, EventArgs e)
         {
             // Update big image view
             if (lstMeshes.SelectedNodes.Count > 0 && lstMeshes.SelectedNodes[0].Tag != null)
                 panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
-        }
 
-        private void lstMeshes_Click(object sender, EventArgs e)
-        {
-            LoadMesh();
             UpdateUI();
         }
 
@@ -159,7 +150,7 @@ namespace WadTool
                 if (lstMeshes.SelectedNodes.Count <= 0 || lstMeshes.SelectedNodes[0].Tag == null)
                     return;
 
-                SelectedMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+                SelectedMesh = panelMesh.Mesh;
                 _tool.ToggleUnsavedChanges();
             }
 
@@ -260,6 +251,12 @@ namespace WadTool
         {
             _tool.Configuration.MeshEditor_DrawWireframe = cbWireframe.Checked;
             UpdateUI();
+        }
+
+        private void nudVertexNum_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                RemapSelectedVertex();
         }
     }
 }

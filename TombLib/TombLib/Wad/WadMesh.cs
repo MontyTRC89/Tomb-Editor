@@ -357,103 +357,118 @@ namespace TombLib.Wad
 
             // Create a new mesh (all meshes from model will be joined)
             WadMesh mesh = null;
-            var lastBaseVertex = 0;
             for (int i = 0; i < tmpModel.Meshes.Count; i++)
             {
                 var tmpMesh = tmpModel.Meshes[i];
+                var tmpLst  = new List<int>();
+                var tmpPos  = new List<Vector3>();
+                var tmpCol  = new List<Vector3>();
+                var tmpNor  = new List<Vector3>();
 
                 if (mesh == null || !mergeIntoOne)
                 {
                     mesh = new WadMesh();
                     mesh.Name = string.IsNullOrEmpty(tmpMesh.Name) ? "ImportedMesh" + i : tmpMesh.Name;
-                    lastBaseVertex = 0;
+
+                    tmpLst = new List<int>();
+                    tmpPos = new List<Vector3>();
+                    tmpCol = new List<Vector3>();
+                    tmpNor = new List<Vector3>();
                 }
 
-                mesh.VerticesPositions.AddRange(tmpMesh.Positions);
+                tmpPos.AddRange(tmpMesh.Positions);
+
+                // HACK: Fix rounding errors in vertex positions
+                for (int v = 0; v < tmpPos.Count; v++)
+                    tmpPos[v] = new Vector3((float)Math.Round(tmpPos[v].X, 3),
+                                            (float)Math.Round(tmpPos[v].Y, 3),
+                                            (float)Math.Round(tmpPos[v].Z, 3));
 
                 // Copy normals as well, if they are consistent
                 if (tmpMesh.Normals.Count == tmpMesh.Positions.Count)
-                    mesh.VerticesNormals.AddRange(tmpMesh.Normals);
+                    tmpNor.AddRange(tmpMesh.Normals);
                 
                 // Copy vertex colors, if they are consistent
                 if (tmpMesh.Colors.Count == tmpMesh.Positions.Count)
-                    mesh.VerticesColors.AddRange(tmpMesh.Colors.Select(v => v.To3()));
+                    tmpCol.AddRange(tmpMesh.Colors.Select(v => v.To3()));
 
                 foreach (var tmpSubmesh in tmpMesh.Submeshes)
                     foreach (var tmpPoly in tmpSubmesh.Value.Polygons)
                     {
-                        if (tmpPoly.Shape == IOPolygonShape.Quad)
+                        var vertexCount = (tmpPoly.Shape == IOPolygonShape.Quad ? 4 : 3);
+
+                        var poly = new WadPolygon
+                        { Shape = vertexCount == 4 ? WadPolygonShape.Quad : WadPolygonShape.Triangle};
+
+                        // ULTRA HACK for ass-imp disjointment mess!
+                        // Ass-imp tends to disjoint shared vertices in case different faces have non-adjacent
+                        // texture coordinates. Sadly no ass-imp options can solve this problem, so only way
+                        // to do this is to manually rejoint similar ones.
+
+                        for (int j = 0; j < vertexCount; j++)
                         {
-                            var poly = new WadPolygon { Shape = WadPolygonShape.Quad };
-                            poly.Index0 = tmpPoly.Indices[0] + lastBaseVertex;
-                            poly.Index1 = tmpPoly.Indices[1] + lastBaseVertex;
-                            poly.Index2 = tmpPoly.Indices[2] + lastBaseVertex;
-                            poly.Index3 = tmpPoly.Indices[3] + lastBaseVertex;
+                            // Get assimp's own index which is wrong by now
+                            var tmpIndex = tmpPoly.Indices[j];
 
-                            var area = new TextureArea();
-                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
-                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
+                            // Find first entry in assimp vertex lists which is similar
+                            // to the one index is refering to and remember it as candidate.
 
-                            /*var min = Vector2.Min(Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
-                            var max = Vector2.Max(Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
-                            var size = max - min;
+                            int candidate = -1;
+                            for (int k = 0; k < tmpPos.Count; k++)
+                            {
+                                if (tmpPos[tmpIndex] == tmpPos[k] &&
+                                    tmpCol[tmpIndex] == tmpCol[k] &&
+                                    tmpNor[tmpIndex] == tmpNor[k])
+                                {
+                                    candidate = k;
+                                    break;
+                                }
+                            }
 
-                            area.TexCoord0 -= min;
-                            area.TexCoord1 -= min;
-                            area.TexCoord2 -= min;
-                            area.TexCoord3 -= min;
+                            // Copy vertex data from assimp lists to mesh lists, also
+                            // keeping data index to refer to it later in case similar but 
+                            // duplicated entry is found.
 
-                            var texture = new WadTexture(ImageC.CreateNew((int)size.X, (int)size.Y));
-                            texture.Image.CopyFrom(0, 0, tmpSubmesh.Value.Material.Texture.Image, (int)min.X, (int)min.Y, (int)size.X, (int)size.Y);
-                            */
+                            int newIndex = -1;
 
-                            area.Texture = tmpSubmesh.Value.Material.Texture;
-                            area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
-                            area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
+                            if (!tmpLst.Contains(candidate))
+                            {
+                                newIndex = tmpLst.Count;
+                                tmpLst.Add(candidate);
+                                mesh.VerticesPositions.Add(tmpPos[candidate]);
+                                mesh.VerticesColors.Add(tmpCol[candidate]);
+                                mesh.VerticesNormals.Add(tmpNor[candidate]);
+                            }
+                            else
+                                newIndex = tmpLst.IndexOf(candidate);
 
-                            poly.Texture = area;
-                            poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
-
-                            mesh.Polys.Add(poly);
+                            switch (j)
+                            {
+                                case 0: poly.Index0 = newIndex; break;
+                                case 1: poly.Index1 = newIndex; break;
+                                case 2: poly.Index2 = newIndex; break;
+                                case 3: poly.Index3 = newIndex; break;
+                            }
                         }
+
+                        var area = new TextureArea();
+                        area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
+                        area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
+                        area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
+
+                        if (vertexCount == 4)
+                            area.TexCoord3 = tmpMesh.UV[tmpPoly.Indices[3]];
                         else
-                        {
-                            var poly = new WadPolygon { Shape = WadPolygonShape.Triangle };
-                            poly.Index0 = tmpPoly.Indices[0] + lastBaseVertex;
-                            poly.Index1 = tmpPoly.Indices[1] + lastBaseVertex;
-                            poly.Index2 = tmpPoly.Indices[2] + lastBaseVertex;
-
-                            var area = new TextureArea();
-                            area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
-                            area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
-                            area.TexCoord2 = tmpMesh.UV[tmpPoly.Indices[2]];
-
                             area.TexCoord3 = area.TexCoord2;
 
-                            /*var min = Vector2.Min(Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
-                            var max = Vector2.Max(Vector2.Max(Vector2.Max(area.TexCoord0, area.TexCoord1), area.TexCoord2), area.TexCoord3);
-                            var size = max - min;
+                        area.Texture = tmpSubmesh.Value.Material.Texture;
+                        area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
+                        area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
 
-                            area.TexCoord0 -= min;
-                            area.TexCoord1 -= min;
-                            area.TexCoord2 -= min;
-                            area.TexCoord3 -= min;
+                        poly.Texture = area;
+                        poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
 
-                            var texture = new WadTexture(ImageC.CreateNew((int)size.X, (int)size.Y));
-                            texture.Image.CopyFrom(0, 0, tmpSubmesh.Value.Material.Texture.Image, (int)min.X, (int)min.Y, (int)size.X, (int)size.Y);
-                            */
-
-                            area.Texture = tmpSubmesh.Value.Material.Texture;
-                            area.DoubleSided = tmpSubmesh.Value.Material.DoubleSided;
-                            area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
-
-                            poly.Texture = area;
-                            poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
-
-                            mesh.Polys.Add(poly);
-                        }
+                        mesh.Polys.Add(poly);
                     }
 
                 if (!mergeIntoOne || i == tmpModel.Meshes.Count - 1)
@@ -467,11 +482,8 @@ namespace TombLib.Wad
                     if (mesh.VerticesPositions.Count != mesh.VerticesColors.Count)
                         mesh.VerticesColors.Clear(); // Reset vertex colors in case they got desynced from vertex count
 
-                    lastBaseVertex = 0;
                     meshList.Add(mesh);
                 }
-                else
-                    lastBaseVertex = mesh.VerticesPositions.Count;
             }
 
             return meshList;

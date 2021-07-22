@@ -175,6 +175,7 @@
             this.nudVertexNum.Name = "nudVertexNum";
             this.nudVertexNum.Size = new System.Drawing.Size(62, 22);
             this.nudVertexNum.TabIndex = 2;
+            this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
             // 
             // darkLabel1
             // 

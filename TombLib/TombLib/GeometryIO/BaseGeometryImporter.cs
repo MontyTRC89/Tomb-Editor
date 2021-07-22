@@ -92,8 +92,8 @@ namespace TombLib.GeometryIO
 
             if (_settings.PremultiplyUV)
             {
-                uv.X *= w;
-                uv.Y *= h;
+                uv.X *= (float)w;
+                uv.Y *= (float)h;
 
                 if (!_settings.WrapUV)
                 {

@@ -492,8 +492,13 @@ namespace WadTool
                 return;
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _moveable.Id, theNode.WadMesh.Name) { GenericMode = true })
-                form.ShowDialog(this);
+            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _moveable.Id, theNode.WadMesh.Clone()))
+            {
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                ReplaceExistingBone(form.SelectedMesh.Clone(), theNode);
+            }
         }
 
         private void DeleteBone()

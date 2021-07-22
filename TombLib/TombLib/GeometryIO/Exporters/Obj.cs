@@ -76,7 +76,7 @@ namespace TombLib.GeometryIO.Exporters
 
                     for (int i = 0; i < mesh.Normals.Count; i++)
                     {
-                        var normal = mesh.Normals[i];
+                        var normal = mesh.Normals[i] / _settings.Scale;
                         int found = -1;
                         for (int j = 0; j < normals.Count; j++)
                             if (normals[j] == normal)
