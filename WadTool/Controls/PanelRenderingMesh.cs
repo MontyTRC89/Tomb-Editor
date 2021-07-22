@@ -90,7 +90,10 @@ namespace WadTool.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
 
-        private const float _littleSphereRadius = 1.5f;
+        // Constants
+        private const float _littleSphereRadius = 1.0f;
+        private readonly List<int> _oldLaraHairIndices = new List<int>() { 37, 38, 39, 40 };
+        private readonly List<int> _youngLaraHairIndices = new List<int>() { 68, 69, 70, 71, 76, 77, 78, 79 };
 
         protected override Vector4 ClearColor => _tool.Configuration.RenderingItem_BackgroundColor;
 
@@ -200,7 +203,22 @@ namespace WadTool.Controls
                     _device.SetVertexInputLayout(_littleSphere.InputLayout);
                     _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
-                    bool hasDrawnCurrentVertex = true;
+                    // HACK: Determine remappable vertices.
+                    // For more info: https://www.tombraiderforums.com/showthread.php?t=132749
+
+                    int safeIndex = int.MaxValue;
+                    if (_tool.DestinationWad.GameVersion != TRVersion.Game.TombEngine)
+                    {
+                        if (_mesh.VerticesPositions.Count <= 255)
+                            safeIndex = 127;
+                        else
+                        {
+                            var step = (Math.Truncate((float)_mesh.VerticesPositions.Count / 256.0f) - 1) * 256.0f;
+                            safeIndex = _mesh.VerticesPositions.Count - (int)step - 1;
+                            if (safeIndex > 127) safeIndex = 127;
+                        }
+                    }
+
                     var textToDraw = new List<Text>();
 
                     for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
@@ -208,17 +226,17 @@ namespace WadTool.Controls
                         var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VerticesPositions[i]) * viewProjection;
                         solidEffect.Parameters["ModelViewProjection"].SetValue((posMatrix).ToSharpDX());
 
-                        if (hasDrawnCurrentVertex)
-                        {
-                            solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 1));
-                            hasDrawnCurrentVertex = false;
-                        }
-
                         var selected = (i == _currentVertex);
                         if (selected)
                         {
                             solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 1));
-                            hasDrawnCurrentVertex = true;
+                        }
+                        else
+                        {
+                            if (i <= safeIndex)
+                                solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.7f, 1, 1));
+                            else
+                                solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0.7f, 0, 1));
                         }
 
                         solidEffect.Techniques[0].Passes[0].Apply();

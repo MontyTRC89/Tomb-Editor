@@ -417,8 +417,8 @@ namespace TombLib.Wad
                             for (int k = 0; k < tmpPos.Count; k++)
                             {
                                 if (tmpPos[tmpIndex] == tmpPos[k] &&
-                                    tmpCol[tmpIndex] == tmpCol[k] &&
-                                    tmpNor[tmpIndex] == tmpNor[k])
+                                    (tmpCol.Count == 0 || tmpCol[tmpIndex] == tmpCol[k]) &&
+                                    (tmpNor.Count == 0 || tmpNor[tmpIndex] == tmpNor[k]))
                                 {
                                     candidate = k;
                                     break;
@@ -436,8 +436,8 @@ namespace TombLib.Wad
                                 newIndex = tmpLst.Count;
                                 tmpLst.Add(candidate);
                                 mesh.VerticesPositions.Add(tmpPos[candidate]);
-                                mesh.VerticesColors.Add(tmpCol[candidate]);
-                                mesh.VerticesNormals.Add(tmpNor[candidate]);
+                                if (tmpCol.Count > 0) mesh.VerticesColors.Add(tmpCol[candidate]);
+                                if (tmpNor.Count > 0) mesh.VerticesNormals.Add(tmpNor[candidate]);
                             }
                             else
                                 newIndex = tmpLst.IndexOf(candidate);

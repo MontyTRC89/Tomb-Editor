@@ -51,6 +51,7 @@
             this.lstMeshes.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.lstMeshes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstMeshes.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.lstMeshes.ExpandOnDoubleClick = false;
             this.lstMeshes.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.lstMeshes.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.lstMeshes.Location = new System.Drawing.Point(1, 25);
