@@ -566,7 +566,7 @@ namespace WadTool
 
             using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
             {
-                if (form.ShowDialog() == DialogResult.Cancel)
+                if (form.ShowDialog() == DialogResult.Cancel || form.SelectedMesh == null)
                     return;
 
                 InsertNewBone(form.SelectedMesh.Clone(), theNode);

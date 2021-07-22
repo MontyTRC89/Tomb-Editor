@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
@@ -74,6 +75,9 @@ namespace WadTool.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SafeRemapLimit
         {
+            // HACK: Determine remappable vertices (only for legacy engines).
+            // For more info: https://www.tombraiderforums.com/showthread.php?t=132749
+
             get
             {
                 int safeIndex = int.MaxValue;
@@ -98,7 +102,8 @@ namespace WadTool.Controls
         // Interaction state
         private float _lastX;
         private float _lastY;
-        private List<int> _clickedVertices = new List<int>();
+        private Vector3 _lastVertexPos;
+        private List<int> _clickchain = new List<int>();
 
         // Legacy rendering state
         private GraphicsDevice _device;
@@ -225,24 +230,28 @@ namespace WadTool.Controls
                     _device.SetVertexInputLayout(_littleSphere.InputLayout);
                     _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
-                    // HACK: Determine remappable vertices.
-                    // For more info: https://www.tombraiderforums.com/showthread.php?t=132749
-
                     var safeIndex = SafeRemapLimit;
                     var textToDraw = new List<Text>();
 
                     for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
                     {
+                        var selected = (i == _currentVertex);
+
+                        // Don't draw vertices from clickchain
+                        if (!selected && _clickchain.Contains(i) && _clickchain.Contains(_currentVertex))
+                            continue;
+
                         var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VerticesPositions[i]) * viewProjection;
                         solidEffect.Parameters["ModelViewProjection"].SetValue((posMatrix).ToSharpDX());
 
-                        var selected = (i == _currentVertex);
                         if (selected)
                         {
+                            // Highlight selection
                             solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 1));
                         }
                         else
                         {
+                            // Highlight safe remap indices
                             if (i <= safeIndex)
                                 solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 1));
                             else
@@ -257,12 +266,23 @@ namespace WadTool.Controls
                             // Only draw texts which are actually visible
                             if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
                             {
+                                var pos = posMatrix.TransformPerspectively(new Vector3()).To2();
+
+                                // Filter out labels which sit on the same coordinate and show ellipsis instead
+                                var existingText = textToDraw.Where(t => t.Pos == pos).ToList();
+                                if (existingText.Count > 0)
+                                {
+                                    if (existingText[0].String != _currentVertex.ToString())
+                                        existingText[0].String = "...";
+                                    continue;
+                                }
+
                                 textToDraw.Add(new Text
                                 {
                                     Font = _fontDefault,
                                     TextAlignment = new Vector2(0.0f, 0.0f),
                                     PixelPos = new VectorInt2(2, -2),
-                                    Pos = posMatrix.TransformPerspectively(new Vector3()).To2(),
+                                    Pos = pos,
                                     Overlay = _tool.Configuration.Rendering3D_DrawFontOverlays,
                                     String = i.ToString()
                                 });
@@ -365,6 +385,9 @@ namespace WadTool.Controls
 
         private void TryPickVertex(float x, float y)
         {
+            if (_mesh == null)
+                return;
+
             var matrix = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             var ray = Ray.GetPickRay(new Vector2(x, y), matrix, ClientSize.Width, ClientSize.Height);
 
@@ -380,27 +403,35 @@ namespace WadTool.Controls
 
                 if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))
                 {
-                    if (newDistance < distance || candidate == -1)
+                    if (newDistance <= distance || candidate == -1)
                     {
                         distance = newDistance;
                         candidate = i;
                     }
                 }
 
-                if (candidate != -1 && !_clickedVertices.Contains(candidate))
+                if (candidate != -1 && !_clickchain.Contains(candidate))
                 {
                     CurrentVertex = candidate;
-                    _clickedVertices.Add(candidate);
+
+                    // Reset clickchain in case other coordinate is picked
+                    if (_lastVertexPos != _mesh.VerticesPositions[candidate])
+                    {
+                        _lastVertexPos = _mesh.VerticesPositions[candidate];
+                        _clickchain.Clear();
+                    }
+                    _clickchain.Add(candidate);
                     return;
                 }
             }
 
-            if (_clickedVertices.Count > 0)
-                CurrentVertex = _clickedVertices[0];
+            if (_clickchain.Count > 0)
+            {
+                _clickchain.Clear();
+                TryPickVertex(x, y); // All similar vertices clicked, restart picking
+            }
             else
                 CurrentVertex = -1;
-
-            _clickedVertices.Clear();
         }
 
         public void ResetCamera()

@@ -48,6 +48,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).BeginInit();
             this.darkSectionPanel2.SuspendLayout();
             this.panelMain.SuspendLayout();
+            this.panelMeshView.SuspendLayout();
             this.panelTree.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,11 +73,11 @@
             // 
             // panelMesh
             // 
-            this.panelMesh.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelMesh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panelMesh.Location = new System.Drawing.Point(319, 0);
+            this.panelMesh.Location = new System.Drawing.Point(0, 0);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(415, 393);
+            this.panelMesh.Size = new System.Drawing.Size(415, 394);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -221,12 +222,6 @@
             this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkPanel1.Controls.Add(this.darkSectionPanel1);
-            this.darkPanel1.Controls.Add(this.panelTree);
-            this.darkPanel1.Location = new System.Drawing.Point(5, 5);
-            this.darkPanel1.Name = "darkPanel1";
-            this.darkPanel1.Size = new System.Drawing.Size(734, 482);
-            this.darkPanel1.TabIndex = 56;
             this.panelMain.Controls.Add(this.panelMeshView);
             this.panelMain.Controls.Add(this.darkSectionPanel1);
             this.panelMain.Controls.Add(this.panelTree);
@@ -237,6 +232,7 @@
             // 
             // panelMeshView
             // 
+            this.panelMeshView.Controls.Add(this.panelMesh);
             this.panelMeshView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMeshView.Location = new System.Drawing.Point(319, 0);
             this.panelMeshView.Name = "panelMeshView";
@@ -275,6 +271,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).EndInit();
             this.darkSectionPanel2.ResumeLayout(false);
             this.panelMain.ResumeLayout(false);
+            this.panelMeshView.ResumeLayout(false);
             this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
 
