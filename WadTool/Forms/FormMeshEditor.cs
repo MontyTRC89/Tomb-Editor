@@ -227,11 +227,6 @@ namespace WadTool
             RemapSelectedVertex();
         }
 
-        private void FormMesh_ResizeEnd(object sender, EventArgs e)
-        {
-            panelMesh.ResetCamera();
-        }
-
         private void butFindVertex_Click(object sender, EventArgs e)
         {
             var newVertexIndex = (int)nudVertexNum.Value;
