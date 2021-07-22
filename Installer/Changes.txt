@@ -4,6 +4,7 @@ Version 1.3.16
 WadTool:
  * Ability to remap vertices (double-click on meshes in skeleton editor or use "Tools -> Mesh editor" in main window).
  * New function in animation fixer to restore original animation names for current game version.
+ * Fix problems with disjointed vertices when non-UV-mapped objects are imported from external 3D models.
 
 Version 1.3.15
 ==============
