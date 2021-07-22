@@ -41,12 +41,13 @@
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.cbShowVertices = new DarkUI.Controls.DarkCheckBox();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
-            this.darkPanel1 = new DarkUI.Controls.DarkPanel();
+            this.panelMain = new DarkUI.Controls.DarkPanel();
+            this.panelMeshView = new DarkUI.Controls.DarkPanel();
             this.panelTree = new DarkUI.Controls.DarkPanel();
             this.darkSectionPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).BeginInit();
             this.darkSectionPanel2.SuspendLayout();
-            this.darkPanel1.SuspendLayout();
+            this.panelMain.SuspendLayout();
             this.panelTree.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -135,7 +136,7 @@
             this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
             this.butFindVertex.Location = new System.Drawing.Point(247, 55);
             this.butFindVertex.Name = "butFindVertex";
-            this.butFindVertex.Size = new System.Drawing.Size(82, 22);
+            this.butFindVertex.Size = new System.Drawing.Size(81, 22);
             this.butFindVertex.TabIndex = 5;
             this.butFindVertex.Text = "Jump to";
             this.butFindVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -156,7 +157,7 @@
             this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRemapVertex.Checked = false;
             this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butRemapVertex.Location = new System.Drawing.Point(335, 55);
+            this.butRemapVertex.Location = new System.Drawing.Point(334, 55);
             this.butRemapVertex.Name = "butRemapVertex";
             this.butRemapVertex.Size = new System.Drawing.Size(74, 22);
             this.butRemapVertex.TabIndex = 3;
@@ -215,18 +216,33 @@
             this.darkSectionPanel2.Size = new System.Drawing.Size(314, 482);
             this.darkSectionPanel2.TabIndex = 55;
             // 
-            // darkPanel1
+            // panelMain
             // 
-            this.darkPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panelMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkPanel1.Controls.Add(this.panelMesh);
             this.darkPanel1.Controls.Add(this.darkSectionPanel1);
             this.darkPanel1.Controls.Add(this.panelTree);
             this.darkPanel1.Location = new System.Drawing.Point(5, 5);
             this.darkPanel1.Name = "darkPanel1";
             this.darkPanel1.Size = new System.Drawing.Size(734, 482);
             this.darkPanel1.TabIndex = 56;
+            this.panelMain.Controls.Add(this.panelMeshView);
+            this.panelMain.Controls.Add(this.darkSectionPanel1);
+            this.panelMain.Controls.Add(this.panelTree);
+            this.panelMain.Location = new System.Drawing.Point(5, 5);
+            this.panelMain.Name = "panelMain";
+            this.panelMain.Size = new System.Drawing.Size(734, 482);
+            this.panelMain.TabIndex = 56;
+            // 
+            // panelMeshView
+            // 
+            this.panelMeshView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMeshView.Location = new System.Drawing.Point(319, 0);
+            this.panelMeshView.Name = "panelMeshView";
+            this.panelMeshView.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.panelMeshView.Size = new System.Drawing.Size(415, 399);
+            this.panelMeshView.TabIndex = 55;
             // 
             // panelTree
             // 
@@ -243,7 +259,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(744, 522);
-            this.Controls.Add(this.darkPanel1);
+            this.Controls.Add(this.panelMain);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
             this.MinimizeBox = false;
@@ -258,7 +274,7 @@
             this.darkSectionPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).EndInit();
             this.darkSectionPanel2.ResumeLayout(false);
-            this.darkPanel1.ResumeLayout(false);
+            this.panelMain.ResumeLayout(false);
             this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -279,7 +295,8 @@
         private DarkUI.Controls.DarkCheckBox cbVertexNumbers;
         private DarkUI.Controls.DarkButton butFindVertex;
         private DarkUI.Controls.DarkCheckBox cbWireframe;
-        private DarkUI.Controls.DarkPanel darkPanel1;
+        private DarkUI.Controls.DarkPanel panelMain;
         private DarkUI.Controls.DarkPanel panelTree;
+        private DarkUI.Controls.DarkPanel panelMeshView;
     }
 }

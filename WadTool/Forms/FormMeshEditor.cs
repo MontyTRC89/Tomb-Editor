@@ -225,7 +225,17 @@ namespace WadTool
             if (count > 0)
             {
                 _tool.ToggleUnsavedChanges();
-                popup.ShowInfo(panelMesh, "Successfully replaced vertex " + panelMesh.CurrentVertex + " with " + newVertexIndex + " in " + count + " faces.");
+
+                var message = "Successfully replaced vertex " + panelMesh.CurrentVertex + " with " + newVertexIndex + " in " + count + " faces.";
+
+                if (newVertexIndex > panelMesh.SafeRemapLimit)
+                {
+                    message += "\n" + "Specified vertex number is out of recommended bounds. Glitches may happen in game.";
+                    popup.ShowWarning(panelMesh, message);
+                }
+                else
+                    popup.ShowInfo(panelMesh, message);
+
                 panelMesh.CurrentVertex = newVertexIndex;
             }
         }

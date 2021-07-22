@@ -71,12 +71,34 @@ namespace WadTool.Controls
         }
         private int _currentVertex = -1;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int SafeRemapLimit
+        {
+            get
+            {
+                int safeIndex = int.MaxValue;
+                if (_tool.DestinationWad.GameVersion != TRVersion.Game.TombEngine)
+                {
+                    if (_mesh.VerticesPositions.Count <= 255)
+                        safeIndex = 127;
+                    else
+                    {
+                        var step = (Math.Truncate((float)_mesh.VerticesPositions.Count / 256.0f) - 1) * 256.0f;
+                        safeIndex = _mesh.VerticesPositions.Count - (int)step - 1;
+                        if (safeIndex > 127) safeIndex = 127;
+                    }
+                }
+                return safeIndex;
+            }
+        }
+
         // General state
         private WadToolClass _tool;
 
         // Interaction state
         private float _lastX;
         private float _lastY;
+        private List<int> _clickedVertices = new List<int>();
 
         // Legacy rendering state
         private GraphicsDevice _device;
@@ -206,19 +228,7 @@ namespace WadTool.Controls
                     // HACK: Determine remappable vertices.
                     // For more info: https://www.tombraiderforums.com/showthread.php?t=132749
 
-                    int safeIndex = int.MaxValue;
-                    if (_tool.DestinationWad.GameVersion != TRVersion.Game.TombEngine)
-                    {
-                        if (_mesh.VerticesPositions.Count <= 255)
-                            safeIndex = 127;
-                        else
-                        {
-                            var step = (Math.Truncate((float)_mesh.VerticesPositions.Count / 256.0f) - 1) * 256.0f;
-                            safeIndex = _mesh.VerticesPositions.Count - (int)step - 1;
-                            if (safeIndex > 127) safeIndex = 127;
-                        }
-                    }
-
+                    var safeIndex = SafeRemapLimit;
                     var textToDraw = new List<Text>();
 
                     for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
@@ -360,6 +370,7 @@ namespace WadTool.Controls
 
             float distance = float.MaxValue;
             int candidate = -1;
+            int result = candidate;
 
             for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
             {
@@ -376,11 +387,20 @@ namespace WadTool.Controls
                     }
                 }
 
-                if (candidate != -1)
+                if (candidate != -1 && !_clickedVertices.Contains(candidate))
+                {
                     CurrentVertex = candidate;
-                else
-                    CurrentVertex = -1;
+                    _clickedVertices.Add(candidate);
+                    return;
+                }
             }
+
+            if (_clickedVertices.Count > 0)
+                CurrentVertex = _clickedVertices[0];
+            else
+                CurrentVertex = -1;
+
+            _clickedVertices.Clear();
         }
 
         public void ResetCamera()
