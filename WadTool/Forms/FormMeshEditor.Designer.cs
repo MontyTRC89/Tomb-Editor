@@ -41,9 +41,13 @@
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.cbShowVertices = new DarkUI.Controls.DarkCheckBox();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.darkPanel1 = new DarkUI.Controls.DarkPanel();
+            this.panelTree = new DarkUI.Controls.DarkPanel();
             this.darkSectionPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).BeginInit();
             this.darkSectionPanel2.SuspendLayout();
+            this.darkPanel1.SuspendLayout();
+            this.panelTree.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstMeshes
@@ -59,20 +63,19 @@
             this.lstMeshes.Name = "lstMeshes";
             this.lstMeshes.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
             this.lstMeshes.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
-            this.lstMeshes.Size = new System.Drawing.Size(317, 407);
+            this.lstMeshes.Size = new System.Drawing.Size(312, 456);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
             this.lstMeshes.Click += new System.EventHandler(this.lstMeshes_Click);
+            this.lstMeshes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstMeshes_KeyDown);
             // 
             // panelMesh
             // 
-            this.panelMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelMesh.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panelMesh.Location = new System.Drawing.Point(330, 5);
+            this.panelMesh.Location = new System.Drawing.Point(319, 0);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(485, 524);
+            this.panelMesh.Size = new System.Drawing.Size(415, 393);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -80,7 +83,7 @@
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.Checked = false;
             this.btCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btCancel.Location = new System.Drawing.Point(647, 533);
+            this.btCancel.Location = new System.Drawing.Point(571, 493);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(81, 23);
             this.btCancel.TabIndex = 52;
@@ -92,7 +95,7 @@
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOk.Checked = false;
             this.btOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btOk.Location = new System.Drawing.Point(734, 533);
+            this.btOk.Location = new System.Drawing.Point(658, 493);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(81, 23);
             this.btOk.TabIndex = 53;
@@ -101,7 +104,6 @@
             // 
             // darkSectionPanel1
             // 
-            this.darkSectionPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkSectionPanel1.Controls.Add(this.cbWireframe);
             this.darkSectionPanel1.Controls.Add(this.butFindVertex);
             this.darkSectionPanel1.Controls.Add(this.cbVertexNumbers);
@@ -109,16 +111,17 @@
             this.darkSectionPanel1.Controls.Add(this.nudVertexNum);
             this.darkSectionPanel1.Controls.Add(this.darkLabel1);
             this.darkSectionPanel1.Controls.Add(this.cbShowVertices);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(5, 444);
+            this.darkSectionPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.darkSectionPanel1.Location = new System.Drawing.Point(319, 399);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Vertex remap tools";
-            this.darkSectionPanel1.Size = new System.Drawing.Size(319, 85);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(415, 83);
             this.darkSectionPanel1.TabIndex = 54;
             // 
             // cbWireframe
             // 
             this.cbWireframe.AutoSize = true;
-            this.cbWireframe.Location = new System.Drawing.Point(213, 28);
+            this.cbWireframe.Location = new System.Drawing.Point(214, 32);
             this.cbWireframe.Name = "cbWireframe";
             this.cbWireframe.Size = new System.Drawing.Size(79, 17);
             this.cbWireframe.TabIndex = 6;
@@ -127,11 +130,12 @@
             // 
             // butFindVertex
             // 
+            this.butFindVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butFindVertex.Checked = false;
             this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butFindVertex.Location = new System.Drawing.Point(168, 55);
+            this.butFindVertex.Location = new System.Drawing.Point(247, 55);
             this.butFindVertex.Name = "butFindVertex";
-            this.butFindVertex.Size = new System.Drawing.Size(73, 22);
+            this.butFindVertex.Size = new System.Drawing.Size(82, 22);
             this.butFindVertex.TabIndex = 5;
             this.butFindVertex.Text = "Jump to";
             this.butFindVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -140,7 +144,7 @@
             // cbVertexNumbers
             // 
             this.cbVertexNumbers.AutoSize = true;
-            this.cbVertexNumbers.Location = new System.Drawing.Point(100, 28);
+            this.cbVertexNumbers.Location = new System.Drawing.Point(101, 32);
             this.cbVertexNumbers.Name = "cbVertexNumbers";
             this.cbVertexNumbers.Size = new System.Drawing.Size(118, 17);
             this.cbVertexNumbers.TabIndex = 4;
@@ -149,11 +153,12 @@
             // 
             // butRemapVertex
             // 
+            this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRemapVertex.Checked = false;
             this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butRemapVertex.Location = new System.Drawing.Point(247, 55);
+            this.butRemapVertex.Location = new System.Drawing.Point(335, 55);
             this.butRemapVertex.Name = "butRemapVertex";
-            this.butRemapVertex.Size = new System.Drawing.Size(66, 22);
+            this.butRemapVertex.Size = new System.Drawing.Size(74, 22);
             this.butRemapVertex.TabIndex = 3;
             this.butRemapVertex.Text = "Remap";
             this.butRemapVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -161,12 +166,13 @@
             // 
             // nudVertexNum
             // 
+            this.nudVertexNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudVertexNum.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
-            this.nudVertexNum.Location = new System.Drawing.Point(100, 55);
+            this.nudVertexNum.Location = new System.Drawing.Point(96, 55);
             this.nudVertexNum.LoopValues = false;
             this.nudVertexNum.Maximum = new decimal(new int[] {
             65535,
@@ -174,15 +180,16 @@
             0,
             0});
             this.nudVertexNum.Name = "nudVertexNum";
-            this.nudVertexNum.Size = new System.Drawing.Size(62, 22);
+            this.nudVertexNum.Size = new System.Drawing.Size(145, 22);
             this.nudVertexNum.TabIndex = 2;
             this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
             // 
             // darkLabel1
             // 
+            this.darkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel1.AutoSize = true;
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(4, 57);
+            this.darkLabel1.Location = new System.Drawing.Point(5, 57);
             this.darkLabel1.Name = "darkLabel1";
             this.darkLabel1.Size = new System.Drawing.Size(85, 13);
             this.darkLabel1.TabIndex = 1;
@@ -191,7 +198,7 @@
             // cbShowVertices
             // 
             this.cbShowVertices.AutoSize = true;
-            this.cbShowVertices.Location = new System.Drawing.Point(7, 28);
+            this.cbShowVertices.Location = new System.Drawing.Point(8, 32);
             this.cbShowVertices.Name = "cbShowVertices";
             this.cbShowVertices.Size = new System.Drawing.Size(96, 17);
             this.cbShowVertices.TabIndex = 0;
@@ -200,27 +207,47 @@
             // 
             // darkSectionPanel2
             // 
-            this.darkSectionPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
             this.darkSectionPanel2.Controls.Add(this.lstMeshes);
-            this.darkSectionPanel2.Location = new System.Drawing.Point(5, 5);
+            this.darkSectionPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = "Mesh list";
-            this.darkSectionPanel2.Size = new System.Drawing.Size(319, 433);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(314, 482);
             this.darkSectionPanel2.TabIndex = 55;
+            // 
+            // darkPanel1
+            // 
+            this.darkPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.darkPanel1.Controls.Add(this.darkSectionPanel1);
+            this.darkPanel1.Controls.Add(this.panelMesh);
+            this.darkPanel1.Controls.Add(this.panelTree);
+            this.darkPanel1.Location = new System.Drawing.Point(5, 5);
+            this.darkPanel1.Name = "darkPanel1";
+            this.darkPanel1.Size = new System.Drawing.Size(734, 482);
+            this.darkPanel1.TabIndex = 56;
+            // 
+            // panelTree
+            // 
+            this.panelTree.Controls.Add(this.darkSectionPanel2);
+            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelTree.Location = new System.Drawing.Point(0, 0);
+            this.panelTree.Name = "panelTree";
+            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
+            this.panelTree.Size = new System.Drawing.Size(319, 482);
+            this.panelTree.TabIndex = 0;
             // 
             // FormMesh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(820, 562);
-            this.Controls.Add(this.darkSectionPanel2);
-            this.Controls.Add(this.darkSectionPanel1);
+            this.ClientSize = new System.Drawing.Size(744, 522);
+            this.Controls.Add(this.darkPanel1);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
-            this.Controls.Add(this.panelMesh);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(800, 600);
+            this.MinimumSize = new System.Drawing.Size(760, 560);
             this.Name = "FormMesh";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -232,6 +259,8 @@
             this.darkSectionPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).EndInit();
             this.darkSectionPanel2.ResumeLayout(false);
+            this.darkPanel1.ResumeLayout(false);
+            this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -251,5 +280,7 @@
         private DarkUI.Controls.DarkCheckBox cbVertexNumbers;
         private DarkUI.Controls.DarkButton butFindVertex;
         private DarkUI.Controls.DarkCheckBox cbWireframe;
+        private DarkUI.Controls.DarkPanel darkPanel1;
+        private DarkUI.Controls.DarkPanel panelTree;
     }
 }

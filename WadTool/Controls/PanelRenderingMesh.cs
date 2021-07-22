@@ -234,9 +234,9 @@ namespace WadTool.Controls
                         else
                         {
                             if (i <= safeIndex)
-                                solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.7f, 1, 1));
+                                solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 1));
                             else
-                                solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0.7f, 0, 1));
+                                solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 1));
                         }
 
                         solidEffect.Techniques[0].Passes[0].Apply();
@@ -402,7 +402,7 @@ namespace WadTool.Controls
             // Multiply distance by world units plus quarter-margin
             scale *= Level.WorldUnit;
 
-            Camera = new ArcBallCamera(center, 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, scale, 100, 1000000, (float)Math.PI / 4.0f);
+            Camera = new ArcBallCamera(center, 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, scale, 50, 1000000, (float)Math.PI / 4.0f);
             Invalidate();
         }
     }
