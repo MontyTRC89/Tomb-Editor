@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Forms;
@@ -46,43 +47,44 @@ namespace WadTool
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
 
-            // Populate tree view
-
-            var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
-            foreach (var moveable in _wad.Moveables)
+            if (mesh == null) // Populate tree view
             {
-                var list = new List<DarkUI.Controls.DarkTreeNode>();
-                var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
-                for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
+                var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
+                foreach (var moveable in _wad.Moveables)
                 {
-                    var wadMesh = moveable.Value.Meshes.ElementAt(i);
-                    var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                    node.Tag = new MeshTreeNode(moveable.Key, wadMesh);
-                    list.Add(node);
+                    var list = new List<DarkUI.Controls.DarkTreeNode>();
+                    var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
+                    for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
+                    {
+                        var wadMesh = moveable.Value.Meshes.ElementAt(i);
+                        var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                        node.Tag = new MeshTreeNode(moveable.Key, wadMesh);
+                        list.Add(node);
+                    }
+                    moveableNode.Nodes.AddRange(list);
+                    moveablesNode.Nodes.Add(moveableNode);
                 }
-                moveableNode.Nodes.AddRange(list);
-                moveablesNode.Nodes.Add(moveableNode);
+                lstMeshes.Nodes.Add(moveablesNode);
+
+                var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
+                foreach (var @static in _wad.Statics)
+                {
+                    var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
+                    var wadMesh = @static.Value.Mesh;
+                    var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                    node.Tag = new MeshTreeNode(@static.Key, wadMesh);
+                    staticNode.Nodes.Add(node);
+                    staticsNode.Nodes.Add(staticNode);
+                }
+                lstMeshes.Nodes.Add(staticsNode);
             }
-            lstMeshes.Nodes.Add(moveablesNode);
-
-            var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
-            foreach (var @static in _wad.Statics)
-            {
-                var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
-                var wadMesh = @static.Value.Mesh;
-                var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                node.Tag = new MeshTreeNode(@static.Key, wadMesh);
-                staticNode.Nodes.Add(node);
-                staticsNode.Nodes.Add(staticNode);
-            }
-            lstMeshes.Nodes.Add(staticsNode);
-
-            // If form is called with specific item and mesh, show only it and not meshtree.
-
-            if (mesh != null)
+            else // If form is called with specific item and mesh, show only it and not meshtree.
             {
                 panelMesh.Mesh = mesh;
                 panelTree.Visible = false; // Lock up list to prevent wandering around
+
+                MinimumSize = new Size(MinimumSize.Width - panelTree.Width, MinimumSize.Height);
+                Size = new Size(Size.Width - panelTree.Width, Size.Height);
             }
         }
 
