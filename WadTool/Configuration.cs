@@ -29,7 +29,7 @@ namespace WadTool
         public bool AnimationEditor_SoundPreview { get; set; } = false;
         public SoundPreviewType AnimationEditor_SoundPreviewType { get; set; } = SoundPreviewType.Land;
 
-        public bool MeshEditor_DrawVertices { get; set; } = false;
+        public bool MeshEditor_DrawVertices { get; set; } = true;
         public bool MeshEditor_DrawVertexNumbers { get; set; } = false;
         public bool MeshEditor_DrawWireframe { get; set; } = false;
 
