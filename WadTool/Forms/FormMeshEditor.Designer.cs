@@ -85,7 +85,7 @@
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.Checked = false;
             this.btCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btCancel.Location = new System.Drawing.Point(571, 493);
+            this.btCancel.Location = new System.Drawing.Point(658, 493);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(81, 23);
             this.btCancel.TabIndex = 52;
@@ -97,7 +97,7 @@
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOk.Checked = false;
             this.btOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btOk.Location = new System.Drawing.Point(658, 493);
+            this.btOk.Location = new System.Drawing.Point(571, 493);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(81, 23);
             this.btOk.TabIndex = 53;
