@@ -71,9 +71,7 @@
             // 
             // panelMesh
             // 
-            this.panelMesh.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelMesh.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.panelMesh.Location = new System.Drawing.Point(319, 0);
             this.panelMesh.Name = "panelMesh";
@@ -222,8 +220,8 @@
             this.darkPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.darkPanel1.Controls.Add(this.darkSectionPanel1);
             this.darkPanel1.Controls.Add(this.panelMesh);
+            this.darkPanel1.Controls.Add(this.darkSectionPanel1);
             this.darkPanel1.Controls.Add(this.panelTree);
             this.darkPanel1.Location = new System.Drawing.Point(5, 5);
             this.darkPanel1.Name = "darkPanel1";
