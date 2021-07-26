@@ -491,7 +491,7 @@ namespace WadTool
 
         private void debugAction9ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
                 form.ShowDialog(this);
         }
 
@@ -647,7 +647,7 @@ namespace WadTool
             if (_tool.DestinationWad == null)
                 return;
 
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { GenericMode = true })
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowMeshList = true, ShowEditingTools = true })
                 form.ShowDialog(this);
         }
     }

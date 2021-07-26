@@ -23,6 +23,12 @@ namespace WadTool
         LandWithMaterial,
         Water
     }
+    public enum MeshEditingMode
+    {
+        None,
+        VertexRemap,
+        Shininess
+    }
 
     public struct MainSelection
     {
@@ -278,14 +284,12 @@ namespace WadTool
             RaiseEvent(new AnimationEditorPlaybackEvent { Playing = playing, Chained = chained });
         }
 
-        // Mesh editor vertex pick
-        public class MeshEditorVertexChangedEvent : IEditorEvent
+        // Mesh editor element change
+        public class MeshEditorElementChangedEvent : IEditorEvent
+        { }
+        public void MeshEditorElementChanged(int number)
         {
-            public int VertexNumber { get; set; }
-        }
-        public void MeshEditorVertexChanged(int vertexNumber)
-        {
-            RaiseEvent(new MeshEditorVertexChangedEvent() { VertexNumber = vertexNumber });
+            RaiseEvent(new MeshEditorElementChangedEvent());
         }
 
         // Update unsaved changes

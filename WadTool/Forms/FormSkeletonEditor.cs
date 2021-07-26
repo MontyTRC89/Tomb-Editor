@@ -477,7 +477,7 @@ namespace WadTool
                 return;
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowMeshList = true, ShowEditingTools = false })
             {
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
@@ -492,7 +492,7 @@ namespace WadTool
                 return;
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, theNode.WadMesh.Clone()))
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, theNode.WadMesh.Clone()))
             {
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
@@ -564,7 +564,7 @@ namespace WadTool
                 return;
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            using (var form = new FormMesh(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad))
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowMeshList = true, ShowEditingTools = false })
             {
                 if (form.ShowDialog() == DialogResult.Cancel || form.SelectedMesh == null)
                     return;

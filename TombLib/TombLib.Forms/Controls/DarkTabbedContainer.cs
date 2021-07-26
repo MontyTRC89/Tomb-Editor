@@ -19,7 +19,7 @@ namespace TombLib.Controls
             get { return _linkedControl; }
             set
             {
-                if (!(value is DarkListView) && !(value is DarkListBox) && !(value == null))
+                if (!(value is DarkListView) && !(value is DarkComboBox) && !(value == null))
                     return;
 
                 // Unlink previous list view, if any
@@ -65,7 +65,7 @@ namespace TombLib.Controls
 
                         // Populate combo and select first entry
                         foreach (TabPage tab in TabPages)
-                            combo.Items.Add(new DarkListItem(tab.Text));
+                            combo.Items.Add(tab.Text);
 
                         if (combo.Items.Count > 0)
                             combo.SelectedIndex = 0;

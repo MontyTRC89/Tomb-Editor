@@ -31,49 +31,86 @@ namespace WadTool.Controls
                     return;
 
                 _mesh = value;
+                InitializeVertexBuffer();
                 ResetCamera();
-                CurrentVertex = -1;
+                CurrentElement = -1;
             }
         }
         private WadMesh _mesh;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawGrid
+        public MeshEditingMode EditingMode
         {
-            get { return _drawGrid; }
+            get {  return _editingMode; }
             set
             {
-                if (_drawGrid == value) return;
-                _drawGrid = value;
+                if (_editingMode == value) 
+                    return;
+
+                CurrentElement = -1;
+                _editingMode = value;
                 Invalidate();
             }
         }
-        private bool _drawGrid;
+        private MeshEditingMode _editingMode = MeshEditingMode.VertexRemap;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int CurrentVertex
+        public int CurrentElement
         {
-            get { return _currentVertex; }
+            get { return _currentElement; }
             set
             {
-                if (_currentVertex == value)
+                if (Mesh == null)
                     return;
+                 
+                // We arent checking if current element is already set because user may
+                // reselect same vertex/face with other incoming params changed (eg shine strength).
 
-                if (Mesh.VerticesPositions.Count > value)
-                    _currentVertex = value;
-                else
-                    _currentVertex = -1;
+                if (EditingMode == MeshEditingMode.VertexRemap)
+                    _currentElement = (Mesh.VerticesPositions.Count > value) ? value : -1;
+                else if (EditingMode == MeshEditingMode.Shininess)
+                    _currentElement = (Mesh.Polys.Count > value) ? value : -1;
 
-                if (_tool.Configuration.MeshEditor_DrawVertices)
+                _tool.MeshEditorElementChanged(CurrentElement);
+
+                if (EditingMode != MeshEditingMode.None)
                     Invalidate();
-
-                _tool.MeshEditorVertexChanged(CurrentVertex);
             }
         }
-        private int _currentVertex = -1;
+        private int _currentElement = -1;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int SafeRemapLimit
+        public bool WireframeMode
+        {
+            get { return _wireframeMode; }
+            set
+            {
+                if (_wireframeMode == value)
+                    return;
+
+                _wireframeMode = value;
+                Invalidate();
+            }
+        }
+        private bool _wireframeMode = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawVertexNumbers
+        {
+            get { return _drawVertexNumbers; }
+            set
+            {
+                if (_drawVertexNumbers == value)
+                    return;
+
+                _drawVertexNumbers = value;
+                Invalidate();
+            }
+        }
+        private bool _drawVertexNumbers = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int SafeVertexRemapLimit
         {
             // HACK: Determine remappable vertices (only for legacy engines).
             // For more info: https://www.tombraiderforums.com/showthread.php?t=132749
@@ -102,15 +139,15 @@ namespace WadTool.Controls
         // Interaction state
         private float _lastX;
         private float _lastY;
-        private Vector3 _lastVertexPos;
+        private List<Vector3> _lastElementPos = new List<Vector3>();
         private List<int> _clickchain = new List<int>();
 
         // Legacy rendering state
         private GraphicsDevice _device;
         private RasterizerState _rasterizerWireframe;
         private VertexInputLayout _layout;
-        private GeometricPrimitive _plane;
         private GeometricPrimitive _littleSphere;
+        private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
 
         // Rendering state
@@ -160,7 +197,6 @@ namespace WadTool.Controls
                     SlopeScaledDepthBias = 0
                 });
 
-                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
                 _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * _littleSphereRadius, 4);
             }
         }
@@ -170,7 +206,6 @@ namespace WadTool.Controls
             if (disposing)
             {
                 _rasterizerWireframe?.Dispose();
-                _plane?.Dispose();
                 _littleSphere?.Dispose();
                 _wadRenderer?.Dispose();
             }
@@ -183,66 +218,44 @@ namespace WadTool.Controls
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
-            if (_tool.Configuration.MeshEditor_DrawWireframe)
-                _device.SetRasterizerState(_rasterizerWireframe);
-            else
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetBlendState(_device.BlendStates.Opaque);
-
             var viewProjection = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
             var solidEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"];
+
+            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
             _wadRenderer.Dispose();
 
             if (Mesh != null)
             {
                 var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
-                var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
                 var world  = Matrix4x4.Identity;
 
-                effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                effect.Parameters["Color"].SetValue(Vector4.One);
-                effect.Parameters["StaticLighting"].SetValue(false);
-                effect.Parameters["ColoredVertices"].SetValue(false);
-                effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-                effect.Techniques[0].Passes[0].Apply();
+                var textToDraw = new List<Text>();
 
-                foreach (var mesh_ in mesh.Meshes)
+                // At first, draw either vertex spheres (if mode is set to vertex remap)
+                // or individual colored shininess faces (if mode is set to shininess editing).
+
+                if (EditingMode == MeshEditingMode.VertexRemap)
                 {
-                    _device.SetVertexBuffer(0, mesh_.VertexBuffer);
-                    _device.SetIndexBuffer(mesh_.IndexBuffer, true);
-                    _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
-                    _device.SetVertexInputLayout(_layout);
-
-                    foreach (var submesh in mesh_.Submeshes)
-                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
-                }
-
-                if (_tool.Configuration.MeshEditor_DrawVertices)
-                {
-                    _device.SetDepthStencilState(_device.DepthStencilStates.Default);
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                    _device.SetBlendState(_device.BlendStates.Opaque);
 
                     _device.SetVertexBuffer(_littleSphere.VertexBuffer);
                     _device.SetVertexInputLayout(_littleSphere.InputLayout);
                     _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
-                    var safeIndex = SafeRemapLimit;
-                    var textToDraw = new List<Text>();
+                    var safeIndex = SafeVertexRemapLimit;
 
                     for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
                     {
-                        var selected = (i == _currentVertex);
+                        var selected = (i == _currentElement);
 
                         // Don't draw vertices from clickchain
-                        if (!selected && _clickchain.Contains(i) && _clickchain.Contains(_currentVertex))
+                        if (!selected && _clickchain.Contains(i) && _clickchain.Contains(_currentElement))
                             continue;
 
                         var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VerticesPositions[i]) * viewProjection;
-                        solidEffect.Parameters["ModelViewProjection"].SetValue((posMatrix).ToSharpDX());
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
 
                         if (selected)
                         {
@@ -261,7 +274,7 @@ namespace WadTool.Controls
                         solidEffect.Techniques[0].Passes[0].Apply();
                         _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
 
-                        if (_tool.Configuration.MeshEditor_DrawVertexNumbers || selected)
+                        if (DrawVertexNumbers || selected)
                         {
                             // Only draw texts which are actually visible
                             if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
@@ -272,7 +285,7 @@ namespace WadTool.Controls
                                 var existingText = textToDraw.Where(t => t.Pos == pos).ToList();
                                 if (existingText.Count > 0)
                                 {
-                                    if (existingText[0].String != _currentVertex.ToString())
+                                    if (existingText[0].String != _currentElement.ToString())
                                         existingText[0].String = "...";
                                     continue;
                                 }
@@ -289,29 +302,97 @@ namespace WadTool.Controls
                             }
                         }
                     }
-
-                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
-
-                    if (textToDraw.Count > 0)
-                        SwapChain.RenderText(textToDraw);
                 }
-            }
-            
-            if (DrawGrid)
-            {
-                _device.SetRasterizerState(_rasterizerWireframe);
+                else if (EditingMode == MeshEditingMode.Shininess)
+                {
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                    _device.SetBlendState(_device.BlendStates.Opaque);
 
-                // Draw the grid
-                _device.SetVertexBuffer(0, _plane.VertexBuffer);
-                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
-                _device.SetIndexBuffer(_plane.IndexBuffer, true);
+                    _device.SetVertexBuffer(_faceVertexBuffer);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
 
-                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                solidEffect.Techniques[0].Passes[0].Apply();
+                    // Create a vertex array
+                    SolidVertex[] vtxs = new SolidVertex[_faceVertexBuffer.ElementCount];
+                    int vertexCount = 0;
 
-                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+                    for (int i = 0; i < _mesh.Polys.Count; i++)
+                    {
+                        var poly = _mesh.Polys[i];
+                        var strength = _mesh.Polys[i].ShineStrength / 64.0f;
+                        int vn = 0;
+
+                        // Draw one triangle for triangular face or 2 triangles for quad face
+
+                        for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
+                            for (int v = 0; v < 3; v++)
+                            {
+                                Vector3 pos = Vector3.Zero;
+
+                                switch (vn)
+                                {
+                                    case 0: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index0]; break;
+                                    case 1: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index1]; break;
+                                    case 2: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index2]; break;
+
+                                    case 3: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index2]; break;
+                                    case 4: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index3]; break;
+                                    case 5: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index0]; break;
+                                }
+
+                                vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1-strength, 1-strength, 1) };
+                                vn++;
+                                vertexCount++;
+                            }
+                    }
+
+                    _faceVertexBuffer.SetData(vtxs);
+
+                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                    solidEffect.Techniques[0].Passes[0].Apply();
+
+                    _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
+                }
+
+                // Next, draw whole textured mesh.
+                // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
+
+                if (EditingMode != MeshEditingMode.Shininess || WireframeMode)
+                {
+                    if (WireframeMode)
+                        _device.SetRasterizerState(_rasterizerWireframe);
+                    else
+                        _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                    _device.SetDepthStencilState(_device.DepthStencilStates.Default);
+                    _device.SetBlendState(_device.BlendStates.Opaque);
+
+                    var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
+                    effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
+                    effect.Parameters["Color"].SetValue(Vector4.One);
+                    effect.Parameters["StaticLighting"].SetValue(false);
+                    effect.Parameters["ColoredVertices"].SetValue(false);
+                    effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+                    effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+                    effect.Techniques[0].Passes[0].Apply();
+
+                    foreach (var mesh_ in mesh.Meshes)
+                    {
+                        _device.SetVertexBuffer(0, mesh_.VertexBuffer);
+                        _device.SetIndexBuffer(mesh_.IndexBuffer, true);
+                        _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
+                        _device.SetVertexInputLayout(_layout);
+
+                        foreach (var submesh in mesh_.Submeshes)
+                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                    }
+                }
+
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                _device.SetBlendState(_device.BlendStates.AlphaBlend);
+
+                if (textToDraw.Count > 0)
+                    SwapChain.RenderText(textToDraw);
             }
         }
 
@@ -371,8 +452,8 @@ namespace WadTool.Controls
         {
             base.OnMouseUp(e);
 
-            if (_tool.Configuration.MeshEditor_DrawVertices && e.Button == MouseButtons.Left)
-                TryPickVertex(e.X, e.Y);
+            if (EditingMode != MeshEditingMode.None && e.Button == MouseButtons.Left)
+                TryPickElement(e.X, e.Y);
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)
@@ -383,7 +464,7 @@ namespace WadTool.Controls
                 ResetCamera();
         }
 
-        private void TryPickVertex(float x, float y)
+        private void TryPickElement(float x, float y)
         {
             if (_mesh == null)
                 return;
@@ -393,45 +474,95 @@ namespace WadTool.Controls
 
             float distance = float.MaxValue;
             int candidate = -1;
-            int result = candidate;
 
-            for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
+            if (EditingMode == MeshEditingMode.VertexRemap)
             {
-                var vertex = _mesh.VerticesPositions[i];
-                var sphere = new BoundingSphere(vertex, _littleSphereRadius);
-                float newDistance;
+                // Try to pick a vertex sphere
 
-                if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))
+                for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
                 {
-                    if (newDistance <= distance || candidate == -1)
+                    var vertex = _mesh.VerticesPositions[i];
+                    var sphere = new BoundingSphere(vertex, _littleSphereRadius);
+                    float newDistance;
+
+                    if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))
                     {
-                        distance = newDistance;
-                        candidate = i;
+                        if (newDistance <= distance || candidate == -1)
+                        {
+                            distance = newDistance;
+                            candidate = i;
+                        }
+                    }
+
+                    // Clickchain is only used for vertex picking since model may have 2 vertices at same coordinate
+                    // but not 2 faces with same coordinates (it means Z-fighting will appear and it is a model issue).
+
+                    if (candidate != -1 && !_clickchain.Contains(candidate))
+                    {
+                        CurrentElement = candidate;
+
+                        // Reset clickchain in case other coordinate is picked
+                        if (_lastElementPos.Count != 1 || _lastElementPos[0] != _mesh.VerticesPositions[candidate])
+                        {
+                            _lastElementPos = new List<Vector3>() { _mesh.VerticesPositions[candidate] };
+                            _clickchain.Clear();
+                        }
+                        _clickchain.Add(candidate);
+                        return;
                     }
                 }
 
-                if (candidate != -1 && !_clickchain.Contains(candidate))
+                if (_clickchain.Count > 0)
                 {
-                    CurrentVertex = candidate;
-
-                    // Reset clickchain in case other coordinate is picked
-                    if (_lastVertexPos != _mesh.VerticesPositions[candidate])
-                    {
-                        _lastVertexPos = _mesh.VerticesPositions[candidate];
-                        _clickchain.Clear();
-                    }
-                    _clickchain.Add(candidate);
-                    return;
+                    _clickchain.Clear();
+                    TryPickElement(x, y); // All similar vertices clicked, restart picking
                 }
-            }
-
-            if (_clickchain.Count > 0)
-            {
-                _clickchain.Clear();
-                TryPickVertex(x, y); // All similar vertices clicked, restart picking
+                else
+                    CurrentElement = -1;
             }
             else
-                CurrentVertex = -1;
+            {
+                // Try to pick a face
+
+                for (int i = 0; i < _mesh.Polys.Count; i++)
+                {
+                    var poly = _mesh.Polys[i];
+                    float newDistance;
+                    
+                    for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
+                    {
+                        var v = new Vector3[3]
+                        {
+                            _mesh.VerticesPositions[(j == 0 ? poly.Index0 : poly.Index2)],
+                            _mesh.VerticesPositions[(j == 0 ? poly.Index1 : poly.Index3)],
+                            _mesh.VerticesPositions[(j == 0 ? poly.Index2 : poly.Index0)]
+                        };
+
+                        if (Collision.RayIntersectsTriangle(ray, v[0], v[1], v[2], out newDistance))
+                        {
+                            if (newDistance <= distance || candidate == -1)
+                            {
+                                distance = newDistance;
+                                candidate = i;
+                            }
+                        }
+                    }
+                }
+
+                if (candidate != -1)
+                {
+                    CurrentElement = candidate;
+                    _clickchain.Clear(); // Clickchain is not used for face picking, so clear it just in case.
+                }
+            }
+        }
+
+        public void InitializeVertexBuffer()
+        {
+            var vertexCount = 0;
+            foreach (var poly in _mesh.Polys)
+                if (poly.Shape == WadPolygonShape.Triangle) vertexCount += 3; else vertexCount += 6;
+            _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
         }
 
         public void ResetCamera()

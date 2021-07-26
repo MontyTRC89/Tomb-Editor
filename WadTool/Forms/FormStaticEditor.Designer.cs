@@ -97,6 +97,7 @@
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.butExportMeshToFile = new DarkUI.Controls.DarkButton();
+            this.butEditMesh = new DarkUI.Controls.DarkButton();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -128,10 +129,10 @@
             // 
             this.darkStatusStrip1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.darkStatusStrip1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 610);
+            this.darkStatusStrip1.Location = new System.Drawing.Point(0, 641);
             this.darkStatusStrip1.Name = "darkStatusStrip1";
             this.darkStatusStrip1.Padding = new System.Windows.Forms.Padding(0, 5, 0, 3);
-            this.darkStatusStrip1.Size = new System.Drawing.Size(1068, 24);
+            this.darkStatusStrip1.Size = new System.Drawing.Size(884, 24);
             this.darkStatusStrip1.TabIndex = 0;
             this.darkStatusStrip1.Text = "darkStatusStrip1";
             // 
@@ -325,7 +326,7 @@
             // 
             this.butSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butSaveChanges.Checked = false;
-            this.butSaveChanges.Location = new System.Drawing.Point(939, 583);
+            this.butSaveChanges.Location = new System.Drawing.Point(755, 614);
             this.butSaveChanges.Name = "butSaveChanges";
             this.butSaveChanges.Size = new System.Drawing.Size(59, 23);
             this.butSaveChanges.TabIndex = 46;
@@ -513,13 +514,14 @@
             // lstLights
             // 
             this.lstLights.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.lstLights.ExpandOnDoubleClick = false;
             this.lstLights.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.lstLights.Location = new System.Drawing.Point(6, 36);
             this.lstLights.MaxDragChange = 20;
             this.lstLights.Name = "lstLights";
             this.lstLights.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
             this.lstLights.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
-            this.lstLights.Size = new System.Drawing.Size(87, 107);
+            this.lstLights.Size = new System.Drawing.Size(87, 136);
             this.lstLights.TabIndex = 97;
             this.lstLights.Text = "darkTreeView1";
             this.lstLights.Click += new System.EventHandler(this.lstLights_Click);
@@ -528,7 +530,7 @@
             // 
             this.butImportMeshFromFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butImportMeshFromFile.Checked = false;
-            this.butImportMeshFromFile.Location = new System.Drawing.Point(810, 583);
+            this.butImportMeshFromFile.Location = new System.Drawing.Point(626, 614);
             this.butImportMeshFromFile.Name = "butImportMeshFromFile";
             this.butImportMeshFromFile.Size = new System.Drawing.Size(59, 23);
             this.butImportMeshFromFile.TabIndex = 98;
@@ -601,6 +603,7 @@
             // 
             // darkGroupBox4
             // 
+            this.darkGroupBox4.Controls.Add(this.butEditMesh);
             this.darkGroupBox4.Controls.Add(this.butRecalcNormals);
             this.darkGroupBox4.Controls.Add(this.lstLights);
             this.darkGroupBox4.Controls.Add(this.comboLightType);
@@ -614,7 +617,7 @@
             this.darkGroupBox4.Controls.Add(this.numRadius);
             this.darkGroupBox4.Location = new System.Drawing.Point(5, 361);
             this.darkGroupBox4.Name = "darkGroupBox4";
-            this.darkGroupBox4.Size = new System.Drawing.Size(242, 150);
+            this.darkGroupBox4.Size = new System.Drawing.Size(242, 179);
             this.darkGroupBox4.TabIndex = 111;
             this.darkGroupBox4.TabStop = false;
             // 
@@ -1083,11 +1086,11 @@
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox4);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox1);
             this.darkSectionPanel1.Controls.Add(this.darkGroupBox3);
-            this.darkSectionPanel1.Location = new System.Drawing.Point(810, 5);
+            this.darkSectionPanel1.Location = new System.Drawing.Point(626, 5);
             this.darkSectionPanel1.MinimumSize = new System.Drawing.Size(252, 569);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = null;
-            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 569);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(252, 600);
             this.darkSectionPanel1.TabIndex = 110;
             // 
             // darkGroupBox5
@@ -1097,7 +1100,7 @@
             this.darkGroupBox5.Controls.Add(this.cbDrawGrid);
             this.darkGroupBox5.Controls.Add(this.cbDrawGizmo);
             this.darkGroupBox5.Controls.Add(this.cbDrawLights);
-            this.darkGroupBox5.Location = new System.Drawing.Point(5, 515);
+            this.darkGroupBox5.Location = new System.Drawing.Point(5, 546);
             this.darkGroupBox5.Name = "darkGroupBox5";
             this.darkGroupBox5.Size = new System.Drawing.Size(242, 48);
             this.darkGroupBox5.TabIndex = 112;
@@ -1118,7 +1121,7 @@
             // 
             this.butCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butCancel.Checked = false;
-            this.butCancel.Location = new System.Drawing.Point(1003, 583);
+            this.butCancel.Location = new System.Drawing.Point(819, 614);
             this.butCancel.Name = "butCancel";
             this.butCancel.Size = new System.Drawing.Size(59, 23);
             this.butCancel.TabIndex = 111;
@@ -1135,7 +1138,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(5, 5);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = null;
-            this.darkSectionPanel2.Size = new System.Drawing.Size(799, 601);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(615, 632);
             this.darkSectionPanel2.TabIndex = 112;
             // 
             // panelRendering
@@ -1143,14 +1146,14 @@
             this.panelRendering.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRendering.Location = new System.Drawing.Point(1, 1);
             this.panelRendering.Name = "panelRendering";
-            this.panelRendering.Size = new System.Drawing.Size(797, 599);
+            this.panelRendering.Size = new System.Drawing.Size(613, 630);
             this.panelRendering.TabIndex = 0;
             // 
             // butExportMeshToFile
             // 
             this.butExportMeshToFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butExportMeshToFile.Checked = false;
-            this.butExportMeshToFile.Location = new System.Drawing.Point(874, 583);
+            this.butExportMeshToFile.Location = new System.Drawing.Point(690, 614);
             this.butExportMeshToFile.Name = "butExportMeshToFile";
             this.butExportMeshToFile.Size = new System.Drawing.Size(60, 23);
             this.butExportMeshToFile.TabIndex = 113;
@@ -1158,11 +1161,22 @@
             this.butExportMeshToFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butExportMeshToFile.Click += new System.EventHandler(this.butExportMeshToFile_Click);
             // 
+            // butEditMesh
+            // 
+            this.butEditMesh.Checked = false;
+            this.butEditMesh.Location = new System.Drawing.Point(99, 149);
+            this.butEditMesh.Name = "butEditMesh";
+            this.butEditMesh.Size = new System.Drawing.Size(137, 23);
+            this.butEditMesh.TabIndex = 103;
+            this.butEditMesh.Text = "Edit mesh";
+            this.butEditMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditMesh.Click += new System.EventHandler(this.butEditMesh_Click);
+            // 
             // FormStaticEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1068, 634);
+            this.ClientSize = new System.Drawing.Size(884, 665);
             this.Controls.Add(this.butExportMeshToFile);
             this.Controls.Add(this.darkSectionPanel2);
             this.Controls.Add(this.butImportMeshFromFile);
@@ -1171,7 +1185,7 @@
             this.Controls.Add(this.darkStatusStrip1);
             this.Controls.Add(this.butSaveChanges);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1084, 672);
+            this.MinimumSize = new System.Drawing.Size(900, 704);
             this.Name = "FormStaticEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -1282,5 +1296,6 @@
         private DarkUI.Controls.DarkNumericUpDown nudColBoxMaxX;
         private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkButton butExportMeshToFile;
+        private DarkUI.Controls.DarkButton butEditMesh;
     }
 }

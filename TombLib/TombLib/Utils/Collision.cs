@@ -594,9 +594,8 @@ namespace TombLib.Utils
             determinant = edge1.X * directioncrossedge2.X + edge1.Y * directioncrossedge2.Y + edge1.Z * directioncrossedge2.Z;
 
             //If the ray is parallel to the triangle plane, there is no collision.
-            //This also means that we are not culling, the ray may hit both the
-            //back and the front of the triangle.
-            if (MathC.IsZero(determinant))
+            //If the ray hits the back of the triangle, there is no collision as well.
+            if (determinant <= 0)
             {
                 distance = 0f;
                 return false;

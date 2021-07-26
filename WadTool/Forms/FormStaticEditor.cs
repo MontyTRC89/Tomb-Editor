@@ -617,5 +617,17 @@ namespace WadTool
                 }
             }
         }
+
+        private void butEditMesh_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, Static.Mesh.Clone()))
+            {
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                Static.Mesh = form.SelectedMesh.Clone();
+                panelRendering.Invalidate();
+            }
+        }
     }
 }

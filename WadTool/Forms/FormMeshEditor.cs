@@ -10,7 +10,7 @@ using TombLib.Wad;
 
 namespace WadTool
 {
-    public partial class FormMesh : DarkForm
+    public partial class FormMeshEditor : DarkForm
     {
         private class MeshTreeNode
         {
@@ -24,7 +24,8 @@ namespace WadTool
             }
         }
 
-        public bool GenericMode { get; set; }
+        public bool ShowMeshList { get; set; } = false;
+        public bool ShowEditingTools { get; set; } = true;
         public WadMesh SelectedMesh { get; set; }
 
         private Wad2 _wad;
@@ -33,10 +34,10 @@ namespace WadTool
 
         private readonly PopUpInfo popup = new PopUpInfo();
 
-        public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
+        public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
             : this(tool, deviceManager, wad, null) { }
 
-        public FormMesh(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMesh mesh)
+        public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadMesh mesh)
         {
             InitializeComponent();
 
@@ -46,6 +47,8 @@ namespace WadTool
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
+
+            tabsModes.LinkedControl = cbEditingMode;
 
             if (mesh == null) // Populate tree view
             {
@@ -102,24 +105,60 @@ namespace WadTool
 
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
-            if (obj is WadToolClass.MeshEditorVertexChangedEvent)
+            if (obj is WadToolClass.MeshEditorElementChangedEvent)
             {
                 UpdateUI();
-                nudVertexNum.Select(0, 5);
-                nudVertexNum.Focus();
+                if (panelMesh.EditingMode == MeshEditingMode.VertexRemap)
+                {
+                    if (panelMesh.CurrentElement != -1)
+                        nudVertexNum.Value = (decimal)panelMesh.CurrentElement;
+
+                    nudVertexNum.Select(0, 5);
+                    nudVertexNum.Focus();
+                }
+                else if (panelMesh.EditingMode == MeshEditingMode.Shininess)
+                {
+                    if (panelMesh.CurrentElement == -1) return;
+
+                    var poly = panelMesh.Mesh.Polys[panelMesh.CurrentElement];
+
+                    if (Control.ModifierKeys == Keys.Alt)
+                    {
+                        nudShineStrength.Value = (decimal)poly.ShineStrength;
+                    }
+                    else
+                    {
+                        poly.ShineStrength = (byte)nudShineStrength.Value;
+                        panelMesh.Mesh.Polys[panelMesh.CurrentElement] = poly;
+                        panelMesh.Invalidate();
+                    }
+                }
             }
         }
 
         private void UpdateUI()
         {
-            var enableNud = panelMesh.CurrentVertex != -1;
-            if (enableNud) nudVertexNum.Value = panelMesh.CurrentVertex;
+            panelEditing.Enabled = panelMesh.Mesh != null;
+
+            var enableNud = panelMesh.EditingMode == MeshEditingMode.VertexRemap && panelMesh.CurrentElement != -1;
+            if (enableNud) nudVertexNum.Value = panelMesh.CurrentElement;
             butRemapVertex.Enabled = enableNud;
 
-            btCancel.Visible = !GenericMode;
-            cbWireframe.Checked = _tool.Configuration.MeshEditor_DrawWireframe;
-            cbShowVertices.Checked = _tool.Configuration.MeshEditor_DrawVertices;
-            cbVertexNumbers.Checked = _tool.Configuration.MeshEditor_DrawVertexNumbers;
+            cbVertexNumbers.Enabled = panelMesh.EditingMode == MeshEditingMode.VertexRemap;
+            cbWireframe.Checked = panelMesh.WireframeMode;
+            cbVertexNumbers.Checked = panelMesh.DrawVertexNumbers;
+
+            if (ShowMeshList && ShowEditingTools)
+            {
+                btCancel.Visible = false;
+                btOk.Location = btCancel.Location;
+            }
+            
+            if (!ShowEditingTools)
+            {
+                panelMesh.EditingMode = MeshEditingMode.None;
+                panelEditingTools.Visible = false;
+            }
 
             panelMesh.Invalidate();
         }
@@ -132,15 +171,15 @@ namespace WadTool
 
             UpdateUI();
         }
-        
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Escape)
-                panelMesh.CurrentVertex = -1;
+                panelMesh.CurrentElement = -1;
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
-        
+
         private void lstMeshes_Click(object sender, EventArgs e)
         {
             ShowSelectedMesh();
@@ -154,34 +193,25 @@ namespace WadTool
 
         private void btOk_Click(object sender, EventArgs e)
         {
-            if (!GenericMode)
-            {
-                SelectedMesh = panelMesh.Mesh;
-                _tool.ToggleUnsavedChanges();
-            }
+            SelectedMesh = panelMesh.Mesh;
+            _tool.ToggleUnsavedChanges();
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void cbShowVertices_CheckedChanged(object sender, EventArgs e)
-        {
-            _tool.Configuration.MeshEditor_DrawVertices = cbShowVertices.Checked;
-            UpdateUI();
-        }
-
         private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
         {
-            _tool.Configuration.MeshEditor_DrawVertexNumbers = cbVertexNumbers.Checked;
+            panelMesh.DrawVertexNumbers = cbVertexNumbers.Checked;
             UpdateUI();
         }
 
         private void RemapSelectedVertex()
         {
-            if (panelMesh.CurrentVertex == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VerticesPositions.Count == 0)
+            if (panelMesh.EditingMode != MeshEditingMode.VertexRemap || panelMesh.CurrentElement == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VerticesPositions.Count == 0)
                 return;
 
-            if (nudVertexNum.Value == panelMesh.CurrentVertex)
+            if (nudVertexNum.Value == panelMesh.CurrentElement)
             {
                 popup.ShowError(panelMesh, "Please specify other vertex number.");
                 return;
@@ -191,15 +221,15 @@ namespace WadTool
             if (newVertexIndex >= panelMesh.Mesh.VerticesPositions.Count)
             {
                 popup.ShowError(panelMesh, "Please specify index between 0 and " + (panelMesh.Mesh.VerticesPositions.Count - 1) + ".");
-                nudVertexNum.Value = panelMesh.CurrentVertex;
+                nudVertexNum.Value = panelMesh.CurrentElement;
                 return;
             }
 
             var oldVertex = panelMesh.Mesh.VerticesPositions[newVertexIndex];
-            panelMesh.Mesh.VerticesPositions[newVertexIndex] = panelMesh.Mesh.VerticesPositions[panelMesh.CurrentVertex];
-            panelMesh.Mesh.VerticesPositions[panelMesh.CurrentVertex] = oldVertex;
+            panelMesh.Mesh.VerticesPositions[newVertexIndex] = panelMesh.Mesh.VerticesPositions[panelMesh.CurrentElement];
+            panelMesh.Mesh.VerticesPositions[panelMesh.CurrentElement] = oldVertex;
 
-            var ov = panelMesh.CurrentVertex;
+            var ov = panelMesh.CurrentElement;
             var nv = newVertexIndex;
             var count = 0;
 
@@ -228,9 +258,9 @@ namespace WadTool
             {
                 _tool.ToggleUnsavedChanges();
 
-                var message = "Successfully replaced vertex " + panelMesh.CurrentVertex + " with " + newVertexIndex + " in " + count + " faces.";
+                var message = "Successfully replaced vertex " + panelMesh.CurrentElement + " with " + newVertexIndex + " in " + count + " faces.";
 
-                if (newVertexIndex > panelMesh.SafeRemapLimit)
+                if (newVertexIndex > panelMesh.SafeVertexRemapLimit)
                 {
                     message += "\n" + "Specified vertex number is out of recommended bounds. Glitches may happen in game.";
                     popup.ShowWarning(panelMesh, message);
@@ -238,7 +268,7 @@ namespace WadTool
                 else
                     popup.ShowInfo(panelMesh, message);
 
-                panelMesh.CurrentVertex = newVertexIndex;
+                panelMesh.CurrentElement = newVertexIndex;
             }
         }
 
@@ -249,18 +279,21 @@ namespace WadTool
 
         private void butFindVertex_Click(object sender, EventArgs e)
         {
+            if (panelMesh.Mesh == null)
+                return;
+
             var newVertexIndex = (int)nudVertexNum.Value;
             if (newVertexIndex >= panelMesh.Mesh.VerticesPositions.Count)
             {
                 popup.ShowError(panelMesh, "Please specify index between 0 and " + (panelMesh.Mesh.VerticesPositions.Count - 1) + ".");
                 return;
             }
-            panelMesh.CurrentVertex = newVertexIndex;
+            panelMesh.CurrentElement = newVertexIndex;
         }
 
         private void cbWireframe_CheckedChanged(object sender, EventArgs e)
         {
-            _tool.Configuration.MeshEditor_DrawWireframe = cbWireframe.Checked;
+            panelMesh.WireframeMode = cbWireframe.Checked;
             UpdateUI();
         }
 
@@ -273,6 +306,33 @@ namespace WadTool
         private void lstMeshes_KeyDown(object sender, KeyEventArgs e)
         {
             ShowSelectedMesh();
+        }
+
+        private void cbEditingMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            panelMesh.EditingMode = cbEditingMode.SelectedIndex == 0 ? MeshEditingMode.VertexRemap : MeshEditingMode.Shininess;
+            UpdateUI();
+        }
+
+        private void butApplyShinyToAllFaces_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.EditingMode != MeshEditingMode.Shininess || panelMesh.Mesh == null || panelMesh.Mesh.Polys.Count == 0)
+                return;
+
+            var currentValue = (byte)nudShineStrength.Value;
+
+            for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
+            {
+                var poly = panelMesh.Mesh.Polys[i];
+                poly.ShineStrength = currentValue;
+                panelMesh.Mesh.Polys[i] = poly;
+            }
+
+            panelMesh.Invalidate();
+        }
+
+        private void nudShineStrength_ValueChanged(object sender, EventArgs e)
+        {
         }
     }
 }
