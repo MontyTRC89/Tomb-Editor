@@ -84,7 +84,21 @@ namespace TombLib.GeometryIO.Importers
                     material.DoubleSided = (mat.HasTwoSided && mat.IsTwoSided) 
                         || mat.Name.StartsWith(Graphics.Material.Material_OpaqueDoubleSided)
                         || mat.Name.StartsWith(Graphics.Material.Material_AdditiveBlendingDoubleSided);
-                    material.Shininess = mat.HasShininess ? (int)mat.Shininess : 0;
+
+                    // HACK: Ass-imp uses different numbering for shininess in different formats!
+
+                    if (mat.HasShininess)
+                    {
+                        var extension = Path.GetExtension(filename).ToLower();
+
+                        if (extension == ".obj")
+                            material.Shininess = (int)(mat.Shininess * 1023.0f);
+                        else
+                            material.Shininess = (int)mat.Shininess;
+                    }
+                    else
+                        material.Shininess = 0;
+
                     newModel.Materials.Add(material);
                 }
 

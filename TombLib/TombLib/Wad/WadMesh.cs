@@ -466,7 +466,7 @@ namespace TombLib.Wad
                         area.BlendMode = tmpSubmesh.Value.Material.AdditiveBlending ? BlendMode.Additive : BlendMode.Normal;
 
                         poly.Texture = area;
-                        poly.ShineStrength = (byte)Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven);
+                        poly.ShineStrength = (byte)Math.Min(Math.Round(tmpSubmesh.Value.Material.Shininess / 16.0f, MidpointRounding.ToEven), 63);
 
                         mesh.Polys.Add(poly);
                     }
