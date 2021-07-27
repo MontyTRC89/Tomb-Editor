@@ -16,15 +16,13 @@ namespace WadTool
 {
     public partial class FormStaticEditor : DarkForm
     {
-        public WadStatic Static { get; private set; }
-
         private readonly Wad2 _wad;
-        private readonly WadStatic _workingStatic;
+        private readonly WadStatic _static;
         private readonly WadToolClass _tool;
         private readonly GraphicsDevice _device;
         private bool _doChangesInLighting = false;
 
-        public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic @static)
+        public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic staticMesh)
         {
             _doChangesInLighting = false;
 
@@ -34,24 +32,22 @@ namespace WadTool
             _tool = tool;
             _device = deviceManager.___LegacyDevice;
 
-            Static = @static;
-
-            _workingStatic = @static.Clone();
+            _static = staticMesh.Clone();
             panelRendering.InitializeRendering(tool, deviceManager);
 
             panelRendering.Configuration = _tool.Configuration;
-            panelRendering.Static = _workingStatic;
+            panelRendering.Static = _static;
             panelRendering.DrawGrid = true;
             panelRendering.DrawGizmo = true;
             panelRendering.DrawLights = true;
-            comboLightType.SelectedIndex = (int)_workingStatic.Mesh.LightingType;
+            comboLightType.SelectedIndex = (int)_static.Mesh.LightingType;
             UpdateVisibilityBoxUI();
             UpdateCollisionBoxUI();
             UpdatePositionUI();
             UpdateLightsList();
             UpdateLightUI();
 
-            numAmbient.Value = (decimal)_workingStatic.AmbientLight;
+            numAmbient.Value = (decimal)_static.AmbientLight;
 
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
@@ -66,7 +62,7 @@ namespace WadTool
             {
                 UpdateLightsList();
                 UpdateLightUI();
-                _workingStatic.Version = DataVersion.GetNext();
+                _static.Version = DataVersion.GetNext();
                 panelRendering.Invalidate();
             }
         }
@@ -77,24 +73,24 @@ namespace WadTool
             var transform = panelRendering.GizmoTransform;
             if (transform != Matrix4x4.Identity)
             {
-                for (int i = 0; i < _workingStatic.Mesh.VertexPositions.Count; i++)
+                for (int i = 0; i < _static.Mesh.VertexPositions.Count; i++)
                 {
-                    var position = MathC.HomogenousTransform(_workingStatic.Mesh.VertexPositions[i], transform);
-                    _workingStatic.Mesh.VertexPositions[i] = new Vector3(position.X, position.Y, position.Z);
+                    var position = MathC.HomogenousTransform(_static.Mesh.VertexPositions[i], transform);
+                    _static.Mesh.VertexPositions[i] = new Vector3(position.X, position.Y, position.Z);
                 }
 
-                for (int i = 0; i < _workingStatic.Mesh.VertexNormals.Count; i++)
+                for (int i = 0; i < _static.Mesh.VertexNormals.Count; i++)
                 {
-                    var normal = MathC.HomogenousTransform(_workingStatic.Mesh.VertexNormals[i], transform);
-                    _workingStatic.Mesh.VertexNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
+                    var normal = MathC.HomogenousTransform(_static.Mesh.VertexNormals[i], transform);
+                    _static.Mesh.VertexNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
                 }
             }
 
             // Assign the edited mesh to original static mesh
-            _wad.Statics.Remove(_workingStatic.Id);
-            _wad.Statics.Add(_workingStatic.Id, _workingStatic);
+            _wad.Statics.Remove(_static.Id);
+            _wad.Statics.Add(_static.Id, _static);
 
-            _workingStatic.Version = DataVersion.GetNext();
+            _static.Version = DataVersion.GetNext();
 
             _tool.ToggleUnsavedChanges();
 
@@ -105,9 +101,9 @@ namespace WadTool
         private void UpdateLightsList()
         {
             lstLights.Nodes.Clear();
-            foreach (var light in _workingStatic.Lights)
+            foreach (var light in _static.Lights)
             {
-                var node = new DarkUI.Controls.DarkTreeNode("Light #" + _workingStatic.Lights.IndexOf(light));
+                var node = new DarkUI.Controls.DarkTreeNode("Light #" + _static.Lights.IndexOf(light));
                 node.Tag = light;
                 lstLights.Nodes.Add(node);
             }
@@ -115,34 +111,34 @@ namespace WadTool
 
         private void UpdateVisibilityBoxUI()
         {
-            nudVisBoxMinX.Value = (decimal)_workingStatic.VisibilityBox.Minimum.X;
-            nudVisBoxMinY.Value = (decimal)_workingStatic.VisibilityBox.Minimum.Y;
-            nudVisBoxMinZ.Value = (decimal)_workingStatic.VisibilityBox.Minimum.Z;
-            nudVisBoxMaxX.Value = (decimal)_workingStatic.VisibilityBox.Maximum.X;
-            nudVisBoxMaxY.Value = (decimal)_workingStatic.VisibilityBox.Maximum.Y;
-            nudVisBoxMaxZ.Value = (decimal)_workingStatic.VisibilityBox.Maximum.Z;
+            nudVisBoxMinX.Value = (decimal)_static.VisibilityBox.Minimum.X;
+            nudVisBoxMinY.Value = (decimal)_static.VisibilityBox.Minimum.Y;
+            nudVisBoxMinZ.Value = (decimal)_static.VisibilityBox.Minimum.Z;
+            nudVisBoxMaxX.Value = (decimal)_static.VisibilityBox.Maximum.X;
+            nudVisBoxMaxY.Value = (decimal)_static.VisibilityBox.Maximum.Y;
+            nudVisBoxMaxZ.Value = (decimal)_static.VisibilityBox.Maximum.Z;
         }
 
         private void butCalculateVisibilityBox_Click(object sender, EventArgs e)
         {
-            _workingStatic.VisibilityBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+            _static.VisibilityBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
             UpdateVisibilityBoxUI();
             panelRendering.Invalidate();
         }
 
         private void UpdateCollisionBoxUI()
         {
-            nudColBoxMinX.Value = (decimal)_workingStatic.CollisionBox.Minimum.X;
-            nudColBoxMinY.Value = (decimal)_workingStatic.CollisionBox.Minimum.Y;
-            nudColBoxMinZ.Value = (decimal)_workingStatic.CollisionBox.Minimum.Z;
-            nudColBoxMaxX.Value = (decimal)_workingStatic.CollisionBox.Maximum.X;
-            nudColBoxMaxY.Value = (decimal)_workingStatic.CollisionBox.Maximum.Y;
-            nudColBoxMaxZ.Value = (decimal)_workingStatic.CollisionBox.Maximum.Z;
+            nudColBoxMinX.Value = (decimal)_static.CollisionBox.Minimum.X;
+            nudColBoxMinY.Value = (decimal)_static.CollisionBox.Minimum.Y;
+            nudColBoxMinZ.Value = (decimal)_static.CollisionBox.Minimum.Z;
+            nudColBoxMaxX.Value = (decimal)_static.CollisionBox.Maximum.X;
+            nudColBoxMaxY.Value = (decimal)_static.CollisionBox.Maximum.Y;
+            nudColBoxMaxZ.Value = (decimal)_static.CollisionBox.Maximum.Z;
         }
 
         private void butCalculateCollisionBox_Click(object sender, EventArgs e)
         {
-            _workingStatic.CollisionBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+            _static.CollisionBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
             UpdateCollisionBoxUI();
             panelRendering.Invalidate();
         }
@@ -233,7 +229,7 @@ namespace WadTool
             if (!_doChangesInLighting)
                 return;
 
-            _workingStatic.AmbientLight = (short)numAmbient.Value;
+            _static.AmbientLight = (short)numAmbient.Value;
             panelRendering.UpdateLights();
         }
 
@@ -246,7 +242,7 @@ namespace WadTool
         private void FormStaticEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (DialogResult == DialogResult.OK)
-                _workingStatic.Version = DataVersion.GetNext();
+                _static.Version = DataVersion.GetNext();
         }
 
         private void lstLights_Click(object sender, EventArgs e)
@@ -283,11 +279,11 @@ namespace WadTool
                                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    _workingStatic.Mesh = mesh;
-                    _workingStatic.VisibilityBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
-                    _workingStatic.CollisionBox = _workingStatic.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
-                    _workingStatic.Version = DataVersion.GetNext();
-                    _workingStatic.Mesh.CalculateNormals();
+                    _static.Mesh = mesh;
+                    _static.VisibilityBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+                    _static.CollisionBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+                    _static.Version = DataVersion.GetNext();
+                    _static.Mesh.CalculateNormals();
 
                     panelRendering.Invalidate();
                     UpdatePositionUI();
@@ -302,12 +298,12 @@ namespace WadTool
         {
             var result = (float)nudVisBoxMinX.Value;
 
-            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(result,
-                                                                       _workingStatic.VisibilityBox.Minimum.Y,
-                                                                       _workingStatic.VisibilityBox.Minimum.Z),
-                                                           new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                       _workingStatic.VisibilityBox.Maximum.Y,
-                                                                       _workingStatic.VisibilityBox.Maximum.Z));
+            _static.VisibilityBox = new BoundingBox(new Vector3(result,
+                                                                       _static.VisibilityBox.Minimum.Y,
+                                                                       _static.VisibilityBox.Minimum.Z),
+                                                           new Vector3(_static.VisibilityBox.Maximum.X,
+                                                                       _static.VisibilityBox.Maximum.Y,
+                                                                       _static.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -315,12 +311,12 @@ namespace WadTool
         {
             var result = (float)nudVisBoxMinY.Value;
 
-            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
+            _static.VisibilityBox = new BoundingBox(new Vector3(_static.VisibilityBox.Minimum.X,
                                                                        result,
-                                                                       _workingStatic.VisibilityBox.Minimum.Z),
-                                                           new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                       _workingStatic.VisibilityBox.Maximum.Y,
-                                                                       _workingStatic.VisibilityBox.Maximum.Z));
+                                                                       _static.VisibilityBox.Minimum.Z),
+                                                           new Vector3(_static.VisibilityBox.Maximum.X,
+                                                                       _static.VisibilityBox.Maximum.Y,
+                                                                       _static.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -328,12 +324,12 @@ namespace WadTool
         {
             var result = (float)nudVisBoxMinZ.Value;
 
-            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
-                                                                       _workingStatic.VisibilityBox.Minimum.Y,
+            _static.VisibilityBox = new BoundingBox(new Vector3(_static.VisibilityBox.Minimum.X,
+                                                                       _static.VisibilityBox.Minimum.Y,
                                                                        result),
-                                                           new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                       _workingStatic.VisibilityBox.Maximum.Y,
-                                                                       _workingStatic.VisibilityBox.Maximum.Z));
+                                                           new Vector3(_static.VisibilityBox.Maximum.X,
+                                                                       _static.VisibilityBox.Maximum.Y,
+                                                                       _static.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -343,12 +339,12 @@ namespace WadTool
         {
             var result = (float)nudVisBoxMaxX.Value;
 
-            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
-                                                                     _workingStatic.VisibilityBox.Minimum.Y,
-                                                                     _workingStatic.VisibilityBox.Minimum.Z),
+            _static.VisibilityBox = new BoundingBox(new Vector3(_static.VisibilityBox.Minimum.X,
+                                                                     _static.VisibilityBox.Minimum.Y,
+                                                                     _static.VisibilityBox.Minimum.Z),
                                                          new Vector3(result,
-                                                                     _workingStatic.VisibilityBox.Maximum.Y,
-                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+                                                                     _static.VisibilityBox.Maximum.Y,
+                                                                     _static.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -356,12 +352,12 @@ namespace WadTool
         {
             var result = (float)nudVisBoxMaxY.Value;
 
-            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
-                                                                     _workingStatic.VisibilityBox.Minimum.Y,
-                                                                     _workingStatic.VisibilityBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
+            _static.VisibilityBox = new BoundingBox(new Vector3(_static.VisibilityBox.Minimum.X,
+                                                                     _static.VisibilityBox.Minimum.Y,
+                                                                     _static.VisibilityBox.Minimum.Z),
+                                                         new Vector3(_static.VisibilityBox.Maximum.X,
                                                                      result,
-                                                                     _workingStatic.VisibilityBox.Maximum.Z));
+                                                                     _static.VisibilityBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -369,11 +365,11 @@ namespace WadTool
         {
             var result = (float)nudVisBoxMaxZ.Value;
 
-            _workingStatic.VisibilityBox = new BoundingBox(new Vector3(_workingStatic.VisibilityBox.Minimum.X,
-                                                                     _workingStatic.VisibilityBox.Minimum.Y,
-                                                                     _workingStatic.VisibilityBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.VisibilityBox.Maximum.X,
-                                                                     _workingStatic.VisibilityBox.Maximum.Y,
+            _static.VisibilityBox = new BoundingBox(new Vector3(_static.VisibilityBox.Minimum.X,
+                                                                     _static.VisibilityBox.Minimum.Y,
+                                                                     _static.VisibilityBox.Minimum.Z),
+                                                         new Vector3(_static.VisibilityBox.Maximum.X,
+                                                                     _static.VisibilityBox.Maximum.Y,
                                                                      result));
             panelRendering.Invalidate();
         }
@@ -382,12 +378,12 @@ namespace WadTool
         {
             var result = (float)nudColBoxMinX.Value;
 
-            _workingStatic.CollisionBox = new BoundingBox(new Vector3(result,
-                                                                     _workingStatic.CollisionBox.Minimum.Y,
-                                                                     _workingStatic.CollisionBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
-                                                                     _workingStatic.CollisionBox.Maximum.Y,
-                                                                     _workingStatic.CollisionBox.Maximum.Z));
+            _static.CollisionBox = new BoundingBox(new Vector3(result,
+                                                                     _static.CollisionBox.Minimum.Y,
+                                                                     _static.CollisionBox.Minimum.Z),
+                                                         new Vector3(_static.CollisionBox.Maximum.X,
+                                                                     _static.CollisionBox.Maximum.Y,
+                                                                     _static.CollisionBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -395,12 +391,12 @@ namespace WadTool
         {
             var result = (float)nudColBoxMinY.Value;
 
-            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
+            _static.CollisionBox = new BoundingBox(new Vector3(_static.CollisionBox.Minimum.X,
                                                                      result,
-                                                                     _workingStatic.CollisionBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
-                                                                     _workingStatic.CollisionBox.Maximum.Y,
-                                                                     _workingStatic.CollisionBox.Maximum.Z));
+                                                                     _static.CollisionBox.Minimum.Z),
+                                                         new Vector3(_static.CollisionBox.Maximum.X,
+                                                                     _static.CollisionBox.Maximum.Y,
+                                                                     _static.CollisionBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -408,12 +404,12 @@ namespace WadTool
         {
             var result = (float)nudColBoxMinZ.Value;
 
-            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
-                                                                     _workingStatic.CollisionBox.Minimum.Y,
+            _static.CollisionBox = new BoundingBox(new Vector3(_static.CollisionBox.Minimum.X,
+                                                                     _static.CollisionBox.Minimum.Y,
                                                                      result),
-                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
-                                                                     _workingStatic.CollisionBox.Maximum.Y,
-                                                                     _workingStatic.CollisionBox.Maximum.Z));
+                                                         new Vector3(_static.CollisionBox.Maximum.X,
+                                                                     _static.CollisionBox.Maximum.Y,
+                                                                     _static.CollisionBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -421,12 +417,12 @@ namespace WadTool
         {
             var result = (float)nudColBoxMaxX.Value;
 
-            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
-                                                                     _workingStatic.CollisionBox.Minimum.Y,
-                                                                     _workingStatic.CollisionBox.Minimum.Z),
+            _static.CollisionBox = new BoundingBox(new Vector3(_static.CollisionBox.Minimum.X,
+                                                                     _static.CollisionBox.Minimum.Y,
+                                                                     _static.CollisionBox.Minimum.Z),
                                                          new Vector3(result,
-                                                                     _workingStatic.CollisionBox.Maximum.Y,
-                                                                     _workingStatic.CollisionBox.Maximum.Z));
+                                                                     _static.CollisionBox.Maximum.Y,
+                                                                     _static.CollisionBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -434,12 +430,12 @@ namespace WadTool
         {
             var result = (float)nudColBoxMaxY.Value;
 
-            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
-                                                                     _workingStatic.CollisionBox.Minimum.Y,
-                                                                     _workingStatic.CollisionBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
+            _static.CollisionBox = new BoundingBox(new Vector3(_static.CollisionBox.Minimum.X,
+                                                                     _static.CollisionBox.Minimum.Y,
+                                                                     _static.CollisionBox.Minimum.Z),
+                                                         new Vector3(_static.CollisionBox.Maximum.X,
                                                                      result,
-                                                                     _workingStatic.CollisionBox.Maximum.Z));
+                                                                     _static.CollisionBox.Maximum.Z));
             panelRendering.Invalidate();
         }
 
@@ -447,11 +443,11 @@ namespace WadTool
         {
             var result = (float)nudColBoxMaxZ.Value;
 
-            _workingStatic.CollisionBox = new BoundingBox(new Vector3(_workingStatic.CollisionBox.Minimum.X,
-                                                                     _workingStatic.CollisionBox.Minimum.Y,
-                                                                     _workingStatic.CollisionBox.Minimum.Z),
-                                                         new Vector3(_workingStatic.CollisionBox.Maximum.X,
-                                                                     _workingStatic.CollisionBox.Maximum.Y,
+            _static.CollisionBox = new BoundingBox(new Vector3(_static.CollisionBox.Minimum.X,
+                                                                     _static.CollisionBox.Minimum.Y,
+                                                                     _static.CollisionBox.Minimum.Z),
+                                                         new Vector3(_static.CollisionBox.Maximum.X,
+                                                                     _static.CollisionBox.Maximum.Y,
                                                                      result));
             panelRendering.Invalidate();
         }
@@ -483,9 +479,9 @@ namespace WadTool
 
         private void butRecalcNormals_Click(object sender, EventArgs e)
         {
-            if (_workingStatic.Mesh != null)
+            if (_static.Mesh != null)
             {
-                _workingStatic.Mesh.CalculateNormals();
+                _static.Mesh.CalculateNormals();
                 panelRendering.UpdateLights();
                 panelRendering.Invalidate();
             }
@@ -495,8 +491,8 @@ namespace WadTool
         {
             if (comboLightType.SelectedIndex==(int)WadMeshLightingType.Normals)
             {
-                _workingStatic.Mesh.LightingType = WadMeshLightingType.Normals;
-                _workingStatic.Lights.Clear();
+                _static.Mesh.LightingType = WadMeshLightingType.Normals;
+                _static.Lights.Clear();
                 butAddLight.Enabled = false;
                 butDeleteLight.Enabled = false;
                 numIntensity.Enabled = false;
@@ -509,7 +505,7 @@ namespace WadTool
             }
             else
             {
-                _workingStatic.Mesh.LightingType = WadMeshLightingType.VertexColors;
+                _static.Mesh.LightingType = WadMeshLightingType.VertexColors;
                 butAddLight.Enabled = true;
                 butDeleteLight.Enabled = true;
                 numIntensity.Enabled = true;
@@ -558,14 +554,14 @@ namespace WadTool
         private void butClearCollisionBox_Click(object sender, EventArgs e)
         {
 
-            _workingStatic.CollisionBox = new BoundingBox();
+            _static.CollisionBox = new BoundingBox();
             UpdateCollisionBoxUI();
             panelRendering.Invalidate();
         }
 
         private void butClearVisibilityBox_Click(object sender, EventArgs e)
         {
-            _workingStatic.VisibilityBox = new BoundingBox();
+            _static.VisibilityBox = new BoundingBox();
             UpdateVisibilityBoxUI();
             panelRendering.Invalidate();
         }
@@ -578,7 +574,7 @@ namespace WadTool
                 saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
                 saveFileDialog.AddExtension = true;
                 saveFileDialog.DefaultExt = "mqo";
-                saveFileDialog.FileName = _workingStatic.Mesh.Name;
+                saveFileDialog.FileName = _static.Mesh.Name;
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -597,7 +593,7 @@ namespace WadTool
                             BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
                             new Thread(() =>
                             {
-                                var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, _workingStatic.Mesh);
+                                var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, _static.Mesh);
 
                                 if (resultModel != null)
                                 {
@@ -620,13 +616,13 @@ namespace WadTool
 
         private void butEditMesh_Click(object sender, EventArgs e)
         {
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, Static.Mesh.Clone()))
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _static.Mesh.Clone()))
             {
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;
 
-                Static.Mesh = form.SelectedMesh.Clone();
-                panelRendering.Invalidate();
+                _static.Mesh = form.SelectedMesh.Clone();
+                _tool.StaticLightsChanged();
             }
         }
     }

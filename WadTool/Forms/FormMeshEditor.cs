@@ -110,12 +110,14 @@ namespace WadTool
         {
             if (obj is WadToolClass.MeshEditorElementChangedEvent)
             {
+                var newIndex = (obj as WadToolClass.MeshEditorElementChangedEvent).ElementIndex;
+
                 switch (panelMesh.EditingMode)
                 {
                     case MeshEditingMode.VertexRemap:
                         {
-                            if (panelMesh.CurrentElement != -1)
-                                nudVertexNum.Value = (decimal)panelMesh.CurrentElement;
+                            if (newIndex != -1)
+                                nudVertexNum.Value = (decimal)newIndex;
 
                             nudVertexNum.Select(0, 5);
                             nudVertexNum.Focus();
@@ -124,23 +126,23 @@ namespace WadTool
 
                     case MeshEditingMode.VertexAttributes:
                         {
-                            if (panelMesh.CurrentElement == -1) return;
+                            if (newIndex == -1) return;
 
                             // Add missing data if needed
                             panelMesh.Mesh.GenerateMissingVertexData(); 
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
-                                nudGlow.Value = panelMesh.Mesh.VertexAttributes[panelMesh.CurrentElement].Glow;
-                                nudMove.Value = panelMesh.Mesh.VertexAttributes[panelMesh.CurrentElement].Move;
-                                panelColor.BackColor = panelMesh.Mesh.VertexColors[panelMesh.CurrentElement].ToWinFormsColor();
+                                nudGlow.Value = panelMesh.Mesh.VertexAttributes[newIndex].Glow;
+                                nudMove.Value = panelMesh.Mesh.VertexAttributes[newIndex].Move;
+                                panelColor.BackColor = panelMesh.Mesh.VertexColors[newIndex].ToWinFormsColor();
                             }
                             else
                             {
                                 if (cbApplyColor.Checked)
-                                    panelMesh.Mesh.VertexColors[panelMesh.CurrentElement] = panelColor.BackColor.ToFloat3Color();
+                                    panelMesh.Mesh.VertexColors[newIndex] = panelColor.BackColor.ToFloat3Color();
 
-                                panelMesh.Mesh.VertexAttributes[panelMesh.CurrentElement] = new VertexAttributes() { Glow = (int)nudGlow.Value, Move = (int)nudMove.Value };
+                                panelMesh.Mesh.VertexAttributes[newIndex] = new VertexAttributes() { Glow = (int)nudGlow.Value, Move = (int)nudMove.Value };
                                 panelMesh.Invalidate();
                             }
                         }
@@ -148,9 +150,9 @@ namespace WadTool
 
                     case MeshEditingMode.FaceAttributes:
                         {
-                            if (panelMesh.CurrentElement == -1) return;
+                            if (newIndex == -1) return;
 
-                            var poly = panelMesh.Mesh.Polys[panelMesh.CurrentElement];
+                            var poly = panelMesh.Mesh.Polys[newIndex];
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
@@ -181,12 +183,13 @@ namespace WadTool
                                 }
                                 poly.Texture = selectedTexture;
                                 poly.ShineStrength = (byte)nudShineStrength.Value;
-                                panelMesh.Mesh.Polys[panelMesh.CurrentElement] = poly;
+                                panelMesh.Mesh.Polys[newIndex] = poly;
                                 panelMesh.Invalidate();
                             }
                         }
                         break;
                 }
+                UpdateUI();
             }
         }
 

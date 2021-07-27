@@ -82,7 +82,7 @@ namespace WadTool.Controls
                         break;
                 }
 
-                _tool.MeshEditorElementChanged(CurrentElement);
+                _tool.MeshEditorElementChanged(_currentElement);
 
                 if (EditingMode != MeshEditingMode.None)
                     Invalidate();
@@ -144,6 +144,28 @@ namespace WadTool.Controls
             }
         }
 
+        private float VertexSphereRadius
+        {
+            // A helper function to define vertex pick sphere radius
+            get
+            {
+                var distances = new List<float>();
+
+                if (Mesh == null || Mesh.VertexPositions.Count == 0)
+                    return 0;
+
+                foreach (var v in Mesh.VertexPositions)
+                    foreach (var v2 in Mesh.VertexPositions)
+                    {
+                        if (v == v2) continue;
+                        distances.Add(Vector3.Distance(v, v2));
+                    }
+
+                var medianDistance = distances.Sum() / distances.Count;
+                return ((medianDistance * 0.7f) + (Mesh.BoundingSphere.Radius * 0.3f)) / 32.0f;
+            }
+        }
+
         // General state
         private WadToolClass _tool;
 
@@ -166,7 +188,6 @@ namespace WadTool.Controls
         private RenderingFont _fontDefault;
 
         // Constants
-        private const float _littleSphereRadius = 1.0f;
         private readonly List<int> _oldLaraHairIndices = new List<int>() { 37, 38, 39, 40 };
         private readonly List<int> _youngLaraHairIndices = new List<int>() { 68, 69, 70, 71, 76, 77, 78, 79 };
 
@@ -208,7 +229,7 @@ namespace WadTool.Controls
                     SlopeScaledDepthBias = 0
                 });
 
-                _littleSphere = GeometricPrimitive.Sphere.New(_device, 2 * _littleSphereRadius, 4);
+                _littleSphere = GeometricPrimitive.Sphere.New(_device, 2, 4);
             }
         }
 
@@ -249,8 +270,12 @@ namespace WadTool.Controls
                 if (EditingMode == MeshEditingMode.VertexRemap ||
                     EditingMode == MeshEditingMode.VertexAttributes)
                 {
+                    // Draw model first in vertex mode
+                    DrawModel(mesh, world * viewProjection);
+
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                    _device.SetBlendState(_device.BlendStates.Opaque);
+                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                    _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
 
                     _device.SetVertexBuffer(_littleSphere.VertexBuffer);
                     _device.SetVertexInputLayout(_littleSphere.InputLayout);
@@ -272,7 +297,7 @@ namespace WadTool.Controls
                         if (selected)
                         {
                             // Highlight selection
-                            solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 1));
+                            solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 0.5f));
                         }
                         else
                         {
@@ -280,9 +305,9 @@ namespace WadTool.Controls
                             {
                                 // Highlight safe remap indices
                                 if (i <= safeIndex)
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 1));
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 0.8f));
                                 else
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 1));
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.8f, 0.8f, 0, 0.8f));
                             }
                             else
                             {
@@ -290,9 +315,9 @@ namespace WadTool.Controls
                                 // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
 
                                 if (_mesh.HasAttributes)
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, _mesh.VertexAttributes[i].Glow / 63.0f, _mesh.VertexAttributes[i].Move / 63.0f, 1));
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, _mesh.VertexAttributes[i].Glow / 63.0f, _mesh.VertexAttributes[i].Move / 63.0f, 0.5f));
                                 else
-                                    solidEffect.Parameters["Color"].SetValue(Vector4.Zero);
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0,0,0,0.6f));
                             }
                         }
 
@@ -388,47 +413,51 @@ namespace WadTool.Controls
                     solidEffect.Techniques[0].Passes[0].Apply();
 
                     _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
-                }
 
-                // Next, draw whole textured mesh.
-                // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
-
-                if (EditingMode != MeshEditingMode.FaceAttributes || WireframeMode)
-                {
+                    // Draw model last in face editing only if wireframe mode is set
                     if (WireframeMode)
-                        _device.SetRasterizerState(_rasterizerWireframe);
-                    else
-                        _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-                    _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-                    _device.SetBlendState(_device.BlendStates.Opaque);
-
-                    var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
-                    effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
-                    effect.Parameters["Color"].SetValue(Vector4.One);
-                    effect.Parameters["StaticLighting"].SetValue(EditingMode == MeshEditingMode.VertexAttributes);
-                    effect.Parameters["ColoredVertices"].SetValue(EditingMode == MeshEditingMode.VertexAttributes);
-                    effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-                    effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
-                    effect.Techniques[0].Passes[0].Apply();
-
-                    foreach (var mesh_ in mesh.Meshes)
-                    {
-                        _device.SetVertexBuffer(0, mesh_.VertexBuffer);
-                        _device.SetIndexBuffer(mesh_.IndexBuffer, true);
-                        _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
-                        _device.SetVertexInputLayout(_layout);
-
-                        foreach (var submesh in mesh_.Submeshes)
-                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
-                    }
+                        DrawModel(mesh, world * viewProjection);
                 }
-
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                _device.SetBlendState(_device.BlendStates.AlphaBlend);
 
                 if (textToDraw.Count > 0)
+                {
+                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
                     SwapChain.RenderText(textToDraw);
+                }
+            }
+        }
+
+        private void DrawModel(StaticModel mesh, Matrix4x4 world)
+        {
+            // Next, draw whole textured mesh.
+            // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
+
+            if (WireframeMode)
+                _device.SetRasterizerState(_rasterizerWireframe);
+            else
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
+            _device.SetBlendState(_device.BlendStates.Opaque);
+
+            var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
+            effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
+            effect.Parameters["Color"].SetValue(Vector4.One);
+            effect.Parameters["StaticLighting"].SetValue(EditingMode == MeshEditingMode.VertexAttributes);
+            effect.Parameters["ColoredVertices"].SetValue(EditingMode == MeshEditingMode.VertexAttributes);
+            effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
+            effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+            effect.Techniques[0].Passes[0].Apply();
+
+            foreach (var mesh_ in mesh.Meshes)
+            {
+                _device.SetVertexBuffer(0, mesh_.VertexBuffer);
+                _device.SetIndexBuffer(mesh_.IndexBuffer, true);
+                _layout = VertexInputLayout.FromBuffer(0, mesh_.VertexBuffer);
+                _device.SetVertexInputLayout(_layout);
+
+                foreach (var submesh in mesh_.Submeshes)
+                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
             }
         }
 
@@ -519,7 +548,7 @@ namespace WadTool.Controls
                 for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
                     var vertex = _mesh.VertexPositions[i];
-                    var sphere = new BoundingSphere(vertex, _littleSphereRadius);
+                    var sphere = new BoundingSphere(vertex, VertexSphereRadius);
                     float newDistance;
 
                     if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))
@@ -600,6 +629,8 @@ namespace WadTool.Controls
             foreach (var poly in _mesh.Polys)
                 if (poly.Shape == WadPolygonShape.Triangle) vertexCount += 3; else vertexCount += 6;
             _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
+
+            _littleSphere = GeometricPrimitive.Sphere.New(_device, VertexSphereRadius, 4);
         }
 
         public void ResetCamera()

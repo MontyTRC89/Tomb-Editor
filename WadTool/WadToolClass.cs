@@ -287,10 +287,12 @@ namespace WadTool
 
         // Mesh editor element change
         public class MeshEditorElementChangedEvent : IEditorEvent
-        { }
+        {
+            public int ElementIndex { get; set; }
+        }
         public void MeshEditorElementChanged(int number)
         {
-            RaiseEvent(new MeshEditorElementChangedEvent());
+            RaiseEvent(new MeshEditorElementChangedEvent() { ElementIndex = number });
         }
 
         // Update unsaved changes
