@@ -101,7 +101,7 @@
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.panelMesh.Location = new System.Drawing.Point(319, 0);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(429, 384);
+            this.panelMesh.Size = new System.Drawing.Size(497, 384);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -109,7 +109,7 @@
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.Checked = false;
             this.btCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btCancel.Location = new System.Drawing.Point(672, 492);
+            this.btCancel.Location = new System.Drawing.Point(740, 492);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(81, 23);
             this.btCancel.TabIndex = 52;
@@ -121,7 +121,7 @@
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOk.Checked = false;
             this.btOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btOk.Location = new System.Drawing.Point(585, 492);
+            this.btOk.Location = new System.Drawing.Point(653, 492);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(81, 23);
             this.btOk.TabIndex = 53;
@@ -139,14 +139,14 @@
             this.panelEditing.Location = new System.Drawing.Point(0, 5);
             this.panelEditing.Name = "panelEditing";
             this.panelEditing.SectionHeader = "Editing tools";
-            this.panelEditing.Size = new System.Drawing.Size(429, 92);
+            this.panelEditing.Size = new System.Drawing.Size(497, 92);
             this.panelEditing.TabIndex = 54;
             // 
             // cbWireframe
             // 
             this.cbWireframe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbWireframe.AutoSize = true;
-            this.cbWireframe.Location = new System.Drawing.Point(205, 35);
+            this.cbWireframe.Location = new System.Drawing.Point(273, 35);
             this.cbWireframe.Name = "cbWireframe";
             this.cbWireframe.Size = new System.Drawing.Size(79, 17);
             this.cbWireframe.TabIndex = 6;
@@ -157,7 +157,7 @@
             // 
             this.cbVertexNumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbVertexNumbers.AutoSize = true;
-            this.cbVertexNumbers.Location = new System.Drawing.Point(284, 35);
+            this.cbVertexNumbers.Location = new System.Drawing.Point(352, 35);
             this.cbVertexNumbers.Name = "cbVertexNumbers";
             this.cbVertexNumbers.Size = new System.Drawing.Size(118, 17);
             this.cbVertexNumbers.TabIndex = 4;
@@ -171,7 +171,7 @@
             this.cbEditingMode.FormattingEnabled = true;
             this.cbEditingMode.Location = new System.Drawing.Point(49, 33);
             this.cbEditingMode.Name = "cbEditingMode";
-            this.cbEditingMode.Size = new System.Drawing.Size(145, 23);
+            this.cbEditingMode.Size = new System.Drawing.Size(213, 23);
             this.cbEditingMode.TabIndex = 9;
             this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
             // 
@@ -196,7 +196,7 @@
             this.tabsModes.Multiline = true;
             this.tabsModes.Name = "tabsModes";
             this.tabsModes.SelectedIndex = 0;
-            this.tabsModes.Size = new System.Drawing.Size(427, 39);
+            this.tabsModes.Size = new System.Drawing.Size(495, 39);
             this.tabsModes.TabIndex = 7;
             // 
             // tabVertexRemap
@@ -208,7 +208,7 @@
             this.tabVertexRemap.Controls.Add(this.butRemapVertex);
             this.tabVertexRemap.Location = new System.Drawing.Point(4, 4);
             this.tabVertexRemap.Name = "tabVertexRemap";
-            this.tabVertexRemap.Size = new System.Drawing.Size(356, 31);
+            this.tabVertexRemap.Size = new System.Drawing.Size(424, 31);
             this.tabVertexRemap.TabIndex = 0;
             this.tabVertexRemap.Text = "Vertex numbers";
             // 
@@ -230,7 +230,7 @@
             0,
             0});
             this.nudVertexNum.Name = "nudVertexNum";
-            this.nudVertexNum.Size = new System.Drawing.Size(105, 23);
+            this.nudVertexNum.Size = new System.Drawing.Size(173, 23);
             this.nudVertexNum.TabIndex = 2;
             this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
             // 
@@ -239,7 +239,7 @@
             this.butFindVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butFindVertex.Checked = false;
             this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butFindVertex.Location = new System.Drawing.Point(199, 5);
+            this.butFindVertex.Location = new System.Drawing.Point(267, 5);
             this.butFindVertex.Name = "butFindVertex";
             this.butFindVertex.Size = new System.Drawing.Size(74, 23);
             this.butFindVertex.TabIndex = 5;
@@ -263,7 +263,7 @@
             this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRemapVertex.Checked = false;
             this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butRemapVertex.Location = new System.Drawing.Point(279, 5);
+            this.butRemapVertex.Location = new System.Drawing.Point(347, 5);
             this.butRemapVertex.Name = "butRemapVertex";
             this.butRemapVertex.Size = new System.Drawing.Size(74, 23);
             this.butRemapVertex.TabIndex = 3;
@@ -284,7 +284,7 @@
             this.tabVertexAttributes.Location = new System.Drawing.Point(4, 4);
             this.tabVertexAttributes.Name = "tabVertexAttributes";
             this.tabVertexAttributes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabVertexAttributes.Size = new System.Drawing.Size(356, 31);
+            this.tabVertexAttributes.Size = new System.Drawing.Size(424, 31);
             this.tabVertexAttributes.TabIndex = 2;
             this.tabVertexAttributes.Text = "Vertex attributes";
             // 
@@ -305,7 +305,7 @@
             this.panelColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panelColor.Location = new System.Drawing.Point(256, 5);
             this.panelColor.Name = "panelColor";
-            this.panelColor.Size = new System.Drawing.Size(51, 23);
+            this.panelColor.Size = new System.Drawing.Size(77, 23);
             this.panelColor.TabIndex = 16;
             this.panelColor.Tag = "EditAmbientLight";
             this.panelColor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelColor_MouseDown);
@@ -386,7 +386,7 @@
             // 
             this.butApplyToAllVertices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butApplyToAllVertices.Checked = false;
-            this.butApplyToAllVertices.Location = new System.Drawing.Point(313, 5);
+            this.butApplyToAllVertices.Location = new System.Drawing.Point(339, 5);
             this.butApplyToAllVertices.Name = "butApplyToAllVertices";
             this.butApplyToAllVertices.Size = new System.Drawing.Size(82, 23);
             this.butApplyToAllVertices.TabIndex = 10;
@@ -404,7 +404,7 @@
             this.tabFaceAttributes.Location = new System.Drawing.Point(4, 4);
             this.tabFaceAttributes.Name = "tabFaceAttributes";
             this.tabFaceAttributes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFaceAttributes.Size = new System.Drawing.Size(356, 31);
+            this.tabFaceAttributes.Size = new System.Drawing.Size(424, 31);
             this.tabFaceAttributes.TabIndex = 1;
             this.tabFaceAttributes.Text = "Face attributes";
             // 
@@ -422,7 +422,7 @@
             "Lighten"});
             this.cbBlendMode.Location = new System.Drawing.Point(177, 5);
             this.cbBlendMode.Name = "cbBlendMode";
-            this.cbBlendMode.Size = new System.Drawing.Size(88, 23);
+            this.cbBlendMode.Size = new System.Drawing.Size(156, 23);
             this.cbBlendMode.TabIndex = 11;
             // 
             // darkLabel6
@@ -460,7 +460,7 @@
             // 
             this.butApplyToAllFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butApplyToAllFaces.Checked = false;
-            this.butApplyToAllFaces.Location = new System.Drawing.Point(271, 5);
+            this.butApplyToAllFaces.Location = new System.Drawing.Point(339, 5);
             this.butApplyToAllFaces.Name = "butApplyToAllFaces";
             this.butApplyToAllFaces.Size = new System.Drawing.Size(82, 23);
             this.butApplyToAllFaces.TabIndex = 9;
@@ -498,7 +498,7 @@
             this.panelMain.Controls.Add(this.panelTree);
             this.panelMain.Location = new System.Drawing.Point(5, 5);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(748, 481);
+            this.panelMain.Size = new System.Drawing.Size(816, 481);
             this.panelMain.TabIndex = 56;
             // 
             // panelEditingTools
@@ -507,7 +507,7 @@
             this.panelEditingTools.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelEditingTools.Location = new System.Drawing.Point(319, 384);
             this.panelEditingTools.Name = "panelEditingTools";
-            this.panelEditingTools.Size = new System.Drawing.Size(429, 97);
+            this.panelEditingTools.Size = new System.Drawing.Size(497, 97);
             this.panelEditingTools.TabIndex = 55;
             // 
             // panelTree
@@ -524,7 +524,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(758, 521);
+            this.ClientSize = new System.Drawing.Size(826, 521);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);

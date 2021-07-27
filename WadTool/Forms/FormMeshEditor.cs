@@ -50,6 +50,7 @@ namespace WadTool
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
 
+            Size = MinimumSize; // Counteract DarkTabbedContainer designer UI
             tabsModes.LinkedControl = cbEditingMode;
 
             if (mesh == null) // Populate tree view
