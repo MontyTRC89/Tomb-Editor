@@ -73,14 +73,14 @@ namespace TombLib.LevelData.Compilers
 
             currentMeshSize += 10;
 
-            newMesh.NumVertices = (short)oldMesh.VerticesPositions.Count;
+            newMesh.NumVertices = (short)oldMesh.VertexPositions.Count;
             currentMeshSize += 2;
 
-            newMesh.Vertices = new tr_vertex[oldMesh.VerticesPositions.Count];
+            newMesh.Vertices = new tr_vertex[oldMesh.VertexPositions.Count];
 
-            for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
+            for (int j = 0; j < oldMesh.VertexPositions.Count; j++)
             {
-                var vertex = oldMesh.VerticesPositions[j];
+                var vertex = oldMesh.VertexPositions[j];
                 newMesh.Vertices[j] = new tr_vertex((short)vertex.X, (short)-vertex.Y, (short)vertex.Z);
 
                 currentMeshSize += 6;
@@ -94,12 +94,12 @@ namespace TombLib.LevelData.Compilers
             var objectString = isStatic ? "Static" : "Moveable";
 
             // If light type is static and vertex colors count isn't valid, use flat lighting
-            if (oldMesh.LightingType != WadMeshLightingType.Normals && oldMesh.VerticesColors.Count != oldMesh.VerticesPositions.Count)
+            if (oldMesh.LightingType != WadMeshLightingType.Normals && oldMesh.VertexColors.Count != oldMesh.VertexPositions.Count)
                 flatLighting = true;
 
             if (oldMesh.LightingType == WadMeshLightingType.Normals)
             {
-                if (oldMesh.VerticesNormals.Count == 0)
+                if (oldMesh.VertexNormals.Count == 0)
                 {
                     _progressReporter.ReportWarn(string.Format(objectString + " {0} has a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                     oldMesh.CalculateNormals();
@@ -111,16 +111,16 @@ namespace TombLib.LevelData.Compilers
                 useShades = true;
             }
 
-            newMesh.NumNormals = (short)(useShades ? -oldMesh.VerticesPositions.Count : oldMesh.VerticesNormals.Count);
+            newMesh.NumNormals = (short)(useShades ? -oldMesh.VertexPositions.Count : oldMesh.VertexNormals.Count);
             currentMeshSize += 2;
 
             if (!useShades)
             {
-                newMesh.Normals = new tr_vertex[oldMesh.VerticesNormals.Count];
+                newMesh.Normals = new tr_vertex[oldMesh.VertexNormals.Count];
 
-                for (int j = 0; j < oldMesh.VerticesNormals.Count; j++)
+                for (int j = 0; j < oldMesh.VertexNormals.Count; j++)
                 {
-                    Vector3 normal = oldMesh.VerticesNormals[j];
+                    Vector3 normal = oldMesh.VertexNormals[j];
                     normal = Vector3.Normalize(normal);
                     normal *= 16300.0f;
                     newMesh.Normals[j] = new tr_vertex((short)normal.X, (short)-normal.Y, (short)normal.Z);
@@ -130,13 +130,13 @@ namespace TombLib.LevelData.Compilers
             }
             else
             {
-                newMesh.Lights = new short[oldMesh.VerticesPositions.Count];
+                newMesh.Lights = new short[oldMesh.VertexPositions.Count];
 
-                for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
+                for (int j = 0; j < oldMesh.VertexPositions.Count; j++)
                 {
                     // HACK: Because of inconsistent TE light model (0.0f-2.0f), clamp luma to 1.0f to avoid issues with
                     // incorrect shade translations in room meshes reimported as statics.
-                    var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VerticesColors[j].GetLuma(), 1.0f);
+                    var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VertexColors[j].GetLuma(), 1.0f);
 
                     newMesh.Lights[j] = (short)(8191.0f - lightValue * 8191.0f);
                     currentMeshSize += 2;

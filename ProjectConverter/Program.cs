@@ -89,11 +89,11 @@ namespace ProjectConverter
                             Console.ResetColor();
 
                             var mesh = moveable.Value.Bones[14].Mesh.Clone(); ;
-                            for (int i = 0; i < mesh.VerticesPositions.Count; i++)
+                            for (int i = 0; i < mesh.VertexPositions.Count; i++)
                             {
-                                var pos = mesh.VerticesPositions[i];
+                                var pos = mesh.VertexPositions[i];
                                 pos.Y += 256;
-                                mesh.VerticesPositions[i] = pos;
+                                mesh.VertexPositions[i] = pos;
                             }
                             moveable.Value.Bones[7].Mesh = mesh;
                             moveable.Value.Meshes[7] = mesh;

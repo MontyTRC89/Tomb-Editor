@@ -876,17 +876,17 @@ namespace WadTool
 
             mesh.Name = name;
 
-            mesh.VerticesPositions.Add(new Vector3(-1, 1, 1)); // 0
-            mesh.VerticesPositions.Add(new Vector3(1, 1, 1)); // 1
-            mesh.VerticesPositions.Add(new Vector3(1, 1, -1)); // 2
-            mesh.VerticesPositions.Add(new Vector3(-1, 1, -1)); // 3
-            mesh.VerticesPositions.Add(new Vector3(-1, -1, 1)); // 4
-            mesh.VerticesPositions.Add(new Vector3(1, -1, 1)); // 5
-            mesh.VerticesPositions.Add(new Vector3(1, -1, -1)); // 6
-            mesh.VerticesPositions.Add(new Vector3(-1, -1, -1)); // 7
+            mesh.VertexPositions.Add(new Vector3(-1, 1, 1)); // 0
+            mesh.VertexPositions.Add(new Vector3(1, 1, 1)); // 1
+            mesh.VertexPositions.Add(new Vector3(1, 1, -1)); // 2
+            mesh.VertexPositions.Add(new Vector3(-1, 1, -1)); // 3
+            mesh.VertexPositions.Add(new Vector3(-1, -1, 1)); // 4
+            mesh.VertexPositions.Add(new Vector3(1, -1, 1)); // 5
+            mesh.VertexPositions.Add(new Vector3(1, -1, -1)); // 6
+            mesh.VertexPositions.Add(new Vector3(-1, -1, -1)); // 7
 
             for (int i = 0; i < 8; i++)
-                mesh.VerticesNormals.Add(Vector3.Zero);
+                mesh.VertexNormals.Add(Vector3.Zero);
 
             var texture = new TextureArea();
             var image = ImageC.Magenta;

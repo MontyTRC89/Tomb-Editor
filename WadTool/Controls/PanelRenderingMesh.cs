@@ -66,10 +66,21 @@ namespace WadTool.Controls
                 // We arent checking if current element is already set because user may
                 // reselect same vertex/face with other incoming params changed (eg shine strength).
 
-                if (EditingMode == MeshEditingMode.VertexRemap)
-                    _currentElement = (Mesh.VerticesPositions.Count > value) ? value : -1;
-                else if (EditingMode == MeshEditingMode.Shininess)
-                    _currentElement = (Mesh.Polys.Count > value) ? value : -1;
+                switch (EditingMode)
+                {
+                    case MeshEditingMode.FaceAttributes:
+                        _currentElement = (Mesh.Polys.Count > value) ? value : -1;
+                        break;
+
+                    case MeshEditingMode.VertexAttributes:
+                    case MeshEditingMode.VertexRemap:
+                        _currentElement = (Mesh.VertexPositions.Count > value) ? value : -1;
+                        break;
+
+                    default:
+                        _currentElement = -1;
+                        break;
+                }
 
                 _tool.MeshEditorElementChanged(CurrentElement);
 
@@ -120,12 +131,12 @@ namespace WadTool.Controls
                 int safeIndex = int.MaxValue;
                 if (_tool.DestinationWad.GameVersion != TRVersion.Game.TombEngine)
                 {
-                    if (_mesh.VerticesPositions.Count <= 255)
+                    if (_mesh.VertexPositions.Count <= 255)
                         safeIndex = 127;
                     else
                     {
-                        var step = (Math.Truncate((float)_mesh.VerticesPositions.Count / 256.0f) - 1) * 256.0f;
-                        safeIndex = _mesh.VerticesPositions.Count - (int)step - 1;
+                        var step = (Math.Truncate((float)_mesh.VertexPositions.Count / 256.0f) - 1) * 256.0f;
+                        safeIndex = _mesh.VertexPositions.Count - (int)step - 1;
                         if (safeIndex > 127) safeIndex = 127;
                     }
                 }
@@ -235,7 +246,8 @@ namespace WadTool.Controls
                 // At first, draw either vertex spheres (if mode is set to vertex remap)
                 // or individual colored shininess faces (if mode is set to shininess editing).
 
-                if (EditingMode == MeshEditingMode.VertexRemap)
+                if (EditingMode == MeshEditingMode.VertexRemap ||
+                    EditingMode == MeshEditingMode.VertexAttributes)
                 {
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                     _device.SetBlendState(_device.BlendStates.Opaque);
@@ -246,7 +258,7 @@ namespace WadTool.Controls
 
                     var safeIndex = SafeVertexRemapLimit;
 
-                    for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
+                    for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                     {
                         var selected = (i == _currentElement);
 
@@ -254,7 +266,7 @@ namespace WadTool.Controls
                         if (!selected && _clickchain.Contains(i) && _clickchain.Contains(_currentElement))
                             continue;
 
-                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VerticesPositions[i]) * viewProjection;
+                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VertexPositions[i]) * viewProjection;
                         solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
 
                         if (selected)
@@ -264,11 +276,24 @@ namespace WadTool.Controls
                         }
                         else
                         {
-                            // Highlight safe remap indices
-                            if (i <= safeIndex)
-                                solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 1));
+                            if (EditingMode == MeshEditingMode.VertexRemap)
+                            {
+                                // Highlight safe remap indices
+                                if (i <= safeIndex)
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 1));
+                                else
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 1));
+                            }
                             else
-                                solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 0, 1));
+                            {
+                                // Mix glow and move attributes for now as green and blue color components for vertex spheres.
+                                // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
+
+                                if (_mesh.HasAttributes)
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, _mesh.VertexAttributes[i].Glow / 63.0f, _mesh.VertexAttributes[i].Move / 63.0f, 1));
+                                else
+                                    solidEffect.Parameters["Color"].SetValue(Vector4.Zero);
+                            }
                         }
 
                         solidEffect.Techniques[0].Passes[0].Apply();
@@ -280,30 +305,41 @@ namespace WadTool.Controls
                             if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
                             {
                                 var pos = posMatrix.TransformPerspectively(new Vector3()).To2();
+                                var message = string.Empty;
 
-                                // Filter out labels which sit on the same coordinate and show ellipsis instead
-                                var existingText = textToDraw.Where(t => t.Pos == pos).ToList();
-                                if (existingText.Count > 0)
+                                if (EditingMode == MeshEditingMode.VertexRemap)
                                 {
-                                    if (existingText[0].String != _currentElement.ToString())
-                                        existingText[0].String = "...";
-                                    continue;
+                                    // Filter out labels which sit on the same coordinate and show ellipsis instead
+                                    var existingText = textToDraw.Where(t => t.Pos == pos).ToList();
+                                    if (existingText.Count > 0)
+                                    {
+                                        if (existingText[0].String != _currentElement.ToString())
+                                            existingText[0].String = "...";
+                                        continue;
+                                    }
+
+                                    message = i.ToString();
+                                }
+                                else if (EditingMode == MeshEditingMode.VertexAttributes && _mesh.HasAttributes)
+                                {
+                                    message = _mesh.VertexAttributes[i].Glow + ", " + _mesh.VertexAttributes[i].Move;
                                 }
 
-                                textToDraw.Add(new Text
-                                {
-                                    Font = _fontDefault,
-                                    TextAlignment = new Vector2(0.0f, 0.0f),
-                                    PixelPos = new VectorInt2(2, -2),
-                                    Pos = pos,
-                                    Overlay = _tool.Configuration.Rendering3D_DrawFontOverlays,
-                                    String = i.ToString()
-                                });
+                                if (!string.IsNullOrEmpty(message))
+                                    textToDraw.Add(new Text
+                                    {
+                                        Font = _fontDefault,
+                                        TextAlignment = new Vector2(0.0f, 0.0f),
+                                        PixelPos = new VectorInt2(2, -2),
+                                        Pos = pos,
+                                        Overlay = _tool.Configuration.Rendering3D_DrawFontOverlays,
+                                        String = message
+                                    });
                             }
                         }
                     }
                 }
-                else if (EditingMode == MeshEditingMode.Shininess)
+                else if (EditingMode == MeshEditingMode.FaceAttributes)
                 {
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
                     _device.SetBlendState(_device.BlendStates.Opaque);
@@ -330,13 +366,13 @@ namespace WadTool.Controls
 
                                 switch (vn)
                                 {
-                                    case 0: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index0]; break;
-                                    case 1: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index1]; break;
-                                    case 2: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index2]; break;
+                                    case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                    case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
+                                    case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
 
-                                    case 3: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index2]; break;
-                                    case 4: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index3]; break;
-                                    case 5: pos = _mesh.VerticesPositions[_mesh.Polys[i].Index0]; break;
+                                    case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                    case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
+                                    case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
                                 }
 
                                 vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1-strength, 1-strength, 1) };
@@ -357,7 +393,7 @@ namespace WadTool.Controls
                 // Next, draw whole textured mesh.
                 // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
 
-                if (EditingMode != MeshEditingMode.Shininess || WireframeMode)
+                if (EditingMode != MeshEditingMode.FaceAttributes || WireframeMode)
                 {
                     if (WireframeMode)
                         _device.SetRasterizerState(_rasterizerWireframe);
@@ -370,8 +406,8 @@ namespace WadTool.Controls
                     var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
                     effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
                     effect.Parameters["Color"].SetValue(Vector4.One);
-                    effect.Parameters["StaticLighting"].SetValue(false);
-                    effect.Parameters["ColoredVertices"].SetValue(false);
+                    effect.Parameters["StaticLighting"].SetValue(EditingMode == MeshEditingMode.VertexAttributes);
+                    effect.Parameters["ColoredVertices"].SetValue(EditingMode == MeshEditingMode.VertexAttributes);
                     effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                     effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
                     effect.Techniques[0].Passes[0].Apply();
@@ -475,13 +511,14 @@ namespace WadTool.Controls
             float distance = float.MaxValue;
             int candidate = -1;
 
-            if (EditingMode == MeshEditingMode.VertexRemap)
+            if (EditingMode == MeshEditingMode.VertexRemap ||
+                EditingMode == MeshEditingMode.VertexAttributes)
             {
                 // Try to pick a vertex sphere
 
-                for (int i = 0; i < _mesh.VerticesPositions.Count; i++)
+                for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
-                    var vertex = _mesh.VerticesPositions[i];
+                    var vertex = _mesh.VertexPositions[i];
                     var sphere = new BoundingSphere(vertex, _littleSphereRadius);
                     float newDistance;
 
@@ -502,9 +539,9 @@ namespace WadTool.Controls
                         CurrentElement = candidate;
 
                         // Reset clickchain in case other coordinate is picked
-                        if (_lastElementPos.Count != 1 || _lastElementPos[0] != _mesh.VerticesPositions[candidate])
+                        if (_lastElementPos.Count != 1 || _lastElementPos[0] != _mesh.VertexPositions[candidate])
                         {
-                            _lastElementPos = new List<Vector3>() { _mesh.VerticesPositions[candidate] };
+                            _lastElementPos = new List<Vector3>() { _mesh.VertexPositions[candidate] };
                             _clickchain.Clear();
                         }
                         _clickchain.Add(candidate);
@@ -533,9 +570,9 @@ namespace WadTool.Controls
                     {
                         var v = new Vector3[3]
                         {
-                            _mesh.VerticesPositions[(j == 0 ? poly.Index0 : poly.Index2)],
-                            _mesh.VerticesPositions[(j == 0 ? poly.Index1 : poly.Index3)],
-                            _mesh.VerticesPositions[(j == 0 ? poly.Index2 : poly.Index0)]
+                            _mesh.VertexPositions[(j == 0 ? poly.Index0 : poly.Index2)],
+                            _mesh.VertexPositions[(j == 0 ? poly.Index1 : poly.Index3)],
+                            _mesh.VertexPositions[(j == 0 ? poly.Index2 : poly.Index0)]
                         };
 
                         if (Collision.RayIntersectsTriangle(ray, v[0], v[1], v[2], out newDistance))

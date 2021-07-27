@@ -106,7 +106,7 @@ namespace TombLib.Graphics
             mesh.BoundingSphere = msh.BoundingSphere;
 
             // For some reason, wad meshes sometimes may have position count desynced from color count, so we check that too.
-            var hasShades = msh.VerticesColors.Count != 0 && msh.VerticesPositions.Count == msh.VerticesColors.Count;
+            var hasShades = msh.VertexColors.Count != 0 && msh.VertexPositions.Count == msh.VertexColors.Count;
 
             for (int j = 0; j < msh.Polys.Count; j++)
             {
@@ -144,14 +144,14 @@ namespace TombLib.Graphics
                     int v2 = poly.Index1;
                     int v3 = poly.Index2;
 
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], msh.VerticesNormals[v1], mesh, submesh,
-                                            coords[0], 0, (hasShades ? msh.VerticesColors[v1] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v1], msh.VertexNormals[v1], mesh, submesh,
+                                            coords[0], 0, (hasShades ? msh.VertexColors[v1] : Vector3.One),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh,
-                                            coords[1], 0, (hasShades ? msh.VerticesColors[v2] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v2], msh.VertexNormals[v2], mesh, submesh,
+                                            coords[1], 0, (hasShades ? msh.VertexColors[v2] : Vector3.One),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], msh.VerticesNormals[v3], mesh, submesh,
-                                            coords[2], 0, (hasShades ? msh.VerticesColors[v3] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v3], msh.VertexNormals[v3], mesh, submesh,
+                                            coords[2], 0, (hasShades ? msh.VertexColors[v3] : Vector3.One),
                                             positionInPackedTexture);
                 }
                 else
@@ -161,24 +161,24 @@ namespace TombLib.Graphics
                     int v3 = poly.Index2;
                     int v4 = poly.Index3;
 
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v1], msh.VerticesNormals[v1], mesh, submesh,
-                                            coords[0], 0, (hasShades ? msh.VerticesColors[v1] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v1], msh.VertexNormals[v1], mesh, submesh,
+                                            coords[0], 0, (hasShades ? msh.VertexColors[v1] : Vector3.One),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh,
-                                            coords[1], 0, (hasShades ? msh.VerticesColors[v2] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v2], msh.VertexNormals[v2], mesh, submesh,
+                                            coords[1], 0, (hasShades ? msh.VertexColors[v2] : Vector3.One),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], msh.VerticesNormals[v4], mesh, submesh,
-                                            coords[3], 0, (hasShades ? msh.VerticesColors[v4] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v4], msh.VertexNormals[v4], mesh, submesh,
+                                            coords[3], 0, (hasShades ? msh.VertexColors[v4] : Vector3.One),
                                             positionInPackedTexture);
 
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v4], msh.VerticesNormals[v4], mesh, submesh,
-                                            coords[3], 0, (hasShades ? msh.VerticesColors[v4] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v4], msh.VertexNormals[v4], mesh, submesh,
+                                            coords[3], 0, (hasShades ? msh.VertexColors[v4] : Vector3.One),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v2], msh.VerticesNormals[v2], mesh, submesh,
-                                            coords[1], 0, (hasShades ? msh.VerticesColors[v2] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v2], msh.VertexNormals[v2], mesh, submesh,
+                                            coords[1], 0, (hasShades ? msh.VertexColors[v2] : Vector3.One),
                                             positionInPackedTexture);
-                    PutObjectVertexAndIndex(msh.VerticesPositions[v3], msh.VerticesNormals[v3], mesh, submesh,
-                                            coords[2], 0, (hasShades ? msh.VerticesColors[v3] : Vector3.One),
+                    PutObjectVertexAndIndex(msh.VertexPositions[v3], msh.VertexNormals[v3], mesh, submesh,
+                                            coords[2], 0, (hasShades ? msh.VertexColors[v3] : Vector3.One),
                                             positionInPackedTexture);
                 }
             }

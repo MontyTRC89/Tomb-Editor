@@ -122,15 +122,15 @@ namespace TombLib.Wad.Tr4Wad
 
             // Add positions
             foreach (var oldVertex in oldMesh.Vertices)
-                mesh.VerticesPositions.Add(new Vector3(oldVertex.X, -oldVertex.Y, oldVertex.Z));
+                mesh.VertexPositions.Add(new Vector3(oldVertex.X, -oldVertex.Y, oldVertex.Z));
 
             // Add normals
             foreach (var oldNormal in oldMesh.Normals)
-                mesh.VerticesNormals.Add(new Vector3(oldNormal.X, -oldNormal.Y, oldNormal.Z));
+                mesh.VertexNormals.Add(new Vector3(oldNormal.X, -oldNormal.Y, oldNormal.Z));
 
             // Add shades
             foreach (var oldShade in oldMesh.Shades)
-                mesh.VerticesColors.Add(new Vector3((8191.0f - oldShade) / 8191.0f));
+                mesh.VertexColors.Add(new Vector3((8191.0f - oldShade) / 8191.0f));
 
             // Add polygons
             foreach (var oldPoly in oldMesh.Polygons)
@@ -163,7 +163,7 @@ namespace TombLib.Wad.Tr4Wad
                 mesh.LightingType = WadMeshLightingType.Normals;
 
             // Usually only for static meshes
-            if (mesh.VerticesNormals.Count == 0)
+            if (mesh.VertexNormals.Count == 0)
                 mesh.CalculateNormals();
 
             return mesh;

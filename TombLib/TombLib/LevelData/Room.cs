@@ -1682,9 +1682,9 @@ namespace TombLib.LevelData
                 if (wadStatic == null) 
                     continue;
 
-                for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
+                for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
                 {
-                    Vector3 position = wadStatic.Mesh.VerticesPositions[j];
+                    Vector3 position = wadStatic.Mesh.VertexPositions[j];
                     var trVertex = new tr_room_vertex
                     {
                         Position = new tr_vertex

@@ -27,7 +27,8 @@ namespace WadTool
     {
         None,
         VertexRemap,
-        Shininess
+        VertexAttributes,
+        FaceAttributes
     }
 
     public struct MainSelection

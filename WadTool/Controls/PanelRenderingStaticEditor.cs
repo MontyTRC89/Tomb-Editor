@@ -274,11 +274,11 @@ namespace WadTool.Controls
                 if (DrawNormals)
                 {
                     var lines = new List<SolidVertex>();
-                    for (int i = 0; i < Static.Mesh.VerticesNormals.Count; i++)
+                    for (int i = 0; i < Static.Mesh.VertexNormals.Count; i++)
                     {
-                        var p = Vector3.Transform(Static.Mesh.VerticesPositions[i], world);
-                        var n = Vector3.TransformNormal(Static.Mesh.VerticesNormals[i] /
-                            Static.Mesh.VerticesNormals[i].Length(), world);
+                        var p = Vector3.Transform(Static.Mesh.VertexPositions[i], world);
+                        var n = Vector3.TransformNormal(Static.Mesh.VertexNormals[i] /
+                            Static.Mesh.VertexNormals[i].Length(), world);
 
                         var v = new SolidVertex();
                         v.Position = p;
@@ -567,19 +567,19 @@ namespace WadTool.Controls
 
         public void UpdateLights()
         {
-            Static.Mesh.VerticesColors.Clear();
+            Static.Mesh.VertexColors.Clear();
 
             Matrix4x4 world = Matrix4x4.CreateFromYawPitchRoll(StaticRotation.Y, StaticRotation.X, StaticRotation.Z) *  
                               Matrix4x4.CreateTranslation(StaticPosition);
 
-            for (int i = 0; i < Static.Mesh.VerticesPositions.Count; i++)
+            for (int i = 0; i < Static.Mesh.VertexPositions.Count; i++)
             {
                 float newShade = Static.AmbientLight / 255.0f;
                 foreach (var light in Static.Lights)
                 {
                     // Transform current vertex and normal
-                    var p = Vector3.Transform(Static.Mesh.VerticesPositions[i], world);
-                    var n = Vector3.TransformNormal(Static.Mesh.VerticesNormals[i] / Static.Mesh.VerticesNormals[i].Length(), world);
+                    var p = Vector3.Transform(Static.Mesh.VertexPositions[i], world);
+                    var n = Vector3.TransformNormal(Static.Mesh.VertexNormals[i] / Static.Mesh.VertexNormals[i].Length(), world);
 
                     // Get the light direction vector
                     var lightDirection = light.Position - p;
@@ -597,7 +597,7 @@ namespace WadTool.Controls
                                 (light.Radius * Level.WorldUnit));
                 }
 
-                Static.Mesh.VerticesColors.Add(new Vector3(Math.Min(newShade, 1.0f)));
+                Static.Mesh.VertexColors.Add(new Vector3(Math.Min(newShade, 1.0f)));
             }
 
             _tool.StaticLightsChanged();

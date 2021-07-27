@@ -419,20 +419,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         var normalTransform = staticMesh.RotationMatrix;
                         WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
 
-                        for (int j = 0; j < wadStatic.Mesh.VerticesPositions.Count; j++)
+                        for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
                         {
                             // Apply the transform to the vertex
-                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VerticesPositions[j], worldTransform);
-                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VerticesNormals[j], normalTransform);
+                            Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
+                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
                             normal = Vector3.Normalize(normal);
                             int lightingEffect = 0;
                             float shade = 1.0f;
                             if (interpretShadesAsMovement &&
                                 _level.Settings.GameVersion >= TRVersion.Game.TR3)
                             {
-                                if (j < wadStatic.Mesh.VerticesColors.Count)
+                                if (j < wadStatic.Mesh.VertexColors.Count)
                                 {
-                                    var luma = wadStatic.Mesh.VerticesColors[j].GetLuma();
+                                    var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
                                     if (luma < 0.5f) lightingEffect = 0x2000;   // Movement
                                     else if (luma < 1.0f) lightingEffect = 0x4000; // Glow
                                 }
@@ -440,8 +440,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             else
                             {
                                 // If we have vertex colors, use them as a luma factor for the resulting vertex color
-                                if (!clearShades && j < wadStatic.Mesh.VerticesColors.Count)
-                                    shade = wadStatic.Mesh.VerticesColors[j].GetLuma();
+                                if (!clearShades && j < wadStatic.Mesh.VertexColors.Count)
+                                    shade = wadStatic.Mesh.VertexColors[j].GetLuma();
                             }
                             Vector3 color;
                             if (!entry.TintAsAmbient)

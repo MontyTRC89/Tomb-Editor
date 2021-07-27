@@ -412,7 +412,7 @@ namespace TombLib.Wad
                     chunkIO.ReadChunks((id3, chunkSize3) =>
                     {
                         if (id3 == Wad2Chunks.MeshVertexPosition)
-                            mesh.VerticesPositions.Add(chunkIO.ReadChunkVector3(chunkSize3));
+                            mesh.VertexPositions.Add(chunkIO.ReadChunkVector3(chunkSize3));
                         else
                             return false;
                         return true;
@@ -423,7 +423,7 @@ namespace TombLib.Wad
                     chunkIO.ReadChunks((id3, chunkSize3) =>
                     {
                         if (id3 == Wad2Chunks.MeshVertexNormal)
-                            mesh.VerticesNormals.Add(chunkIO.ReadChunkVector3(chunkSize3));
+                            mesh.VertexNormals.Add(chunkIO.ReadChunkVector3(chunkSize3));
                         else
                             return false;
                         return true;
@@ -434,9 +434,24 @@ namespace TombLib.Wad
                     chunkIO.ReadChunks((id3, chunkSize3) =>
                     {
                         if (id3 == Wad2Chunks.MeshVertexShade)
-                            mesh.VerticesColors.Add(new Vector3((8191.0f - chunkIO.ReadChunkShort(chunkSize3)) / 8191.0f));
+                            mesh.VertexColors.Add(new Vector3((8191.0f - chunkIO.ReadChunkShort(chunkSize3)) / 8191.0f));
                         else if (id3 == Wad2Chunks.MeshVertexColor)
-                            mesh.VerticesColors.Add(chunkIO.ReadChunkVector3(chunkSize3));
+                            mesh.VertexColors.Add(chunkIO.ReadChunkVector3(chunkSize3));
+                        else
+                            return false;
+                        return true;
+                    });
+                }
+                else if (id2 == Wad2Chunks.MeshVertexAttributes)
+                {
+                    chunkIO.ReadChunks((id3, chunkSize3) =>
+                    {
+                        if (id3 == Wad2Chunks.MeshVertexAttribute)
+                        {
+                            var attr = new VertexAttributes();
+                            attr.Glow = LEB128.ReadInt(chunkIO.Raw);
+                            attr.Move = LEB128.ReadInt(chunkIO.Raw);
+                        }
                         else
                             return false;
                         return true;

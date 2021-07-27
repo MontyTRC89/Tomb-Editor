@@ -77,16 +77,16 @@ namespace WadTool
             var transform = panelRendering.GizmoTransform;
             if (transform != Matrix4x4.Identity)
             {
-                for (int i = 0; i < _workingStatic.Mesh.VerticesPositions.Count; i++)
+                for (int i = 0; i < _workingStatic.Mesh.VertexPositions.Count; i++)
                 {
-                    var position = MathC.HomogenousTransform(_workingStatic.Mesh.VerticesPositions[i], transform);
-                    _workingStatic.Mesh.VerticesPositions[i] = new Vector3(position.X, position.Y, position.Z);
+                    var position = MathC.HomogenousTransform(_workingStatic.Mesh.VertexPositions[i], transform);
+                    _workingStatic.Mesh.VertexPositions[i] = new Vector3(position.X, position.Y, position.Z);
                 }
 
-                for (int i = 0; i < _workingStatic.Mesh.VerticesNormals.Count; i++)
+                for (int i = 0; i < _workingStatic.Mesh.VertexNormals.Count; i++)
                 {
-                    var normal = MathC.HomogenousTransform(_workingStatic.Mesh.VerticesNormals[i], transform);
-                    _workingStatic.Mesh.VerticesNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
+                    var normal = MathC.HomogenousTransform(_workingStatic.Mesh.VertexNormals[i], transform);
+                    _workingStatic.Mesh.VertexNormals[i] = new Vector3(normal.X, normal.Y, normal.Z);
                 }
             }
 

@@ -12,14 +12,21 @@ using TombLib.Graphics;
 
 namespace TombLib.Wad
 {
+    public class VertexAttributes
+    {
+        public int Glow { get; set; } = 0;
+        public int Move { get; set; } = 0;
+    }
+
     public class WadMesh : ICloneable
     {
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public string Name { get; set; }
-        public List<Vector3> VerticesPositions { get; set; } = new List<Vector3>();
-        public List<Vector3> VerticesNormals { get; set; } = new List<Vector3>();
-        public List<Vector3> VerticesColors { get; set; } = new List<Vector3>();
+        public List<Vector3> VertexPositions { get; set; } = new List<Vector3>();
+        public List<Vector3> VertexNormals { get; set; } = new List<Vector3>();
+        public List<Vector3> VertexColors { get; set; } = new List<Vector3>();
+        public List<VertexAttributes> VertexAttributes { get; set; } = new List<VertexAttributes>();
         public List<WadPolygon> Polys { get; set; } = new List<WadPolygon>();
         public BoundingSphere BoundingSphere { get; set; }
         public BoundingBox BoundingBox { get; set; }
@@ -27,54 +34,16 @@ namespace TombLib.Wad
 
         public Hash Hash => Hash.FromByteArray(ToByteArray());
 
-        public void CalculateNormals()
-        {
-            VerticesNormals.Clear();
-
-            var tempNormals = new List<VertexNormalAverageHelper>();
-            for (int i = 0; i < VerticesPositions.Count; i++)
-                tempNormals.Add(new VertexNormalAverageHelper());
-
-            foreach (var poly in Polys)
-            {
-                var p0 = VerticesPositions[poly.Index0];
-                var p1 = VerticesPositions[poly.Index1];
-                var p2 = VerticesPositions[poly.Index2];
-
-                var v1 = p0 - p2;
-                var v2 = p1 - p2;
-                var normal = Vector3.Cross(v1, v2);
-
-                tempNormals[poly.Index0].Normal += normal;
-                tempNormals[poly.Index0].NumVertices++;
-
-                tempNormals[poly.Index1].Normal += normal;
-                tempNormals[poly.Index1].NumVertices++;
-
-                tempNormals[poly.Index2].Normal += normal;
-                tempNormals[poly.Index2].NumVertices++;
-
-                if (poly.Shape == WadPolygonShape.Quad)
-                {
-                    tempNormals[poly.Index3].Normal += normal;
-                    tempNormals[poly.Index3].NumVertices++;
-                }
-            }
-
-            for (int i = 0; i < tempNormals.Count; i++)
-            {
-                var normal = tempNormals[i].Normal / Math.Max(1, tempNormals[i].NumVertices);
-                normal = Vector3.Normalize(normal);
-                VerticesNormals.Add(normal);
-            }
-        }
+        public bool HasColors  => VertexColors.Count == VertexPositions.Count;
+        public bool HasNormals => VertexNormals.Count == VertexPositions.Count;
+        public bool HasAttributes => VertexAttributes.Count == VertexPositions.Count;
 
         public WadMesh Clone()
         {
             var mesh = (WadMesh)MemberwiseClone();
-            mesh.VerticesPositions = new List<Vector3>(VerticesPositions);
-            mesh.VerticesNormals = new List<Vector3>(VerticesNormals);
-            mesh.VerticesColors = new List<Vector3>(VerticesColors);
+            mesh.VertexPositions = new List<Vector3>(VertexPositions);
+            mesh.VertexNormals = new List<Vector3>(VertexNormals);
+            mesh.VertexColors = new List<Vector3>(VertexColors);
             mesh.Polys = new List<WadPolygon>(Polys);
             return mesh;
         }
@@ -90,19 +59,19 @@ namespace TombLib.Wad
                 writer.Write(BoundingSphere.Center.Z);
                 writer.Write(BoundingSphere.Radius);
 
-                int numVertices = VerticesPositions.Count;
+                int numVertices = VertexPositions.Count;
                 writer.Write(numVertices);
 
-                for (int i = 0; i < VerticesPositions.Count; i++)
-                    writer.Write(VerticesPositions[i]);
+                for (int i = 0; i < VertexPositions.Count; i++)
+                    writer.Write(VertexPositions[i]);
 
-                if (VerticesNormals.Count > 0)
-                    for (int i = 0; i < VerticesNormals.Count; i++)
-                        writer.Write(VerticesNormals[i]);
+                if (VertexNormals.Count > 0)
+                    for (int i = 0; i < VertexNormals.Count; i++)
+                        writer.Write(VertexNormals[i]);
 
-                if (VerticesColors.Count > 0)
-                    for (int i = 0; i < VerticesColors.Count; i++)
-                        writer.Write(VerticesColors[i]);
+                if (VertexColors.Count > 0)
+                    for (int i = 0; i < VertexColors.Count; i++)
+                        writer.Write(VertexColors[i]);
 
                 int numPolygons = Polys.Count;
                 writer.Write(numPolygons);
@@ -139,7 +108,7 @@ namespace TombLib.Wad
             float maxY = float.MinValue;
             float maxZ = float.MinValue;
             
-            foreach (Vector3 oldVertex in VerticesPositions)
+            foreach (Vector3 oldVertex in VertexPositions)
             {
                 var transformedVertex = MathC.HomogenousTransform(oldVertex, transform);
 
@@ -158,7 +127,7 @@ namespace TombLib.Wad
         {
             Vector3 min = new Vector3(float.MaxValue);
             Vector3 max = new Vector3(float.MinValue);
-            foreach (Vector3 oldVertex in VerticesPositions)
+            foreach (Vector3 oldVertex in VertexPositions)
             {
                 min = Vector3.Min(oldVertex, min);
                 max = Vector3.Max(oldVertex, max);
@@ -172,6 +141,85 @@ namespace TombLib.Wad
             return new BoundingSphere(
                 (boundingBox.Maximum + boundingBox.Minimum) * 0.5f,
                 Vector3.Distance(boundingBox.Minimum, boundingBox.Maximum) * 0.5f);
+        }
+
+        public void CalculateNormals()
+        {
+            VertexNormals.Clear();
+
+            var tempNormals = new List<VertexNormalAverageHelper>();
+            for (int i = 0; i < VertexPositions.Count; i++)
+                tempNormals.Add(new VertexNormalAverageHelper());
+
+            foreach (var poly in Polys)
+            {
+                var p0 = VertexPositions[poly.Index0];
+                var p1 = VertexPositions[poly.Index1];
+                var p2 = VertexPositions[poly.Index2];
+
+                var v1 = p0 - p2;
+                var v2 = p1 - p2;
+                var normal = Vector3.Cross(v1, v2);
+
+                tempNormals[poly.Index0].Normal += normal;
+                tempNormals[poly.Index0].NumVertices++;
+
+                tempNormals[poly.Index1].Normal += normal;
+                tempNormals[poly.Index1].NumVertices++;
+
+                tempNormals[poly.Index2].Normal += normal;
+                tempNormals[poly.Index2].NumVertices++;
+
+                if (poly.Shape == WadPolygonShape.Quad)
+                {
+                    tempNormals[poly.Index3].Normal += normal;
+                    tempNormals[poly.Index3].NumVertices++;
+                }
+            }
+
+            for (int i = 0; i < tempNormals.Count; i++)
+            {
+                var normal = tempNormals[i].Normal / Math.Max(1, tempNormals[i].NumVertices);
+                normal = Vector3.Normalize(normal);
+                VertexNormals.Add(normal);
+            }
+        }
+
+        public void ConvertVertexAttributesFromVertexColors()
+        {
+            // This function converts vertex attributes from legacy TE workflow which
+            // interpreted vertex colors as glow/move flags. We convert exact shade value to exact
+            // attribute value, because legacy compiler should convert it to a flag anyway, while
+            // TEN compiler most likely will keep attribute value on a per-vertex basis.
+
+            VertexAttributes.Clear();
+
+            if (!HasColors)
+                VertexAttributes = Enumerable.Repeat(new VertexAttributes(), VertexPositions.Count).ToList();
+            else
+            {
+                for (int i = 0; i < VertexColors.Count; i++)
+                {
+                    var attr = new VertexAttributes();
+                    var luma = VertexColors[i].GetLuma();
+
+                    if (luma < 0.5f) attr.Move = (int)(luma * 2.0f * 63.0f);
+                    else if (luma < 1.0f) attr.Glow = (int)((luma - 0.5f) * 63.0f);
+
+                    VertexAttributes.Add(attr);
+                }
+
+                VertexColors.Clear();
+            }
+        }
+
+        public void GenerateMissingVertexData()
+        {
+            if (!HasColors)
+                VertexColors = Enumerable.Repeat(Vector3.One, VertexPositions.Count).ToList();
+
+            if (!HasAttributes)
+                VertexAttributes = Enumerable.Repeat(new VertexAttributes(), VertexPositions.Count).ToList();
         }
 
         public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)
@@ -245,20 +293,20 @@ namespace TombLib.Wad
             {
                 var poly = new IOPolygon(p.Shape == WadPolygonShape.Quad ? IOPolygonShape.Quad : IOPolygonShape.Triangle);
 
-                mesh.Positions.Add(m.VerticesPositions[p.Index0]);
-                mesh.Positions.Add(m.VerticesPositions[p.Index1]);
-                mesh.Positions.Add(m.VerticesPositions[p.Index2]);
+                mesh.Positions.Add(m.VertexPositions[p.Index0]);
+                mesh.Positions.Add(m.VertexPositions[p.Index1]);
+                mesh.Positions.Add(m.VertexPositions[p.Index2]);
                 if (p.Shape == WadPolygonShape.Quad)
                 {
-                    mesh.Positions.Add(m.VerticesPositions[p.Index3]);
+                    mesh.Positions.Add(m.VertexPositions[p.Index3]);
                 }
 
-                mesh.Normals.Add(m.VerticesNormals[p.Index0]);
-                mesh.Normals.Add(m.VerticesNormals[p.Index1]);
-                mesh.Normals.Add(m.VerticesNormals[p.Index2]);
+                mesh.Normals.Add(m.VertexNormals[p.Index0]);
+                mesh.Normals.Add(m.VertexNormals[p.Index1]);
+                mesh.Normals.Add(m.VertexNormals[p.Index2]);
                 if (p.Shape == WadPolygonShape.Quad)
                 {
-                    mesh.Normals.Add(m.VerticesNormals[p.Index3]);
+                    mesh.Normals.Add(m.VertexNormals[p.Index3]);
                 }
 
                 var texture = texturePieces[((WadTexture)p.Texture.Texture).Hash];
@@ -277,14 +325,14 @@ namespace TombLib.Wad
                     mesh.UV.Add((p.Texture.TexCoord3 + offset) / 256.0f);
                 }
 
-                if (m.VerticesColors.Count >= m.VerticesPositions.Count)
+                if (m.VertexColors.Count >= m.VertexPositions.Count)
                 {
-                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index0], 1.0f));
-                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index1], 1.0f));
-                    mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index2], 1.0f));
+                    mesh.Colors.Add(new Vector4(m.VertexColors[p.Index0], 1.0f));
+                    mesh.Colors.Add(new Vector4(m.VertexColors[p.Index1], 1.0f));
+                    mesh.Colors.Add(new Vector4(m.VertexColors[p.Index2], 1.0f));
                     if (p.Shape == WadPolygonShape.Quad)
                     {
-                        mesh.Colors.Add(new Vector4(m.VerticesColors[p.Index3], 1.0f));
+                        mesh.Colors.Add(new Vector4(m.VertexColors[p.Index3], 1.0f));
                     }
                 }
                 else
@@ -404,11 +452,11 @@ namespace TombLib.Wad
                             // to the one assimp index is refering to in its vertex list and remember it as candidate.
 
                             int candidate = -1;
-                            for (int k = 0; k < mesh.VerticesPositions.Count; k++)
+                            for (int k = 0; k < mesh.VertexPositions.Count; k++)
                             {
-                                if (tmpPos[tmpIndex] == mesh.VerticesPositions[k] &&
-                                    (mesh.VerticesColors.Count  == 0 || tmpCol[tmpIndex] == mesh.VerticesColors[k]) &&
-                                    (mesh.VerticesNormals.Count == 0 || tmpNor[tmpIndex] == mesh.VerticesNormals[k]))
+                                if (tmpPos[tmpIndex] == mesh.VertexPositions[k] &&
+                                    (mesh.VertexColors.Count  == 0 || tmpCol[tmpIndex] == mesh.VertexColors[k]) &&
+                                    (mesh.VertexNormals.Count == 0 || tmpNor[tmpIndex] == mesh.VertexNormals[k]))
                                 {
                                     candidate = k;
                                     break;
@@ -421,10 +469,10 @@ namespace TombLib.Wad
 
                             if (candidate == -1)
                             {
-                                candidate = mesh.VerticesPositions.Count;
-                                mesh.VerticesPositions.Add(tmpPos[tmpIndex]);
-                                if (tmpCol.Count > 0) mesh.VerticesColors.Add(tmpCol[tmpIndex]);
-                                if (tmpNor.Count > 0) mesh.VerticesNormals.Add(tmpNor[tmpIndex]);
+                                candidate = mesh.VertexPositions.Count;
+                                mesh.VertexPositions.Add(tmpPos[tmpIndex]);
+                                if (tmpCol.Count > 0) mesh.VertexColors.Add(tmpCol[tmpIndex]);
+                                if (tmpNor.Count > 0) mesh.VertexNormals.Add(tmpNor[tmpIndex]);
                             }
 
                             switch (j)
@@ -461,11 +509,11 @@ namespace TombLib.Wad
                     mesh.BoundingBox = mesh.CalculateBoundingBox();
                     mesh.BoundingSphere = mesh.CalculateBoundingSphere();
 
-                    if (mesh.VerticesNormals.Count == 0 || calculateNormals)
+                    if (!mesh.HasNormals || calculateNormals)
                         mesh.CalculateNormals(); // MQO files rarely have normals
                     
-                    if (mesh.VerticesPositions.Count != mesh.VerticesColors.Count)
-                        mesh.VerticesColors.Clear(); // Reset vertex colors in case they got desynced from vertex count
+                    if (!mesh.HasColors)
+                        mesh.VertexColors.Clear(); // Reset vertex colors in case they got desynced from vertex count
 
                     meshList.Add(mesh);
                 }

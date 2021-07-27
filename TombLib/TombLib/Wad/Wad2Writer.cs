@@ -155,7 +155,7 @@ namespace TombLib.Wad
                 // Write positions
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexPositions, () =>
                 {
-                    foreach (var pos in mesh.VerticesPositions)
+                    foreach (var pos in mesh.VertexPositions)
                     {
                         chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexPosition, pos);
                     }
@@ -164,7 +164,7 @@ namespace TombLib.Wad
                 // Write normals
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexNormals, () =>
                 {
-                    foreach (var normal in mesh.VerticesNormals)
+                    foreach (var normal in mesh.VertexNormals)
                     {
                         chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexNormal, normal);
                     }
@@ -173,10 +173,21 @@ namespace TombLib.Wad
                 // Write shades
                 chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexShades, () =>
                 {
-                    foreach (var color in mesh.VerticesColors)
+                    foreach (var color in mesh.VertexColors)
                     {
                         chunkIO.WriteChunkVector3(Wad2Chunks.MeshVertexColor, color);
                     }
+                });
+
+                // Write vertex attributes
+                chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexAttributes, () =>
+                {
+                    foreach (var attr in mesh.VertexAttributes)
+                        chunkIO.WriteChunkWithChildren(Wad2Chunks.MeshVertexAttribute, () =>
+                        {
+                            LEB128.Write(chunkIO.Raw, attr.Glow);
+                            LEB128.Write(chunkIO.Raw, attr.Move);
+                        });
                 });
 
                 // Write light mode

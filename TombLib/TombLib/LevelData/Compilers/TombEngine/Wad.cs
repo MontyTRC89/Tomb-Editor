@@ -61,12 +61,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var objectString = isStatic ? "Static" : "Moveable";
 
             // If light type is static and vertex colors count isn't valid, use flat lighting
-            if (oldMesh.LightingType != WadMeshLightingType.Normals && oldMesh.VerticesColors.Count != oldMesh.VerticesPositions.Count)
+            if (oldMesh.LightingType != WadMeshLightingType.Normals && oldMesh.VertexColors.Count != oldMesh.VertexPositions.Count)
                 flatLighting = true;
 
             if (oldMesh.LightingType == WadMeshLightingType.Normals)
             {
-                if (oldMesh.VerticesNormals.Count == 0)
+                if (oldMesh.VertexNormals.Count == 0)
                 {
                     _progressReporter.ReportWarn(string.Format(objectString + " {0} has a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                     oldMesh.CalculateNormals();
@@ -79,30 +79,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
             }
 
             // Add vertices components
-            foreach (var pos in oldMesh.VerticesPositions)
+            foreach (var pos in oldMesh.VertexPositions)
             {
                 newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
                 newMesh.Vertices.Add(new TombEngineVertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
             }
-            foreach (var normal in oldMesh.VerticesNormals)
+            foreach (var normal in oldMesh.VertexNormals)
                 newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
             if (useShades)
             {
-                for (int j = 0; j < oldMesh.VerticesPositions.Count; j++)
+                for (int j = 0; j < oldMesh.VertexPositions.Count; j++)
                 {
                     // HACK: Because of inconsistent TE light model (0.0f-2.0f), clamp luma to 1.0f to avoid issues with
                     // incorrect shade translations in room meshes reimported as statics.
-                    var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VerticesColors[j].GetLuma(), 1.0f);
+                    var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VertexColors[j].GetLuma(), 1.0f);
 
                     newMesh.Colors.Add(new Vector3(lightValue));
                 }
             }
             else
             {
-                for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+                for (int i = 0; i < oldMesh.VertexPositions.Count; i++)
                     newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
             }
-            for (int i = 0; i < oldMesh.VerticesPositions.Count; i++)
+            for (int i = 0; i < oldMesh.VertexPositions.Count; i++)
                 newMesh.Bones.Add(meshIndex);
 
             for (int j = 0; j < oldMesh.Polys.Count; j++)

@@ -391,10 +391,10 @@ namespace WadTool.Controls
             {
                 if (poly.Shape == WadPolygonShape.Quad)
                 {
-                    Vector3 p1 = mesh.VerticesPositions[poly.Index0];
-                    Vector3 p2 = mesh.VerticesPositions[poly.Index1];
-                    Vector3 p3 = mesh.VerticesPositions[poly.Index2];
-                    Vector3 p4 = mesh.VerticesPositions[poly.Index3];
+                    Vector3 p1 = mesh.VertexPositions[poly.Index0];
+                    Vector3 p2 = mesh.VertexPositions[poly.Index1];
+                    Vector3 p3 = mesh.VertexPositions[poly.Index2];
+                    Vector3 p4 = mesh.VertexPositions[poly.Index3];
 
                     float distance;
                     if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
@@ -411,9 +411,9 @@ namespace WadTool.Controls
                 }
                 else
                 {
-                    Vector3 p1 = mesh.VerticesPositions[poly.Index0];
-                    Vector3 p2 = mesh.VerticesPositions[poly.Index1];
-                    Vector3 p3 = mesh.VerticesPositions[poly.Index2];
+                    Vector3 p1 = mesh.VertexPositions[poly.Index0];
+                    Vector3 p2 = mesh.VertexPositions[poly.Index1];
+                    Vector3 p3 = mesh.VertexPositions[poly.Index2];
 
                     float distance;
                     if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)

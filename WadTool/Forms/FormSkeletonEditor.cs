@@ -275,9 +275,9 @@ namespace WadTool
                     float.Parse(tokens[2]),
                     float.Parse(tokens[3]),
                     float.Parse(tokens[4]));
-                for (int i = 0; i < mesh.VerticesPositions.Count; i++)
+                for (int i = 0; i < mesh.VertexPositions.Count; i++)
                 {
-                    mesh.VerticesPositions[i] -= offset;
+                    mesh.VertexPositions[i] -= offset;
                 }
             }
 
