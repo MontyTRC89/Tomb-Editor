@@ -435,10 +435,7 @@ namespace TombLib.Wad
                                 case 3: poly.Index3 = candidate; break;
                             }
                         }
-
-                        if (poly.Shape == WadPolygonShape.Triangle)
-                            poly.Index3 = 0;
-
+                        
                         var area = new TextureArea();
                         area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
                         area.TexCoord1 = tmpMesh.UV[tmpPoly.Indices[1]];
