@@ -199,9 +199,7 @@ namespace WadTool.Controls
             if (Static != null)
             {
                 var model = _wadRenderer.GetStatic(Static);
-
                 var effect = _deviceManager.___LegacyEffects["Model"];
-
                 var world = GizmoTransform;
 
                 effect.Parameters["ModelViewProjection"].SetValue((world * viewProjection).ToSharpDX());
@@ -286,7 +284,7 @@ namespace WadTool.Controls
                         lines.Add(v);
 
                         v = new SolidVertex();
-                        v.Position = p + n * 256.0f;
+                        v.Position = p + n * 32.0f;
                         v.Color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
                         lines.Add(v);
                     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.Graphics;
@@ -111,23 +112,20 @@ namespace WadTool
             if (obj is WadToolClass.MeshEditorElementChangedEvent)
             {
                 var newIndex = (obj as WadToolClass.MeshEditorElementChangedEvent).ElementIndex;
+                if (newIndex == -1) return;
 
                 switch (panelMesh.EditingMode)
                 {
                     case MeshEditingMode.VertexRemap:
                         {
-                            if (newIndex != -1)
-                                nudVertexNum.Value = (decimal)newIndex;
-
+                            nudVertexNum.Value = (decimal)newIndex;
                             nudVertexNum.Select(0, 5);
                             nudVertexNum.Focus();
                         }
                         break;
 
-                    case MeshEditingMode.VertexAttributes:
+                    case MeshEditingMode.VertexEffects:
                         {
-                            if (newIndex == -1) return;
-
                             // Add missing data if needed
                             panelMesh.Mesh.GenerateMissingVertexData(); 
 
@@ -135,14 +133,24 @@ namespace WadTool
                             {
                                 nudGlow.Value = panelMesh.Mesh.VertexAttributes[newIndex].Glow;
                                 nudMove.Value = panelMesh.Mesh.VertexAttributes[newIndex].Move;
+                            }
+                            else
+                            {
+                                panelMesh.Mesh.VertexAttributes[newIndex] = new VertexAttributes() { Glow = (int)nudGlow.Value, Move = (int)nudMove.Value };
+                                panelMesh.Invalidate();
+                            }
+                        }
+                        break;
+
+                    case MeshEditingMode.VertexColorsAndNormals:
+                        {
+                            if (Control.ModifierKeys == Keys.Alt)
+                            {
                                 panelColor.BackColor = panelMesh.Mesh.VertexColors[newIndex].ToWinFormsColor();
                             }
                             else
                             {
-                                if (cbApplyColor.Checked)
-                                    panelMesh.Mesh.VertexColors[newIndex] = panelColor.BackColor.ToFloat3Color();
-
-                                panelMesh.Mesh.VertexAttributes[newIndex] = new VertexAttributes() { Glow = (int)nudGlow.Value, Move = (int)nudMove.Value };
+                                panelMesh.Mesh.VertexColors[newIndex] = panelColor.BackColor.ToFloat3Color();
                                 panelMesh.Invalidate();
                             }
                         }
@@ -150,8 +158,6 @@ namespace WadTool
 
                     case MeshEditingMode.FaceAttributes:
                         {
-                            if (newIndex == -1) return;
-
                             var poly = panelMesh.Mesh.Polys[newIndex];
 
                             if (Control.ModifierKeys == Keys.Alt)
@@ -167,6 +173,7 @@ namespace WadTool
                                     case BlendMode.Lighten:  cbBlendMode.SelectedIndex = 5; break;
                                 }
                                 nudShineStrength.Value = (decimal)poly.ShineStrength;
+                                butDoubleSide.Checked = poly.Texture.DoubleSided;
                             }
                             else
                             {
@@ -183,6 +190,7 @@ namespace WadTool
                                 }
                                 poly.Texture = selectedTexture;
                                 poly.ShineStrength = (byte)nudShineStrength.Value;
+                                poly.Texture.DoubleSided = butDoubleSide.Checked;
                                 panelMesh.Mesh.Polys[newIndex] = poly;
                                 panelMesh.Invalidate();
                             }
@@ -201,9 +209,9 @@ namespace WadTool
             if (enableNud) nudVertexNum.Value = panelMesh.CurrentElement;
             butRemapVertex.Enabled = enableNud;
 
-            cbVertexNumbers.Enabled = panelMesh.EditingMode != MeshEditingMode.FaceAttributes;
+            cbAllInfo.Enabled = panelMesh.EditingMode != MeshEditingMode.FaceAttributes;
             cbWireframe.Checked = panelMesh.WireframeMode;
-            cbVertexNumbers.Checked = panelMesh.DrawVertexNumbers;
+            cbAllInfo.Checked = panelMesh.DrawInformationForAllElements;
 
             if (ShowMeshList && ShowEditingTools)
             {
@@ -216,6 +224,14 @@ namespace WadTool
                 panelMesh.EditingMode = MeshEditingMode.None;
                 panelEditingTools.Visible = false;
             }
+
+            if (panelMesh.EditingMode == MeshEditingMode.VertexColorsAndNormals)
+                cbAllInfo.Text = "Show all normals";
+            else
+                cbAllInfo.Text = "Show all numbers";
+
+            if (cbBlendMode.SelectedIndex == -1)
+                cbBlendMode.SelectedIndex = 0;
 
             panelMesh.Invalidate();
         }
@@ -259,13 +275,13 @@ namespace WadTool
 
         private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
         {
-            panelMesh.DrawVertexNumbers = cbVertexNumbers.Checked;
+            panelMesh.DrawInformationForAllElements = cbAllInfo.Checked;
             UpdateUI();
         }
 
         private void RemapSelectedVertex()
         {
-            if (panelMesh.EditingMode != MeshEditingMode.VertexRemap || panelMesh.CurrentElement == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+            if (panelMesh.CurrentElement == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
                 return;
 
             if (nudVertexNum.Value == panelMesh.CurrentElement)
@@ -383,6 +399,7 @@ namespace WadTool
             {
                 var poly = panelMesh.Mesh.Polys[i];
                 poly.Texture.BlendMode = currentBlendMode;
+                poly.Texture.DoubleSided = butDoubleSide.Checked;
                 poly.ShineStrength = currentShinyValue;
                 panelMesh.Mesh.Polys[i] = poly;
             }
@@ -392,18 +409,16 @@ namespace WadTool
 
         private void butApplyToAllVertices_Click(object sender, EventArgs e)
         {
-            if (panelMesh.EditingMode != MeshEditingMode.VertexAttributes || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+            if (panelMesh.EditingMode != MeshEditingMode.VertexEffects || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
                 return;
 
             panelMesh.Mesh.GenerateMissingVertexData();
 
-            var currentColor = panelColor.BackColor.ToFloat3Color();
             var currentGlow  = (int)nudGlow.Value;
             var currentMove  = (int)nudMove.Value;
 
             for (int i = 0; i < panelMesh.Mesh.VertexPositions.Count; i++)
             {
-                panelMesh.Mesh.VertexColors[i] = currentColor;
                 panelMesh.Mesh.VertexAttributes[i].Glow = currentGlow;
                 panelMesh.Mesh.VertexAttributes[i].Move = currentMove;
             }
@@ -423,6 +438,63 @@ namespace WadTool
                 if (panelColor.BackColor != colorDialog.Color)
                     panelColor.BackColor = colorDialog.Color;
             }
+        }
+
+        private void butRecalcNormals_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+                return;
+
+            panelMesh.Mesh.CalculateNormals();
+        }
+
+        private void butApplyShadesToAllVertices_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+                return;
+
+            panelMesh.Mesh.GenerateMissingVertexData();
+
+            var currentColor = panelColor.BackColor.ToFloat3Color();
+
+            for (int i = 0; i < panelMesh.Mesh.VertexPositions.Count; i++)
+                panelMesh.Mesh.VertexColors[i] = currentColor;
+
+            panelMesh.Invalidate();
+        }
+
+        private void butConvertFromShades_Click(object sender, EventArgs e)
+        {
+            // This function converts vertex attributes from legacy TE workflow which
+            // interpreted vertex colors as glow/move flags. We convert exact shade value to exact
+            // attribute value, because legacy compiler should convert it to a flag anyway, while
+            // TEN compiler most likely will keep attribute value on a per-vertex basis.
+
+            panelMesh.Mesh.VertexAttributes.Clear();
+
+            if (!panelMesh.Mesh.HasColors)
+                panelMesh.Mesh.VertexAttributes = Enumerable.Repeat(new VertexAttributes(), panelMesh.Mesh.VertexPositions.Count).ToList();
+            else
+            {
+                for (int i = 0; i < panelMesh.Mesh.VertexColors.Count; i++)
+                {
+                    var attr = new VertexAttributes();
+                    var luma = panelMesh.Mesh.VertexColors[i].GetLuma();
+
+                    if (luma < 0.5f) attr.Move = (int)(luma * 2.0f * 63.0f);
+                    else if (luma < 1.0f) attr.Glow = (int)((luma - 0.5f) * 63.0f);
+
+                    panelMesh.Mesh.VertexAttributes.Add(attr);
+                }
+
+                panelMesh.Mesh.VertexColors.Clear();
+                panelMesh.Invalidate();
+            }
+        }
+
+        private void butDoubleSide_Click(object sender, EventArgs e)
+        {
+            butDoubleSide.Checked = !butDoubleSide.Checked;
         }
     }
 }

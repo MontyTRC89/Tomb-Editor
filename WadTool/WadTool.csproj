@@ -577,6 +577,7 @@
     <None Include="Resources\copy-to-all-16.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\texture_DoubleSided_1-16.png" />
     <Content Include="WT.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

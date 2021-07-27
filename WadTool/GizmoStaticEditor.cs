@@ -1,6 +1,8 @@
 ﻿using SharpDX.Toolkit.Graphics;
+using System;
 using System.Numerics;
 using TombLib.Graphics;
+using TombLib.LevelData;
 using WadTool.Controls;
 
 namespace WadTool
@@ -42,11 +44,11 @@ namespace WadTool
         protected override float RotationZ => _control.StaticRotation.Z;
         protected override Vector3 Scale => new Vector3(_control.StaticScale);
 
-        protected override float CentreCubeSize => _configuration.GizmoStatic_CenterCubeSize;
-        protected override float TranslationConeSize => _configuration.GizmoStatic_TranslationConeSize;
-        protected override float Size => _configuration.GizmoStatic_Size;
-        protected override float ScaleCubeSize => _configuration.GizmoStatic_ScaleCubeSize;
-        protected override float LineThickness => _configuration.GizmoStatic_LineThickness;
+        protected override float CentreCubeSize => _UIscale * _configuration.GizmoStatic_CenterCubeSize;
+        protected override float TranslationConeSize => _UIscale * _configuration.GizmoStatic_TranslationConeSize;
+        protected override float Size => _UIscale * _configuration.GizmoStatic_Size;
+        protected override float ScaleCubeSize => _UIscale * _configuration.GizmoStatic_ScaleCubeSize;
+        protected override float LineThickness => _UIscale * _configuration.GizmoStatic_LineThickness;
 
         protected override GizmoOrientation Orientation => GizmoOrientation.Normal;
 
@@ -57,5 +59,7 @@ namespace WadTool
         protected override bool SupportRotationY => true;
         protected override bool SupportRotationX => true;
         protected override bool SupportRotationZ => true;
+
+        private float _UIscale => Math.Max(_control.Static.Mesh.CalculateBoundingSphere().Radius / (Level.WorldUnit * 2), 0.1f);
     }
 }

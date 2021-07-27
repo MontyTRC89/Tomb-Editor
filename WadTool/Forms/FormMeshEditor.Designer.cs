@@ -28,13 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lstMeshes = new DarkUI.Controls.DarkTreeView();
             this.panelMesh = new WadTool.Controls.PanelRenderingMesh();
             this.btCancel = new DarkUI.Controls.DarkButton();
             this.btOk = new DarkUI.Controls.DarkButton();
             this.panelEditing = new DarkUI.Controls.DarkSectionPanel();
             this.cbWireframe = new DarkUI.Controls.DarkCheckBox();
-            this.cbVertexNumbers = new DarkUI.Controls.DarkCheckBox();
+            this.cbAllInfo = new DarkUI.Controls.DarkCheckBox();
             this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tabsModes = new TombLib.Controls.DarkTabbedContainer();
@@ -43,15 +44,20 @@
             this.butFindVertex = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butRemapVertex = new DarkUI.Controls.DarkButton();
-            this.tabVertexAttributes = new System.Windows.Forms.TabPage();
-            this.cbApplyColor = new DarkUI.Controls.DarkCheckBox();
+            this.tabVertexShadesAndNormals = new System.Windows.Forms.TabPage();
+            this.darkLabel7 = new DarkUI.Controls.DarkLabel();
+            this.butRecalcNormals = new DarkUI.Controls.DarkButton();
+            this.butApplyShadesToAllVertices = new DarkUI.Controls.DarkButton();
             this.panelColor = new DarkUI.Controls.DarkPanel();
+            this.tabVertexEffects = new System.Windows.Forms.TabPage();
+            this.butConvertFromShades = new DarkUI.Controls.DarkButton();
             this.nudMove = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
             this.nudGlow = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel4 = new DarkUI.Controls.DarkLabel();
             this.butApplyToAllVertices = new DarkUI.Controls.DarkButton();
             this.tabFaceAttributes = new System.Windows.Forms.TabPage();
+            this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.cbBlendMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.nudShineStrength = new DarkUI.Controls.DarkNumericUpDown();
@@ -61,11 +67,13 @@
             this.panelMain = new DarkUI.Controls.DarkPanel();
             this.panelEditingTools = new DarkUI.Controls.DarkPanel();
             this.panelTree = new DarkUI.Controls.DarkPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelEditing.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabVertexRemap.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).BeginInit();
-            this.tabVertexAttributes.SuspendLayout();
+            this.tabVertexShadesAndNormals.SuspendLayout();
+            this.tabVertexEffects.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMove)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGlow)).BeginInit();
             this.tabFaceAttributes.SuspendLayout();
@@ -131,7 +139,7 @@
             // panelEditing
             // 
             this.panelEditing.Controls.Add(this.cbWireframe);
-            this.panelEditing.Controls.Add(this.cbVertexNumbers);
+            this.panelEditing.Controls.Add(this.cbAllInfo);
             this.panelEditing.Controls.Add(this.cbEditingMode);
             this.panelEditing.Controls.Add(this.darkLabel2);
             this.panelEditing.Controls.Add(this.tabsModes);
@@ -146,23 +154,23 @@
             // 
             this.cbWireframe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbWireframe.AutoSize = true;
-            this.cbWireframe.Location = new System.Drawing.Point(273, 35);
+            this.cbWireframe.Location = new System.Drawing.Point(296, 35);
             this.cbWireframe.Name = "cbWireframe";
             this.cbWireframe.Size = new System.Drawing.Size(79, 17);
             this.cbWireframe.TabIndex = 6;
             this.cbWireframe.Text = "Wireframe";
+            this.toolTip.SetToolTip(this.cbWireframe, "Draw mesh as wireframe");
             this.cbWireframe.CheckedChanged += new System.EventHandler(this.cbWireframe_CheckedChanged);
             // 
-            // cbVertexNumbers
+            // cbAllInfo
             // 
-            this.cbVertexNumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbVertexNumbers.AutoSize = true;
-            this.cbVertexNumbers.Location = new System.Drawing.Point(352, 35);
-            this.cbVertexNumbers.Name = "cbVertexNumbers";
-            this.cbVertexNumbers.Size = new System.Drawing.Size(118, 17);
-            this.cbVertexNumbers.TabIndex = 4;
-            this.cbVertexNumbers.Text = "Show all numbers";
-            this.cbVertexNumbers.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
+            this.cbAllInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbAllInfo.Location = new System.Drawing.Point(376, 35);
+            this.cbAllInfo.Name = "cbAllInfo";
+            this.cbAllInfo.Size = new System.Drawing.Size(109, 17);
+            this.cbAllInfo.TabIndex = 4;
+            this.cbAllInfo.Text = "Show all numbers";
+            this.cbAllInfo.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
             // 
             // cbEditingMode
             // 
@@ -171,7 +179,7 @@
             this.cbEditingMode.FormattingEnabled = true;
             this.cbEditingMode.Location = new System.Drawing.Point(49, 33);
             this.cbEditingMode.Name = "cbEditingMode";
-            this.cbEditingMode.Size = new System.Drawing.Size(213, 23);
+            this.cbEditingMode.Size = new System.Drawing.Size(241, 23);
             this.cbEditingMode.TabIndex = 9;
             this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
             // 
@@ -189,7 +197,8 @@
             // 
             this.tabsModes.Alignment = System.Windows.Forms.TabAlignment.Right;
             this.tabsModes.Controls.Add(this.tabVertexRemap);
-            this.tabsModes.Controls.Add(this.tabVertexAttributes);
+            this.tabsModes.Controls.Add(this.tabVertexShadesAndNormals);
+            this.tabsModes.Controls.Add(this.tabVertexEffects);
             this.tabsModes.Controls.Add(this.tabFaceAttributes);
             this.tabsModes.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tabsModes.Location = new System.Drawing.Point(1, 52);
@@ -208,9 +217,9 @@
             this.tabVertexRemap.Controls.Add(this.butRemapVertex);
             this.tabVertexRemap.Location = new System.Drawing.Point(4, 4);
             this.tabVertexRemap.Name = "tabVertexRemap";
-            this.tabVertexRemap.Size = new System.Drawing.Size(424, 31);
+            this.tabVertexRemap.Size = new System.Drawing.Size(403, 31);
             this.tabVertexRemap.TabIndex = 0;
-            this.tabVertexRemap.Text = "Vertex numbers";
+            this.tabVertexRemap.Text = "Vertex remap";
             // 
             // nudVertexNum
             // 
@@ -230,7 +239,7 @@
             0,
             0});
             this.nudVertexNum.Name = "nudVertexNum";
-            this.nudVertexNum.Size = new System.Drawing.Size(173, 23);
+            this.nudVertexNum.Size = new System.Drawing.Size(152, 23);
             this.nudVertexNum.TabIndex = 2;
             this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
             // 
@@ -239,12 +248,13 @@
             this.butFindVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butFindVertex.Checked = false;
             this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butFindVertex.Location = new System.Drawing.Point(267, 5);
+            this.butFindVertex.Location = new System.Drawing.Point(246, 5);
             this.butFindVertex.Name = "butFindVertex";
             this.butFindVertex.Size = new System.Drawing.Size(74, 23);
             this.butFindVertex.TabIndex = 5;
             this.butFindVertex.Text = "Jump to";
             this.butFindVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butFindVertex, "Jump to specified vertex");
             this.butFindVertex.Click += new System.EventHandler(this.butFindVertex_Click);
             // 
             // darkLabel1
@@ -263,39 +273,62 @@
             this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRemapVertex.Checked = false;
             this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butRemapVertex.Location = new System.Drawing.Point(347, 5);
+            this.butRemapVertex.Location = new System.Drawing.Point(326, 5);
             this.butRemapVertex.Name = "butRemapVertex";
             this.butRemapVertex.Size = new System.Drawing.Size(74, 23);
             this.butRemapVertex.TabIndex = 3;
             this.butRemapVertex.Text = "Remap";
             this.butRemapVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butRemapVertex, "Remap selected vertex to specified vertex number");
             this.butRemapVertex.Click += new System.EventHandler(this.butRemapVertex_Click);
             // 
-            // tabVertexAttributes
+            // tabVertexShadesAndNormals
             // 
-            this.tabVertexAttributes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabVertexAttributes.Controls.Add(this.cbApplyColor);
-            this.tabVertexAttributes.Controls.Add(this.panelColor);
-            this.tabVertexAttributes.Controls.Add(this.nudMove);
-            this.tabVertexAttributes.Controls.Add(this.darkLabel5);
-            this.tabVertexAttributes.Controls.Add(this.nudGlow);
-            this.tabVertexAttributes.Controls.Add(this.darkLabel4);
-            this.tabVertexAttributes.Controls.Add(this.butApplyToAllVertices);
-            this.tabVertexAttributes.Location = new System.Drawing.Point(4, 4);
-            this.tabVertexAttributes.Name = "tabVertexAttributes";
-            this.tabVertexAttributes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabVertexAttributes.Size = new System.Drawing.Size(424, 31);
-            this.tabVertexAttributes.TabIndex = 2;
-            this.tabVertexAttributes.Text = "Vertex attributes";
+            this.tabVertexShadesAndNormals.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabVertexShadesAndNormals.Controls.Add(this.darkLabel7);
+            this.tabVertexShadesAndNormals.Controls.Add(this.butRecalcNormals);
+            this.tabVertexShadesAndNormals.Controls.Add(this.butApplyShadesToAllVertices);
+            this.tabVertexShadesAndNormals.Controls.Add(this.panelColor);
+            this.tabVertexShadesAndNormals.Location = new System.Drawing.Point(4, 4);
+            this.tabVertexShadesAndNormals.Name = "tabVertexShadesAndNormals";
+            this.tabVertexShadesAndNormals.Padding = new System.Windows.Forms.Padding(3);
+            this.tabVertexShadesAndNormals.Size = new System.Drawing.Size(403, 31);
+            this.tabVertexShadesAndNormals.TabIndex = 3;
+            this.tabVertexShadesAndNormals.Text = "Vertex shades & normals";
             // 
-            // cbApplyColor
+            // darkLabel7
             // 
-            this.cbApplyColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cbApplyColor.Location = new System.Drawing.Point(170, 7);
-            this.cbApplyColor.Name = "cbApplyColor";
-            this.cbApplyColor.Size = new System.Drawing.Size(84, 17);
-            this.cbApplyColor.TabIndex = 17;
-            this.cbApplyColor.Text = "Apply color:";
+            this.darkLabel7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.darkLabel7.AutoSize = true;
+            this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel7.Location = new System.Drawing.Point(3, 8);
+            this.darkLabel7.Name = "darkLabel7";
+            this.darkLabel7.Size = new System.Drawing.Size(75, 13);
+            this.darkLabel7.TabIndex = 21;
+            this.darkLabel7.Text = "Vertex shade:";
+            // 
+            // butRecalcNormals
+            // 
+            this.butRecalcNormals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRecalcNormals.Checked = false;
+            this.butRecalcNormals.Location = new System.Drawing.Point(188, 5);
+            this.butRecalcNormals.Name = "butRecalcNormals";
+            this.butRecalcNormals.Size = new System.Drawing.Size(124, 23);
+            this.butRecalcNormals.TabIndex = 20;
+            this.butRecalcNormals.Text = "Recalculate normals";
+            this.butRecalcNormals.Click += new System.EventHandler(this.butRecalcNormals_Click);
+            // 
+            // butApplyShadesToAllVertices
+            // 
+            this.butApplyShadesToAllVertices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApplyShadesToAllVertices.Checked = false;
+            this.butApplyShadesToAllVertices.Location = new System.Drawing.Point(318, 5);
+            this.butApplyShadesToAllVertices.Name = "butApplyShadesToAllVertices";
+            this.butApplyShadesToAllVertices.Size = new System.Drawing.Size(82, 23);
+            this.butApplyShadesToAllVertices.TabIndex = 18;
+            this.butApplyShadesToAllVertices.Text = "Apply to all";
+            this.toolTip.SetToolTip(this.butApplyShadesToAllVertices, "Apply specified vertex shade to all vertices");
+            this.butApplyShadesToAllVertices.Click += new System.EventHandler(this.butApplyShadesToAllVertices_Click);
             // 
             // panelColor
             // 
@@ -303,12 +336,41 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelColor.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelColor.Location = new System.Drawing.Point(256, 5);
+            this.panelColor.Location = new System.Drawing.Point(80, 5);
             this.panelColor.Name = "panelColor";
-            this.panelColor.Size = new System.Drawing.Size(77, 23);
+            this.panelColor.Size = new System.Drawing.Size(102, 23);
             this.panelColor.TabIndex = 16;
             this.panelColor.Tag = "EditAmbientLight";
             this.panelColor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelColor_MouseDown);
+            // 
+            // tabVertexEffects
+            // 
+            this.tabVertexEffects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabVertexEffects.Controls.Add(this.butConvertFromShades);
+            this.tabVertexEffects.Controls.Add(this.nudMove);
+            this.tabVertexEffects.Controls.Add(this.darkLabel5);
+            this.tabVertexEffects.Controls.Add(this.nudGlow);
+            this.tabVertexEffects.Controls.Add(this.darkLabel4);
+            this.tabVertexEffects.Controls.Add(this.butApplyToAllVertices);
+            this.tabVertexEffects.Location = new System.Drawing.Point(4, 4);
+            this.tabVertexEffects.Name = "tabVertexEffects";
+            this.tabVertexEffects.Padding = new System.Windows.Forms.Padding(3);
+            this.tabVertexEffects.Size = new System.Drawing.Size(403, 31);
+            this.tabVertexEffects.TabIndex = 2;
+            this.tabVertexEffects.Text = "Vertex effects";
+            // 
+            // butConvertFromShades
+            // 
+            this.butConvertFromShades.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butConvertFromShades.Checked = false;
+            this.butConvertFromShades.Location = new System.Drawing.Point(179, 5);
+            this.butConvertFromShades.Name = "butConvertFromShades";
+            this.butConvertFromShades.Size = new System.Drawing.Size(133, 23);
+            this.butConvertFromShades.TabIndex = 20;
+            this.butConvertFromShades.Text = "Convert from shades";
+            this.toolTip.SetToolTip(this.butConvertFromShades, "Convert vertex effects from legacy workflow involving vertex shades.");
+            this.butConvertFromShades.Click += new System.EventHandler(this.butConvertFromShades_Click);
             // 
             // nudMove
             // 
@@ -319,7 +381,7 @@
             0,
             0,
             65536});
-            this.nudMove.Location = new System.Drawing.Point(121, 5);
+            this.nudMove.Location = new System.Drawing.Point(128, 5);
             this.nudMove.LoopValues = false;
             this.nudMove.Maximum = new decimal(new int[] {
             63,
@@ -327,20 +389,18 @@
             0,
             0});
             this.nudMove.Name = "nudMove";
-            this.nudMove.Size = new System.Drawing.Size(40, 23);
+            this.nudMove.Size = new System.Drawing.Size(45, 23);
             this.nudMove.TabIndex = 14;
-            this.nudMove.Value = new decimal(new int[] {
-            63,
-            0,
-            0,
-            0});
+            this.toolTip.SetToolTip(this.nudMove, "For legacy engines, any value above 0 results in constant movement only for merge" +
+        "d statics.\r\nIn such case, movement strength is derived from room effect strength" +
+        ".\r\n");
             // 
             // darkLabel5
             // 
             this.darkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel5.AutoSize = true;
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(84, 8);
+            this.darkLabel5.Location = new System.Drawing.Point(91, 8);
             this.darkLabel5.Name = "darkLabel5";
             this.darkLabel5.Size = new System.Drawing.Size(38, 13);
             this.darkLabel5.TabIndex = 13;
@@ -363,13 +423,10 @@
             0,
             0});
             this.nudGlow.Name = "nudGlow";
-            this.nudGlow.Size = new System.Drawing.Size(40, 23);
+            this.nudGlow.Size = new System.Drawing.Size(45, 23);
             this.nudGlow.TabIndex = 12;
-            this.nudGlow.Value = new decimal(new int[] {
-            63,
-            0,
-            0,
-            0});
+            this.toolTip.SetToolTip(this.nudGlow, "For legacy engines, any value above 0 results in constant glow only for merged st" +
+        "atics.\r\nIn such case, glow strength is derived from room effect strength.");
             // 
             // darkLabel4
             // 
@@ -386,16 +443,18 @@
             // 
             this.butApplyToAllVertices.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butApplyToAllVertices.Checked = false;
-            this.butApplyToAllVertices.Location = new System.Drawing.Point(339, 5);
+            this.butApplyToAllVertices.Location = new System.Drawing.Point(318, 5);
             this.butApplyToAllVertices.Name = "butApplyToAllVertices";
             this.butApplyToAllVertices.Size = new System.Drawing.Size(82, 23);
             this.butApplyToAllVertices.TabIndex = 10;
             this.butApplyToAllVertices.Text = "Apply to all";
+            this.toolTip.SetToolTip(this.butApplyToAllVertices, "Apply specified vertex attributes to all faces");
             this.butApplyToAllVertices.Click += new System.EventHandler(this.butApplyToAllVertices_Click);
             // 
             // tabFaceAttributes
             // 
             this.tabFaceAttributes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabFaceAttributes.Controls.Add(this.butDoubleSide);
             this.tabFaceAttributes.Controls.Add(this.cbBlendMode);
             this.tabFaceAttributes.Controls.Add(this.darkLabel6);
             this.tabFaceAttributes.Controls.Add(this.nudShineStrength);
@@ -404,9 +463,22 @@
             this.tabFaceAttributes.Location = new System.Drawing.Point(4, 4);
             this.tabFaceAttributes.Name = "tabFaceAttributes";
             this.tabFaceAttributes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFaceAttributes.Size = new System.Drawing.Size(424, 31);
+            this.tabFaceAttributes.Size = new System.Drawing.Size(403, 31);
             this.tabFaceAttributes.TabIndex = 1;
             this.tabFaceAttributes.Text = "Face attributes";
+            // 
+            // butDoubleSide
+            // 
+            this.butDoubleSide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDoubleSide.Checked = false;
+            this.butDoubleSide.Image = global::WadTool.Properties.Resources.texture_DoubleSided_1_16;
+            this.butDoubleSide.Location = new System.Drawing.Point(288, 5);
+            this.butDoubleSide.Name = "butDoubleSide";
+            this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
+            this.butDoubleSide.TabIndex = 12;
+            this.butDoubleSide.Tag = "";
+            this.toolTip.SetToolTip(this.butDoubleSide, "Double-sided");
+            this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
             // 
             // cbBlendMode
             // 
@@ -422,7 +494,7 @@
             "Lighten"});
             this.cbBlendMode.Location = new System.Drawing.Point(177, 5);
             this.cbBlendMode.Name = "cbBlendMode";
-            this.cbBlendMode.Size = new System.Drawing.Size(156, 23);
+            this.cbBlendMode.Size = new System.Drawing.Size(105, 23);
             this.cbBlendMode.TabIndex = 11;
             // 
             // darkLabel6
@@ -460,11 +532,12 @@
             // 
             this.butApplyToAllFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butApplyToAllFaces.Checked = false;
-            this.butApplyToAllFaces.Location = new System.Drawing.Point(339, 5);
+            this.butApplyToAllFaces.Location = new System.Drawing.Point(318, 5);
             this.butApplyToAllFaces.Name = "butApplyToAllFaces";
             this.butApplyToAllFaces.Size = new System.Drawing.Size(82, 23);
             this.butApplyToAllFaces.TabIndex = 9;
             this.butApplyToAllFaces.Text = "Apply to all";
+            this.toolTip.SetToolTip(this.butApplyToAllFaces, "Apply specified face attributes to all faces");
             this.butApplyToAllFaces.Click += new System.EventHandler(this.butApplyToAllFaces_Click);
             // 
             // darkLabel3
@@ -542,8 +615,10 @@
             this.tabVertexRemap.ResumeLayout(false);
             this.tabVertexRemap.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).EndInit();
-            this.tabVertexAttributes.ResumeLayout(false);
-            this.tabVertexAttributes.PerformLayout();
+            this.tabVertexShadesAndNormals.ResumeLayout(false);
+            this.tabVertexShadesAndNormals.PerformLayout();
+            this.tabVertexEffects.ResumeLayout(false);
+            this.tabVertexEffects.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMove)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGlow)).EndInit();
             this.tabFaceAttributes.ResumeLayout(false);
@@ -568,7 +643,7 @@
         private DarkUI.Controls.DarkNumericUpDown nudVertexNum;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
-        private DarkUI.Controls.DarkCheckBox cbVertexNumbers;
+        private DarkUI.Controls.DarkCheckBox cbAllInfo;
         private DarkUI.Controls.DarkButton butFindVertex;
         private DarkUI.Controls.DarkCheckBox cbWireframe;
         private DarkUI.Controls.DarkPanel panelMain;
@@ -577,12 +652,11 @@
         private TombLib.Controls.DarkTabbedContainer tabsModes;
         private System.Windows.Forms.TabPage tabVertexRemap;
         private System.Windows.Forms.TabPage tabFaceAttributes;
-        private DarkUI.Controls.DarkComboBox cbEditingMode;
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkNumericUpDown nudShineStrength;
         private DarkUI.Controls.DarkButton butApplyToAllFaces;
         private DarkUI.Controls.DarkLabel darkLabel3;
-        private System.Windows.Forms.TabPage tabVertexAttributes;
+        private System.Windows.Forms.TabPage tabVertexEffects;
         private DarkUI.Controls.DarkButton butApplyToAllVertices;
         private DarkUI.Controls.DarkNumericUpDown nudGlow;
         private DarkUI.Controls.DarkLabel darkLabel4;
@@ -591,6 +665,13 @@
         private DarkUI.Controls.DarkComboBox cbBlendMode;
         private DarkUI.Controls.DarkLabel darkLabel6;
         private DarkUI.Controls.DarkPanel panelColor;
-        private DarkUI.Controls.DarkCheckBox cbApplyColor;
+        private System.Windows.Forms.TabPage tabVertexShadesAndNormals;
+        private DarkUI.Controls.DarkButton butApplyShadesToAllVertices;
+        private DarkUI.Controls.DarkButton butRecalcNormals;
+        private DarkUI.Controls.DarkButton butConvertFromShades;
+        private DarkUI.Controls.DarkLabel darkLabel7;
+        private DarkUI.Controls.DarkComboBox cbEditingMode;
+        private DarkUI.Controls.DarkButton butDoubleSide;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

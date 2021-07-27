@@ -185,34 +185,6 @@ namespace TombLib.Wad
             }
         }
 
-        public void ConvertVertexAttributesFromVertexColors()
-        {
-            // This function converts vertex attributes from legacy TE workflow which
-            // interpreted vertex colors as glow/move flags. We convert exact shade value to exact
-            // attribute value, because legacy compiler should convert it to a flag anyway, while
-            // TEN compiler most likely will keep attribute value on a per-vertex basis.
-
-            VertexAttributes.Clear();
-
-            if (!HasColors)
-                VertexAttributes = Enumerable.Repeat(new VertexAttributes(), VertexPositions.Count).ToList();
-            else
-            {
-                for (int i = 0; i < VertexColors.Count; i++)
-                {
-                    var attr = new VertexAttributes();
-                    var luma = VertexColors[i].GetLuma();
-
-                    if (luma < 0.5f) attr.Move = (int)(luma * 2.0f * 63.0f);
-                    else if (luma < 1.0f) attr.Glow = (int)((luma - 0.5f) * 63.0f);
-
-                    VertexAttributes.Add(attr);
-                }
-
-                VertexColors.Clear();
-            }
-        }
-
         public void GenerateMissingVertexData()
         {
             if (!HasColors)

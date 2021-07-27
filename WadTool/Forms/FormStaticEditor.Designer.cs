@@ -62,13 +62,13 @@
             this.cbDrawLights = new DarkUI.Controls.DarkCheckBox();
             this.lstLights = new DarkUI.Controls.DarkTreeView();
             this.butImportMeshFromFile = new DarkUI.Controls.DarkButton();
-            this.cbDrawNormals = new DarkUI.Controls.DarkCheckBox();
-            this.butRecalcNormals = new DarkUI.Controls.DarkButton();
             this.comboLightType = new DarkUI.Controls.DarkComboBox();
             this.darkLabel18 = new DarkUI.Controls.DarkLabel();
             this.darkLabel19 = new DarkUI.Controls.DarkLabel();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.darkGroupBox4 = new DarkUI.Controls.DarkGroupBox();
+            this.butEditMesh = new DarkUI.Controls.DarkButton();
+            this.butRecalcNormals = new DarkUI.Controls.DarkButton();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
             this.nudColBoxMaxZ = new DarkUI.Controls.DarkNumericUpDown();
             this.nudColBoxMaxY = new DarkUI.Controls.DarkNumericUpDown();
@@ -97,7 +97,7 @@
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.panelRendering = new WadTool.Controls.PanelRenderingStaticEditor();
             this.butExportMeshToFile = new DarkUI.Controls.DarkButton();
-            this.butEditMesh = new DarkUI.Controls.DarkButton();
+            this.cbDrawNormals = new DarkUI.Controls.DarkCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numAmbient)).BeginInit();
@@ -538,27 +538,6 @@
             this.butImportMeshFromFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butImportMeshFromFile.Click += new System.EventHandler(this.butImportMeshFromFile_Click);
             // 
-            // cbDrawNormals
-            // 
-            this.cbDrawNormals.AutoSize = true;
-            this.cbDrawNormals.Location = new System.Drawing.Point(167, 27);
-            this.cbDrawNormals.Name = "cbDrawNormals";
-            this.cbDrawNormals.Size = new System.Drawing.Size(68, 17);
-            this.cbDrawNormals.TabIndex = 99;
-            this.cbDrawNormals.Text = "Normals";
-            this.cbDrawNormals.CheckedChanged += new System.EventHandler(this.cbDrawNormals_CheckedChanged);
-            // 
-            // butRecalcNormals
-            // 
-            this.butRecalcNormals.Checked = false;
-            this.butRecalcNormals.Location = new System.Drawing.Point(99, 120);
-            this.butRecalcNormals.Name = "butRecalcNormals";
-            this.butRecalcNormals.Size = new System.Drawing.Size(137, 23);
-            this.butRecalcNormals.TabIndex = 101;
-            this.butRecalcNormals.Text = "Recalculate normals";
-            this.butRecalcNormals.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butRecalcNormals.Click += new System.EventHandler(this.butRecalcNormals_Click);
-            // 
             // comboLightType
             // 
             this.comboLightType.FormattingEnabled = true;
@@ -620,6 +599,28 @@
             this.darkGroupBox4.Size = new System.Drawing.Size(242, 179);
             this.darkGroupBox4.TabIndex = 111;
             this.darkGroupBox4.TabStop = false;
+            // 
+            // butEditMesh
+            // 
+            this.butEditMesh.Checked = false;
+            this.butEditMesh.Location = new System.Drawing.Point(99, 149);
+            this.butEditMesh.Name = "butEditMesh";
+            this.butEditMesh.Size = new System.Drawing.Size(137, 23);
+            this.butEditMesh.TabIndex = 103;
+            this.butEditMesh.Text = "Edit mesh";
+            this.butEditMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butEditMesh.Click += new System.EventHandler(this.butEditMesh_Click);
+            // 
+            // butRecalcNormals
+            // 
+            this.butRecalcNormals.Checked = false;
+            this.butRecalcNormals.Location = new System.Drawing.Point(99, 120);
+            this.butRecalcNormals.Name = "butRecalcNormals";
+            this.butRecalcNormals.Size = new System.Drawing.Size(137, 23);
+            this.butRecalcNormals.TabIndex = 101;
+            this.butRecalcNormals.Text = "Recalculate normals";
+            this.butRecalcNormals.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.butRecalcNormals.Click += new System.EventHandler(this.butRecalcNormals_Click);
             // 
             // darkGroupBox3
             // 
@@ -1161,16 +1162,15 @@
             this.butExportMeshToFile.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.butExportMeshToFile.Click += new System.EventHandler(this.butExportMeshToFile_Click);
             // 
-            // butEditMesh
+            // cbDrawNormals
             // 
-            this.butEditMesh.Checked = false;
-            this.butEditMesh.Location = new System.Drawing.Point(99, 149);
-            this.butEditMesh.Name = "butEditMesh";
-            this.butEditMesh.Size = new System.Drawing.Size(137, 23);
-            this.butEditMesh.TabIndex = 103;
-            this.butEditMesh.Text = "Edit mesh";
-            this.butEditMesh.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.butEditMesh.Click += new System.EventHandler(this.butEditMesh_Click);
+            this.cbDrawNormals.AutoSize = true;
+            this.cbDrawNormals.Location = new System.Drawing.Point(167, 27);
+            this.cbDrawNormals.Name = "cbDrawNormals";
+            this.cbDrawNormals.Size = new System.Drawing.Size(68, 17);
+            this.cbDrawNormals.TabIndex = 99;
+            this.cbDrawNormals.Text = "Normals";
+            this.cbDrawNormals.CheckedChanged += new System.EventHandler(this.cbDrawNormals_CheckedChanged);
             // 
             // FormStaticEditor
             // 
@@ -1261,8 +1261,6 @@
         private DarkUI.Controls.DarkCheckBox cbDrawLights;
         private DarkUI.Controls.DarkTreeView lstLights;
         private DarkUI.Controls.DarkButton butImportMeshFromFile;
-        private DarkUI.Controls.DarkCheckBox cbDrawNormals;
-        private DarkUI.Controls.DarkButton butRecalcNormals;
         private DarkUI.Controls.DarkComboBox comboLightType;
         private DarkUI.Controls.DarkLabel darkLabel18;
         private DarkUI.Controls.DarkLabel darkLabel19;
@@ -1297,5 +1295,7 @@
         private Controls.PanelRenderingStaticEditor panelRendering;
         private DarkUI.Controls.DarkButton butExportMeshToFile;
         private DarkUI.Controls.DarkButton butEditMesh;
+        private DarkUI.Controls.DarkButton butRecalcNormals;
+        private DarkUI.Controls.DarkCheckBox cbDrawNormals;
     }
 }

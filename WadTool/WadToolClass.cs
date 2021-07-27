@@ -27,7 +27,8 @@ namespace WadTool
     {
         None,
         VertexRemap,
-        VertexAttributes,
+        VertexColorsAndNormals,
+        VertexEffects,
         FaceAttributes
     }
 
