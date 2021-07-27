@@ -451,6 +451,7 @@ namespace TombLib.Wad
                             var attr = new VertexAttributes();
                             attr.Glow = LEB128.ReadInt(chunkIO.Raw);
                             attr.Move = LEB128.ReadInt(chunkIO.Raw);
+                            mesh.VertexAttributes.Add(attr);
                         }
                         else
                             return false;
