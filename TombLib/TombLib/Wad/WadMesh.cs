@@ -360,7 +360,6 @@ namespace TombLib.Wad
             for (int i = 0; i < tmpModel.Meshes.Count; i++)
             {
                 var tmpMesh = tmpModel.Meshes[i];
-                var tmpLst  = new List<int>();
                 var tmpPos  = new List<Vector3>();
                 var tmpCol  = new List<Vector3>();
                 var tmpNor  = new List<Vector3>();
@@ -369,26 +368,17 @@ namespace TombLib.Wad
                 {
                     mesh = new WadMesh();
                     mesh.Name = string.IsNullOrEmpty(tmpMesh.Name) ? "ImportedMesh" + i : tmpMesh.Name;
-
-                    tmpLst = new List<int>();
-                    tmpPos = new List<Vector3>();
-                    tmpCol = new List<Vector3>();
-                    tmpNor = new List<Vector3>();
                 }
 
-                tmpPos.AddRange(tmpMesh.Positions);
-
-                // HACK: Fix rounding errors in vertex positions
-                for (int v = 0; v < tmpPos.Count; v++)
-                    tmpPos[v] = new Vector3((float)Math.Round(tmpPos[v].X, 3),
-                                            (float)Math.Round(tmpPos[v].Y, 3),
-                                            (float)Math.Round(tmpPos[v].Z, 3));
-
+                // Fix rounding errors in vertex positions
+                tmpPos.AddRange(tmpMesh.Positions.Select(v => new Vector3((float)Math.Round(v.X, 3),
+                                                                          (float)Math.Round(v.Y, 3),
+                                                                          (float)Math.Round(v.Z, 3))));
                 // Copy normals as well, if they are consistent
                 if (tmpMesh.Normals.Count == tmpMesh.Positions.Count)
                     tmpNor.AddRange(tmpMesh.Normals);
                 
-                // Copy vertex colors, if they are consistent
+                // Copy vertex colors, if they are consistent and omit alpha if exists
                 if (tmpMesh.Colors.Count == tmpMesh.Positions.Count)
                     tmpCol.AddRange(tmpMesh.Colors.Select(v => v.To3()));
 
@@ -410,15 +400,15 @@ namespace TombLib.Wad
                             // Get assimp's own index which is wrong by now
                             var tmpIndex = tmpPoly.Indices[j];
 
-                            // Find first entry in assimp vertex lists which is similar
-                            // to the one index is refering to and remember it as candidate.
+                            // Find first entry in filtered vertex list which is similar
+                            // to the one assimp index is refering to in its vertex list and remember it as candidate.
 
                             int candidate = -1;
-                            for (int k = 0; k < tmpPos.Count; k++)
+                            for (int k = 0; k < mesh.VerticesPositions.Count; k++)
                             {
-                                if (tmpPos[tmpIndex] == tmpPos[k] &&
-                                    (tmpCol.Count == 0 || tmpCol[tmpIndex] == tmpCol[k]) &&
-                                    (tmpNor.Count == 0 || tmpNor[tmpIndex] == tmpNor[k]))
+                                if (tmpPos[tmpIndex] == mesh.VerticesPositions[k] &&
+                                    (mesh.VerticesColors.Count  == 0 || tmpCol[tmpIndex] == mesh.VerticesColors[k]) &&
+                                    (mesh.VerticesNormals.Count == 0 || tmpNor[tmpIndex] == mesh.VerticesNormals[k]))
                                 {
                                     candidate = k;
                                     break;
@@ -429,27 +419,25 @@ namespace TombLib.Wad
                             // keeping data index to refer to it later in case similar but 
                             // duplicated entry is found.
 
-                            int newIndex = -1;
-
-                            if (!tmpLst.Contains(candidate))
+                            if (candidate == -1)
                             {
-                                newIndex = tmpLst.Count;
-                                tmpLst.Add(candidate);
-                                mesh.VerticesPositions.Add(tmpPos[candidate]);
-                                if (tmpCol.Count > 0) mesh.VerticesColors.Add(tmpCol[candidate]);
-                                if (tmpNor.Count > 0) mesh.VerticesNormals.Add(tmpNor[candidate]);
+                                candidate = mesh.VerticesPositions.Count;
+                                mesh.VerticesPositions.Add(tmpPos[tmpIndex]);
+                                if (tmpCol.Count > 0) mesh.VerticesColors.Add(tmpCol[tmpIndex]);
+                                if (tmpNor.Count > 0) mesh.VerticesNormals.Add(tmpNor[tmpIndex]);
                             }
-                            else
-                                newIndex = tmpLst.IndexOf(candidate);
 
                             switch (j)
                             {
-                                case 0: poly.Index0 = newIndex; break;
-                                case 1: poly.Index1 = newIndex; break;
-                                case 2: poly.Index2 = newIndex; break;
-                                case 3: poly.Index3 = newIndex; break;
+                                case 0: poly.Index0 = candidate; break;
+                                case 1: poly.Index1 = candidate; break;
+                                case 2: poly.Index2 = candidate; break;
+                                case 3: poly.Index3 = candidate; break;
                             }
                         }
+
+                        if (poly.Shape == WadPolygonShape.Triangle)
+                            poly.Index3 = 0;
 
                         var area = new TextureArea();
                         area.TexCoord0 = tmpMesh.UV[tmpPoly.Indices[0]];
