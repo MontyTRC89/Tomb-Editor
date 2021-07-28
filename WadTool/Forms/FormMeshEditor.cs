@@ -144,6 +144,9 @@ namespace WadTool
 
                     case MeshEditingMode.VertexColorsAndNormals:
                         {
+                            // Add missing data if needed
+                            GenerateMissingVertexData();
+
                             if (Control.ModifierKeys == Keys.Alt)
                             {
                                 panelColor.BackColor = panelMesh.Mesh.VertexColors[newIndex].ToWinFormsColor();
