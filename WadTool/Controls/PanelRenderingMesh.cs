@@ -165,9 +165,9 @@ namespace WadTool.Controls
                 var medianDistance = distances.Sum() / distances.Count;
 
                 if (Mesh.BoundingSphere.Radius > 0)
-                    return ((medianDistance * 0.7f) + (Mesh.BoundingSphere.Radius * 0.3f)) / 32.0f;
+                    return ((medianDistance * 0.7f) + (Mesh.BoundingSphere.Radius * 0.3f)) / 40.0f;
                 else
-                    return medianDistance / 32.0f;
+                    return medianDistance / 40.0f;
             }
         }
 
