@@ -155,19 +155,21 @@ namespace WadTool.Controls
                 if (Mesh == null || Mesh.VertexPositions.Count == 0)
                     return 0;
 
-                foreach (var v in Mesh.VertexPositions)
-                    foreach (var v2 in Mesh.VertexPositions)
+                foreach (var p in Mesh.Polys)
+                {
+                    distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index0], Mesh.VertexPositions[p.Index1]));
+                    distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index1], Mesh.VertexPositions[p.Index2]));
+                    
+                    if (p.Shape == WadPolygonShape.Triangle)
+                        distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index2], Mesh.VertexPositions[p.Index0]));
+                    else
                     {
-                        if (v == v2) continue;
-                        distances.Add(Vector3.Distance(v, v2));
+                        distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index2], Mesh.VertexPositions[p.Index3]));
+                        distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index3], Mesh.VertexPositions[p.Index0]));
                     }
+                }
 
-                var medianDistance = distances.Sum() / distances.Count;
-
-                if (Mesh.BoundingSphere.Radius > 0)
-                    return ((medianDistance * 0.7f) + (Mesh.BoundingSphere.Radius * 0.3f)) / 40.0f;
-                else
-                    return medianDistance / 40.0f;
+                return distances.Sum() / distances.Count / 12.0f;
             }
         }
 

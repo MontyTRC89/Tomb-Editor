@@ -33,7 +33,9 @@ namespace TombLib.GeometryIO.Exporters
 
             AssimpContext context = new AssimpContext();
             context.SetConfig(new NormalSmoothingAngleConfig(90.0f));
-            Scene scene = context.ImportFile(tempFile);
+            Scene scene = context.ImportFile(tempFile,
+                PostProcessPreset.TargetRealTimeFast ^
+                PostProcessSteps.Triangulate);
 
             switch (_exporter)
             {
