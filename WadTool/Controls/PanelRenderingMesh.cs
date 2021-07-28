@@ -325,7 +325,11 @@ namespace WadTool.Controls
                                     // Mix glow and move attributes for now as green and blue color components for vertex spheres.
                                     // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
                                     if (_mesh.HasAttributes)
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, _mesh.VertexAttributes[i].Glow / 63.0f, _mesh.VertexAttributes[i].Move / 63.0f, 0.5f));
+                                    {
+                                        var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 32.0f) / 95.0f;
+                                        var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 32.0f) / 95.0f;
+                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, glowPower, movePower, 0.5f));
+                                    }
                                     else
                                         solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.6f));
                                     break;
@@ -431,7 +435,7 @@ namespace WadTool.Controls
                         for (int i = 0; i < _mesh.Polys.Count; i++)
                         {
                             var poly = _mesh.Polys[i];
-                            var strength = _mesh.Polys[i].ShineStrength / 64.0f;
+                            var strength = _mesh.Polys[i].ShineStrength == 0 ? 0 : (_mesh.Polys[i].ShineStrength + 32.0f) / 95.0f;
                             int vn = 0;
 
                             // Draw one triangle for triangular face or 2 triangles for quad face
