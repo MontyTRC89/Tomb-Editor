@@ -125,6 +125,14 @@ namespace WadTool
             base.Dispose(disposing);
         }
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+                panelMesh.CurrentElement = -1;
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
             if (obj is WadToolClass.MeshEditorElementChangedEvent)
@@ -281,40 +289,6 @@ namespace WadTool
             UpdateUI();
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Escape)
-                panelMesh.CurrentElement = -1;
-
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
-
-        private void lstMeshes_Click(object sender, EventArgs e)
-        {
-            ShowSelectedMesh();
-        }
-
-        private void btCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
-        private void btOk_Click(object sender, EventArgs e)
-        {
-            SelectedMesh = panelMesh.Mesh;
-            _tool.ToggleUnsavedChanges();
-
-            DialogResult = DialogResult.OK;
-            Close();
-        }
-
-        private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
-        {
-            panelMesh.DrawExtraInfo = cbAllInfo.Checked;
-            UpdateUI();
-        }
-
         private void RemapSelectedVertex()
         {
             if (panelMesh.CurrentElement == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
@@ -390,8 +364,10 @@ namespace WadTool
 
         private int AutoFit()
         {
-            var edges = new List<FaceEdge>();
+            // Collect all poly edges as index pairs
 
+            var edges = new List<FaceEdge>();
+            
             for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
             {
                 var poly = panelMesh.Mesh.Polys[i];
@@ -408,6 +384,10 @@ namespace WadTool
                 }
             }
 
+            // Filter out orphaned edges by counting index pairs. 
+            // If index pair only occurs once, it means no adjacent similar edge exists, so
+            // edge is leading to a mesh hole.
+
             var orphans = edges.GroupBy(x => x)
                                .Where(g => g.Count() == 1)
                                .Select(y => y.Key)
@@ -418,9 +398,12 @@ namespace WadTool
             foreach (var orphan in orphans)
                 foreach (var point in orphan.P)
                 {
+                    // Remap only needed vertices
+
                     if (!remappedIndexList.Contains(point) && point > panelMesh.SafeVertexRemapLimit)
                     {
                         // Find fitting vertex number to remap to
+
                         while (true)
                         {
                             if (orphans.Any(o => o.P[0] == count || o.P[1] == count))
@@ -445,6 +428,32 @@ namespace WadTool
         {
             if (panelMesh.Mesh.GenerateMissingVertexData())
                 popup.ShowInfo(panelMesh, "Missing vertex data was automatically generated for this mesh.");
+        }
+
+        private void lstMeshes_Click(object sender, EventArgs e)
+        {
+            ShowSelectedMesh();
+        }
+
+        private void btCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void btOk_Click(object sender, EventArgs e)
+        {
+            SelectedMesh = panelMesh.Mesh;
+            _tool.ToggleUnsavedChanges();
+
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+
+        private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMesh.DrawExtraInfo = cbAllInfo.Checked;
+            UpdateUI();
         }
 
         private void butRemapVertex_Click(object sender, EventArgs e)
@@ -615,7 +624,6 @@ namespace WadTool
                 popup.ShowInfo(panelMesh, "Vertex count is lower than remap limit. No auto-fitting is needed.");
                 return;
             }
-
 
             var count = AutoFit();
 
