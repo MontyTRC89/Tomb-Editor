@@ -185,6 +185,7 @@ namespace WadTool.Controls
         private RasterizerState _rasterizerWireframe;
         private VertexInputLayout _layout;
         private GeometricPrimitive _littleSphere;
+        private float _normalLength = 1.0f;
         private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
 
@@ -289,7 +290,6 @@ namespace WadTool.Controls
                     _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
                     var safeIndex    = SafeVertexRemapLimit;
-                    var normalLength = VertexSphereRadius * 3.0f;
 
                     for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                     {
@@ -389,7 +389,7 @@ namespace WadTool.Controls
                                                 linesToDraw.Add(v);
 
                                                 v = new SolidVertex();
-                                                v.Position = p + n * normalLength;
+                                                v.Position = p + n * _normalLength;
                                                 v.Color = color;
                                                 linesToDraw.Add(v);
                                             }
@@ -715,6 +715,7 @@ namespace WadTool.Controls
             _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
 
             _littleSphere = GeometricPrimitive.Sphere.New(_device, VertexSphereRadius, 4);
+            _normalLength = VertexSphereRadius * 3.0f;
         }
 
         public void ResetCamera()
