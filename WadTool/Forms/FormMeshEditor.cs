@@ -135,7 +135,8 @@ namespace WadTool
                     case MeshEditingMode.VertexEffects:
                         {
                             // Add missing data if needed
-                            GenerateMissingVertexData(); 
+                            if (!panelMesh.Mesh.HasAttributes)
+                                GenerateMissingVertexData(); 
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
@@ -153,7 +154,8 @@ namespace WadTool
                     case MeshEditingMode.VertexColorsAndNormals:
                         {
                             // Add missing data if needed
-                            GenerateMissingVertexData();
+                            if (!panelMesh.Mesh.HasColors || !panelMesh.Mesh.HasNormals)
+                                GenerateMissingVertexData();
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
