@@ -643,7 +643,7 @@ namespace WadTool.Controls
             {
                 // Try to pick a vertex sphere
 
-                var radius = VertexSphereRadius;
+                var radius = VertexSphereRadius / 2.0f;
                 for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
                     var vertex = _mesh.VertexPositions[i];
