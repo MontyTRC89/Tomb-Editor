@@ -241,6 +241,7 @@
             this.nudVertexNum.Name = "nudVertexNum";
             this.nudVertexNum.Size = new System.Drawing.Size(152, 23);
             this.nudVertexNum.TabIndex = 2;
+            this.toolTip.SetToolTip(this.nudVertexNum, "Vertex number to operate with");
             this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
             // 
             // butFindVertex
@@ -254,7 +255,7 @@
             this.butFindVertex.TabIndex = 5;
             this.butFindVertex.Text = "Jump to";
             this.butFindVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butFindVertex, "Jump to specified vertex");
+            this.toolTip.SetToolTip(this.butFindVertex, "Jump to specified vertex number");
             this.butFindVertex.Click += new System.EventHandler(this.butFindVertex_Click);
             // 
             // darkLabel1
@@ -340,7 +341,8 @@
             this.panelColor.Name = "panelColor";
             this.panelColor.Size = new System.Drawing.Size(102, 23);
             this.panelColor.TabIndex = 16;
-            this.panelColor.Tag = "EditAmbientLight";
+            this.panelColor.Tag = "";
+            this.toolTip.SetToolTip(this.panelColor, "Vertex shade (color) to apply");
             this.panelColor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelColor_MouseDown);
             // 
             // tabVertexEffects
@@ -527,6 +529,7 @@
             this.nudShineStrength.Name = "nudShineStrength";
             this.nudShineStrength.Size = new System.Drawing.Size(55, 23);
             this.nudShineStrength.TabIndex = 7;
+            this.toolTip.SetToolTip(this.nudShineStrength, "Shininess value on the range from 0 to 63");
             // 
             // butApplyToAllFaces
             // 

@@ -185,13 +185,23 @@ namespace TombLib.Wad
             }
         }
 
-        public void GenerateMissingVertexData()
+        public bool GenerateMissingVertexData()
         {
+            bool result = false;
+
             if (!HasColors)
+            {
+                result = true;
                 VertexColors = Enumerable.Repeat(Vector3.One, VertexPositions.Count).ToList();
+            }
 
             if (!HasAttributes)
+            {
+                result = true;
                 VertexAttributes = Enumerable.Repeat(new VertexAttributes(), VertexPositions.Count).ToList();
+            }
+
+            return result;
         }
 
         public static WadMesh ImportFromExternalModel(string fileName, IOGeometrySettings settings)

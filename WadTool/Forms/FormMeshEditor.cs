@@ -127,7 +127,7 @@ namespace WadTool
                     case MeshEditingMode.VertexEffects:
                         {
                             // Add missing data if needed
-                            panelMesh.Mesh.GenerateMissingVertexData(); 
+                            GenerateMissingVertexData(); 
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
@@ -337,6 +337,12 @@ namespace WadTool
             }
         }
 
+        private void GenerateMissingVertexData()
+        {
+            if (panelMesh.Mesh.GenerateMissingVertexData())
+                popup.ShowInfo(panelMesh, "Missing vertex data was automatically generated for this mesh.");
+        }
+
         private void butRemapVertex_Click(object sender, EventArgs e)
         {
             RemapSelectedVertex();
@@ -404,7 +410,7 @@ namespace WadTool
             if (panelMesh.EditingMode != MeshEditingMode.VertexEffects || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
                 return;
 
-            panelMesh.Mesh.GenerateMissingVertexData();
+            GenerateMissingVertexData();
 
             var currentGlow  = (int)nudGlow.Value;
             var currentMove  = (int)nudMove.Value;
@@ -445,7 +451,7 @@ namespace WadTool
             if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
                 return;
 
-            panelMesh.Mesh.GenerateMissingVertexData();
+            GenerateMissingVertexData();
 
             var currentColor = panelColor.BackColor.ToFloat3Color();
 
