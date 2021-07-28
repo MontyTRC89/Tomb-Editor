@@ -471,6 +471,18 @@ namespace TombLib.LevelData.Compilers
                             // If we have vertex colors, use them as a luma factor for the resulting vertex color
                             if (!clearShades && j < wadStatic.Mesh.VertexColors.Count)
                                 shade = wadStatic.Mesh.VertexColors[j].GetLuma();
+
+                            // Use native wad2 vertex effect values to assign vertex flags.
+                            // Since legacy engines doesn't support individual values, we convert any value to a flag.
+                            
+                            if (_level.Settings.GameVersion >= TRVersion.Game.TR3 && wadStatic.Mesh.HasAttributes)
+                            {
+                                if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                    lightingEffect |= 0x2000; // Movement
+
+                                if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                    lightingEffect |= 0x4000; // Glow
+                            }
                         }
                         Vector3 color;
                         if (!entry.TintAsAmbient)

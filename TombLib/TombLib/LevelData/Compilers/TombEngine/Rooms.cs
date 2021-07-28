@@ -427,8 +427,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             normal = Vector3.Normalize(normal);
                             int lightingEffect = 0;
                             float shade = 1.0f;
-                            if (interpretShadesAsMovement &&
-                                _level.Settings.GameVersion >= TRVersion.Game.TR3)
+                            if (interpretShadesAsMovement)
                             {
                                 if (j < wadStatic.Mesh.VertexColors.Count)
                                 {
@@ -442,6 +441,14 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 // If we have vertex colors, use them as a luma factor for the resulting vertex color
                                 if (!clearShades && j < wadStatic.Mesh.VertexColors.Count)
                                     shade = wadStatic.Mesh.VertexColors[j].GetLuma();
+
+                                // FIXME: Those parameters MUST BE VERTEX-BASED IN TOMB ENGINE!!!
+
+                                if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                    lightingEffect |= 0x2000; // Movement
+
+                                if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                    lightingEffect |= 0x4000; // Glow
                             }
                             Vector3 color;
                             if (!entry.TintAsAmbient)
