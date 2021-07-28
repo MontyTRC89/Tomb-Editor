@@ -564,7 +564,7 @@ namespace TombLib.Utils
         /// the ray, no intersection is assumed to have happened. In both cases of assumptions,
         /// this method returns false.
         /// </remarks>
-        public static bool RayIntersectsTriangle(Ray ray, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, out float distance)
+        public static bool RayIntersectsTriangle(Ray ray, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, bool bothSides, out float distance)
         {
             //Source: Fast Minimum Storage Ray / Triangle Intersection
             //Reference: http://www.cs.virginia.edu/~gfx/Courses/2003/ImageSynthesis/papers/Acceleration/Fast%20MinimumStorage%20RayTriangle%20Intersection.pdf
@@ -594,8 +594,9 @@ namespace TombLib.Utils
             determinant = edge1.X * directioncrossedge2.X + edge1.Y * directioncrossedge2.Y + edge1.Z * directioncrossedge2.Z;
 
             //If the ray is parallel to the triangle plane, there is no collision.
-            //If the ray hits the back of the triangle, there is no collision as well.
-            if (determinant <= 0)
+            //If the ray hits the back of the triangle, there is no collision as well, if single-side mode is set.
+            if ((!bothSides && determinant <= 0) ||
+                ( bothSides && MathC.IsZero(determinant)))
             {
                 distance = 0f;
                 return false;
@@ -663,10 +664,10 @@ namespace TombLib.Utils
         /// <param name="point">When the method completes, contains the point of intersection,
         /// or <see cref="Vector3.Zero"/> if there was no intersection.</param>
         /// <returns>Whether the two objects intersected.</returns>
-        public static bool RayIntersectsTriangle(Ray ray, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, out Vector3 point)
+        public static bool RayIntersectsTriangle(Ray ray, Vector3 vertex1, Vector3 vertex2, Vector3 vertex3, bool bothSides, out Vector3 point)
         {
             float distance;
-            if (!RayIntersectsTriangle(ray, vertex1, vertex2, vertex3, out distance))
+            if (!RayIntersectsTriangle(ray, vertex1, vertex2, vertex3, bothSides, out distance))
             {
                 point = Vector3.Zero;
                 return false;

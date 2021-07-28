@@ -81,6 +81,38 @@ namespace TombLib.Utils
 
     public static class TextureExtensions
     {
+        public static BlendMode ToBlendMode(int index)
+        {
+            var result = BlendMode.Normal;
+            switch (index)
+            {
+                default:
+                case 0: result = BlendMode.Normal; break;
+                case 1: result = BlendMode.Additive; break;
+                case 2: result = BlendMode.Subtract; break;
+                case 3: result = BlendMode.Exclude; break;
+                case 4: result = BlendMode.Screen; break;
+                case 5: result = BlendMode.Lighten; break;
+            }
+            return result;
+        }
+
+        public static int ToIndex(this BlendMode mode)
+        {
+            var result = 0;
+            switch (mode)
+            {
+                default:
+                case BlendMode.Normal: result = 0; break;
+                case BlendMode.Additive: result = 1; break;
+                case BlendMode.Subtract: result = 2; break;
+                case BlendMode.Exclude: result = 3; break;
+                case BlendMode.Screen: result = 4; break;
+                case BlendMode.Lighten: result = 5; break;
+            }
+            return result;
+        }
+
         // Mapping correction compensation coordinate sets.
         // Used to counterbalance TR4/5 internal mapping correction applied in regard to NewFlags
         // value.

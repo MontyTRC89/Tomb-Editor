@@ -107,7 +107,7 @@ namespace WadTool.Controls
         private bool _wireframeMode = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool DrawInformationForAllElements
+        public bool DrawExtraInfo
         {
             get { return _drawInformationForAllElements; }
             set
@@ -337,7 +337,7 @@ namespace WadTool.Controls
                         solidEffect.Techniques[0].Passes[0].Apply();
                         _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
 
-                        if (DrawInformationForAllElements || selected)
+                        if (DrawExtraInfo || selected)
                         {
                             // Only draw texts which are actually visible
                             if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
@@ -410,56 +410,62 @@ namespace WadTool.Controls
                 }
                 else if (EditingMode == MeshEditingMode.FaceAttributes)
                 {
-                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                    _device.SetBlendState(_device.BlendStates.Opaque);
+                    // Accumulate and draw extra face info (for now, only shininess values)
 
-                    _device.SetVertexBuffer(_faceVertexBuffer);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
-
-                    // Create a vertex array
-                    var vtxs = new SolidVertex[_faceVertexBuffer.ElementCount];
-                    int vertexCount = 0;
-
-                    for (int i = 0; i < _mesh.Polys.Count; i++)
+                    if (DrawExtraInfo)
                     {
-                        var poly = _mesh.Polys[i];
-                        var strength = _mesh.Polys[i].ShineStrength / 64.0f;
-                        int vn = 0;
+                        _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                        _device.SetBlendState(_device.BlendStates.Opaque);
 
-                        // Draw one triangle for triangular face or 2 triangles for quad face
+                        _device.SetVertexBuffer(_faceVertexBuffer);
+                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
 
-                        for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
-                            for (int v = 0; v < 3; v++)
-                            {
-                                Vector3 pos = Vector3.Zero;
+                        // Create a vertex array
+                        var vtxs = new SolidVertex[_faceVertexBuffer.ElementCount];
+                        int vertexCount = 0;
 
-                                switch (vn)
+                        for (int i = 0; i < _mesh.Polys.Count; i++)
+                        {
+                            var poly = _mesh.Polys[i];
+                            var strength = _mesh.Polys[i].ShineStrength / 64.0f;
+                            int vn = 0;
+
+                            // Draw one triangle for triangular face or 2 triangles for quad face
+
+                            for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
+                                for (int v = 0; v < 3; v++)
                                 {
-                                    case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
-                                    case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
-                                    case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                    Vector3 pos = Vector3.Zero;
 
-                                    case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
-                                    case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
-                                    case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                    switch (vn)
+                                    {
+                                        case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                        case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
+                                        case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+
+                                        case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                        case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
+                                        case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                    }
+
+                                    vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1 - strength, 1 - strength, 1) };
+                                    vn++;
+                                    vertexCount++;
                                 }
+                        }
 
-                                vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1-strength, 1-strength, 1) };
-                                vn++;
-                                vertexCount++;
-                            }
+                        _faceVertexBuffer.SetData(vtxs);
+
+                        solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                        solidEffect.Techniques[0].Passes[0].Apply();
+
+                        _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
                     }
 
-                    _faceVertexBuffer.SetData(vtxs);
+                    // Draw model last in face editing only if wireframe mode is set or extra mode is unset
 
-                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                    solidEffect.Techniques[0].Passes[0].Apply();
-
-                    _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
-
-                    // Draw model last in face editing only if wireframe mode is set
-                    if (WireframeMode)
+                    if (WireframeMode || !DrawExtraInfo)
                         DrawModel(mesh, world * viewProjection);
                 }
 
@@ -492,12 +498,10 @@ namespace WadTool.Controls
             // In case mode is set to shininess editing, only draw in wireframe mode to avoid Z-fighting.
 
             if (WireframeMode)
+            {
                 _device.SetRasterizerState(_rasterizerWireframe);
-            else
-                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-
-            _device.SetDepthStencilState(_device.DepthStencilStates.Default);
-            _device.SetBlendState(_device.BlendStates.Opaque);
+                _device.SetBlendState(_device.BlendStates.Opaque);
+            }
 
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
@@ -516,7 +520,22 @@ namespace WadTool.Controls
                 _device.SetVertexInputLayout(_layout);
 
                 foreach (var submesh in mesh_.Submeshes)
-                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                {
+                    if (!WireframeMode)
+                    {
+                        if (submesh.Value.Material.AdditiveBlending)
+                            _device.SetBlendState(_device.BlendStates.Additive);
+                        else
+                            _device.SetBlendState(_device.BlendStates.Opaque);
+
+                        if (submesh.Value.Material.DoubleSided)
+                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
+                        else
+                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                    }
+
+                    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                }
             }
         }
 
@@ -664,7 +683,7 @@ namespace WadTool.Controls
                             _mesh.VertexPositions[(j == 0 ? poly.Index2 : poly.Index0)]
                         };
 
-                        if (Collision.RayIntersectsTriangle(ray, v[0], v[1], v[2], out newDistance))
+                        if (Collision.RayIntersectsTriangle(ray, v[0], v[1], v[2], poly.Texture.DoubleSided, out newDistance))
                         {
                             if (newDistance <= distance || candidate == -1)
                             {

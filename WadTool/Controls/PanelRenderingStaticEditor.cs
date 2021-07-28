@@ -222,13 +222,21 @@ namespace WadTool.Controls
 
                     foreach (var submesh in mesh.Submeshes)
                     {
-                        _device.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
-                    }
+                        if (submesh.Value.Material.AdditiveBlending)
+                            _device.SetBlendState(_device.BlendStates.Additive);
+                        else
+                            _device.SetBlendState(_device.BlendStates.Opaque);
 
-                    //foreach (var submesh in mesh.Submeshes)
-                    //    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
+                        if (submesh.Value.Material.DoubleSided)
+                            _device.SetRasterizerState(_device.RasterizerStates.CullNone);
+                        else
+                            _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                        _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    }
                 }
 
+                _device.SetBlendState(_device.BlendStates.Opaque);
                 _device.SetRasterizerState(_rasterizerWireframe);
 
                 // Draw boxes

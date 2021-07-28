@@ -2048,7 +2048,7 @@ namespace TombLib.LevelData
                     var p2 = VertexPositions[entry.Value.Start + i + 2];
 
                     Vector3 position;
-                    if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, out position))
+                    if (Collision.RayIntersectsTriangle(ray, p0, p1, p2, true, out position))
                     {
                         float distance = (position - ray.Position).Length();
                         var normal = Vector3.Cross(p1 - p0, p2 - p0);

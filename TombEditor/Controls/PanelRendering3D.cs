@@ -1658,7 +1658,7 @@ namespace TombEditor.Controls
                     Vector3 p3 = mesh.Vertices[submesh.Value.Indices[k + 2]].Position;
 
                     float distance;
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, true, out distance) && distance < minDistance)
                     {
                         minDistance = distance;
                         hit = true;
@@ -3215,7 +3215,7 @@ namespace TombEditor.Controls
                             else
                                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
 
-                            _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
 						}
 
                         // Add text message

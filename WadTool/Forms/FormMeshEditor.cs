@@ -162,35 +162,17 @@ namespace WadTool
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
-                                switch (poly.Texture.BlendMode)
-                                {
-                                    default:
-                                    case BlendMode.Normal:   cbBlendMode.SelectedIndex = 0; break;
-                                    case BlendMode.Additive: cbBlendMode.SelectedIndex = 1; break;
-                                    case BlendMode.Subtract: cbBlendMode.SelectedIndex = 2; break;
-                                    case BlendMode.Exclude:  cbBlendMode.SelectedIndex = 3; break;
-                                    case BlendMode.Screen:   cbBlendMode.SelectedIndex = 4; break;
-                                    case BlendMode.Lighten:  cbBlendMode.SelectedIndex = 5; break;
-                                }
+                                cbBlendMode.SelectedIndex = poly.Texture.BlendMode.ToIndex();
                                 nudShineStrength.Value = (decimal)poly.ShineStrength;
                                 butDoubleSide.Checked = poly.Texture.DoubleSided;
                             }
                             else
                             {
                                 var selectedTexture = poly.Texture;
-                                switch (cbBlendMode.SelectedIndex)
-                                {
-                                    default:
-                                    case 0: selectedTexture.BlendMode = BlendMode.Normal;   break;
-                                    case 1: selectedTexture.BlendMode = BlendMode.Additive; break;
-                                    case 2: selectedTexture.BlendMode = BlendMode.Subtract; break;
-                                    case 3: selectedTexture.BlendMode = BlendMode.Exclude;  break;
-                                    case 4: selectedTexture.BlendMode = BlendMode.Screen;   break;
-                                    case 5: selectedTexture.BlendMode = BlendMode.Lighten;  break;
-                                }
+                                selectedTexture.BlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
+                                selectedTexture.DoubleSided = butDoubleSide.Checked;
                                 poly.Texture = selectedTexture;
                                 poly.ShineStrength = (byte)nudShineStrength.Value;
-                                poly.Texture.DoubleSided = butDoubleSide.Checked;
                                 panelMesh.Mesh.Polys[newIndex] = poly;
                                 panelMesh.Invalidate();
                             }
@@ -209,9 +191,8 @@ namespace WadTool
             if (enableNud) nudVertexNum.Value = panelMesh.CurrentElement;
             butRemapVertex.Enabled = enableNud;
 
-            cbAllInfo.Enabled = panelMesh.EditingMode != MeshEditingMode.FaceAttributes;
             cbWireframe.Checked = panelMesh.WireframeMode;
-            cbAllInfo.Checked = panelMesh.DrawInformationForAllElements;
+            cbAllInfo.Checked = panelMesh.DrawExtraInfo;
 
             if (ShowMeshList && ShowEditingTools)
             {
@@ -225,10 +206,21 @@ namespace WadTool
                 panelEditingTools.Visible = false;
             }
 
-            if (panelMesh.EditingMode == MeshEditingMode.VertexColorsAndNormals)
-                cbAllInfo.Text = "Show all normals";
-            else
-                cbAllInfo.Text = "Show all numbers";
+            switch (panelMesh.EditingMode)
+            {
+                case MeshEditingMode.FaceAttributes:
+                    cbAllInfo.Text = "Show sheen";
+                    break;
+                case MeshEditingMode.VertexColorsAndNormals:
+                    cbAllInfo.Text = "Show all normals";
+                    break;
+                case MeshEditingMode.VertexEffects:
+                    cbAllInfo.Text = "Show all values";
+                    break;
+                case MeshEditingMode.VertexRemap:
+                    cbAllInfo.Text = "Show all numbers";
+                    break;
+            }
 
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
@@ -275,7 +267,7 @@ namespace WadTool
 
         private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
         {
-            panelMesh.DrawInformationForAllElements = cbAllInfo.Checked;
+            panelMesh.DrawExtraInfo = cbAllInfo.Checked;
             UpdateUI();
         }
 
@@ -393,7 +385,7 @@ namespace WadTool
                 return;
 
             var currentShinyValue = (byte)nudShineStrength.Value;
-            var currentBlendMode  = (BlendMode)cbBlendMode.SelectedIndex;
+            var currentBlendMode  = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
 
             for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
             {

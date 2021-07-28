@@ -210,28 +210,7 @@ namespace TombEditor.ToolWindows
         private void cmbBlending_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selectedTexture = _editor.SelectedTexture;
-            switch (cmbBlending.SelectedIndex)
-            {
-                default:
-                case 0:
-                    selectedTexture.BlendMode = BlendMode.Normal;
-                    break;
-                case 1:
-                    selectedTexture.BlendMode = BlendMode.Additive;
-                    break;
-                case 2:
-                    selectedTexture.BlendMode = BlendMode.Subtract;
-                    break;
-                case 3:
-                    selectedTexture.BlendMode = BlendMode.Exclude;
-                    break;
-                case 4:
-                    selectedTexture.BlendMode = BlendMode.Screen;
-                    break;
-                case 5:
-                    selectedTexture.BlendMode = BlendMode.Lighten;
-                    break;
-            }
+            selectedTexture.BlendMode = TextureExtensions.ToBlendMode(cmbBlending.SelectedIndex);
             _editor.SelectedTexture = selectedTexture;
         }
 
@@ -239,30 +218,7 @@ namespace TombEditor.ToolWindows
         {
             butDoubleSide.Checked = texture.DoubleSided;
 
-            int newIndex = 0;
-            switch (texture.BlendMode)
-            {
-                case BlendMode.Normal:
-                default:
-                    newIndex = 0;
-                    break;
-                case BlendMode.Additive:
-                    newIndex = 1;
-                    break;
-                case BlendMode.Subtract:
-                    newIndex = 2;
-                    break;
-                case BlendMode.Exclude:
-                    newIndex = 3;
-                    break;
-                case BlendMode.Screen:
-                    newIndex = 4;
-                    break;
-                case BlendMode.Lighten:
-                    newIndex = 5;
-                    break;
-            };
-
+            int newIndex = texture.BlendMode.ToIndex();
             if (newIndex < cmbBlending.Items.Count)
                 cmbBlending.SelectedIndex = newIndex;
             else

@@ -193,12 +193,23 @@ namespace WadTool.Controls
 
                         foreach (var submesh in mesh_.Submeshes)
                         {
-                            _device.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                            if (submesh.Value.Material.AdditiveBlending)
+                                _device.SetBlendState(_device.BlendStates.Additive);
+                            else
+                                _device.SetBlendState(_device.BlendStates.Opaque);
+
+                            if (submesh.Value.Material.DoubleSided)
+                                _device.SetRasterizerState(_device.RasterizerStates.CullNone);
+                            else
+                                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+
+                            _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
                         }
                     }
-                        //foreach (var submesh in mesh_.Submeshes)
-                        //    _device.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.MeshBaseIndex);
                 }
+
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                _device.SetBlendState(_device.BlendStates.Opaque);
 
                 // Draw box
                 if (SelectedNode != null)
@@ -397,13 +408,13 @@ namespace WadTool.Controls
                     Vector3 p4 = mesh.VertexPositions[poly.Index3];
 
                     float distance;
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, true, out distance) && distance < minDistance)
                     {
                         minDistance = distance;
                         hit = true;
                     }
 
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p3, p4, out distance) && distance < minDistance)
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p3, p4, true, out distance) && distance < minDistance)
                     {
                         minDistance = distance;
                         hit = true;
@@ -416,7 +427,7 @@ namespace WadTool.Controls
                     Vector3 p3 = mesh.VertexPositions[poly.Index2];
 
                     float distance;
-                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
+                    if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, true, out distance) && distance < minDistance)
                     {
                         minDistance = distance;
                         hit = true;
