@@ -396,7 +396,7 @@ namespace WadTool
                                 break;
 
                             if (count > panelMesh.SafeVertexRemapLimit || count == panelMesh.Mesh.VertexPositions.Count - 1)
-                                break;
+                                return count;
                         }
                         
                         RemapSelectedVertex(point, count);
@@ -570,10 +570,17 @@ namespace WadTool
 
         private void butAutoFit_Click(object sender, EventArgs e)
         {
+            if (panelMesh.Mesh.VertexPositions.Count < panelMesh.SafeVertexRemapLimit)
+            {
+                popup.ShowInfo(panelMesh, "Vertex count is lower than remap limit. No auto-fitting is needed.");
+                return;
+            }
+
+
             var count = AutoFit();
 
             if (count == 0)
-                popup.ShowError(panelMesh, "This mesh is fully enclosed. Auto-fitting works with meshes which have at least one hole.");
+                popup.ShowWarning(panelMesh, "No vertices were auto-fitted. Possibly mesh is already remapped or contains no holes.");
             else
                 popup.ShowInfo(panelMesh, "Auto-fitted " + count + " vertices.");
 
