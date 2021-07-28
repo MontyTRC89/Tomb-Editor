@@ -115,6 +115,16 @@ namespace WadTool
             UpdateUI();
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+                _tool.EditorEventRaised -= Tool_EditorEventRaised;
+            }
+            base.Dispose(disposing);
+        }
+
         private void Tool_EditorEventRaised(IEditorEvent obj)
         {
             if (obj is WadToolClass.MeshEditorElementChangedEvent)
