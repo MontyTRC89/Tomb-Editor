@@ -3,10 +3,10 @@ Version 1.3.16
 
 WadTool:
  * Fully-fledged mesh editor which largely replicates missing strpix functionality:
-    - Remap vertices, including automatic mode
-	- Individually edit vertex shades
-	- Individually edit vertex effects and convert them from legacy vertex shades workflow
-	- Edit face attributes, such as shininess, double-sided and blending modes (including FLEP ones)
+    - Remap vertices, including automatic mode.
+	- Individually edit vertex shades.
+	- Individually edit vertex effects (glow and movement) and convert them from legacy vertex shades workflow.
+	- Edit face attributes, such as shininess, double-sided and blending modes (including FLEP ones).
 	
  * New function in animation fixer to restore original animation names for current game version.
  * Fix problems with disjointed vertices when non-UV-mapped objects are imported from external 3D models.
