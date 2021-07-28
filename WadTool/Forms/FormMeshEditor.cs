@@ -444,6 +444,7 @@ namespace WadTool
                 return;
 
             panelMesh.Mesh.CalculateNormals();
+            panelMesh.Invalidate();
         }
 
         private void butApplyShadesToAllVertices_Click(object sender, EventArgs e)
@@ -486,8 +487,9 @@ namespace WadTool
                 }
 
                 panelMesh.Mesh.VertexColors.Clear();
-                panelMesh.Invalidate();
             }
+
+            panelMesh.Invalidate();
         }
 
         private void butDoubleSide_Click(object sender, EventArgs e)
