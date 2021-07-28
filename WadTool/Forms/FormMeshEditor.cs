@@ -385,8 +385,20 @@ namespace WadTool
             foreach (var orphan in orphans)
                 foreach (var point in orphan.P)
                 {
-                    if (!remappedIndexList.Contains(point))
+                    if (!remappedIndexList.Contains(point) && point > panelMesh.SafeVertexRemapLimit)
                     {
+                        // Find fitting vertex number to remap to
+                        while (true)
+                        {
+                            if (orphans.Any(o => o.P[0] == count || o.P[1] == count))
+                                count++;
+                            else
+                                break;
+
+                            if (count > panelMesh.SafeVertexRemapLimit || count == panelMesh.Mesh.VertexPositions.Count - 1)
+                                break;
+                        }
+                        
                         RemapSelectedVertex(point, count);
                         remappedIndexList.Add(point);
                         count++;
