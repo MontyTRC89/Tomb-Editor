@@ -191,11 +191,16 @@ namespace WadTool
                             }
                             else
                             {
-                                var selectedTexture = poly.Texture;
-                                selectedTexture.BlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
-                                selectedTexture.DoubleSided = butDoubleSide.Checked;
-                                poly.Texture = selectedTexture;
-                                poly.ShineStrength = (byte)nudShineStrength.Value;
+                                // Apply shininess only if checkbock is set and vice versa for other attribs
+
+                                if (cbAllInfo.Checked)
+                                    poly.ShineStrength = (byte)nudShineStrength.Value;
+                                else
+                                {
+                                    poly.Texture.BlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
+                                    poly.Texture.DoubleSided = butDoubleSide.Checked;
+                                }
+
                                 panelMesh.Mesh.Polys[newIndex] = poly;
                                 panelMesh.Invalidate();
                             }
@@ -479,9 +484,16 @@ namespace WadTool
             for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
             {
                 var poly = panelMesh.Mesh.Polys[i];
-                poly.Texture.BlendMode = currentBlendMode;
-                poly.Texture.DoubleSided = butDoubleSide.Checked;
-                poly.ShineStrength = currentShinyValue;
+
+                // Apply shininess only if checkbock is set and vice versa for other attribs
+
+                if (cbAllInfo.Checked)
+                    poly.ShineStrength = currentShinyValue;
+                else
+                {
+                    poly.Texture.BlendMode = currentBlendMode;
+                    poly.Texture.DoubleSided = butDoubleSide.Checked;
+                }
                 panelMesh.Mesh.Polys[i] = poly;
             }
 

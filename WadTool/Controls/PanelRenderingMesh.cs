@@ -598,6 +598,8 @@ namespace WadTool.Controls
 
                 Invalidate();
             }
+            else if (EditingMode != MeshEditingMode.None && e.Button == MouseButtons.Left)
+                TryPickElement(e.X, e.Y, true);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -616,7 +618,7 @@ namespace WadTool.Controls
                 ResetCamera();
         }
 
-        private void TryPickElement(float x, float y)
+        private void TryPickElement(float x, float y, bool continuous = false)
         {
             if (_mesh == null)
                 return;
@@ -652,28 +654,39 @@ namespace WadTool.Controls
                     // Clickchain is only used for vertex picking since model may have 2 vertices at same coordinate
                     // but not 2 faces with same coordinates (it means Z-fighting will appear and it is a model issue).
 
-                    if (candidate != -1 && !_clickchain.Contains(candidate))
+                    if (candidate != -1)
                     {
-                        CurrentElement = candidate;
-
-                        // Reset clickchain in case other coordinate is picked
-                        if (_lastElementPos.Count != 1 || _lastElementPos[0] != _mesh.VertexPositions[candidate])
+                        if (continuous && candidate != CurrentElement)
                         {
-                            _lastElementPos = new List<Vector3>() { _mesh.VertexPositions[candidate] };
-                            _clickchain.Clear();
+                            CurrentElement = candidate;
+                            return;
                         }
-                        _clickchain.Add(candidate);
-                        return;
+                        else if (!continuous && !_clickchain.Contains(candidate))
+                        {
+                            CurrentElement = candidate;
+
+                            // Reset clickchain in case other coordinate is picked
+                            if (_lastElementPos.Count != 1 || _lastElementPos[0] != _mesh.VertexPositions[candidate])
+                            {
+                                _lastElementPos = new List<Vector3>() { _mesh.VertexPositions[candidate] };
+                                _clickchain.Clear();
+                            }
+                            _clickchain.Add(candidate);
+                            return;
+                        }
                     }
                 }
 
-                if (_clickchain.Count > 0)
+                if (!continuous)
                 {
-                    _clickchain.Clear();
-                    TryPickElement(x, y); // All similar vertices clicked, restart picking
+                    if (_clickchain.Count > 0)
+                    {
+                        _clickchain.Clear();
+                        TryPickElement(x, y); // All similar vertices clicked, restart picking
+                    }
+                    else
+                        CurrentElement = -1;
                 }
-                else
-                    CurrentElement = -1;
             }
             else
             {
@@ -706,8 +719,15 @@ namespace WadTool.Controls
 
                 if (candidate != -1)
                 {
-                    CurrentElement = candidate;
-                    _clickchain.Clear(); // Clickchain is not used for face picking, so clear it just in case.
+                    if (continuous && candidate != CurrentElement)
+                    {
+                        CurrentElement = candidate;
+                    }
+                    else
+                    {
+                        CurrentElement = candidate;
+                        _clickchain.Clear(); // Clickchain is not used for face picking, so clear it just in case.
+                    }
                 }
             }
         }
