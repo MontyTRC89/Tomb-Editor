@@ -163,7 +163,11 @@ namespace WadTool.Controls
                     }
 
                 var medianDistance = distances.Sum() / distances.Count;
-                return ((medianDistance * 0.7f) + (Mesh.BoundingSphere.Radius * 0.3f)) / 32.0f;
+
+                if (Mesh.BoundingSphere.Radius > 0)
+                    return ((medianDistance * 0.7f) + (Mesh.BoundingSphere.Radius * 0.3f)) / 32.0f;
+                else
+                    return medianDistance / 32.0f;
             }
         }
 
@@ -292,7 +296,7 @@ namespace WadTool.Controls
                         var selected = (i == _currentElement);
 
                         // Don't draw vertices from clickchain
-                        if (!selected && _clickchain.Contains(i) && _clickchain.Contains(_currentElement))
+                        if (!selected && _currentElement != -1 && _mesh.VertexPositions[i] == _mesh.VertexPositions[_currentElement])
                             continue;
 
                         var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VertexPositions[i]) * viewProjection;
@@ -624,10 +628,11 @@ namespace WadTool.Controls
             {
                 // Try to pick a vertex sphere
 
+                var radius = VertexSphereRadius;
                 for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
                     var vertex = _mesh.VertexPositions[i];
-                    var sphere = new BoundingSphere(vertex, VertexSphereRadius);
+                    var sphere = new BoundingSphere(vertex, radius);
                     float newDistance;
 
                     if (Collision.RayIntersectsSphere(ray, sphere, out newDistance))
