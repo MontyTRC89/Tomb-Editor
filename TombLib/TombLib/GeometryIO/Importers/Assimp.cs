@@ -46,8 +46,7 @@ namespace TombLib.GeometryIO.Importers
             // Disable merging similar materials because we encode double-sided attrib in the material name.
             // Also we disable triangulation because legacy meshes still need quads.
             Scene scene = context.ImportFile(filename,
-                PostProcessPreset.TargetRealTimeMaximumQuality ^ 
-                PostProcessSteps.RemoveRedundantMaterials ^
+                PostProcessPreset.TargetRealTimeFast ^ 
                 PostProcessSteps.Triangulate);
 
             var newModel = new IOModel();
