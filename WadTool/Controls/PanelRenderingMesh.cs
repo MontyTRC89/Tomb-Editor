@@ -472,6 +472,11 @@ namespace WadTool.Controls
                     if (WireframeMode || !DrawExtraInfo)
                         DrawModel(mesh, world * viewProjection);
                 }
+                else if (EditingMode == MeshEditingMode.None)
+                {
+                    // Simply draw model without any indications
+                    DrawModel(mesh, world * viewProjection);
+                }
 
                 if (textToDraw.Count > 0)
                 {
