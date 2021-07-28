@@ -130,13 +130,12 @@ namespace WadTool
             if (obj is WadToolClass.MeshEditorElementChangedEvent)
             {
                 var newIndex = (obj as WadToolClass.MeshEditorElementChangedEvent).ElementIndex;
-                if (newIndex == -1) return;
 
                 switch (panelMesh.EditingMode)
                 {
                     case MeshEditingMode.VertexRemap:
                         {
-                            nudVertexNum.Value = (decimal)newIndex;
+                            UpdateUI();
                             nudVertexNum.Select(0, 5);
                             nudVertexNum.Focus();
                         }
@@ -144,6 +143,8 @@ namespace WadTool
 
                     case MeshEditingMode.VertexEffects:
                         {
+                            if (newIndex == -1) return;
+
                             // Add missing data if needed
                             if (!panelMesh.Mesh.HasAttributes)
                                 GenerateMissingVertexData(); 
@@ -163,6 +164,8 @@ namespace WadTool
 
                     case MeshEditingMode.VertexColorsAndNormals:
                         {
+                            if (newIndex == -1) return;
+
                             // Add missing data if needed
                             if (!panelMesh.Mesh.HasColors || !panelMesh.Mesh.HasNormals)
                                 GenerateMissingVertexData();
@@ -181,13 +184,19 @@ namespace WadTool
 
                     case MeshEditingMode.FaceAttributes:
                         {
+                            if (newIndex == -1) return;
+
                             var poly = panelMesh.Mesh.Polys[newIndex];
 
                             if (Control.ModifierKeys == Keys.Alt)
                             {
-                                cbBlendMode.SelectedIndex = poly.Texture.BlendMode.ToIndex();
-                                nudShineStrength.Value = (decimal)poly.ShineStrength;
-                                butDoubleSide.Checked = poly.Texture.DoubleSided;
+                                if (cbAllInfo.Checked)
+                                    nudShineStrength.Value = (decimal)poly.ShineStrength;
+                                else
+                                {
+                                    cbBlendMode.SelectedIndex = poly.Texture.BlendMode.ToIndex();
+                                    butDoubleSide.Checked = poly.Texture.DoubleSided;
+                                }
                             }
                             else
                             {
@@ -248,6 +257,13 @@ namespace WadTool
                 case MeshEditingMode.VertexRemap:
                     cbAllInfo.Text = "Show all numbers";
                     break;
+            }
+
+            if (panelMesh.EditingMode == MeshEditingMode.FaceAttributes)
+            {
+                nudShineStrength.Enabled = cbAllInfo.Checked;
+                cbBlendMode.Enabled = !cbAllInfo.Checked;
+                butDoubleSide.Enabled = !cbAllInfo.Checked;
             }
 
             if (cbBlendMode.SelectedIndex == -1)

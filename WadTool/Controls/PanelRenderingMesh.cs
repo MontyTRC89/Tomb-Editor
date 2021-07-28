@@ -602,8 +602,12 @@ namespace WadTool.Controls
 
                 Invalidate();
             }
-            else if (EditingMode != MeshEditingMode.None && e.Button == MouseButtons.Left)
+            else if (EditingMode != MeshEditingMode.None &&
+                     EditingMode != MeshEditingMode.VertexRemap && 
+                     e.Button == MouseButtons.Left)
+            {
                 TryPickElement(e.X, e.Y, true);
+            }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
