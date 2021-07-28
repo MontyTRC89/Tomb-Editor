@@ -406,7 +406,9 @@ namespace TombLib.Wad
                                                                           (float)Math.Round(v.Z, 3))));
                 // Copy normals as well, if they are consistent
                 if (tmpMesh.Normals.Count == tmpMesh.Positions.Count)
-                    tmpNor.AddRange(tmpMesh.Normals);
+                    tmpNor.AddRange(tmpMesh.Normals.Select(v => new Vector3((float)Math.Round(v.X, 3),
+                                                                            (float)Math.Round(v.Y, 3),
+                                                                            (float)Math.Round(v.Z, 3))));
                 
                 // Copy vertex colors, if they are consistent and omit alpha if exists
                 if (tmpMesh.Colors.Count == tmpMesh.Positions.Count)
