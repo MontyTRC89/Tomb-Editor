@@ -27,6 +27,14 @@ namespace WadTool
             }
         }
 
+        public class FaceEdge : IEquatable<FaceEdge>
+        {
+            public int[] P { get; set; }
+
+            public bool Equals(FaceEdge other) => (other.P[0] == P[0] && other.P[1] == P[1]) || (other.P[1] == P[0] && other.P[0] == P[1]);
+            public override int GetHashCode() => P[0].GetHashCode() ^ P[1].GetHashCode();
+        }
+
         public bool ShowMeshList { get; set; } = false;
         public bool ShowEditingTools { get; set; } = true;
         public WadMesh SelectedMesh { get; set; }
@@ -293,34 +301,7 @@ namespace WadTool
                 return;
             }
 
-            var oldVertex = panelMesh.Mesh.VertexPositions[newVertexIndex];
-            panelMesh.Mesh.VertexPositions[newVertexIndex] = panelMesh.Mesh.VertexPositions[panelMesh.CurrentElement];
-            panelMesh.Mesh.VertexPositions[panelMesh.CurrentElement] = oldVertex;
-
-            var ov = panelMesh.CurrentElement;
-            var nv = newVertexIndex;
-            var count = 0;
-
-            for (int j = 0; j < panelMesh.Mesh.Polys.Count; j++)
-            {
-                var done = false;
-                var poly = panelMesh.Mesh.Polys[j];
-
-                if (poly.Index0 == ov) { poly.Index0 = nv; done = true; } else if (poly.Index0 == nv) { poly.Index0 = ov; done = true; }
-                if (poly.Index1 == ov) { poly.Index1 = nv; done = true; } else if (poly.Index1 == nv) { poly.Index1 = ov; done = true; }
-                if (poly.Index2 == ov) { poly.Index2 = nv; done = true; } else if (poly.Index2 == nv) { poly.Index2 = ov; done = true; }
-
-                if (poly.Shape == WadPolygonShape.Quad)
-                {
-                    if (poly.Index3 == ov) { poly.Index3 = nv; done = true; } else if (poly.Index3 == nv) { poly.Index3 = ov; done = true; }
-                }
-
-                if (done)
-                {
-                    panelMesh.Mesh.Polys[j] = poly;
-                    count++;
-                }
-            }
+            var count = RemapSelectedVertex(panelMesh.CurrentElement, newVertexIndex);
 
             if (count > 0)
             {
@@ -338,6 +319,81 @@ namespace WadTool
 
                 panelMesh.CurrentElement = newVertexIndex;
             }
+        }
+
+        private int RemapSelectedVertex(int oldIndex, int newIndex)
+        {
+            if (oldIndex >= panelMesh.Mesh.VertexPositions.Count || newIndex >= panelMesh.Mesh.VertexPositions.Count)
+                return 0;
+
+            var count = 0;
+            var oldVertex = panelMesh.Mesh.VertexPositions[newIndex];
+            panelMesh.Mesh.VertexPositions[newIndex] = panelMesh.Mesh.VertexPositions[oldIndex];
+            panelMesh.Mesh.VertexPositions[oldIndex] = oldVertex;
+
+            for (int j = 0; j < panelMesh.Mesh.Polys.Count; j++)
+            {
+                var done = false;
+                var poly = panelMesh.Mesh.Polys[j];
+
+                if (poly.Index0 == oldIndex) { poly.Index0 = newIndex; done = true; } else if (poly.Index0 == newIndex) { poly.Index0 = oldIndex; done = true; }
+                if (poly.Index1 == oldIndex) { poly.Index1 = newIndex; done = true; } else if (poly.Index1 == newIndex) { poly.Index1 = oldIndex; done = true; }
+                if (poly.Index2 == oldIndex) { poly.Index2 = newIndex; done = true; } else if (poly.Index2 == newIndex) { poly.Index2 = oldIndex; done = true; }
+
+                if (poly.Shape == WadPolygonShape.Quad)
+                {
+                    if (poly.Index3 == oldIndex) { poly.Index3 = newIndex; done = true; } else if (poly.Index3 == newIndex) { poly.Index3 = oldIndex; done = true; }
+                }
+
+                if (done)
+                {
+                    panelMesh.Mesh.Polys[j] = poly;
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private int AutoFit()
+        {
+            var edges = new List<FaceEdge>();
+
+            for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
+            {
+                var poly = panelMesh.Mesh.Polys[i];
+
+                edges.Add(new FaceEdge { P = new int[] { poly.Index0, poly.Index1 } });
+                edges.Add(new FaceEdge { P = new int[] { poly.Index1, poly.Index2 } });
+
+                if (poly.Shape == WadPolygonShape.Triangle)
+                    edges.Add(new FaceEdge { P = new int[] { poly.Index2, poly.Index0 } });
+                else
+                {
+                    edges.Add(new FaceEdge { P = new int[] { poly.Index2, poly.Index3 } });
+                    edges.Add(new FaceEdge { P = new int[] { poly.Index3, poly.Index0 } });
+                }
+            }
+
+            var orphans = edges.GroupBy(x => x)
+                               .Where(g => g.Count() == 1)
+                               .Select(y => y.Key)
+                               .ToList();
+
+            var remappedIndexList = new List<int>();
+            var count = 0;
+            foreach (var orphan in orphans)
+                foreach (var point in orphan.P)
+                {
+                    if (!remappedIndexList.Contains(point))
+                    {
+                        RemapSelectedVertex(point, count);
+                        remappedIndexList.Add(point);
+                        count++;
+                    }
+                }
+
+            return count;
         }
 
         private void GenerateMissingVertexData()
@@ -498,6 +554,18 @@ namespace WadTool
         private void butDoubleSide_Click(object sender, EventArgs e)
         {
             butDoubleSide.Checked = !butDoubleSide.Checked;
+        }
+
+        private void butAutoFit_Click(object sender, EventArgs e)
+        {
+            var count = AutoFit();
+
+            if (count == 0)
+                popup.ShowError(panelMesh, "This mesh is fully enclosed. Auto-fitting works with meshes which have at least one hole.");
+            else
+                popup.ShowInfo(panelMesh, "Auto-fitted " + count + " vertices.");
+
+            panelMesh.Invalidate();
         }
     }
 }

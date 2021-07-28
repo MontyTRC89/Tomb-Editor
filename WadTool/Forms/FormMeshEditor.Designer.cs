@@ -40,6 +40,7 @@
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tabsModes = new TombLib.Controls.DarkTabbedContainer();
             this.tabVertexRemap = new System.Windows.Forms.TabPage();
+            this.butAutoFit = new DarkUI.Controls.DarkButton();
             this.nudVertexNum = new DarkUI.Controls.DarkNumericUpDown();
             this.butFindVertex = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
@@ -211,6 +212,7 @@
             // tabVertexRemap
             // 
             this.tabVertexRemap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabVertexRemap.Controls.Add(this.butAutoFit);
             this.tabVertexRemap.Controls.Add(this.nudVertexNum);
             this.tabVertexRemap.Controls.Add(this.butFindVertex);
             this.tabVertexRemap.Controls.Add(this.darkLabel1);
@@ -220,6 +222,21 @@
             this.tabVertexRemap.Size = new System.Drawing.Size(403, 31);
             this.tabVertexRemap.TabIndex = 0;
             this.tabVertexRemap.Text = "Vertex remap";
+            // 
+            // butAutoFit
+            // 
+            this.butAutoFit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butAutoFit.Checked = false;
+            this.butAutoFit.Image = global::WadTool.Properties.Resources.import_16;
+            this.butAutoFit.Location = new System.Drawing.Point(326, 5);
+            this.butAutoFit.Name = "butAutoFit";
+            this.butAutoFit.Size = new System.Drawing.Size(74, 23);
+            this.butAutoFit.TabIndex = 6;
+            this.butAutoFit.Text = "Auto-fit";
+            this.butAutoFit.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butAutoFit, "Try to automatically remap all vertices sitting on mesh holes.\r\nFor legacy engine" +
+        "s, you still have to manually remap hair hole.");
+            this.butAutoFit.Click += new System.EventHandler(this.butAutoFit_Click);
             // 
             // nudVertexNum
             // 
@@ -239,7 +256,7 @@
             0,
             0});
             this.nudVertexNum.Name = "nudVertexNum";
-            this.nudVertexNum.Size = new System.Drawing.Size(152, 23);
+            this.nudVertexNum.Size = new System.Drawing.Size(72, 23);
             this.nudVertexNum.TabIndex = 2;
             this.toolTip.SetToolTip(this.nudVertexNum, "Vertex number to operate with");
             this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
@@ -249,7 +266,7 @@
             this.butFindVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butFindVertex.Checked = false;
             this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butFindVertex.Location = new System.Drawing.Point(246, 5);
+            this.butFindVertex.Location = new System.Drawing.Point(166, 5);
             this.butFindVertex.Name = "butFindVertex";
             this.butFindVertex.Size = new System.Drawing.Size(74, 23);
             this.butFindVertex.TabIndex = 5;
@@ -274,7 +291,7 @@
             this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butRemapVertex.Checked = false;
             this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butRemapVertex.Location = new System.Drawing.Point(326, 5);
+            this.butRemapVertex.Location = new System.Drawing.Point(246, 5);
             this.butRemapVertex.Name = "butRemapVertex";
             this.butRemapVertex.Size = new System.Drawing.Size(74, 23);
             this.butRemapVertex.TabIndex = 3;
@@ -676,5 +693,6 @@
         private DarkUI.Controls.DarkComboBox cbEditingMode;
         private DarkUI.Controls.DarkButton butDoubleSide;
         private System.Windows.Forms.ToolTip toolTip;
+        private DarkUI.Controls.DarkButton butAutoFit;
     }
 }
