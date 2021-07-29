@@ -240,7 +240,7 @@ namespace TombLib.Wad
                     tempTextures.Add(((WadTexture)poly.Texture.Texture).Hash, ((WadTexture)poly.Texture.Texture));
             }
 
-            List<WadTexture> textureList = tempTextures.Values.ToList();
+            var textureList = tempTextures.Values.ToList();
             textureList.Sort(delegate (WadTexture x, WadTexture y)
             {
                 if (x.Image.Width > y.Image.Width)
@@ -259,7 +259,7 @@ namespace TombLib.Wad
                 });
             }
 
-            var pages = Wad2.PackTexturesForExport(texturePieces);
+            var pages = texturePieces.Count == 1 ? new List<WadTexture>() { texturePieces.First().Value.Texture } : Wad2.PackTexturesForExport(texturePieces);
             var name = string.IsNullOrEmpty(mesh.Name) ? "UntitledMesh" : mesh.Name;
 
             // Create the materials
@@ -304,17 +304,18 @@ namespace TombLib.Wad
                 var texture = texturePieces[((WadTexture)p.Texture.Texture).Hash];
 
                 var offset = new Vector2
-                    (
-                        Math.Max(0.0f, texture.Position.X),
-                        Math.Max(0.0f, texture.Position.Y)
-                    );
+                (
+                    Math.Max(0.0f, texture.Position.X),
+                    Math.Max(0.0f, texture.Position.Y)
+                );
+                var size = pages[texture.Atlas].Image.Size;
 
-                mesh.UV.Add((p.Texture.TexCoord0 + offset) / 256.0f);
-                mesh.UV.Add((p.Texture.TexCoord1 + offset) / 256.0f);
-                mesh.UV.Add((p.Texture.TexCoord2 + offset) / 256.0f);
+                mesh.UV.Add((p.Texture.TexCoord0 + offset) / size);
+                mesh.UV.Add((p.Texture.TexCoord1 + offset) / size);
+                mesh.UV.Add((p.Texture.TexCoord2 + offset) / size);
                 if (p.Shape == WadPolygonShape.Quad)
                 {
-                    mesh.UV.Add((p.Texture.TexCoord3 + offset) / 256.0f);
+                    mesh.UV.Add((p.Texture.TexCoord3 + offset) / size);
                 }
 
                 if (m.VertexColors.Count >= m.VertexPositions.Count)
