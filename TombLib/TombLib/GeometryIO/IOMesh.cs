@@ -126,7 +126,7 @@ namespace TombLib.GeometryIO
             }
         }
 
-        public void CalculateNormals(bool weighted = false)
+        public void CalculateNormals(bool weighted = true)
         {
             Normals.Clear();
 
