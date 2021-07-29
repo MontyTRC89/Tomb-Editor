@@ -15,7 +15,7 @@ namespace TombLib.Wad.TrLevels
 
         public static Wad2 ConvertTrLevel(TrLevel oldLevel)
         {
-            var wad = new Wad2() { GameVersion = oldLevel.Version, SoundSystem = SoundSystem.Xml } ;
+            var wad = new Wad2() { GameVersion = oldLevel.Version } ;
 
             logger.Info("Converting TR level to WAD2");
 

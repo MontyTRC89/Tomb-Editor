@@ -40,20 +40,6 @@ namespace WadTool
                             Environment.Exit(1);
                 };
 
-                // Show startup help
-                if (configuration.StartUpHelp_Show)
-                {
-                    var help = new FormStartupHelp();
-                    Application.Run(help);
-                    switch (help.DialogResult)
-                    {
-                        case DialogResult.Cancel:
-                            return;
-                        case DialogResult.OK:
-                            configuration.StartUpHelp_Show = false;
-                            break;
-                    }
-                }
                 configuration.SaveTry();
 
                 // Run

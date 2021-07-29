@@ -162,18 +162,6 @@
     <Compile Include="Utils\ImageQuantizer.cs" />
     <Compile Include="Utils\NaturalComparer.cs" />
     <Compile Include="Utils\Configuration.cs" />
-    <Compile Include="Forms\Prj2SoundsConversionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Prj2SoundsConversionDialog.Designer.cs">
-      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Wad2SoundsConversionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Wad2SoundsConversionDialog.Designer.cs">
-      <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="GeometryIO\BaseGeometryExporter.cs" />
     <Compile Include="GeometryIO\BaseGeometryImporter.cs" />
     <Compile Include="GeometryIO\Exporters\Assimp.cs" />
@@ -277,7 +265,6 @@
     <Compile Include="Script\ScriptCompilerTR5Main.cs" />
     <Compile Include="Script\ScriptCompilerTRNG.cs" />
     <Compile Include="Utils\BrowseFolderDialog.cs" />
-    <Compile Include="Utils\FileFormatConversions.cs" />
     <Compile Include="Utils\DataVersion.cs" />
     <Compile Include="Utils\MathC.cs" />
     <Compile Include="NG\NgParameterInfo.cs" />
@@ -336,7 +323,6 @@
     <Compile Include="Types\VectorInt2.cs" />
     <Compile Include="Types\VectorInt3.cs" />
     <Compile Include="Wad\Catalog\TrCatalog.cs" />
-    <Compile Include="Wad\WadAdditionalSoundInfo.cs" />
     <Compile Include="Wad\WadLight.cs" />
     <Compile Include="Wad\IWadObject.cs" />
     <Compile Include="Wad\TrLevels\Structs.cs" />
@@ -348,7 +334,6 @@
     <Compile Include="Wad\Wad2Writer.cs" />
     <Compile Include="Wad\WadAnimCommand.cs" />
     <Compile Include="Wad\Tr4Wad\Tr4WadOperations.cs" />
-    <Compile Include="Wad\WadFixedSoundInfo.cs" />
     <Compile Include="Wad\WadSample.cs" />
     <Compile Include="Wad\WadSoundInfo.cs" />
     <Compile Include="Wad\WadSoundPlayer.cs" />
@@ -382,12 +367,6 @@
     <None Include="ResourcesC\pcsky.raw.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Forms\Prj2SoundsConversionDialog.resx">
-      <DependentUpon>Prj2SoundsConversionDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Wad2SoundsConversionDialog.resx">
-      <DependentUpon>Wad2SoundsConversionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="ResourcesC\ResourcesC.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>ResourcesC.Designer.cs</LastGenOutput>

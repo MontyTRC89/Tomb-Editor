@@ -118,7 +118,7 @@ namespace TombLib.LevelData
         // Last used room
         public int LastSelectedRoom { get; set; } = 0;
 
-        // New sound system
+        // Sound system
         public SoundSystem SoundSystem { get; set; } = SoundSystem.Xml;
         public List<int> SelectedSounds { get; set; } = new List<int>();
         public List<WadSoundInfo> GlobalSoundMap
@@ -141,26 +141,26 @@ namespace TombLib.LevelData
 
         // Default sound paths
         public List<WadSoundPath> WadSoundPaths { get; set; } = new List<WadSoundPath>
-            {
-                new WadSoundPath("Sounds"), // For directly loading wad files.
-                new WadSoundPath("Sound"),
-                new WadSoundPath("Sounds" + Dir + "Samples"),
-                new WadSoundPath("Sound" + Dir + "Samples"),
-                new WadSoundPath(".." + Dir + "Sounds"), // For directly loading wad files.
-                new WadSoundPath(".." + Dir + "Sound"),
-                new WadSoundPath(".." + Dir + "Sounds" + Dir + "Samples"),
-                new WadSoundPath(".." + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(".." + Dir + ".." + Dir + "Sounds"), // For directly loading wad files.
-                new WadSoundPath(".." + Dir + ".." + Dir + "Sound"),
-                new WadSoundPath(".." + Dir + ".." + Dir + "Sounds" + Dir + "Samples"),
-                new WadSoundPath(".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.GameDirectory) + Dir + "Sound" + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
-                new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
-            };
+        {
+            new WadSoundPath("Sounds"), // For directly loading wad files.
+            new WadSoundPath("Sound"),
+            new WadSoundPath("Sounds" + Dir + "Samples"),
+            new WadSoundPath("Sound" + Dir + "Samples"),
+            new WadSoundPath(".." + Dir + "Sounds"), // For directly loading wad files.
+            new WadSoundPath(".." + Dir + "Sound"),
+            new WadSoundPath(".." + Dir + "Sounds" + Dir + "Samples"),
+            new WadSoundPath(".." + Dir + "Sound" + Dir + "Samples"),
+            new WadSoundPath(".." + Dir + ".." + Dir + "Sounds"), // For directly loading wad files.
+            new WadSoundPath(".." + Dir + ".." + Dir + "Sound"),
+            new WadSoundPath(".." + Dir + ".." + Dir + "Sounds" + Dir + "Samples"),
+            new WadSoundPath(".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
+            new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + "Sound" + Dir + "Samples"),
+            new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
+            new WadSoundPath(VariableCreate(VariableType.LevelDirectory) + Dir + ".." + Dir + ".." + Dir + "Sound" + Dir + "Samples"),
+            new WadSoundPath(VariableCreate(VariableType.GameDirectory) + Dir + "Sound" + Dir + "Samples"),
+            new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + VariableCreate(VariableType.SoundEngineVersion) + Dir + "Samples"),
+            new WadSoundPath(VariableCreate(VariableType.EditorDirectory) + Dir + "Sounds" + Dir + "Samples")
+        };
 
         // Game version and version-specific settings
         public TRVersion.Game GameVersion { get; set; } = TRVersion.Game.TR4;

@@ -21,7 +21,7 @@ namespace TombLib.LevelData
         public const short MaxNumberOfRooms = 1024;
 
         public Room[] Rooms { get; } = new Room[MaxNumberOfRooms]; // Rooms in level
-        public LevelSettings Settings { get; private set; } = new LevelSettings { SoundSystem = SoundSystem.Xml };
+        public LevelSettings Settings { get; private set; } = new LevelSettings();
         public ScriptIdTable<IHasScriptID> GlobalScriptingIdsTable { get; } = new ScriptIdTable<IHasScriptID>();
 
         public List<Room> ExistingRooms => Rooms.Where(r => r != null).ToList();

@@ -115,15 +115,15 @@ namespace TombEditor.ToolWindows
                 obj is Editor.LevelChangedEvent)
             {
                 bool isTR4orNG = _editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4;
-                bool isNGorT5M = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
+                bool isNGorTEN = _editor.Level.Settings.GameVersion >= TRVersion.Game.TRNG;
                 bool isTR4or5 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;
                 bool isTR345 = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR3;
                 bool isTR1 = _editor.Level.Settings.GameVersion == TRVersion.Game.TR1;
 
                 cbHorizon.Enabled = !isTR1;
                 cbFlagOutside.Enabled = !isTR1;
-                cbFlagCold.Enabled = isNGorT5M;
-                cbFlagDamage.Enabled = isNGorT5M;
+                cbFlagCold.Enabled = isNGorTEN;
+                cbFlagDamage.Enabled = isNGorTEN;
                 cbNoLensflare.Enabled = isTR4or5;
                 comboReverberation.Enabled = isTR345;
                 comboReverberation.SelectedIndexChanged -= comboReverberation_SelectedIndexChanged; // Prevent SelectedIndexChanged event from DataSource assignment in next line

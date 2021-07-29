@@ -199,12 +199,6 @@
     <Compile Include="Forms\FormSpriteSequenceEditor.Designer.cs">
       <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FormStartupHelp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\FormStartupHelp.Designer.cs">
-      <DependentUpon>FormStartupHelp.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\FormAnimCommandsEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -270,9 +264,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormSpriteSequenceEditor.resx">
       <DependentUpon>FormSpriteSequenceEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FormStartupHelp.resx">
-      <DependentUpon>FormStartupHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormAnimCommandsEditor.resx">
       <DependentUpon>FormAnimCommandsEditor.cs</DependentUpon>

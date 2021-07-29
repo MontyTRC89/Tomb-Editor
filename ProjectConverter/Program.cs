@@ -43,11 +43,7 @@ namespace ProjectConverter
                 foreach (var wadRef in level.Settings.Wads)
                 {
                     var wad = wadRef.Wad;
-                    var newWad = new Wad2
-                    {
-                        GameVersion = TRVersion.Game.TombEngine,
-                        SoundSystem = SoundSystem.Xml
-                    };
+                    var newWad = new Wad2 { GameVersion = TRVersion.Game.TombEngine };
 
                     uint animating = 1231;
 

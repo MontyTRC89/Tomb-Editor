@@ -36,7 +36,6 @@ namespace TombLib.LevelData.IO
             {
                 LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
                 Level level = new Level();
-                Wad2 embeddedSoundInfoWad = null;
                 chunkIO.ReadChunks((id, chunkSize) =>
                 {
                     LevelSettings settings = null;
@@ -45,9 +44,7 @@ namespace TombLib.LevelData.IO
                         level.ApplyNewLevelSettings(settings);
                         return true;
                     }
-                    else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad, progressReporter))
-                        return true;
-                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, embeddedSoundInfoWad, progressReporter))
+                    else if (LoadRooms(chunkIO, id, level, levelSettingsIds, progressReporter))
                         return true;
                     return false;
                 });
@@ -75,16 +72,13 @@ namespace TombLib.LevelData.IO
             {
                 LevelSettingsIds levelSettingsIds = new LevelSettingsIds();
                 LoadedObjects loadedObjects = new LoadedObjects { Settings = new LevelSettings(), Objects = new List<ObjectInstance>() };
-                Wad2 embeddedSoundInfoWad = null;
 
                 chunkIO.ReadChunks((id, chunkSize) =>
                 {
                     if (LoadLevelSettings(chunkIO, id, filename, ref levelSettingsIds, ref loadedObjects.Settings, loadSettings))
                         return true;
-                    else if (LoadEmbeddedSoundInfoWad(chunkIO, id, ref embeddedSoundInfoWad))
-                        return true;
                     else if (LoadObjects(chunkIO, id, levelSettingsIds,
-                        obj => { }, objectMapDictionary, null, roomLinkActions, objectLinkActions, embeddedSoundInfoWad))
+                        obj => { }, objectMapDictionary, null, roomLinkActions, objectLinkActions))
                         return true;
                     return false;
                 });
@@ -158,14 +152,16 @@ namespace TombLib.LevelData.IO
             if (idOuter != Prj2Chunks.Settings)
                 return false;
 
-            LevelSettings settings = new LevelSettings { LevelFilePath = thisPath };
+            // We force sound system to none here to identify old projects which had legacy (so called dynamic) sound system.
+            // Since 1.3.16, TE is not capable of loading such projects.
+
+            LevelSettings settings = new LevelSettings { LevelFilePath = thisPath, SoundSystem = SoundSystem.None };
+
             var levelSettingsIds = new LevelSettingsIds();
             var WadsToLoad = new Dictionary<ReferencedWad, string>(new ReferenceEqualityComparer<ReferencedWad>());
             var SoundsCatalogsToLoad = new Dictionary<ReferencedSoundsCatalog, string>(new ReferenceEqualityComparer<ReferencedSoundsCatalog>());
             var importedGeometriesToLoad = new Dictionary<ImportedGeometry, ImportedGeometryInfo>(new ReferenceEqualityComparer<ImportedGeometry>());
             var levelTexturesToLoad = new Dictionary<LevelTexture, string>(new ReferenceEqualityComparer<LevelTexture>());
-
-            bool foundSoundSystem = false;
 
             chunkIO.ReadChunks((id, chunkSize) =>
             {
@@ -180,10 +176,7 @@ namespace TombLib.LevelData.IO
                     settings.Wads.Add(wad);
                 }
                 else if (id == Prj2Chunks.SoundSystem)
-                {
-                    foundSoundSystem = true;
                     settings.SoundSystem = (SoundSystem)chunkIO.ReadChunkInt(chunkSize);
-                }
                 else if (id == Prj2Chunks.LastRoom)
                     settings.LastSelectedRoom = chunkIO.ReadChunkInt(chunkSize);
                 else if (id == Prj2Chunks.FontTextureFilePath)
@@ -589,9 +582,6 @@ namespace TombLib.LevelData.IO
                 return true;
             });
 
-            if (!foundSoundSystem)
-                settings.SoundSystem = SoundSystem.Dynamic;
-
             // Load wads
             progressReporter?.ReportInfo("Loading wads into level");
             if (!loadingSettings.IgnoreWads)
@@ -620,16 +610,7 @@ namespace TombLib.LevelData.IO
             return true;
         }
 
-        private static bool LoadEmbeddedSoundInfoWad(ChunkReader chunkIO, ChunkId idOuter, ref Wad2 embeddedSoundInfoWad, IProgressReporter progressReporter = null)
-        {
-            if (idOuter != Prj2Chunks.EmbeddedSoundInfoWad)
-                return false;
-
-            progressReporter?.ReportInfo("Loading embedded sound samples");
-            embeddedSoundInfoWad = Wad2Loader.LoadFromStream(chunkIO.Raw.BaseStream);
-            return true;
-        }
-        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, Wad2 embeddedSoundInfoWad, IProgressReporter progressReporter = null)
+        private static bool LoadRooms(ChunkReader chunkIO, ChunkId idOuter, Level level, LevelSettingsIds levelSettingsIds, IProgressReporter progressReporter = null)
         {
             if (idOuter != Prj2Chunks.Rooms)
                 return false;
@@ -883,7 +864,7 @@ namespace TombLib.LevelData.IO
                             }));
                     }
                     else if (LoadObjects(chunkIO, id2, levelSettingsIds, obj => room.AddObjectAndSingularPortal(level, obj),
-                            newObjects, room, roomLinkActions, objectLinkActions, embeddedSoundInfoWad))
+                            newObjects, room, roomLinkActions, objectLinkActions))
                         return true;
                     else
                         return false;
@@ -935,7 +916,7 @@ namespace TombLib.LevelData.IO
         private static bool LoadObjects(ChunkReader chunkIO, ChunkId idOuter, LevelSettingsIds levelSettingsIds,
             Action<ObjectInstance> addObject, Dictionary<long, ObjectInstance> newObjects,
             Room room, List<KeyValuePair<long, Action<Room>>> roomLinkActions,
-            List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions, Wad2 embeddedSoundInfoWad)
+            List<KeyValuePair<long, Action<ObjectInstance>>> objectLinkActions)
         {
             if (idOuter != Prj2Chunks.Objects)
                 return false;
@@ -1155,17 +1136,22 @@ namespace TombLib.LevelData.IO
                     var instance = new SoundSourceInstance();
                     instance.Position = chunkIO.Raw.ReadVector3();
 
-                    if (id3 == Prj2Chunks.ObjectSoundSource)
+                    if (id3 == Prj2Chunks.ObjectSoundSource) // Deprecated
                     {
-                        instance.WadReferencedSoundName = TrCatalog.GetOriginalSoundName(TRVersion.Game.TR4, chunkIO.Raw.ReadUInt16());
+                        chunkIO.Raw.ReadUInt16();
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
                     }
-                    else if (id3 == Prj2Chunks.ObjectSoundSource2)
+                    else if (id3 == Prj2Chunks.ObjectSoundSource2) // Deprecated
                     {
-                        instance.WadReferencedSoundName = chunkIO.Raw.ReadString(); // Used wrong string type
-                        chunkIO.Raw.ReadInt16(); // Unused
-                        chunkIO.Raw.ReadByte(); // Unused
+                        chunkIO.Raw.ReadString();
+                        chunkIO.Raw.ReadInt16();
+                        chunkIO.Raw.ReadByte();
+                    }
+                    else if (id3 == Prj2Chunks.ObjectSoundSource3) // Deprecated
+                    {
+                        chunkIO.Raw.ReadStringUTF8();
+                        LEB128.ReadLong(chunkIO.Raw);
                     }
                     else if (id3 == Prj2Chunks.ObjectSoundSource4)
                     {
@@ -1179,15 +1165,6 @@ namespace TombLib.LevelData.IO
                         instance.PlayMode = (SoundSourcePlayMode)chunkIO.Raw.ReadInt32();
                         chunkIO.Raw.ReadInt16(); // Unused
                         chunkIO.Raw.ReadByte(); // Unused
-                    }
-                    else
-                    {
-                        instance.WadReferencedSoundName = chunkIO.Raw.ReadStringUTF8();
-
-                        // Use an embedded sound info
-                        long soundInfoId = LEB128.ReadLong(chunkIO.Raw);
-                        if (soundInfoId >= 0)
-                            instance.EmbeddedSoundInfo = embeddedSoundInfoWad.FixedSoundInfosObsolete[new WadFixedSoundInfoId((uint)soundInfoId)].SoundInfo;
                     }
 
                     addObject(instance);

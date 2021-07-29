@@ -2,7 +2,7 @@
 {
     public enum SoundSystem : long
     {
-        Dynamic = 0,
+        None = 0,
         Xml = 1
     }
 

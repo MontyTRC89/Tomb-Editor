@@ -179,12 +179,10 @@ namespace TombEditor.ToolWindows
                 obj is Editor.LevelChangedEvent ||
                 obj is Editor.GameVersionChangedEvent)
             {
-                bool isT5M = _editor.Level.IsTombEngine;
-
-                butAddBoxVolume.Enabled = isT5M;
-                butAddSphereVolume.Enabled = isT5M;
-                butAddPrismVolume.Enabled = isT5M;
-                butDrawVolumes.Enabled = isT5M; // We may safely hide it because it's not customizable
+                butAddBoxVolume.Enabled    = _editor.Level.IsTombEngine;
+                butAddSphereVolume.Enabled = _editor.Level.IsTombEngine;
+                butAddPrismVolume.Enabled  = _editor.Level.IsTombEngine;
+                butDrawVolumes.Enabled     = _editor.Level.IsTombEngine; // We may safely hide it because it's not customizable
 
                 butAddSprite.Enabled      = _editor.Level.Settings.GameVersion <= TRVersion.Game.TR2;
                 butAddFlybyCamera.Enabled = _editor.Level.Settings.GameVersion >= TRVersion.Game.TR4;

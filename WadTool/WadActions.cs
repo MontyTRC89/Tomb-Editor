@@ -35,24 +35,6 @@ namespace WadTool
             try
             {
                 newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
-                if (isWad2 && newWad.SoundSystem == SoundSystem.Dynamic)
-                {
-                    if (DarkMessageBox.Show(owner, "This Wad2 is using the old dynamic sound system and needs to be converted " +
-                                            "to the new Xml sound system. A backup copy will be created under the same directory. " +
-                                            "Do you want to continue?",
-                                            "Convert Wad2", MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Question) != DialogResult.Yes)
-                        return;
-
-                    File.Copy(fileName, fileName + ".bak", true);
-                    if (!FileFormatConversions.ConvertWad2ToNewSoundFormat(fileName, fileName))
-                    {
-                        tool.SendMessage("Converting the file failed!", PopupType.Error);
-                        return;
-                    }
-
-                    newWad = Wad2.ImportFromFile(fileName, true, new GraphicalDialogHandler(owner), tool.Configuration.Tool_AllowTRNGDecryption);
-                }
 
                 if (newWad.HasUnknownData)
                     tool.SendMessage("Loaded wad2 is of newer version.\nSome data was lost. Don't save this wad2 and use newest version of Wad Tool.", PopupType.Warning);
@@ -153,7 +135,6 @@ namespace WadTool
             // Save the wad2
             try
             {
-                // XML_SOUND_SYSTEM
                 Wad2Writer.SaveToFile(wadToSave, outPath);
 
                 // Immediately reload new wad, if it wasn't saved before (new or imported)
@@ -182,7 +163,7 @@ namespace WadTool
                 if (form.ShowDialog(owner) == DialogResult.Cancel)
                     return;
 
-                tool.DestinationWad = new Wad2 { GameVersion = form.Version, SoundSystem = SoundSystem.Xml };
+                tool.DestinationWad = new Wad2 { GameVersion = form.Version };
                 tool.ToggleUnsavedChanges(false);
             }
         }
@@ -565,7 +546,6 @@ namespace WadTool
         {
             Wad2 dest = new Wad2();
             dest.GameVersion = TRVersion.Game.TombEngine;
-            dest.SoundSystem = SoundSystem.Xml;
 
             foreach (var moveable in src.Moveables)
             {

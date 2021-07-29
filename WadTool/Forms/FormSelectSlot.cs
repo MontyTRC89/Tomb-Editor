@@ -36,18 +36,6 @@ namespace WadTool
                 chosenId.Value = ((WadStaticId)currentId).TypeId;
             else if (TypeClass == typeof(WadSpriteSequenceId))
                 chosenId.Value = ((WadSpriteSequenceId)currentId).TypeId;
-            else if (TypeClass == typeof(WadFixedSoundInfoId))
-                chosenId.Value = ((WadFixedSoundInfoId)currentId).TypeId;
-            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
-            {
-                chosenId.Visible = false;
-                chosenIdText.Visible = true;
-                lstSlots.Enabled = false;
-                tbSearchLabel.Enabled = false;
-                tbSearch.Enabled = false;
-
-                chosenIdText.Text = ((WadAdditionalSoundInfoId)currentId).Name;
-            }
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 
@@ -103,13 +91,6 @@ namespace WadTool
                 NewId = new WadStaticId(newId);
             else if (TypeClass == typeof(WadSpriteSequenceId))
                 NewId = new WadSpriteSequenceId(newId);
-
-            // FIXME: Are we still handling copying/moving/etc of deprecated sound info objects?
-
-            else if (TypeClass == typeof(WadFixedSoundInfoId))
-                NewId = new WadFixedSoundInfoId((uint)chosenId.Value);
-            else if (TypeClass == typeof(WadAdditionalSoundInfoId))
-                NewId = new WadAdditionalSoundInfoId(chosenIdText.Text);
             else
                 throw new NotImplementedException("The " + TypeClass + " is not implemented yet.");
 

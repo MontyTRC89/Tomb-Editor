@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace TombLib.Wad
 {
@@ -13,9 +12,6 @@ namespace TombLib.Wad
         public bool FrameBased => Type >= WadAnimCommandType.PlaySound;
         public bool PositionBased => Type == WadAnimCommandType.SetPosition;
         public bool VelocityBased => Type == WadAnimCommandType.SetJumpDistance;
-
-        // Only for old Wad2 importing
-        public WadSoundInfo SoundInfoObsolete { get; set; }
 
         public string Description => ToString();
         public override string ToString()

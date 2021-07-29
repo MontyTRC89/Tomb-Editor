@@ -61,8 +61,6 @@ namespace WadTool
         public float GizmoAnimationEditor_ScaleCubeSize { get; set; } = 24.0f;
         public float GizmoAnimationEditor_LineThickness { get; set; } = 6.0f;
 
-        public bool StartUpHelp_Show { get; set; } = false;
-
         public Point Window_FormMain_Position { get; set; } = new Point(-1);
         public Size Window_FormMain_Size { get; set; } = new Size(1200, 700);
         public bool Window_FormMain_Maximized { get; set; } = false;
