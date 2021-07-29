@@ -32,6 +32,9 @@ namespace TombLib
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Angle(this Vector3 v1, Vector3 v2) => (float)Math.Acos(Vector3.Dot(v2, v1) / (v2.Length() * v1.Length()));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Round(Vector2 v) => new Vector2((float)Math.Round(v.X), (float)Math.Round(v.Y));
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 Round(Vector3 v) => new Vector3((float)Math.Round(v.X), (float)Math.Round(v.Y), (float)Math.Round(v.Z));
