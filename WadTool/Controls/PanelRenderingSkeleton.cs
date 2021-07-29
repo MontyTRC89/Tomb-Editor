@@ -175,12 +175,12 @@ namespace WadTool.Controls
                 {
                     // TODO Keep data on GPU, optimize data upload
                     // Use new renderer
-                    var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.WadMesh });
+                    var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.Mesh });
 
                     effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
                     effect.Parameters["ModelViewProjection"].SetValue((node.GlobalTransform * viewProjection).ToSharpDX());
                     effect.Parameters["Color"].SetValue(Vector4.One);
-                    effect.Parameters["StaticLighting"].SetValue(node.WadMesh.LightingType != WadMeshLightingType.Normals);
+                    effect.Parameters["StaticLighting"].SetValue(node.Mesh.LightingType != WadMeshLightingType.Normals);
                     effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TombLib.LevelData.TRVersion.Game.TombEngine);
 
                     effect.Techniques[0].Passes[0].Apply();
@@ -215,7 +215,7 @@ namespace WadTool.Controls
                 if (SelectedNode != null)
                 {
                     _vertexBufferVisibility?.Dispose();
-                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedNode.WadMesh.BoundingBox);
+                    _vertexBufferVisibility = GetVertexBufferFromBoundingBox(SelectedNode.Mesh.BoundingBox);
 
                     _device.SetVertexBuffer(_vertexBufferVisibility);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -261,7 +261,7 @@ namespace WadTool.Controls
                 {
                     Font = _fontDefault,
                     Overlay = true,
-                    Pos = worldViewProjection.TransformPerspectively(SelectedNode.Centre - Vector3.UnitY * 128.0f).To2(),
+                    Pos = worldViewProjection.TransformPerspectively(SelectedNode.Center - Vector3.UnitY * 128.0f).To2(),
                     TextAlignment = new Vector2(0, 0),
                     ScreenAlignment = new Vector2(0.5f, 0.5f),
                     String =
@@ -397,7 +397,7 @@ namespace WadTool.Controls
             // Now do a ray - triangle intersection test
             bool hit = false;
             float minDistance = float.PositiveInfinity;
-            var mesh = node.WadMesh;
+            var mesh = node.Mesh;
             foreach (var poly in mesh.Polys)
             {
                 if (poly.Shape == WadPolygonShape.Quad)

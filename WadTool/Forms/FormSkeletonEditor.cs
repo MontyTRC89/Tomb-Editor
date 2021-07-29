@@ -52,7 +52,7 @@ namespace WadTool
             _bones = new List<WadMeshBoneNode>();
             for (int i = 0; i < _moveable.Bones.Count; i++)
             {
-                var boneNode = new WadMeshBoneNode(null, skin.Bones[i].Mesh, _moveable.Bones[i]);
+                var boneNode = new WadMeshBoneNode(skin.Bones[i].Mesh, _moveable.Bones[i]);
                 boneNode.Bone.Translation = _moveable.Bones[i].Translation;
                 boneNode.GlobalTransform = Matrix4x4.Identity;
                 _bones.Add(boneNode);
@@ -226,7 +226,7 @@ namespace WadTool
             bone.Name = currentBone.Bone.Name;
             bone.Parent = parentBone;
             bone.Translation = currentBone.Bone.Translation;
-            bone.Mesh = currentBone.WadMesh;
+            bone.Mesh = currentBone.Mesh;
 
             foreach (var childNode in currentNode.Nodes)
                 bone.Children.Add(SaveSkeleton(bone, childNode));
@@ -243,7 +243,7 @@ namespace WadTool
             bone.OpCode = WadLinkOpcode.NotUseStack;
 
             // Create the new node
-            var node = new WadMeshBoneNode(parentNode, mesh, bone);
+            var node = new WadMeshBoneNode(mesh, bone);
 
             // Insert the bone
             int index = _bones.IndexOf(parentNode);
@@ -282,7 +282,7 @@ namespace WadTool
             }
 
             node.Bone.Mesh = mesh;
-            node.WadMesh = mesh;
+            node.Mesh = mesh;
 
             // Reload skeleton
             _lastBone = node;
@@ -492,7 +492,7 @@ namespace WadTool
                 return;
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, theNode.WadMesh.Clone()))
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, theNode.Mesh.Clone()))
             {
                 if (form.ShowDialog() == DialogResult.Cancel)
                     return;

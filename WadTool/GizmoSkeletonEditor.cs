@@ -43,7 +43,7 @@ namespace WadTool
 
         }
 
-        protected override Vector3 Position => _control != null && _control.SelectedNode != null ? _control.SelectedNode.Centre : Vector3.Zero;
+        protected override Vector3 Position => _control != null && _control.SelectedNode != null ? _control.SelectedNode.Center : Vector3.Zero;
         protected override float RotationY => 0;
         protected override float RotationX => 0;
         protected override float RotationZ => 0;
