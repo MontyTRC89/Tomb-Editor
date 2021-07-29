@@ -155,6 +155,10 @@
             this.soundDataGridViewColumnSearch = new DarkUI.Controls.DarkDataGridViewButtonColumn();
             this.lblPathsPrompt = new DarkUI.Controls.DarkLabel();
             this.tabMisc = new System.Windows.Forms.TabPage();
+            this.panelLuaPath = new System.Windows.Forms.Panel();
+            this.butBrowseLuaPath = new DarkUI.Controls.DarkButton();
+            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
+            this.tbLuaPath = new DarkUI.Controls.DarkTextBox();
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
             this.lblTr5Weather = new DarkUI.Controls.DarkLabel();
@@ -185,10 +189,7 @@
             this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panelLuaPath = new System.Windows.Forms.Panel();
-            this.butBrowseLuaPath = new DarkUI.Controls.DarkButton();
-            this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.tbLuaPath = new DarkUI.Controls.DarkTextBox();
+            this.cbKeepSampleRate = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
@@ -218,6 +219,7 @@
             this.tabSamples.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).BeginInit();
             this.tabMisc.SuspendLayout();
+            this.panelLuaPath.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
             this.panelTr5LaraType.SuspendLayout();
             this.panelScripts.SuspendLayout();
@@ -225,7 +227,6 @@
             this.panel12.SuspendLayout();
             this.tabPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
-            this.panelLuaPath.SuspendLayout();
             this.SuspendLayout();
             // 
             // pathVariablesDataGridViewContextMenu
@@ -620,7 +621,7 @@
             this.lblGameEnableQuickStartFeature2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.lblGameEnableQuickStartFeature2.Location = new System.Drawing.Point(16, 189);
             this.lblGameEnableQuickStartFeature2.Name = "lblGameEnableQuickStartFeature2";
-            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(700, 13);
+            this.lblGameEnableQuickStartFeature2.Size = new System.Drawing.Size(698, 13);
             this.lblGameEnableQuickStartFeature2.TabIndex = 5;
             this.lblGameEnableQuickStartFeature2.Text = "If you are using TRNG, to speed up level load and exit further, it is recommended" +
     " to enable \'soft fullscreen\' mode in the TRNG settings.";
@@ -1853,12 +1854,53 @@
             this.tabMisc.TabIndex = 6;
             this.tabMisc.Text = "Misc";
             // 
+            // panelLuaPath
+            // 
+            this.panelLuaPath.Controls.Add(this.butBrowseLuaPath);
+            this.panelLuaPath.Controls.Add(this.darkLabel10);
+            this.panelLuaPath.Controls.Add(this.tbLuaPath);
+            this.panelLuaPath.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelLuaPath.Location = new System.Drawing.Point(0, 463);
+            this.panelLuaPath.Name = "panelLuaPath";
+            this.panelLuaPath.Size = new System.Drawing.Size(778, 50);
+            this.panelLuaPath.TabIndex = 98;
+            // 
+            // butBrowseLuaPath
+            // 
+            this.butBrowseLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butBrowseLuaPath.Checked = false;
+            this.butBrowseLuaPath.Location = new System.Drawing.Point(683, 23);
+            this.butBrowseLuaPath.Name = "butBrowseLuaPath";
+            this.butBrowseLuaPath.Size = new System.Drawing.Size(92, 22);
+            this.butBrowseLuaPath.TabIndex = 3;
+            this.butBrowseLuaPath.Text = "Browse";
+            this.butBrowseLuaPath.Click += new System.EventHandler(this.butBrowseLuaPath_Click);
+            // 
+            // darkLabel10
+            // 
+            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel10.Location = new System.Drawing.Point(0, 3);
+            this.darkLabel10.Name = "darkLabel10";
+            this.darkLabel10.Size = new System.Drawing.Size(439, 17);
+            this.darkLabel10.TabIndex = 1;
+            this.darkLabel10.Text = "Path of LUA script file:";
+            // 
+            // tbLuaPath
+            // 
+            this.tbLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbLuaPath.Location = new System.Drawing.Point(19, 23);
+            this.tbLuaPath.Name = "tbLuaPath";
+            this.tbLuaPath.Size = new System.Drawing.Size(658, 22);
+            this.tbLuaPath.TabIndex = 2;
+            this.tbLuaPath.TextChanged += new System.EventHandler(this.tbLuaPath_TextChanged);
+            // 
             // panelTr5Weather
             // 
             this.panelTr5Weather.Controls.Add(this.comboTr5Weather);
             this.panelTr5Weather.Controls.Add(this.lblTr5Weather);
             this.panelTr5Weather.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5Weather.Location = new System.Drawing.Point(0, 390);
+            this.panelTr5Weather.Location = new System.Drawing.Point(0, 412);
             this.panelTr5Weather.Name = "panelTr5Weather";
             this.panelTr5Weather.Size = new System.Drawing.Size(778, 51);
             this.panelTr5Weather.TabIndex = 97;
@@ -1887,7 +1929,7 @@
             this.panelTr5LaraType.Controls.Add(this.comboLaraType);
             this.panelTr5LaraType.Controls.Add(this.lblLaraType);
             this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 339);
+            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 361);
             this.panelTr5LaraType.Name = "panelTr5LaraType";
             this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
             this.panelTr5LaraType.TabIndex = 96;
@@ -1917,7 +1959,7 @@
             this.panelScripts.Controls.Add(this.darkLabel15);
             this.panelScripts.Controls.Add(this.tbScriptPath);
             this.panelScripts.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelScripts.Location = new System.Drawing.Point(0, 289);
+            this.panelScripts.Location = new System.Drawing.Point(0, 311);
             this.panelScripts.Name = "panelScripts";
             this.panelScripts.Size = new System.Drawing.Size(778, 50);
             this.panelScripts.TabIndex = 95;
@@ -1958,7 +2000,7 @@
             this.panel6.Controls.Add(this.darkLabel6);
             this.panel6.Controls.Add(this.levelFilePathTxt);
             this.panel6.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel6.Location = new System.Drawing.Point(0, 237);
+            this.panel6.Location = new System.Drawing.Point(0, 259);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(778, 52);
             this.panel6.TabIndex = 94;
@@ -1995,6 +2037,7 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cbKeepSampleRate);
             this.panel12.Controls.Add(this.cbRemoveObjects);
             this.panel12.Controls.Add(this.cbRearrangeRooms);
             this.panel12.Controls.Add(this.cbRemapAnimTextures);
@@ -2012,7 +2055,7 @@
             this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel12.Location = new System.Drawing.Point(0, 0);
             this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(778, 237);
+            this.panel12.Size = new System.Drawing.Size(778, 259);
             this.panel12.TabIndex = 91;
             // 
             // darkLabel22
@@ -2161,46 +2204,18 @@
             this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
             this.SelectedSoundsOriginalIdColumn.Width = 80;
             // 
-            // panelLuaPath
+            // cbKeepSampleRate
             // 
-            this.panelLuaPath.Controls.Add(this.butBrowseLuaPath);
-            this.panelLuaPath.Controls.Add(this.darkLabel10);
-            this.panelLuaPath.Controls.Add(this.tbLuaPath);
-            this.panelLuaPath.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelLuaPath.Location = new System.Drawing.Point(0, 441);
-            this.panelLuaPath.Name = "panelLuaPath";
-            this.panelLuaPath.Size = new System.Drawing.Size(778, 50);
-            this.panelLuaPath.TabIndex = 98;
-            // 
-            // butBrowseLuaPath
-            // 
-            this.butBrowseLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butBrowseLuaPath.Checked = false;
-            this.butBrowseLuaPath.Location = new System.Drawing.Point(683, 23);
-            this.butBrowseLuaPath.Name = "butBrowseLuaPath";
-            this.butBrowseLuaPath.Size = new System.Drawing.Size(92, 22);
-            this.butBrowseLuaPath.TabIndex = 3;
-            this.butBrowseLuaPath.Text = "Browse";
-            this.butBrowseLuaPath.Click += new System.EventHandler(this.butBrowseLuaPath_Click);
-            // 
-            // darkLabel10
-            // 
-            this.darkLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel10.Location = new System.Drawing.Point(0, 3);
-            this.darkLabel10.Name = "darkLabel10";
-            this.darkLabel10.Size = new System.Drawing.Size(439, 17);
-            this.darkLabel10.TabIndex = 1;
-            this.darkLabel10.Text = "Path of LUA script file:";
-            // 
-            // tbLuaPath
-            // 
-            this.tbLuaPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbLuaPath.Location = new System.Drawing.Point(19, 23);
-            this.tbLuaPath.Name = "tbLuaPath";
-            this.tbLuaPath.Size = new System.Drawing.Size(658, 22);
-            this.tbLuaPath.TabIndex = 2;
-            this.tbLuaPath.TextChanged += new System.EventHandler(this.tbLuaPath_TextChanged);
+            this.cbKeepSampleRate.AutoSize = true;
+            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 235);
+            this.cbKeepSampleRate.Name = "cbKeepSampleRate";
+            this.cbKeepSampleRate.Size = new System.Drawing.Size(215, 17);
+            this.cbKeepSampleRate.TabIndex = 114;
+            this.cbKeepSampleRate.Tag = "";
+            this.cbKeepSampleRate.Text = "Keep original sample rate for sounds";
+            this.pathToolTip.SetToolTip(this.cbKeepSampleRate, "Disable autoresampling of all sounds to recommended engine sample rate.\r\nMay be n" +
+        "ecessary if level builder uses custom sound sample rate.");
+            this.cbKeepSampleRate.CheckedChanged += new System.EventHandler(this.cbKeepSampleRate_CheckedChanged);
             // 
             // FormLevelSettings
             // 
@@ -2261,6 +2276,8 @@
             this.tabSamples.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundDataGridView)).EndInit();
             this.tabMisc.ResumeLayout(false);
+            this.panelLuaPath.ResumeLayout(false);
+            this.panelLuaPath.PerformLayout();
             this.panelTr5Weather.ResumeLayout(false);
             this.panelTr5LaraType.ResumeLayout(false);
             this.panelScripts.ResumeLayout(false);
@@ -2271,8 +2288,6 @@
             this.panel12.PerformLayout();
             this.tabPaths.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
-            this.panelLuaPath.ResumeLayout(false);
-            this.panelLuaPath.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -2450,5 +2465,6 @@
         private DarkUI.Controls.DarkButton butBrowseLuaPath;
         private DarkUI.Controls.DarkLabel darkLabel10;
         private DarkUI.Controls.DarkTextBox tbLuaPath;
+        private DarkUI.Controls.DarkCheckBox cbKeepSampleRate;
     }
 }

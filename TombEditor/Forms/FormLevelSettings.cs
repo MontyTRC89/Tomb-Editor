@@ -628,6 +628,7 @@ namespace TombEditor.Forms
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
             cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 			cbRemoveObjects.Checked = _levelSettings.RemoveUnusedObjects;
+            cbKeepSampleRate.Checked = _levelSettings.KeepSampleRate;
 
             // Lock settings dependent on preview mode
             cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
@@ -1680,6 +1681,12 @@ namespace TombEditor.Forms
             if (_levelSettings.TenLuaScriptFile == tbLuaPath.Text)
                 return;
             _levelSettings.TenLuaScriptFile = tbLuaPath.Text;
+            UpdateDialog();
+        }
+
+        private void cbKeepSampleRate_CheckedChanged(object sender, EventArgs e)
+        {
+            _levelSettings.KeepSampleRate = cbKeepSampleRate.Checked;
             UpdateDialog();
         }
     }

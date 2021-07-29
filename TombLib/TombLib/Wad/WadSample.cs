@@ -418,7 +418,10 @@ namespace TombLib.Wad
                             if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
                                 throw new EndOfStreamException();
 
-                            currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, supportedSampleRate, supportedBitness));
+                            if (settings.KeepSampleRate)
+                                currentSample = new WadSample(samplePath, buffer);
+                            else
+                                currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, supportedSampleRate, supportedBitness));
 
                             if (currentSample.SampleRate != supportedSampleRate)
                                 reporter?.ReportWarn("Sample " + samplePath + " has a sample rate of " + currentSample.SampleRate + " which is unsupported for this engine version.");
