@@ -208,11 +208,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
     {
         public tr_room_info Info;
         public int NumDataWords;
-        public List<Vector3> Positions = new List<Vector3>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<Vector3> Tangents = new List<Vector3>();
-        public List<Vector3> Bitangents = new List<Vector3>();
-        public List<Vector3> Colors = new List<Vector3>();
         public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets;
         public List<tr_room_portal> Portals;
@@ -243,11 +238,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
         {
             writer.WriteBlock(Info);
 
-            writer.Write(Positions.Count);
-            foreach (var p in Positions)
-                writer.Write(p);
-            foreach (var c in Colors)
-                writer.Write(c);
+            writer.Write(Vertices.Count);
+            foreach (var p in Vertices)
+                writer.Write(p.Position);
+            foreach (var c in Vertices)
+                writer.Write(c.Color);
             foreach (var v in Vertices)
                 writer.Write(v.Effects);
 

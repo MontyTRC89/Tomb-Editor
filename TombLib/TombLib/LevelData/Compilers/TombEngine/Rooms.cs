@@ -1733,13 +1733,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         private void PrepareRoomBuckets(TombEngineRoom room)
         {
-            // Add main vertex channels
-            foreach (var vertex in room.Vertices)
-            {
-                room.Positions.Add(vertex.Position);
-                room.Colors.Add(vertex.Color);
-            }
-
             // Build buckets and assign texture coordinates
             var textures = _textureInfoManager.GetObjectTextures();
             room.Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>(new TombEngineMaterial.TombEngineMaterialComparer());
