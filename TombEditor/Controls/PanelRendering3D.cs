@@ -2967,7 +2967,7 @@ namespace TombEditor.Controls
                             {
                                 if (movID.Meshes[i].LightingType == WadMeshLightingType.Normals)
                                 {
-                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(false);
+                                    skinnedModelEffect.Parameters["StaticLighting"].SetValue(_editor.Level.IsTombEngine);
                                     skinnedModelEffect.Parameters["Color"].SetValue(ConvertColor(instance.Room.Properties.AmbientLight));
                                 }
                                 else
