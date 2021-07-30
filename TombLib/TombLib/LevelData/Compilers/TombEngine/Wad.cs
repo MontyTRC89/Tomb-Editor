@@ -72,7 +72,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var v = new TombEngineVertex() 
                 { 
                     Position = new Vector3(pos.X, -pos.Y, pos.Z),
-                    Normal   = new Vector3(normal.X, -normal.Y, normal.Z),
+                    Normal = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
                     Color    = color,
                     Bone     = meshIndex,
                     Effects  = effect
