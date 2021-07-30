@@ -54,29 +54,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 Sphere = oldMesh.BoundingSphere
             };
 
-            // FIX: the following code will check for valid normals and shades combinations.
-            // As last chance, I recalculate the normals on the fly.
-            bool useShades = false;
-            bool flatLighting = false;
             var objectString = isStatic ? "Static" : "Moveable";
-
-            // If light type is static and vertex colors count isn't valid, use flat lighting
-            if (oldMesh.LightingType != WadMeshLightingType.Normals && oldMesh.VertexColors.Count != oldMesh.VertexPositions.Count)
-                flatLighting = true;
-
-            if (oldMesh.LightingType == WadMeshLightingType.Normals)
-            {
-                if (oldMesh.VertexNormals.Count == 0)
-                {
-                    _progressReporter.ReportWarn(string.Format(objectString + " {0} has a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
-                    oldMesh.CalculateNormals();
-                }
-                useShades = false;
-            }
-            else
-            {
-                useShades = true;
-            }
 
             // Add vertices components
             foreach (var pos in oldMesh.VertexPositions)
@@ -84,24 +62,27 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
                 newMesh.Vertices.Add(new TombEngineVertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
             }
+
+            if (!oldMesh.HasNormals)
+            {
+                _progressReporter.ReportWarn(string.Format(objectString + " {0} has a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
+                oldMesh.CalculateNormals();
+            }
+
             foreach (var normal in oldMesh.VertexNormals)
                 newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
-            if (useShades)
+
+            if (oldMesh.HasColors)
             {
                 for (int j = 0; j < oldMesh.VertexPositions.Count; j++)
-                {
-                    // HACK: Because of inconsistent TE light model (0.0f-2.0f), clamp luma to 1.0f to avoid issues with
-                    // incorrect shade translations in room meshes reimported as statics.
-                    var lightValue = flatLighting ? 1.0f : Math.Min(oldMesh.VertexColors[j].GetLuma(), 1.0f);
-
-                    newMesh.Colors.Add(new Vector3(lightValue));
-                }
+                    newMesh.Colors.Add(oldMesh.VertexColors[j] / 2.0f);
             }
             else
             {
                 for (int i = 0; i < oldMesh.VertexPositions.Count; i++)
                     newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
             }
+
             for (int i = 0; i < oldMesh.VertexPositions.Count; i++)
                 newMesh.Bones.Add(meshIndex);
 
@@ -113,7 +94,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if (poly.ShineStrength > 0)
                 {
-                    if (useShades && isStatic)
+                    if (oldMesh.LightingType == WadMeshLightingType.VertexColors)
                         _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {

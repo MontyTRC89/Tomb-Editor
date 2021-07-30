@@ -115,7 +115,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         output += RoomGeometry.CalculateLightForVertex(room, light, position, normal, false, false);
                     }
 
-            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f); ;
+            return Vector3.Max(output, new Vector3()) * (1.0f / 128.0f);
         }
 
         private TombEngineRoom BuildRoom(Room room)
@@ -426,7 +426,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
                             normal = Vector3.Normalize(normal);
                             int lightingEffect = 0;
-                            float shade = 1.0f;
+                            Vector3 shade = Vector3.One;
+                            
                             if (interpretShadesAsMovement)
                             {
                                 if (j < wadStatic.Mesh.VertexColors.Count)
@@ -439,17 +440,20 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             else
                             {
                                 // If we have vertex colors, use them as a luma factor for the resulting vertex color
-                                if (!clearShades && j < wadStatic.Mesh.VertexColors.Count)
-                                    shade = wadStatic.Mesh.VertexColors[j].GetLuma();
+                                if (!clearShades && wadStatic.Mesh.HasColors)
+                                    shade = wadStatic.Mesh.VertexColors[j];
 
                                 // FIXME: Those parameters MUST BE VERTEX-BASED IN TOMB ENGINE!!!
+                                if (wadStatic.Mesh.HasAttributes)
+                                {
+                                    if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
+                                        lightingEffect |= 0x2000; // Movement
 
-                                if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
-                                    lightingEffect |= 0x2000; // Movement
-
-                                if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
-                                    lightingEffect |= 0x4000; // Glow
+                                    if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
+                                        lightingEffect |= 0x4000; // Glow
+                                }
                             }
+
                             Vector3 color;
                             if (!entry.TintAsAmbient)
                             {
@@ -1390,9 +1394,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             }
                                             else
                                             {
-                                                //if (grayscale)
-                                                //    newColor = (ushort)(8160 - (((8160 - v2.Lighting2) / 2) + ((8160 - refColor) / 2)));
-                                                //else
                                                 newColor = (v2.Color + refColor) / 2.0f;
                                             }
 
