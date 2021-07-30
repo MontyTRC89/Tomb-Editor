@@ -87,9 +87,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 throw new NotSupportedException("A wad must be loaded to compile the final level.");
 
             _textureInfoManager = new TombEngineTexInfoManager(_level, _progressReporter);
-        
+
             // Prepare level data in parallel to the sounds
-            ConvertWad2DataToTr4();
+            ConvertWad2DataToTombEngine();
             BuildRooms();
 
             // Compile textures

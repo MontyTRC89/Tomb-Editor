@@ -56,35 +56,30 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
             var objectString = isStatic ? "Static" : "Moveable";
 
-            // Add vertices components
-            foreach (var pos in oldMesh.VertexPositions)
-            {
-                newMesh.Positions.Add(new Vector3(pos.X, -pos.Y, pos.Z));
-                newMesh.Vertices.Add(new TombEngineVertex { Position = new Vector3(pos.X, -pos.Y, pos.Z) });
-            }
-
             if (!oldMesh.HasNormals)
             {
                 _progressReporter.ReportWarn(string.Format(objectString + " {0} has a mesh with invalid lighting data. Normals will be recalculated on the fly.", objectName));
                 oldMesh.CalculateNormals();
             }
 
-            foreach (var normal in oldMesh.VertexNormals)
-                newMesh.Normals.Add(Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)));
-
-            if (oldMesh.HasColors)
-            {
-                for (int j = 0; j < oldMesh.VertexPositions.Count; j++)
-                    newMesh.Colors.Add(oldMesh.VertexColors[j] / 2.0f);
-            }
-            else
-            {
-                for (int i = 0; i < oldMesh.VertexPositions.Count; i++)
-                    newMesh.Colors.Add(new Vector3(0.5f, 0.5f, 0.5f));
-            }
-
             for (int i = 0; i < oldMesh.VertexPositions.Count; i++)
-                newMesh.Bones.Add(meshIndex);
+            {
+                var pos    = oldMesh.VertexPositions[i];
+                var normal = oldMesh.VertexNormals[i];
+                var color  = (oldMesh.HasColors) ? oldMesh.VertexColors[i] / 2.0f : new Vector3(0.5f);
+                var effect = (oldMesh.HasAttributes) ? oldMesh.VertexAttributes[i].Glow | (oldMesh.VertexAttributes[i].Move << 6) : 0;
+
+                var v = new TombEngineVertex() 
+                { 
+                    Position = new Vector3(pos.X, -pos.Y, pos.Z),
+                    Normal   = new Vector3(normal.X, -normal.Y, normal.Z),
+                    Color    = color,
+                    Bone     = meshIndex,
+                    Effects  = effect
+                };
+
+                newMesh.Vertices.Add(v);
+            }
 
             for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
@@ -141,11 +136,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 if (poly.Shape == WadPolygonShape.Quad)
                     newMesh.Vertices[index3].Polygons.Add(new NormalHelper(newPoly));
 
-                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[0]]);
-                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[1]]);
-                newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[2]]);
+                newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
+                newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);
+                newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[2]].Normal);
                 if (poly.Shape == WadPolygonShape.Quad)
-                    newPoly.Normals.Add(newMesh.Normals[newPoly.Indices[3]]);
+                    newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[3]].Normal);
             }
 
             _meshes.Add(newMesh);
@@ -207,8 +202,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 {
                     var poly = polygons[j];
 
-                    var e1 = mesh.Positions[poly.Polygon.Indices[1]] - mesh.Positions[poly.Polygon.Indices[0]];
-                    var e2 = mesh.Positions[poly.Polygon.Indices[2]] - mesh.Positions[poly.Polygon.Indices[0]];
+                    var e1 = mesh.Vertices[poly.Polygon.Indices[1]].Position - mesh.Vertices[poly.Polygon.Indices[0]].Position;
+                    var e2 = mesh.Vertices[poly.Polygon.Indices[2]].Position - mesh.Vertices[poly.Polygon.Indices[0]].Position;
 
                     var uv1 = poly.Polygon.TextureCoordinates[1] - poly.Polygon.TextureCoordinates[0];
                     var uv2 = poly.Polygon.TextureCoordinates[2] - poly.Polygon.TextureCoordinates[0];
@@ -266,7 +261,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             public int KeyFrameSize { get; set; }
         }
 
-        public void ConvertWad2DataToTr4()
+        public void ConvertWad2DataToTombEngine()
         {
             ReportProgress(0, "Preparing WAD data");
 

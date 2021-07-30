@@ -41,13 +41,15 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(mesh.Sphere.Center);
                     writer.Write(mesh.Sphere.Radius);
 
-                    writer.Write(mesh.Positions.Count);
-                    foreach (var p in mesh.Positions)
-                        writer.Write(p);
-                    foreach (var c in mesh.Colors)
-                        writer.Write(c);
-                    foreach (var b in mesh.Bones)
-                        writer.Write(b);
+                    writer.Write(mesh.Vertices.Count);
+                    foreach (var p in mesh.Vertices)
+                        writer.Write(p.Position);
+                    foreach (var c in mesh.Vertices)
+                        writer.Write(c.Color);
+                    foreach (var e in mesh.Vertices)
+                        writer.Write(e.Effects);
+                    foreach (var b in mesh.Vertices)
+                        writer.Write(b.Bone);
 
                     writer.Write(mesh.Buckets.Count);
                     foreach (var bucket in mesh.Buckets.Values)

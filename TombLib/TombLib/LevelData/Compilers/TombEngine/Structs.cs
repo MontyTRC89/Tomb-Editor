@@ -246,10 +246,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(Positions.Count);
             foreach (var p in Positions)
                 writer.Write(p);
-            foreach (var n in Normals)
-                writer.Write(n);
             foreach (var c in Colors)
                 writer.Write(c);
+            foreach (var v in Vertices)
+                writer.Write(v.Effects);
 
             writer.Write(Buckets.Count);
             foreach (var bucket in Buckets.Values)
@@ -393,13 +393,9 @@ namespace TombLib.LevelData.Compilers.TombEngine
     public class TombEngineMesh
     {
         public BoundingSphere Sphere;
-        public List<Vector3> Positions = new List<Vector3>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<Vector3> Colors = new List<Vector3>();
-        public List<int> Bones = new List<int>();
+        public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
         public List<TombEnginePolygon> Polygons = new List<TombEnginePolygon>();
         public Dictionary<TombEngineMaterial, TombEngineBucket> Buckets = new Dictionary<TombEngineMaterial, TombEngineBucket>();
-        public List<TombEngineVertex> Vertices = new List<TombEngineVertex>();
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

@@ -873,7 +873,6 @@ namespace TombLib.LevelData.Compilers
                     if (isTR23 && !allowMovement)
                         flags |= 0x8000;
 
-
                     if (lightEffect == RoomLightEffect.None && trVertex.Attributes != 0x0000)
                     {
                         // Workaround for desynced water reflections (possibly make it an option in TombEngine?)

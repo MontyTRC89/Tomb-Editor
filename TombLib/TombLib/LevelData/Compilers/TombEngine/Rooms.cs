@@ -218,7 +218,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 switch (room.Properties.Type)
                 {
                     case RoomType.Water:
-                        lightEffect = RoomLightEffect.Glow; // TR2 does water glowing automatically
+                        lightEffect = RoomLightEffect.Glow;
                         break;
                     case RoomType.Quicksand:
                         lightEffect = RoomLightEffect.Movement;
@@ -663,6 +663,165 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 // Now we need to build final normals, tangents, bitangents
             }
 
+            // Assign vertex effects
+
+            for (int i = 0; i < newRoom.Vertices.Count; ++i)
+            {
+                var trVertex = newRoom.Vertices[i];
+                int effects = 0; // shift by 6
+
+                bool allowMovement = true;
+                bool allowGlow = true;
+
+                foreach (var portal in room.Portals)
+                {
+                    var xv = (int)(trVertex.Position.X / Level.WorldUnit);
+                    var zv = (int)(trVertex.Position.Z / Level.WorldUnit);
+
+                    var otherRoomLightEffect = portal.AdjoiningRoom.Properties.LightEffect;
+                    if (otherRoomLightEffect == RoomLightEffect.Default)
+                    {
+                        switch (portal.AdjoiningRoom.Properties.Type)
+                        {
+                            case RoomType.Water:
+                                otherRoomLightEffect = RoomLightEffect.Glow;
+                                break;
+                            case RoomType.Quicksand:
+                                otherRoomLightEffect = RoomLightEffect.Movement;
+                                break;
+                            default:
+                                otherRoomLightEffect = RoomLightEffect.None;
+                                break;
+                        }
+                    }
+
+                    // Check for imported geometry out of room bounds
+                    if (xv > 0 && zv > 0 && xv < room.NumXSectors && zv < room.NumZSectors)
+                    {
+                        var connectionInfo1 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv));
+                        var connectionInfo2 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv));
+                        var connectionInfo3 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv, zv - 1));
+                        var connectionInfo4 = room.GetFloorRoomConnectionInfo(new VectorInt2(xv - 1, zv - 1));
+
+                        bool isTraversablePortal = connectionInfo1.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                   connectionInfo2.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                   connectionInfo3.TraversableType == Room.RoomConnectionType.FullPortal &&
+                                                   connectionInfo4.TraversableType == Room.RoomConnectionType.FullPortal;
+
+                        bool isOppositeCorner = connectionInfo1.TraversableType == Room.RoomConnectionType.TriangularPortalXnZn &&
+                                                !connectionInfo2.IsTriangularPortal &&
+                                                !connectionInfo3.IsTriangularPortal &&
+                                                !connectionInfo4.IsTriangularPortal
+                                                ||
+                                                !connectionInfo1.IsTriangularPortal &&
+                                                connectionInfo2.TraversableType == Room.RoomConnectionType.TriangularPortalXpZn &&
+                                                !connectionInfo3.IsTriangularPortal &&
+                                                !connectionInfo4.IsTriangularPortal
+                                                ||
+                                                !connectionInfo1.IsTriangularPortal &&
+                                                !connectionInfo2.IsTriangularPortal &&
+                                                connectionInfo3.TraversableType == Room.RoomConnectionType.TriangularPortalXnZp &&
+                                                !connectionInfo4.IsTriangularPortal
+                                                ||
+                                                !connectionInfo1.IsTriangularPortal &&
+                                                !connectionInfo2.IsTriangularPortal &&
+                                                !connectionInfo3.IsTriangularPortal &&
+                                                connectionInfo4.TraversableType == Room.RoomConnectionType.TriangularPortalXpZp;
+
+                        var pos = new VectorInt3((int)trVertex.Position.X, (int)trVertex.Position.Y, (int)trVertex.Position.Z);
+
+                        // A bit complex but working code for water surface movement.
+                        // Works better than winroomedit as it takes adjacent portals into account.
+                        if ((waterPortals.Contains(portal) && !portal.PositionOnPortal(pos, false, true)))
+                        {
+                            // A candidate vertex must belong to portal sectors, non triangular, not wall, not solid floor
+                            if ((isTraversablePortal || isOppositeCorner) &&
+                                connectionInfo1.AnyType != Room.RoomConnectionType.NoPortal &&
+                                !room.Blocks[xv, zv].IsAnyWall &&
+                                connectionInfo2.AnyType != Room.RoomConnectionType.NoPortal &&
+                                !room.Blocks[xv - 1, zv].IsAnyWall &&
+                                connectionInfo3.AnyType != Room.RoomConnectionType.NoPortal &&
+                                !room.Blocks[xv, zv - 1].IsAnyWall &&
+                                connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
+                                !room.Blocks[xv - 1, zv - 1].IsAnyWall)
+                            {
+                                effects |= GetEffectValue(room, RoomLightEffect.Movement);
+                            }
+                        }
+
+                        if (lightEffect == RoomLightEffect.Mist && portal.Direction == PortalDirection.Floor && isTraversablePortal)
+                        {
+                            // Assign mist, if set, for vertices inside portal
+                            if (portal.PositionOnPortal(pos, true, false))
+                            {
+                                effects |= GetEffectValue(room, RoomLightEffect.Glow);
+                                break;
+                            }
+                        }
+                        else if (lightEffect == RoomLightEffect.Reflection && portal.Direction == PortalDirection.Floor &&
+                            ((room.Properties.Type == RoomType.Water || room.Properties.Type == RoomType.Quicksand) != (portal.AdjoiningRoom.Properties.Type == RoomType.Water || portal.AdjoiningRoom.Properties.Type == RoomType.Quicksand)))
+                        {
+                            // Assign reflection, if set, for all enclosed portal faces
+                            if (portal.PositionOnPortal(pos, false, false) ||
+                                portal.PositionOnPortal(pos, true, false))
+                            {
+                                effects |= GetEffectValue(room, RoomLightEffect.Glow);
+                                break;
+                            }
+                        }
+                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                        {
+                            // Disable movement for portal faces
+                            if (portal.PositionOnPortal(pos, false, false) ||
+                                portal.PositionOnPortal(pos, true, false))
+                            {
+                                // Still allow movement, if adjoining room has very same properties
+                                if (!(otherRoomLightEffect == lightEffect &&
+                                      portal.AdjoiningRoom.Properties.LightEffectStrength == room.Properties.LightEffectStrength))
+                                    allowMovement = false;
+                            }
+                        }
+
+                        if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
+                        {
+                            // Apply effect on all faces, if room light interp mode is sharp-cut
+                            if (interpMode != RoomLightInterpolationMode.NoInterpolate)
+                            {
+                                // Disable glow for portal faces
+                                if (portal.PositionOnPortal(pos, false, false) ||
+                                    portal.PositionOnPortal(pos, true, false))
+                                {
+                                    // Still allow glow, if adjoining room has very same properties
+                                    if (!((otherRoomLightEffect == RoomLightEffect.Glow ||
+                                           otherRoomLightEffect == RoomLightEffect.GlowAndMovement) &&
+                                           portal.AdjoiningRoom.Properties.LightEffectStrength == room.Properties.LightEffectStrength))
+                                        allowGlow = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
+                    effects |= GetEffectValue(room, RoomLightEffect.Movement);
+                if (allowGlow && (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement))
+                    effects |= GetEffectValue(room, RoomLightEffect.Glow);
+
+                if (lightEffect == RoomLightEffect.None && trVertex.Effects != 0x0000)
+                {
+                    // Workaround for desynced water reflections (possibly make it an option in TombEngine?)
+                    // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
+                    // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
+                    // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
+                    // This is original TR renderer bug and should be resolved in TombEngine DX11 renderer.
+                    // Do not remove this condition.
+                }
+                else
+                    trVertex.Effects = effects;
+
+                newRoom.Vertices[i] = trVertex;
+            }
+
             // Build portals
 
             var tempIdPortals = new List<PortalInstance>();
@@ -711,6 +870,27 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ConvertLights(room, newRoom);
 
             return newRoom;
+        }
+
+        private int GetEffectValue(Room room, RoomLightEffect effect)
+        {
+            switch (effect)
+            {
+                case RoomLightEffect.Glow:
+                case RoomLightEffect.Mist:
+                case RoomLightEffect.Reflection:
+                    return (room.Properties.LightEffectStrength * 15);
+
+                case RoomLightEffect.Movement:
+                    return (room.Properties.LightEffectStrength * 15) << 6;
+
+                case RoomLightEffect.GlowAndMovement:
+                    return  (room.Properties.LightEffectStrength * 15) | 
+                           ((room.Properties.LightEffectStrength * 15) << 12);
+
+                default:
+                    return 0;
+            }
         }
 
         private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
