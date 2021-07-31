@@ -67,16 +67,16 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var pos    = oldMesh.VertexPositions[i];
                 var normal = oldMesh.VertexNormals[i];
                 var color  = (oldMesh.HasColors) ? oldMesh.VertexColors[i] / 2.0f : new Vector3(0.5f);
-                var effect = (oldMesh.HasAttributes) ? oldMesh.VertexAttributes[i].Glow | (oldMesh.VertexAttributes[i].Move << 6) : 0;
 
                 var v = new TombEngineVertex() 
                 { 
                     Position = new Vector3(pos.X, -pos.Y, pos.Z),
-                    Normal = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
+                    Normal   = Vector3.Normalize(new Vector3(normal.X, -normal.Y, normal.Z)),
                     Color    = color,
                     Bone     = meshIndex,
-                    Effects  = effect
-                };
+                    Glow     = (oldMesh.HasAttributes) ? (float)oldMesh.VertexAttributes[i].Glow / 64.0f : 0.0f,
+                    Move     = (oldMesh.HasAttributes) ? (float)oldMesh.VertexAttributes[i].Move / 64.0f : 0.0f
+            };
 
                 newMesh.Vertices.Add(v);
             }

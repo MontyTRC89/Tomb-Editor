@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
@@ -47,7 +48,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     foreach (var c in mesh.Vertices)
                         writer.Write(c.Color);
                     foreach (var e in mesh.Vertices)
-                        writer.Write(e.Effects);
+                        writer.Write(new Vector3(e.Glow, e.Move, e.Refract));
                     foreach (var b in mesh.Vertices)
                         writer.Write(b.Bone);
 

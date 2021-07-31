@@ -121,9 +121,12 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public Vector3 Tangent;
         public Vector3 Bitangent;
         public int Bone;
-        public int Effects;
         public int IndexInPoly;
         public int OriginalIndex;
+
+        public float Glow;
+        public float Move;
+        public float Refract;
 
         public List<NormalHelper> Polygons = new List<NormalHelper>();
         public bool IsOnPortal;
@@ -155,6 +158,41 @@ namespace TombLib.LevelData.Compilers.TombEngine
         public override int GetHashCode()
         {
             return unchecked((int)Position.X + (int)Position.Y * 695504311 + (int)Position.Z * 550048883);
+        }
+    }
+
+    public static class TombEngineVertexExtensions
+    { 
+        public static TombEngineVertex SetEffects(this TombEngineVertex vertex, Room room, RoomLightEffect effect)
+        {
+            var value = (float)room.Properties.LightEffectStrength / 4.0f;
+            switch (effect)
+            {
+                case RoomLightEffect.Default:
+                    if (room.Properties.Type == RoomType.Water)
+                        vertex.Refract = vertex.Refract == 0f ? value : vertex.Refract;
+                    break;
+
+                case RoomLightEffect.Glow:
+                case RoomLightEffect.Mist:
+                case RoomLightEffect.Reflection:
+                    vertex.Glow = vertex.Glow == 0f ? value : vertex.Glow;
+                    break;
+
+                case RoomLightEffect.Movement:
+                    vertex.Move = vertex.Glow == 0f ? value : vertex.Move;
+                    break;
+
+                case RoomLightEffect.GlowAndMovement:
+                    vertex.Glow = vertex.Glow == 0f ? value : vertex.Glow;
+                    vertex.Move = vertex.Glow == 0f ? value : vertex.Move;
+                    break;
+
+                default:
+                    break;
+            }
+
+            return vertex;
         }
     }
 
@@ -244,7 +282,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var c in Vertices)
                 writer.Write(c.Color);
             foreach (var v in Vertices)
-                writer.Write(v.Effects);
+                writer.Write(new Vector3(v.Glow, v.Move, v.Refract));
 
             writer.Write(Buckets.Count);
             foreach (var bucket in Buckets.Values)

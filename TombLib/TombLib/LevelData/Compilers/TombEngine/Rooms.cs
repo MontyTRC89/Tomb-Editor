@@ -218,7 +218,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 switch (room.Properties.Type)
                 {
                     case RoomType.Water:
-                        lightEffect = RoomLightEffect.Glow;
+                        lightEffect = RoomLightEffect.Refraction;
                         break;
                     case RoomType.Quicksand:
                         lightEffect = RoomLightEffect.Movement;
@@ -246,6 +246,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
+                case RoomLightEffect.Refraction:
                     if (!waterSchemeSet) newRoom.WaterScheme = (byte)(room.Properties.LightEffectStrength == 0 ? 0 : room.Properties.LightEffectStrength + 1);
                     newRoom.Flags |= 0x0100;
                     break;
@@ -419,22 +420,26 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         var normalTransform = staticMesh.RotationMatrix;
                         WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
 
+                        if (wadStatic == null || wadStatic.Mesh == null)
+                            continue;
+
                         for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
                         {
                             // Apply the transform to the vertex
                             Vector3 position = MathC.HomogenousTransform(wadStatic.Mesh.VertexPositions[j], worldTransform);
-                            Vector3 normal = MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform);
-                            normal = Vector3.Normalize(normal);
-                            int lightingEffect = 0;
-                            Vector3 shade = Vector3.One;
+                            Vector3 normal   = Vector3.Normalize(MathC.HomogenousTransform(wadStatic.Mesh.VertexNormals[j], normalTransform));
+                            Vector3 shade    = Vector3.One;
+
+                            var glow = 0f;
+                            var move = 0f;
                             
                             if (interpretShadesAsMovement)
                             {
                                 if (j < wadStatic.Mesh.VertexColors.Count)
                                 {
                                     var luma = wadStatic.Mesh.VertexColors[j].GetLuma();
-                                    if (luma < 0.5f) lightingEffect = 0x2000;   // Movement
-                                    else if (luma < 1.0f) lightingEffect = 0x4000; // Glow
+                                    if (luma < 0.5f) move = luma * 2.0f;   // Movement
+                                    else if (luma < 1.0f) glow = (luma - 0.5f) * 2.0f; // Glow
                                 }
                             }
                             else
@@ -447,10 +452,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (wadStatic.Mesh.HasAttributes)
                                 {
                                     if (wadStatic.Mesh.VertexAttributes[j].Move > 0)
-                                        lightingEffect |= 0x2000; // Movement
+                                        move = (float)wadStatic.Mesh.VertexAttributes[j].Move / 64.0f; // Movement
 
                                     if (wadStatic.Mesh.VertexAttributes[j].Glow > 0)
-                                        lightingEffect |= 0x4000; // Glow
+                                        glow = (float)wadStatic.Mesh.VertexAttributes[j].Glow / 64.0f; // Movement
                                 }
                             }
 
@@ -475,7 +480,8 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 Position = new Vector3(position.X, -(position.Y + room.WorldPos.Y), (short)position.Z),
                                 Color = color,
                                 Normal = normal,
-                                Effects = (ushort)lightingEffect
+                                Glow = glow,
+                                Move = move
                             };
 
                             roomVertices.Add(trVertex);
@@ -668,7 +674,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int i = 0; i < newRoom.Vertices.Count; ++i)
             {
                 var trVertex = newRoom.Vertices[i];
-                int effects = 0; // shift by 6
 
                 bool allowMovement = true;
                 bool allowGlow = true;
@@ -684,7 +689,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         switch (portal.AdjoiningRoom.Properties.Type)
                         {
                             case RoomType.Water:
-                                otherRoomLightEffect = RoomLightEffect.Glow;
+                                otherRoomLightEffect = RoomLightEffect.Refraction;
                                 break;
                             case RoomType.Quicksand:
                                 otherRoomLightEffect = RoomLightEffect.Movement;
@@ -745,7 +750,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 connectionInfo4.AnyType != Room.RoomConnectionType.NoPortal &&
                                 !room.Blocks[xv - 1, zv - 1].IsAnyWall)
                             {
-                                effects |= GetEffectValue(room, RoomLightEffect.Movement);
+                                trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
                             }
                         }
 
@@ -754,7 +759,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             // Assign mist, if set, for vertices inside portal
                             if (portal.PositionOnPortal(pos, true, false))
                             {
-                                effects |= GetEffectValue(room, RoomLightEffect.Glow);
+                                trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
                                 break;
                             }
                         }
@@ -765,11 +770,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             if (portal.PositionOnPortal(pos, false, false) ||
                                 portal.PositionOnPortal(pos, true, false))
                             {
-                                effects |= GetEffectValue(room, RoomLightEffect.Glow);
+                                trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
                                 break;
                             }
                         }
-                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement)
+                        else if (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement || lightEffect == RoomLightEffect.Refraction)
                         {
                             // Disable movement for portal faces
                             if (portal.PositionOnPortal(pos, false, false) ||
@@ -782,7 +787,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             }
                         }
 
-                        if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
+                        if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement || lightEffect == RoomLightEffect.Refraction)
                         {
                             // Apply effect on all faces, if room light interp mode is sharp-cut
                             if (interpMode != RoomLightInterpolationMode.NoInterpolate)
@@ -803,21 +808,11 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 }
 
                 if (allowMovement && (lightEffect == RoomLightEffect.Movement || lightEffect == RoomLightEffect.GlowAndMovement))
-                    effects |= GetEffectValue(room, RoomLightEffect.Movement);
+                    trVertex = trVertex.SetEffects(room, RoomLightEffect.Movement);
                 if (allowGlow && (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement))
-                    effects |= GetEffectValue(room, RoomLightEffect.Glow);
-
-                if (lightEffect == RoomLightEffect.None && trVertex.Effects != 0x0000)
-                {
-                    // Workaround for desynced water reflections (possibly make it an option in TombEngine?)
-                    // If vertex already has attribute assigned (e.g. merged statics), only apply it in case room has no
-                    // global vertex effect. It is necessary because if original vertex effect is different from global room vertex
-                    // effect, and (possibly) vertex count doesn't match seed, vertex effect seed may become desynced.
-                    // This is original TR renderer bug and should be resolved in TombEngine DX11 renderer.
-                    // Do not remove this condition.
-                }
-                else
-                    trVertex.Effects = effects;
+                    trVertex = trVertex.SetEffects(room, RoomLightEffect.Glow);
+                if (allowMovement && lightEffect == RoomLightEffect.Refraction)
+                    trVertex = trVertex.SetEffects(room, RoomLightEffect.Refraction);
 
                 newRoom.Vertices[i] = trVertex;
             }
@@ -870,27 +865,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             ConvertLights(room, newRoom);
 
             return newRoom;
-        }
-
-        private int GetEffectValue(Room room, RoomLightEffect effect)
-        {
-            switch (effect)
-            {
-                case RoomLightEffect.Glow:
-                case RoomLightEffect.Mist:
-                case RoomLightEffect.Reflection:
-                    return (room.Properties.LightEffectStrength * 15);
-
-                case RoomLightEffect.Movement:
-                    return (room.Properties.LightEffectStrength * 15) << 6;
-
-                case RoomLightEffect.GlowAndMovement:
-                    return  (room.Properties.LightEffectStrength * 15) | 
-                           ((room.Properties.LightEffectStrength * 15) << 12);
-
-                default:
-                    return 0;
-            }
         }
 
         private static int GetOrAddVertex(Room room, Dictionary<int, int> roomVerticesDictionary, List<TombEngineVertex> roomVertices,
