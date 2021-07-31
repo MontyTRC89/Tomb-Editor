@@ -364,8 +364,6 @@ namespace DarkUI.Controls
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            base.OnKeyDown(e);
-
             if (IsDragging)
                 return;
 
@@ -462,6 +460,8 @@ namespace DarkUI.Controls
                     }
                     break;
             }
+
+            base.OnKeyDown(e);
         }
 
         #endregion

@@ -144,6 +144,9 @@ namespace WadTool
                     case MeshEditingMode.VertexRemap:
                         {
                             UpdateUI();
+
+                            if (newIndex == -1) return;
+
                             nudVertexNum.Select(0, 5);
                             nudVertexNum.Focus();
                         }

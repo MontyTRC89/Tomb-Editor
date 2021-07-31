@@ -17,6 +17,7 @@ WadTool:
  * Fix problems with disjointed vertices when non-UV-mapped objects are imported from external 3D models.
  * Fix incorrect importing of shininess value for obj format.
  * Fix incorrect exporting of normals.
+ * Fix wrong depiction of skinned model in skeleton editor.
 
 Version 1.3.15
 ==============

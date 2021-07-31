@@ -44,7 +44,7 @@ namespace WadTool
             WadMoveable skin;
             var skinId = new WadMoveableId(TrCatalog.GetMoveableSkin(_tool.DestinationWad.GameVersion, _moveable.Id.TypeId));
             if (_tool.DestinationWad.Moveables.ContainsKey(skinId))
-                skin = _tool.DestinationWad.Moveables[skinId];
+                skin = _moveable.ReplaceDummyMeshes(_tool.DestinationWad.Moveables[skinId]);
             else
                 skin = _tool.DestinationWad.Moveables[_moveable.Id];
 
@@ -52,7 +52,7 @@ namespace WadTool
             _bones = new List<WadMeshBoneNode>();
             for (int i = 0; i < _moveable.Bones.Count; i++)
             {
-                var boneNode = new WadMeshBoneNode(skin.Bones[i].Mesh, _moveable.Bones[i]);
+                var boneNode = new WadMeshBoneNode(skin.Meshes[i], _moveable.Bones[i]);
                 boneNode.Bone.Translation = _moveable.Bones[i].Translation;
                 boneNode.GlobalTransform = Matrix4x4.Identity;
                 _bones.Add(boneNode);
