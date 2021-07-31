@@ -139,7 +139,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit4.Name = "cbBit4";
             this.cbBit4.Size = new System.Drawing.Size(300, 32);
             this.cbBit4.TabIndex = 12;
-            this.cbBit4.Text = "Focus on Lara\'s last head position";
+            this.cbBit4.Text = "Hide Lara";
             // 
             // cbBit5
             // 
@@ -219,7 +219,7 @@ namespace TombEditor.Forms.TombEngine
             this.cbBit15.Name = "cbBit15";
             this.cbBit15.Size = new System.Drawing.Size(300, 32);
             this.cbBit15.TabIndex = 23;
-            this.cbBit15.Text = "Hide Lara";
+            this.cbBit15.Text = "One shot";
             // 
             // cbBit14
             // 
