@@ -448,6 +448,9 @@ namespace TombLib.LevelData.Compilers
                     var normalTransform = staticMesh.RotationMatrix;
                     WadStatic wadStatic = _level.Settings.WadTryGetStatic(staticMesh.WadObjectId);
 
+                    if (wadStatic == null || wadStatic.Mesh == null)
+                        continue;
+
                     for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
                     {
                         // Apply the transform to the vertex

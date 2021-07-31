@@ -1679,7 +1679,7 @@ namespace TombLib.LevelData
                 // This null check prevents TE from crashing in case if user deleted a wad or legacy wad
                 // is currently locked and saving by utils such as strpix.
 
-                if (wadStatic == null) 
+                if (wadStatic == null || wadStatic.Mesh == null) 
                     continue;
 
                 for (int j = 0; j < wadStatic.Mesh.VertexPositions.Count; j++)
