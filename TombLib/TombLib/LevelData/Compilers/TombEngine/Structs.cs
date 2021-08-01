@@ -126,7 +126,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
         public float Glow;
         public float Move;
-        public float Refract;
+        public bool  Locked;
 
         public List<NormalHelper> Polygons = new List<NormalHelper>();
         public bool IsOnPortal;
@@ -168,11 +168,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             var value = (float)room.Properties.LightEffectStrength / 4.0f;
             switch (effect)
             {
-                case RoomLightEffect.Default:
-                    if (room.Properties.Type == RoomType.Water)
-                        vertex.Refract = vertex.Refract == 0f ? value : vertex.Refract;
-                    break;
-
                 case RoomLightEffect.Glow:
                 case RoomLightEffect.Mist:
                 case RoomLightEffect.Reflection:
@@ -282,7 +277,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var c in Vertices)
                 writer.Write(c.Color);
             foreach (var v in Vertices)
-                writer.Write(new Vector3(v.Glow, v.Move, v.Refract));
+                writer.Write(new Vector3(v.Glow, v.Move, v.Locked ? 0 : 1));
 
             writer.Write(Buckets.Count);
             foreach (var bucket in Buckets.Values)

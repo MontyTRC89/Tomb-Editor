@@ -48,7 +48,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     foreach (var c in mesh.Vertices)
                         writer.Write(c.Color);
                     foreach (var e in mesh.Vertices)
-                        writer.Write(new Vector3(e.Glow, e.Move, e.Refract));
+                        writer.Write(new Vector3(e.Glow, e.Move, e.Locked ? 0 : 1));
                     foreach (var b in mesh.Vertices)
                         writer.Write(b.Bone);
 
