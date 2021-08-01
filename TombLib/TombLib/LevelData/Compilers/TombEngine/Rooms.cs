@@ -773,7 +773,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                         }
 
                         // Disable movement for portal faces
-                        if (portal.PositionOnPortal(pos, false, false) || portal.PositionOnPortal(pos, true, false))
+                        if (portal.PositionOnPortal(pos, false, false))
                             trVertex.Locked = true;
 
                         if (lightEffect == RoomLightEffect.Glow || lightEffect == RoomLightEffect.GlowAndMovement)
