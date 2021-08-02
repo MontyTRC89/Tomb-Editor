@@ -172,8 +172,12 @@ namespace TombEditor.Forms
             if (obj is Editor.AutosaveEvent)
             {
                 var evt = obj as Editor.AutosaveEvent;
-                statusAutosave.Text = evt.Exception == null ? "Autosave OK: " + evt.Time : "Autosave failed!";
-                statusAutosave.ForeColor = evt.Exception == null ? Colors.LightText : Colors.BlueHighlight;
+                var success = evt.Exception == null;
+                statusAutosave.Text = success ? "Autosave OK: " + evt.Time : "Autosave failed!";
+                statusAutosave.ForeColor = success ? Colors.LightText : Colors.BlueHighlight;
+
+                if (!success)
+                    _editor.SendMessage("Autosave failed. Probably project is corrupted.\nRestart Tomb Editor and continue from last valid version.", PopupType.Warning);
             }
 
             // Update room information on the status strip
