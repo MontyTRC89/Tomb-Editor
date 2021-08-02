@@ -145,54 +145,17 @@ namespace TombLib.Wad
 
         public void CalculateNormals(bool weighted = true)
         {
-            VertexNormals.Clear();
-
-            var tempNormals = new List<VertexNormalAverageHelper>();
-            for (int i = 0; i < VertexPositions.Count; i++)
-                tempNormals.Add(new VertexNormalAverageHelper());
+            var helper = new VertexNormalAverageHelper(VertexPositions);
 
             foreach (var poly in Polys)
             {
-                var p0 = VertexPositions[poly.Index0];
-                var p1 = VertexPositions[poly.Index1];
-                var p2 = VertexPositions[poly.Index2];
-
-                var v1 = p1 - p0;
-                var v2 = p2 - p0;
-                var n = Vector3.Cross(v1, v2);
-
-                if (weighted)
-                    n = Vector3.Normalize(n);
-
-                // Get the angle between the two other points for each point;
-                // The starting point will be the 'base' and the two adjacent points will be normalized against it
-
-                var a1 = (p1 - p0).Angle(p2 - p0);
-                var a2 = (p2 - p1).Angle(p0 - p1);
-                var a3 = (p0 - p2).Angle(p1 - p2);
-
-                tempNormals[poly.Index0].Normal += weighted ? Vector3.Multiply(a1, n) : n;
-                tempNormals[poly.Index0].NumVertices++;
-
-                tempNormals[poly.Index1].Normal += weighted ? Vector3.Multiply(a2, n) : n;
-                tempNormals[poly.Index1].NumVertices++;
-
-                tempNormals[poly.Index2].Normal += weighted ? Vector3.Multiply(a3, n) : n;
-                tempNormals[poly.Index2].NumVertices++;
-
-                if (poly.Shape == WadPolygonShape.Quad)
-                {
-                    tempNormals[poly.Index3].Normal += weighted ? Vector3.Multiply(a3, n) : n;
-                    tempNormals[poly.Index3].NumVertices++;
-                }
+                if (poly.Shape == WadPolygonShape.Triangle)
+                    helper.AddPolygon(true, poly.Index0, poly.Index1, poly.Index2);
+                else
+                    helper.AddPolygon(true, poly.Index0, poly.Index1, poly.Index2, poly.Index3);
             }
 
-            for (int i = 0; i < tempNormals.Count; i++)
-            {
-                var normal = tempNormals[i].Normal / Math.Max(1, tempNormals[i].NumVertices);
-                normal = Vector3.Normalize(normal);
-                VertexNormals.Add(normal);
-            }
+            VertexNormals = helper.CalculateNormals();
         }
 
         public bool GenerateMissingVertexData()
