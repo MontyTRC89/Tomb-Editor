@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TombLib.IO;
 using TombLib.Utils;
@@ -281,6 +282,8 @@ namespace TombLib.LevelData.IO
                                             chunkIO.Raw.Write(frame.TexCoord3);
                                             LEB128.Write(chunkIO.Raw, frame.Repeat);
                                         }
+                                    else
+                                        logger.Warn("Animated sequence " + set.Name + " has a frame refering to a texture file which is missing from project.");
                                 }
 
                                 chunkIO.WriteChunkEnd();
@@ -377,20 +380,26 @@ namespace TombLib.LevelData.IO
                                                 continue;
 
                                             if (texture.Texture is LevelTexture)
-                                                using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
-                                                {
-                                                    int textureIndex = levelSettingIds.LevelTextures[(LevelTexture)texture.Texture];
+                                            {
+                                                var t = (LevelTexture)texture.Texture;
+                                                if (levelSettingIds.LevelTextures.ContainsKey(t))
+                                                    using (var chunkTextureLevelTexture = chunkIO.WriteChunk(Prj2Chunks.TextureLevelTexture2, LEB128.MaximumSize1Byte))
+                                                    {
+                                                        int textureIndex = levelSettingIds.LevelTextures[t];
 
-                                                    LEB128.Write(chunkIO.Raw, (long)face);
-                                                    chunkIO.Raw.Write(texture.TexCoord0);
-                                                    chunkIO.Raw.Write(texture.TexCoord1);
-                                                    chunkIO.Raw.Write(texture.TexCoord2);
-                                                    chunkIO.Raw.Write(texture.TexCoord3);
-                                                    chunkIO.Raw.Write(texture.ParentArea.Start);
-                                                    chunkIO.Raw.Write(texture.ParentArea.End);
-                                                    LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
-                                                    LEB128.Write(chunkIO.Raw, textureIndex);
-                                                }
+                                                        LEB128.Write(chunkIO.Raw, (long)face);
+                                                        chunkIO.Raw.Write(texture.TexCoord0);
+                                                        chunkIO.Raw.Write(texture.TexCoord1);
+                                                        chunkIO.Raw.Write(texture.TexCoord2);
+                                                        chunkIO.Raw.Write(texture.TexCoord3);
+                                                        chunkIO.Raw.Write(texture.ParentArea.Start);
+                                                        chunkIO.Raw.Write(texture.ParentArea.End);
+                                                        LEB128.Write(chunkIO.Raw, (texture.DoubleSided ? 1L : 0) | ((long)texture.BlendMode << 1));
+                                                        LEB128.Write(chunkIO.Raw, textureIndex);
+                                                    }
+                                                else
+                                                    logger.Warn("Room " + room.Name + " has a texture refering to a texture file " + t.Path + " which is missing from project.");
+                                            }
                                             else if (texture.Texture == TextureInvisible.Instance)
                                                 chunkIO.WriteChunkInt(Prj2Chunks.TextureInvisible, (long)face);
                                             else
@@ -757,25 +766,30 @@ namespace TombLib.LevelData.IO
                             chunkIO.WriteChunkEnd();
                         }
                     else if (o is ImportedGeometryInstance)
-                        chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry4, () =>
-                        {
-                            var instance = (ImportedGeometryInstance)o;
-                            LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
-                            chunkIO.Raw.Write(instance.Position);
-                            chunkIO.Raw.Write(instance.RotationY);
-                            chunkIO.Raw.Write(instance.RotationX);
-                            chunkIO.Raw.Write(instance.Roll);
-                            chunkIO.Raw.Write(instance.Scale);
-                            chunkIO.Raw.Write(instance.Color);
+                    {
+                        var instance = (ImportedGeometryInstance)o;
+                        if (levelSettingIds.ImportedGeometries.ContainsKey(instance.Model))
+                            chunkIO.WriteChunkWithChildren(Prj2Chunks.ObjectImportedGeometry4, () =>
+                            {
+                                LEB128.Write(chunkIO.Raw, objectInstanceLookup.TryGetOrDefault(instance, -1));
+                                chunkIO.Raw.Write(instance.Position);
+                                chunkIO.Raw.Write(instance.RotationY);
+                                chunkIO.Raw.Write(instance.RotationX);
+                                chunkIO.Raw.Write(instance.Roll);
+                                chunkIO.Raw.Write(instance.Scale);
+                                chunkIO.Raw.Write(instance.Color);
 
-                            LEB128.Write(chunkIO.Raw, instance.Model == null ?
-                                -1 :
-                                levelSettingIds.ImportedGeometries[instance.Model]);
+                                LEB128.Write(chunkIO.Raw, instance.Model == null ?
+                                    -1 :
+                                    levelSettingIds.ImportedGeometries[instance.Model]);
 
-                            chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
-                            chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometrySharpEdges, instance.SharpEdges);
-                            chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryHidden, instance.Hidden);
-                        });
+                                chunkIO.WriteChunkInt(Prj2Chunks.ObjectImportedGeometryLightingModel, (int)instance.LightingModel);
+                                chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometrySharpEdges, instance.SharpEdges);
+                                chunkIO.WriteChunkBool(Prj2Chunks.ObjectImportedGeometryHidden, instance.Hidden);
+                            });
+                        else
+                            logger.Warn("Imported geometry " + instance.ToString() + " refers to a model which is missing from project.");
+                    }
                     else
                         logger.Warn("Object " + o + " not supported.");
                 }

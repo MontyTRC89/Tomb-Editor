@@ -5,6 +5,7 @@ Tomb Editor:
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to keep original sample rate for sounds, in case builder uses custom one via FLEP patch.
  * Fix exception if level with missing merged statics is compiled.
+ * Fix possible "key not found" deadlocks when corrupted project files are saved.
 
 WadTool:
  * Fully-fledged mesh editor which largely replicates missing strpix functionality:
