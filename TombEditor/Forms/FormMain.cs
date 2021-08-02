@@ -177,7 +177,8 @@ namespace TombEditor.Forms
                 statusAutosave.ForeColor = success ? Colors.LightText : Colors.BlueHighlight;
 
                 if (!success)
-                    _editor.SendMessage("Autosave failed. Probably project is corrupted.\nRestart Tomb Editor and continue from last valid version.", PopupType.Warning);
+                    _editor.SendMessage("Autosave failed. Error: " + evt.Exception.Message + 
+                                        "\nRestart Tomb Editor and continue from last valid version.", PopupType.Warning);
             }
 
             // Update room information on the status strip

@@ -270,15 +270,18 @@ namespace TombLib.LevelData.IO
                             using (var chunkAnimatedTextureFrames = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrames))
                             {
                                 foreach (AnimatedTextureFrame frame in set.Frames)
-                                    using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, 120))
-                                    {
-                                        LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
-                                        chunkIO.Raw.Write(frame.TexCoord0);
-                                        chunkIO.Raw.Write(frame.TexCoord1);
-                                        chunkIO.Raw.Write(frame.TexCoord2);
-                                        chunkIO.Raw.Write(frame.TexCoord3);
-                                        LEB128.Write(chunkIO.Raw, frame.Repeat);
-                                    }
+                                {
+                                    if (levelSettingIds.LevelTextures.ContainsKey(frame.Texture))
+                                        using (var chunkAnimatedTextureFrame = chunkIO.WriteChunk(Prj2Chunks.AnimatedTextureFrame, 120))
+                                        {
+                                            LEB128.Write(chunkIO.Raw, levelSettingIds.LevelTextures[frame.Texture]);
+                                            chunkIO.Raw.Write(frame.TexCoord0);
+                                            chunkIO.Raw.Write(frame.TexCoord1);
+                                            chunkIO.Raw.Write(frame.TexCoord2);
+                                            chunkIO.Raw.Write(frame.TexCoord3);
+                                            LEB128.Write(chunkIO.Raw, frame.Repeat);
+                                        }
+                                }
 
                                 chunkIO.WriteChunkEnd();
                             }
