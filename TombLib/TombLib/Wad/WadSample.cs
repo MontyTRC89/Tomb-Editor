@@ -423,7 +423,7 @@ namespace TombLib.Wad
                             else
                                 currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, supportedSampleRate, supportedBitness));
 
-                            if (currentSample.SampleRate != supportedSampleRate)
+                            if (!settings.EnableCustomSampleRate && currentSample.SampleRate != supportedSampleRate)
                                 reporter?.ReportWarn("Sample " + samplePath + " has a sample rate of " + currentSample.SampleRate + " which is unsupported for this engine version.");
 
                             if (currentSample.ChannelCount > 1)
