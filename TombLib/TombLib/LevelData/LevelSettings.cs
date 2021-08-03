@@ -204,7 +204,8 @@ namespace TombLib.LevelData
         public int TexturePadding { get; set; } = 8;
         public bool FastMode { get; set; } = false;
 		public bool RemoveUnusedObjects { get; set; } = false;
-        public bool KeepSampleRate { get; set; } = false;
+        public bool EnableCustomSampleRate { get; set; } = false;
+        public int CustomSampleRate { get; set; } = 44100;
 
         // For TR5 only
         public Tr5LaraType Tr5LaraType { get; set; } = Tr5LaraType.Normal;

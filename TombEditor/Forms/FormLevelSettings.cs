@@ -628,7 +628,9 @@ namespace TombEditor.Forms
             cbRemapAnimTextures.Checked = _levelSettings.RemapAnimatedTextures;
             cbRearrangeRooms.Checked = _levelSettings.RearrangeVerticalRooms;
 			cbRemoveObjects.Checked = _levelSettings.RemoveUnusedObjects;
-            cbKeepSampleRate.Checked = _levelSettings.KeepSampleRate;
+            cbKeepSampleRate.Checked = _levelSettings.EnableCustomSampleRate;
+            cmbSampleRate.SelectedIndex = cmbSampleRate.Items.IndexOf(_levelSettings.CustomSampleRate.ToString());
+            cmbSampleRate.Enabled = cbKeepSampleRate.Checked;
 
             // Lock settings dependent on preview mode
             cbRemapAnimTextures.Enabled = !_levelSettings.FastMode;
@@ -653,7 +655,7 @@ namespace TombEditor.Forms
 
             // TR5 platform
             currentVersionToCheck = (_levelSettings.GameVersion == TRVersion.Game.TR5);
-            panelTr5LaraType.Visible = currentVersionToCheck;
+            cbSampleRate.Visible = currentVersionToCheck;
             panelTr5Weather.Visible = currentVersionToCheck;
             panelTr5Sprites.Visible = currentVersionToCheck;
 
@@ -1686,7 +1688,16 @@ namespace TombEditor.Forms
 
         private void cbKeepSampleRate_CheckedChanged(object sender, EventArgs e)
         {
-            _levelSettings.KeepSampleRate = cbKeepSampleRate.Checked;
+            _levelSettings.EnableCustomSampleRate = cbKeepSampleRate.Checked;
+            UpdateDialog();
+        }
+
+        private void cmbSampleRate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int result;
+            if (cmbSampleRate.SelectedIndex != -1 &&
+                int.TryParse(cmbSampleRate.SelectedItem.ToString(), out result))
+                _levelSettings.CustomSampleRate = result;
             UpdateDialog();
         }
     }

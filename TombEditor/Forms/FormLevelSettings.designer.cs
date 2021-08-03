@@ -20,34 +20,22 @@
             this.pathVariablesDataGridViewContextMenu = new DarkUI.Controls.DarkContextMenu();
             this.pathVariablesDataGridViewContextMenuCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.pathToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.butAssignFromWads = new DarkUI.Controls.DarkButton();
-            this.butRemoveMissing = new DarkUI.Controls.DarkButton();
-            this.butAssignFromSoundSources = new DarkUI.Controls.DarkButton();
-            this.butAssignSoundsFromSelectedCatalogs = new DarkUI.Controls.DarkButton();
-            this.butAssignHardcodedSounds = new DarkUI.Controls.DarkButton();
-            this.butAutodetectSoundsAndAssign = new DarkUI.Controls.DarkButton();
-            this.butDeselectAllSounds = new DarkUI.Controls.DarkButton();
-            this.butSelectAllSounds = new DarkUI.Controls.DarkButton();
-            this.cbRemapAnimTextures = new DarkUI.Controls.DarkCheckBox();
-            this.cbDither16BitTextures = new DarkUI.Controls.DarkCheckBox();
-            this.cbOverrideAllLightQuality = new DarkUI.Controls.DarkCheckBox();
-            this.cmbDefaultLightQuality = new DarkUI.Controls.DarkComboBox();
-            this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
-            this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
-            this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
-            this.cbRearrangeRooms = new DarkUI.Controls.DarkCheckBox();
-            this.cbRemoveObjects = new DarkUI.Controls.DarkCheckBox();
-            this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
-            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.optionsList = new DarkUI.Controls.DarkListView();
             this.butApply = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
+            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabbedContainer = new TombLib.Controls.DarkTabbedContainer();
             this.tabGame = new System.Windows.Forms.TabPage();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.GameEnableExtraReverbPresetsCheckBox = new DarkUI.Controls.DarkCheckBox();
+            this.GameEnableExtraBlendingModesCheckBox = new DarkUI.Controls.DarkCheckBox();
             this.lblGameEnableQuickStartFeature2 = new DarkUI.Controls.DarkLabel();
             this.lblGameEnableQuickStartFeature1 = new DarkUI.Controls.DarkLabel();
             this.GameEnableQuickStartFeatureCheckBox = new DarkUI.Controls.DarkCheckBox();
@@ -125,10 +113,18 @@
             this.skyTextureFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.tabSoundsCatalogs = new System.Windows.Forms.TabPage();
             this.cbAutodetectIfNoneSelected = new DarkUI.Controls.DarkCheckBox();
+            this.butAssignFromWads = new DarkUI.Controls.DarkButton();
+            this.butRemoveMissing = new DarkUI.Controls.DarkButton();
             this.darkLabel20 = new DarkUI.Controls.DarkLabel();
             this.labelSoundsCatalogsStatistics = new DarkUI.Controls.DarkLabel();
             this.butSearchSounds = new DarkUI.Controls.DarkButton();
+            this.butAssignFromSoundSources = new DarkUI.Controls.DarkButton();
             this.tbFilterSounds = new DarkUI.Controls.DarkTextBox();
+            this.butAssignSoundsFromSelectedCatalogs = new DarkUI.Controls.DarkButton();
+            this.butAssignHardcodedSounds = new DarkUI.Controls.DarkButton();
+            this.butAutodetectSoundsAndAssign = new DarkUI.Controls.DarkButton();
+            this.butDeselectAllSounds = new DarkUI.Controls.DarkButton();
+            this.butSelectAllSounds = new DarkUI.Controls.DarkButton();
             this.lblCatalogsPrompt = new DarkUI.Controls.DarkLabel();
             this.soundsCatalogsDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.SoundsCatalogPathColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -162,7 +158,7 @@
             this.panelTr5Weather = new System.Windows.Forms.Panel();
             this.comboTr5Weather = new DarkUI.Controls.DarkComboBox();
             this.lblTr5Weather = new DarkUI.Controls.DarkLabel();
-            this.panelTr5LaraType = new System.Windows.Forms.Panel();
+            this.cbSampleRate = new System.Windows.Forms.Panel();
             this.comboLaraType = new DarkUI.Controls.DarkComboBox();
             this.lblLaraType = new DarkUI.Controls.DarkLabel();
             this.panelScripts = new System.Windows.Forms.Panel();
@@ -174,9 +170,20 @@
             this.darkLabel6 = new DarkUI.Controls.DarkLabel();
             this.levelFilePathTxt = new DarkUI.Controls.DarkTextBox();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.cmbSampleRate = new DarkUI.Controls.DarkComboBox();
+            this.cbKeepSampleRate = new DarkUI.Controls.DarkCheckBox();
+            this.cbRemoveObjects = new DarkUI.Controls.DarkCheckBox();
+            this.cbRearrangeRooms = new DarkUI.Controls.DarkCheckBox();
+            this.cbRemapAnimTextures = new DarkUI.Controls.DarkCheckBox();
+            this.cbDither16BitTextures = new DarkUI.Controls.DarkCheckBox();
+            this.cbOverrideAllLightQuality = new DarkUI.Controls.DarkCheckBox();
+            this.cmbDefaultLightQuality = new DarkUI.Controls.DarkComboBox();
             this.darkLabel22 = new DarkUI.Controls.DarkLabel();
+            this.cbAgressiveFloordataPacking = new DarkUI.Controls.DarkCheckBox();
+            this.cbAgressiveTexturePacking = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel13 = new DarkUI.Controls.DarkLabel();
             this.darkLabel16 = new DarkUI.Controls.DarkLabel();
+            this.numPadding = new DarkUI.Controls.DarkNumericUpDown();
             this.panelRoomAmbientLight = new DarkUI.Controls.DarkPanel();
             this.darkLabel12 = new DarkUI.Controls.DarkLabel();
             this.tabPaths = new System.Windows.Forms.TabPage();
@@ -184,14 +191,7 @@
             this.pathVariablesDataGridView = new DarkUI.Controls.DarkDataGridView();
             this.pathVariablesDataGridViewNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pathVariablesDataGridViewValueColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoundsId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoundsName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsCatalogColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsGameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SelectedSoundsOriginalIdColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbKeepSampleRate = new DarkUI.Controls.DarkCheckBox();
             this.pathVariablesDataGridViewContextMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.darkSectionPanel1.SuspendLayout();
             this.tabbedContainer.SuspendLayout();
             this.tabGame.SuspendLayout();
@@ -221,10 +221,11 @@
             this.tabMisc.SuspendLayout();
             this.panelLuaPath.SuspendLayout();
             this.panelTr5Weather.SuspendLayout();
-            this.panelTr5LaraType.SuspendLayout();
+            this.cbSampleRate.SuspendLayout();
             this.panelScripts.SuspendLayout();
             this.panel6.SuspendLayout();
             this.panel12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPadding)).BeginInit();
             this.tabPaths.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).BeginInit();
             this.SuspendLayout();
@@ -236,14 +237,14 @@
             this.pathVariablesDataGridViewContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.pathVariablesDataGridViewContextMenuCopy});
             this.pathVariablesDataGridViewContextMenu.Name = "variablesListContextMenu";
-            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(103, 26);
+            this.pathVariablesDataGridViewContextMenu.Size = new System.Drawing.Size(94, 26);
             // 
             // pathVariablesDataGridViewContextMenuCopy
             // 
             this.pathVariablesDataGridViewContextMenuCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.pathVariablesDataGridViewContextMenuCopy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.pathVariablesDataGridViewContextMenuCopy.Name = "pathVariablesDataGridViewContextMenuCopy";
-            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(102, 22);
+            this.pathVariablesDataGridViewContextMenuCopy.Size = new System.Drawing.Size(93, 22);
             this.pathVariablesDataGridViewContextMenuCopy.Text = "Copy";
             this.pathVariablesDataGridViewContextMenuCopy.Click += new System.EventHandler(this.pathVariablesDataGridViewContextMenuCopy_Click);
             // 
@@ -253,253 +254,6 @@
             this.pathToolTip.InitialDelay = 300;
             this.pathToolTip.ReshowDelay = 100;
             this.pathToolTip.ShowAlways = true;
-            // 
-            // butAssignFromWads
-            // 
-            this.butAssignFromWads.Checked = false;
-            this.butAssignFromWads.Location = new System.Drawing.Point(495, 245);
-            this.butAssignFromWads.Name = "butAssignFromWads";
-            this.butAssignFromWads.Size = new System.Drawing.Size(72, 22);
-            this.butAssignFromWads.TabIndex = 115;
-            this.butAssignFromWads.Text = "From wads";
-            this.butAssignFromWads.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select sounds from wads");
-            this.butAssignFromWads.Click += new System.EventHandler(this.butAssignFromWads_Click);
-            // 
-            // butRemoveMissing
-            // 
-            this.butRemoveMissing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRemoveMissing.Checked = false;
-            this.butRemoveMissing.Location = new System.Drawing.Point(684, 480);
-            this.butRemoveMissing.Name = "butRemoveMissing";
-            this.butRemoveMissing.Size = new System.Drawing.Size(91, 22);
-            this.butRemoveMissing.TabIndex = 114;
-            this.butRemoveMissing.Text = "Clear missing";
-            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren\'t present in any of the catalogs");
-            this.butRemoveMissing.Click += new System.EventHandler(this.butRemoveMissing_Click);
-            // 
-            // butAssignFromSoundSources
-            // 
-            this.butAssignFromSoundSources.Checked = false;
-            this.butAssignFromSoundSources.Location = new System.Drawing.Point(373, 245);
-            this.butAssignFromSoundSources.Name = "butAssignFromSoundSources";
-            this.butAssignFromSoundSources.Size = new System.Drawing.Size(116, 22);
-            this.butAssignFromSoundSources.TabIndex = 113;
-            this.butAssignFromSoundSources.Text = "From sound sources";
-            this.butAssignFromSoundSources.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignFromSoundSources, "Select sounds from sound sources placed in level");
-            this.butAssignFromSoundSources.Click += new System.EventHandler(this.ButAssignFromSoundSources_Click);
-            // 
-            // butAssignSoundsFromSelectedCatalogs
-            // 
-            this.butAssignSoundsFromSelectedCatalogs.Checked = false;
-            this.butAssignSoundsFromSelectedCatalogs.Location = new System.Drawing.Point(236, 245);
-            this.butAssignSoundsFromSelectedCatalogs.Name = "butAssignSoundsFromSelectedCatalogs";
-            this.butAssignSoundsFromSelectedCatalogs.Size = new System.Drawing.Size(131, 22);
-            this.butAssignSoundsFromSelectedCatalogs.TabIndex = 112;
-            this.butAssignSoundsFromSelectedCatalogs.Text = "From selected catalogs";
-            this.butAssignSoundsFromSelectedCatalogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignSoundsFromSelectedCatalogs, "Select sounds from selected catalogs");
-            this.butAssignSoundsFromSelectedCatalogs.Click += new System.EventHandler(this.ButAssignSoundsFromSelectedCatalogs_Click);
-            // 
-            // butAssignHardcodedSounds
-            // 
-            this.butAssignHardcodedSounds.Checked = false;
-            this.butAssignHardcodedSounds.Location = new System.Drawing.Point(105, 245);
-            this.butAssignHardcodedSounds.Name = "butAssignHardcodedSounds";
-            this.butAssignHardcodedSounds.Size = new System.Drawing.Size(125, 22);
-            this.butAssignHardcodedSounds.TabIndex = 111;
-            this.butAssignHardcodedSounds.Text = "Hardcoded & global";
-            this.butAssignHardcodedSounds.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAssignHardcodedSounds, "Select hardcoded sounds and all sounds from all catalogs which are marked as glob" +
-        "al");
-            this.butAssignHardcodedSounds.Click += new System.EventHandler(this.ButAssignHardcodedSounds_Click);
-            // 
-            // butAutodetectSoundsAndAssign
-            // 
-            this.butAutodetectSoundsAndAssign.BackColor = System.Drawing.Color.DarkGreen;
-            this.butAutodetectSoundsAndAssign.BackColorUseGeneric = false;
-            this.butAutodetectSoundsAndAssign.Checked = false;
-            this.butAutodetectSoundsAndAssign.Image = global::TombEditor.Properties.Resources.actions_light_on_16;
-            this.butAutodetectSoundsAndAssign.Location = new System.Drawing.Point(6, 245);
-            this.butAutodetectSoundsAndAssign.Name = "butAutodetectSoundsAndAssign";
-            this.butAutodetectSoundsAndAssign.Size = new System.Drawing.Size(93, 22);
-            this.butAutodetectSoundsAndAssign.TabIndex = 110;
-            this.butAutodetectSoundsAndAssign.Text = "Autodetect";
-            this.butAutodetectSoundsAndAssign.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.pathToolTip.SetToolTip(this.butAutodetectSoundsAndAssign, "Find and select all sounds used in a level.\r\nThis includes hardcoded and global s" +
-        "ounds, sounds used in animations, sound sources and flipeffect sounds.\r\nScripted" +
-        " sounds are not included.");
-            this.butAutodetectSoundsAndAssign.Click += new System.EventHandler(this.ButAutodetectSoundsAndAssign_Click);
-            // 
-            // butDeselectAllSounds
-            // 
-            this.butDeselectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDeselectAllSounds.Checked = false;
-            this.butDeselectAllSounds.Location = new System.Drawing.Point(695, 245);
-            this.butDeselectAllSounds.Name = "butDeselectAllSounds";
-            this.butDeselectAllSounds.Size = new System.Drawing.Size(80, 22);
-            this.butDeselectAllSounds.TabIndex = 108;
-            this.butDeselectAllSounds.Text = "Deselect all";
-            this.pathToolTip.SetToolTip(this.butDeselectAllSounds, "Deselect all sounds");
-            this.butDeselectAllSounds.Click += new System.EventHandler(this.butDeselectAllSounds_Click);
-            // 
-            // butSelectAllSounds
-            // 
-            this.butSelectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSelectAllSounds.Checked = false;
-            this.butSelectAllSounds.Location = new System.Drawing.Point(609, 245);
-            this.butSelectAllSounds.Name = "butSelectAllSounds";
-            this.butSelectAllSounds.Size = new System.Drawing.Size(80, 22);
-            this.butSelectAllSounds.TabIndex = 107;
-            this.butSelectAllSounds.Text = "Select all";
-            this.pathToolTip.SetToolTip(this.butSelectAllSounds, "Select all available sounds");
-            this.butSelectAllSounds.Click += new System.EventHandler(this.butSelectAllSounds_Click);
-            // 
-            // cbRemapAnimTextures
-            // 
-            this.cbRemapAnimTextures.AutoSize = true;
-            this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 166);
-            this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
-            this.cbRemapAnimTextures.Size = new System.Drawing.Size(396, 17);
-            this.cbRemapAnimTextures.TabIndex = 110;
-            this.cbRemapAnimTextures.Tag = "";
-            this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
-            this.pathToolTip.SetToolTip(this.cbRemapAnimTextures, "Scan all objects for textures which are similar to any animated frame and apply a" +
-        "nimations to them.");
-            this.cbRemapAnimTextures.CheckedChanged += new System.EventHandler(this.cbRemapAnimTextures_CheckedChanged);
-            // 
-            // cbDither16BitTextures
-            // 
-            this.cbDither16BitTextures.AutoSize = true;
-            this.cbDither16BitTextures.Location = new System.Drawing.Point(3, 143);
-            this.cbDither16BitTextures.Name = "cbDither16BitTextures";
-            this.cbDither16BitTextures.Size = new System.Drawing.Size(135, 17);
-            this.cbDither16BitTextures.TabIndex = 109;
-            this.cbDither16BitTextures.Tag = "";
-            this.cbDither16BitTextures.Text = "Dither 16-bit textures";
-            this.pathToolTip.SetToolTip(this.cbDither16BitTextures, "Apply dithering and premultiply alpha channel to brightness for 16-bit textures.");
-            this.cbDither16BitTextures.CheckedChanged += new System.EventHandler(this.cbDither16BitTextures_CheckedChanged);
-            // 
-            // cbOverrideAllLightQuality
-            // 
-            this.cbOverrideAllLightQuality.AutoSize = true;
-            this.cbOverrideAllLightQuality.Location = new System.Drawing.Point(216, 42);
-            this.cbOverrideAllLightQuality.Name = "cbOverrideAllLightQuality";
-            this.cbOverrideAllLightQuality.Size = new System.Drawing.Size(168, 17);
-            this.cbOverrideAllLightQuality.TabIndex = 108;
-            this.cbOverrideAllLightQuality.Tag = "";
-            this.cbOverrideAllLightQuality.Text = "Override individual settings";
-            this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
-            this.cbOverrideAllLightQuality.Visible = false;
-            this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
-            // 
-            // cmbDefaultLightQuality
-            // 
-            this.cmbDefaultLightQuality.FormattingEnabled = true;
-            this.cmbDefaultLightQuality.Items.AddRange(new object[] {
-            "Low",
-            "Medium",
-            "High"});
-            this.cmbDefaultLightQuality.Location = new System.Drawing.Point(129, 40);
-            this.cmbDefaultLightQuality.Name = "cmbDefaultLightQuality";
-            this.cmbDefaultLightQuality.Size = new System.Drawing.Size(81, 23);
-            this.cmbDefaultLightQuality.TabIndex = 107;
-            this.pathToolTip.SetToolTip(this.cmbDefaultLightQuality, "Raytracing quality for all lights with \'Default\' light quality setting");
-            this.cmbDefaultLightQuality.SelectedIndexChanged += new System.EventHandler(this.cmbDefaultLightQuality_SelectedIndexChanged);
-            // 
-            // cbAgressiveFloordataPacking
-            // 
-            this.cbAgressiveFloordataPacking.AutoSize = true;
-            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 120);
-            this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
-            this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(176, 17);
-            this.cbAgressiveFloordataPacking.TabIndex = 105;
-            this.cbAgressiveFloordataPacking.Tag = "";
-            this.cbAgressiveFloordataPacking.Text = "Aggressive floordata packing";
-            this.pathToolTip.SetToolTip(this.cbAgressiveFloordataPacking, "Scan and merge similar floordata sequences.\r\nRecommended mode for TR1-3 targets.");
-            this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
-            // 
-            // cbAgressiveTexturePacking
-            // 
-            this.cbAgressiveTexturePacking.AutoSize = true;
-            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 97);
-            this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
-            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(337, 17);
-            this.cbAgressiveTexturePacking.TabIndex = 104;
-            this.cbAgressiveTexturePacking.Tag = "";
-            this.cbAgressiveTexturePacking.Text = "Aggressive texture packing (merge object and room textures)";
-            this.pathToolTip.SetToolTip(this.cbAgressiveTexturePacking, "Pack both object and room textures in same texture pages.\r\nRecommended mode for T" +
-        "R1-3 targets.");
-            this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
-            // 
-            // numPadding
-            // 
-            this.numPadding.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.numPadding.Location = new System.Drawing.Point(129, 69);
-            this.numPadding.LoopValues = false;
-            this.numPadding.Name = "numPadding";
-            this.numPadding.Size = new System.Drawing.Size(81, 22);
-            this.numPadding.TabIndex = 102;
-            this.pathToolTip.SetToolTip(this.numPadding, "Edge pixel padding to prevent texture border bleeding.\r\nIf set to 0, seams betwee" +
-        "n textures may become visible.");
-            this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
-            // 
-            // cbRearrangeRooms
-            // 
-            this.cbRearrangeRooms.AutoSize = true;
-            this.cbRearrangeRooms.Location = new System.Drawing.Point(3, 189);
-            this.cbRearrangeRooms.Name = "cbRearrangeRooms";
-            this.cbRearrangeRooms.Size = new System.Drawing.Size(280, 17);
-            this.cbRearrangeRooms.TabIndex = 111;
-            this.cbRearrangeRooms.Tag = "";
-            this.cbRearrangeRooms.Text = "Rearrange vertically connected rooms if necessary";
-            this.pathToolTip.SetToolTip(this.cbRearrangeRooms, "Prioritize vertically connected rooms during compilation.\r\nAllows to safely make " +
-        "more rooms until overall amount of vertically connected ones won\'t hit absolute " +
-        "limit.");
-            this.cbRearrangeRooms.CheckedChanged += new System.EventHandler(this.cbRearrangeRooms_CheckedChanged);
-            // 
-            // cbRemoveObjects
-            // 
-            this.cbRemoveObjects.AutoSize = true;
-            this.cbRemoveObjects.Location = new System.Drawing.Point(3, 212);
-            this.cbRemoveObjects.Name = "cbRemoveObjects";
-            this.cbRemoveObjects.Size = new System.Drawing.Size(251, 17);
-            this.cbRemoveObjects.TabIndex = 112;
-            this.cbRemoveObjects.Tag = "";
-            this.cbRemoveObjects.Text = "Remove unused objects from compiled level";
-            this.pathToolTip.SetToolTip(this.cbRemoveObjects, "Removes moveables and statics that are in the WADs, but not placed in the level.\r" +
-        "\nUse with caution in the case of dynamic object creation with scripts!");
-            this.cbRemoveObjects.CheckedChanged += new System.EventHandler(this.cbRemoveObjects_CheckedChanged);
-            // 
-            // GameEnableExtraReverbPresetsCheckBox
-            // 
-            this.GameEnableExtraReverbPresetsCheckBox.AutoSize = true;
-            this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 76);
-            this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
-            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(156, 17);
-            this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
-            this.GameEnableExtraReverbPresetsCheckBox.Text = "Show FLEP reverb presets";
-            this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
-            this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
-            // 
-            // GameEnableExtraBlendingModesCheckBox
-            // 
-            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
-            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
-            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
-            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(170, 17);
-            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
-            this.GameEnableExtraBlendingModesCheckBox.Text = "Show extra blending modes";
-            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch\r\nor" +
-        " should be available by default in Tomb Engine.");
-            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
             // 
             // optionsList
             // 
@@ -565,6 +319,42 @@
             this.darkSectionPanel1.Size = new System.Drawing.Size(788, 533);
             this.darkSectionPanel1.TabIndex = 7;
             // 
+            // colSoundsId
+            // 
+            this.colSoundsId.HeaderText = "ID";
+            this.colSoundsId.Name = "colSoundsId";
+            this.colSoundsId.ReadOnly = true;
+            this.colSoundsId.Width = 40;
+            // 
+            // colSoundsName
+            // 
+            this.colSoundsName.HeaderText = "Name";
+            this.colSoundsName.Name = "colSoundsName";
+            this.colSoundsName.Width = 200;
+            // 
+            // SelectedSoundsCatalogColumn
+            // 
+            this.SelectedSoundsCatalogColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.SelectedSoundsCatalogColumn.HeaderText = "From catalog";
+            this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
+            this.SelectedSoundsCatalogColumn.ReadOnly = true;
+            // 
+            // SelectedSoundsGameColumn
+            // 
+            this.SelectedSoundsGameColumn.HeaderText = "Range";
+            this.SelectedSoundsGameColumn.Name = "SelectedSoundsGameColumn";
+            this.SelectedSoundsGameColumn.ReadOnly = true;
+            this.SelectedSoundsGameColumn.ToolTipText = "Range name of TRNG extended soundmap";
+            this.SelectedSoundsGameColumn.Width = 80;
+            // 
+            // SelectedSoundsOriginalIdColumn
+            // 
+            this.SelectedSoundsOriginalIdColumn.HeaderText = "Orig. ID";
+            this.SelectedSoundsOriginalIdColumn.Name = "SelectedSoundsOriginalIdColumn";
+            this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
+            this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
+            this.SelectedSoundsOriginalIdColumn.Width = 80;
+            // 
             // tabbedContainer
             // 
             this.tabbedContainer.Controls.Add(this.tabGame);
@@ -614,6 +404,31 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(772, 349);
             this.panel3.TabIndex = 3;
+            // 
+            // GameEnableExtraReverbPresetsCheckBox
+            // 
+            this.GameEnableExtraReverbPresetsCheckBox.AutoSize = true;
+            this.GameEnableExtraReverbPresetsCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableExtraReverbPresetsCheckBox.Location = new System.Drawing.Point(19, 76);
+            this.GameEnableExtraReverbPresetsCheckBox.Name = "GameEnableExtraReverbPresetsCheckBox";
+            this.GameEnableExtraReverbPresetsCheckBox.Size = new System.Drawing.Size(156, 17);
+            this.GameEnableExtraReverbPresetsCheckBox.TabIndex = 7;
+            this.GameEnableExtraReverbPresetsCheckBox.Text = "Show FLEP reverb presets";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraReverbPresetsCheckBox, "Adds extra reverb presets to UI which are enabled by corresponding FLEP patch.\r\n");
+            this.GameEnableExtraReverbPresetsCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraReverbPresetsCheckBox_CheckedChanged);
+            // 
+            // GameEnableExtraBlendingModesCheckBox
+            // 
+            this.GameEnableExtraBlendingModesCheckBox.AutoSize = true;
+            this.GameEnableExtraBlendingModesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.GameEnableExtraBlendingModesCheckBox.Location = new System.Drawing.Point(19, 53);
+            this.GameEnableExtraBlendingModesCheckBox.Name = "GameEnableExtraBlendingModesCheckBox";
+            this.GameEnableExtraBlendingModesCheckBox.Size = new System.Drawing.Size(170, 17);
+            this.GameEnableExtraBlendingModesCheckBox.TabIndex = 6;
+            this.GameEnableExtraBlendingModesCheckBox.Text = "Show extra blending modes";
+            this.pathToolTip.SetToolTip(this.GameEnableExtraBlendingModesCheckBox, "Adds extra blending modes to UI which are enabled by corresponding FLEP patch\r\nor" +
+        " should be available by default in Tomb Engine.");
+            this.GameEnableExtraBlendingModesCheckBox.CheckedChanged += new System.EventHandler(this.GameEnableExtraBlendingModesCheckBox_CheckedChanged);
             // 
             // lblGameEnableQuickStartFeature2
             // 
@@ -1506,6 +1321,30 @@
             this.cbAutodetectIfNoneSelected.Text = "Autodetect sounds on compilation if none selected";
             this.cbAutodetectIfNoneSelected.CheckedChanged += new System.EventHandler(this.cbAutodetectIfNoneSelected_CheckedChanged);
             // 
+            // butAssignFromWads
+            // 
+            this.butAssignFromWads.Checked = false;
+            this.butAssignFromWads.Location = new System.Drawing.Point(495, 245);
+            this.butAssignFromWads.Name = "butAssignFromWads";
+            this.butAssignFromWads.Size = new System.Drawing.Size(72, 22);
+            this.butAssignFromWads.TabIndex = 115;
+            this.butAssignFromWads.Text = "From wads";
+            this.butAssignFromWads.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignFromWads, "Select sounds from wads");
+            this.butAssignFromWads.Click += new System.EventHandler(this.butAssignFromWads_Click);
+            // 
+            // butRemoveMissing
+            // 
+            this.butRemoveMissing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRemoveMissing.Checked = false;
+            this.butRemoveMissing.Location = new System.Drawing.Point(684, 480);
+            this.butRemoveMissing.Name = "butRemoveMissing";
+            this.butRemoveMissing.Size = new System.Drawing.Size(91, 22);
+            this.butRemoveMissing.TabIndex = 114;
+            this.butRemoveMissing.Text = "Clear missing";
+            this.pathToolTip.SetToolTip(this.butRemoveMissing, "Hide sounds which aren\'t present in any of the catalogs");
+            this.butRemoveMissing.Click += new System.EventHandler(this.butRemoveMissing_Click);
+            // 
             // darkLabel20
             // 
             this.darkLabel20.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1539,6 +1378,18 @@
             this.butSearchSounds.TabIndex = 109;
             this.butSearchSounds.Click += new System.EventHandler(this.butFilterSounds_Click);
             // 
+            // butAssignFromSoundSources
+            // 
+            this.butAssignFromSoundSources.Checked = false;
+            this.butAssignFromSoundSources.Location = new System.Drawing.Point(373, 245);
+            this.butAssignFromSoundSources.Name = "butAssignFromSoundSources";
+            this.butAssignFromSoundSources.Size = new System.Drawing.Size(116, 22);
+            this.butAssignFromSoundSources.TabIndex = 113;
+            this.butAssignFromSoundSources.Text = "From sound sources";
+            this.butAssignFromSoundSources.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignFromSoundSources, "Select sounds from sound sources placed in level");
+            this.butAssignFromSoundSources.Click += new System.EventHandler(this.ButAssignFromSoundSources_Click);
+            // 
             // tbFilterSounds
             // 
             this.tbFilterSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1547,6 +1398,72 @@
             this.tbFilterSounds.Size = new System.Drawing.Size(198, 22);
             this.tbFilterSounds.TabIndex = 100;
             this.tbFilterSounds.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbFilterSounds_KeyDown);
+            // 
+            // butAssignSoundsFromSelectedCatalogs
+            // 
+            this.butAssignSoundsFromSelectedCatalogs.Checked = false;
+            this.butAssignSoundsFromSelectedCatalogs.Location = new System.Drawing.Point(236, 245);
+            this.butAssignSoundsFromSelectedCatalogs.Name = "butAssignSoundsFromSelectedCatalogs";
+            this.butAssignSoundsFromSelectedCatalogs.Size = new System.Drawing.Size(131, 22);
+            this.butAssignSoundsFromSelectedCatalogs.TabIndex = 112;
+            this.butAssignSoundsFromSelectedCatalogs.Text = "From selected catalogs";
+            this.butAssignSoundsFromSelectedCatalogs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignSoundsFromSelectedCatalogs, "Select sounds from selected catalogs");
+            this.butAssignSoundsFromSelectedCatalogs.Click += new System.EventHandler(this.ButAssignSoundsFromSelectedCatalogs_Click);
+            // 
+            // butAssignHardcodedSounds
+            // 
+            this.butAssignHardcodedSounds.Checked = false;
+            this.butAssignHardcodedSounds.Location = new System.Drawing.Point(105, 245);
+            this.butAssignHardcodedSounds.Name = "butAssignHardcodedSounds";
+            this.butAssignHardcodedSounds.Size = new System.Drawing.Size(125, 22);
+            this.butAssignHardcodedSounds.TabIndex = 111;
+            this.butAssignHardcodedSounds.Text = "Hardcoded & global";
+            this.butAssignHardcodedSounds.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAssignHardcodedSounds, "Select hardcoded sounds and all sounds from all catalogs which are marked as glob" +
+        "al");
+            this.butAssignHardcodedSounds.Click += new System.EventHandler(this.ButAssignHardcodedSounds_Click);
+            // 
+            // butAutodetectSoundsAndAssign
+            // 
+            this.butAutodetectSoundsAndAssign.BackColor = System.Drawing.Color.DarkGreen;
+            this.butAutodetectSoundsAndAssign.BackColorUseGeneric = false;
+            this.butAutodetectSoundsAndAssign.Checked = false;
+            this.butAutodetectSoundsAndAssign.Image = global::TombEditor.Properties.Resources.actions_light_on_16;
+            this.butAutodetectSoundsAndAssign.Location = new System.Drawing.Point(6, 245);
+            this.butAutodetectSoundsAndAssign.Name = "butAutodetectSoundsAndAssign";
+            this.butAutodetectSoundsAndAssign.Size = new System.Drawing.Size(93, 22);
+            this.butAutodetectSoundsAndAssign.TabIndex = 110;
+            this.butAutodetectSoundsAndAssign.Text = "Autodetect";
+            this.butAutodetectSoundsAndAssign.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.pathToolTip.SetToolTip(this.butAutodetectSoundsAndAssign, "Find and select all sounds used in a level.\r\nThis includes hardcoded and global s" +
+        "ounds, sounds used in animations, sound sources and flipeffect sounds.\r\nScripted" +
+        " sounds are not included.");
+            this.butAutodetectSoundsAndAssign.Click += new System.EventHandler(this.ButAutodetectSoundsAndAssign_Click);
+            // 
+            // butDeselectAllSounds
+            // 
+            this.butDeselectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDeselectAllSounds.Checked = false;
+            this.butDeselectAllSounds.Location = new System.Drawing.Point(695, 245);
+            this.butDeselectAllSounds.Name = "butDeselectAllSounds";
+            this.butDeselectAllSounds.Size = new System.Drawing.Size(80, 22);
+            this.butDeselectAllSounds.TabIndex = 108;
+            this.butDeselectAllSounds.Text = "Deselect all";
+            this.pathToolTip.SetToolTip(this.butDeselectAllSounds, "Deselect all sounds");
+            this.butDeselectAllSounds.Click += new System.EventHandler(this.butDeselectAllSounds_Click);
+            // 
+            // butSelectAllSounds
+            // 
+            this.butSelectAllSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSelectAllSounds.Checked = false;
+            this.butSelectAllSounds.Location = new System.Drawing.Point(609, 245);
+            this.butSelectAllSounds.Name = "butSelectAllSounds";
+            this.butSelectAllSounds.Size = new System.Drawing.Size(80, 22);
+            this.butSelectAllSounds.TabIndex = 107;
+            this.butSelectAllSounds.Text = "Select all";
+            this.pathToolTip.SetToolTip(this.butSelectAllSounds, "Select all available sounds");
+            this.butSelectAllSounds.Click += new System.EventHandler(this.butSelectAllSounds_Click);
             // 
             // lblCatalogsPrompt
             // 
@@ -1843,7 +1760,7 @@
             this.tabMisc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabMisc.Controls.Add(this.panelLuaPath);
             this.tabMisc.Controls.Add(this.panelTr5Weather);
-            this.tabMisc.Controls.Add(this.panelTr5LaraType);
+            this.tabMisc.Controls.Add(this.cbSampleRate);
             this.tabMisc.Controls.Add(this.panelScripts);
             this.tabMisc.Controls.Add(this.panel6);
             this.tabMisc.Controls.Add(this.panel12);
@@ -1924,15 +1841,15 @@
             this.lblTr5Weather.TabIndex = 3;
             this.lblTr5Weather.Text = "TR5 weather:";
             // 
-            // panelTr5LaraType
+            // cbSampleRate
             // 
-            this.panelTr5LaraType.Controls.Add(this.comboLaraType);
-            this.panelTr5LaraType.Controls.Add(this.lblLaraType);
-            this.panelTr5LaraType.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTr5LaraType.Location = new System.Drawing.Point(0, 361);
-            this.panelTr5LaraType.Name = "panelTr5LaraType";
-            this.panelTr5LaraType.Size = new System.Drawing.Size(778, 51);
-            this.panelTr5LaraType.TabIndex = 96;
+            this.cbSampleRate.Controls.Add(this.comboLaraType);
+            this.cbSampleRate.Controls.Add(this.lblLaraType);
+            this.cbSampleRate.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSampleRate.Location = new System.Drawing.Point(0, 361);
+            this.cbSampleRate.Name = "cbSampleRate";
+            this.cbSampleRate.Size = new System.Drawing.Size(778, 51);
+            this.cbSampleRate.TabIndex = 96;
             // 
             // comboLaraType
             // 
@@ -2037,6 +1954,7 @@
             // 
             // panel12
             // 
+            this.panel12.Controls.Add(this.cmbSampleRate);
             this.panel12.Controls.Add(this.cbKeepSampleRate);
             this.panel12.Controls.Add(this.cbRemoveObjects);
             this.panel12.Controls.Add(this.cbRearrangeRooms);
@@ -2058,6 +1976,112 @@
             this.panel12.Size = new System.Drawing.Size(778, 259);
             this.panel12.TabIndex = 91;
             // 
+            // cmbSampleRate
+            // 
+            this.cmbSampleRate.FormattingEnabled = true;
+            this.cmbSampleRate.Items.AddRange(new object[] {
+            "11025",
+            "22050",
+            "44100",
+            "48000"});
+            this.cmbSampleRate.Location = new System.Drawing.Point(215, 233);
+            this.cmbSampleRate.Name = "cmbSampleRate";
+            this.cmbSampleRate.Size = new System.Drawing.Size(81, 23);
+            this.cmbSampleRate.TabIndex = 115;
+            this.cmbSampleRate.SelectedIndexChanged += new System.EventHandler(this.cmbSampleRate_SelectedIndexChanged);
+            // 
+            // cbKeepSampleRate
+            // 
+            this.cbKeepSampleRate.AutoSize = true;
+            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 235);
+            this.cbKeepSampleRate.Name = "cbKeepSampleRate";
+            this.cbKeepSampleRate.Size = new System.Drawing.Size(209, 17);
+            this.cbKeepSampleRate.TabIndex = 114;
+            this.cbKeepSampleRate.Tag = "";
+            this.cbKeepSampleRate.Text = "Use custom sample rate for sounds:";
+            this.pathToolTip.SetToolTip(this.cbKeepSampleRate, "Override original game sample rate with custom one.\r\nMay be necessary if level bu" +
+        "ilder uses samples with custom sample rate.");
+            this.cbKeepSampleRate.CheckedChanged += new System.EventHandler(this.cbKeepSampleRate_CheckedChanged);
+            // 
+            // cbRemoveObjects
+            // 
+            this.cbRemoveObjects.AutoSize = true;
+            this.cbRemoveObjects.Location = new System.Drawing.Point(3, 212);
+            this.cbRemoveObjects.Name = "cbRemoveObjects";
+            this.cbRemoveObjects.Size = new System.Drawing.Size(251, 17);
+            this.cbRemoveObjects.TabIndex = 112;
+            this.cbRemoveObjects.Tag = "";
+            this.cbRemoveObjects.Text = "Remove unused objects from compiled level";
+            this.pathToolTip.SetToolTip(this.cbRemoveObjects, "Removes moveables and statics that are in the WADs, but not placed in the level.\r" +
+        "\nUse with caution in the case of dynamic object creation with scripts!");
+            this.cbRemoveObjects.CheckedChanged += new System.EventHandler(this.cbRemoveObjects_CheckedChanged);
+            // 
+            // cbRearrangeRooms
+            // 
+            this.cbRearrangeRooms.AutoSize = true;
+            this.cbRearrangeRooms.Location = new System.Drawing.Point(3, 189);
+            this.cbRearrangeRooms.Name = "cbRearrangeRooms";
+            this.cbRearrangeRooms.Size = new System.Drawing.Size(280, 17);
+            this.cbRearrangeRooms.TabIndex = 111;
+            this.cbRearrangeRooms.Tag = "";
+            this.cbRearrangeRooms.Text = "Rearrange vertically connected rooms if necessary";
+            this.pathToolTip.SetToolTip(this.cbRearrangeRooms, "Prioritize vertically connected rooms during compilation.\r\nAllows to safely make " +
+        "more rooms until overall amount of vertically connected ones won\'t hit absolute " +
+        "limit.");
+            this.cbRearrangeRooms.CheckedChanged += new System.EventHandler(this.cbRearrangeRooms_CheckedChanged);
+            // 
+            // cbRemapAnimTextures
+            // 
+            this.cbRemapAnimTextures.AutoSize = true;
+            this.cbRemapAnimTextures.Location = new System.Drawing.Point(3, 166);
+            this.cbRemapAnimTextures.Name = "cbRemapAnimTextures";
+            this.cbRemapAnimTextures.Size = new System.Drawing.Size(396, 17);
+            this.cbRemapAnimTextures.TabIndex = 110;
+            this.cbRemapAnimTextures.Tag = "";
+            this.cbRemapAnimTextures.Text = "Map animated textures to imported geometry, objects and static meshes";
+            this.pathToolTip.SetToolTip(this.cbRemapAnimTextures, "Scan all objects for textures which are similar to any animated frame and apply a" +
+        "nimations to them.");
+            this.cbRemapAnimTextures.CheckedChanged += new System.EventHandler(this.cbRemapAnimTextures_CheckedChanged);
+            // 
+            // cbDither16BitTextures
+            // 
+            this.cbDither16BitTextures.AutoSize = true;
+            this.cbDither16BitTextures.Location = new System.Drawing.Point(3, 143);
+            this.cbDither16BitTextures.Name = "cbDither16BitTextures";
+            this.cbDither16BitTextures.Size = new System.Drawing.Size(135, 17);
+            this.cbDither16BitTextures.TabIndex = 109;
+            this.cbDither16BitTextures.Tag = "";
+            this.cbDither16BitTextures.Text = "Dither 16-bit textures";
+            this.pathToolTip.SetToolTip(this.cbDither16BitTextures, "Apply dithering and premultiply alpha channel to brightness for 16-bit textures.");
+            this.cbDither16BitTextures.CheckedChanged += new System.EventHandler(this.cbDither16BitTextures_CheckedChanged);
+            // 
+            // cbOverrideAllLightQuality
+            // 
+            this.cbOverrideAllLightQuality.AutoSize = true;
+            this.cbOverrideAllLightQuality.Location = new System.Drawing.Point(216, 42);
+            this.cbOverrideAllLightQuality.Name = "cbOverrideAllLightQuality";
+            this.cbOverrideAllLightQuality.Size = new System.Drawing.Size(168, 17);
+            this.cbOverrideAllLightQuality.TabIndex = 108;
+            this.cbOverrideAllLightQuality.Tag = "";
+            this.cbOverrideAllLightQuality.Text = "Override individual settings";
+            this.pathToolTip.SetToolTip(this.cbOverrideAllLightQuality, "Override raytracing quality for all lights with specified one");
+            this.cbOverrideAllLightQuality.Visible = false;
+            this.cbOverrideAllLightQuality.CheckedChanged += new System.EventHandler(this.cbOverrideAllLightQuality_CheckedChanged);
+            // 
+            // cmbDefaultLightQuality
+            // 
+            this.cmbDefaultLightQuality.FormattingEnabled = true;
+            this.cmbDefaultLightQuality.Items.AddRange(new object[] {
+            "Low",
+            "Medium",
+            "High"});
+            this.cmbDefaultLightQuality.Location = new System.Drawing.Point(129, 40);
+            this.cmbDefaultLightQuality.Name = "cmbDefaultLightQuality";
+            this.cmbDefaultLightQuality.Size = new System.Drawing.Size(81, 23);
+            this.cmbDefaultLightQuality.TabIndex = 107;
+            this.pathToolTip.SetToolTip(this.cmbDefaultLightQuality, "Raytracing quality for all lights with \'Default\' light quality setting");
+            this.cmbDefaultLightQuality.SelectedIndexChanged += new System.EventHandler(this.cmbDefaultLightQuality_SelectedIndexChanged);
+            // 
             // darkLabel22
             // 
             this.darkLabel22.AutoSize = true;
@@ -2068,6 +2092,31 @@
             this.darkLabel22.Size = new System.Drawing.Size(113, 13);
             this.darkLabel22.TabIndex = 106;
             this.darkLabel22.Text = "Default light quality:";
+            // 
+            // cbAgressiveFloordataPacking
+            // 
+            this.cbAgressiveFloordataPacking.AutoSize = true;
+            this.cbAgressiveFloordataPacking.Location = new System.Drawing.Point(3, 120);
+            this.cbAgressiveFloordataPacking.Name = "cbAgressiveFloordataPacking";
+            this.cbAgressiveFloordataPacking.Size = new System.Drawing.Size(176, 17);
+            this.cbAgressiveFloordataPacking.TabIndex = 105;
+            this.cbAgressiveFloordataPacking.Tag = "";
+            this.cbAgressiveFloordataPacking.Text = "Aggressive floordata packing";
+            this.pathToolTip.SetToolTip(this.cbAgressiveFloordataPacking, "Scan and merge similar floordata sequences.\r\nRecommended mode for TR1-3 targets.");
+            this.cbAgressiveFloordataPacking.CheckedChanged += new System.EventHandler(this.cbAgressiveFloordataPacking_CheckedChanged);
+            // 
+            // cbAgressiveTexturePacking
+            // 
+            this.cbAgressiveTexturePacking.AutoSize = true;
+            this.cbAgressiveTexturePacking.Location = new System.Drawing.Point(3, 97);
+            this.cbAgressiveTexturePacking.Name = "cbAgressiveTexturePacking";
+            this.cbAgressiveTexturePacking.Size = new System.Drawing.Size(337, 17);
+            this.cbAgressiveTexturePacking.TabIndex = 104;
+            this.cbAgressiveTexturePacking.Tag = "";
+            this.cbAgressiveTexturePacking.Text = "Aggressive texture packing (merge object and room textures)";
+            this.pathToolTip.SetToolTip(this.cbAgressiveTexturePacking, "Pack both object and room textures in same texture pages.\r\nRecommended mode for T" +
+        "R1-3 targets.");
+            this.cbAgressiveTexturePacking.CheckedChanged += new System.EventHandler(this.cbAgressiveTexturePacking_CheckedChanged);
             // 
             // darkLabel13
             // 
@@ -2088,6 +2137,22 @@
             this.darkLabel16.Size = new System.Drawing.Size(120, 13);
             this.darkLabel16.TabIndex = 90;
             this.darkLabel16.Text = "Default ambient light:";
+            // 
+            // numPadding
+            // 
+            this.numPadding.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.numPadding.Location = new System.Drawing.Point(129, 69);
+            this.numPadding.LoopValues = false;
+            this.numPadding.Name = "numPadding";
+            this.numPadding.Size = new System.Drawing.Size(81, 22);
+            this.numPadding.TabIndex = 102;
+            this.pathToolTip.SetToolTip(this.numPadding, "Edge pixel padding to prevent texture border bleeding.\r\nIf set to 0, seams betwee" +
+        "n textures may become visible.");
+            this.numPadding.ValueChanged += new System.EventHandler(this.numPadding_ValueChanged);
             // 
             // panelRoomAmbientLight
             // 
@@ -2168,55 +2233,6 @@
             this.pathVariablesDataGridViewValueColumn.Name = "pathVariablesDataGridViewValueColumn";
             this.pathVariablesDataGridViewValueColumn.ReadOnly = true;
             // 
-            // colSoundsId
-            // 
-            this.colSoundsId.HeaderText = "ID";
-            this.colSoundsId.Name = "colSoundsId";
-            this.colSoundsId.ReadOnly = true;
-            this.colSoundsId.Width = 40;
-            // 
-            // colSoundsName
-            // 
-            this.colSoundsName.HeaderText = "Name";
-            this.colSoundsName.Name = "colSoundsName";
-            this.colSoundsName.Width = 200;
-            // 
-            // SelectedSoundsCatalogColumn
-            // 
-            this.SelectedSoundsCatalogColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.SelectedSoundsCatalogColumn.HeaderText = "From catalog";
-            this.SelectedSoundsCatalogColumn.Name = "SelectedSoundsCatalogColumn";
-            this.SelectedSoundsCatalogColumn.ReadOnly = true;
-            // 
-            // SelectedSoundsGameColumn
-            // 
-            this.SelectedSoundsGameColumn.HeaderText = "Range";
-            this.SelectedSoundsGameColumn.Name = "SelectedSoundsGameColumn";
-            this.SelectedSoundsGameColumn.ReadOnly = true;
-            this.SelectedSoundsGameColumn.ToolTipText = "Range name of TRNG extended soundmap";
-            this.SelectedSoundsGameColumn.Width = 80;
-            // 
-            // SelectedSoundsOriginalIdColumn
-            // 
-            this.SelectedSoundsOriginalIdColumn.HeaderText = "Orig. ID";
-            this.SelectedSoundsOriginalIdColumn.Name = "SelectedSoundsOriginalIdColumn";
-            this.SelectedSoundsOriginalIdColumn.ReadOnly = true;
-            this.SelectedSoundsOriginalIdColumn.ToolTipText = "Original sound ID derived from TRNG extended soundmap";
-            this.SelectedSoundsOriginalIdColumn.Width = 80;
-            // 
-            // cbKeepSampleRate
-            // 
-            this.cbKeepSampleRate.AutoSize = true;
-            this.cbKeepSampleRate.Location = new System.Drawing.Point(3, 235);
-            this.cbKeepSampleRate.Name = "cbKeepSampleRate";
-            this.cbKeepSampleRate.Size = new System.Drawing.Size(215, 17);
-            this.cbKeepSampleRate.TabIndex = 114;
-            this.cbKeepSampleRate.Tag = "";
-            this.cbKeepSampleRate.Text = "Keep original sample rate for sounds";
-            this.pathToolTip.SetToolTip(this.cbKeepSampleRate, "Disable autoresampling of all sounds to recommended engine sample rate.\r\nMay be n" +
-        "ecessary if level builder uses custom sound sample rate.");
-            this.cbKeepSampleRate.CheckedChanged += new System.EventHandler(this.cbKeepSampleRate_CheckedChanged);
-            // 
             // FormLevelSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2236,7 +2252,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Level Settings";
             this.pathVariablesDataGridViewContextMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
             this.darkSectionPanel1.ResumeLayout(false);
             this.tabbedContainer.ResumeLayout(false);
             this.tabGame.ResumeLayout(false);
@@ -2279,13 +2294,14 @@
             this.panelLuaPath.ResumeLayout(false);
             this.panelLuaPath.PerformLayout();
             this.panelTr5Weather.ResumeLayout(false);
-            this.panelTr5LaraType.ResumeLayout(false);
+            this.cbSampleRate.ResumeLayout(false);
             this.panelScripts.ResumeLayout(false);
             this.panelScripts.PerformLayout();
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numPadding)).EndInit();
             this.tabPaths.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pathVariablesDataGridView)).EndInit();
             this.ResumeLayout(false);
@@ -2364,7 +2380,7 @@
         private System.Windows.Forms.Panel panelTr5Weather;
         private DarkUI.Controls.DarkComboBox comboTr5Weather;
         private DarkUI.Controls.DarkLabel lblTr5Weather;
-        private System.Windows.Forms.Panel panelTr5LaraType;
+        private System.Windows.Forms.Panel cbSampleRate;
         private DarkUI.Controls.DarkComboBox comboLaraType;
         private DarkUI.Controls.DarkLabel lblLaraType;
         private System.Windows.Forms.Panel panelScripts;
@@ -2466,5 +2482,6 @@
         private DarkUI.Controls.DarkLabel darkLabel10;
         private DarkUI.Controls.DarkTextBox tbLuaPath;
         private DarkUI.Controls.DarkCheckBox cbKeepSampleRate;
+        private DarkUI.Controls.DarkComboBox cmbSampleRate;
     }
 }

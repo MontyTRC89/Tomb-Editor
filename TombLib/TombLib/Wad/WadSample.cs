@@ -418,8 +418,8 @@ namespace TombLib.Wad
                             if (stream.Read(buffer, 0, buffer.Length) != buffer.Length)
                                 throw new EndOfStreamException();
 
-                            if (settings.KeepSampleRate)
-                                currentSample = new WadSample(samplePath, buffer);
+                            if (settings.EnableCustomSampleRate)
+                                currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, settings.CustomSampleRate, supportedBitness));
                             else
                                 currentSample = new WadSample(samplePath, ConvertSampleFormat(buffer, supportedSampleRate, supportedBitness));
 
