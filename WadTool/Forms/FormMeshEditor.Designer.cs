@@ -491,13 +491,6 @@
             this.cbBlendMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbBlendMode.FormattingEnabled = true;
-            this.cbBlendMode.Items.AddRange(new object[] {
-            "Normal",
-            "Add",
-            "Subtract",
-            "Exclude",
-            "Screen",
-            "Lighten"});
             this.cbBlendMode.Location = new System.Drawing.Point(177, 5);
             this.cbBlendMode.Name = "cbBlendMode";
             this.cbBlendMode.Size = new System.Drawing.Size(105, 23);

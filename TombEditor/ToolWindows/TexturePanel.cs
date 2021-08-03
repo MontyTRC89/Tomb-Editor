@@ -1,6 +1,5 @@
 ﻿using DarkUI.Docking;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,16 +12,6 @@ namespace TombEditor.ToolWindows
 {
     public partial class TexturePanel : DarkToolWindow
     {
-        private static readonly List<string> _blendingModeDescriptions = new List<string>()
-        {
-            "Normal",
-            "Add",
-            "Subtract",
-            "Exclude",
-            "Screen",
-            "Lighten"
-        };
-
         private readonly Editor _editor;
 
         public TexturePanel()
@@ -45,6 +34,8 @@ namespace TombEditor.ToolWindows
             // Populate selection tile size 
             for (int i = 5; i <= 8; i++)
                 cmbTileSize.Items.Add((float)(Math.Pow(2, i)));
+
+            RepopulateBlendingModes();
 
             cmbBlending.SelectedIndex = 0;
             if (cmbTileSize.Items.Contains(_editor.Configuration.TextureMap_TileSelectionSize))
@@ -142,31 +133,13 @@ namespace TombEditor.ToolWindows
             butBumpMaps.Enabled = comboCurrentTexture.SelectedItem != null &&
                 (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 || _editor.Level.IsTombEngine);
 
-            cmbBlending.Enabled = _editor.Level.Settings.GameVersion > TRVersion.Game.TR2;
-
             RepopulateBlendingModes();
         }
 
         private void RepopulateBlendingModes()
         {
             cmbBlending.Items.Clear();
-
-            // For TR4, TRNG and TombEngine we can add all types (if extra blending modes are enabled)
-            if ((_editor.Level.Settings.GameEnableExtraBlendingModes ?? false) &&
-               (_editor.Level.Settings.GameVersion.Legacy() == TRVersion.Game.TR4 ||
-                _editor.Level.IsTombEngine))
-            {
-                _blendingModeDescriptions.ForEach(item => cmbBlending.Items.Add(item));
-            }
-            else
-            {
-                // Type 0 exists everywhere
-                cmbBlending.Items.Add(_blendingModeDescriptions[0]);
-
-                // Additive blending is for TR3-5 only
-                if (_editor.Level.Settings.GameVersion >= TRVersion.Game.TR3)
-                    cmbBlending.Items.Add(_blendingModeDescriptions[1]);
-            }
+            TextureExtensions.BlendModeUserNames(_editor.Level.Settings).ForEach(s => cmbBlending.Items.Add(s));
 
             // Restore current blending mode
             UpdateTextureControls(_editor.SelectedTexture);
@@ -218,7 +191,7 @@ namespace TombEditor.ToolWindows
         {
             butDoubleSide.Checked = texture.DoubleSided;
 
-            int newIndex = texture.BlendMode.ToIndex();
+            int newIndex = texture.BlendMode.ToUserIndex();
             if (newIndex < cmbBlending.Items.Count)
                 cmbBlending.SelectedIndex = newIndex;
             else

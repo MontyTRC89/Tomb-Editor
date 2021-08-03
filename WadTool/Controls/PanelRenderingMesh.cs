@@ -328,12 +328,12 @@ namespace WadTool.Controls
                                     // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
                                     if (_mesh.HasAttributes)
                                     {
-                                        var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 32.0f) / 95.0f;
-                                        var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 32.0f) / 95.0f;
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, glowPower, movePower, 0.5f));
+                                        var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 64.0f) / 128.0f;
+                                        var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 64.0f) / 128.0f;
+                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, glowPower, movePower, 0.7f));
                                     }
                                     else
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.6f));
+                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.8f));
                                     break;
 
                                 case MeshEditingMode.VertexColorsAndNormals:

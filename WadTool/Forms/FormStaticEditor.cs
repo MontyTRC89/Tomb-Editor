@@ -130,6 +130,7 @@ namespace WadTool
                     return;
 
                 _static.Mesh = form.SelectedMesh.Clone();
+                panelRendering.UpdateMesh();
                 panelRendering.Invalidate();
             }
         }

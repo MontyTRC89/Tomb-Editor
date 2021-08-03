@@ -608,5 +608,7 @@ namespace WadTool.Controls
 
             _tool.StaticLightsChanged();
         }
+
+        public void UpdateMesh() => _wadRenderer.Dispose();
     }
 }

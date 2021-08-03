@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
+using TombLib.LevelData;
 
 namespace TombLib.Utils
 {
@@ -81,10 +82,13 @@ namespace TombLib.Utils
 
     public static class TextureExtensions
     {
-        public static BlendMode ToBlendMode(int index)
+         // Helper procedures to convert between blending mode indices available to user
+         // and actual internal enumeration of blending modes.
+
+        public static BlendMode ToBlendMode(int userIndex)
         {
             var result = BlendMode.Normal;
-            switch (index)
+            switch (userIndex)
             {
                 default:
                 case 0: result = BlendMode.Normal; break;
@@ -97,7 +101,7 @@ namespace TombLib.Utils
             return result;
         }
 
-        public static int ToIndex(this BlendMode mode)
+        public static int ToUserIndex(this BlendMode mode)
         {
             var result = 0;
             switch (mode)
@@ -110,6 +114,41 @@ namespace TombLib.Utils
                 case BlendMode.Screen: result = 4; break;
                 case BlendMode.Lighten: result = 5; break;
             }
+            return result;
+        }
+
+        // Helper UI function which gets the names of all available blending modes
+        // according to selected game version.
+
+        public static List<string> BlendModeUserNames(TRVersion.Game version) =>
+            BlendModeUserNames(new LevelSettings() { GameVersion = version, GameEnableExtraBlendingModes = true });
+
+        public static List<string> BlendModeUserNames(LevelSettings settings)
+        {
+            int blendCount;
+
+            // For TR4, TRNG and TombEngine we can add all types (if extra blending modes are enabled)
+            if (((settings.GameEnableExtraBlendingModes ?? false) && settings.GameVersion.Legacy() == TRVersion.Game.TR4) ||
+                 settings.GameVersion == TRVersion.Game.TombEngine)
+            {
+                blendCount = 6;
+            }
+            else
+            {
+                // Additive blending is for TR3-5 only
+                if (settings.GameVersion >= TRVersion.Game.TR3)
+                    blendCount = 2;
+                else
+                    blendCount = 1; // Type 0 exists everywhere
+            }
+
+            var result = new List<string>();
+            for (int i = 0; i < blendCount; i++)
+            {
+                var name = ToBlendMode(i).ToString();
+                result.Add(name);
+            }
+
             return result;
         }
 

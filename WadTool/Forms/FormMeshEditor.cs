@@ -59,6 +59,10 @@ namespace WadTool
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
 
+            // Populate blending modes
+            cbBlendMode.Items.Clear();
+            TextureExtensions.BlendModeUserNames(_tool.DestinationWad.GameVersion).ForEach(s => cbBlendMode.Items.Add(s));
+
             Size = MinimumSize; // Counteract DarkTabbedContainer designer UI
             tabsModes.LinkedControl = cbEditingMode;
 
@@ -205,7 +209,8 @@ namespace WadTool
                                     nudShineStrength.Value = (decimal)poly.ShineStrength;
                                 else
                                 {
-                                    cbBlendMode.SelectedIndex = poly.Texture.BlendMode.ToIndex();
+                                    var bmIndex = poly.Texture.BlendMode.ToUserIndex();
+                                    if (bmIndex < cbBlendMode.Items.Count) cbBlendMode.SelectedIndex = bmIndex;
                                     butDoubleSide.Checked = poly.Texture.DoubleSided;
                                 }
                             }

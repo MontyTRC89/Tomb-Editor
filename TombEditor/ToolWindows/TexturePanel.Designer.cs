@@ -141,13 +141,6 @@ namespace TombEditor.ToolWindows
             // 
             this.cmbBlending.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cmbBlending.FormattingEnabled = true;
-            this.cmbBlending.Items.AddRange(new object[] {
-            "Normal",
-            "Add",
-            "Subtract",
-            "Exclude",
-            "Screen",
-            "Lighten"});
             this.cmbBlending.Location = new System.Drawing.Point(31, 3);
             this.cmbBlending.Name = "cmbBlending";
             this.cmbBlending.Size = new System.Drawing.Size(110, 23);
