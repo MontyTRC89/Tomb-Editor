@@ -841,7 +841,7 @@ namespace WadTool
 
         private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            if (panelRendering.SelectedNode != null)
+            if (e.Button == MouseButtons.Left && panelRendering.SelectedNode != null)
                 EditMesh();
         }
     }

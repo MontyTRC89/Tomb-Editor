@@ -119,6 +119,21 @@ namespace WadTool
             nudVisBoxMaxZ.Value = (decimal)_static.VisibilityBox.Maximum.Z;
         }
 
+        private void EditMesh()
+        {
+            if (panelRendering.Static == null || panelRendering.Static.Mesh == null)
+                return;
+
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _static.Mesh.Clone()))
+            {
+                if (form.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                _static.Mesh = form.SelectedMesh.Clone();
+                panelRendering.Invalidate();
+            }
+        }
+
         private void butCalculateVisibilityBox_Click(object sender, EventArgs e)
         {
             _static.VisibilityBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
@@ -614,16 +629,12 @@ namespace WadTool
             }
         }
 
-        private void butEditMesh_Click(object sender, EventArgs e)
-        {
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad, _static.Mesh.Clone()))
-            {
-                if (form.ShowDialog() == DialogResult.Cancel)
-                    return;
+        private void butEditMesh_Click(object sender, EventArgs e) => EditMesh();
 
-                _static.Mesh = form.SelectedMesh.Clone();
-                _tool.StaticLightsChanged();
-            }
+        private void panelRendering_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                EditMesh();
         }
     }
 }

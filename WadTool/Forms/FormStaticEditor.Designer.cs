@@ -1149,6 +1149,7 @@
             this.panelRendering.Name = "panelRendering";
             this.panelRendering.Size = new System.Drawing.Size(613, 630);
             this.panelRendering.TabIndex = 0;
+            this.panelRendering.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.panelRendering_MouseDoubleClick);
             // 
             // butExportMeshToFile
             // 
