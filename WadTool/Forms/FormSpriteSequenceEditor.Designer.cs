@@ -168,7 +168,7 @@
             this.butRecalc.Name = "butRecalc";
             this.butRecalc.Size = new System.Drawing.Size(23, 23);
             this.butRecalc.TabIndex = 51;
-            this.toolTip1.SetToolTip(this.butRecalc, "Replace sprite");
+            this.toolTip1.SetToolTip(this.butRecalc, "Recalculate adjustment");
             this.butRecalc.Click += new System.EventHandler(this.butRecalc_Click);
             // 
             // darkGroupBox1
