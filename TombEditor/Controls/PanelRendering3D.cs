@@ -2363,11 +2363,11 @@ namespace TombEditor.Controls
             _legacyDevice.SetVertexInputLayout(_littleCube.InputLayout);
             _legacyDevice.SetIndexBuffer(_littleCube.IndexBuffer, _littleCube.IsIndex32Bits);
 
+            Vector4 color = normalColor;
+
             // Draw center cubes
             for (int i = 0; i < volumesToDraw.Count; i++)
-            {
-                Vector4 color = normalColor;
-
+            { 
                 var instance = volumesToDraw[i];
                 if (_editor.SelectedObject == instance)
                     selectedIndex = i;
@@ -2408,11 +2408,10 @@ namespace TombEditor.Controls
                     var shape = instance.Shape();
 
                     // Switch colours
-                    if (selectedIndex >= 0 && i == selectedIndex)
-                        effect.Parameters["Color"].SetValue(selectColor);
-                    else if (lastIndex == selectedIndex || lastIndex == -1)
-                        effect.Parameters["Color"].SetValue(normalColor);
-                    lastIndex = i;
+                    if (i == selectedIndex)
+                        color = selectColor;
+                    else
+                        color = normalColor;
 
                     // Switch vertex buffers (only do it if shape is changed)
                     if (shape != currentShape)
@@ -2466,13 +2465,28 @@ namespace TombEditor.Controls
                             break;
                     }
 
-                    effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
-                    effect.CurrentTechnique.Passes[0].Apply();
 
-                    if (shape == VolumeShape.Prism)
-                        _legacyDevice.Draw(PrimitiveType.TriangleList, 24);
-                    else
-                        _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
+                    for (int d = 0; d < 2; d++)
+                    {
+                        if (d == 0)
+                        {
+                            effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.1f, 1.0f));
+                            _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                        }
+                        else
+                        {
+                            effect.Parameters["Color"].SetValue(color);
+                            _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
+                        }
+
+                        effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
+                        effect.CurrentTechnique.Passes[0].Apply();
+
+                        if (shape == VolumeShape.Prism)
+                            _legacyDevice.Draw(PrimitiveType.TriangleList, 24);
+                        else
+                            _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
+                    }
                 }
             }
         }

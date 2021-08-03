@@ -520,7 +520,7 @@ namespace WadTool.Controls
 
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
-            effect.Parameters["Color"].SetValue(Vector4.One);
+            effect.Parameters["Color"].SetValue(WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
             effect.Parameters["StaticLighting"].SetValue(EditingMode == MeshEditingMode.VertexColorsAndNormals);
             effect.Parameters["ColoredVertices"].SetValue(EditingMode == MeshEditingMode.VertexColorsAndNormals);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
