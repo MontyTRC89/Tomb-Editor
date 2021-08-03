@@ -144,10 +144,7 @@ namespace TombLib.Utils
 
             var result = new List<string>();
             for (int i = 0; i < blendCount; i++)
-            {
-                var name = ToBlendMode(i).ToString();
-                result.Add(name);
-            }
+                result.Add(ToBlendMode(i).ToString());
 
             return result;
         }
