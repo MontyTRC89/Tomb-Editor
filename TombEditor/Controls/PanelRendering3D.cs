@@ -2468,9 +2468,9 @@ namespace TombEditor.Controls
 
                     for (int d = 0; d < 2; d++)
                     {
-                        if (d == 0)
+                        if (d == 1)
                         {
-                            effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.1f, 1.0f));
+                            effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.7f, 0.4f));
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
                         }
                         else
