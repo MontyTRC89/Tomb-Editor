@@ -97,6 +97,7 @@
     <Compile Include="Graphics\DeviceManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\ArrowType.cs" />
+    <Compile Include="Rendering\BoundingBoxExtensions.cs" />
     <Compile Include="Rendering\DirectX11\Dx11PipelineState.cs" />
     <Compile Include="Rendering\DirectX11\Dx11RenderingDrawingRoom.cs" />
     <Compile Include="Rendering\DirectX11\Dx11RenderingDrawingTest.cs" />

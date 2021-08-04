@@ -13,7 +13,6 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace WadTool.Controls
 {
@@ -156,30 +155,6 @@ namespace WadTool.Controls
             base.Dispose(disposing);
         }
 
-        private Buffer<SolidVertex> GetVertexBufferFromBoundingBox(BoundingBox box)
-        {
-            var p0 = new SolidVertex(new Vector3(box.Minimum.X, box.Minimum.Y, box.Minimum.Z));
-            var p1 = new SolidVertex(new Vector3(box.Maximum.X, box.Minimum.Y, box.Minimum.Z));
-            var p2 = new SolidVertex(new Vector3(box.Maximum.X, box.Minimum.Y, box.Maximum.Z));
-            var p3 = new SolidVertex(new Vector3(box.Minimum.X, box.Minimum.Y, box.Maximum.Z));
-            var p4 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Minimum.Z));
-            var p5 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Minimum.Z));
-            var p6 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Maximum.Z));
-            var p7 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Maximum.Z));
-
-            var vertices = new[]
-            {
-                p4, p5, p5, p1, p1, p0, p0, p4,
-                    p5, p6, p6, p2, p2, p1, p1, p5,
-                    p2, p6, p6, p7, p7, p3, p3, p2,
-                    p7, p4, p4, p0, p0, p3, p3, p7,
-                    p7, p6, p6, p5, p5, p4, p4, p7,
-                    p0, p1, p1, p2, p2, p3, p3, p0
-            };
-
-            return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
-        }
-
         protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
 
         protected override void OnDraw()
@@ -246,7 +221,7 @@ namespace WadTool.Controls
                     if (DrawVisibilityBox)
                     {
                         _vertexBufferVisibility?.Dispose();
-                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Static.VisibilityBox);
+                        _vertexBufferVisibility = Static.VisibilityBox.GetVertexBuffer(_device);
 
                         _device.SetVertexBuffer(_vertexBufferVisibility);
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -262,7 +237,7 @@ namespace WadTool.Controls
                     if (DrawCollisionBox)
                     {
                         _vertexBufferCollision?.Dispose();
-                        _vertexBufferCollision = GetVertexBufferFromBoundingBox(Static.CollisionBox);
+                        _vertexBufferCollision = Static.CollisionBox.GetVertexBuffer(_device);
 
                         _device.SetVertexBuffer(_vertexBufferCollision);
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferCollision));
@@ -297,7 +272,8 @@ namespace WadTool.Controls
                         lines.Add(v);
                     }
 
-                    Buffer<SolidVertex> bufferLines = Buffer.New(_device, lines.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+                    var bufferLines = SharpDX.Toolkit.Graphics.Buffer.New(_device, lines.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+
                     _device.SetVertexBuffer(bufferLines);
                     _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, bufferLines));
                     _device.SetIndexBuffer(null, false);

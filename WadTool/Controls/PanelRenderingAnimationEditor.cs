@@ -12,7 +12,6 @@ using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Utils;
 using TombLib.Wad;
-using Buffer = SharpDX.Toolkit.Graphics.Buffer;
 
 namespace WadTool.Controls
 {
@@ -153,30 +152,6 @@ namespace WadTool.Controls
             base.Dispose(disposing);
         }
 
-        private Buffer<SolidVertex> GetVertexBufferFromBoundingBox(BoundingBox box)
-        {
-            var p0 = new SolidVertex(new Vector3(box.Minimum.X, box.Minimum.Y, box.Minimum.Z));
-            var p1 = new SolidVertex(new Vector3(box.Maximum.X, box.Minimum.Y, box.Minimum.Z));
-            var p2 = new SolidVertex(new Vector3(box.Maximum.X, box.Minimum.Y, box.Maximum.Z));
-            var p3 = new SolidVertex(new Vector3(box.Minimum.X, box.Minimum.Y, box.Maximum.Z));
-            var p4 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Minimum.Z));
-            var p5 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Minimum.Z));
-            var p6 = new SolidVertex(new Vector3(box.Maximum.X, box.Maximum.Y, box.Maximum.Z));
-            var p7 = new SolidVertex(new Vector3(box.Minimum.X, box.Maximum.Y, box.Maximum.Z));
-
-            var vertices = new[]
-            {
-                p4, p5, p5, p1, p1, p0, p0, p4,
-                    p5, p6, p6, p2, p2, p1, p1, p5,
-                    p2, p6, p6, p7, p7, p3, p3, p2,
-                    p7, p4, p4, p0, p0, p3, p3, p7,
-                    p7, p6, p6, p5, p5, p4, p4, p7,
-                    p0, p1, p1, p2, p2, p3, p3, p0
-            };
-
-            return Buffer.New(_device, vertices, BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
-        }
-
         protected override Vector4 ClearColor => Configuration.RenderingItem_BackgroundColor;
 
         protected override void OnDraw()
@@ -291,7 +266,7 @@ namespace WadTool.Controls
                         if (_vertexBufferVisibility != null)
                             _vertexBufferVisibility.Dispose();
                         int meshIndex = _model.Meshes.IndexOf(SelectedMesh);
-                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(Skin.Meshes[meshIndex].BoundingBox);
+                        _vertexBufferVisibility = Skin.Meshes[meshIndex].BoundingBox.GetVertexBuffer(_device);
 
                         _device.SetVertexBuffer(_vertexBufferVisibility);
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
@@ -309,7 +284,7 @@ namespace WadTool.Controls
                     {
                         if (_vertexBufferVisibility != null)
                             _vertexBufferVisibility.Dispose();
-                        _vertexBufferVisibility = GetVertexBufferFromBoundingBox(_editor.CurrentKeyFrame.BoundingBox);
+                        _vertexBufferVisibility = _editor.CurrentKeyFrame.BoundingBox.GetVertexBuffer(_device);
 
                         _device.SetVertexBuffer(_vertexBufferVisibility);
                         _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _vertexBufferVisibility));
