@@ -512,19 +512,19 @@
             this.nudSphereRadius.Location = new System.Drawing.Point(262, 5);
             this.nudSphereRadius.LoopValues = false;
             this.nudSphereRadius.Maximum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             0});
+            this.nudSphereRadius.Minimum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            -2147483648});
             this.nudSphereRadius.Name = "nudSphereRadius";
             this.nudSphereRadius.Size = new System.Drawing.Size(54, 23);
             this.nudSphereRadius.TabIndex = 15;
             this.toolTip.SetToolTip(this.nudSphereRadius, "Shininess value on the range from 0 to 63");
-            this.nudSphereRadius.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.nudSphereRadius.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
             this.nudSphereRadius.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
@@ -551,12 +551,12 @@
             this.nudSphereZ.Location = new System.Drawing.Point(154, 5);
             this.nudSphereZ.LoopValues = false;
             this.nudSphereZ.Maximum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             0});
             this.nudSphereZ.Minimum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             -2147483648});
@@ -579,12 +579,12 @@
             this.nudSphereY.Location = new System.Drawing.Point(93, 5);
             this.nudSphereY.LoopValues = false;
             this.nudSphereY.Maximum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             0});
             this.nudSphereY.Minimum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             -2147483648});
@@ -607,12 +607,12 @@
             this.nudSphereX.Location = new System.Drawing.Point(32, 5);
             this.nudSphereX.LoopValues = false;
             this.nudSphereX.Maximum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             0});
             this.nudSphereX.Minimum = new decimal(new int[] {
-            65535,
+            1000000,
             0,
             0,
             -2147483648});

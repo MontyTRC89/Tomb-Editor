@@ -219,6 +219,7 @@
     </Compile>
     <Compile Include="GizmoAnimationEditor.cs" />
     <Compile Include="GizmoSkeletonEditor.cs" />
+    <Compile Include="GizmoMeshEditor.cs" />
     <Compile Include="GizmoStaticEditor.cs" />
     <Compile Include="GizmoStaticEditorLight.cs" />
     <Compile Include="Program.cs" />

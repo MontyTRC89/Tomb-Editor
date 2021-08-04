@@ -235,6 +235,10 @@ namespace WadTool
                             }
                         }
                         break;
+
+                    case MeshEditingMode.Sphere:
+                        GetSphereValues();
+                        break;
                 }
                 UpdateUI();
             }
@@ -277,9 +281,10 @@ namespace WadTool
                 case MeshEditingMode.VertexRemap:
                     cbAllInfo.Text = "Show all numbers";
                     break;
+                case MeshEditingMode.Sphere:
+                    cbAllInfo.Text = "Show gizmo";
+                    break;
             }
-
-            cbAllInfo.Visible = panelMesh.EditingMode != MeshEditingMode.Sphere;
 
             if (panelMesh.EditingMode == MeshEditingMode.FaceAttributes)
             {

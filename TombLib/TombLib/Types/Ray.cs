@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Drawing;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using TombLib.Graphics;
 
 namespace TombLib
 {
@@ -25,6 +27,9 @@ namespace TombLib
             Vector3 farPoint = inverse.TransformPerspectively(new Vector3(screenPos.X / width * 2.0f - 1.0f, -(screenPos.Y / height * 2.0f - 1.0f), 1.0f));
             return new Ray(nearPoint, Vector3.Normalize(farPoint - nearPoint));
         }
+
+        public static Ray GetPickRay(ArcBallCamera camera, Size size, float x, float y) =>
+            GetPickRay(new Vector2(x, y), camera.GetViewProjectionMatrix(size.Width, size.Height), size.Width, size.Height);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Ray first, Ray second) => first.Position == second.Position && first.Direction == second.Direction;

@@ -286,19 +286,16 @@ namespace WadTool.Controls
             Invalidate();
         }
 
-        private Ray GetRay(float x, float y)
-        {
-            return Ray.GetPickRay(new Vector2(x, y), Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ClientSize.Width, ClientSize.Height);
-        }
-
         protected override void OnMouseDown(MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
+                var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
+
                 // Try to do gizmo picking
                 if (DrawGizmo)
                 {
-                    var result = _gizmo.DoPicking(GetRay(e.X, e.Y));
+                    var result = _gizmo.DoPicking(ray);
                     if (result != null)
                     {
                         _gizmo.ActivateGizmo(result);
@@ -313,7 +310,7 @@ namespace WadTool.Controls
                 {
                     float distance = 0;
                     float minDistance = float.PositiveInfinity;
-                    if (DoNodePicking(GetRay(e.X, e.Y), node, out distance))
+                    if (DoNodePicking(ray, node, out distance))
                     {
                         if (distance < minDistance)
                         {
@@ -343,9 +340,11 @@ namespace WadTool.Controls
         {
             base.OnMouseMove(e);
 
-            if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(GetRay(e.X, e.Y))))
+            var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
+
+            if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
                 Invalidate();
-            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), GetRay(e.X, e.Y)))
+            if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
                 Invalidate();
 
             if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)

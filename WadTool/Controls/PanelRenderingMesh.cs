@@ -196,6 +196,9 @@ namespace WadTool.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
 
+        // Gizmo
+        private GizmoMeshEditor _gizmo;
+
         // Constants
         private readonly List<int> _oldLaraHairIndices = new List<int>() { 37, 38, 39, 40 };
         private readonly List<int> _youngLaraHairIndices = new List<int>() { 68, 69, 70, 71, 76, 77, 78, 79 };
@@ -240,6 +243,7 @@ namespace WadTool.Controls
 
                 _littleSphere = GeometricPrimitive.Sphere.New(_device, 2, 4);
                 _bigSphere = GeometricPrimitive.Sphere.New(_device, 1, 10);
+                _gizmo = new GizmoMeshEditor(_tool.Configuration, _device, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"], this);
             }
         }
 
@@ -247,6 +251,7 @@ namespace WadTool.Controls
         {
             if (disposing)
             {
+                _gizmo?.Dispose();
                 _rasterizerWireframe?.Dispose();
                 _littleSphere?.Dispose();
                 _bigSphere?.Dispose();
@@ -504,6 +509,14 @@ namespace WadTool.Controls
                     solidEffect.Techniques[0].Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, _bigSphere.IndexBuffer.ElementCount);
+
+                    // Draw gizmo if needed
+
+                    if (DrawExtraInfo)
+                    {
+                        SwapChain.ClearDepth();
+                        _gizmo.Draw(viewProjection);
+                    }
                 }
                 else if (EditingMode == MeshEditingMode.None)
                 {
@@ -602,6 +615,17 @@ namespace WadTool.Controls
 
             _lastX = e.X;
             _lastY = e.Y;
+
+            if (DrawExtraInfo)
+            {
+                var result = _gizmo.DoPicking(Ray.GetPickRay(Camera, ClientSize, e.X, e.Y));
+                if (result != null)
+                {
+                    _gizmo.ActivateGizmo(result);
+                    Invalidate();
+                    return;
+                }
+            }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -633,15 +657,28 @@ namespace WadTool.Controls
             }
             else if (EditingMode != MeshEditingMode.None &&
                      EditingMode != MeshEditingMode.VertexRemap && 
+                     EditingMode != MeshEditingMode.Sphere &&
                      e.Button == MouseButtons.Left)
             {
                 TryPickElement(e.X, e.Y, true);
+            }
+            else if (EditingMode == MeshEditingMode.Sphere)
+            {
+                var ray = Ray.GetPickRay(Camera, ClientSize, e.X, e.Y);
+
+                if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
+                    Invalidate();
+                if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
+                    Invalidate();
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            if (EditingMode == MeshEditingMode.Sphere && _gizmo.MouseUp())
+                Invalidate();
 
             if (EditingMode != MeshEditingMode.None && e.Button == MouseButtons.Left)
                 TryPickElement(e.X, e.Y);
@@ -660,8 +697,7 @@ namespace WadTool.Controls
             if (_mesh == null)
                 return;
 
-            var matrix = Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height);
-            var ray = Ray.GetPickRay(new Vector2(x, y), matrix, ClientSize.Width, ClientSize.Height);
+            var ray = Ray.GetPickRay(Camera, ClientSize, x, y);
 
             float distance = float.MaxValue;
             int candidate = -1;
