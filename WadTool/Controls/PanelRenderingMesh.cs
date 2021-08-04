@@ -239,7 +239,7 @@ namespace WadTool.Controls
                 });
 
                 _littleSphere = GeometricPrimitive.Sphere.New(_device, 2, 4);
-                _bigSphere = GeometricPrimitive.Sphere.New(_device, 1, 16);
+                _bigSphere = GeometricPrimitive.Sphere.New(_device, 1, 10);
             }
         }
 
@@ -489,18 +489,18 @@ namespace WadTool.Controls
                     // Now prepare and draw wireframe sphere
                     
                     _device.SetRasterizerState(_rasterizerWireframe);
-                    _device.SetBlendState(_device.BlendStates.Opaque);
+                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
                     _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
 
                     _device.SetVertexBuffer(_bigSphere.VertexBuffer);
                     _device.SetVertexInputLayout(_bigSphere.InputLayout);
-                    _device.SetIndexBuffer(_bigSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
+                    _device.SetIndexBuffer(_bigSphere.IndexBuffer, _bigSphere.IsIndex32Bits);
 
-                    var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center) * viewProjection;
-                    var finalMatrix = posMatrix * Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius);
+                    var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center);
+                    var finalMatrix = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius) * posMatrix * viewProjection;
 
                     solidEffect.Parameters["ModelViewProjection"].SetValue(finalMatrix.ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                    solidEffect.Parameters["Color"].SetValue(new Vector4(Vector3.One, 0.5f));
                     solidEffect.Techniques[0].Passes[0].Apply();
 
                     _device.DrawIndexed(PrimitiveType.TriangleList, _bigSphere.IndexBuffer.ElementCount);
