@@ -58,6 +58,7 @@ namespace TombLib.Wad
                 writer.Write(BoundingSphere.Center.Y);
                 writer.Write(BoundingSphere.Center.Z);
                 writer.Write(BoundingSphere.Radius);
+                writer.Write((int)LightingType);
 
                 int numVertices = VertexPositions.Count;
                 writer.Write(numVertices);
@@ -72,6 +73,13 @@ namespace TombLib.Wad
                 if (VertexColors.Count > 0)
                     for (int i = 0; i < VertexColors.Count; i++)
                         writer.Write(VertexColors[i]);
+
+                if (VertexAttributes.Count > 0)
+                    for (int i = 0; i < VertexAttributes.Count; i++)
+                    {
+                        writer.Write(VertexAttributes[i].Glow);
+                        writer.Write(VertexAttributes[i].Move);
+                    }
 
                 int numPolygons = Polys.Count;
                 writer.Write(numPolygons);
