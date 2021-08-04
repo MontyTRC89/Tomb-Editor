@@ -6591,6 +6591,14 @@
       <sprite_sequence id="1367" name="SKIDOO_SNOW_TRAIL_SPRITES" />
       <sprite_sequence id="1368" name="KAYAK_PADDLE_TRAIL_SPRITE" />
       <sprite_sequence id="1369" name="KAYAK_WAKE_SPRTIES" />
+      <sprite_sequence id="1370" name="BINOCULAR_GRAPHIC" />
+      <sprite_sequence id="1371" name="LASER_SIGHT_GRAPHIC" />
+      <sprite_sequence id="1372" name="CAUSTICS_TEXTURES" />
+      <sprite_sequence id="1373" name="BAR_BORDER_GRAPHIC" />
+      <sprite_sequence id="1374" name="HEALTH_BAR_TEXTURE" />
+      <sprite_sequence id="1375" name="AIR_BAR_TEXTURE" />
+      <sprite_sequence id="1376" name="DASH_BAR_TEXTURE" />
+      <sprite_sequence id="1377" name="SFX_BAR_TEXTURE" />
     </sprite_sequences>
     <sounds max="8192">
       <sound id="0" name="LARA_FEET" />
