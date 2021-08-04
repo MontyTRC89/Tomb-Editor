@@ -187,6 +187,7 @@ namespace WadTool.Controls
         private RasterizerState _rasterizerWireframe;
         private VertexInputLayout _layout;
         private GeometricPrimitive _littleSphere;
+        private GeometricPrimitive _bigSphere;
         private float _normalLength = 1.0f;
         private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
@@ -238,6 +239,7 @@ namespace WadTool.Controls
                 });
 
                 _littleSphere = GeometricPrimitive.Sphere.New(_device, 2, 4);
+                _bigSphere = GeometricPrimitive.Sphere.New(_device, 1, 16);
             }
         }
 
@@ -247,6 +249,7 @@ namespace WadTool.Controls
             {
                 _rasterizerWireframe?.Dispose();
                 _littleSphere?.Dispose();
+                _bigSphere?.Dispose();
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
@@ -280,7 +283,7 @@ namespace WadTool.Controls
                     EditingMode == MeshEditingMode.VertexEffects ||
                     EditingMode == MeshEditingMode.VertexColorsAndNormals)
                 {
-                    // Draw model first in vertex mode
+                    // Draw model first in vertex or sphere modes
                     DrawModel(mesh, world * viewProjection);
 
                     _device.SetRasterizerState(_device.RasterizerStates.CullBack);
@@ -477,6 +480,30 @@ namespace WadTool.Controls
 
                     if (WireframeMode || !DrawExtraInfo)
                         DrawModel(mesh, world * viewProjection);
+                }
+                else if (EditingMode == MeshEditingMode.Sphere)
+                {
+                    // Draw model first
+                    DrawModel(mesh, world * viewProjection);
+
+                    // Now prepare and draw wireframe sphere
+                    
+                    _device.SetRasterizerState(_rasterizerWireframe);
+                    _device.SetBlendState(_device.BlendStates.Opaque);
+                    _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
+
+                    _device.SetVertexBuffer(_bigSphere.VertexBuffer);
+                    _device.SetVertexInputLayout(_bigSphere.InputLayout);
+                    _device.SetIndexBuffer(_bigSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
+
+                    var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center) * viewProjection;
+                    var finalMatrix = posMatrix * Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius);
+
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(finalMatrix.ToSharpDX());
+                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                    solidEffect.Techniques[0].Passes[0].Apply();
+
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _bigSphere.IndexBuffer.ElementCount);
                 }
                 else if (EditingMode == MeshEditingMode.None)
                 {

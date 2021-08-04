@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Controls;
@@ -275,6 +276,8 @@ namespace WadTool
                     break;
             }
 
+            cbAllInfo.Visible = panelMesh.EditingMode == MeshEditingMode.Sphere;
+
             if (panelMesh.EditingMode == MeshEditingMode.FaceAttributes)
             {
                 nudShineStrength.Enabled = cbAllInfo.Checked;
@@ -284,6 +287,12 @@ namespace WadTool
 
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
+
+            // Sphere values are global
+            nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
+            nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
+            nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
+            nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
 
             panelMesh.Invalidate();
         }
@@ -640,6 +649,13 @@ namespace WadTool
             else
                 popup.ShowInfo(panelMesh, "Auto-fitted " + count + " vertices.");
 
+            panelMesh.Invalidate();
+        }
+
+        private void nudSphereData_ValueChanged(object sender, EventArgs e)
+        {
+            var newCoord = new Vector3((float)nudSphereX.Value, (float)nudSphereY.Value, (float)nudSphereZ.Value);
+            panelMesh.Mesh.BoundingSphere = new BoundingSphere(newCoord, (float)nudSphereRadius.Value);
             panelMesh.Invalidate();
         }
     }

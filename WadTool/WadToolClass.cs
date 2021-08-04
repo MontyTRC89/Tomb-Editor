@@ -29,6 +29,7 @@ namespace WadTool
         VertexRemap,
         VertexColorsAndNormals,
         VertexEffects,
+        Sphere,
         FaceAttributes
     }
 
