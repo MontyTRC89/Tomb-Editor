@@ -516,11 +516,6 @@
             0,
             0,
             0});
-            this.nudSphereRadius.Minimum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            -2147483648});
             this.nudSphereRadius.Name = "nudSphereRadius";
             this.nudSphereRadius.Size = new System.Drawing.Size(54, 23);
             this.nudSphereRadius.TabIndex = 15;
