@@ -151,10 +151,9 @@ namespace WadTool
                 {
                     case MeshEditingMode.VertexRemap:
                         {
-                            UpdateUI();
-
                             if (newIndex == -1) return;
 
+                            UpdateUI();
                             nudVertexNum.Select(0, 5);
                             nudVertexNum.Focus();
                         }
@@ -240,7 +239,13 @@ namespace WadTool
                         GetSphereValues();
                         break;
                 }
-                UpdateUI();
+
+                // We don't need to update UI for sphere editing because needed UI is already updated.
+                // Also we don't need that for vertex remap mode, because it was already done.
+
+                if (panelMesh.EditingMode != MeshEditingMode.VertexRemap &&
+                    panelMesh.EditingMode != MeshEditingMode.Sphere)
+                    UpdateUI();
             }
         }
 
@@ -682,8 +687,8 @@ namespace WadTool
         private void butResetSphere_Click(object sender, EventArgs e)
         {
             panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
+            panelMesh.Invalidate();
             GetSphereValues();
-            UpdateUI();
         }
     }
 }
