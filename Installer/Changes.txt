@@ -3,7 +3,7 @@ Version 1.3.16
 
 Tomb Editor:
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
- * Level setting to keep original sample rate for sounds, in case builder uses custom one via FLEP patch.
+ * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
  * Fix exception if level with missing merged statics is compiled.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
 
@@ -19,6 +19,7 @@ WadTool:
  * Fix incorrect importing of shininess value for obj format.
  * Fix incorrect exporting of normals.
  * Fix wrong depiction of skinned model in skeleton editor.
+ * Fix gizmo size in static mesh editor.
 
 Version 1.3.15
 ==============
