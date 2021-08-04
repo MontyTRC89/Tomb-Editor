@@ -276,7 +276,7 @@ namespace WadTool
                     break;
             }
 
-            cbAllInfo.Visible = panelMesh.EditingMode == MeshEditingMode.Sphere;
+            cbAllInfo.Visible = panelMesh.EditingMode != MeshEditingMode.Sphere;
 
             if (panelMesh.EditingMode == MeshEditingMode.FaceAttributes)
             {
@@ -289,10 +289,13 @@ namespace WadTool
                 cbBlendMode.SelectedIndex = 0;
 
             // Sphere values are global
-            nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
-            nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
-            nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
-            nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
+            if (panelMesh.Mesh != null)
+            {
+                nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
+                nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
+                nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
+                nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
+            }
 
             panelMesh.Invalidate();
         }
