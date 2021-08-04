@@ -497,7 +497,7 @@ namespace WadTool.Controls
                     _device.SetIndexBuffer(_bigSphere.IndexBuffer, _bigSphere.IsIndex32Bits);
 
                     var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center);
-                    var finalMatrix = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius) * posMatrix * viewProjection;
+                    var finalMatrix = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius * 2) * posMatrix * viewProjection;
 
                     solidEffect.Parameters["ModelViewProjection"].SetValue(finalMatrix.ToSharpDX());
                     solidEffect.Parameters["Color"].SetValue(new Vector4(Vector3.One, 0.5f));
