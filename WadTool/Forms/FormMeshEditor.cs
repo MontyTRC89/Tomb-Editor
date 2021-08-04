@@ -44,6 +44,8 @@ namespace WadTool
         private DeviceManager _deviceManager;
         private WadToolClass _tool;
 
+        private bool _readingValues = false;
+
         private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
@@ -102,6 +104,7 @@ namespace WadTool
             {
                 panelMesh.Mesh = mesh;
                 panelTree.Visible = false; // Lock up list to prevent wandering around
+                GetSphereValues();
 
                 MinimumSize = new Size(MinimumSize.Width - panelTree.Width, MinimumSize.Height);
                 Size = new Size(Size.Width - panelTree.Width, Size.Height);
@@ -288,16 +291,21 @@ namespace WadTool
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
 
+            panelMesh.Invalidate();
+        }
+
+        private void GetSphereValues()
+        {
             // Sphere values are global
             if (panelMesh.Mesh != null)
             {
+                _readingValues = true;
                 nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
                 nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
                 nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
                 nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
+                _readingValues = false;
             }
-
-            panelMesh.Invalidate();
         }
 
         private void ShowSelectedMesh()
@@ -306,6 +314,7 @@ namespace WadTool
             if (lstMeshes.SelectedNodes.Count > 0 && lstMeshes.SelectedNodes[0].Tag != null)
                 panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
 
+            GetSphereValues();
             UpdateUI();
         }
 
@@ -657,9 +666,19 @@ namespace WadTool
 
         private void nudSphereData_ValueChanged(object sender, EventArgs e)
         {
+            if (_readingValues)
+                return;
+
             var newCoord = new Vector3((float)nudSphereX.Value, (float)nudSphereY.Value, (float)nudSphereZ.Value);
             panelMesh.Mesh.BoundingSphere = new BoundingSphere(newCoord, (float)nudSphereRadius.Value);
             panelMesh.Invalidate();
+        }
+
+        private void butResetSphere_Click(object sender, EventArgs e)
+        {
+            panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
+            GetSphereValues();
+            UpdateUI();
         }
     }
 }

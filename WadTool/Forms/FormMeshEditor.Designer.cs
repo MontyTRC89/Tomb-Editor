@@ -492,11 +492,12 @@
             // 
             this.butResetSphere.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.butResetSphere.Checked = false;
-            this.butResetSphere.Location = new System.Drawing.Point(332, 5);
+            this.butResetSphere.Location = new System.Drawing.Point(322, 5);
             this.butResetSphere.Name = "butResetSphere";
-            this.butResetSphere.Size = new System.Drawing.Size(68, 23);
+            this.butResetSphere.Size = new System.Drawing.Size(57, 23);
             this.butResetSphere.TabIndex = 21;
             this.butResetSphere.Text = "Reset";
+            this.butResetSphere.Click += new System.EventHandler(this.butResetSphere_Click);
             // 
             // nudSphereRadius
             // 
@@ -516,7 +517,7 @@
             0,
             0});
             this.nudSphereRadius.Name = "nudSphereRadius";
-            this.nudSphereRadius.Size = new System.Drawing.Size(64, 23);
+            this.nudSphereRadius.Size = new System.Drawing.Size(54, 23);
             this.nudSphereRadius.TabIndex = 15;
             this.toolTip.SetToolTip(this.nudSphereRadius, "Shininess value on the range from 0 to 63");
             this.nudSphereRadius.Value = new decimal(new int[] {
@@ -525,6 +526,7 @@
             0,
             0});
             this.nudSphereRadius.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
+            this.nudSphereRadius.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
             // darkLabel9
             // 
@@ -563,6 +565,7 @@
             this.nudSphereZ.TabIndex = 13;
             this.toolTip.SetToolTip(this.nudSphereZ, "Shininess value on the range from 0 to 63");
             this.nudSphereZ.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
+            this.nudSphereZ.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
             // nudSphereY
             // 
@@ -590,6 +593,7 @@
             this.nudSphereY.TabIndex = 11;
             this.toolTip.SetToolTip(this.nudSphereY, "Shininess value on the range from 0 to 63");
             this.nudSphereY.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
+            this.nudSphereY.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
             // nudSphereX
             // 
@@ -617,6 +621,7 @@
             this.nudSphereX.TabIndex = 9;
             this.toolTip.SetToolTip(this.nudSphereX, "Shininess value on the range from 0 to 63");
             this.nudSphereX.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
+            this.nudSphereX.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
             // darkLabel8
             // 
