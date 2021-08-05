@@ -136,6 +136,7 @@ namespace TombEditor.Controls
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
         private Buffer<SolidVertex> _prismVertexBuffer;
+        private Buffer<SolidVertex> _boxVertexBuffer;
 
         // Flyby stuff
         private const float _flybyPathThickness = 32.0f;
@@ -301,6 +302,7 @@ namespace TombEditor.Controls
                 // Initialize vertex buffers
                 _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);
                 _prismVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 24);
+                _boxVertexBuffer = (new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius)).GetVertexBuffer(_legacyDevice));
                 BuildPrismVertexBuffer();
 
                 // Maybe I could use this as bounding box, scaling it properly before drawing
@@ -2470,13 +2472,17 @@ namespace TombEditor.Controls
                     {
                         if (d == 1)
                         {
-                            effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.7f, 0.4f));
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
+                            _legacyDevice.SetVertexBuffer(_boxVertexBuffer);
+                            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _boxVertexBuffer));
+                            effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.5f, 0.5f));
                         }
                         else
                         {
-                            effect.Parameters["Color"].SetValue(color);
                             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
+                            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+                            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+                            effect.Parameters["Color"].SetValue(color);
                         }
 
                         effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
@@ -2484,6 +2490,8 @@ namespace TombEditor.Controls
 
                         if (shape == VolumeShape.Prism)
                             _legacyDevice.Draw(PrimitiveType.TriangleList, 24);
+                        else if (shape == VolumeShape.Box && d == 1)
+                            _legacyDevice.Draw(PrimitiveType.LineList, _boxVertexBuffer.ElementCount);
                         else
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);
                     }
