@@ -39,8 +39,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 writer.Write(_meshes.Count);
                 foreach (var mesh in _meshes)
                 {
-                    writer.Write(mesh.Sphere.Center);
-                    writer.Write(mesh.Sphere.Radius);
+                    writer.Write( mesh.Sphere.Center.X);
+                    writer.Write(-mesh.Sphere.Center.Y);
+                    writer.Write( mesh.Sphere.Center.Z);
+                    writer.Write( mesh.Sphere.Radius);
 
                     writer.Write(mesh.Vertices.Count);
                     foreach (var p in mesh.Vertices)
