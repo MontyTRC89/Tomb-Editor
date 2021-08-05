@@ -1,30 +1,22 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using TombLib.Utils;
 
 namespace TombEditor.Controls
 {
     public class RichTextLabel : RichTextBox
     {
-        public void SuspendDraw()
-        {
-            WinFormsUtils.LockWindowUpdate(Handle);
-        }
-
-        public void ResumeDraw()
-        {
-            WinFormsUtils.LockWindowUpdate(IntPtr.Zero);
-        }
-
         public RichTextLabel()
         {
             ReadOnly = true;
             BorderStyle = BorderStyle.None;
             TabStop = false;
+            DoubleBuffered = true;
             SetStyle(ControlStyles.Selectable, false);
             SetStyle(ControlStyles.UserMouse, true);
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
             MouseEnter += delegate (object sender, EventArgs e)
             {

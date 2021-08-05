@@ -343,8 +343,6 @@ namespace TombEditor.ToolWindows
             if (_editor == null || _editor.Level == null || !_editor.Configuration.UI_ShowStats)
                 return;
 
-            tbStats.SuspendDraw();
-
             var summary = _editor.Stats;
             var settings = _editor.Level.Settings;
             var lStats = summary.LevelStats;
@@ -353,6 +351,7 @@ namespace TombEditor.ToolWindows
             var limitWarning = string.Empty;
 
             tbStats.BackColor = Colors.GreyBackground;
+            tbStats.ClearUndo();
             tbStats.Clear();
 
             // Room block
@@ -490,7 +489,6 @@ namespace TombEditor.ToolWindows
             if (tbStats.AutoSize) 
                 tbStats.AutoSize = false; // HACK: prevent further size updates
 
-            tbStats.ResumeDraw();
             toolTip.SetToolTip(tbStats, limitWarning);
         }
     }
