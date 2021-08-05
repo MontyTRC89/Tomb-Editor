@@ -173,8 +173,8 @@ namespace TombLib.LevelData.Compilers
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if(poly.ShineStrength > 0)
                 {
-                    if (useShades && isStatic)
-                        _progressReporter.ReportWarn("Stray shiny effect found on static " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
+                    if (useShades)
+                        _progressReporter.ReportWarn("Stray shiny effect found on " + objectString + " " + objectName + ", face " + oldMesh.Polys.IndexOf(poly) + ". Ignoring data.");
                     else
                     {
                         lightingEffect |= 0x02;
