@@ -301,6 +301,8 @@ namespace WadTool
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
 
+            butPreview.Checked = false;
+
             panelMesh.Invalidate();
         }
 
@@ -689,6 +691,16 @@ namespace WadTool
             panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
             panelMesh.Invalidate();
             GetSphereValues();
+        }
+
+        private void butPreview_Click(object sender, EventArgs e)
+        {
+            butPreview.Checked = !butPreview.Checked;
+
+            if (butPreview.Checked)
+                panelMesh.StartPreview();
+            else
+                panelMesh.StopPreview();
         }
     }
 }

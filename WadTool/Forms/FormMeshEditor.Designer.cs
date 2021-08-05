@@ -64,6 +64,7 @@
             this.panelEditingTools = new DarkUI.Controls.DarkPanel();
             this.panelTree = new DarkUI.Controls.DarkPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.butPreview = new DarkUI.Controls.DarkButton();
             this.panelEditing.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabVertexRemap.SuspendLayout();
@@ -366,6 +367,7 @@
             // tabVertexEffects
             // 
             this.tabVertexEffects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabVertexEffects.Controls.Add(this.butPreview);
             this.tabVertexEffects.Controls.Add(this.butConvertFromShades);
             this.tabVertexEffects.Controls.Add(this.nudMove);
             this.tabVertexEffects.Controls.Add(this.darkLabel5);
@@ -384,9 +386,9 @@
             this.butConvertFromShades.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.butConvertFromShades.Checked = false;
-            this.butConvertFromShades.Location = new System.Drawing.Point(179, 5);
+            this.butConvertFromShades.Location = new System.Drawing.Point(199, 5);
             this.butConvertFromShades.Name = "butConvertFromShades";
-            this.butConvertFromShades.Size = new System.Drawing.Size(139, 23);
+            this.butConvertFromShades.Size = new System.Drawing.Size(119, 23);
             this.butConvertFromShades.TabIndex = 20;
             this.butConvertFromShades.Text = "Convert from shades";
             this.toolTip.SetToolTip(this.butConvertFromShades, "Convert vertex effects from legacy workflow involving vertex shades.");
@@ -401,7 +403,7 @@
             0,
             0,
             65536});
-            this.nudMove.Location = new System.Drawing.Point(128, 5);
+            this.nudMove.Location = new System.Drawing.Point(122, 5);
             this.nudMove.LoopValues = false;
             this.nudMove.Maximum = new decimal(new int[] {
             63,
@@ -409,7 +411,7 @@
             0,
             0});
             this.nudMove.Name = "nudMove";
-            this.nudMove.Size = new System.Drawing.Size(45, 23);
+            this.nudMove.Size = new System.Drawing.Size(41, 23);
             this.nudMove.TabIndex = 14;
             this.toolTip.SetToolTip(this.nudMove, "For legacy engines, any value above 0 results in constant movement only for merge" +
         "d statics.\r\nIn such case, movement strength is derived from room effect strength" +
@@ -420,7 +422,7 @@
             this.darkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.darkLabel5.AutoSize = true;
             this.darkLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel5.Location = new System.Drawing.Point(91, 8);
+            this.darkLabel5.Location = new System.Drawing.Point(85, 8);
             this.darkLabel5.Name = "darkLabel5";
             this.darkLabel5.Size = new System.Drawing.Size(38, 13);
             this.darkLabel5.TabIndex = 13;
@@ -443,7 +445,7 @@
             0,
             0});
             this.nudGlow.Name = "nudGlow";
-            this.nudGlow.Size = new System.Drawing.Size(45, 23);
+            this.nudGlow.Size = new System.Drawing.Size(41, 23);
             this.nudGlow.TabIndex = 12;
             this.toolTip.SetToolTip(this.nudGlow, "For legacy engines, any value above 0 results in constant glow only for merged st" +
         "atics.\r\nIn such case, glow strength is derived from room effect strength.");
@@ -765,6 +767,19 @@
             this.panelTree.Size = new System.Drawing.Size(319, 481);
             this.panelTree.TabIndex = 0;
             // 
+            // butPreview
+            // 
+            this.butPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.butPreview.Checked = false;
+            this.butPreview.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPreview.Location = new System.Drawing.Point(169, 5);
+            this.butPreview.Name = "butPreview";
+            this.butPreview.Size = new System.Drawing.Size(24, 23);
+            this.butPreview.TabIndex = 21;
+            this.butPreview.Tag = "";
+            this.toolTip.SetToolTip(this.butPreview, "Preview effects");
+            this.butPreview.Click += new System.EventHandler(this.butPreview_Click);
+            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -860,5 +875,6 @@
         private DarkUI.Controls.DarkNumericUpDown nudSphereRadius;
         private DarkUI.Controls.DarkLabel darkLabel9;
         private DarkUI.Controls.DarkButton butResetSphere;
+        private DarkUI.Controls.DarkButton butPreview;
     }
 }
