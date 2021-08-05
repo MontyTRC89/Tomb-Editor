@@ -1152,14 +1152,12 @@ namespace TombEditor
                 EditorActions.AddVolume(VolumeShape.Box);
             });
 
-            // FIXME: Re-enable for TEN when there will be actual implementation
-
-            // AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
-            // {
-            //     if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
-            //         return;
-            //     EditorActions.AddVolume(VolumeShape.Sphere);
-            // });
+            AddCommand("AddSphereVolume", "Add sphere volume", CommandType.Objects, delegate (CommandArgs args)
+            {
+                if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
+                    return;
+                EditorActions.AddVolume(VolumeShape.Sphere);
+            });
 
             // FIXME: Re-enable for TEN when there will be actual implementation
 

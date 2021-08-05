@@ -714,6 +714,7 @@
             this.butAddSphereVolume.Name = "butAddSphereVolume";
             this.butAddSphereVolume.Size = new System.Drawing.Size(23, 25);
             this.butAddSphereVolume.Visible = false;
+            this.butAddSphereVolume.Tag = "AddSphereVolume";
             // 
             // butTextureFloor
             // 

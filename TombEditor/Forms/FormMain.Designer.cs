@@ -1245,6 +1245,7 @@ namespace TombEditor.Forms
             this.addSphereVolumeToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_volume_sphere_16;
             this.addSphereVolumeToolStripMenuItem.Name = "addSphereVolumeToolStripMenuItem";
             this.addSphereVolumeToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.addSphereVolumeToolStripMenuItem.Tag = "AddSphereVolume";
             this.addSphereVolumeToolStripMenuItem.Text = "AddSphereVolume";
             this.addSphereVolumeToolStripMenuItem.Visible = false;
             // 

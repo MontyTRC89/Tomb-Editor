@@ -381,13 +381,28 @@ namespace TombLib.LevelData.Compilers.TombEngine
             writer.Write(OriginalRoom.Volumes.Count());
             foreach (var volume in OriginalRoom.Volumes)
             {
-                var bv = volume as BoxVolumeInstance;
-                var bvPos = bv.Room.WorldPos + bv.Position;
-                bvPos.Y = -bvPos.Y;
+                var bvPos = volume.Room.WorldPos + volume.Position;
+                bvPos.Y = -bvPos.Y; // Invert Y coordinate to comply with TR coord system
 
-                writer.Write(bvPos);
-                writer.Write(Quaternion.CreateFromYawPitchRoll(bv.RotationY, bv.RotationX, 0));
-                writer.Write(bv.Size / 2.0f);
+                if (volume is BoxVolumeInstance)
+                {
+                    writer.Write(0);
+                    var bv = volume as BoxVolumeInstance;
+
+                    writer.Write(bvPos);
+                    writer.Write(Quaternion.CreateFromYawPitchRoll(bv.RotationY, bv.RotationX, 0));
+                    writer.Write(bv.Size / 2.0f);
+                }
+                else if (volume is SphereVolumeInstance)
+                {
+                    writer.Write(1);
+                    var sv = volume as SphereVolumeInstance;
+
+                    writer.Write(bvPos);
+                    writer.Write(Quaternion.Identity);
+                    writer.Write(new Vector3(sv.Size / 2.0f));
+                }
+
                 writer.Write((int)volume.Activators);
                 writer.Write(volume.Scripts.OnEnter);
                 writer.Write(volume.Scripts.OnInside);
