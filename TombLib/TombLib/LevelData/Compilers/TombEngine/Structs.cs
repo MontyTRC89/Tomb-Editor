@@ -389,7 +389,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                     writer.Write(0);
                     var bv = volume as BoxVolumeInstance;
 
-                    writer.Write(bvPos);
+                    writer.Write(bvPos - new Vector3(0, bv.Size.Y / 2.0f, 0)); // Move at the centerpoint
                     writer.Write(Quaternion.CreateFromYawPitchRoll(bv.RotationY, bv.RotationX, 0));
                     writer.Write(bv.Size / 2.0f);
                 }
