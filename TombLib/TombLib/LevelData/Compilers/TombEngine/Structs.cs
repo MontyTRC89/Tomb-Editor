@@ -382,8 +382,10 @@ namespace TombLib.LevelData.Compilers.TombEngine
             foreach (var volume in OriginalRoom.Volumes)
             {
                 var bv = volume as BoxVolumeInstance;
+                var bvPos = bv.Room.WorldPos + bv.Position;
+                bvPos.Y = -bvPos.Y;
 
-                writer.Write(bv.Position);
+                writer.Write(bvPos);
                 writer.Write(Quaternion.CreateFromYawPitchRoll(bv.RotationY, bv.RotationX, 0));
                 writer.Write(bv.Size / 2.0f);
                 writer.Write((int)volume.Activators);
