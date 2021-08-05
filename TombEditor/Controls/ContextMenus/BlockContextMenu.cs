@@ -78,6 +78,10 @@ namespace TombEditor.Controls.ContextMenus
                 {
                     EditorActions.PlaceObject(targetRoom, targetBlock, new BoxVolumeInstance());
                 }));
+                Items.Add(new ToolStripMenuItem("Add sphere volume", Properties.Resources.objects_volume_sphere_16, (o, e) =>
+                {
+                    EditorActions.PlaceObject(targetRoom, targetBlock, new SphereVolumeInstance());
+                }));
             }
         }
     }

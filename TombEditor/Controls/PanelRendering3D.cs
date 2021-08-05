@@ -2472,16 +2472,25 @@ namespace TombEditor.Controls
                     {
                         if (d == 1)
                         {
+
+                            if (shape == VolumeShape.Box)
+                            {
+                                _legacyDevice.SetVertexBuffer(_boxVertexBuffer);
+                                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _boxVertexBuffer));
+                            }
+
                             _legacyDevice.SetRasterizerState(_rasterizerWireframe);
-                            _legacyDevice.SetVertexBuffer(_boxVertexBuffer);
-                            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _boxVertexBuffer));
                             effect.Parameters["Color"].SetValue(new Vector4(color.To3() * 0.5f, 0.5f));
                         }
                         else
                         {
+                            if (shape == VolumeShape.Box)
+                            {
+                                _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
+                                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
+                            }
+
                             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-                            _legacyDevice.SetVertexBuffer(_littleCube.VertexBuffer);
-                            _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _littleCube.VertexBuffer));
                             effect.Parameters["Color"].SetValue(color);
                         }
 
