@@ -139,6 +139,9 @@
     <Compile Include="Controls\PanelRenderingStaticEditor.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PanelTextureMap.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\FormAnimationEditor.cs">
       <SubType>Form</SubType>
     </Compile>

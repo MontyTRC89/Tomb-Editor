@@ -66,11 +66,8 @@ namespace WadTool.Controls
             get { return _currentElement; }
             set
             {
-                if (Mesh == null)
+                if (Mesh == null || _currentElement == value)
                     return;
-                 
-                // We arent checking if current element is already set because user may
-                // reselect same vertex/face with other incoming params changed (eg shine strength).
 
                 switch (EditingMode)
                 {
@@ -696,6 +693,8 @@ namespace WadTool.Controls
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            CurrentElement = -1;
 
             if (EditingMode == MeshEditingMode.Sphere && _gizmo.MouseUp())
                 Invalidate();

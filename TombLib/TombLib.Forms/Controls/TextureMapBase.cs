@@ -630,11 +630,32 @@ namespace TombLib.Controls
             }
         }
 
-        public void ResetVisibleTexture(Texture texture)
+        public void ResetVisibleTexture(Texture texture, bool fit = false)
         {
             _visibleTexture = texture;
-            ViewPosition = new Vector2((VisibleTexture?.IsAvailable ?? false) ? VisibleTexture.Image.Width * 0.5f : 128, (ClientSize.Height - _scrollSizeTotal) * 0.5f);
-            ViewScale = 1.0f;
+
+            var available = VisibleTexture != null && VisibleTexture.IsAvailable;
+
+            var x = available ? VisibleTexture.Image.Width * 0.5f : 128;
+            float y = (ClientSize.Height - _scrollSizeTotal) * 0.5f; ;
+
+            var scale = 1.0f;
+
+            if (fit & available)
+            {
+                if (VisibleTexture.Image.Width > VisibleTexture.Image.Height)
+                    scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
+                else
+                    scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
+                scale *= 0.8f;
+
+                if (VisibleTexture.Image.Height <= ClientSize.Height / 2)
+                    y = (float)VisibleTexture.Image.Height / 2;
+            }
+
+
+            ViewPosition = new Vector2(x, y);
+            ViewScale = scale;
             Invalidate();
         }
 

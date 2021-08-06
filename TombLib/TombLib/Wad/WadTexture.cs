@@ -37,5 +37,19 @@ namespace TombLib.Wad
         public bool Equals(WadTexture other) => Hash == other.Hash;
         public override bool Equals(object other) => other is WadTexture && Hash == ((WadTexture)other).Hash;
         public override int GetHashCode() => Hash.GetHashCode();
+
+        public override string ToString()
+        {
+            var hint = string.Empty;
+
+            if (string.IsNullOrEmpty(Image.FileName))
+                hint += "Untitled ";
+            else
+                hint += Path.GetFileName(Image.FileName) + " ";
+
+            hint += "(" + Image.Size.X + "x" + Image.Size.Y + ")";
+
+            return hint;
+        }
     }
 }

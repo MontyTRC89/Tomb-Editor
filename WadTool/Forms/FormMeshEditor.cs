@@ -9,6 +9,7 @@ using TombLib;
 using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.Graphics;
+using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 
@@ -61,12 +62,13 @@ namespace WadTool
             _tool.EditorEventRaised += Tool_EditorEventRaised;
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
+            panelTextureMap.Initialize(_tool);
 
             // Populate blending modes
             cbBlendMode.Items.Clear();
             TextureExtensions.BlendModeUserNames(_tool.DestinationWad.GameVersion).ForEach(s => cbBlendMode.Items.Add(s));
 
-            Size = MinimumSize; // Counteract DarkTabbedContainer designer UI
+            //Size = MinimumSize; // Counteract DarkTabbedContainer designer UI
             tabsModes.LinkedControl = cbEditingMode;
 
             if (mesh == null) // Populate tree view
@@ -121,6 +123,7 @@ namespace WadTool
             if (lstMeshes.SelectedNodes.Count > 0)
                 lstMeshes.EnsureVisible();
             UpdateUI();
+            RepopulateTextureList();
         }
 
         protected override void Dispose(bool disposing)
@@ -136,7 +139,10 @@ namespace WadTool
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Escape)
+            {
                 panelMesh.CurrentElement = -1;
+                panelTextureMap.SelectedTexture = TextureArea.None;
+            }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -153,6 +159,9 @@ namespace WadTool
                         {
                             if (newIndex == -1) return;
 
+                            // Vertex remap mode doesn't need any major processing. 
+                            // We just update UI and focus on the vertex number to ease keyboard interaction.
+
                             UpdateUI();
                             nudVertexNum.Select(0, 5);
                             nudVertexNum.Focus();
@@ -167,12 +176,12 @@ namespace WadTool
                             if (!panelMesh.Mesh.HasAttributes)
                                 GenerateMissingVertexData(); 
 
-                            if (Control.ModifierKeys == Keys.Alt)
+                            if (Control.ModifierKeys == Keys.Alt) // Picking
                             {
                                 nudGlow.Value = panelMesh.Mesh.VertexAttributes[newIndex].Glow;
                                 nudMove.Value = panelMesh.Mesh.VertexAttributes[newIndex].Move;
                             }
-                            else
+                            else // Editing
                             {
                                 panelMesh.Mesh.VertexAttributes[newIndex] = new VertexAttributes() { Glow = (int)nudGlow.Value, Move = (int)nudMove.Value };
                                 panelMesh.Invalidate();
@@ -188,11 +197,11 @@ namespace WadTool
                             if (!panelMesh.Mesh.HasColors || !panelMesh.Mesh.HasNormals)
                                 GenerateMissingVertexData();
 
-                            if (Control.ModifierKeys == Keys.Alt)
+                            if (Control.ModifierKeys == Keys.Alt) // Picking
                             {
                                 panelColor.BackColor = panelMesh.Mesh.VertexColors[newIndex].ToWinFormsColor();
                             }
-                            else
+                            else // Editing
                             {
                                 panelMesh.Mesh.VertexColors[newIndex] = panelColor.BackColor.ToFloat3Color();
                                 panelMesh.Invalidate();
@@ -206,29 +215,63 @@ namespace WadTool
 
                             var poly = panelMesh.Mesh.Polys[newIndex];
 
-                            if (Control.ModifierKeys == Keys.Alt)
+                            if (Control.ModifierKeys == Keys.Alt) // Picking
                             {
-                                if (cbAllInfo.Checked)
+                                if (cbSheen.Checked)
+                                {
                                     nudShineStrength.Value = (decimal)poly.ShineStrength;
-                                else
+                                }
+                                
+                                if (cbBlend.Checked)
                                 {
                                     var bmIndex = poly.Texture.BlendMode.ToUserIndex();
                                     if (bmIndex < cbBlendMode.Items.Count) cbBlendMode.SelectedIndex = bmIndex;
                                     butDoubleSide.Checked = poly.Texture.DoubleSided;
                                 }
-                            }
-                            else
-                            {
-                                // Apply shininess only if checkbock is set and vice versa for other attribs
 
-                                if (cbAllInfo.Checked)
-                                    poly.ShineStrength = (byte)nudShineStrength.Value;
-                                else
+                                if (cbTexture.Checked)
                                 {
-                                    poly.Texture.BlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
-                                    poly.Texture.DoubleSided = butDoubleSide.Checked;
+                                    panelTextureMap.VisibleTexture = poly.Texture.Texture;
+                                    panelTextureMap.SelectedTexture = poly.Texture;
+                                    comboCurrentTexture.SelectedItem = poly.Texture.Texture;
+                                }
+                            }
+                            else // Editing
+                            {
+                                var currTexture = poly.Texture;
+
+                                if (cbTexture.Checked)
+                                {
+                                    if (Control.ModifierKeys == Keys.None) // No modifiers - ordinary application
+                                    {
+                                        // If there's no currently selected texture, fall back to original poly texture
+                                        if (panelTextureMap.VisibleTexture.IsAvailable && panelTextureMap.SelectedTexture != TextureArea.None)
+                                            currTexture = panelTextureMap.SelectedTexture;
+                                            
+                                    }
+                                    else // Shift or control pressed - flip or rotate texture
+                                    {
+                                        currTexture = poly.Texture;
+
+                                        if (Control.ModifierKeys == Keys.Control)
+                                            currTexture.Mirror();
+                                        else if (Control.ModifierKeys == Keys.Shift)
+                                            currTexture.Rotate(1);
+                                    }
                                 }
 
+                                if (cbSheen.Checked)
+                                {
+                                    poly.ShineStrength = (byte)nudShineStrength.Value;
+                                }
+
+                                if (cbBlend.Checked)
+                                {
+                                    currTexture.BlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
+                                    currTexture.DoubleSided = butDoubleSide.Checked;
+                                }
+
+                                poly.Texture = currTexture;
                                 panelMesh.Mesh.Polys[newIndex] = poly;
                                 panelMesh.Invalidate();
                             }
@@ -291,12 +334,16 @@ namespace WadTool
                     break;
             }
 
-            if (panelMesh.EditingMode == MeshEditingMode.FaceAttributes)
+            var faceMode = panelMesh.EditingMode == MeshEditingMode.FaceAttributes;
+
+            if (faceMode)
             {
                 nudShineStrength.Enabled = cbAllInfo.Checked;
                 cbBlendMode.Enabled = !cbAllInfo.Checked;
                 butDoubleSide.Enabled = !cbAllInfo.Checked;
             }
+
+            panelTexturing.Visible = faceMode;
 
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
@@ -321,11 +368,14 @@ namespace WadTool
         private void ShowSelectedMesh()
         {
             // Update big image view
-            if (lstMeshes.SelectedNodes.Count > 0 && lstMeshes.SelectedNodes[0].Tag != null)
-                panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+            if (lstMeshes.SelectedNodes.Count == 0 || lstMeshes.SelectedNodes[0].Tag == null)
+                return;
+
+            panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
 
             GetSphereValues();
             UpdateUI();
+            RepopulateTextureList();
         }
 
         private void RemapSelectedVertex()
@@ -469,6 +519,26 @@ namespace WadTool
                 popup.ShowInfo(panelMesh, "Missing vertex data was automatically generated for this mesh.");
         }
 
+        private void RepopulateTextureList()
+        {
+            if (panelMesh.Mesh == null)
+                return;
+
+            var list = new List<Texture>();
+
+            foreach (var poly in panelMesh.Mesh.Polys)
+            {
+                if (!list.Exists(t => t == poly.Texture.Texture))
+                    list.Add(poly.Texture.Texture);
+            }
+
+            comboCurrentTexture.Items.Clear();
+            comboCurrentTexture.Items.AddRange(list.ToArray());
+
+            if (comboCurrentTexture.Items.Count > 0)
+                comboCurrentTexture.SelectedIndex = 0;
+        }
+
         private void lstMeshes_Click(object sender, EventArgs e)
         {
             ShowSelectedMesh();
@@ -550,15 +620,18 @@ namespace WadTool
             {
                 var poly = panelMesh.Mesh.Polys[i];
 
-                // Apply shininess only if checkbock is set and vice versa for other attribs
-
-                if (cbAllInfo.Checked)
+                if (cbSheen.Checked)
                     poly.ShineStrength = currentShinyValue;
-                else
+
+                if (cbBlend.Checked)
                 {
                     poly.Texture.BlendMode = currentBlendMode;
                     poly.Texture.DoubleSided = butDoubleSide.Checked;
                 }
+
+                if (cbTexture.Checked && panelTextureMap.SelectedTexture != TextureArea.None)
+                    poly.Texture = panelTextureMap.SelectedTexture;
+
                 panelMesh.Mesh.Polys[i] = poly;
             }
 
@@ -700,6 +773,53 @@ namespace WadTool
                 panelMesh.StartPreview();
             else
                 panelMesh.StopPreview();
+        }
+
+        private void butRecalcNormalsAvg_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+                return;
+
+            panelMesh.Mesh.CalculateNormals(false);
+            panelMesh.Invalidate();
+        }
+
+        private void butAddTexture_Click(object sender, EventArgs e)
+        {
+            var paths = LevelFileDialog.BrowseFiles(FindForm(), null, null, "Load texture file", LevelTexture.FileExtensions).ToList();
+            if (paths.Count > 0)
+            {
+                var newTexture = new WadTexture(ImageC.FromFile(paths[0]));
+                comboCurrentTexture.Items.Add(newTexture);
+                comboCurrentTexture.SelectedItem = newTexture;                
+            }
+        }
+
+        private void comboCurrentTexture_SelectedValueChanged(object sender, EventArgs e)
+        {
+            var selectedTexture = comboCurrentTexture.SelectedItem as Texture;
+            panelTextureMap.ResetVisibleTexture(selectedTexture, true);
+        }
+
+        private void butDeleteTexture_Click(object sender, EventArgs e)
+        {
+            if (panelMesh.Mesh.Polys.Any(p => p.Texture.Texture == panelTextureMap.VisibleTexture))
+            {
+                popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in mesh.");
+                return;
+            }
+            
+            if (_tool.DestinationWad.MeshTexturesUnique.Contains(panelTextureMap.VisibleTexture as WadTexture))
+            {
+                popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in wad.");
+                return;
+            }
+
+            var index = comboCurrentTexture.Items.IndexOf(panelTextureMap.VisibleTexture);
+            if (index != -1)
+                comboCurrentTexture.Items.RemoveAt(index);
+
+            comboCurrentTexture.SelectedIndex = 0;
         }
     }
 }

@@ -150,7 +150,7 @@ namespace TombEditor.ToolWindows
             if (panelTextureMap.VisibleTexture != comboCurrentTexture.SelectedItem)
             {
                 var selectedTexture = comboCurrentTexture.SelectedItem as LevelTexture;
-                panelTextureMap.ResetVisibleTexture(comboCurrentTexture.SelectedItem as LevelTexture);
+                panelTextureMap.ResetVisibleTexture(selectedTexture);
                 _editor.SelectedLevelTextureChanged(selectedTexture);
             }
             UpdateUI();
