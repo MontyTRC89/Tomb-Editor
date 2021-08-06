@@ -38,6 +38,9 @@ namespace WadTool.Controls
         }
         private WadMesh _mesh;
 
+        public WadMesh VisibleMesh => _previewTimer.Enabled? _previewMesh : _mesh;
+        private WadMesh _previewMesh;
+
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MeshEditingMode EditingMode
         {
@@ -46,6 +49,9 @@ namespace WadTool.Controls
             {
                 if (_editingMode == value) 
                     return;
+
+                if (value != MeshEditingMode.VertexEffects)
+                    StopPreview();
 
                 CurrentElement = -1;
                 _editingMode = value;
@@ -196,6 +202,10 @@ namespace WadTool.Controls
         private RenderingTextureAllocator _fontTexture;
         private RenderingFont _fontDefault;
 
+        // Vertex effect preview
+        private readonly Timer _previewTimer = new Timer { Interval = 33 };
+        private int _frameCount;
+
         // Gizmo
         private GizmoMeshEditor _gizmo;
 
@@ -204,6 +214,11 @@ namespace WadTool.Controls
         private readonly List<int> _youngLaraHairIndices = new List<int>() { 68, 69, 70, 71, 76, 77, 78, 79 };
 
         protected override Vector4 ClearColor => _tool.Configuration.RenderingItem_BackgroundColor;
+
+        public PanelRenderingMesh()
+        {
+            _previewTimer.Tick += new EventHandler(PreviewTimer_Tick);
+        }
 
         public void InitializeRendering(WadToolClass tool, DeviceManager deviceManager)
         {
@@ -251,6 +266,9 @@ namespace WadTool.Controls
         {
             if (disposing)
             {
+                _previewTimer.Stop();
+                _previewTimer.Tick -= new EventHandler(PreviewTimer_Tick);
+
                 _gizmo?.Dispose();
                 _rasterizerWireframe?.Dispose();
                 _littleSphere?.Dispose();
@@ -273,9 +291,9 @@ namespace WadTool.Controls
 
             _wadRenderer.Dispose();
 
-            if (Mesh != null)
+            if (VisibleMesh != null)
             {
-                var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
+                var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
                 var world  = Matrix4x4.Identity;
 
                 var textToDraw  = new List<Text>();
@@ -309,7 +327,7 @@ namespace WadTool.Controls
                         if (!selected && _currentElement != -1 && _mesh.VertexPositions[i] == _mesh.VertexPositions[_currentElement])
                             continue;
 
-                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VertexPositions[i]) * viewProjection;
+                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]) * viewProjection;
                         solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
 
                         if (selected)
@@ -558,11 +576,13 @@ namespace WadTool.Controls
                 _device.SetBlendState(_device.BlendStates.Opaque);
             }
 
+            var showColors = EditingMode == MeshEditingMode.VertexColorsAndNormals || (EditingMode == MeshEditingMode.VertexEffects && _previewTimer.Enabled);
+
             var effect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
             effect.Parameters["Color"].SetValue(WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
-            effect.Parameters["StaticLighting"].SetValue(EditingMode == MeshEditingMode.VertexColorsAndNormals);
-            effect.Parameters["ColoredVertices"].SetValue(EditingMode == MeshEditingMode.VertexColorsAndNormals);
+            effect.Parameters["StaticLighting"].SetValue(showColors);
+            effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
             effect.Techniques[0].Passes[0].Apply();
@@ -711,7 +731,7 @@ namespace WadTool.Controls
                 var radius = VertexSphereRadius / 2.0f;
                 for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
-                    var vertex = _mesh.VertexPositions[i];
+                    var vertex = VisibleMesh.VertexPositions[i];
                     var sphere = new BoundingSphere(vertex, radius);
                     float newDistance;
 
@@ -836,6 +856,62 @@ namespace WadTool.Controls
             scale *= Level.WorldUnit;
 
             Camera = new ArcBallCamera(center, 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, scale, 50, 1000000, (float)Math.PI / 4.0f);
+            Invalidate();
+        }
+
+        private void GetTransformedVertices()
+        {
+            if (_mesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasAttributes)
+                return;
+
+            for (int i = 0; i < _mesh.VertexPositions.Count; i++)
+            {
+                var v = _mesh.VertexPositions[i];
+                var a = _mesh.VertexAttributes[i];
+
+                var hash = v.GetHashCode();
+
+                var wibble = (float)Math.Sin((((_frameCount + hash) % 64) / 64.0f) * (Math.PI * 2));
+
+                var newPos = v;
+                var newCol = _mesh.HasColors ? _mesh.VertexColors[i] : Vector3.One;
+
+                if (a.Glow > 0.0f)
+                {
+                    float intensity = a.Glow / 63.0f * (float)MathC.Lerp(-0.5f, 1.0f, wibble * 0.5f + 0.5f);
+                    newCol = Vector3.Min(newCol + new Vector3(intensity, intensity, intensity), new Vector3(2));
+                }
+
+                if (a.Move > 0.0f)
+                    newPos.Y += wibble * a.Move / 63.0f * 128.0f; // 128 units offset to top and bottom (256 total)
+
+                _previewMesh.VertexPositions[i] = newPos;
+
+                if (!_previewMesh.HasColors)
+                    _previewMesh.VertexColors.Add(newCol);
+                else
+                    _previewMesh.VertexColors[i] = newCol;
+            }
+        }
+
+        private void PreviewTimer_Tick(object sender, EventArgs e)
+        {
+            GetTransformedVertices();
+            Invalidate();
+            _frameCount++;
+        }
+
+        public void StartPreview()
+        {
+            _frameCount = 0;
+            _previewMesh = _mesh.Clone();
+            _previewTimer.Start();
+        }
+
+        public void StopPreview()
+        {
+            _previewTimer.Stop();
+            _previewMesh = null;
             Invalidate();
         }
     }

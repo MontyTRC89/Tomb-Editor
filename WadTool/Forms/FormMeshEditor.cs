@@ -534,6 +534,7 @@ namespace WadTool
         private void cbEditingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             panelMesh.EditingMode = (MeshEditingMode)cbEditingMode.SelectedIndex + 1;
+            butPreview.Checked = false;
             UpdateUI();
         }
 
@@ -689,6 +690,16 @@ namespace WadTool
             panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
             panelMesh.Invalidate();
             GetSphereValues();
+        }
+
+        private void butPreview_Click(object sender, EventArgs e)
+        {
+            butPreview.Checked = !butPreview.Checked;
+
+            if (butPreview.Checked)
+                panelMesh.StartPreview();
+            else
+                panelMesh.StopPreview();
         }
     }
 }

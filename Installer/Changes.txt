@@ -7,6 +7,7 @@ Tomb Editor:
  * Allow shiny effect on static, if light type is set to dynamic.
  * Fix exception if level with missing merged statics is compiled.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
+ * Fix statistics GUI memory leak which led to editor slowdown over time.
 
 WadTool:
  * Fully-fledged mesh editor which largely replicates missing strpix functionality:
