@@ -301,8 +301,6 @@ namespace WadTool
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
 
-            butPreview.Checked = false;
-
             panelMesh.Invalidate();
         }
 
@@ -536,6 +534,7 @@ namespace WadTool
         private void cbEditingMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             panelMesh.EditingMode = (MeshEditingMode)cbEditingMode.SelectedIndex + 1;
+            butPreview.Checked = false;
             UpdateUI();
         }
 

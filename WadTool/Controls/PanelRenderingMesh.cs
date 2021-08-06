@@ -37,6 +37,8 @@ namespace WadTool.Controls
             }
         }
         private WadMesh _mesh;
+
+        public WadMesh VisibleMesh => _previewTimer.Enabled? _previewMesh : _mesh;
         private WadMesh _previewMesh;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -289,10 +291,9 @@ namespace WadTool.Controls
 
             _wadRenderer.Dispose();
 
-            var visibleMesh = _previewTimer.Enabled ? _previewMesh : _mesh;
-            if (visibleMesh != null)
+            if (VisibleMesh != null)
             {
-                var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = Mesh });
+                var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
                 var world  = Matrix4x4.Identity;
 
                 var textToDraw  = new List<Text>();
@@ -326,7 +327,7 @@ namespace WadTool.Controls
                         if (!selected && _currentElement != -1 && _mesh.VertexPositions[i] == _mesh.VertexPositions[_currentElement])
                             continue;
 
-                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.VertexPositions[i]) * viewProjection;
+                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]) * viewProjection;
                         solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
 
                         if (selected)
@@ -730,7 +731,7 @@ namespace WadTool.Controls
                 var radius = VertexSphereRadius / 2.0f;
                 for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
-                    var vertex = _mesh.VertexPositions[i];
+                    var vertex = VisibleMesh.VertexPositions[i];
                     var sphere = new BoundingSphere(vertex, radius);
                     float newDistance;
 
@@ -858,52 +859,45 @@ namespace WadTool.Controls
             Invalidate();
         }
 
-        private List<Vector3>[] GetTransformedVertices()
+        private void GetTransformedVertices()
         {
-            var result = new List<Vector3>[2] { new List<Vector3>(), new List<Vector3>() };
-
             if (_mesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasAttributes)
-                return result;
+                return;
 
             for (int i = 0; i < _mesh.VertexPositions.Count; i++)
             {
                 var v = _mesh.VertexPositions[i];
                 var a = _mesh.VertexAttributes[i];
 
-                var wibble = (float)Math.Sin((((_frameCount + v.GetHashCode()) % 64) / 64.0f) * (Math.PI * 2));
+                var hash = v.GetHashCode();
+
+                var wibble = (float)Math.Sin((((_frameCount + hash) % 64) / 64.0f) * (Math.PI * 2));
 
                 var newPos = v;
                 var newCol = _mesh.HasColors ? _mesh.VertexColors[i] : Vector3.One;
 
                 if (a.Glow > 0.0f)
                 {
-                    float intensity = a.Glow * (float)MathC.Lerp(-0.5f, 1.0f, wibble * 0.5f + 0.5f);
-                    newCol = Vector3.Min(newCol + new Vector3(intensity, intensity, intensity), Vector3.One);
+                    float intensity = a.Glow / 63.0f * (float)MathC.Lerp(-0.5f, 1.0f, wibble * 0.5f + 0.5f);
+                    newCol = Vector3.Min(newCol + new Vector3(intensity, intensity, intensity), new Vector3(2));
                 }
 
                 if (a.Move > 0.0f)
-                    newPos.Y += wibble * a.Move; // 128 units offset to top and bottom (256 total)
+                    newPos.Y += wibble * a.Move / 63.0f * 128.0f; // 128 units offset to top and bottom (256 total)
 
-                result[0].Add(newPos);
-                result[1].Add(newCol);
+                _previewMesh.VertexPositions[i] = newPos;
+
+                if (!_previewMesh.HasColors)
+                    _previewMesh.VertexColors.Add(newCol);
+                else
+                    _previewMesh.VertexColors[i] = newCol;
             }
-
-            return result;
         }
 
         private void PreviewTimer_Tick(object sender, EventArgs e)
         {
-            // Get transformed data
-            var transformedData = GetTransformedVertices();
-
-            // Temprarily substitute
-            _previewMesh.VertexPositions = transformedData[0];
-            _previewMesh.VertexColors = transformedData[1];
-
-            // Immediately redraw
+            GetTransformedVertices();
             Invalidate();
-
-            // Increase frame count
             _frameCount++;
         }
 
@@ -918,6 +912,7 @@ namespace WadTool.Controls
         {
             _previewTimer.Stop();
             _previewMesh = null;
+            Invalidate();
         }
     }
 }
