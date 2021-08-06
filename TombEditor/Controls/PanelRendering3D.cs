@@ -2446,7 +2446,6 @@ namespace TombEditor.Controls
                             {
                                 var bv = instance as BoxVolumeInstance;
                                 model = Matrix4x4.CreateScale(bv.Size / _littleCubeRadius / 2.0f) *
-                                        Matrix4x4.CreateTranslation(new Vector3(0, bv.Size.Y / 2 + 8.0f, 0)) *
                                         instance.RotationPositionMatrix;
                             }
                             break;
