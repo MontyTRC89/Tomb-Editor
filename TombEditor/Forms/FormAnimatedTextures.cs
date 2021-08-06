@@ -79,7 +79,7 @@ namespace TombEditor.Forms
 
         private readonly Editor _editor;
         private readonly Cache<CachedImageInfo, Bitmap> _imageCache;
-        private readonly static ImageC transparentBackground = ImageC.FromSystemDrawingImage(Properties.Resources.misc_TransparentBackground);
+        private readonly static ImageC transparentBackground = ImageC.FromSystemDrawingImage(TombLib.Properties.Resources.misc_TransparentBackground);
         
         private readonly bool _isNg;
 

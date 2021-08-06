@@ -460,7 +460,7 @@ namespace TombEditor.Forms
                 return base.ProcessCmdKey(ref msg, keyData);
 
             // Don't process reserved camera keys
-            if (Hotkey.ReservedCameraKeys.Contains(keyData))
+            if (WinFormsUtils.DirectionalCameraKeys.Contains(keyData))
                 return base.ProcessCmdKey(ref msg, keyData);
 
             // Don't process one-key and shift hotkeys if we're focused on control which allows text input

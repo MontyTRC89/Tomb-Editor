@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace TombEditor.Controls
+namespace TombLib.Controls
 {
     // This avoids various trouble with the official DarkUI control and also allows floating point values
     // TODO Maybe fork DarkUI to fix this in the source.

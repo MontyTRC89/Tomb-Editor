@@ -107,9 +107,13 @@
     <Compile Include="Controls\DarkDataGridViewControls.designer.cs">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DarkScrollBarC.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\MovementTimer.cs" />
     <Compile Include="Controls\PanelItemPreview.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -127,6 +131,9 @@
     </Compile>
     <Compile Include="Controls\SoundInfoEditor.Designer.cs">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TextureMapBase.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\FormOptionsBase.cs">
       <SubType>Form</SubType>
@@ -231,7 +238,7 @@
       <DependentUpon>GeometryIOSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
@@ -255,6 +262,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\misc\misc_SoundToolOverlay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\misc\misc_TransparentBackground.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,10 +19,10 @@ namespace TombLib.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace TombLib.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TombLib.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace TombLib.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap actions_play_16 {
+        public static System.Drawing.Bitmap actions_play_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_play-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -73,7 +73,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap actions_refresh_16 {
+        public static System.Drawing.Bitmap actions_refresh_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_refresh_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -83,7 +83,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_ArrowDown_16 {
+        public static System.Drawing.Bitmap general_ArrowDown_16 {
             get {
                 object obj = ResourceManager.GetObject("general_ArrowDown_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -93,7 +93,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_ArrowUp_16 {
+        public static System.Drawing.Bitmap general_ArrowUp_16 {
             get {
                 object obj = ResourceManager.GetObject("general_ArrowUp_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -103,7 +103,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_clipboard_16 {
+        public static System.Drawing.Bitmap general_clipboard_16 {
             get {
                 object obj = ResourceManager.GetObject("general_clipboard-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -113,7 +113,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_clipboard_161 {
+        public static System.Drawing.Bitmap general_clipboard_161 {
             get {
                 object obj = ResourceManager.GetObject("general_clipboard-161", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -123,7 +123,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_copy_16 {
+        public static System.Drawing.Bitmap general_copy_16 {
             get {
                 object obj = ResourceManager.GetObject("general_copy-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -133,7 +133,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_copy_link_16 {
+        public static System.Drawing.Bitmap general_copy_link_16 {
             get {
                 object obj = ResourceManager.GetObject("general_copy_link-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -143,7 +143,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_create_new_16 {
+        public static System.Drawing.Bitmap general_create_new_16 {
             get {
                 object obj = ResourceManager.GetObject("general_create_new-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -153,7 +153,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_edit_16 {
+        public static System.Drawing.Bitmap general_edit_16 {
             get {
                 object obj = ResourceManager.GetObject("general_edit-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -163,7 +163,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_Export_16 {
+        public static System.Drawing.Bitmap general_Export_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Export-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -173,7 +173,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_Import_16 {
+        public static System.Drawing.Bitmap general_Import_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Import-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -183,7 +183,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_Open_16 {
+        public static System.Drawing.Bitmap general_Open_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Open-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -193,7 +193,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_plus_math_16 {
+        public static System.Drawing.Bitmap general_plus_math_16 {
             get {
                 object obj = ResourceManager.GetObject("general_plus_math-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -203,7 +203,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_redo_16 {
+        public static System.Drawing.Bitmap general_redo_16 {
             get {
                 object obj = ResourceManager.GetObject("general_redo-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -213,7 +213,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_Save_16 {
+        public static System.Drawing.Bitmap general_Save_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Save-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -223,7 +223,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_Save_As_16 {
+        public static System.Drawing.Bitmap general_Save_As_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Save As-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -233,7 +233,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_search_16 {
+        public static System.Drawing.Bitmap general_search_16 {
             get {
                 object obj = ResourceManager.GetObject("general_search-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -243,7 +243,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_target_16 {
+        public static System.Drawing.Bitmap general_target_16 {
             get {
                 object obj = ResourceManager.GetObject("general_target_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -253,7 +253,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_trash_16 {
+        public static System.Drawing.Bitmap general_trash_16 {
             get {
                 object obj = ResourceManager.GetObject("general_trash-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -263,7 +263,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_undo_16 {
+        public static System.Drawing.Bitmap general_undo_16 {
             get {
                 object obj = ResourceManager.GetObject("general_undo-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -273,7 +273,7 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap general_Warning_16 {
+        public static System.Drawing.Bitmap general_Warning_16 {
             get {
                 object obj = ResourceManager.GetObject("general_Warning-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -283,9 +283,19 @@ namespace TombLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap misc_SoundToolOverlay {
+        public static System.Drawing.Bitmap misc_SoundToolOverlay {
             get {
                 object obj = ResourceManager.GetObject("misc_SoundToolOverlay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap misc_TransparentBackground {
+            get {
+                object obj = ResourceManager.GetObject("misc_TransparentBackground", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

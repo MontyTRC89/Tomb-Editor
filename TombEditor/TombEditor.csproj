@@ -279,9 +279,6 @@
     <Compile Include="Controls\ContextMenus\SelectedRoomContextMenu.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\DarkScrollBarC.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\DepthBar.cs" />
     <Compile Include="Controls\ContextMenus\MaterialObjectContextMenu.cs">
       <SubType>Component</SubType>
@@ -292,7 +289,6 @@
     <Compile Include="Controls\ImportedGeometryManager.Designer.cs">
       <DependentUpon>ImportedGeometryManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MovementTimer.cs" />
     <Compile Include="Controls\PanelPalette.cs">
       <SubType>Component</SubType>
     </Compile>

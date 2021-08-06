@@ -9,6 +9,7 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombEditor.Controls.ContextMenus;
 using TombLib;
+using TombLib.Controls;
 using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Utils;

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -17,16 +16,6 @@ namespace TombEditor
         private const uint MAPVK_VK_TO_CHAR = 2;
         [DllImport("user32.dll")]
         private static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
-        public static List<Keys> ReservedCameraKeys = new List<Keys>
-        {
-            Keys.Up,
-            Keys.Down,
-            Keys.Left,
-            Keys.Right,
-            Keys.PageDown,
-            Keys.PageUp
-        };
 
         // Remap weird ToString mappings for certain characters
         public static Dictionary<Keys, string> FriendlyKeyNameTable = new Dictionary<Keys, string>

@@ -1065,7 +1065,7 @@
             // 
             this.tr5SpritesTextureFilePathPicPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tr5SpritesTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
-            this.tr5SpritesTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.misc_TransparentBackground;
+            this.tr5SpritesTextureFilePathPicPreview.BackgroundImage = global::TombLib.Properties.Resources.misc_TransparentBackground;
             this.tr5SpritesTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tr5SpritesTextureFilePathPicPreview.Location = new System.Drawing.Point(639, 2);
             this.tr5SpritesTextureFilePathPicPreview.Name = "tr5SpritesTextureFilePathPicPreview";
@@ -1143,7 +1143,7 @@
             // 
             this.fontTextureFilePathPicPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.fontTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
-            this.fontTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.misc_TransparentBackground;
+            this.fontTextureFilePathPicPreview.BackgroundImage = global::TombLib.Properties.Resources.misc_TransparentBackground;
             this.fontTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.fontTextureFilePathPicPreview.Location = new System.Drawing.Point(639, 2);
             this.fontTextureFilePathPicPreview.Name = "fontTextureFilePathPicPreview";
@@ -1221,7 +1221,7 @@
             // 
             this.skyTextureFilePathPicPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.skyTextureFilePathPicPreview.BackColor = System.Drawing.Color.Gray;
-            this.skyTextureFilePathPicPreview.BackgroundImage = global::TombEditor.Properties.Resources.misc_TransparentBackground;
+            this.skyTextureFilePathPicPreview.BackgroundImage = global::TombLib.Properties.Resources.misc_TransparentBackground;
             this.skyTextureFilePathPicPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.skyTextureFilePathPicPreview.Location = new System.Drawing.Point(639, 2);
             this.skyTextureFilePathPicPreview.Name = "skyTextureFilePathPicPreview";

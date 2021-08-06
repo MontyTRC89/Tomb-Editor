@@ -4,7 +4,6 @@ using System.Drawing.Drawing2D;
 using System.Numerics;
 using System.Windows.Forms;
 using DarkUI.Forms;
-using TombLib;
 using TombLib.LevelData;
 using TombLib.Utils;
 using Color = System.Drawing.Color;
@@ -88,19 +87,6 @@ namespace TombEditor.Forms
                 for (int x = xMin; x < xMax; ++x)
                     textureMap.VisibleTexture.SetFootStepSound(x, y, sound);
 
-            // TODO: disabled for now
-            /*ConservativeRasterizer.RasterizeQuad(
-                textureMap.SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity,
-                textureMap.SelectedTexture.TexCoord1 / LevelTexture.FootStepSoundGranularity,
-                textureMap.SelectedTexture.TexCoord2 / LevelTexture.FootStepSoundGranularity,
-                textureMap.SelectedTexture.TexCoord3 / LevelTexture.FootStepSoundGranularity,
-                (startX, startY, endX, endY) =>
-                {
-                    for (int y = startY; y < endY; ++y)
-                        for (int x = startX; x < endX; ++x)
-                            textureMap.VisibleTexture.SetFootStepSound(x, y, sound);
-                });*/
-
             textureMap.Invalidate();
             _editor.TextureSoundsChange();
         }
@@ -177,20 +163,6 @@ namespace TombEditor.Forms
                 RectangleF selArea = RectangleF.FromLTRB(selStart.X, selStart.Y, selEnd.X, selEnd.Y);
 
                 e.Graphics.FillRectangle(_coverBrush, selArea);
-
-                // TODO: disabled for now
-                /*ConservativeRasterizer.RasterizeQuadUniquely(
-                    SelectedTexture.TexCoord0 / LevelTexture.FootStepSoundGranularity,
-                    SelectedTexture.TexCoord1 / LevelTexture.FootStepSoundGranularity,
-                    SelectedTexture.TexCoord2 / LevelTexture.FootStepSoundGranularity,
-                    SelectedTexture.TexCoord3 / LevelTexture.FootStepSoundGranularity,
-                    (startX, startY, endX, endY) =>
-                    {
-                        PointF tileStart = ToVisualCoord(new Vector2(startX, startY) * LevelTexture.FootStepSoundGranularity);
-                        PointF tileEnd = ToVisualCoord(new Vector2(endX, endY) * LevelTexture.FootStepSoundGranularity);
-                        RectangleF tileArea = RectangleF.FromLTRB(tileStart.X, tileStart.Y, tileEnd.X, tileEnd.Y);
-                        e.Graphics.FillRectangle(_coverBrush, tileArea);
-                    });*/
 
                 base.OnPaintSelection(e);
             }

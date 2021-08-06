@@ -538,7 +538,7 @@ namespace TombEditor.Forms
                 {
                     fontTextureFilePathPicPreview.Image?.Dispose();
                     fontTextureFilePathPicPreview.Image = _levelSettings.LoadFontTexture(fontPath == "<default>" ? null : fontPath).ToBitmap();
-                    fontTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
+                    fontTextureFilePathPicPreview.BackgroundImage = TombLib.Properties.Resources.misc_TransparentBackground;
                     fontTextureFilePathPicPreview.Tag = null;
                     fontTextureFilePathTxt.BackColor = _correctColor;
                 }
@@ -564,7 +564,7 @@ namespace TombEditor.Forms
                 {
                     skyTextureFilePathPicPreview.Image?.Dispose();
                     skyTextureFilePathPicPreview.Image = _levelSettings.LoadSkyTexture(skyPath == "<default>" ? null : skyPath).ToBitmap();
-                    skyTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
+                    skyTextureFilePathPicPreview.BackgroundImage = TombLib.Properties.Resources.misc_TransparentBackground;
                     skyTextureFilePathPicPreview.Tag = null;
                     skyTextureFilePathTxt.BackColor = _correctColor;
                 }
@@ -590,7 +590,7 @@ namespace TombEditor.Forms
                 {
                     tr5SpritesTextureFilePathPicPreview.Image?.Dispose();
                     tr5SpritesTextureFilePathPicPreview.Image = _levelSettings.LoadTr5ExtraSprites(tr5SpritesPath == "<default>" ? null : tr5SpritesPath).ToBitmap();
-                    tr5SpritesTextureFilePathPicPreview.BackgroundImage = Properties.Resources.misc_TransparentBackground;
+                    tr5SpritesTextureFilePathPicPreview.BackgroundImage = TombLib.Properties.Resources.misc_TransparentBackground;
                     tr5SpritesTextureFilePathPicPreview.Tag = null;
                     tr5SpritesTextureFilePathTxt.BackColor = _correctColor;
                 }
@@ -892,7 +892,7 @@ namespace TombEditor.Forms
             {
                 using (Graphics g = Graphics.FromImage(result))
                 {
-                    using (TextureBrush brush = new TextureBrush(Properties.Resources.misc_TransparentBackground))
+                    using (TextureBrush brush = new TextureBrush(TombLib.Properties.Resources.misc_TransparentBackground))
                         g.FillRectangle(brush, new Rectangle(new Point(), result.Size));
                     g.InterpolationMode = InterpolationMode.NearestNeighbor;
                     if (data.LevelTexture != null)

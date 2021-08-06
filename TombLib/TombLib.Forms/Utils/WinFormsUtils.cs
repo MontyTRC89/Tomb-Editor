@@ -9,6 +9,16 @@ namespace TombLib.Utils
 {
     public static class WinFormsUtils
     {
+        public static List<Keys> DirectionalCameraKeys = new List<Keys>
+        {
+            Keys.Up,
+            Keys.Down,
+            Keys.Left,
+            Keys.Right,
+            Keys.PageDown,
+            Keys.PageUp
+        };
+
         public static Color ToWinFormsColor(this Vector3 color) => new Vector4(color, 255.0f).ToWinFormsColor();
         public static Vector3 ToFloat3Color(this Color color) => new Vector3(color.R, color.G, color.B) / 255.0f;
         public static Vector4 ToFloat4Color(this Color color) => new Vector4(color.R, color.G, color.B, color.A) / 255.0f;

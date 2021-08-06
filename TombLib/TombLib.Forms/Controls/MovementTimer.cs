@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
-using TombLib;
+using TombLib.Utils;
 
-namespace TombEditor.Controls
+namespace TombLib.Controls
 {
     public enum AnimationMode
     {
@@ -46,7 +46,7 @@ namespace TombEditor.Controls
             if (Mode != AnimationMode.Idle)
                 return false; // Reject if auto-move is in progress
 
-            if (Hotkey.ReservedCameraKeys.Contains(moveDirection))
+            if (WinFormsUtils.DirectionalCameraKeys.Contains(moveDirection))
             {
                 Mode = AnimationMode.Spin;
                 if (_moveTimer.Enabled == false)
