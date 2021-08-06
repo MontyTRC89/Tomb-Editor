@@ -582,7 +582,7 @@ namespace WadTool.Controls
             effect.Parameters["ModelViewProjection"].SetValue(world.ToSharpDX());
             effect.Parameters["Color"].SetValue(WireframeMode ? new Vector4(1.0f - ClearColor.To3().GetLuma()) : Vector4.One);
             effect.Parameters["StaticLighting"].SetValue(showColors);
-            effect.Parameters["ColoredVertices"].SetValue(showColors);
+            effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
             effect.Techniques[0].Passes[0].Apply();
