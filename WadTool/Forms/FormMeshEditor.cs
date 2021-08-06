@@ -336,13 +336,6 @@ namespace WadTool
 
             var faceMode = panelMesh.EditingMode == MeshEditingMode.FaceAttributes;
 
-            if (faceMode)
-            {
-                nudShineStrength.Enabled = cbAllInfo.Checked;
-                cbBlendMode.Enabled = !cbAllInfo.Checked;
-                butDoubleSide.Enabled = !cbAllInfo.Checked;
-            }
-
             panelTexturing.Visible = faceMode;
 
             if (cbBlendMode.SelectedIndex == -1)
