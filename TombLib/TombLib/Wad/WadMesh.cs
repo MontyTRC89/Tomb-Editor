@@ -162,9 +162,9 @@ namespace TombLib.Wad
             foreach (var poly in Polys)
             {
                 if (poly.Shape == WadPolygonShape.Triangle)
-                    helper.AddPolygon(true, poly.Index0, poly.Index1, poly.Index2);
+                    helper.AddPolygon(weighted, poly.Index0, poly.Index1, poly.Index2);
                 else
-                    helper.AddPolygon(true, poly.Index0, poly.Index1, poly.Index2, poly.Index3);
+                    helper.AddPolygon(weighted, poly.Index0, poly.Index1, poly.Index2, poly.Index3);
             }
 
             VertexNormals = helper.CalculateNormals();

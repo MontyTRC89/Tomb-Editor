@@ -134,9 +134,9 @@ namespace TombLib.GeometryIO
                 foreach (var poly in submesh.Value.Polygons)
                 {
                     if (poly.Shape == IOPolygonShape.Triangle)
-                        helper.AddPolygon(true, poly.Indices[0], poly.Indices[1], poly.Indices[2]);
+                        helper.AddPolygon(weighted, poly.Indices[0], poly.Indices[1], poly.Indices[2]);
                     else
-                        helper.AddPolygon(true, poly.Indices[0], poly.Indices[1], poly.Indices[2], poly.Indices[3]);
+                        helper.AddPolygon(weighted, poly.Indices[0], poly.Indices[1], poly.Indices[2], poly.Indices[3]);
                 }
 
             Normals = helper.CalculateNormals();
