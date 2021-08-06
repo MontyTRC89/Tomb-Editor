@@ -131,8 +131,6 @@ namespace TombEditor.Forms
 
                 addBoxVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
                 addSphereVolumeToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
-                addPrismVolumeToolStripMenuItem.Visible  = false; // FIXME: Re-enable for TEN when there will be actual implementation
-                toolStripMenuSeparator7.Visible = _editor.Level.IsTombEngine;
                 generateObjectNamesToolStripMenuItem.Visible = _editor.Level.IsTombEngine;
             }
 

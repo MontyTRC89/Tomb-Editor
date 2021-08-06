@@ -1159,15 +1159,6 @@ namespace TombEditor
                 EditorActions.AddVolume(VolumeShape.Sphere);
             });
 
-            // FIXME: Re-enable for TEN when there will be actual implementation
-
-            // AddCommand("AddPrismVolume", "Add prism volume", CommandType.Objects, delegate (CommandArgs args)
-            // {
-            //     if (!EditorActions.VersionCheck(args.Editor.Level.IsTombEngine, "Volume"))
-            //         return;
-            //     EditorActions.AddVolume(VolumeShape.Prism);
-            // });
-
             AddCommand("AddItem", "Add item", CommandType.Objects, delegate (CommandArgs args)
             {
                 var currentItem = EditorActions.GetCurrentItemWithMessage();

@@ -660,9 +660,6 @@ namespace TombEditor
                 case VolumeShape.Box:
                     _editor.Action = new EditorActionPlace(false, (l, r) => new BoxVolumeInstance());
                     break;
-                case VolumeShape.Prism:
-                    _editor.Action = new EditorActionPlace(false, (l, r) => new PrismVolumeInstance());
-                    break;
                 case VolumeShape.Sphere:
                     _editor.Action = new EditorActionPlace(false, (l, r) => new SphereVolumeInstance());
                     break;

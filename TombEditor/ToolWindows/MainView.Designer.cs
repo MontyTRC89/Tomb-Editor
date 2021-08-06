@@ -64,7 +64,6 @@
             this.butCompileLevelAndPlay = new System.Windows.Forms.ToolStripButton();
             this.butCompileAndPlayPreview = new System.Windows.Forms.ToolStripButton();
             this.butAddBoxVolume = new System.Windows.Forms.ToolStripButton();
-            this.butAddPrismVolume = new System.Windows.Forms.ToolStripButton();
             this.butAddSphereVolume = new System.Windows.Forms.ToolStripButton();
             this.butTextureFloor = new System.Windows.Forms.ToolStripButton();
             this.butTextureCeiling = new System.Windows.Forms.ToolStripButton();
@@ -131,7 +130,6 @@
             this.butCompileLevelAndPlay,
             this.butCompileAndPlayPreview,
             this.butAddBoxVolume,
-            this.butAddPrismVolume,
             this.butAddSphereVolume,
             this.butTextureFloor,
             this.butTextureCeiling,
@@ -693,17 +691,6 @@
             this.butAddBoxVolume.Size = new System.Drawing.Size(23, 25);
             this.butAddBoxVolume.Tag = "AddBoxVolume";
             // 
-            // butAddPrismVolume
-            // 
-            this.butAddPrismVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butAddPrismVolume.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butAddPrismVolume.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butAddPrismVolume.Image = global::TombEditor.Properties.Resources.objects_volume_prism_16;
-            this.butAddPrismVolume.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butAddPrismVolume.Name = "butAddPrismVolume";
-            this.butAddPrismVolume.Size = new System.Drawing.Size(23, 25);
-            this.butAddPrismVolume.Visible = false;
-            // 
             // butAddSphereVolume
             // 
             this.butAddSphereVolume.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -925,7 +912,6 @@
         private System.Windows.Forms.ToolStripButton butDraw15BitLighting;
         private System.Windows.Forms.ToolStripMenuItem butDrawVolumes;
         private System.Windows.Forms.ToolStripButton butAddBoxVolume;
-        private System.Windows.Forms.ToolStripButton butAddPrismVolume;
         private System.Windows.Forms.ToolStripButton butAddSphereVolume;
         private System.Windows.Forms.ToolStripButton butDrawStaticTint;
         private System.Windows.Forms.ToolStripButton butDisableHiddenRoomPicking;

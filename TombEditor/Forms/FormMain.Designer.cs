@@ -112,9 +112,7 @@ namespace TombEditor.Forms
             this.addMemoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPortalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addTriggerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.addSphereVolumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addPrismVolumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addBoxVolumeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.deleteAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,6 +131,7 @@ namespace TombEditor.Forms
             this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
             this.makeQuickItemGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getObjectStatisticsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateObjectNamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.texturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadTextureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeTexturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -215,7 +214,6 @@ namespace TombEditor.Forms
             this.dockArea = new DarkUI.Docking.DarkDockPanel();
             this.panelDockArea = new System.Windows.Forms.Panel();
             this.assToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateObjectNamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.panelDockArea.SuspendLayout();
@@ -1043,10 +1041,8 @@ namespace TombEditor.Forms
             this.toolStripMenuItem8,
             this.addPortalToolStripMenuItem,
             this.addTriggerToolStripMenuItem,
-            this.toolStripMenuSeparator7,
-            this.addSphereVolumeToolStripMenuItem,
-            this.addPrismVolumeToolStripMenuItem,
             this.addBoxVolumeToolStripMenuItem,
+            this.addSphereVolumeToolStripMenuItem,
             this.toolStripSeparator7,
             this.deleteAllToolStripMenuItem,
             this.toolStripMenuSeparator8,
@@ -1230,14 +1226,6 @@ namespace TombEditor.Forms
             this.addTriggerToolStripMenuItem.Tag = "AddTrigger";
             this.addTriggerToolStripMenuItem.Text = "AddTrigger";
             // 
-            // toolStripMenuSeparator7
-            // 
-            this.toolStripMenuSeparator7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripMenuSeparator7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripMenuSeparator7.Margin = new System.Windows.Forms.Padding(0, 0, 0, 1);
-            this.toolStripMenuSeparator7.Name = "toolStripMenuSeparator7";
-            this.toolStripMenuSeparator7.Size = new System.Drawing.Size(257, 6);
-            // 
             // addSphereVolumeToolStripMenuItem
             // 
             this.addSphereVolumeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -1248,16 +1236,6 @@ namespace TombEditor.Forms
             this.addSphereVolumeToolStripMenuItem.Tag = "AddSphereVolume";
             this.addSphereVolumeToolStripMenuItem.Text = "AddSphereVolume";
             this.addSphereVolumeToolStripMenuItem.Visible = false;
-            // 
-            // addPrismVolumeToolStripMenuItem
-            // 
-            this.addPrismVolumeToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.addPrismVolumeToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.addPrismVolumeToolStripMenuItem.Image = global::TombEditor.Properties.Resources.objects_volume_prism_16;
-            this.addPrismVolumeToolStripMenuItem.Name = "addPrismVolumeToolStripMenuItem";
-            this.addPrismVolumeToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.addPrismVolumeToolStripMenuItem.Text = "AddPrismVolume";
-            this.addPrismVolumeToolStripMenuItem.Visible = false;
             // 
             // addBoxVolumeToolStripMenuItem
             // 
@@ -1427,6 +1405,15 @@ namespace TombEditor.Forms
             this.getObjectStatisticsToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
             this.getObjectStatisticsToolStripMenuItem.Tag = "GetObjectStatistics";
             this.getObjectStatisticsToolStripMenuItem.Text = "GetObjectStatistics";
+            // 
+            // generateObjectNamesToolStripMenuItem
+            // 
+            this.generateObjectNamesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.generateObjectNamesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.generateObjectNamesToolStripMenuItem.Name = "generateObjectNamesToolStripMenuItem";
+            this.generateObjectNamesToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
+            this.generateObjectNamesToolStripMenuItem.Tag = "GenerateObjectNames";
+            this.generateObjectNamesToolStripMenuItem.Text = "GenerateObjectNames";
             // 
             // texturesToolStripMenuItem
             // 
@@ -2260,15 +2247,6 @@ namespace TombEditor.Forms
             this.assToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assToolStripMenuItem.Text = "ass";
             // 
-            // generateObjectNamesToolStripMenuItem
-            // 
-            this.generateObjectNamesToolStripMenuItem.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.generateObjectNamesToolStripMenuItem.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.generateObjectNamesToolStripMenuItem.Name = "generateObjectNamesToolStripMenuItem";
-            this.generateObjectNamesToolStripMenuItem.Size = new System.Drawing.Size(260, 22);
-            this.generateObjectNamesToolStripMenuItem.Tag = "GenerateObjectNames";
-            this.generateObjectNamesToolStripMenuItem.Text = "GenerateObjectNames";
-            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -2378,7 +2356,6 @@ namespace TombEditor.Forms
         private System.Windows.Forms.ToolStripMenuItem paletteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem texturePanelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addGhostBlockToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuSeparator7;
         private System.Windows.Forms.ToolStripMenuItem addPortalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addTriggerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem transformToolStripMenuItem;
@@ -2473,7 +2450,6 @@ namespace TombEditor.Forms
         private ToolStripMenuItem searchAndReplaceToolStripMenuItem;
         private ToolStripMenuItem findUntexturedToolStripMenuItem;
         private ToolStripMenuItem addSphereVolumeToolStripMenuItem;
-        private ToolStripMenuItem addPrismVolumeToolStripMenuItem;
         private ToolStripMenuItem addBoxVolumeToolStripMenuItem;
         private ToolStripMenuItem toolStripMenuItem8;
         private ToolStripMenuItem assToolStripMenuItem;

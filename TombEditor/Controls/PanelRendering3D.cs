@@ -135,7 +135,6 @@ namespace TombEditor.Controls
         private Buffer<SolidVertex> _objectHeightLineVertexBuffer;
         private Buffer<SolidVertex> _flybyPathVertexBuffer;
         private Buffer<SolidVertex> _ghostBlockVertexBuffer;
-        private Buffer<SolidVertex> _prismVertexBuffer;
         private Buffer<SolidVertex> _boxVertexBuffer;
 
         // Flyby stuff
@@ -263,7 +262,6 @@ namespace TombEditor.Controls
                 _rasterizerWireframe?.Dispose();
                 _objectHeightLineVertexBuffer?.Dispose();
                 _flybyPathVertexBuffer?.Dispose();
-                _prismVertexBuffer?.Dispose();
                 _gizmo?.Dispose();
                 _sphere?.Dispose();
                 _cone?.Dispose();
@@ -301,9 +299,7 @@ namespace TombEditor.Controls
 
                 // Initialize vertex buffers
                 _ghostBlockVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 84);
-                _prismVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_legacyDevice, 24);
                 _boxVertexBuffer = (new BoundingBox(new Vector3(-_littleCubeRadius), new Vector3(_littleCubeRadius)).GetVertexBuffer(_legacyDevice));
-                BuildPrismVertexBuffer();
 
                 // Maybe I could use this as bounding box, scaling it properly before drawing
                 _linesCube = GeometricPrimitive.LinesCube.New(_legacyDevice, 128, 128, 128);
@@ -349,16 +345,6 @@ namespace TombEditor.Controls
 
                 ResetCamera(true);
             }
-        }
-
-        private void BuildPrismVertexBuffer()
-        {
-            SolidVertex[] v = new SolidVertex[24];
-            Vector3[] p = new Vector3[6] { new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 1),
-                              new Vector3(1, 1, 1), new Vector3(1, 1, 0), new Vector3(0, 1, 0) };
-            byte[] x = new byte[24] { 0, 1, 2, 4, 1, 0, 0, 5, 4, 2, 1, 4, 3, 2, 4, 3, 0, 2, 5, 0, 3, 3, 4, 5 };
-            for (int i = 0; i < 24; i++) v[i] = new SolidVertex(p[x[i]]);
-            _prismVertexBuffer.SetData(v);
         }
 
         private void EditorEventRaised(IEditorEvent obj)
@@ -2432,10 +2418,6 @@ namespace TombEditor.Controls
                                 _legacyDevice.SetVertexInputLayout(_sphere.InputLayout);
                                 _legacyDevice.SetIndexBuffer(_sphere.IndexBuffer, _sphere.IsIndex32Bits);
                                 break;
-                            case VolumeShape.Prism:
-                                _legacyDevice.SetVertexBuffer(_prismVertexBuffer);
-                                _legacyDevice.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _prismVertexBuffer));
-                                break;
                         }
                     }
 
@@ -2456,14 +2438,6 @@ namespace TombEditor.Controls
                                         instance.RotationPositionMatrix;
                             }
                             break;
-                        case VolumeShape.Prism:
-                            {
-                                var pv = instance as PrismVolumeInstance;
-                                model = Matrix4x4.CreateScale(new Vector3(Level.WorldUnit, pv.Scale * pv.DefaultScale, Level.WorldUnit)) *
-                                        Matrix4x4.CreateTranslation(-Level.HalfWorldUnit, 1, -Level.HalfWorldUnit) *
-                                        instance.RotationPositionMatrix;
-                            }
-                            break;
                     }
 
 
@@ -2471,7 +2445,6 @@ namespace TombEditor.Controls
                     {
                         if (d == 1)
                         {
-
                             if (shape == VolumeShape.Box)
                             {
                                 _legacyDevice.SetVertexBuffer(_boxVertexBuffer);
@@ -2496,9 +2469,7 @@ namespace TombEditor.Controls
                         effect.Parameters["ModelViewProjection"].SetValue((model * _viewProjection).ToSharpDX());
                         effect.CurrentTechnique.Passes[0].Apply();
 
-                        if (shape == VolumeShape.Prism)
-                            _legacyDevice.Draw(PrimitiveType.TriangleList, 24);
-                        else if (shape == VolumeShape.Box && d == 1)
+                        if (shape == VolumeShape.Box && d == 1)
                             _legacyDevice.Draw(PrimitiveType.LineList, _boxVertexBuffer.ElementCount);
                         else
                             _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, elementCount);

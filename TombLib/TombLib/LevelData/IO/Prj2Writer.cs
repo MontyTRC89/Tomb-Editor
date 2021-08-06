@@ -704,13 +704,6 @@ namespace TombLib.LevelData.IO
                                         chunkIO.Raw.Write(bv.RotationX);
                                     }
                                     break;
-                                case VolumeShape.Prism:
-                                    {
-                                        var pv = instance as PrismVolumeInstance;
-                                        chunkIO.Raw.Write(pv.Scale);
-                                        chunkIO.Raw.Write(pv.RotationY);
-                                    }
-                                    break;
                                 case VolumeShape.Sphere:
                                     chunkIO.Raw.Write((instance as SphereVolumeInstance).Scale);
                                     break;

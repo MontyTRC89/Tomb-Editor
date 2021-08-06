@@ -453,8 +453,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                                 chunkIO.Raw.Write(0);
                                             else if (vol is SphereVolumeInstance)
                                                 chunkIO.Raw.Write(1);
-                                            else if (vol is PrismVolumeInstance)
-                                                chunkIO.Raw.Write(2);
 
                                             chunkIO.Raw.Write(X);
                                             chunkIO.Raw.Write(Y);
@@ -483,12 +481,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                             }
                                             else if (vol is SphereVolumeInstance)
                                                 chunkIO.Raw.Write((vol as SphereVolumeInstance).Size);
-                                            else if (vol is PrismVolumeInstance)
-                                            {
-                                                var pv = (PrismVolumeInstance)vol;
-                                                chunkIO.Raw.Write(pv.RotationY);
-                                                chunkIO.Raw.Write(pv.Size);
-                                            }
                                         }
                                 }
                             }

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Numerics;
-using System.Transactions.Configuration;
 
 namespace TombLib.LevelData
 {
     // All possible shapes are reduced to these three basics.
-    // If we need a plane volume, it will be a box or prism with one axis scale set to minimum.
+    // If we need a plane volume, it will be a box with one axis scale set to minimum.
     // If we need legacy "trigger" volume, it will be a box with one axis scale set to maximum.
     public enum VolumeShape : byte
     {
-        Box, Prism, Sphere, Undefined
+        Box, Sphere, Undefined
     }
 
     // Possible activator flags. If none is set, volume is disabled.
@@ -43,46 +42,6 @@ namespace TombLib.LevelData
             var script = (VolumeScriptInstance)MemberwiseClone();
             script.Name = Name;
             return script;
-        }
-    }
-
-    public class PrismVolumeInstance : VolumeInstance, IScaleable, IRotateableY
-    {
-        private const float _defaultScale = 32.0f;
-        private const float _maxScale = 256.0f;
-        private const float _scaleStep = 32.0f;
-
-
-        public float Size => Scale * _scaleStep;
-
-        public float DefaultScale => 32.0f;
-        public float Scale
-        {
-            get { return _scale; }
-            set
-            {
-                if (value >= 1.0f && value <= _maxScale)
-                    _scale = value;
-            }
-        }
-        private float _scale = _defaultScale;
-
-        public float RotationY
-        {
-            get { return _rotationY; }
-            set 
-            {
-                var roundedValue = Math.Round(value / 90.0f) * 90.0f;
-                _rotationY = (float)(roundedValue - Math.Floor(roundedValue / 360.0) * 360.0); 
-            }
-        }
-        private float _rotationY = 0.0f;
-
-        public override string ToString()
-        {
-            return "Prism Volume '" + Scripts.Name + "' (h = " + Math.Round(Size) + ")" +
-                   " in room '" + (Room?.ToString() ?? "NULL") + "' " +
-                   "at [" + SectorPosition.X + ", " + SectorPosition.Y + "] ";
         }
     }
 
@@ -172,7 +131,6 @@ namespace TombLib.LevelData
         {
             if (this is BoxVolumeInstance) return VolumeShape.Box;
             if (this is SphereVolumeInstance) return VolumeShape.Sphere;
-            if (this is PrismVolumeInstance) return VolumeShape.Prism;
             return VolumeShape.Undefined;
         }
 

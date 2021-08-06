@@ -1458,14 +1458,6 @@ namespace TombLib.LevelData.IO
                                 bv.RotationX = chunkIO.Raw.ReadSingle();
                             }
                             break;
-                        case VolumeShape.Prism:
-                            {
-                                instance = new PrismVolumeInstance();
-                                var pv = instance as PrismVolumeInstance;
-                                pv.Scale = chunkIO.Raw.ReadSingle();
-                                pv.RotationY = chunkIO.Raw.ReadSingle();
-                            }
-                            break;
                         case VolumeShape.Sphere:
                             {
                                 instance = new SphereVolumeInstance();
