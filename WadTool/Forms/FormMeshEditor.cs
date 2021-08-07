@@ -92,7 +92,7 @@ namespace WadTool
                 lstMeshes.EnsureVisible();
             //CalculateWindowDimensions();
             UpdateUI();
-            RepopulateTextureList();
+            RepopulateTextureList(butAllTextures.Checked);
         }
 
         protected override void Dispose(bool disposing)
@@ -366,15 +366,11 @@ namespace WadTool
         {
             // Subtract parasite UI elements from designer mode and recalc all needed dimensions
 
-            var shift = tabsModes.Size.Height - tabVertexEffects.ClientSize.Height + tabsModes.Padding.Y * 2;
+            var shift = tabsModes.Size.Height - tabVertexEffects.ClientSize.Height;
 
             tabsModes.Size = new Size(tabsModes.Size.Width, tabsModes.Size.Height - shift);
-            
-            //panelEditingTools.Size = new Size(panelEditingTools.Size.Width,
-                    //                          panelEditingTools.Size.Height - shift);
-            //
-            //panelEditingTools.Size = new Size(panelEditingTools.Size.Width, panelEditingTools.Size.Height - shift);
-
+            panelEditingTools.Size = new Size(panelEditingTools.Size.Width,
+                                             panelEditingTools.Size.Height - shift);
         }
 
         private bool NoMesh()
@@ -405,7 +401,7 @@ namespace WadTool
 
                 GetSphereValues();
                 UpdateUI();
-                RepopulateTextureList();
+                RepopulateTextureList(butAllTextures.Checked);
             }
         }
 
@@ -552,16 +548,24 @@ namespace WadTool
                 popup.ShowInfo(panelMesh, "Missing vertex data was automatically generated for this mesh.");
         }
 
-        private void RepopulateTextureList()
+        private void RepopulateTextureList(bool wholeWad)
         {
             if (NoMesh()) return;
 
             var list = new List<Texture>();
 
-            foreach (var poly in panelMesh.Mesh.Polys)
+            if (wholeWad)
             {
-                if (!list.Exists(t => t == poly.Texture.Texture))
-                    list.Add(poly.Texture.Texture);
+                foreach (var mesh in _tool.DestinationWad.MeshesUnique)
+                    foreach (var poly in mesh.Polys)
+                        if (!list.Exists(t => t == poly.Texture.Texture))
+                            list.Add(poly.Texture.Texture);
+            }
+            else
+            {
+                foreach (var poly in panelMesh.Mesh.Polys)
+                    if (!list.Exists(t => t == poly.Texture.Texture))
+                        list.Add(poly.Texture.Texture);
             }
 
             comboCurrentTexture.Items.Clear();
@@ -569,6 +573,8 @@ namespace WadTool
 
             if (comboCurrentTexture.Items.Count > 0)
                 comboCurrentTexture.SelectedIndex = 0;
+
+            panelTextureMap.SelectedTexture = TextureArea.None;
         }
 
         private void lstMeshes_Click(object sender, EventArgs e)
@@ -895,6 +901,12 @@ namespace WadTool
 
             panelMesh.WireframeMode = butWire.Checked = !butWire.Checked;
             UpdateUI();
+        }
+
+        private void butAllTextures_Click(object sender, EventArgs e)
+        {
+            butAllTextures.Checked = !butAllTextures.Checked;
+            RepopulateTextureList(butAllTextures.Checked);
         }
     }
 }

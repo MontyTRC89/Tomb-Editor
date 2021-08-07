@@ -72,7 +72,7 @@
             this.panelTexturinga = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
             this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
-            this.darkButton1 = new DarkUI.Controls.DarkButton();
+            this.butAllTextures = new DarkUI.Controls.DarkButton();
             this.butExportTexture = new DarkUI.Controls.DarkButton();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.butDeleteTexture = new DarkUI.Controls.DarkButton();
@@ -115,7 +115,7 @@
             this.lstMeshes.Name = "lstMeshes";
             this.lstMeshes.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
             this.lstMeshes.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
-            this.lstMeshes.Size = new System.Drawing.Size(240, 534);
+            this.lstMeshes.Size = new System.Drawing.Size(256, 534);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
             this.lstMeshes.Click += new System.EventHandler(this.lstMeshes_Click);
@@ -125,9 +125,9 @@
             // 
             this.panelMesh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panelMesh.Location = new System.Drawing.Point(247, 0);
+            this.panelMesh.Location = new System.Drawing.Point(263, 0);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(612, 463);
+            this.panelMesh.Size = new System.Drawing.Size(374, 560);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -180,7 +180,7 @@
             this.butAlpha.Size = new System.Drawing.Size(24, 23);
             this.butAlpha.TabIndex = 12;
             this.butAlpha.Tag = "";
-            this.toolTip.SetToolTip(this.butAlpha, "List all textures from wad");
+            this.toolTip.SetToolTip(this.butAlpha, "Toggle transparency");
             this.butAlpha.Click += new System.EventHandler(this.butAlpha_Click);
             // 
             // butWire
@@ -194,7 +194,7 @@
             this.butWire.Size = new System.Drawing.Size(24, 23);
             this.butWire.TabIndex = 11;
             this.butWire.Tag = "";
-            this.toolTip.SetToolTip(this.butWire, "List all textures from wad");
+            this.toolTip.SetToolTip(this.butWire, "Toggle wireframe mode");
             this.butWire.Click += new System.EventHandler(this.butWire_Click);
             // 
             // tabsModes
@@ -313,7 +313,7 @@
             this.tabVertexShadesAndNormals.Location = new System.Drawing.Point(4, 4);
             this.tabVertexShadesAndNormals.Name = "tabVertexShadesAndNormals";
             this.tabVertexShadesAndNormals.Padding = new System.Windows.Forms.Padding(3);
-            this.tabVertexShadesAndNormals.Size = new System.Drawing.Size(324, 59);
+            this.tabVertexShadesAndNormals.Size = new System.Drawing.Size(324, 58);
             this.tabVertexShadesAndNormals.TabIndex = 3;
             this.tabVertexShadesAndNormals.Text = "Normals & shades";
             // 
@@ -401,7 +401,7 @@
             this.tabVertexEffects.Location = new System.Drawing.Point(4, 4);
             this.tabVertexEffects.Name = "tabVertexEffects";
             this.tabVertexEffects.Padding = new System.Windows.Forms.Padding(3);
-            this.tabVertexEffects.Size = new System.Drawing.Size(324, 59);
+            this.tabVertexEffects.Size = new System.Drawing.Size(324, 58);
             this.tabVertexEffects.TabIndex = 2;
             this.tabVertexEffects.Text = "Vertex effects";
             // 
@@ -523,7 +523,7 @@
             this.tabSphere.Location = new System.Drawing.Point(4, 4);
             this.tabSphere.Name = "tabSphere";
             this.tabSphere.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSphere.Size = new System.Drawing.Size(324, 59);
+            this.tabSphere.Size = new System.Drawing.Size(324, 58);
             this.tabSphere.TabIndex = 4;
             this.tabSphere.Text = "Sphere";
             // 
@@ -540,10 +540,10 @@
             // 
             // darkLabel3
             // 
-            this.darkLabel3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.darkLabel3.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.darkLabel3.AutoSize = true;
             this.darkLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel3.Location = new System.Drawing.Point(109, 14);
+            this.darkLabel3.Location = new System.Drawing.Point(109, 6);
             this.darkLabel3.Name = "darkLabel3";
             this.darkLabel3.Size = new System.Drawing.Size(15, 13);
             this.darkLabel3.TabIndex = 22;
@@ -624,14 +624,14 @@
             // 
             // nudSphereY
             // 
-            this.nudSphereY.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.nudSphereY.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.nudSphereY.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudSphereY.IncrementAlternate = new decimal(new int[] {
             10,
             0,
             0,
             65536});
-            this.nudSphereY.Location = new System.Drawing.Point(126, 11);
+            this.nudSphereY.Location = new System.Drawing.Point(126, 3);
             this.nudSphereY.LoopValues = false;
             this.nudSphereY.Maximum = new decimal(new int[] {
             1000000,
@@ -700,7 +700,7 @@
             this.tabFaceAttributes.Location = new System.Drawing.Point(4, 4);
             this.tabFaceAttributes.Name = "tabFaceAttributes";
             this.tabFaceAttributes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFaceAttributes.Size = new System.Drawing.Size(324, 59);
+            this.tabFaceAttributes.Size = new System.Drawing.Size(324, 58);
             this.tabFaceAttributes.TabIndex = 1;
             this.tabFaceAttributes.Text = "Face attributes";
             // 
@@ -743,7 +743,7 @@
             this.cbBlend.AutoSize = true;
             this.cbBlend.Checked = true;
             this.cbBlend.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBlend.Location = new System.Drawing.Point(7, 7);
+            this.cbBlend.Location = new System.Drawing.Point(7, 5);
             this.cbBlend.Name = "cbBlend";
             this.cbBlend.Size = new System.Drawing.Size(76, 17);
             this.cbBlend.TabIndex = 14;
@@ -836,7 +836,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = "Mesh list";
-            this.darkSectionPanel2.Size = new System.Drawing.Size(242, 560);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(258, 560);
             this.darkSectionPanel2.TabIndex = 55;
             // 
             // panelMain
@@ -877,14 +877,14 @@
             // panelTextureMap
             // 
             this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTextureMap.Location = new System.Drawing.Point(1, 53);
+            this.panelTextureMap.Location = new System.Drawing.Point(1, 55);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(332, 345);
+            this.panelTextureMap.Size = new System.Drawing.Size(332, 343);
             this.panelTextureMap.TabIndex = 0;
             // 
             // panelTexturingTools
             // 
-            this.panelTexturingTools.Controls.Add(this.darkButton1);
+            this.panelTexturingTools.Controls.Add(this.butAllTextures);
             this.panelTexturingTools.Controls.Add(this.butExportTexture);
             this.panelTexturingTools.Controls.Add(this.butAddTexture);
             this.panelTexturingTools.Controls.Add(this.butDeleteTexture);
@@ -892,20 +892,21 @@
             this.panelTexturingTools.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTexturingTools.Location = new System.Drawing.Point(1, 25);
             this.panelTexturingTools.Name = "panelTexturingTools";
-            this.panelTexturingTools.Size = new System.Drawing.Size(332, 28);
+            this.panelTexturingTools.Size = new System.Drawing.Size(332, 30);
             this.panelTexturingTools.TabIndex = 1;
             // 
-            // darkButton1
+            // butAllTextures
             // 
-            this.darkButton1.Checked = false;
-            this.darkButton1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.darkButton1.Image = global::WadTool.Properties.Resources.actions_DrawAllRooms_16;
-            this.darkButton1.Location = new System.Drawing.Point(1, 3);
-            this.darkButton1.Name = "darkButton1";
-            this.darkButton1.Size = new System.Drawing.Size(24, 23);
-            this.darkButton1.TabIndex = 8;
-            this.darkButton1.Tag = "";
-            this.toolTip.SetToolTip(this.darkButton1, "List all textures from wad");
+            this.butAllTextures.Checked = false;
+            this.butAllTextures.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butAllTextures.Image = global::WadTool.Properties.Resources.actions_DrawAllRooms_16;
+            this.butAllTextures.Location = new System.Drawing.Point(1, 3);
+            this.butAllTextures.Name = "butAllTextures";
+            this.butAllTextures.Size = new System.Drawing.Size(24, 23);
+            this.butAllTextures.TabIndex = 8;
+            this.butAllTextures.Tag = "";
+            this.toolTip.SetToolTip(this.butAllTextures, "List all textures from wad");
+            this.butAllTextures.Click += new System.EventHandler(this.butAllTextures_Click);
             // 
             // butExportTexture
             // 
@@ -965,7 +966,7 @@
             this.panelTree.Location = new System.Drawing.Point(0, 0);
             this.panelTree.Name = "panelTree";
             this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.panelTree.Size = new System.Drawing.Size(247, 560);
+            this.panelTree.Size = new System.Drawing.Size(263, 560);
             this.panelTree.TabIndex = 0;
             // 
             // FormMeshEditor
@@ -1074,7 +1075,7 @@
         private DarkUI.Controls.DarkButton butRecalcNormalsAvg;
         private DarkUI.Controls.DarkButton butExportTexture;
         private DarkUI.Controls.DarkNumericUpDown nudSphereRadius;
-        private DarkUI.Controls.DarkButton darkButton1;
+        private DarkUI.Controls.DarkButton butAllTextures;
         private DarkUI.Controls.DarkButton butAlpha;
         private DarkUI.Controls.DarkButton butWire;
         private DarkUI.Controls.DarkLabel darkLabel2;
