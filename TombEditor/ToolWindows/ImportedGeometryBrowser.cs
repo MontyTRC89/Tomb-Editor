@@ -66,6 +66,7 @@ namespace TombEditor.ToolWindows
                 {
                     comboItems.SelectedItem = panelItem.CurrentObject = e.Current;
                     MakeActive();
+                    panelItem.ResetCamera();
                 }
             }
 
@@ -75,6 +76,11 @@ namespace TombEditor.ToolWindows
                 if(((Editor.ConfigurationChangedEvent)obj).UpdateKeyboardShortcuts)
                     CommandHandler.AssignCommandsToControls(_editor, this, toolTip, true);
             }
+
+            // Update UI
+            if (obj is Editor.ConfigurationChangedEvent ||
+                obj is Editor.InitEvent)
+                panelItem.AnimatePreview = _editor.Configuration.RenderingItem_Animate;
         }
 
         private void butSearch_Click(object sender, EventArgs e)

@@ -16,6 +16,13 @@ namespace TombLib
             Radius = radius;
         }
 
+        public static BoundingSphere FromBoundingBox(BoundingBox bb)
+        {
+            var inR = Math.Max(Math.Max(bb.Size.X, bb.Size.Y), bb.Size.Z) * 0.5f;
+            var outR = Vector3.Distance(bb.Minimum, bb.Maximum) * 0.5f;
+            return new BoundingSphere(bb.Center, (inR + outR) * 0.5f);
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(BoundingSphere first, BoundingSphere second) => first.Center == second.Center && first.Radius == second.Radius;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

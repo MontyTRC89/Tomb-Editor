@@ -38,6 +38,7 @@
             this.panelItem.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelItem.AnimatePreview = false;
             this.panelItem.AutoSize = true;
             this.panelItem.DrawTransparency = false;
             this.panelItem.Location = new System.Drawing.Point(3, 2);

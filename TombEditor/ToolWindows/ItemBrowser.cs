@@ -116,6 +116,7 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ConfigurationChangedEvent ||
                 obj is Editor.InitEvent)
             {
+                panelItem.AnimatePreview = _editor.Configuration.RenderingItem_Animate;
                 lblFromWad.Visible = _editor.Configuration.RenderingItem_ShowMultipleWadsPrompt;
             }
 
@@ -140,6 +141,7 @@ namespace TombEditor.ToolWindows
             }
 
             MakeActive();
+            panelItem.ResetCamera();
         }
 
         private void FindLaraSkin()

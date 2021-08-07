@@ -26,8 +26,8 @@ namespace TombLib.Controls
                     if (!_animTimer.Enabled) _animTimer.Enabled = true;
                     if (_currentObject != value) _currentFrame = 0;
                 }
-                else if(_animTimer.Enabled) 
-                    _animTimer.Enabled = false;
+                else
+                    _animTimer.Enabled = AnimatePreview;
 
                 _currentObject = value;
                 Invalidate();
@@ -41,11 +41,17 @@ namespace TombLib.Controls
         public int KeyFrameIndex { get; set; }
 
         public bool DrawTransparency { get; set; } = false;
+        public bool AnimatePreview { get; set; } = true;
 
         // Preview animation state
-        private Timer _animTimer = new Timer() { Interval = 333 };
+        private Timer _animTimer = new Timer() { Interval = 15 };
         private int _currentFrame;
-      
+        private int _frameTimeout;
+
+        private float _rotationFactor = 0.0f;
+        private const float _rotationSpeed = 0.005f;
+        private const float _rotationStep = 0.000125f;
+
         // Interaction state
         private float _lastX;
         private float _lastY;
@@ -65,13 +71,31 @@ namespace TombLib.Controls
 
         private void _animTimer_Tick(object sender, EventArgs e)
         {
-            if (!(CurrentObject is WadSpriteSequence))
+            if (!AnimatePreview && !(CurrentObject is WadSpriteSequence))
                 return;
 
-            if (_currentFrame < (CurrentObject as WadSpriteSequence).Sprites.Count - 1)
-                _currentFrame++;
-            else
-                _currentFrame = 0;
+            if (CurrentObject is WadSpriteSequence)
+            {
+                _frameTimeout++;
+                if (_frameTimeout >= 20)
+                {
+                    _frameTimeout = 0;
+                    if (_currentFrame < (CurrentObject as WadSpriteSequence).Sprites.Count - 1)
+                        _currentFrame++;
+                    else
+                        _currentFrame = 0;
+                }
+            }
+            else if (AnimatePreview)
+            {
+                if (_rotationFactor < _rotationSpeed)
+                    _rotationFactor += _rotationStep;
+                else if (_rotationFactor > _rotationSpeed)
+                    _rotationFactor = _rotationSpeed;
+
+                Camera.Rotate(_rotationFactor, 0.0f);
+            }
+
             Invalidate();
         }
 
@@ -117,7 +141,51 @@ namespace TombLib.Controls
 
         public void ResetCamera()
         {
-            Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000, FieldOfView * (float)(Math.PI / 180));
+            if (CurrentObject == null)
+                Camera = new ArcBallCamera(new Vector3(0.0f, 256.0f, 0.0f), 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, 2048.0f, 100, 1000000, FieldOfView * (float)(Math.PI / 180));
+            else
+            {
+                var bs = new BoundingSphere(new Vector3(0.0f, 256.0f, 0.0f), 640.0f);
+                var center = Vector3.Zero;
+                var radius = 256.0f;
+
+                if (CurrentObject is WadMoveable)
+                {
+                    AnimatedModel model = _wadRenderer.GetMoveable((WadMoveable)CurrentObject);
+                    model.UpdateAnimation(AnimationIndex, KeyFrameIndex);
+
+                    if (model.Animations.Count > AnimationIndex && model.Animations[AnimationIndex].KeyFrames.Count > KeyFrameIndex)
+                    {
+                        var bb = model.Animations[AnimationIndex].KeyFrames[KeyFrameIndex].CalculateBoundingBox(model, model);
+                        bs = BoundingSphere.FromBoundingBox(bb);
+                    }
+                }
+
+                if (CurrentObject is WadStatic)
+                {
+                    var st = CurrentObject as WadStatic;
+                    if (st.Mesh != null)
+                        bs = (CurrentObject as WadStatic).Mesh.CalculateBoundingSphere();
+                }
+
+                if (CurrentObject is ImportedGeometry)
+                {
+                    var impgeo = (CurrentObject as ImportedGeometry);
+
+                    if (impgeo.DirectXModel != null && impgeo.DirectXModel.Meshes != null)
+                    {
+                        var bb = new BoundingBox();
+                        foreach (var mesh in impgeo.DirectXModel.Meshes)
+                            bb = bb.Union(mesh.BoundingBox);
+                        bs = BoundingSphere.FromBoundingBox(bb);
+                    }
+                }
+
+                center = bs.Center;
+                radius = bs.Radius * 1.15f; // Zoom out a bit
+
+                Camera = new ArcBallCamera(center, MathC.DegToRad(35), MathC.DegToRad(35), -(float)Math.PI / 2, (float)Math.PI / 2, radius * 3, 50, 1000000, FieldOfView * (float)(Math.PI / 180));
+            }
         }
 
         public void GarbageCollect()
@@ -321,6 +389,20 @@ namespace TombLib.Controls
 
             _lastX = e.X;
             _lastY = e.Y;
+
+            if (!(CurrentObject is WadSpriteSequence) && e.Button != MouseButtons.Left)
+            {
+                _animTimer.Stop();
+                _rotationFactor = 0;
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (!(CurrentObject is WadSpriteSequence))
+                _animTimer.Start();
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

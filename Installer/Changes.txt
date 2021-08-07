@@ -5,6 +5,7 @@ Tomb Editor:
  * Accept new wad2 vertex effects (glow and movement) for merged statics.
  * Level setting to specify sample rate for sounds, in case builder uses custom one via FLEP patch.
  * Allow shiny effect on static, if light type is set to dynamic.
+ * Fit every item in item browser preview and optionally animate it.
  * Fix exception if level with missing merged statics is compiled.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
  * Fix statistics GUI memory leak which led to editor slowdown over time.
@@ -19,6 +20,7 @@ WadTool:
 	- Edit and automatically calculate sphere.
  * New function in animation fixer to restore original animation names for current game version.
  * Export meshes with single texture without shuffling texture pieces.
+ * Animate main window item preview.
  * Fix problems with disjointed vertices when non-UV-mapped objects are imported from external 3D models.
  * Fix incorrect importing of shininess value for obj format.
  * Fix incorrect exporting of normals.

@@ -32,10 +32,10 @@
             this.tabSubPanel2 = new DarkUI.Controls.DarkPanel();
             this.panel1 = new DarkUI.Controls.DarkPanel();
             this.darkGroupBox1 = new DarkUI.Controls.DarkGroupBox();
-            this.darkCheckBox3 = new DarkUI.Controls.DarkCheckBox();
-            this.darkNumericUpDown1 = new DarkUI.Controls.DarkNumericUpDown();
-            this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.darkCheckBox3 = new DarkUI.Controls.DarkCheckBox();
+            this.cbEnableLogging = new DarkUI.Controls.DarkCheckBox();
+            this.darkNumericUpDown1 = new DarkUI.Controls.DarkNumericUpDown();
             this.darkGroupBox3 = new DarkUI.Controls.DarkGroupBox();
             this.darkLabel73 = new DarkUI.Controls.DarkLabel();
             this.darkNumericUpDown42 = new DarkUI.Controls.DarkNumericUpDown();
@@ -185,6 +185,16 @@
             this.darkGroupBox1.TabStop = false;
             this.darkGroupBox1.Text = "System";
             // 
+            // darkLabel1
+            // 
+            this.darkLabel1.AutoSize = true;
+            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.darkLabel1.Location = new System.Drawing.Point(3, 73);
+            this.darkLabel1.Name = "darkLabel1";
+            this.darkLabel1.Size = new System.Drawing.Size(187, 13);
+            this.darkLabel1.TabIndex = 0;
+            this.darkLabel1.Text = "Number of daily log files in history:";
+            // 
             // darkCheckBox3
             // 
             this.darkCheckBox3.AutoSize = true;
@@ -194,6 +204,16 @@
             this.darkCheckBox3.TabIndex = 4;
             this.darkCheckBox3.Tag = "Tool_MakeEmptyWadAtStartup";
             this.darkCheckBox3.Text = "Make empty destination wad at start-up";
+            // 
+            // cbEnableLogging
+            // 
+            this.cbEnableLogging.AutoSize = true;
+            this.cbEnableLogging.Location = new System.Drawing.Point(6, 44);
+            this.cbEnableLogging.Name = "cbEnableLogging";
+            this.cbEnableLogging.Size = new System.Drawing.Size(105, 17);
+            this.cbEnableLogging.TabIndex = 2;
+            this.cbEnableLogging.Tag = "Log_WriteToFile";
+            this.cbEnableLogging.Text = "Enable logging";
             // 
             // darkNumericUpDown1
             // 
@@ -208,26 +228,6 @@
             this.darkNumericUpDown1.Size = new System.Drawing.Size(64, 22);
             this.darkNumericUpDown1.TabIndex = 3;
             this.darkNumericUpDown1.Tag = "Log_ArchiveN";
-            // 
-            // cbEnableLogging
-            // 
-            this.cbEnableLogging.AutoSize = true;
-            this.cbEnableLogging.Location = new System.Drawing.Point(6, 44);
-            this.cbEnableLogging.Name = "cbEnableLogging";
-            this.cbEnableLogging.Size = new System.Drawing.Size(105, 17);
-            this.cbEnableLogging.TabIndex = 2;
-            this.cbEnableLogging.Tag = "Log_WriteToFile";
-            this.cbEnableLogging.Text = "Enable logging";
-            // 
-            // darkLabel1
-            // 
-            this.darkLabel1.AutoSize = true;
-            this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.darkLabel1.Location = new System.Drawing.Point(3, 73);
-            this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(187, 13);
-            this.darkLabel1.TabIndex = 0;
-            this.darkLabel1.Text = "Number of daily log files in history:";
             // 
             // darkGroupBox3
             // 
@@ -565,9 +565,9 @@
             this.darkLabel67.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel67.Location = new System.Drawing.Point(3, 69);
             this.darkLabel67.Name = "darkLabel67";
-            this.darkLabel67.Size = new System.Drawing.Size(196, 13);
+            this.darkLabel67.Size = new System.Drawing.Size(107, 13);
             this.darkLabel67.TabIndex = 7;
-            this.darkLabel67.Text = "Animation editor undo / redo depth:";
+            this.darkLabel67.Text = "Undo / redo depth:";
             // 
             // darkLabel2
             // 

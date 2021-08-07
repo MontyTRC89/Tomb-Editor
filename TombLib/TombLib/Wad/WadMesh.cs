@@ -148,11 +148,7 @@ namespace TombLib.Wad
             // Gets midpoint between circumscribed and inscribed spheres, since
             // this seems to be optimal radius for most meshes.
 
-            var bb = CalculateBoundingBox();
-
-            var inR  = Math.Max(Math.Max(bb.Size.X, bb.Size.Y), bb.Size.Z) * 0.5f;
-            var outR = Vector3.Distance(bb.Minimum, bb.Maximum) * 0.5f;
-            return new BoundingSphere(bb.Center, (inR + outR) * 0.5f);
+            return BoundingSphere.FromBoundingBox(CalculateBoundingBox());
         }
 
         public void CalculateNormals(bool weighted = true)

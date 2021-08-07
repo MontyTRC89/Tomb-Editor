@@ -39,6 +39,7 @@ namespace TombEditor
         public bool RenderingItem_Antialias { get; set; } = false;
         public bool RenderingItem_HideInternalObjects { get; set; } = false;
         public bool RenderingItem_ShowMultipleWadsPrompt { get; set; } = true;
+        public bool RenderingItem_Animate { get; set; } = false;
 
         // Main 3D window options
 
