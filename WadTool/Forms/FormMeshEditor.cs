@@ -838,9 +838,6 @@ namespace WadTool
             if (_readingValues)
                 return;
 
-            if (tabsModes.SelectedTab != tabSphere)
-                return;
-
             _tool.UndoManager.PushMeshChanged(panelMesh);
 
             var newCoord = new Vector3((float)nudSphereX.Value, (float)nudSphereY.Value, (float)nudSphereZ.Value);

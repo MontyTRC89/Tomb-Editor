@@ -648,7 +648,7 @@
             this.butResetSphere.Location = new System.Drawing.Point(117, 32);
             this.butResetSphere.Name = "butResetSphere";
             this.butResetSphere.Size = new System.Drawing.Size(197, 23);
-            this.butResetSphere.TabIndex = 21;
+            this.butResetSphere.TabIndex = 9;
             this.butResetSphere.Text = "Recalculate";
             this.toolTip.SetToolTip(this.butResetSphere, "Calculates average sphere which encloses the mesh");
             this.butResetSphere.Click += new System.EventHandler(this.butResetSphere_Click);
@@ -760,7 +760,7 @@
             -2147483648});
             this.nudSphereX.Name = "nudSphereX";
             this.nudSphereX.Size = new System.Drawing.Size(85, 23);
-            this.nudSphereX.TabIndex = 9;
+            this.nudSphereX.TabIndex = 21;
             this.nudSphereX.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
             this.nudSphereX.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
