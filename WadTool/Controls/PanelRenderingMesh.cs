@@ -67,12 +67,13 @@ namespace WadTool.Controls
             get { return _currentElement; }
             set
             {
-                if (Mesh == null || _currentElement == value)
+                if (Mesh == null)
                     return;
 
                 switch (EditingMode)
                 {
                     case MeshEditingMode.FaceAttributes:
+                        if (_currentElement == value) return;
                         _currentElement = (Mesh.Polys.Count > value) ? value : -1;
                         break;
 

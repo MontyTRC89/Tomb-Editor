@@ -26,11 +26,11 @@ namespace WadTool
     public enum MeshEditingMode
     {
         None,
+        FaceAttributes,
         VertexRemap,
         VertexColorsAndNormals,
         VertexEffects,
-        Sphere,
-        FaceAttributes
+        Sphere
     }
 
     public struct MainSelection

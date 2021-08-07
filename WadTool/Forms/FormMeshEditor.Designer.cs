@@ -24,6 +24,14 @@
             this.butAlpha = new DarkUI.Controls.DarkButton();
             this.butWire = new DarkUI.Controls.DarkButton();
             this.tabsModes = new TombLib.Controls.DarkTabbedContainer();
+            this.tabFaceAttributes = new System.Windows.Forms.TabPage();
+            this.cbTexture = new DarkUI.Controls.DarkCheckBox();
+            this.cbBlendMode = new DarkUI.Controls.DarkComboBox();
+            this.butApplyToAllFaces = new DarkUI.Controls.DarkButton();
+            this.cbBlend = new DarkUI.Controls.DarkCheckBox();
+            this.nudShineStrength = new DarkUI.Controls.DarkNumericUpDown();
+            this.cbSheen = new DarkUI.Controls.DarkCheckBox();
+            this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.tabVertexRemap = new System.Windows.Forms.TabPage();
             this.butAutoFit = new DarkUI.Controls.DarkButton();
             this.nudVertexNum = new DarkUI.Controls.DarkNumericUpDown();
@@ -55,14 +63,6 @@
             this.nudSphereY = new DarkUI.Controls.DarkNumericUpDown();
             this.nudSphereX = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
-            this.tabFaceAttributes = new System.Windows.Forms.TabPage();
-            this.cbTexture = new DarkUI.Controls.DarkCheckBox();
-            this.cbBlendMode = new DarkUI.Controls.DarkComboBox();
-            this.butApplyToAllFaces = new DarkUI.Controls.DarkButton();
-            this.cbBlend = new DarkUI.Controls.DarkCheckBox();
-            this.nudShineStrength = new DarkUI.Controls.DarkNumericUpDown();
-            this.cbSheen = new DarkUI.Controls.DarkCheckBox();
-            this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.cbExtra = new DarkUI.Controls.DarkCheckBox();
             this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
@@ -73,6 +73,7 @@
             this.panelTexturinga = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
             this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
+            this.butSearch = new DarkUI.Controls.DarkButton();
             this.butAllTextures = new DarkUI.Controls.DarkButton();
             this.butExportTexture = new DarkUI.Controls.DarkButton();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
@@ -83,6 +84,8 @@
             this.statusLabel = new DarkUI.Controls.DarkLabel();
             this.panelEditingTools.SuspendLayout();
             this.tabsModes.SuspendLayout();
+            this.tabFaceAttributes.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).BeginInit();
             this.tabVertexRemap.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).BeginInit();
             this.tabVertexShadesAndNormals.SuspendLayout();
@@ -94,8 +97,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereZ)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereX)).BeginInit();
-            this.tabFaceAttributes.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).BeginInit();
             this.darkSectionPanel2.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelCenter.SuspendLayout();
@@ -203,17 +204,127 @@
             // tabsModes
             // 
             this.tabsModes.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabsModes.Controls.Add(this.tabFaceAttributes);
             this.tabsModes.Controls.Add(this.tabVertexRemap);
             this.tabsModes.Controls.Add(this.tabVertexShadesAndNormals);
             this.tabsModes.Controls.Add(this.tabVertexEffects);
             this.tabsModes.Controls.Add(this.tabSphere);
-            this.tabsModes.Controls.Add(this.tabFaceAttributes);
             this.tabsModes.Location = new System.Drawing.Point(1, 58);
             this.tabsModes.Multiline = true;
             this.tabsModes.Name = "tabsModes";
             this.tabsModes.SelectedIndex = 0;
             this.tabsModes.Size = new System.Drawing.Size(331, 102);
             this.tabsModes.TabIndex = 7;
+            // 
+            // tabFaceAttributes
+            // 
+            this.tabFaceAttributes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tabFaceAttributes.Controls.Add(this.cbTexture);
+            this.tabFaceAttributes.Controls.Add(this.cbBlendMode);
+            this.tabFaceAttributes.Controls.Add(this.butApplyToAllFaces);
+            this.tabFaceAttributes.Controls.Add(this.cbBlend);
+            this.tabFaceAttributes.Controls.Add(this.nudShineStrength);
+            this.tabFaceAttributes.Controls.Add(this.cbSheen);
+            this.tabFaceAttributes.Controls.Add(this.butDoubleSide);
+            this.tabFaceAttributes.Location = new System.Drawing.Point(4, 4);
+            this.tabFaceAttributes.Name = "tabFaceAttributes";
+            this.tabFaceAttributes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabFaceAttributes.Size = new System.Drawing.Size(323, 58);
+            this.tabFaceAttributes.TabIndex = 1;
+            this.tabFaceAttributes.Text = "Face attributes";
+            // 
+            // cbTexture
+            // 
+            this.cbTexture.AutoSize = true;
+            this.cbTexture.Checked = true;
+            this.cbTexture.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbTexture.Location = new System.Drawing.Point(7, 34);
+            this.cbTexture.Name = "cbTexture";
+            this.cbTexture.Size = new System.Drawing.Size(62, 17);
+            this.cbTexture.TabIndex = 15;
+            this.cbTexture.Text = "Texture";
+            this.toolTip.SetToolTip(this.cbTexture, "Apply textures to faces");
+            // 
+            // cbBlendMode
+            // 
+            this.cbBlendMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbBlendMode.FormattingEnabled = true;
+            this.cbBlendMode.Location = new System.Drawing.Point(81, 3);
+            this.cbBlendMode.Name = "cbBlendMode";
+            this.cbBlendMode.Size = new System.Drawing.Size(210, 23);
+            this.cbBlendMode.TabIndex = 11;
+            // 
+            // butApplyToAllFaces
+            // 
+            this.butApplyToAllFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butApplyToAllFaces.Checked = false;
+            this.butApplyToAllFaces.Location = new System.Drawing.Point(222, 32);
+            this.butApplyToAllFaces.Name = "butApplyToAllFaces";
+            this.butApplyToAllFaces.Size = new System.Drawing.Size(99, 23);
+            this.butApplyToAllFaces.TabIndex = 9;
+            this.butApplyToAllFaces.Text = "Apply to all";
+            this.toolTip.SetToolTip(this.butApplyToAllFaces, "Apply specified face attributes to all faces");
+            this.butApplyToAllFaces.Click += new System.EventHandler(this.butApplyToAllFaces_Click);
+            // 
+            // cbBlend
+            // 
+            this.cbBlend.AutoSize = true;
+            this.cbBlend.Checked = true;
+            this.cbBlend.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBlend.Location = new System.Drawing.Point(7, 5);
+            this.cbBlend.Name = "cbBlend";
+            this.cbBlend.Size = new System.Drawing.Size(76, 17);
+            this.cbBlend.TabIndex = 14;
+            this.cbBlend.Text = "Blending:";
+            this.toolTip.SetToolTip(this.cbBlend, "Apply blend mode and double-sided attribute to faces");
+            // 
+            // nudShineStrength
+            // 
+            this.nudShineStrength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudShineStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.nudShineStrength.IncrementAlternate = new decimal(new int[] {
+            10,
+            0,
+            0,
+            65536});
+            this.nudShineStrength.Location = new System.Drawing.Point(146, 32);
+            this.nudShineStrength.LoopValues = false;
+            this.nudShineStrength.Maximum = new decimal(new int[] {
+            63,
+            0,
+            0,
+            0});
+            this.nudShineStrength.Name = "nudShineStrength";
+            this.nudShineStrength.Size = new System.Drawing.Size(72, 23);
+            this.nudShineStrength.TabIndex = 7;
+            this.toolTip.SetToolTip(this.nudShineStrength, "Shininess value on the range from 0 to 63");
+            // 
+            // cbSheen
+            // 
+            this.cbSheen.AutoSize = true;
+            this.cbSheen.Checked = true;
+            this.cbSheen.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbSheen.Location = new System.Drawing.Point(81, 34);
+            this.cbSheen.Name = "cbSheen";
+            this.cbSheen.Size = new System.Drawing.Size(61, 17);
+            this.cbSheen.TabIndex = 13;
+            this.cbSheen.Text = "Sheen:";
+            this.toolTip.SetToolTip(this.cbSheen, "Apply sheen attribute to faces");
+            // 
+            // butDoubleSide
+            // 
+            this.butDoubleSide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDoubleSide.Checked = false;
+            this.butDoubleSide.Image = global::WadTool.Properties.Resources.texture_DoubleSided_1_16;
+            this.butDoubleSide.Location = new System.Drawing.Point(297, 3);
+            this.butDoubleSide.Name = "butDoubleSide";
+            this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
+            this.butDoubleSide.TabIndex = 12;
+            this.butDoubleSide.Tag = "";
+            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute.\r\nMay not work in legacy engines.");
+            this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
             // 
             // tabVertexRemap
             // 
@@ -419,9 +530,9 @@
             this.butPreview.Size = new System.Drawing.Size(99, 23);
             this.butPreview.TabIndex = 21;
             this.butPreview.Tag = "";
-            this.butPreview.Text = "Preview all effects";
+            this.butPreview.Text = "Preview";
             this.butPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butPreview, "Preview effects");
+            this.toolTip.SetToolTip(this.butPreview, "Preview all effects");
             this.butPreview.Click += new System.EventHandler(this.butPreview_Click);
             // 
             // butConvertFromShades
@@ -507,7 +618,7 @@
             this.butApplyToAllVertices.Name = "butApplyToAllVertices";
             this.butApplyToAllVertices.Size = new System.Drawing.Size(99, 23);
             this.butApplyToAllVertices.TabIndex = 10;
-            this.butApplyToAllVertices.Text = "Apply effects to all vertices";
+            this.butApplyToAllVertices.Text = "Apply to all";
             this.toolTip.SetToolTip(this.butApplyToAllVertices, "Apply specified vertex attributes to all faces");
             this.butApplyToAllVertices.Click += new System.EventHandler(this.butApplyToAllVertices_Click);
             // 
@@ -686,116 +797,6 @@
             this.darkLabel8.TabIndex = 8;
             this.darkLabel8.Text = "X:";
             // 
-            // tabFaceAttributes
-            // 
-            this.tabFaceAttributes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tabFaceAttributes.Controls.Add(this.cbTexture);
-            this.tabFaceAttributes.Controls.Add(this.cbBlendMode);
-            this.tabFaceAttributes.Controls.Add(this.butApplyToAllFaces);
-            this.tabFaceAttributes.Controls.Add(this.cbBlend);
-            this.tabFaceAttributes.Controls.Add(this.nudShineStrength);
-            this.tabFaceAttributes.Controls.Add(this.cbSheen);
-            this.tabFaceAttributes.Controls.Add(this.butDoubleSide);
-            this.tabFaceAttributes.Location = new System.Drawing.Point(4, 4);
-            this.tabFaceAttributes.Name = "tabFaceAttributes";
-            this.tabFaceAttributes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabFaceAttributes.Size = new System.Drawing.Size(323, 58);
-            this.tabFaceAttributes.TabIndex = 1;
-            this.tabFaceAttributes.Text = "Face attributes";
-            // 
-            // cbTexture
-            // 
-            this.cbTexture.AutoSize = true;
-            this.cbTexture.Checked = true;
-            this.cbTexture.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbTexture.Location = new System.Drawing.Point(7, 34);
-            this.cbTexture.Name = "cbTexture";
-            this.cbTexture.Size = new System.Drawing.Size(62, 17);
-            this.cbTexture.TabIndex = 15;
-            this.cbTexture.Text = "Texture";
-            this.toolTip.SetToolTip(this.cbTexture, "Apply textures to faces");
-            // 
-            // cbBlendMode
-            // 
-            this.cbBlendMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbBlendMode.FormattingEnabled = true;
-            this.cbBlendMode.Location = new System.Drawing.Point(81, 3);
-            this.cbBlendMode.Name = "cbBlendMode";
-            this.cbBlendMode.Size = new System.Drawing.Size(210, 23);
-            this.cbBlendMode.TabIndex = 11;
-            // 
-            // butApplyToAllFaces
-            // 
-            this.butApplyToAllFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butApplyToAllFaces.Checked = false;
-            this.butApplyToAllFaces.Location = new System.Drawing.Point(222, 32);
-            this.butApplyToAllFaces.Name = "butApplyToAllFaces";
-            this.butApplyToAllFaces.Size = new System.Drawing.Size(99, 23);
-            this.butApplyToAllFaces.TabIndex = 9;
-            this.butApplyToAllFaces.Text = "Apply to all";
-            this.toolTip.SetToolTip(this.butApplyToAllFaces, "Apply specified face attributes to all faces");
-            this.butApplyToAllFaces.Click += new System.EventHandler(this.butApplyToAllFaces_Click);
-            // 
-            // cbBlend
-            // 
-            this.cbBlend.AutoSize = true;
-            this.cbBlend.Checked = true;
-            this.cbBlend.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBlend.Location = new System.Drawing.Point(7, 5);
-            this.cbBlend.Name = "cbBlend";
-            this.cbBlend.Size = new System.Drawing.Size(76, 17);
-            this.cbBlend.TabIndex = 14;
-            this.cbBlend.Text = "Blending:";
-            this.toolTip.SetToolTip(this.cbBlend, "Apply blend mode and double-sided attribute to faces");
-            // 
-            // nudShineStrength
-            // 
-            this.nudShineStrength.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudShineStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.nudShineStrength.IncrementAlternate = new decimal(new int[] {
-            10,
-            0,
-            0,
-            65536});
-            this.nudShineStrength.Location = new System.Drawing.Point(146, 32);
-            this.nudShineStrength.LoopValues = false;
-            this.nudShineStrength.Maximum = new decimal(new int[] {
-            63,
-            0,
-            0,
-            0});
-            this.nudShineStrength.Name = "nudShineStrength";
-            this.nudShineStrength.Size = new System.Drawing.Size(72, 23);
-            this.nudShineStrength.TabIndex = 7;
-            this.toolTip.SetToolTip(this.nudShineStrength, "Shininess value on the range from 0 to 63");
-            // 
-            // cbSheen
-            // 
-            this.cbSheen.AutoSize = true;
-            this.cbSheen.Checked = true;
-            this.cbSheen.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSheen.Location = new System.Drawing.Point(81, 34);
-            this.cbSheen.Name = "cbSheen";
-            this.cbSheen.Size = new System.Drawing.Size(61, 17);
-            this.cbSheen.TabIndex = 13;
-            this.cbSheen.Text = "Sheen:";
-            this.toolTip.SetToolTip(this.cbSheen, "Apply sheen attribute to faces");
-            // 
-            // butDoubleSide
-            // 
-            this.butDoubleSide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDoubleSide.Checked = false;
-            this.butDoubleSide.Image = global::WadTool.Properties.Resources.texture_DoubleSided_1_16;
-            this.butDoubleSide.Location = new System.Drawing.Point(297, 3);
-            this.butDoubleSide.Name = "butDoubleSide";
-            this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
-            this.butDoubleSide.TabIndex = 12;
-            this.butDoubleSide.Tag = "";
-            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute.\r\nMay not work in legacy engines.");
-            this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
-            // 
             // cbExtra
             // 
             this.cbExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -894,6 +895,7 @@
             // 
             // panelTexturingTools
             // 
+            this.panelTexturingTools.Controls.Add(this.butSearch);
             this.panelTexturingTools.Controls.Add(this.butAllTextures);
             this.panelTexturingTools.Controls.Add(this.butExportTexture);
             this.panelTexturingTools.Controls.Add(this.butAddTexture);
@@ -904,6 +906,19 @@
             this.panelTexturingTools.Name = "panelTexturingTools";
             this.panelTexturingTools.Size = new System.Drawing.Size(331, 30);
             this.panelTexturingTools.TabIndex = 1;
+            // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
+            this.butSearch.Image = global::WadTool.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(217, 3);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Selectable = false;
+            this.butSearch.Size = new System.Drawing.Size(24, 23);
+            this.butSearch.TabIndex = 9;
+            this.toolTip.SetToolTip(this.butSearch, "Search for texture sets");
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // butAllTextures
             // 
@@ -966,7 +981,7 @@
             this.comboCurrentTexture.FormattingEnabled = true;
             this.comboCurrentTexture.Location = new System.Drawing.Point(30, 3);
             this.comboCurrentTexture.Name = "comboCurrentTexture";
-            this.comboCurrentTexture.Size = new System.Drawing.Size(211, 23);
+            this.comboCurrentTexture.Size = new System.Drawing.Size(188, 23);
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
@@ -1011,6 +1026,9 @@
             this.panelEditingTools.ResumeLayout(false);
             this.panelEditingTools.PerformLayout();
             this.tabsModes.ResumeLayout(false);
+            this.tabFaceAttributes.ResumeLayout(false);
+            this.tabFaceAttributes.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).EndInit();
             this.tabVertexRemap.ResumeLayout(false);
             this.tabVertexRemap.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudVertexNum)).EndInit();
@@ -1026,9 +1044,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereZ)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereX)).EndInit();
-            this.tabFaceAttributes.ResumeLayout(false);
-            this.tabFaceAttributes.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).EndInit();
             this.darkSectionPanel2.ResumeLayout(false);
             this.panelMain.ResumeLayout(false);
             this.panelCenter.ResumeLayout(false);
@@ -1108,5 +1123,6 @@
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkLabel statusLabel;
         private DarkUI.Controls.DarkPanel panelCenter;
+        private DarkUI.Controls.DarkButton butSearch;
     }
 }

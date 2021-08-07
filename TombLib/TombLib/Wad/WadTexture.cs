@@ -43,11 +43,9 @@ namespace TombLib.Wad
             var hint = string.Empty;
 
             if (string.IsNullOrEmpty(Image.FileName))
-                hint += "Untitled ";
+                hint += "Untitled (" + Image.Size.X + "x" + Image.Size.Y + ")";
             else
                 hint += Path.GetFileName(Image.FileName) + " ";
-
-            hint += "(" + Image.Size.X + "x" + Image.Size.Y + ")";
 
             return hint;
         }

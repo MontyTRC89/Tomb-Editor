@@ -911,5 +911,11 @@ namespace WadTool
             butAllTextures.Checked = !butAllTextures.Checked;
             RepopulateTextureList(butAllTextures.Checked);
         }
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            var searchPopUp = new PopUpSearch(comboCurrentTexture);
+            searchPopUp.Show(this);
+        }
     }
 }
