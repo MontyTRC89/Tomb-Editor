@@ -8,6 +8,7 @@ using TombLib.LevelData;
 using TombLib.Wad;
 using System.Drawing;
 using DarkUI.Config;
+using TombLib.Forms;
 
 namespace TombLib.Controls
 {
@@ -17,6 +18,7 @@ namespace TombLib.Controls
         private DarkTreeView tree;
         private DarkComboBox suggestedGameVersionComboBox;
         private DarkLabel darkLabel1;
+        private DarkButton butSearch;
 
         public event EventHandler ClickOnEmpty;
 
@@ -237,6 +239,7 @@ namespace TombLib.Controls
             this.tree = new DarkUI.Controls.DarkTreeView();
             this.suggestedGameVersionComboBox = new DarkUI.Controls.DarkComboBox();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
+            this.butSearch = new DarkUI.Controls.DarkButton();
             this.SuspendLayout();
             // 
             // tree
@@ -245,10 +248,15 @@ namespace TombLib.Controls
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tree.Enabled = false;
+            this.tree.EvenNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tree.ExpandOnDoubleClick = false;
+            this.tree.FocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(110)))), ((int)(((byte)(175)))));
             this.tree.Location = new System.Drawing.Point(0, 30);
             this.tree.MaxDragChange = 20;
             this.tree.MultiSelect = true;
             this.tree.Name = "tree";
+            this.tree.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+            this.tree.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
             this.tree.Size = new System.Drawing.Size(150, 120);
             this.tree.TabIndex = 1;
             this.tree.Click += new System.EventHandler(this.tree_Click);
@@ -264,9 +272,9 @@ namespace TombLib.Controls
             | System.Windows.Forms.AnchorStyles.Right)));
             this.suggestedGameVersionComboBox.Enabled = false;
             this.suggestedGameVersionComboBox.FormattingEnabled = true;
-            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(103, 3);
+            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(79, 3);
             this.suggestedGameVersionComboBox.Name = "suggestedGameVersionComboBox";
-            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(47, 21);
+            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(44, 21);
             this.suggestedGameVersionComboBox.TabIndex = 0;
             this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
             // 
@@ -276,12 +284,24 @@ namespace TombLib.Controls
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(3, 6);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(91, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(75, 13);
             this.darkLabel1.TabIndex = 3;
             this.darkLabel1.Text = "Game version:";
             // 
+            // butSearch
+            // 
+            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butSearch.Checked = false;
+            this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
+            this.butSearch.Location = new System.Drawing.Point(129, 3);
+            this.butSearch.Name = "butSearch";
+            this.butSearch.Size = new System.Drawing.Size(21, 21);
+            this.butSearch.TabIndex = 5;
+            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
+            // 
             // WadTreeView
             // 
+            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.darkLabel1);
             this.Controls.Add(this.suggestedGameVersionComboBox);
             this.Controls.Add(this.tree);
@@ -327,6 +347,12 @@ namespace TombLib.Controls
         private void WadTreeView_Click(object sender, EventArgs e)
         {
             if (_wad == null && ClickOnEmpty != null) ClickOnEmpty(this, e);
+        }
+
+        private void butSearch_Click(object sender, EventArgs e)
+        {
+            using (var searchPopUp = new PopUpSearch(tree))
+                searchPopUp.Show(this);
         }
     }
 }

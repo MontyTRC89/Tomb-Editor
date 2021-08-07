@@ -8,6 +8,7 @@ using TombLib.Utils;
 using TombLib.LevelData;
 using DarkUI.Controls;
 using TombLib.Wad;
+using System.Linq;
 
 namespace TombLib.Forms
 {
@@ -49,6 +50,11 @@ namespace TombLib.Forms
                     else
                         _searchItems.Add(item.ToString());
                 }
+            }
+            else if (_callbackControl is DarkTreeView)
+            {
+                var callbackTree = (DarkTreeView)_callbackControl;
+                _searchItems = callbackTree.GetAllNodes().Select(n => n.Text).ToList();
             }
 
             // Set pop-up width to parent control width
@@ -143,6 +149,12 @@ namespace TombLib.Forms
                         // TODO: Support other control types?
                         if (_callbackControl is DarkUI.Controls.DarkComboBox)
                             ((DarkUI.Controls.DarkComboBox)_callbackControl).SelectedIndex = _currentIndex;
+                        else if (_callbackControl is DarkUI.Controls.DarkTreeView)
+                        {
+                            var tree = (DarkUI.Controls.DarkTreeView)_callbackControl;
+                            tree.SelectNode(tree.Nodes[_currentIndex]);
+                            tree.EnsureVisible();
+                        }
                         return;
                     }
                 }
