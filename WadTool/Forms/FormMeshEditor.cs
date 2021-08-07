@@ -67,6 +67,7 @@ namespace WadTool
             _wad = wad;
             _deviceManager = deviceManager;
             _tool.EditorEventRaised += Tool_EditorEventRaised;
+            panelTextureMap.SelectedTextureChanged += (s, e) => UpdateStatusLabel();
 
             panelMesh.InitializeRendering(_tool, _deviceManager);
             panelTextureMap.Initialize(_tool);
@@ -401,9 +402,22 @@ namespace WadTool
                 cbBlendMode.SelectedIndex = 0;
 
             // Update status label
-            statusLabel.Text = NoMesh() ? string.Empty : panelMesh.Mesh.Polys.Count + " faces, " + panelMesh.Mesh.VertexPositions.Count + " vertices total.";
+            UpdateStatusLabel();
 
             panelMesh.Invalidate();
+        }
+
+        private void UpdateStatusLabel()
+        {
+            var prompt = NoMesh() ? string.Empty : "Selected mesh: '" + panelMesh.Mesh.Name + "', " + 
+                                                    panelMesh.Mesh.VertexPositions.Count + " vertices, " + panelMesh.Mesh.Polys.Count + " faces. ";
+            if (panelTextureMap.SelectedTexture != TextureArea.None)
+            {
+                var quad = panelTextureMap.SelectedTexture.GetRect();
+                prompt += "Selected texture: " + quad.Start + " to " + quad.End;
+            }
+
+            statusLabel.Text = prompt;
         }
 
         private void CalculateWindowDimensions()

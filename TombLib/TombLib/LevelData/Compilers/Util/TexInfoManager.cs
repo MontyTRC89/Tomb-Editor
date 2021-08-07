@@ -663,7 +663,9 @@ namespace TombLib.LevelData.Compilers.Util
 
         // Gets existing TexInfo child index if there is similar one in parent textures list.
 
-        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, bool isForRoom, bool isForTriangle, bool topmostAndUnpadded, bool checkParameters = true, bool scanOtherSets = false)
+        private Result? GetTexInfo(TextureArea areaToLook, List<ParentTextureArea> parentList, 
+                                   bool isForRoom, bool isForTriangle, bool topmostAndUnpadded,
+                                   bool checkParameters = true, bool scanOtherSets = false, float lookupMargin = 0.0f)
         {
             var lookupCoordinates = new Vector2[isForTriangle ? 3 : 4];
             for (int i = 0; i < lookupCoordinates.Length; i++)
@@ -694,7 +696,7 @@ namespace TombLib.LevelData.Compilers.Util
                         continue;
 
                     // Test if coordinates are mutually equal and return resulting rotation if they are
-                    var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, _animTextureLookupMargin);
+                    var result = TestUVSimilarity(child.AbsCoord, lookupCoordinates, lookupMargin);
                     if (result != _noTexInfo)
                     {
                         // Refresh topmost flag, as same texture may be applied to faces with different topmost priority
@@ -781,7 +783,7 @@ namespace TombLib.LevelData.Compilers.Util
                     var asTriangle = toQuad ? false : isForTriangle;
                     var reference  = toQuad ? refQuad : texture;
 
-                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, remapAnimatedTextures);
+                    var existing = GetTexInfo(reference, actualTex.CompiledAnimation, isForRoom, asTriangle, false, true, remapAnimatedTextures, _animTextureLookupMargin);
                     if (existing.HasValue)
                         return new Result() { ConvertToQuad = toQuad, Rotation = existing.Value.Rotation, TexInfoIndex = existing.Value.TexInfoIndex };
 
@@ -797,7 +799,7 @@ namespace TombLib.LevelData.Compilers.Util
                     var reference  = toQuad ? refQuad : texture;
 
                     // If reference set found, generate actual one and immediately return fresh result
-                    if (GetTexInfo(reference, refTex.CompiledAnimation, isForRoom, asTriangle, false, false, remapAnimatedTextures).HasValue)
+                    if (GetTexInfo(reference, refTex.CompiledAnimation, isForRoom, asTriangle, false, false, remapAnimatedTextures, _animTextureLookupMargin).HasValue)
                     {
                         GenerateAnimTexture(refTex, refQuad, isForRoom, isForTriangle);
                         var result = AddTexture(texture, isForRoom, isForTriangle);
