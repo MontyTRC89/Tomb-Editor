@@ -85,6 +85,7 @@ namespace TombLib.Wad
                     {
                         LEB128.Write(chunkIO.Raw, texture.Image.Width);
                         LEB128.Write(chunkIO.Raw, texture.Image.Height);
+                        chunkIO.WriteChunkString(Wad2Chunks.TextureName, texture.Image.FileName);
                         chunkIO.WriteChunkArrayOfBytes(Wad2Chunks.TextureData, texture.Image.ToByteArray());
                     });
                 }

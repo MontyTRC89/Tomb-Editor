@@ -102,11 +102,15 @@ namespace TombLib.Wad
 
                 var width = LEB128.ReadInt(chunkIO.Raw);
                 var height = LEB128.ReadInt(chunkIO.Raw);
+                var name = string.Empty;
+
                 byte[] textureData = null;
                 chunkIO.ReadChunks((id2, chunkSize2) =>
                 {
                     if (id2 == Wad2Chunks.TextureIndex)
                         obsoleteIndex = chunkIO.ReadChunkLong(chunkSize2);
+                    if (id2 == Wad2Chunks.TextureName)
+                        name = chunkIO.ReadChunkString(chunkSize2);
                     if (id2 == Wad2Chunks.TextureData)
                         textureData = chunkIO.ReadChunkArrayOfBytes(chunkSize2);
                     else
@@ -116,7 +120,7 @@ namespace TombLib.Wad
 
                 var texture = ImageC.FromByteArray(textureData, width, height);
                 texture.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-
+                texture.FileName = name;
                 textures.Add(obsoleteIndex++, new WadTexture(texture));
                 return true;
             });
