@@ -79,7 +79,7 @@ namespace TombLib.Graphics
             submesh.Indices.Add((ushort)(mesh.Vertices.Count - 1));
         }
 
-        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture)
+        public static ObjectMesh FromWad2(GraphicsDevice device, WadMesh msh, Func<WadTexture, VectorInt2> allocateTexture, bool correct)
         {
             Console.WriteLine(msh.Name);
             // Initialize the mesh
@@ -128,15 +128,19 @@ namespace TombLib.Graphics
                         submesh = mesh.Submeshes[materialOpaqueDoubleSided];
                 }
 
-                // Do half-pixel correction on texture to prevent bleeding
                 var coords = poly.Texture.TexCoords;
-                var shape = (int)TextureExtensions.GetTextureShapeType(poly.Texture.TexCoords, poly.Shape == WadPolygonShape.Triangle);
 
-                for (int i = 0; i < (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/ ? 3 : 4); i++)
-                    if (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/)
-                        coords[i] += TextureExtensions.CompensationTris[shape, i];
-                    else
-                        coords[i] += TextureExtensions.CompensationQuads[shape, i];
+                // Do half-pixel correction on texture to prevent bleeding
+                if (correct)
+                {
+                    var shape = (int)TextureExtensions.GetTextureShapeType(poly.Texture.TexCoords, poly.Shape == WadPolygonShape.Triangle);
+
+                    for (int i = 0; i < (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/ ? 3 : 4); i++)
+                        if (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/)
+                            coords[i] += TextureExtensions.CompensationTris[shape, i];
+                        else
+                            coords[i] += TextureExtensions.CompensationQuads[shape, i];
+                }
 
                 if (poly.Shape == WadPolygonShape.Triangle)
                 {

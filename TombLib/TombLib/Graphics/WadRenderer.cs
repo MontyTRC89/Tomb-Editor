@@ -13,20 +13,23 @@ namespace TombLib.Graphics
         private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         public GraphicsDevice GraphicsDevice { get; }
+        public Texture2D Texture { get; private set; } = null;
+
         private Dictionary<WadMoveable, AnimatedModel> Moveables { get; } = new Dictionary<WadMoveable, AnimatedModel>();
         private Dictionary<WadStatic, StaticModel> Statics { get; } = new Dictionary<WadStatic, StaticModel>();
 
-        public Texture2D Texture { get; private set; } = null;
         private RectPacker TexturePacker { get; set; }
         private Dictionary<WadTexture, VectorInt2> PackedTextures { get; set; }
         private bool _compactTexture;
+        private bool _correctTexture;
 
         private bool _disposing = false;
 
-        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture = false)
+        public WadRenderer(GraphicsDevice graphicsDevice, bool compactTexture, bool correctTexture)
         {
             GraphicsDevice = graphicsDevice;
             _compactTexture = compactTexture;
+            _correctTexture = correctTexture;
             CreateTexturePacker();
         }
 
@@ -130,7 +133,7 @@ namespace TombLib.Graphics
             try
             {
                 model = new StaticModel(GraphicsDevice);
-                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, @static.Mesh, AllocateTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, @static.Mesh, AllocateTexture, _correctTexture));
                 model.UpdateBuffers();
             }
             catch (TextureAtlasFullException exc)
@@ -240,7 +243,7 @@ namespace TombLib.Graphics
             Parallel.ForEach(newStatics, @static =>
             {
                 var model = new StaticModel(GraphicsDevice);
-                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, @static.Mesh, AllocateTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(GraphicsDevice, @static.Mesh, AllocateTexture, _correctTexture));
                 model.UpdateBuffers();
                 lock (Statics)
                     Statics.Add(@static, model);

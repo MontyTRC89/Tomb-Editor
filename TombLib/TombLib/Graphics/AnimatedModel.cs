@@ -121,7 +121,7 @@ namespace TombLib.Graphics
 
             // Create meshes
             for (int m = 0; m < bones.Count; m++)
-                model.Meshes.Add(ObjectMesh.FromWad2(device, bones[m].Mesh, allocateTexture));
+                model.Meshes.Add(ObjectMesh.FromWad2(device, bones[m].Mesh, allocateTexture, true));
 
             // HACK: Add matrices here because if original WAD stack was corrupted, we could have broken parent - children
             // relations and so we could have meshes count different from matrices count

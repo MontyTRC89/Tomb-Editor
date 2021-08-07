@@ -93,7 +93,7 @@ namespace TombLib.Controls
             {
                 // Reset scrollbar
                 _legacyDevice = DeviceManager.DefaultDeviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true);
+                _wadRenderer = new WadRenderer(DeviceManager.DefaultDeviceManager.___LegacyDevice, true, true);
 
                 ResetCamera();
 

@@ -222,13 +222,13 @@ namespace WadTool.Controls
             if (LicenseManager.UsageMode != LicenseUsageMode.Runtime)
                 return;
 
-            base.InitializeRendering(deviceManager.Device, true);
+            base.InitializeRendering(deviceManager.Device, tool.Configuration.RenderingItem_Antialias);
             _tool = tool;
 
             // Legacy rendering
             {
                 _device = deviceManager.___LegacyDevice;
-                _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice);
+                _wadRenderer = new WadRenderer(deviceManager.___LegacyDevice, false, false);
 
                 _fontTexture = deviceManager.Device.CreateTextureAllocator(new RenderingTextureAllocator.Description { Size = new VectorInt3(512, 512, 2) });
                 _fontDefault = deviceManager.Device.CreateFont(new RenderingFont.Description
@@ -581,7 +581,8 @@ namespace WadTool.Controls
             effect.Parameters["StaticLighting"].SetValue(showColors);
             effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.Default);
+            effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.PointClamp);
+            effect.Parameters["AlphaTest"].SetValue(!WireframeMode);
             effect.Techniques[0].Passes[0].Apply();
 
             foreach (var mesh_ in mesh.Meshes)
