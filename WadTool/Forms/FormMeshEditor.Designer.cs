@@ -79,6 +79,7 @@
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.panelTree = new DarkUI.Controls.DarkPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.statusLabel = new DarkUI.Controls.DarkLabel();
             this.panelEditingTools.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabVertexRemap.SuspendLayout();
@@ -969,11 +970,23 @@
             this.panelTree.Size = new System.Drawing.Size(263, 560);
             this.panelTree.TabIndex = 0;
             // 
+            // statusLabel
+            // 
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.statusLabel.Location = new System.Drawing.Point(3, 576);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(284, 13);
+            this.statusLabel.TabIndex = 57;
+            this.statusLabel.Text = "This label will contain useful info about current mesh.";
+            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 601);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
@@ -1013,6 +1026,7 @@
             this.panelTexturingTools.ResumeLayout(false);
             this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -1081,5 +1095,6 @@
         private DarkUI.Controls.DarkLabel darkLabel2;
         private DarkUI.Controls.DarkLabel darkLabel6;
         private DarkUI.Controls.DarkLabel darkLabel3;
+        private DarkUI.Controls.DarkLabel statusLabel;
     }
 }
