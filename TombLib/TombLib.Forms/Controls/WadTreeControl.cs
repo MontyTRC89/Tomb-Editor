@@ -278,6 +278,7 @@ namespace TombLib.Controls
             this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(39, 21);
             this.suggestedGameVersionComboBox.TabIndex = 0;
             this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
+            this.suggestedGameVersionComboBox.Resize += new System.EventHandler(this.suggestedGameVersionComboBox_Resize);
             // 
             // darkLabel1
             // 
@@ -352,8 +353,15 @@ namespace TombLib.Controls
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            var searchPopUp = new PopUpSearch(tree);
+            var searchPopUp = new PopUpSearch(tree) { ShowAboveControl = true };
                 searchPopUp.Show(this);
+        }
+
+        private void suggestedGameVersionComboBox_Resize(object sender, EventArgs e)
+        {
+            butSearch.Size = new Size(suggestedGameVersionComboBox.Size.Height, suggestedGameVersionComboBox.Size.Height);
+            butSearch.Location = new Point(ClientSize.Width - butSearch.Size.Width - Padding.Right, suggestedGameVersionComboBox.Location.Y);
+            suggestedGameVersionComboBox.Size = new Size(ClientSize.Width - suggestedGameVersionComboBox.Location.X - butSearch.Size.Width - Padding.Right - 5, suggestedGameVersionComboBox.Size.Height);
         }
     }
 }

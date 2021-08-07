@@ -25,6 +25,8 @@ namespace TombLib.Forms
 
         private Control _callbackControl;
 
+        public bool ShowAboveControl { get; set; } = false;
+
         public PopUpSearch(Control callbackControl, TRVersion.Game version = TRVersion.Game.TR4)
         {
             InitializeComponent();
@@ -89,7 +91,13 @@ namespace TombLib.Forms
 
                 // Smoothly descend pop-up window from parent control using sine function
                 var callbackControlLocation = _callbackControl.PointToScreen(Point.Empty);
-                Location = new Point(callbackControlLocation.X, callbackControlLocation.Y + _callbackControl.Size.Height - MinimumSize.Height + (int)(MinimumSize.Height * Math.Sin(_animProgress * Math.PI / 2)));
+
+                if (ShowAboveControl)
+                    Location = new Point(callbackControlLocation.X,
+                    callbackControlLocation.Y - (int)(MinimumSize.Height * Math.Sin(_animProgress * Math.PI / 2)));
+                else
+                    Location = new Point(callbackControlLocation.X,
+                    callbackControlLocation.Y + _callbackControl.Size.Height - MinimumSize.Height + (int)(MinimumSize.Height * Math.Sin(_animProgress * Math.PI / 2)));
 
                 Opacity = _animProgress;
 
