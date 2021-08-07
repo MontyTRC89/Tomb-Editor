@@ -125,6 +125,24 @@ namespace WadTool
                     case (Keys.Control | Keys.Y):
                         _tool.UndoManager.Redo();
                         break;
+
+                    case Keys.OemMinus:
+                    case Keys.Oemplus:
+                    case Keys.Oem3:
+                    case Keys.Oem5:
+                        var tr = panelTextureMap.SelectedTexture;
+                        tr.Rotate(1);
+                        panelTextureMap.SelectedTexture = tr;
+                        break;
+
+                    case Keys.OemMinus | Keys.Shift:
+                    case Keys.Oemplus | Keys.Shift:
+                    case Keys.Oem3 | Keys.Shift:
+                    case Keys.Oem5 | Keys.Shift:
+                        var tm = panelTextureMap.SelectedTexture;
+                        tm.Mirror();
+                        panelTextureMap.SelectedTexture = tm;
+                        break;
                 }
 
             return base.ProcessCmdKey(ref msg, keyData);

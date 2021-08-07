@@ -18,7 +18,7 @@ namespace WadTool.Controls
         protected override float NavigationSpeedMouseWheelZoom => (_tool?.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom ?? 1.0f) * 0.00025f;
         protected override float NavigationMaxZoom => 2000.0f;
         protected override float NavigationMinZoom => 0.5f;
-        protected override bool DrawSelectionDirectionIndicators => false;
+        protected override bool DrawSelectionDirectionIndicators => true;
 
         public PanelTextureMap() : base() { }
 
