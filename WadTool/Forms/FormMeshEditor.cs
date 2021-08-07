@@ -77,6 +77,9 @@ namespace WadTool
 
             tabsModes.LinkedControl = cbEditingMode;
 
+            // Set window property handlers
+            Configuration.ConfigureWindow(this, _tool.Configuration);
+
             PrepareUI(mesh);
             CalculateWindowDimensions();
         }
@@ -107,11 +110,22 @@ namespace WadTool
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (keyData == Keys.Escape)
-            {
-                panelMesh.CurrentElement = -1;
-                panelTextureMap.SelectedTexture = TextureArea.None;
-            }
+            if (ShowEditingTools)
+                switch (keyData)
+                {
+                    case Keys.Escape:
+                        panelMesh.CurrentElement = -1;
+                        panelTextureMap.SelectedTexture = TextureArea.None;
+                        break;
+
+                    case (Keys.Control | Keys.Z):
+                        _tool.UndoManager.Undo();
+                        break;
+
+                    case (Keys.Control | Keys.Y):
+                        _tool.UndoManager.Redo();
+                        break;
+                }
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -258,6 +272,14 @@ namespace WadTool
                     panelMesh.EditingMode != MeshEditingMode.Sphere)
                     UpdateUI();
             }
+
+            if (obj is WadToolClass.UndoStackChangedEvent)
+            {
+                var stackEvent = (WadToolClass.UndoStackChangedEvent)obj;
+                butTbUndo.Enabled = stackEvent.UndoPossible;
+                butTbRedo.Enabled = stackEvent.RedoPossible;
+                UpdateUI();
+            }
         }
 
         private void PrepareUI(WadMesh mesh)
@@ -313,8 +335,8 @@ namespace WadTool
             butRemapVertex.Enabled = enableRemap;
 
             // Borrow rendering options from 3D panel itself
-            butWire.Checked = panelMesh.WireframeMode;
-            butAlpha.Checked = panelMesh.AlphaTest;
+            butTbWireframe.Checked = panelMesh.WireframeMode;
+            butTbAlpha.Checked = panelMesh.AlphaTest;
             cbExtra.Checked = panelMesh.DrawExtraInfo;
 
             // Hide cancel button in case editing mode is active in tree view.
@@ -331,6 +353,7 @@ namespace WadTool
                 panelMesh.EditingMode = MeshEditingMode.None;
                 panelEditing.Visible = false;
                 panelEditing.Visible = false;
+                topBar.Visible = false;
             }
 
             // cbExtra checkbox toggles alternate mesh drawing mode.
@@ -341,13 +364,13 @@ namespace WadTool
                     cbExtra.Text = "Show sheen";
                     break;
                 case MeshEditingMode.VertexColorsAndNormals:
-                    cbExtra.Text = "All normals";
+                    cbExtra.Text = "Show all normals";
                     break;
                 case MeshEditingMode.VertexEffects:
-                    cbExtra.Text = "All values";
+                    cbExtra.Text = "Show all values";
                     break;
                 case MeshEditingMode.VertexRemap:
-                    cbExtra.Text = "All numbers";
+                    cbExtra.Text = "Show all numbers";
                     break;
                 case MeshEditingMode.Sphere:
                     cbExtra.Text = "Show gizmo";
@@ -400,6 +423,7 @@ namespace WadTool
             var newMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
             if (newMesh != panelMesh.Mesh)
             {
+                _tool.UndoManager.ClearAll();
                 panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
 
                 GetSphereValues();
@@ -426,6 +450,8 @@ namespace WadTool
                 nudVertexNum.Value = panelMesh.CurrentElement;
                 return;
             }
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
             var count = RemapSelectedVertex(panelMesh.CurrentElement, newVertexIndex);
 
@@ -484,6 +510,8 @@ namespace WadTool
         private int AutoFit()
         {
             if (NoMesh()) return 0;
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
             // Collect all poly edges as index pairs
 
@@ -647,6 +675,8 @@ namespace WadTool
             if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.FaceAttributes)
                 return;
 
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
             var currentShinyValue = (byte)nudShineStrength.Value;
             var currentBlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
 
@@ -676,6 +706,8 @@ namespace WadTool
         {
             if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexEffects)
                 return;
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
             GenerateMissingVertexData();
 
@@ -710,6 +742,8 @@ namespace WadTool
             if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals)
                 return;
 
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
             panelMesh.Mesh.CalculateNormals();
             panelMesh.Invalidate();
         }
@@ -719,6 +753,8 @@ namespace WadTool
             if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals)
                 return;
 
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
             panelMesh.Mesh.CalculateNormals(false);
             panelMesh.Invalidate();
         }
@@ -727,6 +763,8 @@ namespace WadTool
         {
             if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals)
                 return;
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
             GenerateMissingVertexData();
 
@@ -746,6 +784,8 @@ namespace WadTool
             // interpreted vertex colors as glow/move flags. We convert exact shade value to exact
             // attribute value, because legacy compiler should convert it to a flag anyway, while
             // TEN compiler most likely will keep attribute value on a per-vertex basis.
+
+            _tool.UndoManager.PushMeshChanged(panelMesh);
 
             panelMesh.Mesh.VertexAttributes.Clear();
 
@@ -798,6 +838,8 @@ namespace WadTool
             if (_readingValues)
                 return;
 
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
             var newCoord = new Vector3((float)nudSphereX.Value, (float)nudSphereY.Value, (float)nudSphereZ.Value);
             panelMesh.Mesh.BoundingSphere = new BoundingSphere(newCoord, (float)nudSphereRadius.Value);
             panelMesh.Invalidate();
@@ -805,6 +847,8 @@ namespace WadTool
 
         private void butResetSphere_Click(object sender, EventArgs e)
         {
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+
             panelMesh.Mesh.BoundingSphere = panelMesh.Mesh.CalculateBoundingSphere();
             panelMesh.Invalidate();
             GetSphereValues();
@@ -893,19 +937,6 @@ namespace WadTool
             }
         }
 
-        private void butAlpha_Click(object sender, EventArgs e)
-        {
-            panelMesh.AlphaTest = butAlpha.Checked = !butAlpha.Checked;
-            UpdateUI();
-        }
-
-        private void butWire_Click(object sender, EventArgs e)
-        {
-
-            panelMesh.WireframeMode = butWire.Checked = !butWire.Checked;
-            UpdateUI();
-        }
-
         private void butAllTextures_Click(object sender, EventArgs e)
         {
             butAllTextures.Checked = !butAllTextures.Checked;
@@ -916,6 +947,38 @@ namespace WadTool
         {
             var searchPopUp = new PopUpSearch(comboCurrentTexture);
             searchPopUp.Show(this);
+        }
+
+        private void butTbUndo_Click(object sender, EventArgs e)
+        {
+            _tool.UndoManager.Undo();
+        }
+
+        private void butTbRedo_Click(object sender, EventArgs e)
+        {
+            _tool.UndoManager.Redo();
+        }
+
+        private void butTbWireframe_Click(object sender, EventArgs e)
+        {
+            panelMesh.WireframeMode = butTbWireframe.Checked = !butTbWireframe.Checked;
+            UpdateUI();
+        }
+
+        private void butTbAlpha_Click(object sender, EventArgs e)
+        {
+            panelMesh.AlphaTest = butTbAlpha.Checked = !butTbAlpha.Checked;
+            UpdateUI();
+        }
+
+        private void butTbResetCamera_Click(object sender, EventArgs e)
+        {
+            panelMesh.ResetCamera();
+        }
+
+        private void FormMeshEditor_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _tool.UndoManager.ClearAll();
         }
     }
 }

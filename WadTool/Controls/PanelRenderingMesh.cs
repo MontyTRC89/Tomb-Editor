@@ -33,7 +33,10 @@ namespace WadTool.Controls
                 _mesh = value;
                 _previewMesh = _mesh.Clone();
                 InitializeVertexBuffer();
-                ResetCamera();
+
+                if (ResetCameraOnMeshChange)
+                    ResetCamera();
+
                 CurrentElement = -1;
             }
         }
@@ -70,22 +73,32 @@ namespace WadTool.Controls
                 if (Mesh == null)
                     return;
 
+                bool engageUndo = false;
+
                 switch (EditingMode)
                 {
                     case MeshEditingMode.FaceAttributes:
-                        if (_currentElement == value) return;
+                        if (_currentElement == value) return;  // Face mode does not need continuous editing of same element
                         _currentElement = (Mesh.Polys.Count > value) ? value : -1;
+                        engageUndo = !Control.ModifierKeys.HasFlag(Keys.Alt);
                         break;
 
                     case MeshEditingMode.VertexEffects:
-                    case MeshEditingMode.VertexRemap:
                     case MeshEditingMode.VertexColorsAndNormals:
+                    case MeshEditingMode.VertexRemap:
                         _currentElement = (Mesh.VertexPositions.Count > value) ? value : -1;
+                        engageUndo = !Control.ModifierKeys.HasFlag(Keys.Alt) && EditingMode != MeshEditingMode.VertexRemap;
                         break;
 
                     default:
                         _currentElement = -1;
                         break;
+                }
+
+                if (engageUndo && !_actionStarted && value != -1)
+                {
+                    _tool.UndoManager.PushMeshChanged(this);
+                    _actionStarted = true;
                 }
 
                 _tool.MeshEditorElementChanged(_currentElement);
@@ -140,6 +153,8 @@ namespace WadTool.Controls
             }
         }
         private bool _drawInformationForAllElements = false;
+
+        public bool ResetCameraOnMeshChange = true;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SafeVertexRemapLimit
@@ -197,6 +212,7 @@ namespace WadTool.Controls
         private WadToolClass _tool;
 
         // Interaction state
+        private bool _actionStarted;
         private float _lastX;
         private float _lastY;
         private List<Vector3> _lastElementPos = new List<Vector3>();
@@ -704,7 +720,14 @@ namespace WadTool.Controls
                 if (_gizmo.GizmoUpdateHoverEffect(_gizmo.DoPicking(ray)))
                     Invalidate();
                 if (_gizmo.MouseMoved(Camera.GetViewProjectionMatrix(ClientSize.Width, ClientSize.Height), ray))
+                {
                     Invalidate();
+                    if (!_actionStarted)
+                    {
+                        _tool.UndoManager.PushMeshChanged(this);
+                        _actionStarted = true;
+                    }
+                }
             }
         }
 
@@ -719,6 +742,8 @@ namespace WadTool.Controls
 
             if (EditingMode != MeshEditingMode.None && e.Button == MouseButtons.Left)
                 TryPickElement(e.X, e.Y);
+
+            _actionStarted = false;
         }
 
         protected override void OnMouseDoubleClick(MouseEventArgs e)

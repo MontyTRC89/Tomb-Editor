@@ -81,5 +81,9 @@ namespace WadTool
         public Point Window_FormReplaceAnimCommands_Position { get; set; } = new Point(-1);
         public Size Window_FormReplaceAnimCommands_Size { get; set; } = new Size(811, 460);
         public bool Window_FormReplaceAnimCommands_Maximized { get; set; } = false;
+
+        public Point Window_FormMeshEditor_Position { get; set; } = new Point(-1);
+        public Size Window_FormMeshEditor_Size { get; set; } = new Size(1055, 707);
+        public bool Window_FormMeshEditor_Maximized { get; set; } = false;
     }
 }
