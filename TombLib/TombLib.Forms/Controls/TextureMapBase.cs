@@ -644,16 +644,16 @@ namespace TombLib.Controls
             {
                 if (ClientSize.Width > ClientSize.Height)
                 {
-                    if (VisibleTexture.Image.Height >= VisibleTexture.Image.Width)
-                        scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
-                    else
+                    scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
+
+                    if (VisibleTexture.Image.Height >= ClientSize.Height * scale)
                         scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
                 }
                 else
                 {
-                    if (VisibleTexture.Image.Width >= VisibleTexture.Image.Height)
-                        scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
-                    else
+                    scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
+
+                    if (VisibleTexture.Image.Width >= ClientSize.Width * scale)
                         scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
                 }
 
