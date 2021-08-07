@@ -212,7 +212,7 @@
             this.tabsModes.Multiline = true;
             this.tabsModes.Name = "tabsModes";
             this.tabsModes.SelectedIndex = 0;
-            this.tabsModes.Size = new System.Drawing.Size(332, 102);
+            this.tabsModes.Size = new System.Drawing.Size(331, 102);
             this.tabsModes.TabIndex = 7;
             // 
             // tabVertexRemap
