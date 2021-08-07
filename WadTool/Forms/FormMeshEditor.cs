@@ -626,6 +626,12 @@ namespace WadTool
             UpdateUI();
         }
 
+        private void cbAlpha_CheckedChanged(object sender, EventArgs e)
+        {
+            panelMesh.AlphaTest = cbAlpha.Checked;
+            UpdateUI();
+        }
+
         private void nudVertexNum_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)

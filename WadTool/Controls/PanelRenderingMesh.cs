@@ -110,6 +110,21 @@ namespace WadTool.Controls
         private bool _wireframeMode = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool AlphaTest
+        {
+            get { return _alphaTest; }
+            set
+            {
+                if (_alphaTest == value)
+                    return;
+
+                _alphaTest = value;
+                Invalidate();
+            }
+        }
+        private bool _alphaTest = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawExtraInfo
         {
             get { return _drawInformationForAllElements; }
@@ -582,7 +597,7 @@ namespace WadTool.Controls
             effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
             effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.PointClamp);
-            effect.Parameters["AlphaTest"].SetValue(!WireframeMode);
+            effect.Parameters["AlphaTest"].SetValue(!WireframeMode && AlphaTest);
             effect.Techniques[0].Passes[0].Apply();
 
             foreach (var mesh_ in mesh.Meshes)

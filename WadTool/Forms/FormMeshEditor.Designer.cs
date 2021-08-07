@@ -78,6 +78,7 @@
             this.butDeleteTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.cbAlpha = new DarkUI.Controls.DarkCheckBox();
             this.panelEditing.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabVertexRemap.SuspendLayout();
@@ -156,6 +157,7 @@
             // 
             // panelEditing
             // 
+            this.panelEditing.Controls.Add(this.cbAlpha);
             this.panelEditing.Controls.Add(this.cbWireframe);
             this.panelEditing.Controls.Add(this.cbExtra);
             this.panelEditing.Controls.Add(this.cbEditingMode);
@@ -164,7 +166,7 @@
             this.panelEditing.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelEditing.Location = new System.Drawing.Point(0, 5);
             this.panelEditing.Name = "panelEditing";
-            this.panelEditing.SectionHeader = "Tools";
+            this.panelEditing.SectionHeader = "Editing tools";
             this.panelEditing.Size = new System.Drawing.Size(612, 92);
             this.panelEditing.TabIndex = 54;
             // 
@@ -195,9 +197,9 @@
             this.cbEditingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbEditingMode.FormattingEnabled = true;
-            this.cbEditingMode.Location = new System.Drawing.Point(88, 33);
+            this.cbEditingMode.Location = new System.Drawing.Point(49, 33);
             this.cbEditingMode.Name = "cbEditingMode";
-            this.cbEditingMode.Size = new System.Drawing.Size(309, 23);
+            this.cbEditingMode.Size = new System.Drawing.Size(284, 23);
             this.cbEditingMode.TabIndex = 9;
             this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
             // 
@@ -207,9 +209,9 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(6, 36);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(79, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(40, 13);
             this.darkLabel2.TabIndex = 8;
-            this.darkLabel2.Text = "Editing mode:";
+            this.darkLabel2.Text = "Mode:";
             // 
             // tabsModes
             // 
@@ -960,6 +962,18 @@
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
+            // cbAlpha
+            // 
+            this.cbAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbAlpha.AutoSize = true;
+            this.cbAlpha.Location = new System.Drawing.Point(344, 35);
+            this.cbAlpha.Name = "cbAlpha";
+            this.cbAlpha.Size = new System.Drawing.Size(56, 17);
+            this.cbAlpha.TabIndex = 10;
+            this.cbAlpha.Text = "Alpha";
+            this.toolTip.SetToolTip(this.cbAlpha, "Draw mesh as wireframe");
+            this.cbAlpha.CheckedChanged += new System.EventHandler(this.cbAlpha_CheckedChanged);
+            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1072,5 +1086,6 @@
         private DarkUI.Controls.DarkButton butRecalcNormalsAvg;
         private DarkUI.Controls.DarkButton butExportTexture;
         private DarkUI.Controls.DarkNumericUpDown nudSphereRadius;
+        private DarkUI.Controls.DarkCheckBox cbAlpha;
     }
 }
