@@ -1,6 +1,7 @@
 ﻿using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -29,7 +30,7 @@ namespace WadTool
             }
         }
 
-        public class FaceEdge : IEquatable<FaceEdge>
+        private class FaceEdge : IEquatable<FaceEdge>
         {
             public int[] P { get; set; }
 
@@ -37,8 +38,14 @@ namespace WadTool
             public override int GetHashCode() => P[0].GetHashCode() ^ P[1].GetHashCode();
         }
 
-        public bool ShowMeshList { get; set; } = false;
-        public bool ShowEditingTools { get; set; } = true;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool ShowEditingTools
+        {
+            get { return _showEditingTools; }
+            set { _showEditingTools = value; UpdateUI(); }
+        }
+        private bool _showEditingTools = true;
+
         public WadMesh SelectedMesh { get; set; }
 
         private Wad2 _wad;
@@ -68,49 +75,10 @@ namespace WadTool
             cbBlendMode.Items.Clear();
             TextureExtensions.BlendModeUserNames(_tool.DestinationWad.GameVersion).ForEach(s => cbBlendMode.Items.Add(s));
 
-            //Size = MinimumSize; // Counteract DarkTabbedContainer designer UI
             tabsModes.LinkedControl = cbEditingMode;
 
-            if (mesh == null) // Populate tree view
-            {
-                var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
-                foreach (var moveable in _wad.Moveables)
-                {
-                    var list = new List<DarkUI.Controls.DarkTreeNode>();
-                    var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
-                    for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
-                    {
-                        var wadMesh = moveable.Value.Meshes.ElementAt(i);
-                        var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                        node.Tag = new MeshTreeNode(moveable.Key, wadMesh);
-                        list.Add(node);
-                    }
-                    moveableNode.Nodes.AddRange(list);
-                    moveablesNode.Nodes.Add(moveableNode);
-                }
-                lstMeshes.Nodes.Add(moveablesNode);
-
-                var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
-                foreach (var @static in _wad.Statics)
-                {
-                    var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
-                    var wadMesh = @static.Value.Mesh;
-                    var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                    node.Tag = new MeshTreeNode(@static.Key, wadMesh);
-                    staticNode.Nodes.Add(node);
-                    staticsNode.Nodes.Add(staticNode);
-                }
-                lstMeshes.Nodes.Add(staticsNode);
-            }
-            else // If form is called with specific item and mesh, show only it and not meshtree.
-            {
-                panelMesh.Mesh = mesh;
-                panelTree.Visible = false; // Lock up list to prevent wandering around
-                GetSphereValues();
-
-                MinimumSize = new Size(MinimumSize.Width - panelTree.Width, MinimumSize.Height);
-                Size = new Size(Size.Width - panelTree.Width, Size.Height);
-            }
+            PrepareUI(mesh);
+            CalculateWindowDimensions();
         }
 
         protected override void OnShown(EventArgs e)
@@ -174,7 +142,7 @@ namespace WadTool
 
                             // Add missing data if needed
                             if (!panelMesh.Mesh.HasAttributes)
-                                GenerateMissingVertexData(); 
+                                GenerateMissingVertexData();
 
                             if (Control.ModifierKeys == Keys.Alt) // Picking
                             {
@@ -221,7 +189,7 @@ namespace WadTool
                                 {
                                     nudShineStrength.Value = (decimal)poly.ShineStrength;
                                 }
-                                
+
                                 if (cbBlend.Checked)
                                 {
                                     var bmIndex = poly.Texture.BlendMode.ToUserIndex();
@@ -231,8 +199,7 @@ namespace WadTool
 
                                 if (cbTexture.Checked)
                                 {
-                                    panelTextureMap.VisibleTexture = poly.Texture.Texture;
-                                    panelTextureMap.SelectedTexture = poly.Texture;
+                                    panelTextureMap.ShowTexture(poly.Texture);
                                     comboCurrentTexture.SelectedItem = poly.Texture.Texture;
                                 }
                             }
@@ -247,7 +214,7 @@ namespace WadTool
                                         // If there's no currently selected texture, fall back to original poly texture
                                         if (panelTextureMap.VisibleTexture.IsAvailable && panelTextureMap.SelectedTexture != TextureArea.None)
                                             currTexture = panelTextureMap.SelectedTexture;
-                                            
+
                                     }
                                     else // Shift or control pressed - flip or rotate texture
                                     {
@@ -292,88 +259,165 @@ namespace WadTool
             }
         }
 
+        private void PrepareUI(WadMesh mesh)
+        {
+            if (mesh == null) // Populate tree view
+            {
+                var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
+                foreach (var moveable in _wad.Moveables)
+                {
+                    var list = new List<DarkUI.Controls.DarkTreeNode>();
+                    var moveableNode = new DarkUI.Controls.DarkTreeNode(moveable.Key.ToString(_wad.GameVersion));
+                    for (int i = 0; i < moveable.Value.Meshes.Count(); i++)
+                    {
+                        var wadMesh = moveable.Value.Meshes.ElementAt(i);
+                        var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                        node.Tag = new MeshTreeNode(moveable.Key, wadMesh);
+                        list.Add(node);
+                    }
+                    moveableNode.Nodes.AddRange(list);
+                    moveablesNode.Nodes.Add(moveableNode);
+                }
+                lstMeshes.Nodes.Add(moveablesNode);
+
+                var staticsNode = new DarkUI.Controls.DarkTreeNode("Statics");
+                foreach (var @static in _wad.Statics)
+                {
+                    var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
+                    var wadMesh = @static.Value.Mesh;
+                    var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
+                    node.Tag = new MeshTreeNode(@static.Key, wadMesh);
+                    staticNode.Nodes.Add(node);
+                    staticsNode.Nodes.Add(staticNode);
+                }
+                lstMeshes.Nodes.Add(staticsNode);
+            }
+            else // If form is called with specific mesh, show only it and not meshtree.
+            {
+                panelMesh.Mesh = mesh;
+                panelTree.Visible = false; // Lock up list to prevent wandering around
+                GetSphereValues();
+            }
+        }
+
         private void UpdateUI()
         {
+            // Gray out editing pane if no mesh is selected (e.g. we're in tree view)
             panelEditing.Enabled = panelMesh.Mesh != null;
 
-            var enableNud = panelMesh.EditingMode == MeshEditingMode.VertexRemap && panelMesh.CurrentElement != -1;
-            if (enableNud) nudVertexNum.Value = panelMesh.CurrentElement;
-            butRemapVertex.Enabled = enableNud;
+            // Disable vertex remap controls if no vertex is selected
+            var enableRemap = panelMesh.EditingMode == MeshEditingMode.VertexRemap && 
+                              panelMesh.CurrentElement != -1;
+            if (enableRemap) nudVertexNum.Value = panelMesh.CurrentElement;
+            butRemapVertex.Enabled = enableRemap;
 
+            // Borrow rendering options from 3D panel itself
             cbWireframe.Checked = panelMesh.WireframeMode;
-            cbAllInfo.Checked = panelMesh.DrawExtraInfo;
+            cbExtra.Checked = panelMesh.DrawExtraInfo;
 
-            if (ShowMeshList && ShowEditingTools)
+            // Hide cancel button in case editing mode is active in tree view.
+            // It is needed because editing happens realtime, without keeping backup mesh.
+            if (lstMeshes.Visible && ShowEditingTools)
             {
                 btCancel.Visible = false;
                 btOk.Location = btCancel.Location;
             }
-            
+
+            // Hide editing tools if flag is unset
             if (!ShowEditingTools)
             {
                 panelMesh.EditingMode = MeshEditingMode.None;
                 panelEditingTools.Visible = false;
+                panelTexturing.Visible = false;
             }
 
+            // cbExtra checkbox toggles alternate mesh drawing mode.
+            // In every editing mode it has different meaning, so we change label.
             switch (panelMesh.EditingMode)
             {
                 case MeshEditingMode.FaceAttributes:
-                    cbAllInfo.Text = "Show sheen";
+                    cbExtra.Text = "Show sheen";
                     break;
                 case MeshEditingMode.VertexColorsAndNormals:
-                    cbAllInfo.Text = "Show all normals";
+                    cbExtra.Text = "Show all normals";
                     break;
                 case MeshEditingMode.VertexEffects:
-                    cbAllInfo.Text = "Show all values";
+                    cbExtra.Text = "Show all values";
                     break;
                 case MeshEditingMode.VertexRemap:
-                    cbAllInfo.Text = "Show all numbers";
+                    cbExtra.Text = "Show all numbers";
                     break;
                 case MeshEditingMode.Sphere:
-                    cbAllInfo.Text = "Show gizmo";
+                    cbExtra.Text = "Show gizmo";
                     break;
             }
 
-            var faceMode = panelMesh.EditingMode == MeshEditingMode.FaceAttributes;
-
-            panelTexturing.Visible = faceMode;
-
+            // In case user switched wad version to old game and picking 
+            // unsupported blending mode, switch it back to default (opaque).
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
 
             panelMesh.Invalidate();
         }
 
+        private void CalculateWindowDimensions()
+        {
+            // Subtract parasite UI elements from designer mode and recalc all needed dimensions
+
+            var difference = tabsModes.Width - tabVertexRemap.Width;
+            var realWidth = Width - difference;
+
+            if (!panelTree.Visible)
+                realWidth -= panelTree.Width;
+
+            var minSize = new Size(realWidth, Height);
+            Size = MinimumSize = minSize;
+
+            // This forces editing pane to float in center of the bottom instead of sticking to
+            // just one corner.
+
+            panelEditing.Dock = DockStyle.None;
+            panelEditing.Anchor = AnchorStyles.Top;
+            panelEditing.Size =
+            panelEditing.MaximumSize =
+            panelEditing.MinimumSize = new Size(panelMesh.Size.Width, panelEditing.Size.Height);
+        }
+
+        private bool NoMesh()
+            => panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0;
+
         private void GetSphereValues()
         {
-            // Sphere values are global
-            if (panelMesh.Mesh != null)
-            {
-                _readingValues = true;
-                nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
-                nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
-                nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
-                nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
-                _readingValues = false;
-            }
+            if (NoMesh()) return;
+
+            // Sphere values are global, no need to refer to current element
+            _readingValues = true;
+            nudSphereX.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.X;
+            nudSphereY.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Y;
+            nudSphereZ.Value = (decimal)panelMesh.Mesh.BoundingSphere.Center.Z;
+            nudSphereRadius.Value = (decimal)panelMesh.Mesh.BoundingSphere.Radius;
+            _readingValues = false;
         }
 
         private void ShowSelectedMesh()
         {
-            // Update big image view
             if (lstMeshes.SelectedNodes.Count == 0 || lstMeshes.SelectedNodes[0].Tag == null)
                 return;
 
-            panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+            var newMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+            if (newMesh != panelMesh.Mesh)
+            {
+                panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
 
-            GetSphereValues();
-            UpdateUI();
-            RepopulateTextureList();
+                GetSphereValues();
+                UpdateUI();
+                RepopulateTextureList();
+            }
         }
 
         private void RemapSelectedVertex()
         {
-            if (panelMesh.CurrentElement == -1 || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+            if (NoMesh() || panelMesh.CurrentElement == -1)
                 return;
 
             if (nudVertexNum.Value == panelMesh.CurrentElement)
@@ -381,7 +425,7 @@ namespace WadTool
                 popup.ShowError(panelMesh, "Please specify other vertex number.");
                 return;
             }
-            
+
             var newVertexIndex = (int)nudVertexNum.Value;
             if (newVertexIndex >= panelMesh.Mesh.VertexPositions.Count)
             {
@@ -446,10 +490,12 @@ namespace WadTool
 
         private int AutoFit()
         {
+            if (NoMesh()) return 0;
+
             // Collect all poly edges as index pairs
 
             var edges = new List<FaceEdge>();
-            
+
             for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
             {
                 var poly = panelMesh.Mesh.Polys[i];
@@ -496,7 +542,7 @@ namespace WadTool
                             if (count > panelMesh.SafeVertexRemapLimit || count == panelMesh.Mesh.VertexPositions.Count - 1)
                                 return count;
                         }
-                        
+
                         RemapSelectedVertex(point, count);
                         remappedIndexList.Add(point);
                         count++;
@@ -514,8 +560,7 @@ namespace WadTool
 
         private void RepopulateTextureList()
         {
-            if (panelMesh.Mesh == null)
-                return;
+            if (NoMesh()) return;
 
             var list = new List<Texture>();
 
@@ -554,7 +599,7 @@ namespace WadTool
 
         private void cbVertexNumbers_CheckedChanged(object sender, EventArgs e)
         {
-            panelMesh.DrawExtraInfo = cbAllInfo.Checked;
+            panelMesh.DrawExtraInfo = cbExtra.Checked;
             UpdateUI();
         }
 
@@ -565,8 +610,7 @@ namespace WadTool
 
         private void butFindVertex_Click(object sender, EventArgs e)
         {
-            if (panelMesh.Mesh == null)
-                return;
+            if (NoMesh()) return;
 
             var newVertexIndex = (int)nudVertexNum.Value;
             if (newVertexIndex >= panelMesh.Mesh.VertexPositions.Count)
@@ -603,11 +647,11 @@ namespace WadTool
 
         private void butApplyToAllFaces_Click(object sender, EventArgs e)
         {
-            if (panelMesh.EditingMode != MeshEditingMode.FaceAttributes || panelMesh.Mesh == null || panelMesh.Mesh.Polys.Count == 0)
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.FaceAttributes)
                 return;
 
             var currentShinyValue = (byte)nudShineStrength.Value;
-            var currentBlendMode  = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
+            var currentBlendMode = TextureExtensions.ToBlendMode(cbBlendMode.SelectedIndex);
 
             for (int i = 0; i < panelMesh.Mesh.Polys.Count; i++)
             {
@@ -633,13 +677,13 @@ namespace WadTool
 
         private void butApplyToAllVertices_Click(object sender, EventArgs e)
         {
-            if (panelMesh.EditingMode != MeshEditingMode.VertexEffects || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexEffects)
                 return;
 
             GenerateMissingVertexData();
 
-            var currentGlow  = (int)nudGlow.Value;
-            var currentMove  = (int)nudMove.Value;
+            var currentGlow = (int)nudGlow.Value;
+            var currentMove = (int)nudMove.Value;
 
             for (int i = 0; i < panelMesh.Mesh.VertexPositions.Count; i++)
             {
@@ -666,16 +710,25 @@ namespace WadTool
 
         private void butRecalcNormals_Click(object sender, EventArgs e)
         {
-            if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals)
                 return;
 
             panelMesh.Mesh.CalculateNormals();
             panelMesh.Invalidate();
         }
 
+        private void butRecalcNormalsAvg_Click(object sender, EventArgs e)
+        {
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals)
+                return;
+
+            panelMesh.Mesh.CalculateNormals(false);
+            panelMesh.Invalidate();
+        }
+
         private void butApplyShadesToAllVertices_Click(object sender, EventArgs e)
         {
-            if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
+            if (NoMesh() || panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals)
                 return;
 
             GenerateMissingVertexData();
@@ -690,6 +743,8 @@ namespace WadTool
 
         private void butConvertFromShades_Click(object sender, EventArgs e)
         {
+            if (NoMesh()) return;
+
             // This function converts vertex attributes from legacy TE workflow which
             // interpreted vertex colors as glow/move flags. We convert exact shade value to exact
             // attribute value, because legacy compiler should convert it to a flag anyway, while
@@ -768,23 +823,17 @@ namespace WadTool
                 panelMesh.StopPreview();
         }
 
-        private void butRecalcNormalsAvg_Click(object sender, EventArgs e)
-        {
-            if (panelMesh.EditingMode != MeshEditingMode.VertexColorsAndNormals || panelMesh.Mesh == null || panelMesh.Mesh.VertexPositions.Count == 0)
-                return;
-
-            panelMesh.Mesh.CalculateNormals(false);
-            panelMesh.Invalidate();
-        }
-
         private void butAddTexture_Click(object sender, EventArgs e)
         {
             var paths = LevelFileDialog.BrowseFiles(FindForm(), null, null, "Load texture file", LevelTexture.FileExtensions).ToList();
             if (paths.Count > 0)
             {
-                var newTexture = new WadTexture(ImageC.FromFile(paths[0]));
+                var image = ImageC.FromFile(paths[0]);
+                image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
+
+                var newTexture = new WadTexture(image);
                 comboCurrentTexture.Items.Add(newTexture);
-                comboCurrentTexture.SelectedItem = newTexture;                
+                comboCurrentTexture.SelectedItem = newTexture;
             }
         }
 
@@ -801,7 +850,7 @@ namespace WadTool
                 popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in mesh.");
                 return;
             }
-            
+
             if (_tool.DestinationWad.MeshTexturesUnique.Contains(panelTextureMap.VisibleTexture as WadTexture))
             {
                 popup.ShowError(panelMesh, "Unable to remove selected texture because it's still used in wad.");
@@ -813,6 +862,38 @@ namespace WadTool
                 comboCurrentTexture.Items.RemoveAt(index);
 
             comboCurrentTexture.SelectedIndex = 0;
+        }
+
+        private void butExportTexture_Click(object sender, EventArgs e)
+        {
+            if (panelTextureMap.VisibleTexture == null ||
+                panelTextureMap.VisibleTexture.IsUnavailable ||
+                panelTextureMap.VisibleTexture.Image == null)
+            {
+                popup.ShowError(panelMesh, "Unable to save texture.\nSelected texture is invalid.");
+                return;
+            }
+
+            using (var fileDialog = new SaveFileDialog())
+            {
+                try
+                {
+                    fileDialog.Filter = ImageC.SaveFileFileExtensions.GetFilter(true);
+                    fileDialog.Title = "Choose a texture file name";
+                    fileDialog.FileName = panelTextureMap.VisibleTexture.ToString();
+                    fileDialog.AddExtension = true;
+
+                    DialogResult dialogResult = fileDialog.ShowDialog(this);
+                    if (dialogResult != DialogResult.OK)
+                        return;
+
+                    panelTextureMap.VisibleTexture.Image.Save(fileDialog.FileName);
+                }
+                catch (Exception exc)
+                {
+                    popup.ShowError(panelMesh, "Unable to save texture. Exception: \n" + exc);
+                }
+            }
         }
     }
 }

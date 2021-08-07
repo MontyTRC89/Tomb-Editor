@@ -839,22 +839,17 @@ namespace WadTool.Controls
         {
             // Smart reset camera which fits an object into window. Later reuse for TE item preview!
 
-            var center = Mesh != null ? Mesh.BoundingBox.Center : Vector3.Zero;
-            var dims = Mesh != null ? new Vector2(Mesh.BoundingBox.Size.X, Mesh.BoundingBox.Size.Y) : Vector2.Zero;
-            var screenSpace = new Vector2(Width, Height);
-            var ratio = dims / screenSpace;
-            var scale = 512.0f;
+            var center = Vector3.Zero;
+            var radius = 256.0f;
 
-            // Fit mesh into window depending on ratio prevalence
-            if (ratio.X > ratio.Y)
-                scale = dims.X / screenSpace.X;
-            else
-                scale = dims.Y / screenSpace.Y;
+            if (Mesh != null)
+            {
+                var bs = Mesh.CalculateBoundingSphere();
+                center = bs.Center;
+                radius = bs.Radius * 1.15f; // Zoom out a bit
+            }
 
-            // Multiply distance by world units plus quarter-margin
-            scale *= Level.WorldUnit;
-
-            Camera = new ArcBallCamera(center, 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, scale, 50, 1000000, (float)Math.PI / 4.0f);
+            Camera = new ArcBallCamera(center, 0, 0, -(float)Math.PI / 2, (float)Math.PI / 2, radius * 3, 50, 1000000, (float)Math.PI / 4.0f);
             Invalidate();
         }
 

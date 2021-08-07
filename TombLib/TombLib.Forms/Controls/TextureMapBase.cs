@@ -94,10 +94,7 @@ namespace TombLib.Controls
 
         public void ShowTexture(TextureArea area)
         {
-            if (!(area.Texture is LevelTexture))
-                return;
-
-            VisibleTexture = (LevelTexture)area.Texture;
+            VisibleTexture = area.Texture;
             SelectedTexture = area;
 
             Vector2 min = Vector2.Min(Vector2.Min(area.TexCoord0, area.TexCoord1), Vector2.Min(area.TexCoord2, area.TexCoord3));
@@ -130,7 +127,7 @@ namespace TombLib.Controls
                (pos.X - (ClientSize.Width - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.X,
                (pos.Y - (ClientSize.Height - _scrollSizeTotal) * 0.5f) / ViewScale + ViewPosition.Y);
             if (limited)
-                textureCoord = Vector2.Min(VisibleTexture.Image.Size /*- new Vector2(0.5f)*/, Vector2.Max(Vector2.Zero /*new Vector2(0.5f)*/, textureCoord));
+                textureCoord = Vector2.Min(VisibleTexture.Image.Size, Vector2.Max(Vector2.Zero, textureCoord));
             return textureCoord;
         }
 
@@ -188,7 +185,7 @@ namespace TombLib.Controls
                 return texCoord;
 
             texCoord /= selectionPrecision.Precision;
-            if (selectionPrecision.Precision >= 32.0f && rectangularSelection)
+            if (selectionPrecision.Precision >= 8.0f && rectangularSelection)
             {
                 texCoord = new Vector2(
                     endX ? (float)Math.Ceiling(texCoord.X) : (float)Math.Floor(texCoord.X),
@@ -220,6 +217,8 @@ namespace TombLib.Controls
                 Swap.Do(ref selectedTexture.TexCoord0, ref selectedTexture.TexCoord2);
 
             selectedTexture.Texture = VisibleTexture;
+
+            selectedTexture.ClampToBounds();
 
             // Reset double-sided and blending mode attrib on new picking, if needed
             if (ResetAttributesOnNewSelection)
@@ -643,10 +642,21 @@ namespace TombLib.Controls
 
             if (fit & available)
             {
-                if (VisibleTexture.Image.Width > VisibleTexture.Image.Height)
-                    scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
+                if (ClientSize.Width > ClientSize.Height)
+                {
+                    if (VisibleTexture.Image.Height >= VisibleTexture.Image.Width)
+                        scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
+                    else
+                        scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
+                }
                 else
-                    scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
+                {
+                    if (VisibleTexture.Image.Width >= VisibleTexture.Image.Height)
+                        scale = (float)ClientSize.Width / (float)VisibleTexture.Image.Width;
+                    else
+                        scale = (float)ClientSize.Height / (float)VisibleTexture.Image.Height;
+                }
+
                 scale *= 0.8f;
 
                 if (VisibleTexture.Image.Height <= ClientSize.Height / 2)

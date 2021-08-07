@@ -647,7 +647,7 @@ namespace WadTool
             if (_tool.DestinationWad == null)
                 return;
 
-            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowMeshList = true, ShowEditingTools = true })
+            using (var form = new FormMeshEditor(_tool, DeviceManager.DefaultDeviceManager, _tool.DestinationWad) { ShowEditingTools = true })
                 form.ShowDialog(this);
         }
     }

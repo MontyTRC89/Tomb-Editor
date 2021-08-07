@@ -29,6 +29,8 @@ namespace WadTool
         public bool AnimationEditor_SoundPreview { get; set; } = false;
         public SoundPreviewType AnimationEditor_SoundPreviewType { get; set; } = SoundPreviewType.Land;
 
+        public bool MeshEditor_MouseWheelMovesTheTextureInsteadOfZooming { get; set; } = false;
+
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public int Rendering3D_FontSize { get; set; } = 16;
         public bool Rendering3D_FontIsBold { get; set; } = true;

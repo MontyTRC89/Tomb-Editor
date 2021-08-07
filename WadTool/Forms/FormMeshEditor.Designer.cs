@@ -22,7 +22,7 @@
             this.btOk = new DarkUI.Controls.DarkButton();
             this.panelEditing = new DarkUI.Controls.DarkSectionPanel();
             this.cbWireframe = new DarkUI.Controls.DarkCheckBox();
-            this.cbAllInfo = new DarkUI.Controls.DarkCheckBox();
+            this.cbExtra = new DarkUI.Controls.DarkCheckBox();
             this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.tabsModes = new TombLib.Controls.DarkTabbedContainer();
@@ -67,15 +67,16 @@
             this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.panelMain = new DarkUI.Controls.DarkPanel();
+            this.panelEditingTools = new DarkUI.Controls.DarkPanel();
+            this.panelTree = new DarkUI.Controls.DarkPanel();
             this.panelTexturing = new DarkUI.Controls.DarkPanel();
             this.darkSectionPanel1 = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
             this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
+            this.butExportTexture = new DarkUI.Controls.DarkButton();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.butDeleteTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
-            this.panelEditingTools = new DarkUI.Controls.DarkPanel();
-            this.panelTree = new DarkUI.Controls.DarkPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelEditing.SuspendLayout();
             this.tabsModes.SuspendLayout();
@@ -94,11 +95,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).BeginInit();
             this.darkSectionPanel2.SuspendLayout();
             this.panelMain.SuspendLayout();
+            this.panelEditingTools.SuspendLayout();
+            this.panelTree.SuspendLayout();
             this.panelTexturing.SuspendLayout();
             this.darkSectionPanel1.SuspendLayout();
             this.panelTexturingTools.SuspendLayout();
-            this.panelEditingTools.SuspendLayout();
-            this.panelTree.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstMeshes
@@ -114,7 +115,7 @@
             this.lstMeshes.Name = "lstMeshes";
             this.lstMeshes.NonFocusedNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
             this.lstMeshes.OddNodeColor = System.Drawing.Color.FromArgb(((int)(((byte)(57)))), ((int)(((byte)(60)))), ((int)(((byte)(62)))));
-            this.lstMeshes.Size = new System.Drawing.Size(282, 474);
+            this.lstMeshes.Size = new System.Drawing.Size(240, 534);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
             this.lstMeshes.Click += new System.EventHandler(this.lstMeshes_Click);
@@ -124,9 +125,9 @@
             // 
             this.panelMesh.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMesh.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.panelMesh.Location = new System.Drawing.Point(289, 0);
+            this.panelMesh.Location = new System.Drawing.Point(247, 0);
             this.panelMesh.Name = "panelMesh";
-            this.panelMesh.Size = new System.Drawing.Size(314, 403);
+            this.panelMesh.Size = new System.Drawing.Size(585, 463);
             this.panelMesh.TabIndex = 0;
             // 
             // btCancel
@@ -134,7 +135,7 @@
             this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancel.Checked = false;
             this.btCancel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btCancel.Location = new System.Drawing.Point(828, 511);
+            this.btCancel.Location = new System.Drawing.Point(1057, 571);
             this.btCancel.Name = "btCancel";
             this.btCancel.Size = new System.Drawing.Size(81, 23);
             this.btCancel.TabIndex = 52;
@@ -146,7 +147,7 @@
             this.btOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btOk.Checked = false;
             this.btOk.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btOk.Location = new System.Drawing.Point(741, 511);
+            this.btOk.Location = new System.Drawing.Point(970, 571);
             this.btOk.Name = "btOk";
             this.btOk.Size = new System.Drawing.Size(81, 23);
             this.btOk.TabIndex = 53;
@@ -156,22 +157,22 @@
             // panelEditing
             // 
             this.panelEditing.Controls.Add(this.cbWireframe);
-            this.panelEditing.Controls.Add(this.cbAllInfo);
+            this.panelEditing.Controls.Add(this.cbExtra);
             this.panelEditing.Controls.Add(this.cbEditingMode);
             this.panelEditing.Controls.Add(this.darkLabel2);
             this.panelEditing.Controls.Add(this.tabsModes);
             this.panelEditing.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelEditing.Location = new System.Drawing.Point(0, 5);
             this.panelEditing.Name = "panelEditing";
-            this.panelEditing.SectionHeader = "Editing tools";
-            this.panelEditing.Size = new System.Drawing.Size(615, 92);
+            this.panelEditing.SectionHeader = "Tools";
+            this.panelEditing.Size = new System.Drawing.Size(585, 92);
             this.panelEditing.TabIndex = 54;
             // 
             // cbWireframe
             // 
             this.cbWireframe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbWireframe.AutoSize = true;
-            this.cbWireframe.Location = new System.Drawing.Point(414, 35);
+            this.cbWireframe.Location = new System.Drawing.Point(379, 35);
             this.cbWireframe.Name = "cbWireframe";
             this.cbWireframe.Size = new System.Drawing.Size(79, 17);
             this.cbWireframe.TabIndex = 6;
@@ -179,24 +180,24 @@
             this.toolTip.SetToolTip(this.cbWireframe, "Draw mesh as wireframe");
             this.cbWireframe.CheckedChanged += new System.EventHandler(this.cbWireframe_CheckedChanged);
             // 
-            // cbAllInfo
+            // cbExtra
             // 
-            this.cbAllInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbAllInfo.Location = new System.Drawing.Point(494, 35);
-            this.cbAllInfo.Name = "cbAllInfo";
-            this.cbAllInfo.Size = new System.Drawing.Size(109, 17);
-            this.cbAllInfo.TabIndex = 4;
-            this.cbAllInfo.Text = "Show all numbers";
-            this.cbAllInfo.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
+            this.cbExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbExtra.Location = new System.Drawing.Point(464, 35);
+            this.cbExtra.Name = "cbExtra";
+            this.cbExtra.Size = new System.Drawing.Size(109, 17);
+            this.cbExtra.TabIndex = 4;
+            this.cbExtra.Text = "Show all numbers";
+            this.cbExtra.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
             // 
             // cbEditingMode
             // 
             this.cbEditingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cbEditingMode.FormattingEnabled = true;
-            this.cbEditingMode.Location = new System.Drawing.Point(49, 33);
+            this.cbEditingMode.Location = new System.Drawing.Point(88, 33);
             this.cbEditingMode.Name = "cbEditingMode";
-            this.cbEditingMode.Size = new System.Drawing.Size(359, 23);
+            this.cbEditingMode.Size = new System.Drawing.Size(282, 23);
             this.cbEditingMode.TabIndex = 9;
             this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
             // 
@@ -206,9 +207,9 @@
             this.darkLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel2.Location = new System.Drawing.Point(6, 36);
             this.darkLabel2.Name = "darkLabel2";
-            this.darkLabel2.Size = new System.Drawing.Size(40, 13);
+            this.darkLabel2.Size = new System.Drawing.Size(79, 13);
             this.darkLabel2.TabIndex = 8;
-            this.darkLabel2.Text = "Mode:";
+            this.darkLabel2.Text = "Editing mode:";
             // 
             // tabsModes
             // 
@@ -831,7 +832,7 @@
             this.darkSectionPanel2.Location = new System.Drawing.Point(0, 0);
             this.darkSectionPanel2.Name = "darkSectionPanel2";
             this.darkSectionPanel2.SectionHeader = "Mesh list";
-            this.darkSectionPanel2.Size = new System.Drawing.Size(284, 500);
+            this.darkSectionPanel2.Size = new System.Drawing.Size(242, 560);
             this.darkSectionPanel2.TabIndex = 55;
             // 
             // panelMain
@@ -840,22 +841,41 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMain.Controls.Add(this.panelMesh);
-            this.panelMain.Controls.Add(this.panelTexturing);
             this.panelMain.Controls.Add(this.panelEditingTools);
             this.panelMain.Controls.Add(this.panelTree);
+            this.panelMain.Controls.Add(this.panelTexturing);
             this.panelMain.Location = new System.Drawing.Point(5, 5);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(904, 500);
+            this.panelMain.Size = new System.Drawing.Size(1133, 560);
             this.panelMain.TabIndex = 56;
+            // 
+            // panelEditingTools
+            // 
+            this.panelEditingTools.Controls.Add(this.panelEditing);
+            this.panelEditingTools.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelEditingTools.Location = new System.Drawing.Point(247, 463);
+            this.panelEditingTools.Name = "panelEditingTools";
+            this.panelEditingTools.Size = new System.Drawing.Size(585, 97);
+            this.panelEditingTools.TabIndex = 55;
+            // 
+            // panelTree
+            // 
+            this.panelTree.Controls.Add(this.darkSectionPanel2);
+            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelTree.Location = new System.Drawing.Point(0, 0);
+            this.panelTree.Name = "panelTree";
+            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
+            this.panelTree.Size = new System.Drawing.Size(247, 560);
+            this.panelTree.TabIndex = 0;
             // 
             // panelTexturing
             // 
             this.panelTexturing.Controls.Add(this.darkSectionPanel1);
             this.panelTexturing.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelTexturing.Location = new System.Drawing.Point(603, 0);
+            this.panelTexturing.Location = new System.Drawing.Point(832, 0);
             this.panelTexturing.Name = "panelTexturing";
             this.panelTexturing.Padding = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.panelTexturing.Size = new System.Drawing.Size(301, 403);
+            this.panelTexturing.Size = new System.Drawing.Size(301, 560);
             this.panelTexturing.TabIndex = 56;
             // 
             // darkSectionPanel1
@@ -866,7 +886,7 @@
             this.darkSectionPanel1.Location = new System.Drawing.Point(3, 0);
             this.darkSectionPanel1.Name = "darkSectionPanel1";
             this.darkSectionPanel1.SectionHeader = "Texturing";
-            this.darkSectionPanel1.Size = new System.Drawing.Size(298, 403);
+            this.darkSectionPanel1.Size = new System.Drawing.Size(298, 560);
             this.darkSectionPanel1.TabIndex = 0;
             // 
             // panelTextureMap
@@ -874,11 +894,12 @@
             this.panelTextureMap.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTextureMap.Location = new System.Drawing.Point(1, 53);
             this.panelTextureMap.Name = "panelTextureMap";
-            this.panelTextureMap.Size = new System.Drawing.Size(296, 349);
+            this.panelTextureMap.Size = new System.Drawing.Size(296, 506);
             this.panelTextureMap.TabIndex = 0;
             // 
             // panelTexturingTools
             // 
+            this.panelTexturingTools.Controls.Add(this.butExportTexture);
             this.panelTexturingTools.Controls.Add(this.butAddTexture);
             this.panelTexturingTools.Controls.Add(this.butDeleteTexture);
             this.panelTexturingTools.Controls.Add(this.comboCurrentTexture);
@@ -888,17 +909,31 @@
             this.panelTexturingTools.Size = new System.Drawing.Size(296, 28);
             this.panelTexturingTools.TabIndex = 1;
             // 
+            // butExportTexture
+            // 
+            this.butExportTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butExportTexture.Checked = false;
+            this.butExportTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.butExportTexture.Image = global::WadTool.Properties.Resources.general_Export_16;
+            this.butExportTexture.Location = new System.Drawing.Point(242, 3);
+            this.butExportTexture.Name = "butExportTexture";
+            this.butExportTexture.Size = new System.Drawing.Size(24, 23);
+            this.butExportTexture.TabIndex = 7;
+            this.butExportTexture.Tag = "";
+            this.toolTip.SetToolTip(this.butExportTexture, "Export to file");
+            this.butExportTexture.Click += new System.EventHandler(this.butExportTexture_Click);
+            // 
             // butAddTexture
             // 
             this.butAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.butAddTexture.Checked = false;
             this.butAddTexture.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.butAddTexture.Image = global::WadTool.Properties.Resources.general_plus_math_16;
-            this.butAddTexture.Location = new System.Drawing.Point(242, 3);
+            this.butAddTexture.Location = new System.Drawing.Point(212, 3);
             this.butAddTexture.Name = "butAddTexture";
             this.butAddTexture.Size = new System.Drawing.Size(24, 23);
             this.butAddTexture.TabIndex = 5;
-            this.butAddTexture.Tag = "AddTexture";
+            this.butAddTexture.Tag = "";
             this.butAddTexture.Click += new System.EventHandler(this.butAddTexture_Click);
             // 
             // butDeleteTexture
@@ -925,35 +960,16 @@
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
-            // panelEditingTools
-            // 
-            this.panelEditingTools.Controls.Add(this.panelEditing);
-            this.panelEditingTools.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelEditingTools.Location = new System.Drawing.Point(289, 403);
-            this.panelEditingTools.Name = "panelEditingTools";
-            this.panelEditingTools.Size = new System.Drawing.Size(615, 97);
-            this.panelEditingTools.TabIndex = 55;
-            // 
-            // panelTree
-            // 
-            this.panelTree.Controls.Add(this.darkSectionPanel2);
-            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelTree.Location = new System.Drawing.Point(0, 0);
-            this.panelTree.Name = "panelTree";
-            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 5, 0);
-            this.panelTree.Size = new System.Drawing.Size(289, 500);
-            this.panelTree.TabIndex = 0;
-            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(914, 541);
+            this.ClientSize = new System.Drawing.Size(1143, 601);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.btCancel);
             this.Controls.Add(this.btOk);
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(930, 580);
+            this.MinimumSize = new System.Drawing.Size(1000, 640);
             this.Name = "FormMeshEditor";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -983,11 +999,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudShineStrength)).EndInit();
             this.darkSectionPanel2.ResumeLayout(false);
             this.panelMain.ResumeLayout(false);
+            this.panelEditingTools.ResumeLayout(false);
+            this.panelTree.ResumeLayout(false);
             this.panelTexturing.ResumeLayout(false);
             this.darkSectionPanel1.ResumeLayout(false);
             this.panelTexturingTools.ResumeLayout(false);
-            this.panelEditingTools.ResumeLayout(false);
-            this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1003,7 +1019,7 @@
         private DarkUI.Controls.DarkNumericUpDown nudVertexNum;
         private DarkUI.Controls.DarkLabel darkLabel1;
         private DarkUI.Controls.DarkSectionPanel darkSectionPanel2;
-        private DarkUI.Controls.DarkCheckBox cbAllInfo;
+        private DarkUI.Controls.DarkCheckBox cbExtra;
         private DarkUI.Controls.DarkButton butFindVertex;
         private DarkUI.Controls.DarkCheckBox cbWireframe;
         private DarkUI.Controls.DarkPanel panelMain;
@@ -1037,7 +1053,6 @@
         private DarkUI.Controls.DarkNumericUpDown nudSphereY;
         private DarkUI.Controls.DarkNumericUpDown nudSphereX;
         private DarkUI.Controls.DarkLabel darkLabel8;
-        private DarkUI.Controls.DarkNumericUpDown nudSphereRadius;
         private DarkUI.Controls.DarkLabel darkLabel9;
         private DarkUI.Controls.DarkButton butResetSphere;
         private DarkUI.Controls.DarkButton butPreview;
@@ -1055,5 +1070,7 @@
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkLabel darkLabel10;
         private DarkUI.Controls.DarkButton butRecalcNormalsAvg;
+        private DarkUI.Controls.DarkButton butExportTexture;
+        private DarkUI.Controls.DarkNumericUpDown nudSphereRadius;
     }
 }

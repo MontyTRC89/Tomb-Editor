@@ -172,6 +172,26 @@ namespace TombLib
             return (intX != 0) && ((intX & (intX - 1)) == 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int NextPowerOf2(int x)
+        {
+            if (x < 2)
+            {
+                return 1;
+            }
+            return (int)Math.Pow(2, (int)Math.Log(x - 1, 2) + 1);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int PrevPowerOf2(int x)
+        {
+            if (x < 1)
+            {
+                return 1;
+            }
+            return (int)Math.Pow(2, (int)Math.Log(x, 2));
+        }
+
         /// <summary>
         /// Checks if a - b are almost equals within a float epsilon.
         /// </summary>
