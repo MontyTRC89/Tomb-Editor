@@ -1596,12 +1596,12 @@ namespace TombEditor.Forms
             else if (soundsCatalogsDataGridView.Columns[e.ColumnIndex].Name == SoundsCatalogEditColumn.Name)
             {
                 var path = _levelSettings.MakeAbsolute(_soundsCatalogsDataGridViewDataSource[e.RowIndex].Path);
-                if (File.Exists("soundtool.exe") && File.Exists(path) && Path.GetExtension(path).Equals(".xml", StringComparison.InvariantCultureIgnoreCase))
+                if (File.Exists(DefaultPaths.SoundToolExecutable) && File.Exists(path) && Path.GetExtension(path).Equals(".xml", StringComparison.InvariantCultureIgnoreCase))
                 {
                     if (!string.IsNullOrEmpty(_levelSettings.LevelFilePath))
-                        System.Diagnostics.Process.Start("soundtool.exe", "\"" + path + "\" -r \"" + _levelSettings.MakeAbsolute(_levelSettings.LevelFilePath));
+                        System.Diagnostics.Process.Start(DefaultPaths.SoundToolExecutable, "\"" + path + "\" -r \"" + _levelSettings.MakeAbsolute(_levelSettings.LevelFilePath));
                     else
-                        System.Diagnostics.Process.Start("soundtool.exe", "\"" + path + "\"");
+                        System.Diagnostics.Process.Start(DefaultPaths.SoundToolExecutable, "\"" + path + "\"");
                 }
             }
         }

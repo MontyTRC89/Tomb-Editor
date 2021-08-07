@@ -159,9 +159,9 @@ namespace TombIDE
 			else
 			{
 				// Add the default buttons
-				AddProgramButton(Path.Combine(DefaultPaths.ProgramDirectory, "TombEditor.exe"), false);
-				AddProgramButton(Path.Combine(DefaultPaths.ProgramDirectory, "WadTool.exe"), false);
-				AddProgramButton(Path.Combine(DefaultPaths.ProgramDirectory, "SoundTool.exe"), false);
+				AddProgramButton(DefaultPaths.TombEditorExecutable, false);
+				AddProgramButton(DefaultPaths.WadToolExecutable, false);
+				AddProgramButton(DefaultPaths.SoundToolExecutable, false);
 			}
 
 			// Update the list with only valid programs
