@@ -9,6 +9,7 @@ Tomb Editor:
  * Fix exception if level with missing merged statics is compiled.
  * Fix launching of SoundTool and WadTool from Tomb Editor in case project is opened from explorer.
  * Fix possible "key not found" deadlocks when corrupted project files are saved.
+ * Fix possible corruption of very small textures (less than 5px).
  * Fix statistics GUI memory leak which led to editor slowdown over time.
 
 WadTool:
@@ -22,6 +23,7 @@ WadTool:
  * New function in animation fixer to restore original animation names for current game version.
  * Export meshes with single texture without shuffling texture pieces.
  * Animate main window item preview.
+ * Add search button to object lists in main window.
  * Fix problems with disjointed vertices when non-UV-mapped objects are imported from external 3D models.
  * Fix incorrect importing of shininess value for obj format.
  * Fix incorrect exporting of normals.
