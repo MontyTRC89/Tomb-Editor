@@ -956,7 +956,7 @@
             this.comboCurrentTexture.FormattingEnabled = true;
             this.comboCurrentTexture.Location = new System.Drawing.Point(0, 3);
             this.comboCurrentTexture.Name = "comboCurrentTexture";
-            this.comboCurrentTexture.Size = new System.Drawing.Size(236, 23);
+            this.comboCurrentTexture.Size = new System.Drawing.Size(206, 23);
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
