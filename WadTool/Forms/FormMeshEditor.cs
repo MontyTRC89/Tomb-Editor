@@ -78,7 +78,6 @@ namespace WadTool
             tabsModes.LinkedControl = cbEditingMode;
 
             PrepareUI(mesh);
-            CalculateWindowDimensions();
         }
 
         protected override void OnShown(EventArgs e)
@@ -90,6 +89,7 @@ namespace WadTool
 
             if (lstMeshes.SelectedNodes.Count > 0)
                 lstMeshes.EnsureVisible();
+            CalculateWindowDimensions();
             UpdateUI();
             RepopulateTextureList();
         }
@@ -364,8 +364,7 @@ namespace WadTool
         {
             // Subtract parasite UI elements from designer mode and recalc all needed dimensions
 
-            var difference = tabsModes.Width - tabVertexRemap.Width;
-            var realWidth = Width - difference;
+            var realWidth = Width - 120;
 
             if (!panelTree.Visible)
                 realWidth -= panelTree.Width;
