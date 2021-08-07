@@ -41,7 +41,21 @@ namespace TombLib.Controls
         public int KeyFrameIndex { get; set; }
 
         public bool DrawTransparency { get; set; } = false;
-        public bool AnimatePreview { get; set; } = true;
+
+        public bool AnimatePreview
+        {
+            get { return _animatePreview; }
+            set
+            {
+                if (_animatePreview == value)
+                    return;
+
+                _animatePreview = value;
+                _animTimer.Enabled = value;
+                _rotationFactor = 0.0f;
+            }
+        }
+        private bool _animatePreview = true;
 
         // Preview animation state
         private Timer _animTimer = new Timer() { Interval = 15 };
