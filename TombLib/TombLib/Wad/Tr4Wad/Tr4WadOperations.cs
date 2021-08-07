@@ -22,7 +22,7 @@ namespace TombLib.Wad.Tr4Wad
             var wad = new Wad2() { GameVersion = TRVersion.Game.TR4 };
 
             // Convert all textures
-            Dictionary<int, WadTexture> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);
+            Dictionary<int, TextureArea> textures = ConvertTr4TexturesToWadTexture(oldWad, wad);
             logger.Info("Textures read.");
 
             // Convert sounds
@@ -50,41 +50,61 @@ namespace TombLib.Wad.Tr4Wad
             return wad;
         }
 
-        private static Dictionary<int, WadTexture> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad, Wad2 wad)
+        private static Dictionary<int, TextureArea> ConvertTr4TexturesToWadTexture(Tr4Wad oldWad, Wad2 wad)
         {
-            var textures = new ConcurrentDictionary<int, WadTexture>();
+            var texInfos = new ConcurrentDictionary<int, TextureArea>();
+            var textures = new List<WadTexture>();
+
+            // Generate pages
+
+            for (int i = 0; i < oldWad.NumTexturePages; i++)
+            {
+                var image = ImageC.CreateNew(256, 256);
+
+                for (var y = 0; y < 256; y++)
+                {
+                    for (var x = 0; x < 256; x++)
+                    {
+                        var baseIndex = (i * 256 + y) * 768 + x * 3;
+                        var r = oldWad.TexturePages[baseIndex];
+                        var g = oldWad.TexturePages[baseIndex + 1];
+                        var b = oldWad.TexturePages[baseIndex + 2];
+                        var a = (byte)255;
+
+                        image.SetPixel(x, y, r, g, b, a);
+                    }
+                }
+
+                // Set filename
+                image.FileName = Path.GetFileNameWithoutExtension(oldWad.FileName) + "_Page_" + i;
+
+                // Replace magenta color with alpha transparent black
+                image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+
+                var newPage = new WadTexture(image);
+                textures.Add(newPage);
+            }
+
+            // Generate dummy texture areas
 
             Parallel.For(0, oldWad.Textures.Count, i =>
-              {
-                  var oldTexture = oldWad.Textures[i];
-                  var startX = (short)(oldTexture.X);
-                  var startY = (short)(oldTexture.Page * 256 + oldTexture.Y);
+            {
+                var oldTexture = oldWad.Textures[i];
+                var start = new Vector2(oldTexture.X, oldTexture.Y);
 
-                  // Create the texture ImageC
-                  var image = ImageC.CreateNew(oldTexture.Width + 1, oldTexture.Height + 1);
+                var area = new TextureArea()
+                {
+                    TexCoord0 = start + new Vector2(0, 0),
+                    TexCoord1 = start + new Vector2(oldTexture.Width + 1.0f, 0),
+                    TexCoord2 = start + new Vector2(oldTexture.Width + 1.0f, oldTexture.Height + 1.0f),
+                    TexCoord3 = start + new Vector2(0, oldTexture.Height + 1.0f),
+                    Texture = textures[oldTexture.Page]
+                };
 
-                  for (var y = 0; y < image.Height; y++)
-                  {
-                      for (var x = 0; x < image.Width; x++)
-                      {
-                          var baseIndex = (startY + y) * 768 + (startX + x) * 3;
-                          var r = oldWad.TexturePages[baseIndex];
-                          var g = oldWad.TexturePages[baseIndex + 1];
-                          var b = oldWad.TexturePages[baseIndex + 2];
-                          var a = (byte)255;
-
-                          //var color = new ColorC(r, g, b, a);
-                          image.SetPixel(x, y, r, g, b, a);
-                      }
-                  }
-
-                  // Replace magenta color with alpha transparent black
-                  image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
-
-                  textures.TryAdd(i, new WadTexture(image));
+                texInfos.TryAdd(i, area);
               });
 
-            return new Dictionary<int, WadTexture>(textures);
+            return new Dictionary<int, TextureArea>(texInfos);
         }
 
         private static int GetTr4TextureIdFromPolygon(wad_polygon polygon)
@@ -110,7 +130,7 @@ namespace TombLib.Wad.Tr4Wad
             return textureId;
         }
 
-        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, WadTexture> textures,
+        private static WadMesh ConvertTr4MeshToWadMesh(Wad2 wad, Tr4Wad oldWad, Dictionary<int, TextureArea> textures,
                                                        wad_mesh oldMesh, int objectID)
         {
             WadMesh mesh = new WadMesh();
@@ -227,7 +247,7 @@ namespace TombLib.Wad.Tr4Wad
         }
 
         internal static WadMoveable ConvertTr4MoveableToWadMoveable(Wad2 wad, Tr4Wad oldWad, int moveableIndex,
-                                                                    Dictionary<int, WadTexture> textures)
+                                                                    Dictionary<int, TextureArea> textures)
         {
             wad_moveable oldMoveable = oldWad.Moveables[moveableIndex];
             var newId = new WadMoveableId(oldMoveable.ObjectID);
@@ -532,8 +552,8 @@ namespace TombLib.Wad.Tr4Wad
             return newMoveable;
         }
 
-        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex, /*List<WadMesh> meshes*/
-                                                                  Dictionary<int, WadTexture> textures)
+        internal static WadStatic ConvertTr4StaticMeshToWadStatic(Wad2 wad, Tr4Wad oldWad, int staticIndex,
+                                                                  Dictionary<int, TextureArea> textures)
         {
             var oldStaticMesh = oldWad.Statics[staticIndex];
             var newId = new WadStaticId(oldStaticMesh.ObjectId);
@@ -597,25 +617,22 @@ namespace TombLib.Wad.Tr4Wad
             return staticMesh;
         }
 
-        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, WadTexture> textures)
+        private static TextureArea CalculateTr4UVCoordinates(Wad2 wad, Tr4Wad oldWad, wad_polygon poly, Dictionary<int, TextureArea> textures)
         {
-            TextureArea textureArea = new TextureArea();
+            int textureId = GetTr4TextureIdFromPolygon(poly);
+            var textureArea = textures[textureId];
+
             textureArea.BlendMode = (poly.Attributes & 0x01) != 0 ? BlendMode.Additive : BlendMode.Normal;
             textureArea.DoubleSided = false;
-
-            int textureId = GetTr4TextureIdFromPolygon(poly);
-            textureArea.Texture = textures[textureId];
 
             // Add the UV coordinates
             int shape = (poly.Texture & 0x7000) >> 12;
             int flipped = (poly.Texture & 0x8000) >> 15;
 
-            wad_object_texture texture = oldWad.Textures[textureId];
-
-            Vector2 nw = new Vector2(0, 0);
-            Vector2 ne = new Vector2(texture.Width + 1.0f, 0);
-            Vector2 se = new Vector2(texture.Width + 1.0f, texture.Height + 1.0f);
-            Vector2 sw = new Vector2(0, texture.Height + 1.0f);
+            Vector2 nw = textureArea.TexCoord0;
+            Vector2 ne = textureArea.TexCoord1;
+            Vector2 se = textureArea.TexCoord2;
+            Vector2 sw = textureArea.TexCoord3;
 
             if (poly.Shape == 9)
             {

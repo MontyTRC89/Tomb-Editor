@@ -78,6 +78,7 @@ namespace WadTool
             tabsModes.LinkedControl = cbEditingMode;
 
             PrepareUI(mesh);
+            CalculateWindowDimensions();
         }
 
         protected override void OnShown(EventArgs e)
@@ -89,7 +90,7 @@ namespace WadTool
 
             if (lstMeshes.SelectedNodes.Count > 0)
                 lstMeshes.EnsureVisible();
-            CalculateWindowDimensions();
+            //CalculateWindowDimensions();
             UpdateUI();
             RepopulateTextureList();
         }
@@ -303,7 +304,7 @@ namespace WadTool
         private void UpdateUI()
         {
             // Gray out editing pane if no mesh is selected (e.g. we're in tree view)
-            panelEditing.Enabled = panelMesh.Mesh != null;
+            panelEditingTools.Enabled = panelMesh.Mesh != null;
 
             // Disable vertex remap controls if no vertex is selected
             var enableRemap = panelMesh.EditingMode == MeshEditingMode.VertexRemap && 
@@ -312,7 +313,8 @@ namespace WadTool
             butRemapVertex.Enabled = enableRemap;
 
             // Borrow rendering options from 3D panel itself
-            cbWireframe.Checked = panelMesh.WireframeMode;
+            butWire.Checked = panelMesh.WireframeMode;
+            butAlpha.Checked = panelMesh.AlphaTest;
             cbExtra.Checked = panelMesh.DrawExtraInfo;
 
             // Hide cancel button in case editing mode is active in tree view.
@@ -327,8 +329,8 @@ namespace WadTool
             if (!ShowEditingTools)
             {
                 panelMesh.EditingMode = MeshEditingMode.None;
-                panelEditingTools.Visible = false;
-                panelTexturing.Visible = false;
+                panelEditing.Visible = false;
+                panelEditing.Visible = false;
             }
 
             // cbExtra checkbox toggles alternate mesh drawing mode.
@@ -339,13 +341,13 @@ namespace WadTool
                     cbExtra.Text = "Show sheen";
                     break;
                 case MeshEditingMode.VertexColorsAndNormals:
-                    cbExtra.Text = "Show all normals";
+                    cbExtra.Text = "All normals";
                     break;
                 case MeshEditingMode.VertexEffects:
-                    cbExtra.Text = "Show all values";
+                    cbExtra.Text = "All values";
                     break;
                 case MeshEditingMode.VertexRemap:
-                    cbExtra.Text = "Show all numbers";
+                    cbExtra.Text = "All numbers";
                     break;
                 case MeshEditingMode.Sphere:
                     cbExtra.Text = "Show gizmo";
@@ -364,22 +366,15 @@ namespace WadTool
         {
             // Subtract parasite UI elements from designer mode and recalc all needed dimensions
 
-            var realWidth = Width - 120;
+            var shift = tabsModes.Size.Height - tabVertexEffects.ClientSize.Height + tabsModes.Padding.Y * 2;
 
-            if (!panelTree.Visible)
-                realWidth -= panelTree.Width;
+            tabsModes.Size = new Size(tabsModes.Size.Width, tabsModes.Size.Height - shift);
+            
+            //panelEditingTools.Size = new Size(panelEditingTools.Size.Width,
+                    //                          panelEditingTools.Size.Height - shift);
+            //
+            //panelEditingTools.Size = new Size(panelEditingTools.Size.Width, panelEditingTools.Size.Height - shift);
 
-            var minSize = new Size(realWidth, Height);
-            Size = MinimumSize = minSize;
-
-            // This forces editing pane to float in center of the bottom instead of sticking to
-            // just one corner.
-
-            panelEditing.Dock = DockStyle.None;
-            panelEditing.Anchor = AnchorStyles.Top;
-            panelEditing.Size =
-            panelEditing.MaximumSize =
-            panelEditing.MinimumSize = new Size(panelMesh.Size.Width, panelEditing.Size.Height);
         }
 
         private bool NoMesh()
@@ -618,18 +613,6 @@ namespace WadTool
                 return;
             }
             panelMesh.CurrentElement = newVertexIndex;
-        }
-
-        private void cbWireframe_CheckedChanged(object sender, EventArgs e)
-        {
-            panelMesh.WireframeMode = cbWireframe.Checked;
-            UpdateUI();
-        }
-
-        private void cbAlpha_CheckedChanged(object sender, EventArgs e)
-        {
-            panelMesh.AlphaTest = cbAlpha.Checked;
-            UpdateUI();
         }
 
         private void nudVertexNum_KeyDown(object sender, KeyEventArgs e)
@@ -899,6 +882,19 @@ namespace WadTool
                     popup.ShowError(panelMesh, "Unable to save texture. Exception: \n" + exc);
                 }
             }
+        }
+
+        private void butAlpha_Click(object sender, EventArgs e)
+        {
+            panelMesh.AlphaTest = butAlpha.Checked = !butAlpha.Checked;
+            UpdateUI();
+        }
+
+        private void butWire_Click(object sender, EventArgs e)
+        {
+
+            panelMesh.WireframeMode = butWire.Checked = !butWire.Checked;
+            UpdateUI();
         }
     }
 }

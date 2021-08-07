@@ -93,6 +93,16 @@ namespace WadTool.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap actions_AlphaTest_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_AlphaTest_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap actions_cut_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_cut_16", resourceCulture);
@@ -106,6 +116,16 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap actions_delete_16 {
             get {
                 object obj = ResourceManager.GetObject("actions_delete_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap actions_DrawAllRooms_16 {
+            get {
+                object obj = ResourceManager.GetObject("actions_DrawAllRooms_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1026,6 +1046,16 @@ namespace WadTool.Properties {
         internal static System.Drawing.Bitmap volume_up_16 {
             get {
                 object obj = ResourceManager.GetObject("volume_up-16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap wireframe_16 {
+            get {
+                object obj = ResourceManager.GetObject("wireframe_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
