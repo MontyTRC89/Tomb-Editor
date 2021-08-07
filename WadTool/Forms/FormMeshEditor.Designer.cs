@@ -419,7 +419,7 @@
             this.butPreview.Size = new System.Drawing.Size(99, 23);
             this.butPreview.TabIndex = 21;
             this.butPreview.Tag = "";
-            this.butPreview.Text = "Preview";
+            this.butPreview.Text = "Preview all effects";
             this.butPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.toolTip.SetToolTip(this.butPreview, "Preview effects");
             this.butPreview.Click += new System.EventHandler(this.butPreview_Click);
@@ -507,7 +507,7 @@
             this.butApplyToAllVertices.Name = "butApplyToAllVertices";
             this.butApplyToAllVertices.Size = new System.Drawing.Size(99, 23);
             this.butApplyToAllVertices.TabIndex = 10;
-            this.butApplyToAllVertices.Text = "Apply to all";
+            this.butApplyToAllVertices.Text = "Apply effects to all vertices";
             this.toolTip.SetToolTip(this.butApplyToAllVertices, "Apply specified vertex attributes to all faces");
             this.butApplyToAllVertices.Click += new System.EventHandler(this.butApplyToAllVertices_Click);
             // 
@@ -583,7 +583,6 @@
             this.nudSphereRadius.Name = "nudSphereRadius";
             this.nudSphereRadius.Size = new System.Drawing.Size(61, 23);
             this.nudSphereRadius.TabIndex = 15;
-            this.toolTip.SetToolTip(this.nudSphereRadius, "Shininess value on the range from 0 to 63");
             this.nudSphereRadius.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
             this.nudSphereRadius.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
@@ -621,7 +620,6 @@
             this.nudSphereZ.Name = "nudSphereZ";
             this.nudSphereZ.Size = new System.Drawing.Size(85, 23);
             this.nudSphereZ.TabIndex = 13;
-            this.toolTip.SetToolTip(this.nudSphereZ, "Shininess value on the range from 0 to 63");
             this.nudSphereZ.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
             this.nudSphereZ.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
@@ -649,7 +647,6 @@
             this.nudSphereY.Name = "nudSphereY";
             this.nudSphereY.Size = new System.Drawing.Size(85, 23);
             this.nudSphereY.TabIndex = 11;
-            this.toolTip.SetToolTip(this.nudSphereY, "Shininess value on the range from 0 to 63");
             this.nudSphereY.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
             this.nudSphereY.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
@@ -676,7 +673,6 @@
             this.nudSphereX.Name = "nudSphereX";
             this.nudSphereX.Size = new System.Drawing.Size(85, 23);
             this.nudSphereX.TabIndex = 9;
-            this.toolTip.SetToolTip(this.nudSphereX, "Shininess value on the range from 0 to 63");
             this.nudSphereX.ValueChanged += new System.EventHandler(this.nudSphereData_ValueChanged);
             this.nudSphereX.Validated += new System.EventHandler(this.nudSphereData_ValueChanged);
             // 
@@ -797,7 +793,7 @@
             this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
             this.butDoubleSide.TabIndex = 12;
             this.butDoubleSide.Tag = "";
-            this.toolTip.SetToolTip(this.butDoubleSide, "Double-sided");
+            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute.\r\nMay not work in legacy engines.");
             this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
             // 
             // cbExtra
@@ -820,6 +816,7 @@
             this.cbEditingMode.Name = "cbEditingMode";
             this.cbEditingMode.Size = new System.Drawing.Size(130, 23);
             this.cbEditingMode.TabIndex = 9;
+            this.toolTip.SetToolTip(this.cbEditingMode, "Mesh editor operation mode");
             this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
             // 
             // darkLabel2
@@ -932,7 +929,7 @@
             this.butExportTexture.Size = new System.Drawing.Size(24, 23);
             this.butExportTexture.TabIndex = 7;
             this.butExportTexture.Tag = "";
-            this.toolTip.SetToolTip(this.butExportTexture, "Export to file");
+            this.toolTip.SetToolTip(this.butExportTexture, "Export current texture to file");
             this.butExportTexture.Click += new System.EventHandler(this.butExportTexture_Click);
             // 
             // butAddTexture
@@ -946,6 +943,7 @@
             this.butAddTexture.Size = new System.Drawing.Size(24, 23);
             this.butAddTexture.TabIndex = 5;
             this.butAddTexture.Tag = "";
+            this.toolTip.SetToolTip(this.butAddTexture, "Add new texture file");
             this.butAddTexture.Click += new System.EventHandler(this.butAddTexture_Click);
             // 
             // butDeleteTexture
