@@ -94,7 +94,7 @@ namespace WadTool
 
             if (lstMeshes.SelectedNodes.Count > 0)
                 lstMeshes.EnsureVisible();
-            //CalculateWindowDimensions();
+
             UpdateUI();
             RepopulateTextureList(butAllTextures.Checked);
         }
@@ -303,8 +303,10 @@ namespace WadTool
 
         private void PrepareUI(WadMesh mesh)
         {
-            if (mesh == null) // Populate tree view
+            if (mesh == null) 
             {
+                // Populate tree view
+
                 var moveablesNode = new DarkUI.Controls.DarkTreeNode("Moveables");
                 foreach (var moveable in _wad.Moveables)
                 {
@@ -333,11 +335,18 @@ namespace WadTool
                     staticsNode.Nodes.Add(staticNode);
                 }
                 lstMeshes.Nodes.Add(staticsNode);
+
+                // Always show all textures in tree mode
+
+                butAllTextures.Checked = true;
+                butAllTextures.Enabled = false;
             }
-            else // If form is called with specific mesh, show only it and not meshtree.
+            else 
             {
+                // If form is called with specific mesh, show only it and not meshtree.
+
                 panelMesh.Mesh = mesh;
-                panelTree.Visible = false; // Lock up list to prevent wandering around
+                panelTree.Visible = false;
                 GetSphereValues();
             }
         }
@@ -460,6 +469,8 @@ namespace WadTool
 
                 GetSphereValues();
                 UpdateUI();
+
+                // Keep texture list the same if we're listing all textures
                 RepopulateTextureList(butAllTextures.Checked);
             }
         }
@@ -613,7 +624,11 @@ namespace WadTool
 
         private void RepopulateTextureList(bool wholeWad)
         {
-            if (NoMesh()) return;
+            if (NoMesh() && !wholeWad)
+            {
+                comboCurrentTexture.Items.Clear();
+                return;
+            }
 
             var list = new List<Texture>();
 
@@ -630,6 +645,12 @@ namespace WadTool
                     if (!list.Exists(t => t == poly.Texture.Texture))
                         list.Add(poly.Texture.Texture);
             }
+
+            // If count is the same it means no changes were made in texture list
+            // and there's no need to actually repopulate.
+
+            if (wholeWad && comboCurrentTexture.Items.Count == list.Count)
+                return;
 
             comboCurrentTexture.Items.Clear();
             comboCurrentTexture.Items.AddRange(list.ToArray());

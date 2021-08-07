@@ -659,7 +659,7 @@ namespace TombLib.Controls
 
                 scale *= 0.8f;
 
-                if (VisibleTexture.Image.Height <= ClientSize.Height / 2)
+                if (VisibleTexture.Image.Height <= ClientSize.Height)
                     y = (float)VisibleTexture.Image.Height / 2;
             }
 
