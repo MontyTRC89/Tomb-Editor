@@ -360,9 +360,7 @@ namespace WadTool
                 cbBlendMode.SelectedIndex = 0;
 
             // Update status label
-            var status = string.Empty;
-            if (!NoMesh()) status += panelMesh.Mesh.Polys.Count + " faces, " + panelMesh.Mesh.VertexPositions.Count + " vertices";
-            statusLabel.Text = status;                
+            statusLabel.Text = NoMesh() ? string.Empty : panelMesh.Mesh.Polys.Count + " faces, " + panelMesh.Mesh.VertexPositions.Count + " vertices total.";
 
             panelMesh.Invalidate();
         }

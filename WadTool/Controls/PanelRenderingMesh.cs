@@ -31,6 +31,7 @@ namespace WadTool.Controls
                     return;
 
                 _mesh = value;
+                _previewMesh = _mesh.Clone();
                 InitializeVertexBuffer();
                 ResetCamera();
                 CurrentElement = -1;
@@ -38,7 +39,7 @@ namespace WadTool.Controls
         }
         private WadMesh _mesh;
 
-        public WadMesh VisibleMesh => _previewTimer.Enabled? _previewMesh : _mesh;
+        public WadMesh VisibleMesh => (_previewTimer.Enabled && _previewMesh != null) ? _previewMesh : _mesh;
         private WadMesh _previewMesh;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -871,7 +872,7 @@ namespace WadTool.Controls
 
         private void GetTransformedVertices()
         {
-            if (_mesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasAttributes)
+            if (_mesh == null || _previewMesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasAttributes)
                 return;
 
             for (int i = 0; i < _mesh.VertexPositions.Count; i++)
