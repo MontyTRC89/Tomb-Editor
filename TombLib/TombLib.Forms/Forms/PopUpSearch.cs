@@ -152,7 +152,7 @@ namespace TombLib.Forms
                         else if (_callbackControl is DarkUI.Controls.DarkTreeView)
                         {
                             var tree = (DarkUI.Controls.DarkTreeView)_callbackControl;
-                            tree.SelectNode(tree.Nodes[_currentIndex]);
+                            tree.SelectNode(tree.GetAllNodes()[_currentIndex]);
                             tree.EnsureVisible();
                         }
                         return;

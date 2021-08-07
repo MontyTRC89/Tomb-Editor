@@ -60,6 +60,7 @@ namespace TombLib.Controls
             suggestedGameVersionComboBox.Visible = wadLoaded;
             suggestedGameVersionComboBox.Enabled = wadLoaded;
             darkLabel1.Visible = wadLoaded;
+            butSearch.Visible = wadLoaded;
 
             // Update game version control
             if (wadLoaded)
@@ -272,9 +273,9 @@ namespace TombLib.Controls
             | System.Windows.Forms.AnchorStyles.Right)));
             this.suggestedGameVersionComboBox.Enabled = false;
             this.suggestedGameVersionComboBox.FormattingEnabled = true;
-            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(79, 3);
+            this.suggestedGameVersionComboBox.Location = new System.Drawing.Point(84, 3);
             this.suggestedGameVersionComboBox.Name = "suggestedGameVersionComboBox";
-            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(44, 21);
+            this.suggestedGameVersionComboBox.Size = new System.Drawing.Size(39, 21);
             this.suggestedGameVersionComboBox.TabIndex = 0;
             this.suggestedGameVersionComboBox.SelectedIndexChanged += new System.EventHandler(this.suggestedGameVersionComboBox_SelectedIndexChanged);
             // 
@@ -351,7 +352,7 @@ namespace TombLib.Controls
 
         private void butSearch_Click(object sender, EventArgs e)
         {
-            using (var searchPopUp = new PopUpSearch(tree))
+            var searchPopUp = new PopUpSearch(tree);
                 searchPopUp.Show(this);
         }
     }
