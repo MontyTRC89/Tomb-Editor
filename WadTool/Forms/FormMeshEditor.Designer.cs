@@ -270,7 +270,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nudShineStrength.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudShineStrength.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
@@ -535,7 +535,7 @@
             // 
             this.nudMove.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudMove.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
@@ -567,7 +567,7 @@
             // 
             this.nudGlow.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudGlow.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
@@ -665,7 +665,7 @@
             // 
             this.nudSphereRadius.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudSphereRadius.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
@@ -697,7 +697,7 @@
             this.nudSphereZ.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nudSphereZ.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudSphereZ.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
@@ -724,7 +724,7 @@
             this.nudSphereY.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.nudSphereY.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudSphereY.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
@@ -750,7 +750,7 @@
             // 
             this.nudSphereX.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.nudSphereX.IncrementAlternate = new decimal(new int[] {
-            10,
+            50,
             0,
             0,
             65536});
