@@ -139,18 +139,14 @@ namespace WadTool
                     case Keys.Oemplus:
                     case Keys.Oem3:
                     case Keys.Oem5:
-                        var tr = panelTextureMap.SelectedTexture;
-                        tr.Rotate(1);
-                        panelTextureMap.SelectedTexture = tr;
+                        RotateTexture();
                         break;
 
                     case Keys.OemMinus | Keys.Shift:
                     case Keys.Oemplus | Keys.Shift:
                     case Keys.Oem3 | Keys.Shift:
                     case Keys.Oem5 | Keys.Shift:
-                        var tm = panelTextureMap.SelectedTexture;
-                        tm.Mirror();
-                        panelTextureMap.SelectedTexture = tm;
+                        MirrorTexture();
                         break;
                 }
 
@@ -674,6 +670,26 @@ namespace WadTool
                 popup.ShowInfo(panelMesh, "Missing vertex data was automatically generated for this mesh.");
         }
 
+        private void MirrorTexture()
+        {
+            if (panelTextureMap.VisibleTexture == null || panelTextureMap.VisibleTexture.IsUnavailable)
+                return;
+
+            var tm = panelTextureMap.SelectedTexture;
+            tm.Mirror();
+            panelTextureMap.SelectedTexture = tm;
+        }
+
+        private void RotateTexture()
+        {
+            if (panelTextureMap.VisibleTexture == null || panelTextureMap.VisibleTexture.IsUnavailable)
+                return;
+
+            var tr = panelTextureMap.SelectedTexture;
+            tr.Rotate(1);
+            panelTextureMap.SelectedTexture = tr;
+        }
+
         private void RepopulateTextureList(bool wholeWad)
         {
             if (NoMesh() && !wholeWad)
@@ -1120,6 +1136,16 @@ namespace WadTool
         private void butTbResetCamera_Click(object sender, EventArgs e)
         {
             panelMesh.ResetCamera();
+        }
+
+        private void butTbRotateTexture_Click(object sender, EventArgs e)
+        {
+            RotateTexture();
+        }
+
+        private void butTbMirrorTexture_Click(object sender, EventArgs e)
+        {
+            MirrorTexture();
         }
 
         private void FormMeshEditor_FormClosing(object sender, FormClosingEventArgs e)

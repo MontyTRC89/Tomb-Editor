@@ -72,12 +72,15 @@
             this.topBar = new DarkUI.Controls.DarkToolStrip();
             this.butTbUndo = new System.Windows.Forms.ToolStripButton();
             this.butTbRedo = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbAxis = new System.Windows.Forms.ToolStripButton();
             this.butTbWireframe = new System.Windows.Forms.ToolStripButton();
             this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
             this.butTbBilinear = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbRotateTexture = new System.Windows.Forms.ToolStripButton();
+            this.butTbMirrorTexture = new System.Windows.Forms.ToolStripButton();
             this.panelCenter = new DarkUI.Controls.DarkPanel();
             this.panelEditing = new DarkUI.Controls.DarkPanel();
             this.panelTexturing = new DarkUI.Controls.DarkSectionPanel();
@@ -878,12 +881,15 @@
             this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.butTbUndo,
             this.butTbRedo,
-            this.toolStripSeparator1,
             this.butTbResetCamera,
+            this.toolStripSeparator1,
             this.butTbAxis,
             this.butTbWireframe,
             this.butTbAlpha,
-            this.butTbBilinear});
+            this.butTbBilinear,
+            this.toolStripSeparator2,
+            this.butTbRotateTexture,
+            this.butTbMirrorTexture});
             this.topBar.Location = new System.Drawing.Point(263, 0);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
@@ -917,14 +923,6 @@
             this.butTbRedo.ToolTipText = "Redo (Ctrl+Y)";
             this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
             // butTbResetCamera
             // 
             this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -936,6 +934,14 @@
             this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
             this.butTbResetCamera.ToolTipText = "Reset camera";
             this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
             // 
             // butTbAxis
             // 
@@ -988,6 +994,38 @@
             this.butTbBilinear.Size = new System.Drawing.Size(23, 25);
             this.butTbBilinear.ToolTipText = "Toggle bilinear filter";
             this.butTbBilinear.CheckedChanged += new System.EventHandler(this.butTbBilinear_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbRotateTexture
+            // 
+            this.butTbRotateTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRotateTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRotateTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRotateTexture.Image = global::WadTool.Properties.Resources.general_Rotate;
+            this.butTbRotateTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRotateTexture.Name = "butTbRotateTexture";
+            this.butTbRotateTexture.Size = new System.Drawing.Size(23, 25);
+            this.butTbRotateTexture.ToolTipText = "Rotate current texture";
+            this.butTbRotateTexture.Click += new System.EventHandler(this.butTbRotateTexture_Click);
+            // 
+            // butTbMirrorTexture
+            // 
+            this.butTbMirrorTexture.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbMirrorTexture.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbMirrorTexture.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbMirrorTexture.Image = global::WadTool.Properties.Resources.general_Mirror;
+            this.butTbMirrorTexture.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbMirrorTexture.Name = "butTbMirrorTexture";
+            this.butTbMirrorTexture.Size = new System.Drawing.Size(23, 25);
+            this.butTbMirrorTexture.ToolTipText = "Mirror current texture";
+            this.butTbMirrorTexture.Click += new System.EventHandler(this.butTbMirrorTexture_Click);
             // 
             // panelCenter
             // 
@@ -1275,5 +1313,8 @@
         private DarkUI.Controls.DarkTextBox tbSearchMeshes;
         private DarkUI.Controls.DarkPanel panelSearchTree;
         private System.Windows.Forms.ToolStripButton butTbAxis;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton butTbMirrorTexture;
+        private System.Windows.Forms.ToolStripButton butTbRotateTexture;
     }
 }
