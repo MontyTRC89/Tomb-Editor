@@ -419,7 +419,9 @@ namespace WadTool
         private void UpdateStatusLabel()
         {
             var prompt = NoMesh() ? string.Empty : "Selected mesh: '" + panelMesh.Mesh.Name + "', " + 
-                                                    panelMesh.Mesh.VertexPositions.Count + " vertices, " + panelMesh.Mesh.Polys.Count + " faces. ";
+                                                    panelMesh.Mesh.VertexPositions.Count + " vertices, " + panelMesh.Mesh.Polys.Count + " faces, " +
+                                                    panelMesh.Mesh.Polys.GroupBy(p => p.Texture).Count() + " unique textures. ";
+
             if (panelTextureMap.SelectedTexture != TextureArea.None)
             {
                 var quad = panelTextureMap.SelectedTexture.GetRect();
@@ -752,6 +754,7 @@ namespace WadTool
                 panelMesh.Mesh.Polys[i] = poly;
             }
 
+            UpdateStatusLabel();
             panelMesh.Invalidate();
         }
 
