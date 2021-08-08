@@ -100,7 +100,7 @@ namespace TombLib.Rendering.DirectX11
                 throw new Exception("Can't create Direct3D 11 device! Exception: " + exc);
             }
 
-#if !DEBUG
+#if DEBUG
             using (InfoQueue DeviceInfoQueue = Device.QueryInterface<InfoQueue>())
             {
                 DeviceInfoQueue.SetBreakOnSeverity(MessageSeverity.Warning, true);
