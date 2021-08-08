@@ -65,6 +65,7 @@
             this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
+            this.panelSearchTree = new DarkUI.Controls.DarkPanel();
             this.butSearchMeshes = new DarkUI.Controls.DarkButton();
             this.tbSearchMeshes = new DarkUI.Controls.DarkTextBox();
             this.panelMain = new DarkUI.Controls.DarkPanel();
@@ -90,7 +91,6 @@
             this.panelTree = new DarkUI.Controls.DarkPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusLabel = new DarkUI.Controls.DarkLabel();
-            this.panelSearchTree = new DarkUI.Controls.DarkPanel();
             this.panelEditingTools.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabFaceAttributes.SuspendLayout();
@@ -107,6 +107,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereX)).BeginInit();
             this.darkSectionPanel2.SuspendLayout();
+            this.panelSearchTree.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.topBar.SuspendLayout();
             this.panelCenter.SuspendLayout();
@@ -114,7 +115,6 @@
             this.panelTexturinga.SuspendLayout();
             this.panelTexturingTools.SuspendLayout();
             this.panelTree.SuspendLayout();
-            this.panelSearchTree.SuspendLayout();
             this.SuspendLayout();
             // 
             // lstMeshes
@@ -823,6 +823,16 @@
             this.darkSectionPanel2.Size = new System.Drawing.Size(259, 561);
             this.darkSectionPanel2.TabIndex = 55;
             // 
+            // panelSearchTree
+            // 
+            this.panelSearchTree.Controls.Add(this.butSearchMeshes);
+            this.panelSearchTree.Controls.Add(this.tbSearchMeshes);
+            this.panelSearchTree.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelSearchTree.Location = new System.Drawing.Point(1, 25);
+            this.panelSearchTree.Name = "panelSearchTree";
+            this.panelSearchTree.Size = new System.Drawing.Size(257, 30);
+            this.panelSearchTree.TabIndex = 2;
+            // 
             // butSearchMeshes
             // 
             this.butSearchMeshes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -841,7 +851,7 @@
             this.tbSearchMeshes.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbSearchMeshes.Location = new System.Drawing.Point(0, 3);
             this.tbSearchMeshes.Name = "tbSearchMeshes";
-            this.tbSearchMeshes.Size = new System.Drawing.Size(233, 23);
+            this.tbSearchMeshes.Size = new System.Drawing.Size(227, 23);
             this.tbSearchMeshes.TabIndex = 11;
             this.tbSearchMeshes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearchMeshes_KeyDown);
             // 
@@ -1116,16 +1126,6 @@
             this.statusLabel.TabIndex = 57;
             this.statusLabel.Text = "This label will contain useful info about current mesh.";
             // 
-            // panelSearchTree
-            // 
-            this.panelSearchTree.Controls.Add(this.butSearchMeshes);
-            this.panelSearchTree.Controls.Add(this.tbSearchMeshes);
-            this.panelSearchTree.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelSearchTree.Location = new System.Drawing.Point(1, 25);
-            this.panelSearchTree.Name = "panelSearchTree";
-            this.panelSearchTree.Size = new System.Drawing.Size(257, 30);
-            this.panelSearchTree.TabIndex = 2;
-            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1166,6 +1166,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSphereX)).EndInit();
             this.darkSectionPanel2.ResumeLayout(false);
+            this.panelSearchTree.ResumeLayout(false);
+            this.panelSearchTree.PerformLayout();
             this.panelMain.ResumeLayout(false);
             this.topBar.ResumeLayout(false);
             this.topBar.PerformLayout();
@@ -1174,8 +1176,6 @@
             this.panelTexturinga.ResumeLayout(false);
             this.panelTexturingTools.ResumeLayout(false);
             this.panelTree.ResumeLayout(false);
-            this.panelSearchTree.ResumeLayout(false);
-            this.panelSearchTree.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
