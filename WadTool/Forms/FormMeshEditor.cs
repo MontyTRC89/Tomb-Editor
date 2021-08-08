@@ -347,6 +347,7 @@ namespace WadTool
 
                 panelMesh.Mesh = mesh;
                 panelTree.Visible = false;
+                Text += " - " + panelMesh.Mesh.Name;
                 GetSphereValues();
             }
         }
@@ -418,9 +419,8 @@ namespace WadTool
 
         private void UpdateStatusLabel()
         {
-            var prompt = NoMesh() ? string.Empty : "Selected mesh: '" + panelMesh.Mesh.Name + "', " + 
-                                                    panelMesh.Mesh.VertexPositions.Count + " vertices, " + panelMesh.Mesh.Polys.Count + " faces, " +
-                                                    panelMesh.Mesh.Polys.GroupBy(p => p.Texture).Count() + " unique textures. ";
+            var prompt = NoMesh() ? string.Empty : panelMesh.Mesh.VertexPositions.Count + " vertices, " + panelMesh.Mesh.Polys.Count + " faces, " +
+                                                   panelMesh.Mesh.Polys.GroupBy(p => p.Texture).Count() + " unique textures. ";
 
             if (panelTextureMap.SelectedTexture != TextureArea.None)
             {
