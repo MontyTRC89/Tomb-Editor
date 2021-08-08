@@ -909,7 +909,6 @@
         private System.Windows.Forms.ToolStripButton butSearchAndReplaceObjects;
         private System.Windows.Forms.ToolStripMenuItem butDrawLightRadius;
         private System.Windows.Forms.ToolStripButton butDrawWhiteLighting;
-        private System.Windows.Forms.ToolStripButton butDraw15BitLighting;
         private System.Windows.Forms.ToolStripMenuItem butDrawVolumes;
         private System.Windows.Forms.ToolStripButton butAddBoxVolume;
         private System.Windows.Forms.ToolStripButton butAddSphereVolume;
