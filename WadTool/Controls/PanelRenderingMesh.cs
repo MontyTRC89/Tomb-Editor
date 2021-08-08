@@ -786,12 +786,15 @@ namespace WadTool.Controls
         {
             base.OnMouseUp(e);
 
+            if (e.Button != MouseButtons.Left)
+                return;
+
             CurrentElement = -1;
 
             if (EditingMode == MeshEditingMode.Sphere && _gizmo.MouseUp())
                 Invalidate();
 
-            if (EditingMode != MeshEditingMode.None && e.Button == MouseButtons.Left)
+            if (EditingMode != MeshEditingMode.None)
                 TryPickElement(e.X, e.Y);
 
             _actionStarted = false;
