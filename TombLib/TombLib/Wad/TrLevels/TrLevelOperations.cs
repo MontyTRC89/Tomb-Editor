@@ -19,6 +19,9 @@ namespace TombLib.Wad.TrLevels
 
             logger.Info("Converting TR level to WAD2");
 
+            // These are for legacy TR1-3 color conversions.
+            var solidTextures = new Dictionary<ColorC, WadTexture>();
+
             // Convert textures
             TextureArea[] objectTextures = ConvertTrLevelTexturesToWadTexture(oldLevel);
             logger.Info("Texture conversion complete.");
@@ -27,14 +30,14 @@ namespace TombLib.Wad.TrLevels
             // Meshes will be converted inside each model
             for (int i = 0; i < oldLevel.Moveables.Count; i++)
             {
-                WadMoveable moveable = ConvertTrLevelMoveableToWadMoveable(wad, oldLevel, i, objectTextures);
+                WadMoveable moveable = ConvertTrLevelMoveableToWadMoveable(wad, oldLevel, i, objectTextures, solidTextures);
                 wad.Moveables.Add(moveable.Id, moveable);
             }
             logger.Info("Moveable conversion complete.");
 
             for (int i = 0; i < oldLevel.StaticMeshes.Count; i++)
             {
-                WadStatic @static = ConvertTrLevelStaticMeshToWadStatic(wad, oldLevel, i, objectTextures);
+                WadStatic @static = ConvertTrLevelStaticMeshToWadStatic(wad, oldLevel, i, objectTextures, solidTextures);
                 wad.Statics.Add(@static.Id, @static);
             }
             logger.Info("Static mesh conversion complete.");
@@ -52,9 +55,17 @@ namespace TombLib.Wad.TrLevels
         {
             var objectTextures = new TextureArea[oldLevel.ObjectTextures.Count];
             ImageC tiles = ImageC.FromByteArray(oldLevel.TextureMap32, 256, oldLevel.TextureMap32.Length / 1024);
-             tiles.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
+            tiles.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0));
 
-            // for (int i = 0; i < oldLevel.ObjectTextures.Count; ++i)
+            var tileList = new List<WadTexture>();
+            for (int i = 0; i < tiles.Height / 256; i++)
+            {
+                var newTile = ImageC.CreateNew(256, 256);
+                newTile.CopyFrom(0, 0, tiles, 0, i * 256, 256, 256);
+                newTile.FileName = oldLevel.Name + "_Page_" + i;
+                tileList.Add(new WadTexture(newTile));
+            }
+
             Parallel.For(0, oldLevel.ObjectTextures.Count, i =>
             {
                 var oldTexture = oldLevel.ObjectTextures[i];
@@ -70,37 +81,15 @@ namespace TombLib.Wad.TrLevels
                 for (int j = 0; j < coords.Length; ++j)
                     coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256.0f);
 
-                // Find the corners of the texture
-                Vector2 min = coords[0], max = coords[0];
-                for (int j = 1; j < coords.Length; ++j)
-                {
-                    min = Vector2.Min(min, coords[j]);
-                    max = Vector2.Max(max, coords[j]);
-                }
-
-                VectorInt2 start = VectorInt2.FromFloor(min);
-                VectorInt2 end = VectorInt2.FromCeiling(max);
-                start = VectorInt2.Min(VectorInt2.Max(start, new VectorInt2()), new VectorInt2(256, 256));
-                end = VectorInt2.Min(VectorInt2.Max(end, new VectorInt2()), new VectorInt2(256, 256));
-
-                // Create image
-                ImageC image = ImageC.CreateNew(end.X - start.X, end.Y - start.Y);
-                image.CopyFrom(0, 0, tiles, start.X, start.Y + textureTileIndex * 256, end.X - start.X, end.Y - start.Y);
-
-                // Replace black with transparent color
-                //image.ReplaceColor(new ColorC(0, 0, 0, 255), new ColorC(0, 0, 0, 0));
-
-                WadTexture texture = new WadTexture(image);
-
                 // Create texture area
                 TextureArea textureArea = new TextureArea();
                 textureArea.DoubleSided = false;
                 textureArea.BlendMode = (BlendMode)(oldTexture.Attributes);
-                textureArea.TexCoord0 = coords[0] - start;
-                textureArea.TexCoord1 = coords[1] - start;
-                textureArea.TexCoord2 = coords[2] - start;
-                textureArea.TexCoord3 = isTriangle ? textureArea.TexCoord2 : (coords[3] - start);
-                textureArea.Texture = texture;
+                textureArea.TexCoord0 = coords[0];
+                textureArea.TexCoord1 = coords[1];
+                textureArea.TexCoord2 = coords[2];
+                textureArea.TexCoord3 = isTriangle ? textureArea.TexCoord2 : (coords[3]);
+                textureArea.Texture = tileList[textureTileIndex];
 
                 objectTextures[i] = textureArea;
             });
@@ -108,7 +97,7 @@ namespace TombLib.Wad.TrLevels
             return objectTextures;
         }
 
-        private static WadMesh ConvertTrLevelMeshToWadMesh(Wad2 wad, TrLevel oldLevel, tr_mesh oldMesh, TextureArea[] objectTextures)
+        private static WadMesh ConvertTrLevelMeshToWadMesh(Wad2 wad, TrLevel oldLevel, tr_mesh oldMesh, TextureArea[] objectTextures, Dictionary<ColorC, WadTexture> coloredTextures)
         {
             WadMesh mesh = new WadMesh();
 
@@ -180,7 +169,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = oldPoly.Index3;
-                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture);
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture, coloredTextures);
                 poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
@@ -193,7 +182,7 @@ namespace TombLib.Wad.TrLevels
                 poly.Index1 = oldPoly.Index1;
                 poly.Index2 = oldPoly.Index2;
                 poly.Index3 = 0;
-                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture);
+                poly.Texture = ConvertColoredFaceToTexture(wad, oldLevel, oldPoly.Texture, coloredTextures);
                 poly.ShineStrength = 0;
                 mesh.Polys.Add(poly);
             }
@@ -211,7 +200,7 @@ namespace TombLib.Wad.TrLevels
             return mesh;
         }
 
-        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, int textureSize = 2, int margin = 1)
+        private static TextureArea ConvertColoredFaceToTexture(Wad2 wad, TrLevel oldLevel, ushort paletteIndex, Dictionary<ColorC, WadTexture> references, int textureSize = 2, int margin = 1)
         {
             if (textureSize < 1) textureSize = 1;
             if (margin < 1) margin = 1;
@@ -230,15 +219,24 @@ namespace TombLib.Wad.TrLevels
                 color = new ColorC((byte)(trColor.Red * 4), (byte)(trColor.Green * 4), (byte)(trColor.Blue * 4), 255);
             }
 
-            var image = ImageC.CreateNew(textureSize + margin * 2, textureSize + margin * 2);
-            image.Fill(color);
+            var size = textureSize + margin * 2;
+
+            WadTexture texture;
+            if (!references.TryGetValue(color, out texture))
+            {
+                var image = ImageC.CreateNew(size, size);
+                image.Fill(color);
+                image.FileName = "Solid color (RGB " + color.R + ", " + color.G + ", " + color.B + ")";
+                texture = new WadTexture(image);
+                references.Add(color, texture);
+            }
 
             TextureArea textureArea = new TextureArea();
-            textureArea.Texture = new WadTexture(image);
+            textureArea.Texture = texture;
             textureArea.TexCoord0 = new Vector2(margin, margin);
-            textureArea.TexCoord1 = new Vector2(image.Width - margin, margin);
-            textureArea.TexCoord2 = new Vector2(image.Width - margin, image.Height - margin);
-            textureArea.TexCoord3 = new Vector2(margin, image.Height - margin);
+            textureArea.TexCoord1 = new Vector2(size - margin, margin);
+            textureArea.TexCoord2 = new Vector2(size - margin, size - margin);
+            textureArea.TexCoord3 = new Vector2(margin, size - margin);
             textureArea.BlendMode = BlendMode.Normal;
             textureArea.DoubleSided = false;
             return textureArea;
@@ -298,7 +296,7 @@ namespace TombLib.Wad.TrLevels
         }
 
         public static WadMoveable ConvertTrLevelMoveableToWadMoveable(Wad2 wad, TrLevel oldLevel, int moveableIndex,
-                                                                      TextureArea[] objectTextures)
+                                                                      TextureArea[] objectTextures, Dictionary<ColorC, WadTexture> coloredTextures)
         {
             Console.WriteLine("Converting Moveable " + moveableIndex);
 
@@ -313,7 +311,7 @@ namespace TombLib.Wad.TrLevels
             // Convert the WadMesh
             var newMeshes = new List<WadMesh>();
             foreach (var oldMesh in oldMeshes)
-                newMeshes.Add(ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures));
+                newMeshes.Add(ConvertTrLevelMeshToWadMesh(wad, oldLevel, oldMesh, objectTextures, coloredTextures));
 
             // Build the skeleton
             var root = new WadBone();
@@ -566,7 +564,7 @@ namespace TombLib.Wad.TrLevels
             return newMoveable;
         }
 
-        public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex, TextureArea[] objectTextures)
+        public static WadStatic ConvertTrLevelStaticMeshToWadStatic(Wad2 wad, TrLevel oldLevel, int staticIndex, TextureArea[] objectTextures, Dictionary<ColorC, WadTexture> coloredTextures)
         {
             tr_staticmesh oldStatic = oldLevel.StaticMeshes[staticIndex];
             var newStatic = new WadStatic(new WadStaticId(oldStatic.ObjectID));
@@ -590,7 +588,7 @@ namespace TombLib.Wad.TrLevels
             newStatic.Mesh = ConvertTrLevelMeshToWadMesh(wad,
                                                       oldLevel,
                                                       oldLevel.GetMeshFromPointer(oldStatic.Mesh),
-                                                      objectTextures);
+                                                      objectTextures, coloredTextures);
             return newStatic;
         }
     }

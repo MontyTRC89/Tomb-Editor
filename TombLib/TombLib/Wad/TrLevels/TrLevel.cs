@@ -15,6 +15,7 @@ namespace TombLib.Wad.TrLevels
     public class TrLevel
     {
         internal TRVersion.Game Version;
+        internal string Name;
         internal bool IsNg;
 
         internal byte[] TextureMap32;
@@ -83,6 +84,8 @@ namespace TombLib.Wad.TrLevels
 
             using (var reader = new BinaryReaderEx(File.OpenRead(levelName)))
             {
+                Name = Path.GetFileNameWithoutExtension(levelName);
+
                 version = reader.ReadUInt32();
 
                 if (Version == TRVersion.Game.TR4 && fileName.ToLower().Trim().EndsWith(".trc"))
