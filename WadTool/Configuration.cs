@@ -47,6 +47,7 @@ namespace WadTool
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public bool RenderingItem_ShowDebugInfo { get; set; } = false;
         public bool RenderingItem_Antialias { get; set; } = false;
+        public bool RenderingItem_Animate { get; set; } = true;
         public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 
         public float GizmoStatic_Size { get; set; } = 1536.0f;
@@ -85,7 +86,6 @@ namespace WadTool
         public Point Window_FormReplaceAnimCommands_Position { get; set; } = new Point(-1);
         public Size Window_FormReplaceAnimCommands_Size { get; set; } = new Size(811, 460);
         public bool Window_FormReplaceAnimCommands_Maximized { get; set; } = false;
-
         public Point Window_FormMeshEditor_Position { get; set; } = new Point(-1);
         public Size Window_FormMeshEditor_Size { get; set; } = new Size(1055, 707);
         public bool Window_FormMeshEditor_Maximized { get; set; } = false;

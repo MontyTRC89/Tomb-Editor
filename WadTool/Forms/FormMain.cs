@@ -68,6 +68,8 @@ namespace WadTool
                     _tool.DestinationWad = new Wad2 { GameVersion = TRVersion.Game.TR4 };
                     _tool.RaiseEvent(new WadToolClass.DestinationWadChangedEvent());
                 }
+
+                panel3D.AnimatePreview = _tool.Configuration.RenderingItem_Animate;
             }
 
             if (obj is WadToolClass.MessageEvent)
@@ -639,6 +641,8 @@ namespace WadTool
             // FIXME: Later, when WT bloats up, move this to events
 
             _tool.UndoManager.Resize(_tool.Configuration.AnimationEditor_UndoDepth);
+
+            panel3D.AnimatePreview = _tool.Configuration.RenderingItem_Animate;
             panel3D.Invalidate();
         }
 
