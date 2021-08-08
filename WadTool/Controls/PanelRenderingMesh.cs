@@ -646,7 +646,7 @@ namespace WadTool.Controls
                 {
                     if (!WireframeMode)
                     {
-                        if (submesh.Value.Material.AdditiveBlending)
+                        if (AlphaTest && submesh.Value.Material.AdditiveBlending)
                             _device.SetBlendState(_device.BlendStates.Additive);
                         else
                             _device.SetBlendState(_device.BlendStates.Opaque);
@@ -673,7 +673,7 @@ namespace WadTool.Controls
         {
             base.OnMouseWheel(e);
 
-            Camera.Zoom(-e.Delta * _tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom);
+            Camera.Zoom(-e.Delta * _tool.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom / 4);
             Invalidate();
         }
 
