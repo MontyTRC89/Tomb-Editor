@@ -79,7 +79,11 @@ namespace TombLib.Wad.TrLevels
                 // Calculate UV coordinates...
                 Vector2[] coords = new Vector2[isTriangle ? 3 : 4];
                 for (int j = 0; j < coords.Length; ++j)
-                    coords[j] = new Vector2(oldTexture.Vertices[j].X, oldTexture.Vertices[j].Y) * (1.0f / 256.0f);
+                {
+                    var x = (float)Math.Round(oldTexture.Vertices[j].X * (1.0f / 256.0f), 2);
+                    var y = (float)Math.Round(oldTexture.Vertices[j].Y * (1.0f / 256.0f), 2);
+                    coords[j] = new Vector2(x, y);
+                }
 
                 // Create texture area
                 TextureArea textureArea = new TextureArea();
