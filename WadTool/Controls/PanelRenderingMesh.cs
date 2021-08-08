@@ -227,7 +227,7 @@ namespace WadTool.Controls
                     distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index0], Mesh.VertexPositions[p.Index1]));
                     distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index1], Mesh.VertexPositions[p.Index2]));
                     
-                    if (p.Shape == WadPolygonShape.Triangle)
+                    if (p.IsTriangle)
                         distances.Add(Vector3.Distance(Mesh.VertexPositions[p.Index2], Mesh.VertexPositions[p.Index0]));
                     else
                     {
@@ -925,7 +925,7 @@ namespace WadTool.Controls
         {
             var vertexCount = 0;
             foreach (var poly in _mesh.Polys)
-                if (poly.Shape == WadPolygonShape.Triangle) vertexCount += 3; else vertexCount += 6;
+                if (poly.IsTriangle) vertexCount += 3; else vertexCount += 6;
             _faceVertexBuffer = SharpDX.Toolkit.Graphics.Buffer.Vertex.New<SolidVertex>(_device, vertexCount);
 
             _littleSphere = GeometricPrimitive.Sphere.New(_device, VertexSphereRadius, 4);

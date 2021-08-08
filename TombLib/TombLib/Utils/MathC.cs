@@ -408,13 +408,13 @@ namespace TombLib
         /// <param name="poly">points that define the polygon</param>
         /// <returns>centroid point, or PointF.Empty if something wrong</returns>
         /// https://stackoverflow.com/questions/9815699/how-to-calculate-centroid
-        public static Vector2 GetCentroid(List<Vector2> poly)
+        public static Vector2 GetCentroid(Vector2[] poly)
         {
             float accumulatedArea = 0.0f;
             float centerX = 0.0f;
             float centerY = 0.0f;
 
-            for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            for (int i = 0, j = poly.Length - 1; i < poly.Length; j = i++)
             {
                 float temp = poly[i].X * poly[j].Y - poly[j].X * poly[i].Y;
                 accumulatedArea += temp;
@@ -471,6 +471,28 @@ namespace TombLib
                         CalculateArea(coords[2], coords[3]) +
                         CalculateArea(coords[3], coords[0])) * 0.5f;
             }
+        }
+
+        public static Vector2[] CorrectTexCoords(Vector2[] coords, bool isTriangle, float margin = 0.5f)
+        {
+            if (isTriangle && coords.Length > 3)
+                Array.Resize(ref coords, 3);
+
+            var centroid = GetCentroid(coords);
+            for (int i = 0; i < coords.Length; i++)
+            {
+                var diff = coords[i] - centroid;
+                coords[i].X -= Math.Sign(diff.X) * margin;
+                coords[i].Y -= Math.Sign(diff.Y) * margin;
+            }
+
+            if (isTriangle)
+            {
+                Array.Resize(ref coords, 4);
+                coords[3] = Vector2.Zero;
+            }
+
+            return coords;
         }
     }
 }

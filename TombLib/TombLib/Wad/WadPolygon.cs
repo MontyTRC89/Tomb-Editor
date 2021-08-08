@@ -1,4 +1,6 @@
-﻿using TombLib.Utils;
+﻿using System;
+using System.Numerics;
+using TombLib.Utils;
 
 namespace TombLib.Wad
 {
@@ -17,6 +19,11 @@ namespace TombLib.Wad
         public int Index3;
         public TextureArea Texture;
         public byte ShineStrength;
+
+        public bool IsTriangle => Shape == WadPolygonShape.Triangle;
+
+        public Vector2[] CorrectTexCoords(float margin = 0.5f) =>
+            MathC.CorrectTexCoords(Texture.TexCoords, IsTriangle, margin);
 
         public void Rotate(int iter = 1, bool isTriangle = false)
         {

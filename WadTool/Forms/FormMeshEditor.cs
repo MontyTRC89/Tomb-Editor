@@ -257,17 +257,17 @@ namespace WadTool
                                         if (panelTextureMap.VisibleTexture.IsAvailable && panelTextureMap.SelectedTexture != TextureArea.None)
                                         {
                                             currTexture = panelTextureMap.SelectedTexture;
-                                            if (poly.Shape == WadPolygonShape.Triangle)
+                                            if (poly.IsTriangle)
                                                 currTexture.TexCoord3 = currTexture.TexCoord2;
                                         }
                                     }
                                     else // Shift or control pressed - flip or rotate texture
                                     {
                                         if (Control.ModifierKeys == Keys.Control)
-                                            currTexture.Mirror(poly.Shape == WadPolygonShape.Triangle);
+                                            currTexture.Mirror(poly.IsTriangle);
                                         else if (Control.ModifierKeys == Keys.Shift)
                                             // We actually need to rotate polygon indices to get correct behaviour like in Strpix.
-                                            poly.Rotate(1, poly.Shape == WadPolygonShape.Triangle); 
+                                            poly.Rotate(1, poly.IsTriangle); 
                                     }
                                 }
 
@@ -618,7 +618,7 @@ namespace WadTool
                 edges.Add(new FaceEdge { P = new int[] { poly.Index0, poly.Index1 } });
                 edges.Add(new FaceEdge { P = new int[] { poly.Index1, poly.Index2 } });
 
-                if (poly.Shape == WadPolygonShape.Triangle)
+                if (poly.IsTriangle)
                     edges.Add(new FaceEdge { P = new int[] { poly.Index2, poly.Index0 } });
                 else
                 {

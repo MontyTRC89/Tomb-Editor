@@ -494,7 +494,7 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             int index2 = (poly.Index2 + meshVertexBase);
                             int index3 = (poly.Index3 + meshVertexBase);
 
-                            if (poly.Shape == WadPolygonShape.Triangle)
+                            if (poly.IsTriangle)
                             {
 
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(poly))

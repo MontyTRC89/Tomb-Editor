@@ -38,7 +38,7 @@ namespace TombLib.Wad
         public bool HasNormals => VertexNormals.Count == VertexPositions.Count;
         public bool HasAttributes => VertexAttributes.Count == VertexPositions.Count;
 
-        public List<TextureArea> TextureAreas => Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.Shape == WadPolygonShape.Triangle))
+        public List<TextureArea> TextureAreas => Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.IsTriangle))
                                                        .Select(g => g.Key).Distinct().ToList();
 
         public WadMesh Clone()
@@ -160,7 +160,7 @@ namespace TombLib.Wad
 
             foreach (var poly in Polys)
             {
-                if (poly.Shape == WadPolygonShape.Triangle)
+                if (poly.IsTriangle)
                     helper.AddPolygon(weighted, poly.Index0, poly.Index1, poly.Index2);
                 else
                     helper.AddPolygon(weighted, poly.Index0, poly.Index1, poly.Index2, poly.Index3);

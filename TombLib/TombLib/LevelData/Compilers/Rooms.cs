@@ -526,7 +526,7 @@ namespace TombLib.LevelData.Compilers
                         ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
                         ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
 
-                            if (poly.Shape == WadPolygonShape.Triangle) {
+                            if (poly.IsTriangle) {
                                 FixWadTextureCoordinates(ref poly.Texture);
                                 var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
                                 tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);

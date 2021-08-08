@@ -171,21 +171,6 @@ namespace TombLib.Utils
             { new Vector2(-0.5f, 0.5f), new Vector2( 0.5f, 0.5f), new Vector2( 0.5f, -0.5f), new Vector2(-0.5f, -0.5f) }
         };
 
-        // Unpadded offsets are used if no padding is specified. Only needed for tris, quads are processed
-        // correctly by TR4-5.
-
-        public static readonly Vector2[,] UnpaddedTris = new Vector2[,]
-        {
-            { new Vector2( 0.0f,  0.0f), new Vector2( 0.0f,  0.0f), new Vector2( 0.0f,  0.0f) },
-            { new Vector2(-1.0f,  0.0f), new Vector2( 0.0f, -1.0f), new Vector2( 1.0f,  1.0f) },
-            { new Vector2( 0.0f, -1.0f), new Vector2( 1.0f,  0.0f), new Vector2(-1.0f,  1.0f) },
-            { new Vector2( 0.0f, -1.0f), new Vector2( 1.0f,  1.0f), new Vector2(-1.0f,  0.0f) },
-            { new Vector2( 0.0f,  0.0f), new Vector2( 0.0f,  0.0f), new Vector2( 0.0f,  0.0f) },
-            { new Vector2( 1.0f,  0.0f), new Vector2( 0.0f, -1.0f), new Vector2(-1.0f,  1.0f) },
-            { new Vector2( 0.0f, -1.0f), new Vector2(-1.0f,  0.0f), new Vector2( 1.0f,  1.0f) },
-            { new Vector2( 0.0f, -1.0f), new Vector2(-1.0f,  1.0f), new Vector2( 1.0f,  0.0f) }
-        };
-
         public static TextureShapeType GetTextureShapeType(Vector2[] texCoords, bool isForTriangle)
         {
             bool isClockwise = !(MathC.CalculateArea(texCoords) > 0.0f);

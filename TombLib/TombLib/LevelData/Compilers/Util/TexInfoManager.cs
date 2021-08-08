@@ -497,35 +497,46 @@ namespace TombLib.LevelData.Compilers.Util
                 Tile = parent.Page;
                 UVAdjustmentFlag = (ushort)TextureExtensions.GetTextureShapeType(child.RelCoord, IsForTriangle);
 
+                // At first, collect absolute coords
+                var coords = new Vector2[4];
                 for (int i = 0; i < child.RelCoord.Length; i++)
                 {
-                    var coord = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
+                    coords[i] = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
-
+                    
                     // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
-                    // Otherwise use original unpadded correction offsets.
                     if (version >= TRVersion.Game.TR4)
-                    {
-                        if (parent.Padding.All(p => p == 0))
-                            coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
-                        else
-                            coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
-                    }
-                    else if (version == TRVersion.Game.TR3) 
-                    {
-                        // For some reason texel alignment without padding 
-                        // breaks adjacent textures in TR3, so bypass it for such cases.
-                        if (parent.Padding.All(p => p != 0))
-                            coord -= new Vector2(0.5f);
-                    }
+                        coords[i] -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] :
+                                                     TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
+                }
 
+                // TR3 uses unique texel alignment algorithm without which all textures tend to break.
+                // But for some reason texel alignment without padding breaks adjacent textures
+                // in TR3, so bypass it for such cases.
+
+                if (version == TRVersion.Game.TR3)
+                {
+                    for (int i = 0; i < child.RelCoord.Length; i++)
+                        coords[i] -= new Vector2(0.5f);
+                }
+                else
+                {
+                    // If no padding exists, natively chop 0.5px from every side.
+                    // This works better than Core's clunky AdjustUV method.
+
+                    if (parent.Padding.All(p => p == 0))
+                        coords = MathC.CorrectTexCoords(coords, IsForTriangle, 0.5f);
+                }
+
+                for (int i = 0; i < child.RelCoord.Length; i++)
+                {
                     // Clamp coordinates that are possibly out of bounds
-                    coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
-                    coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
+                    coords[i].X = (float)MathC.Clamp(coords[i].X, 0, maxTextureSize);
+                    coords[i].Y = (float)MathC.Clamp(coords[i].Y, 0, maxTextureSize);
 
                     // Pack coordinates into 2-byte set (whole and frac parts)
-                    TexCoord[i] = new VectorInt2((((int)Math.Truncate(coord.X)) << 8) + (int)(Math.Floor(coord.X % 1.0f * 255.0f)),
-                                                 (((int)Math.Truncate(coord.Y)) << 8) + (int)(Math.Floor(coord.Y % 1.0f * 255.0f)));
+                    TexCoord[i] = new VectorInt2((((int)Math.Truncate(coords[i].X)) << 8) + (int)(Math.Floor(coords[i].X % 1.0f * 255.0f)),
+                                                 (((int)Math.Truncate(coords[i].Y)) << 8) + (int)(Math.Floor(coords[i].Y % 1.0f * 255.0f)));
                 }
 
                 if (child.IsForTriangle)
