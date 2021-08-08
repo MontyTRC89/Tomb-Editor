@@ -485,18 +485,8 @@ namespace WadTool
             if (newNode != null && newNode.WadMesh != panelMesh.Mesh)
             {
                 // Save current node state
-                if (_currentNode != null)
-                {
-                    var obj = _wad.TryGet(_currentNode.ObjectId);
-
-                    if (obj is WadMoveable)
-                        (obj as WadMoveable).Meshes[_currentNode.MeshIndex] = _currentNode.WadMesh = panelMesh.Mesh;
-                    else if (obj is WadStatic)
-                        (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
-                }
-
+                SaveCurrentMesh();
                 _tool.UndoManager.ClearAll();
-
                 panelMesh.Mesh = newNode.WadMesh;
                 _currentNode = newNode;
 
@@ -505,6 +495,24 @@ namespace WadTool
 
                 // Keep texture list the same if we're listing all textures
                 RepopulateTextureList(butAllTextures.Checked);
+            }
+        }
+
+        private void SaveCurrentMesh()
+        {
+            // No need to update tree as it's not visible
+            if (!lstMeshes.Visible)
+                return;
+
+            // Save current node state
+            if (_currentNode != null)
+            {
+                var obj = _wad.TryGet(_currentNode.ObjectId);
+
+                if (obj is WadMoveable)
+                    (obj as WadMoveable).Meshes[_currentNode.MeshIndex] = _currentNode.WadMesh = panelMesh.Mesh;
+                else if (obj is WadStatic)
+                    (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
             }
         }
 
@@ -752,6 +760,7 @@ namespace WadTool
         {
             SelectedMesh = panelMesh.Mesh;
             _tool.ToggleUnsavedChanges();
+            _tool.WadChanged(WadArea.Destination);
 
             DialogResult = DialogResult.OK;
             Close();
@@ -1115,6 +1124,7 @@ namespace WadTool
 
         private void FormMeshEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
+            SaveCurrentMesh();
             _tool.UndoManager.ClearAll();
         }
 
