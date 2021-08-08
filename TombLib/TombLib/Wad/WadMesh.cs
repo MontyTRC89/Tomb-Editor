@@ -38,6 +38,9 @@ namespace TombLib.Wad
         public bool HasNormals => VertexNormals.Count == VertexPositions.Count;
         public bool HasAttributes => VertexAttributes.Count == VertexPositions.Count;
 
+        public List<TextureArea> TextureAreas => Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.Shape == WadPolygonShape.Triangle))
+                                                       .Select(g => g.Key).Distinct().ToList();
+
         public WadMesh Clone()
         {
             var mesh = (WadMesh)MemberwiseClone();

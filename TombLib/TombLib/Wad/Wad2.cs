@@ -70,6 +70,22 @@ namespace TombLib.Wad
             }
         }
 
+        public List<TextureArea> MeshTexInfosUnique
+        {
+            get
+            {
+                var texinfos = new List<TextureArea>();
+
+                foreach (var moveable in Moveables.Values)
+                    foreach (var mesh in moveable.Meshes)
+                        texinfos.AddRange(mesh.TextureAreas);
+                foreach (var stat in Statics.Values)
+                    texinfos.AddRange(stat.Mesh.TextureAreas);
+
+                return texinfos.Distinct().ToList();
+            }
+        }
+
         public WadStaticId GetFirstFreeStaticMesh()
         {
             for (int i = 0; i < Statics.Count; i++)

@@ -90,8 +90,9 @@ namespace WadTool
                 {
                     labelStatistics.Text = "Moveables: " + _tool.DestinationWad.Moveables.Count + " | " +
                                            "Statics: " + _tool.DestinationWad.Statics.Count + " | " +
-                                           "Sprites sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
-                                           "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count;
+                                           "Sprite sequences: " + _tool.DestinationWad.SpriteSequences.Count + " | " +
+                                           "Textures: " + _tool.DestinationWad.MeshTexturesUnique.Count + " | " +
+                                           "Texture infos: " + _tool.DestinationWad.MeshTexInfosUnique.Count;
 
                     meshEditorToolStripMenuItem.Enabled = true;
                 }
