@@ -1,4 +1,5 @@
-﻿using DarkUI.Forms;
+﻿using DarkUI.Controls;
+using DarkUI.Forms;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -52,7 +53,9 @@ namespace WadTool
         private DeviceManager _deviceManager;
         private WadToolClass _tool;
 
+        // Interaction state
         private bool _readingValues = false;
+        private int _currentIndex = -1;
 
         private readonly PopUpInfo popup = new PopUpInfo();
 
@@ -347,7 +350,6 @@ namespace WadTool
 
                 panelMesh.Mesh = mesh;
                 panelTree.Visible = false;
-                Text += " - " + panelMesh.Mesh.Name;
                 GetSphereValues();
             }
         }
@@ -429,6 +431,7 @@ namespace WadTool
             }
 
             statusLabel.Text = prompt;
+            Text = "Mesh editor" + (NoMesh() ? "" : " - " + panelMesh.Mesh.Name);
         }
 
         private void CalculateWindowDimensions()
@@ -460,14 +463,14 @@ namespace WadTool
 
         private void ShowSelectedMesh()
         {
-            if (lstMeshes.SelectedNodes.Count == 0 || lstMeshes.SelectedNodes[0].Tag == null)
+            if (lstMeshes.SelectedNodes.Count == 0)
                 return;
 
-            var newMesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
-            if (newMesh != panelMesh.Mesh)
+            var newMesh = GetChildMesh(lstMeshes.SelectedNodes[0]);
+            if (newMesh != null && newMesh != panelMesh.Mesh)
             {
                 _tool.UndoManager.ClearAll();
-                panelMesh.Mesh = ((MeshTreeNode)lstMeshes.SelectedNodes[0].Tag).WadMesh;
+                panelMesh.Mesh = newMesh;
 
                 GetSphereValues();
                 UpdateUI();
@@ -475,6 +478,17 @@ namespace WadTool
                 // Keep texture list the same if we're listing all textures
                 RepopulateTextureList(butAllTextures.Checked);
             }
+        }
+
+        private WadMesh GetChildMesh(DarkTreeNode node)
+        {
+            if (node.Tag != null && node.Tag is MeshTreeNode)
+                return (node.Tag as MeshTreeNode).WadMesh;
+
+            if (node.Nodes.Count == 0)
+                return null;
+
+            return GetChildMesh(node.Nodes[0]);
         }
 
         private void RemapSelectedVertex()
@@ -661,6 +675,43 @@ namespace WadTool
                 comboCurrentTexture.SelectedIndex = 0;
 
             panelTextureMap.SelectedTexture = TextureArea.None;
+        }
+
+        private void SearchTree()
+        {
+            if (string.IsNullOrEmpty(tbSearchMeshes.Text))
+                return;
+
+            var nodes = lstMeshes.GetAllNodes();
+            var items = nodes.Select(n => n.Text).ToList();
+
+            for (int i = _currentIndex + 1; i <= items.Count; i++)
+            {
+                if (i == items.Count)
+                {
+                    if (_currentIndex == -1)
+                        break; // No match
+                    else
+                    {
+                        i = -1;
+                        _currentIndex = -1;
+                        continue; // Restart search
+                    }
+                }
+
+                if (items[i].IndexOf(tbSearchMeshes.Text, StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    _currentIndex = i;
+                    break;
+                }
+            }
+
+            if (_currentIndex != -1)
+            {
+                lstMeshes.SelectNode(nodes[_currentIndex]);
+                lstMeshes.EnsureVisible();
+                ShowSelectedMesh();
+            }
         }
 
         private void lstMeshes_Click(object sender, EventArgs e)
@@ -1041,6 +1092,17 @@ namespace WadTool
         private void FormMeshEditor_FormClosing(object sender, FormClosingEventArgs e)
         {
             _tool.UndoManager.ClearAll();
+        }
+
+        private void butSearchMeshes_Click(object sender, EventArgs e)
+        {
+            SearchTree();
+        }
+
+        private void tbSearchMeshes_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                SearchTree();
         }
     }
 }
