@@ -179,7 +179,7 @@ namespace TombEditor
             "Copy", "Paste", "Stamp", "|",
             "OpacityNone", "OpacitySolidFaces", "OpacityTraversableFaces", "|",
             "AddCamera", "AddFlybyCamera", "AddSink", "AddSoundSource", "AddImportedGeometry", "AddGhostBlock", "AddMemo", "|",
-            "CompileLevel", "CompileLevelAndPlay", "CompileLevelAndPlay", "CompileAndPlayPreview"
+            "CompileLevel", "CompileLevelAndPlay", "CompileAndPlayPreview"
         };
 
         // Last used tools
