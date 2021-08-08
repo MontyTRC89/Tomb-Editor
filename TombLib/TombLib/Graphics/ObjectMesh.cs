@@ -129,17 +129,18 @@ namespace TombLib.Graphics
                 }
 
                 var coords = poly.Texture.TexCoords;
+                if (poly.Shape == WadPolygonShape.Triangle)
+                    Array.Resize(ref coords, 3);
 
-                // Do half-pixel correction on texture to prevent bleeding
-                if (correct)
+                // Do half-pixel correction on texture to prevent bleeding.
+                // Chop 0.15th of a pixel even if non-corrected mode to prevent issues with AA.
+
+                var centroid = MathC.GetCentroid(coords.ToList());
+                for (int i = 0; i < coords.Length; i++)
                 {
-                    var shape = (int)TextureExtensions.GetTextureShapeType(poly.Texture.TexCoords, poly.Shape == WadPolygonShape.Triangle);
-
-                    for (int i = 0; i < (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/ ? 3 : 4); i++)
-                        if (poly.Shape == WadPolygonShape.Triangle /*poly.Texture.TextureIsTriangle*/)
-                            coords[i] += TextureExtensions.CompensationTris[shape, i];
-                        else
-                            coords[i] += TextureExtensions.CompensationQuads[shape, i];
+                    var diff = coords[i] - centroid;
+                    coords[i].X -= Math.Sign(diff.X) * (correct ? 0.5f : 0.15f);
+                    coords[i].Y -= Math.Sign(diff.Y) * (correct ? 0.5f : 0.15f); 
                 }
 
                 if (poly.Shape == WadPolygonShape.Triangle)

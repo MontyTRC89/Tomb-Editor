@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Numerics;
@@ -399,6 +400,33 @@ namespace TombLib
                     t1 * s +
                     v1;
             return (double)result;
+        }
+
+        /// <summary>
+        /// Method to compute the centroid of a polygon. This does NOT work for a complex polygon.
+        /// </summary>
+        /// <param name="poly">points that define the polygon</param>
+        /// <returns>centroid point, or PointF.Empty if something wrong</returns>
+        /// https://stackoverflow.com/questions/9815699/how-to-calculate-centroid
+        public static Vector2 GetCentroid(List<Vector2> poly)
+        {
+            float accumulatedArea = 0.0f;
+            float centerX = 0.0f;
+            float centerY = 0.0f;
+
+            for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            {
+                float temp = poly[i].X * poly[j].Y - poly[j].X * poly[i].Y;
+                accumulatedArea += temp;
+                centerX += (poly[i].X + poly[j].X) * temp;
+                centerY += (poly[i].Y + poly[j].Y) * temp;
+            }
+
+            if (Math.Abs(accumulatedArea) < 1E-7f)
+                return Vector2.Zero;  // Avoid division by zero
+
+            accumulatedArea *= 3f;
+            return new Vector2(centerX / accumulatedArea, centerY / accumulatedArea);
         }
 
         // Useful for storing a dictionary of vertices

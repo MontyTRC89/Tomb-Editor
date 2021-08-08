@@ -960,7 +960,7 @@ namespace WadTool.Controls
                 var v = _mesh.VertexPositions[i];
                 var a = _mesh.VertexAttributes[i];
 
-                var hash = v.GetHashCode();
+                var hash = MathC.GetVector3Hash(v).GetHashCode();
 
                 var wibble = (float)Math.Sin((((_frameCount + hash) % 64) / 64.0f) * (Math.PI * 2));
 

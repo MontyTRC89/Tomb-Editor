@@ -12,7 +12,7 @@ namespace WadTool.Controls
         protected override bool MouseWheelMovesTheTextureInsteadOfZooming => _tool?.Configuration.MeshEditor_MouseWheelMovesTheTextureInsteadOfZooming ?? false;
         protected override float NavigationSpeedKeyMove => 100.0f;
         protected override float NavigationSpeedKeyZoom => 0.15f;
-        protected override float NavigationSpeedMouseZoom => _tool?.Configuration.RenderingItem_NavigationSpeedMouseZoom ?? 1.0f;
+        protected override float NavigationSpeedMouseZoom => (_tool?.Configuration.RenderingItem_NavigationSpeedMouseZoom ?? 1.0f) * 0.00225f;
         protected override float NavigationSpeedMouseWheelZoom => (_tool?.Configuration.RenderingItem_NavigationSpeedMouseWheelZoom ?? 1.0f) * 0.00025f;
         protected override float NavigationMaxZoom => 2000.0f;
         protected override float NavigationMinZoom => 0.5f;
