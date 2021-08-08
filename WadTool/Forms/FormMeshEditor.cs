@@ -61,6 +61,9 @@ namespace WadTool
         private MeshTreeNode _currentNode = null;
         private int _currentIndex = -1;
 
+        // Preserve user-loaded textures until user leaves editor
+        private List<WadTexture> _userTextures = new List<WadTexture>();
+
         private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormMeshEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad)
@@ -238,7 +241,8 @@ namespace WadTool
                                 if (cbTexture.Checked)
                                 {
                                     panelTextureMap.ShowTexture(poly.Texture);
-                                    comboCurrentTexture.SelectedItem = poly.Texture.Texture;
+                                    if (comboCurrentTexture.Items.Contains(poly.Texture.Texture))
+                                        comboCurrentTexture.SelectedItem = poly.Texture.Texture;
                                 }
                             }
                             else // Editing
@@ -697,7 +701,7 @@ namespace WadTool
                 return;
             }
 
-            var list = new List<Texture>();
+            var list = new List<Texture>(_userTextures);
 
             if (wholeWad)
             {
@@ -1015,15 +1019,24 @@ namespace WadTool
 
         private void butAddTexture_Click(object sender, EventArgs e)
         {
-            var paths = LevelFileDialog.BrowseFiles(FindForm(), null, null, "Load texture file", LevelTexture.FileExtensions).ToList();
-            if (paths.Count > 0)
+            var paths = LevelFileDialog.BrowseFiles(this, null, null, "Load texture file", LevelTexture.FileExtensions).ToList();
+            if (paths.Count == 0)
+                return;
+
+            foreach (var path in paths)
             {
-                var image = ImageC.FromFile(paths[0]);
+                var image = ImageC.FromFile(path);
                 image.ReplaceColor(new ColorC(255, 0, 255, 255), new ColorC(0, 0, 0, 0)); // Magenta to transparency for legacy reasons...
 
                 var newTexture = new WadTexture(image);
+
+                if (comboCurrentTexture.Items.Contains(newTexture))
+                    continue;
+
                 comboCurrentTexture.Items.Add(newTexture);
                 comboCurrentTexture.SelectedItem = newTexture;
+
+                _userTextures.Add(newTexture);
             }
         }
 
@@ -1049,7 +1062,12 @@ namespace WadTool
 
             var index = comboCurrentTexture.Items.IndexOf(panelTextureMap.VisibleTexture);
             if (index != -1)
+            {
+                if (_userTextures.Contains(panelTextureMap.VisibleTexture))
+                    _userTextures.Remove((WadTexture)panelTextureMap.VisibleTexture);
+
                 comboCurrentTexture.Items.RemoveAt(index);
+            }
 
             comboCurrentTexture.SelectedIndex = 0;
         }
