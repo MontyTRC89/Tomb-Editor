@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using TombLib;
+﻿using System.ComponentModel;
 using TombLib.Controls;
 
 namespace WadTool.Controls

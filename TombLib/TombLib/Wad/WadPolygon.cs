@@ -17,5 +17,49 @@ namespace TombLib.Wad
         public int Index3;
         public TextureArea Texture;
         public byte ShineStrength;
+
+        public void Rotate(int iter = 1, bool isTriangle = false)
+        {
+            for (int i = 0; i < iter; i++)
+            {
+                if (!isTriangle)
+                {
+                    int tempIndex = Index3;
+                    Index3 = Index2;
+                    Index2 = Index1;
+                    Index1 = Index0;
+                    Index0 = tempIndex;
+                }
+                else
+                {
+                    int tempIndex = Index2;
+                    Index2 = Index1;
+                    Index1 = Index0;
+                    Index0 = tempIndex;
+                    Index3 = Index2;
+                }
+            }
+        }
+
+        public void Flip(bool isTriangle = false)
+        {
+            if (!isTriangle)
+            {
+                int tempIndex = Index0;
+                Index0 = Index3;
+                Index3 = tempIndex;
+
+                tempIndex = Index1;
+                Index1 = Index2;
+                Index2 = tempIndex;
+            }
+            else
+            {
+                int tempIndex = Index0;
+                Index0 = Index2;
+                Index2 = tempIndex;
+                Index3 = Index2;
+            }
+        }
     }
 }

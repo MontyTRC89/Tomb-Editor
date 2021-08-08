@@ -98,9 +98,10 @@ namespace TombLib.Controls
                         _currentFrame++;
                     else
                         _currentFrame = 0;
+                    Invalidate();
                 }
             }
-            else if (AnimatePreview)
+            else if (AnimatePreview && CurrentObject != null)
             {
                 if (_rotationFactor < _rotationSpeed)
                     _rotationFactor += _rotationStep;
@@ -108,9 +109,8 @@ namespace TombLib.Controls
                     _rotationFactor = _rotationSpeed;
 
                 Camera.Rotate(_rotationFactor, 0.0f);
+                Invalidate();
             }
-
-            Invalidate();
         }
 
         protected override void OnSizeChanged(EventArgs e)
@@ -422,6 +422,9 @@ namespace TombLib.Controls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
+
+            if (CurrentObject == null)
+                return;
 
             if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
