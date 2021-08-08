@@ -88,6 +88,7 @@ namespace WadTool
             // Set window property handlers
             Configuration.ConfigureWindow(this, _tool.Configuration);
 
+            ReadConfig();
             PrepareUI(mesh);
             CalculateWindowDimensions();
         }
@@ -308,6 +309,14 @@ namespace WadTool
                 butTbRedo.Enabled = stackEvent.RedoPossible;
                 UpdateUI();
             }
+        }
+
+        private void ReadConfig()
+        {
+            butTbAlpha.Checked = _tool.Configuration.MeshEditor_AlphaTest;
+            butTbAxis.Checked = _tool.Configuration.MeshEditor_DrawGrid;
+            butTbBilinear.Checked = _tool.Configuration.MeshEditor_Bilinear;
+            butTbWireframe.Checked = _tool.Configuration.MeshEditor_Wireframe;
         }
 
         private void PrepareUI(WadMesh mesh)
@@ -1077,19 +1086,25 @@ namespace WadTool
 
         private void butTbWireframe_Click(object sender, EventArgs e)
         {
-            panelMesh.WireframeMode = butTbWireframe.Checked = !butTbWireframe.Checked;
+            _tool.Configuration.MeshEditor_Wireframe = panelMesh.WireframeMode = butTbWireframe.Checked;
             UpdateUI();
         }
 
         private void butTbAlpha_Click(object sender, EventArgs e)
         {
-            panelMesh.AlphaTest = butTbAlpha.Checked = !butTbAlpha.Checked;
+            _tool.Configuration.MeshEditor_AlphaTest = panelMesh.AlphaTest = butTbAlpha.Checked;
             UpdateUI();
         }
 
         private void butTbBilinear_Click(object sender, EventArgs e)
         {
-            panelMesh.Bilinear = butTbBilinear.Checked = !butTbBilinear.Checked;
+            _tool.Configuration.MeshEditor_Bilinear = panelMesh.Bilinear = butTbBilinear.Checked;
+            UpdateUI();
+        }
+
+        private void butTbAxis_Click(object sender, EventArgs e)
+        {
+            _tool.Configuration.MeshEditor_DrawGrid = panelMesh.DrawGrid = butTbAxis.Checked;
             UpdateUI();
         }
 

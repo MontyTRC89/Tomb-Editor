@@ -157,6 +157,21 @@ namespace WadTool.Controls
         private bool _bilinear = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool DrawGrid
+        {
+            get { return _drawGrid; }
+            set
+            {
+                if (_drawGrid == value)
+                    return;
+
+                _drawGrid = value;
+                Invalidate();
+            }
+        }
+        private bool _drawGrid = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawExtraInfo
         {
             get { return _drawInformationForAllElements; }
@@ -241,6 +256,7 @@ namespace WadTool.Controls
         private VertexInputLayout _layout;
         private GeometricPrimitive _littleSphere;
         private GeometricPrimitive _bigSphere;
+        private GeometricPrimitive _plane;
         private float _normalLength = 1.0f;
         private Buffer<SolidVertex> _faceVertexBuffer;
         private WadRenderer _wadRenderer;
@@ -305,6 +321,7 @@ namespace WadTool.Controls
 
                 _littleSphere = GeometricPrimitive.Sphere.New(_device, 2, 4);
                 _bigSphere = GeometricPrimitive.Sphere.New(_device, 1, 10);
+                _plane = GeometricPrimitive.GridPlane.New(_device, 8, 4);
                 _gizmo = new GizmoMeshEditor(_tool.Configuration, _device, DeviceManager.DefaultDeviceManager.___LegacyEffects["Solid"], this);
             }
         }
@@ -320,6 +337,7 @@ namespace WadTool.Controls
                 _rasterizerWireframe?.Dispose();
                 _littleSphere?.Dispose();
                 _bigSphere?.Dispose();
+                _plane?.Dispose();
                 _wadRenderer?.Dispose();
             }
             base.Dispose(disposing);
@@ -327,6 +345,9 @@ namespace WadTool.Controls
 
         protected override void OnDraw()
         {
+            if (VisibleMesh == null)
+                return;
+
             // To make sure things are in a defined state for legacy rendering...
             ((TombLib.Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
@@ -336,279 +357,292 @@ namespace WadTool.Controls
 
             _device.SetDepthStencilState(_device.DepthStencilStates.Default);
 
+            if (DrawGrid)
+            {
+                _device.SetRasterizerState(_rasterizerWireframe);
+
+                // Draw the grid
+                _device.SetVertexBuffer(0, _plane.VertexBuffer);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _plane.VertexBuffer));
+                _device.SetIndexBuffer(_plane.IndexBuffer, true);
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                solidEffect.Techniques[0].Passes[0].Apply();
+
+                _device.Draw(PrimitiveType.LineList, _plane.VertexBuffer.ElementCount);
+            }
+
             _wadRenderer.Dispose();
 
-            if (VisibleMesh != null)
+            var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
+            var world  = Matrix4x4.Identity;
+
+            var textToDraw  = new List<Text>();
+            var linesToDraw = new List<SolidVertex>();
+
+            // At first, draw either vertex spheres (if mode is set to vertex remap)
+            // or individual colored shininess faces (if mode is set to shininess editing).
+
+            if (EditingMode == MeshEditingMode.VertexRemap ||
+                EditingMode == MeshEditingMode.VertexEffects ||
+                EditingMode == MeshEditingMode.VertexColorsAndNormals)
             {
-                var mesh   = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = VisibleMesh });
-                var world  = Matrix4x4.Identity;
+                // Draw model first in vertex or sphere modes
+                DrawModel(mesh, world * viewProjection);
 
-                var textToDraw  = new List<Text>();
-                var linesToDraw = new List<SolidVertex>();
+                _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
 
-                // At first, draw either vertex spheres (if mode is set to vertex remap)
-                // or individual colored shininess faces (if mode is set to shininess editing).
+                _device.SetVertexBuffer(_littleSphere.VertexBuffer);
+                _device.SetVertexInputLayout(_littleSphere.InputLayout);
+                _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
 
-                if (EditingMode == MeshEditingMode.VertexRemap ||
-                    EditingMode == MeshEditingMode.VertexEffects ||
-                    EditingMode == MeshEditingMode.VertexColorsAndNormals)
+                var safeIndex    = SafeVertexRemapLimit;
+
+                for (int i = 0; i < _mesh.VertexPositions.Count; i++)
                 {
-                    // Draw model first in vertex or sphere modes
-                    DrawModel(mesh, world * viewProjection);
+                    var selected = (i == _currentElement);
 
-                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
-                    _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
+                    // Don't draw vertices from clickchain
+                    if (!selected && _currentElement != -1 && _mesh.VertexPositions[i] == _mesh.VertexPositions[_currentElement])
+                        continue;
 
-                    _device.SetVertexBuffer(_littleSphere.VertexBuffer);
-                    _device.SetVertexInputLayout(_littleSphere.InputLayout);
-                    _device.SetIndexBuffer(_littleSphere.IndexBuffer, _littleSphere.IsIndex32Bits);
+                    var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]) * viewProjection;
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
 
-                    var safeIndex    = SafeVertexRemapLimit;
-
-                    for (int i = 0; i < _mesh.VertexPositions.Count; i++)
+                    if (selected)
                     {
-                        var selected = (i == _currentElement);
-
-                        // Don't draw vertices from clickchain
-                        if (!selected && _currentElement != -1 && _mesh.VertexPositions[i] == _mesh.VertexPositions[_currentElement])
-                            continue;
-
-                        var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(VisibleMesh.VertexPositions[i]) * viewProjection;
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(posMatrix.ToSharpDX());
-
-                        if (selected)
+                        // Highlight selection
+                        solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 0.5f));
+                    }
+                    else
+                    {
+                        switch (EditingMode)
                         {
-                            // Highlight selection
-                            solidEffect.Parameters["Color"].SetValue(new Vector4(1, 0, 0, 0.5f));
+                            case MeshEditingMode.VertexRemap:
+
+                                // Highlight safe remap indices
+                                if (i <= safeIndex)  
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 0.8f));
+                                else
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0.8f, 0.8f, 0, 0.8f));
+                                break;
+
+                            case MeshEditingMode.VertexEffects:
+
+                                // Mix glow and move attributes for now as green and blue color components for vertex spheres.
+                                // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
+                                if (_mesh.HasAttributes)
+                                {
+                                    var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 64.0f) / 128.0f;
+                                    var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 64.0f) / 128.0f;
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, glowPower, movePower, 0.7f));
+                                }
+                                else
+                                    solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.8f));
+                                break;
+
+                            case MeshEditingMode.VertexColorsAndNormals:
+
+                                // Simply draw normal color, since we don't need any extra indication for this mode
+                                solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 1, 0.6f));
+                                break;
                         }
-                        else
+                    }
+
+                    solidEffect.Techniques[0].Passes[0].Apply();
+                    _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
+
+                    if (DrawExtraInfo || selected)
+                    {
+                        // Only draw texts which are actually visible
+                        if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
                         {
+                            var pos = posMatrix.TransformPerspectively(new Vector3()).To2();
+                            var message = string.Empty;
+
                             switch (EditingMode)
                             {
                                 case MeshEditingMode.VertexRemap:
+                                    {
+                                        // Filter out labels which sit on the same coordinate and show ellipsis instead
+                                        var existingText = textToDraw.Where(t => t.Pos == pos).ToList();
+                                        if (existingText.Count > 0)
+                                        {
+                                            if (existingText[0].String != _currentElement.ToString())
+                                                existingText[0].String = "...";
+                                            continue;
+                                        }
 
-                                    // Highlight safe remap indices
-                                    if (i <= safeIndex)  
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0.3f, 1, 0.8f));
-                                    else
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0.8f, 0.8f, 0, 0.8f));
+                                        message = i.ToString();
+                                    }
                                     break;
 
                                 case MeshEditingMode.VertexEffects:
-
-                                    // Mix glow and move attributes for now as green and blue color components for vertex spheres.
-                                    // TODO: If in future there will be more vertex attributes, another way of indication must be invented.
-                                    if (_mesh.HasAttributes)
                                     {
-                                        var glowPower = _mesh.VertexAttributes[i].Glow == 0 ? 0 : (_mesh.VertexAttributes[i].Glow + 64.0f) / 128.0f;
-                                        var movePower = _mesh.VertexAttributes[i].Move == 0 ? 0 : (_mesh.VertexAttributes[i].Move + 64.0f) / 128.0f;
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, glowPower, movePower, 0.7f));
+                                        if (_mesh.HasAttributes)
+                                            message = _mesh.VertexAttributes[i].Glow + ", " + _mesh.VertexAttributes[i].Move;
                                     }
-                                    else
-                                        solidEffect.Parameters["Color"].SetValue(new Vector4(0, 0, 0, 0.8f));
                                     break;
 
                                 case MeshEditingMode.VertexColorsAndNormals:
+                                    {
+                                        if (_mesh.HasNormals)
+                                        {
+                                            var color = selected ? new Vector4(1, 0, 0, 1) : Vector4.One;
 
-                                    // Simply draw normal color, since we don't need any extra indication for this mode
-                                    solidEffect.Parameters["Color"].SetValue(new Vector4(1, 1, 1, 0.6f));
+                                            var p = Vector3.Transform(_mesh.VertexPositions[i], world);
+                                            var n = Vector3.TransformNormal(_mesh.VertexNormals[i] /
+                                                _mesh.VertexNormals[i].Length(), world);
+
+                                            var v = new SolidVertex();
+                                            v.Position = p;
+                                            v.Color = color;
+                                            linesToDraw.Add(v);
+
+                                            v = new SolidVertex();
+                                            v.Position = p + n * _normalLength;
+                                            v.Color = color;
+                                            linesToDraw.Add(v);
+                                        }
+                                    }
                                     break;
                             }
-                        }
 
-                        solidEffect.Techniques[0].Passes[0].Apply();
-                        _device.DrawIndexed(PrimitiveType.TriangleList, _littleSphere.IndexBuffer.ElementCount);
 
-                        if (DrawExtraInfo || selected)
-                        {
-                            // Only draw texts which are actually visible
-                            if (posMatrix.TransformPerspectively(new Vector3()).Z <= 1.0f)
-                            {
-                                var pos = posMatrix.TransformPerspectively(new Vector3()).To2();
-                                var message = string.Empty;
-
-                                switch (EditingMode)
+                            if (!string.IsNullOrEmpty(message))
+                                textToDraw.Add(new Text
                                 {
-                                    case MeshEditingMode.VertexRemap:
-                                        {
-                                            // Filter out labels which sit on the same coordinate and show ellipsis instead
-                                            var existingText = textToDraw.Where(t => t.Pos == pos).ToList();
-                                            if (existingText.Count > 0)
-                                            {
-                                                if (existingText[0].String != _currentElement.ToString())
-                                                    existingText[0].String = "...";
-                                                continue;
-                                            }
-
-                                            message = i.ToString();
-                                        }
-                                        break;
-
-                                    case MeshEditingMode.VertexEffects:
-                                        {
-                                            if (_mesh.HasAttributes)
-                                                message = _mesh.VertexAttributes[i].Glow + ", " + _mesh.VertexAttributes[i].Move;
-                                        }
-                                        break;
-
-                                    case MeshEditingMode.VertexColorsAndNormals:
-                                        {
-                                            if (_mesh.HasNormals)
-                                            {
-                                                var color = selected ? new Vector4(1, 0, 0, 1) : Vector4.One;
-
-                                                var p = Vector3.Transform(_mesh.VertexPositions[i], world);
-                                                var n = Vector3.TransformNormal(_mesh.VertexNormals[i] /
-                                                    _mesh.VertexNormals[i].Length(), world);
-
-                                                var v = new SolidVertex();
-                                                v.Position = p;
-                                                v.Color = color;
-                                                linesToDraw.Add(v);
-
-                                                v = new SolidVertex();
-                                                v.Position = p + n * _normalLength;
-                                                v.Color = color;
-                                                linesToDraw.Add(v);
-                                            }
-                                        }
-                                        break;
-                                }
-
-
-                                if (!string.IsNullOrEmpty(message))
-                                    textToDraw.Add(new Text
-                                    {
-                                        Font = _fontDefault,
-                                        TextAlignment = new Vector2(0.0f, 0.0f),
-                                        PixelPos = new VectorInt2(2, -2),
-                                        Pos = pos,
-                                        Overlay = _tool.Configuration.Rendering3D_DrawFontOverlays,
-                                        String = message
-                                    });
-                            }
+                                    Font = _fontDefault,
+                                    TextAlignment = new Vector2(0.0f, 0.0f),
+                                    PixelPos = new VectorInt2(2, -2),
+                                    Pos = pos,
+                                    Overlay = _tool.Configuration.Rendering3D_DrawFontOverlays,
+                                    String = message
+                                });
                         }
                     }
                 }
-                else if (EditingMode == MeshEditingMode.FaceAttributes)
-                {
-                    // Accumulate and draw extra face info (for now, only shininess values)
+            }
+            else if (EditingMode == MeshEditingMode.FaceAttributes)
+            {
+                // Accumulate and draw extra face info (for now, only shininess values)
 
-                    if (DrawExtraInfo)
+                if (DrawExtraInfo)
+                {
+                    _device.SetRasterizerState(_device.RasterizerStates.CullBack);
+                    _device.SetBlendState(_device.BlendStates.Opaque);
+
+                    _device.SetVertexBuffer(_faceVertexBuffer);
+                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
+
+                    // Create a vertex array
+                    var vtxs = new SolidVertex[_faceVertexBuffer.ElementCount];
+                    int vertexCount = 0;
+
+                    for (int i = 0; i < _mesh.Polys.Count; i++)
                     {
-                        _device.SetRasterizerState(_device.RasterizerStates.CullBack);
-                        _device.SetBlendState(_device.BlendStates.Opaque);
+                        var poly = _mesh.Polys[i];
+                        var strength = _mesh.Polys[i].ShineStrength == 0 ? 0 : (_mesh.Polys[i].ShineStrength + 32.0f) / 95.0f;
+                        int vn = 0;
 
-                        _device.SetVertexBuffer(_faceVertexBuffer);
-                        _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, _faceVertexBuffer));
+                        // Draw one triangle for triangular face or 2 triangles for quad face
 
-                        // Create a vertex array
-                        var vtxs = new SolidVertex[_faceVertexBuffer.ElementCount];
-                        int vertexCount = 0;
+                        for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
+                            for (int v = 0; v < 3; v++)
+                            {
+                                Vector3 pos = Vector3.Zero;
 
-                        for (int i = 0; i < _mesh.Polys.Count; i++)
-                        {
-                            var poly = _mesh.Polys[i];
-                            var strength = _mesh.Polys[i].ShineStrength == 0 ? 0 : (_mesh.Polys[i].ShineStrength + 32.0f) / 95.0f;
-                            int vn = 0;
-
-                            // Draw one triangle for triangular face or 2 triangles for quad face
-
-                            for (int j = 0; j < (poly.Shape == WadPolygonShape.Quad ? 2 : 1); j++)
-                                for (int v = 0; v < 3; v++)
+                                switch (vn)
                                 {
-                                    Vector3 pos = Vector3.Zero;
+                                    case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
+                                    case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
+                                    case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
 
-                                    switch (vn)
-                                    {
-                                        case 0: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
-                                        case 1: pos = _mesh.VertexPositions[_mesh.Polys[i].Index1]; break;
-                                        case 2: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
-
-                                        case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
-                                        case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
-                                        case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
-                                    }
-
-                                    vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1 - strength, 1 - strength, 1) };
-                                    vn++;
-                                    vertexCount++;
+                                    case 3: pos = _mesh.VertexPositions[_mesh.Polys[i].Index2]; break;
+                                    case 4: pos = _mesh.VertexPositions[_mesh.Polys[i].Index3]; break;
+                                    case 5: pos = _mesh.VertexPositions[_mesh.Polys[i].Index0]; break;
                                 }
-                        }
 
-                        _faceVertexBuffer.SetData(vtxs);
-
-                        solidEffect.Parameters["Color"].SetValue(Vector4.One);
-                        solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                        solidEffect.Techniques[0].Passes[0].Apply();
-
-                        _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
+                                vtxs[vertexCount] = new SolidVertex(pos) { Color = new Vector4(1, 1 - strength, 1 - strength, 1) };
+                                vn++;
+                                vertexCount++;
+                            }
                     }
 
-                    // Draw model last in face editing only if wireframe mode is set or extra mode is unset
+                    _faceVertexBuffer.SetData(vtxs);
 
-                    if (WireframeMode || !DrawExtraInfo)
-                        DrawModel(mesh, world * viewProjection);
-                }
-                else if (EditingMode == MeshEditingMode.Sphere)
-                {
-                    // Draw model first
-                    DrawModel(mesh, world * viewProjection);
-
-                    // Now prepare and draw wireframe sphere
-                    
-                    _device.SetRasterizerState(_rasterizerWireframe);
-                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
-                    _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
-
-                    _device.SetVertexBuffer(_bigSphere.VertexBuffer);
-                    _device.SetVertexInputLayout(_bigSphere.InputLayout);
-                    _device.SetIndexBuffer(_bigSphere.IndexBuffer, _bigSphere.IsIndex32Bits);
-
-                    var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center);
-                    var finalMatrix = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius * 2) * posMatrix * viewProjection;
-
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(finalMatrix.ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(Vector3.One, 0.5f));
+                    solidEffect.Parameters["Color"].SetValue(Vector4.One);
+                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
                     solidEffect.Techniques[0].Passes[0].Apply();
 
-                    _device.DrawIndexed(PrimitiveType.TriangleList, _bigSphere.IndexBuffer.ElementCount);
-
-                    // Draw gizmo if needed
-
-                    if (DrawExtraInfo)
-                    {
-                        SwapChain.ClearDepth();
-                        _gizmo.Draw(viewProjection);
-                    }
+                    _device.Draw(PrimitiveType.TriangleList, _faceVertexBuffer.ElementCount);
                 }
-                else if (EditingMode == MeshEditingMode.None)
-                {
-                    // Simply draw model without any indications
+
+                // Draw model last in face editing only if wireframe mode is set or extra mode is unset
+
+                if (WireframeMode || !DrawExtraInfo)
                     DrawModel(mesh, world * viewProjection);
-                }
+            }
+            else if (EditingMode == MeshEditingMode.Sphere)
+            {
+                // Draw model first
+                DrawModel(mesh, world * viewProjection);
 
-                if (textToDraw.Count > 0)
+                // Now prepare and draw wireframe sphere
+                    
+                _device.SetRasterizerState(_rasterizerWireframe);
+                _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                _device.SetDepthStencilState(_device.DepthStencilStates.DepthRead);
+
+                _device.SetVertexBuffer(_bigSphere.VertexBuffer);
+                _device.SetVertexInputLayout(_bigSphere.InputLayout);
+                _device.SetIndexBuffer(_bigSphere.IndexBuffer, _bigSphere.IsIndex32Bits);
+
+                var posMatrix = Matrix4x4.Identity * Matrix4x4.CreateTranslation(_mesh.BoundingSphere.Center);
+                var finalMatrix = Matrix4x4.CreateScale(_mesh.BoundingSphere.Radius * 2) * posMatrix * viewProjection;
+
+                solidEffect.Parameters["ModelViewProjection"].SetValue(finalMatrix.ToSharpDX());
+                solidEffect.Parameters["Color"].SetValue(new Vector4(Vector3.One, 0.5f));
+                solidEffect.Techniques[0].Passes[0].Apply();
+
+                _device.DrawIndexed(PrimitiveType.TriangleList, _bigSphere.IndexBuffer.ElementCount);
+
+                // Draw gizmo if needed
+
+                if (DrawExtraInfo)
                 {
-                    _device.SetBlendState(_device.BlendStates.AlphaBlend);
-                    SwapChain.RenderText(textToDraw);
+                    SwapChain.ClearDepth();
+                    _gizmo.Draw(viewProjection);
                 }
+            }
+            else if (EditingMode == MeshEditingMode.None)
+            {
+                // Simply draw model without any indications
+                DrawModel(mesh, world * viewProjection);
+            }
 
-                if (linesToDraw.Count > 0)
-                {
-                    var bufferLines = SharpDX.Toolkit.Graphics.Buffer.New(_device, linesToDraw.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
+            if (textToDraw.Count > 0)
+            {
+                _device.SetBlendState(_device.BlendStates.AlphaBlend);
+                SwapChain.RenderText(textToDraw);
+            }
 
-                    _device.SetVertexBuffer(bufferLines);
-                    _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, bufferLines));
-                    _device.SetIndexBuffer(null, false);
+            if (linesToDraw.Count > 0)
+            {
+                var bufferLines = SharpDX.Toolkit.Graphics.Buffer.New(_device, linesToDraw.ToArray(), BufferFlags.VertexBuffer, SharpDX.Direct3D11.ResourceUsage.Default);
 
-                    solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
-                    solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-                    solidEffect.CurrentTechnique.Passes[0].Apply();
+                _device.SetVertexBuffer(bufferLines);
+                _device.SetVertexInputLayout(VertexInputLayout.FromBuffer(0, bufferLines));
+                _device.SetIndexBuffer(null, false);
 
-                    _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
-                }
+                solidEffect.Parameters["ModelViewProjection"].SetValue(viewProjection.ToSharpDX());
+                solidEffect.Parameters["Color"].SetValue(new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                solidEffect.CurrentTechnique.Passes[0].Apply();
+
+                _device.Draw(PrimitiveType.LineList, bufferLines.ElementCount);
             }
         }
 

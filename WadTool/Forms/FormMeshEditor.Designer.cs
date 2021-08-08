@@ -74,12 +74,13 @@
             this.butTbRedo = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
+            this.butTbAxis = new System.Windows.Forms.ToolStripButton();
             this.butTbWireframe = new System.Windows.Forms.ToolStripButton();
             this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
             this.butTbBilinear = new System.Windows.Forms.ToolStripButton();
             this.panelCenter = new DarkUI.Controls.DarkPanel();
             this.panelEditing = new DarkUI.Controls.DarkPanel();
-            this.panelTexturinga = new DarkUI.Controls.DarkSectionPanel();
+            this.panelTexturing = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
             this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
             this.butSearch = new DarkUI.Controls.DarkButton();
@@ -112,7 +113,7 @@
             this.topBar.SuspendLayout();
             this.panelCenter.SuspendLayout();
             this.panelEditing.SuspendLayout();
-            this.panelTexturinga.SuspendLayout();
+            this.panelTexturing.SuspendLayout();
             this.panelTexturingTools.SuspendLayout();
             this.panelTree.SuspendLayout();
             this.SuspendLayout();
@@ -879,6 +880,7 @@
             this.butTbRedo,
             this.toolStripSeparator1,
             this.butTbResetCamera,
+            this.butTbAxis,
             this.butTbWireframe,
             this.butTbAlpha,
             this.butTbBilinear});
@@ -935,22 +937,36 @@
             this.butTbResetCamera.ToolTipText = "Reset camera";
             this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
             // 
+            // butTbAxis
+            // 
+            this.butTbAxis.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAxis.CheckOnClick = true;
+            this.butTbAxis.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbAxis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbAxis.Image = global::WadTool.Properties.Resources.general_axis_16;
+            this.butTbAxis.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbAxis.Name = "butTbAxis";
+            this.butTbAxis.Size = new System.Drawing.Size(23, 25);
+            this.butTbAxis.ToolTipText = "Draw grid and axis";
+            this.butTbAxis.CheckedChanged += new System.EventHandler(this.butTbAxis_Click);
+            // 
             // butTbWireframe
             // 
             this.butTbWireframe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbWireframe.CheckOnClick = true;
             this.butTbWireframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbWireframe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTbWireframe.Image = global::WadTool.Properties.Resources.wireframe_16;
             this.butTbWireframe.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.butTbWireframe.Name = "butTbWireframe";
             this.butTbWireframe.Size = new System.Drawing.Size(23, 25);
-            this.butTbWireframe.Text = "toolStripButton1";
             this.butTbWireframe.ToolTipText = "Draw in wireframe mode";
-            this.butTbWireframe.Click += new System.EventHandler(this.butTbWireframe_Click);
+            this.butTbWireframe.CheckedChanged += new System.EventHandler(this.butTbWireframe_Click);
             // 
             // butTbAlpha
             // 
             this.butTbAlpha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAlpha.CheckOnClick = true;
             this.butTbAlpha.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbAlpha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTbAlpha.Image = global::WadTool.Properties.Resources.actions_AlphaTest_16;
@@ -958,11 +974,12 @@
             this.butTbAlpha.Name = "butTbAlpha";
             this.butTbAlpha.Size = new System.Drawing.Size(23, 25);
             this.butTbAlpha.ToolTipText = "Toggle transparency";
-            this.butTbAlpha.Click += new System.EventHandler(this.butTbAlpha_Click);
+            this.butTbAlpha.CheckedChanged += new System.EventHandler(this.butTbAlpha_Click);
             // 
             // butTbBilinear
             // 
             this.butTbBilinear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbBilinear.CheckOnClick = true;
             this.butTbBilinear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.butTbBilinear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butTbBilinear.Image = global::WadTool.Properties.Resources.general_blur_16;
@@ -970,7 +987,7 @@
             this.butTbBilinear.Name = "butTbBilinear";
             this.butTbBilinear.Size = new System.Drawing.Size(23, 25);
             this.butTbBilinear.ToolTipText = "Toggle bilinear filter";
-            this.butTbBilinear.Click += new System.EventHandler(this.butTbBilinear_Click);
+            this.butTbBilinear.CheckedChanged += new System.EventHandler(this.butTbBilinear_Click);
             // 
             // panelCenter
             // 
@@ -984,7 +1001,7 @@
             // 
             // panelEditing
             // 
-            this.panelEditing.Controls.Add(this.panelTexturinga);
+            this.panelEditing.Controls.Add(this.panelTexturing);
             this.panelEditing.Controls.Add(this.panelEditingTools);
             this.panelEditing.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelEditing.Location = new System.Drawing.Point(643, 0);
@@ -993,16 +1010,16 @@
             this.panelEditing.Size = new System.Drawing.Size(330, 561);
             this.panelEditing.TabIndex = 56;
             // 
-            // panelTexturinga
+            // panelTexturing
             // 
-            this.panelTexturinga.Controls.Add(this.panelTextureMap);
-            this.panelTexturinga.Controls.Add(this.panelTexturingTools);
-            this.panelTexturinga.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTexturinga.Location = new System.Drawing.Point(4, 0);
-            this.panelTexturinga.Name = "panelTexturinga";
-            this.panelTexturinga.SectionHeader = "Texturing";
-            this.panelTexturinga.Size = new System.Drawing.Size(326, 400);
-            this.panelTexturinga.TabIndex = 0;
+            this.panelTexturing.Controls.Add(this.panelTextureMap);
+            this.panelTexturing.Controls.Add(this.panelTexturingTools);
+            this.panelTexturing.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTexturing.Location = new System.Drawing.Point(4, 0);
+            this.panelTexturing.Name = "panelTexturing";
+            this.panelTexturing.SectionHeader = "Texturing";
+            this.panelTexturing.Size = new System.Drawing.Size(326, 400);
+            this.panelTexturing.TabIndex = 0;
             // 
             // panelTextureMap
             // 
@@ -1172,7 +1189,7 @@
             this.topBar.PerformLayout();
             this.panelCenter.ResumeLayout(false);
             this.panelEditing.ResumeLayout(false);
-            this.panelTexturinga.ResumeLayout(false);
+            this.panelTexturing.ResumeLayout(false);
             this.panelTexturingTools.ResumeLayout(false);
             this.panelTree.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -1226,7 +1243,7 @@
         private DarkUI.Controls.DarkButton butResetSphere;
         private DarkUI.Controls.DarkButton butPreview;
         private DarkUI.Controls.DarkPanel panelEditing;
-        private DarkUI.Controls.DarkSectionPanel panelTexturinga;
+        private DarkUI.Controls.DarkSectionPanel panelTexturing;
         private Controls.PanelTextureMap panelTextureMap;
         private DarkUI.Controls.DarkPanel panelTexturingTools;
         private DarkUI.Controls.DarkButton butAddTexture;
@@ -1257,5 +1274,6 @@
         private DarkUI.Controls.DarkButton butSearchMeshes;
         private DarkUI.Controls.DarkTextBox tbSearchMeshes;
         private DarkUI.Controls.DarkPanel panelSearchTree;
+        private System.Windows.Forms.ToolStripButton butTbAxis;
     }
 }
