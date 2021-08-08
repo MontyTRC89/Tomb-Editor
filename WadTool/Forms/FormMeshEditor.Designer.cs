@@ -133,8 +133,7 @@
             this.lstMeshes.Size = new System.Drawing.Size(257, 505);
             this.lstMeshes.TabIndex = 1;
             this.lstMeshes.Text = "darkTreeView1";
-            this.lstMeshes.Click += new System.EventHandler(this.lstMeshes_Click);
-            this.lstMeshes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstMeshes_KeyDown);
+            this.lstMeshes.SelectedNodesChanged += new System.EventHandler(this.lstMeshes_SelectedNodesChanged);
             // 
             // panelMesh
             // 

@@ -21,12 +21,14 @@ namespace WadTool
     {
         private class MeshTreeNode
         {
-            public WadMesh WadMesh { get; set; }
             public IWadObjectId ObjectId { get; set; }
+            public int MeshIndex { get; set; }
+            public WadMesh WadMesh { get; set; }
 
-            public MeshTreeNode(IWadObjectId obj, WadMesh wadMesh)
+            public MeshTreeNode(IWadObjectId obj, int index, WadMesh wadMesh)
             {
                 ObjectId = obj;
+                MeshIndex = index;
                 WadMesh = wadMesh;
             }
         }
@@ -55,6 +57,7 @@ namespace WadTool
 
         // Interaction state
         private bool _readingValues = false;
+        private MeshTreeNode _currentNode = null;
         private int _currentIndex = -1;
 
         private readonly PopUpInfo popup = new PopUpInfo();
@@ -321,7 +324,7 @@ namespace WadTool
                     {
                         var wadMesh = moveable.Value.Meshes.ElementAt(i);
                         var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                        node.Tag = new MeshTreeNode(moveable.Key, wadMesh);
+                        node.Tag = new MeshTreeNode(moveable.Key, i, wadMesh);
                         list.Add(node);
                     }
                     moveableNode.Nodes.AddRange(list);
@@ -335,7 +338,7 @@ namespace WadTool
                     var staticNode = new DarkUI.Controls.DarkTreeNode(@static.Key.ToString(_wad.GameVersion));
                     var wadMesh = @static.Value.Mesh;
                     var node = new DarkUI.Controls.DarkTreeNode(wadMesh.Name);
-                    node.Tag = new MeshTreeNode(@static.Key, wadMesh);
+                    node.Tag = new MeshTreeNode(@static.Key, 0, wadMesh);
                     staticNode.Nodes.Add(node);
                     staticsNode.Nodes.Add(staticNode);
                 }
@@ -468,11 +471,24 @@ namespace WadTool
             if (lstMeshes.SelectedNodes.Count == 0)
                 return;
 
-            var newMesh = GetChildMesh(lstMeshes.SelectedNodes[0]);
-            if (newMesh != null && newMesh != panelMesh.Mesh)
+            var newNode = (GetFirstChildNode(lstMeshes.SelectedNodes[0])).Tag as MeshTreeNode;
+            if (newNode != null && newNode.WadMesh != panelMesh.Mesh)
             {
+                // Save current node state
+                if (_currentNode != null)
+                {
+                    var obj = _wad.TryGet(_currentNode.ObjectId);
+
+                    if (obj is WadMoveable)
+                        (obj as WadMoveable).Meshes[_currentNode.MeshIndex] = _currentNode.WadMesh = panelMesh.Mesh;
+                    else if (obj is WadStatic)
+                        (obj as WadStatic).Mesh = _currentNode.WadMesh = panelMesh.Mesh;
+                }
+
                 _tool.UndoManager.ClearAll();
-                panelMesh.Mesh = newMesh;
+
+                panelMesh.Mesh = newNode.WadMesh;
+                _currentNode = newNode;
 
                 GetSphereValues();
                 UpdateUI();
@@ -482,15 +498,15 @@ namespace WadTool
             }
         }
 
-        private WadMesh GetChildMesh(DarkTreeNode node)
+        private DarkTreeNode GetFirstChildNode(DarkTreeNode node)
         {
             if (node.Tag != null && node.Tag is MeshTreeNode)
-                return (node.Tag as MeshTreeNode).WadMesh;
+                return node;
 
             if (node.Nodes.Count == 0)
                 return null;
 
-            return GetChildMesh(node.Nodes[0]);
+            return GetFirstChildNode(node.Nodes[0]);
         }
 
         private void RemapSelectedVertex()
@@ -716,11 +732,6 @@ namespace WadTool
             }
         }
 
-        private void lstMeshes_Click(object sender, EventArgs e)
-        {
-            ShowSelectedMesh();
-        }
-
         private void btCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -764,11 +775,6 @@ namespace WadTool
         {
             if (e.KeyCode == Keys.Enter)
                 RemapSelectedVertex();
-        }
-
-        private void lstMeshes_KeyDown(object sender, KeyEventArgs e)
-        {
-            ShowSelectedMesh();
         }
 
         private void cbEditingMode_SelectedIndexChanged(object sender, EventArgs e)
@@ -1105,6 +1111,11 @@ namespace WadTool
         {
             if (e.KeyCode == Keys.Enter)
                 SearchTree();
+        }
+
+        private void lstMeshes_SelectedNodesChanged(object sender, EventArgs e)
+        {
+            ShowSelectedMesh();
         }
     }
 }
