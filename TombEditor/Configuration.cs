@@ -75,6 +75,7 @@ namespace TombEditor
         public bool Rendering3D_UseRoomEditorDirections { get; set; } = false;
         public bool Rendering3D_ShowExtraBlendingModes { get; set; } = true;
         public bool Rendering3D_HideTransparentFaces { get; set; } = true;
+        public bool Rendering3D_BilinearFilter { get; set; } = true;
         public bool Rendering3D_ShowLightingWhiteTextureOnly { get; set; } = false;
         public string Rendering3D_FontName { get; set; } = "Segoe UI";
         public int Rendering3D_FontSize { get; set; } = 16;
@@ -172,7 +173,7 @@ namespace TombEditor
             "CenterCamera", "ToggleFlyMode", "|",
             "DrawPortals", "DrawAllRooms", "DrawHorizon", 
             "DrawRoomNames", "DrawCardinalDirections", 
-            "DrawExtraBlendingModes", "HideTransparentFaces", "DrawStaticTint", 
+            "DrawExtraBlendingModes", "HideTransparentFaces", "BilinearFilter", "DrawStaticTint", 
             "DrawIllegalSlopes", "DrawSlideDirections", "DisableHiddenRoomPicking", "DisableGeometryPicking", "DrawObjects", "|",
             "FlipMap", "|",
             "Copy", "Paste", "Stamp", "|",

@@ -280,7 +280,7 @@ namespace TombLib.Rendering.DirectX11
             };
         }
 
-        public override void Render(RenderArgs arg)
+        public override void Render(RenderArgs arg, bool linearFilter)
         {
             if (VertexCount == 0)
                 return;
@@ -289,7 +289,7 @@ namespace TombLib.Rendering.DirectX11
             // Setup state
             ((Dx11RenderingSwapChain)arg.RenderTarget).Bind();
             Device.RoomShader.Apply(context, arg.StateBuffer);
-            context.PixelShader.SetSampler(0, Device.SamplerDefault);
+            context.PixelShader.SetSampler(0, linearFilter ? Device.SamplerDefault : Device.SamplerRoundToNearest);
             context.PixelShader.SetShaderResources(0, TextureView, Device.SectorTextureArrayView);
             context.InputAssembler.SetVertexBuffers(0, VertexBufferBindings);
 

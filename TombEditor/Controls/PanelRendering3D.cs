@@ -64,6 +64,8 @@ namespace TombEditor.Controls
         public bool ShowRealTintForObjects { get; set; }
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool HideTransparentFaces { get; set; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool BilinearFilter { get; set; }
 
         // These options require explicit setters because they probe into room cache.
 
@@ -2872,7 +2874,7 @@ namespace TombEditor.Controls
 
             Effect skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
 
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
             // Get Horizon Id and try to retrieve moveable for skybox rendering
             var version = _editor.Level.Settings.GameVersion;
             WadMoveableId? horizonId = WadMoveableId.GetHorizon(version);
@@ -2923,7 +2925,7 @@ namespace TombEditor.Controls
             var skinnedModelEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             skinnedModelEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             skinnedModelEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-            skinnedModelEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+            skinnedModelEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
             skinnedModelEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
             var groups = moveablesToDraw.GroupBy(m => m.WadObjectId);
@@ -3027,10 +3029,12 @@ namespace TombEditor.Controls
 
             var geometryEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["RoomGeometry"];
             geometryEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
-
+            geometryEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
+            
             // Before drawing custom geometry, apply a depth bias for reducing Z fighting
             _legacyDevice.SetRasterizerState(_rasterizerStateDepthBias);
-
+            
+            
             // If picking for imported geometry is disabled, then draw geometry translucent
             if (DisablePickingForImportedGeometry)
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
@@ -3103,7 +3107,6 @@ namespace TombEditor.Controls
                                 geometryEffect.Parameters["TextureEnabled"].SetValue(true);
                                 geometryEffect.Parameters["Texture"].SetResource(((ImportedGeometryTexture)texture).DirectXTexture);
                                 geometryEffect.Parameters["ReciprocalTextureSize"].SetValue(new Vector2(1.0f / texture.Image.Width, 1.0f / texture.Image.Height));
-                                geometryEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.AnisotropicWrap);
                             }
                             else
                                 geometryEffect.Parameters["TextureEnabled"].SetValue(false);
@@ -3156,7 +3159,7 @@ namespace TombEditor.Controls
             var staticMeshEffect = DeviceManager.DefaultDeviceManager.___LegacyEffects["Model"];
             staticMeshEffect.Parameters["AlphaTest"].SetValue(HideTransparentFaces);
             staticMeshEffect.Parameters["ColoredVertices"].SetValue(_editor.Level.IsTombEngine);
-            staticMeshEffect.Parameters["TextureSampler"].SetResource(_legacyDevice.SamplerStates.Default);
+            staticMeshEffect.Parameters["TextureSampler"].SetResource(BilinearFilter ? _legacyDevice.SamplerStates.AnisotropicWrap : _legacyDevice.SamplerStates.PointWrap);
             staticMeshEffect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
 
             var groups = staticsToDraw.GroupBy(s => s.WadObjectId);
@@ -3526,7 +3529,7 @@ namespace TombEditor.Controls
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
             foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden))
-                _renderingCachedRooms[room].Render(renderArgs);
+                _renderingCachedRooms[room].Render(renderArgs, BilinearFilter);
 
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
@@ -3592,7 +3595,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
                 foreach (Room room in hiddenRooms)
-                    _renderingCachedRooms[room].Render(renderArgs);
+                    _renderingCachedRooms[room].Render(renderArgs, BilinearFilter);
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
 

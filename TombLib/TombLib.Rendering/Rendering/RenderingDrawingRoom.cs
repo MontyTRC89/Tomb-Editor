@@ -27,6 +27,6 @@ namespace TombLib.Rendering
 
         public abstract void Dispose();
 
-        public abstract void Render(RenderArgs arg);
+        public abstract void Render(RenderArgs arg, bool linearFilter);
 	}
 }

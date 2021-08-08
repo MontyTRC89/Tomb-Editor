@@ -15,8 +15,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.toolStrip = new DarkUI.Controls.DarkToolStrip();
+            this.panel3D = new TombEditor.Controls.PanelRendering3D();
+            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
+            this.panelStats = new System.Windows.Forms.Panel();
+            this.tbStats = new TombEditor.Controls.RichTextLabel();
+            this.panelMainView = new System.Windows.Forms.Panel();
+            this.toolTip = new System.Windows.Forms.ToolTip();
             this.but2D = new System.Windows.Forms.ToolStripButton();
             this.but3D = new System.Windows.Forms.ToolStripButton();
             this.butFaceEdit = new System.Windows.Forms.ToolStripButton();
@@ -71,13 +76,8 @@
             this.butEditLevelSettings = new System.Windows.Forms.ToolStripButton();
             this.butToggleFlyMode = new System.Windows.Forms.ToolStripButton();
             this.butSearch = new System.Windows.Forms.ToolStripButton();
+            this.butBilinearFilter = new System.Windows.Forms.ToolStripButton();
             this.butSearchAndReplaceObjects = new System.Windows.Forms.ToolStripButton();
-            this.panel3D = new TombEditor.Controls.PanelRendering3D();
-            this.panel2DMap = new TombEditor.Controls.Panel2DMap();
-            this.panelStats = new System.Windows.Forms.Panel();
-            this.tbStats = new TombEditor.Controls.RichTextLabel();
-            this.panelMainView = new System.Windows.Forms.Panel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.toolStrip.SuspendLayout();
             this.panelStats.SuspendLayout();
             this.panelMainView.SuspendLayout();
@@ -104,6 +104,7 @@
             this.butDrawCardinalDirections,
             this.butDrawExtraBlendingModes,
             this.butHideTransparentFaces,
+            this.butBilinearFilter,
             this.butDrawWhiteLighting,
             this.butDrawStaticTint,
             this.butDrawIllegalSlopes,
@@ -145,6 +146,66 @@
             this.toolStrip.TabIndex = 12;
             this.toolStrip.Text = "darkToolStrip1";
             this.toolStrip.MouseClick += new System.Windows.Forms.MouseEventHandler(this.toolStrip_MouseClick);
+            // 
+            // panel3D
+            // 
+            this.panel3D.AllowDrop = true;
+            this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3D.Location = new System.Drawing.Point(0, 0);
+            this.panel3D.Name = "panel3D";
+            this.panel3D.Size = new System.Drawing.Size(1290, 239);
+            this.panel3D.TabIndex = 13;
+            // 
+            // panel2DMap
+            // 
+            this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2DMap.Location = new System.Drawing.Point(0, 0);
+            this.panel2DMap.Name = "panel2DMap";
+            this.panel2DMap.Size = new System.Drawing.Size(1290, 239);
+            this.panel2DMap.TabIndex = 14;
+            this.panel2DMap.Visible = false;
+            this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
+            this.panel2DMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragEnter);
+            // 
+            // panelStats
+            // 
+            this.panelStats.AutoSize = true;
+            this.panelStats.Controls.Add(this.tbStats);
+            this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelStats.Location = new System.Drawing.Point(0, 267);
+            this.panelStats.Name = "panelStats";
+            this.panelStats.Padding = new System.Windows.Forms.Padding(4, 4, 4, 0);
+            this.panelStats.Size = new System.Drawing.Size(1290, 22);
+            this.panelStats.TabIndex = 15;
+            // 
+            // tbStats
+            // 
+            this.tbStats.AutoSize = true;
+            this.tbStats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.tbStats.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbStats.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tbStats.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tbStats.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.tbStats.Location = new System.Drawing.Point(4, 4);
+            this.tbStats.Name = "tbStats";
+            this.tbStats.ReadOnly = true;
+            this.tbStats.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.tbStats.ShortcutsEnabled = false;
+            this.tbStats.Size = new System.Drawing.Size(1282, 18);
+            this.tbStats.TabIndex = 0;
+            this.tbStats.TabStop = false;
+            this.tbStats.Text = "";
+            this.tbStats.WordWrap = false;
+            // 
+            // panelMainView
+            // 
+            this.panelMainView.Controls.Add(this.panel3D);
+            this.panelMainView.Controls.Add(this.panel2DMap);
+            this.panelMainView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelMainView.Location = new System.Drawing.Point(0, 28);
+            this.panelMainView.Name = "panelMainView";
+            this.panelMainView.Size = new System.Drawing.Size(1290, 239);
+            this.panelMainView.TabIndex = 16;
             // 
             // but2D
             // 
@@ -397,7 +458,7 @@
             this.butDrawMoveables.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawMoveables.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawMoveables.Name = "butDrawMoveables";
-            this.butDrawMoveables.Size = new System.Drawing.Size(202, 22);
+            this.butDrawMoveables.Size = new System.Drawing.Size(176, 22);
             this.butDrawMoveables.Tag = "DrawMoveables";
             this.butDrawMoveables.Text = "DrawMoveables";
             // 
@@ -409,7 +470,7 @@
             this.butDrawStatics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawStatics.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawStatics.Name = "butDrawStatics";
-            this.butDrawStatics.Size = new System.Drawing.Size(202, 22);
+            this.butDrawStatics.Size = new System.Drawing.Size(176, 22);
             this.butDrawStatics.Tag = "DrawStatics";
             this.butDrawStatics.Text = "DrawStatics";
             // 
@@ -421,7 +482,7 @@
             this.butDrawImportedGeometry.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawImportedGeometry.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawImportedGeometry.Name = "butDrawImportedGeometry";
-            this.butDrawImportedGeometry.Size = new System.Drawing.Size(202, 22);
+            this.butDrawImportedGeometry.Size = new System.Drawing.Size(176, 22);
             this.butDrawImportedGeometry.Tag = "DrawImportedGeometry";
             this.butDrawImportedGeometry.Text = "DrawImportedGeometry";
             // 
@@ -433,7 +494,7 @@
             this.butDrawGhostBlocks.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawGhostBlocks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawGhostBlocks.Name = "butDrawGhostBlocks";
-            this.butDrawGhostBlocks.Size = new System.Drawing.Size(202, 22);
+            this.butDrawGhostBlocks.Size = new System.Drawing.Size(176, 22);
             this.butDrawGhostBlocks.Tag = "DrawGhostBlocks";
             this.butDrawGhostBlocks.Text = "DrawGhostBlocks";
             // 
@@ -444,7 +505,7 @@
             this.butDrawVolumes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawVolumes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawVolumes.Name = "butDrawVolumes";
-            this.butDrawVolumes.Size = new System.Drawing.Size(202, 22);
+            this.butDrawVolumes.Size = new System.Drawing.Size(176, 22);
             this.butDrawVolumes.Tag = "DrawVolumes";
             this.butDrawVolumes.Text = "DrawVolumes";
             // 
@@ -456,7 +517,7 @@
             this.butDrawOther.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawOther.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawOther.Name = "butDrawOther";
-            this.butDrawOther.Size = new System.Drawing.Size(202, 22);
+            this.butDrawOther.Size = new System.Drawing.Size(176, 22);
             this.butDrawOther.Tag = "DrawOtherObjects";
             this.butDrawOther.Text = "DrawOtherObjects";
             // 
@@ -468,7 +529,7 @@
             this.butDrawLightRadius.CheckState = System.Windows.Forms.CheckState.Checked;
             this.butDrawLightRadius.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.butDrawLightRadius.Name = "butDrawLightRadius";
-            this.butDrawLightRadius.Size = new System.Drawing.Size(202, 22);
+            this.butDrawLightRadius.Size = new System.Drawing.Size(176, 22);
             this.butDrawLightRadius.Tag = "DrawLightRadius";
             this.butDrawLightRadius.Text = "DrawLightRadius";
             // 
@@ -768,6 +829,17 @@
             this.butSearch.Size = new System.Drawing.Size(23, 25);
             this.butSearch.Tag = "Search";
             // 
+            // butBilinearFilter
+            // 
+            this.butBilinearFilter.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butBilinearFilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butBilinearFilter.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butBilinearFilter.Image = global::TombEditor.Properties.Resources.general_blur_16;
+            this.butBilinearFilter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butBilinearFilter.Name = "butBilinearFilter";
+            this.butBilinearFilter.Size = new System.Drawing.Size(24, 24);
+            this.butBilinearFilter.Tag = "BilinearFilter";
+            // 
             // butSearchAndReplaceObjects
             // 
             this.butSearchAndReplaceObjects.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
@@ -778,66 +850,6 @@
             this.butSearchAndReplaceObjects.Name = "butSearchAndReplaceObjects";
             this.butSearchAndReplaceObjects.Size = new System.Drawing.Size(23, 25);
             this.butSearchAndReplaceObjects.Tag = "SearchAndReplaceObjects";
-            // 
-            // panel3D
-            // 
-            this.panel3D.AllowDrop = true;
-            this.panel3D.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3D.Location = new System.Drawing.Point(0, 0);
-            this.panel3D.Name = "panel3D";
-            this.panel3D.Size = new System.Drawing.Size(1290, 239);
-            this.panel3D.TabIndex = 13;
-            // 
-            // panel2DMap
-            // 
-            this.panel2DMap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2DMap.Location = new System.Drawing.Point(0, 0);
-            this.panel2DMap.Name = "panel2DMap";
-            this.panel2DMap.Size = new System.Drawing.Size(1290, 239);
-            this.panel2DMap.TabIndex = 14;
-            this.panel2DMap.Visible = false;
-            this.panel2DMap.DragDrop += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragDrop);
-            this.panel2DMap.DragEnter += new System.Windows.Forms.DragEventHandler(this.panel2DMap_DragEnter);
-            // 
-            // panelStats
-            // 
-            this.panelStats.AutoSize = true;
-            this.panelStats.Controls.Add(this.tbStats);
-            this.panelStats.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelStats.Location = new System.Drawing.Point(0, 267);
-            this.panelStats.Name = "panelStats";
-            this.panelStats.Padding = new System.Windows.Forms.Padding(4, 4, 4, 0);
-            this.panelStats.Size = new System.Drawing.Size(1290, 22);
-            this.panelStats.TabIndex = 15;
-            // 
-            // tbStats
-            // 
-            this.tbStats.AutoSize = true;
-            this.tbStats.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.tbStats.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbStats.Cursor = System.Windows.Forms.Cursors.Default;
-            this.tbStats.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tbStats.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbStats.Location = new System.Drawing.Point(4, 4);
-            this.tbStats.Name = "tbStats";
-            this.tbStats.ReadOnly = true;
-            this.tbStats.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.tbStats.ShortcutsEnabled = false;
-            this.tbStats.Size = new System.Drawing.Size(1282, 18);
-            this.tbStats.TabIndex = 0;
-            this.tbStats.TabStop = false;
-            this.tbStats.Text = "";
-            this.tbStats.WordWrap = false;
-            // 
-            // panelMainView
-            // 
-            this.panelMainView.Controls.Add(this.panel3D);
-            this.panelMainView.Controls.Add(this.panel2DMap);
-            this.panelMainView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMainView.Location = new System.Drawing.Point(0, 28);
-            this.panelMainView.Name = "panelMainView";
-            this.panelMainView.Size = new System.Drawing.Size(1290, 239);
-            this.panelMainView.TabIndex = 16;
             // 
             // MainView
             // 
@@ -922,5 +934,6 @@
         private System.Windows.Forms.Panel panelMainView;
         private TombEditor.Controls.RichTextLabel tbStats;
         private System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.ToolStripButton butBilinearFilter;
     }
 }
