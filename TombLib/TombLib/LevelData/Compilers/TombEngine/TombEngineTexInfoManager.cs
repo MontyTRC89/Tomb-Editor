@@ -542,13 +542,6 @@ namespace TombLib.LevelData.Compilers
                     var coord = new Vector2(child.RelCoord[i].X + (float)(parent.PositionInPage.X + parent.Padding[0]),
                                             child.RelCoord[i].Y + (float)(parent.PositionInPage.Y + parent.Padding[1]));
 
-                    // If padding exists, apply half-pixel blow-up as countermeasure for hardcoded TR4-5 AdjustUV mapping correction.
-                    // Otherwise use original unpadded correction offsets.
-                    if (parent.Padding.All(p => p == 0))
-                        coord -= IsForTriangle ? TextureExtensions.UnpaddedTris[UVAdjustmentFlag, i] : Vector2.Zero;
-                    else
-                        coord -= IsForTriangle ? TextureExtensions.CompensationTris[UVAdjustmentFlag, i] : TextureExtensions.CompensationQuads[UVAdjustmentFlag, i];
-
                     // Clamp coordinates that are possibly out of bounds
                     coord.X = (float)MathC.Clamp(coord.X, 0, maxTextureSize);
                     coord.Y = (float)MathC.Clamp(coord.Y, 0, maxTextureSize);
