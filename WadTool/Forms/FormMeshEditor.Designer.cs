@@ -24,18 +24,14 @@
             this.tabsModes = new TombLib.Controls.DarkTabbedContainer();
             this.tabFaceAttributes = new System.Windows.Forms.TabPage();
             this.cbTexture = new DarkUI.Controls.DarkCheckBox();
-            this.cbBlendMode = new DarkUI.Controls.DarkComboBox();
             this.butApplyToAllFaces = new DarkUI.Controls.DarkButton();
             this.cbBlend = new DarkUI.Controls.DarkCheckBox();
             this.nudShineStrength = new DarkUI.Controls.DarkNumericUpDown();
             this.cbSheen = new DarkUI.Controls.DarkCheckBox();
-            this.butDoubleSide = new DarkUI.Controls.DarkButton();
             this.tabVertexRemap = new System.Windows.Forms.TabPage();
             this.butAutoFit = new DarkUI.Controls.DarkButton();
             this.nudVertexNum = new DarkUI.Controls.DarkNumericUpDown();
-            this.butFindVertex = new DarkUI.Controls.DarkButton();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
-            this.butRemapVertex = new DarkUI.Controls.DarkButton();
             this.tabVertexShadesAndNormals = new System.Windows.Forms.TabPage();
             this.butApplyShadesToAllVertices = new DarkUI.Controls.DarkButton();
             this.panelColor = new DarkUI.Controls.DarkPanel();
@@ -44,7 +40,6 @@
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
             this.butRecalcNormals = new DarkUI.Controls.DarkButton();
             this.tabVertexEffects = new System.Windows.Forms.TabPage();
-            this.butPreview = new DarkUI.Controls.DarkButton();
             this.butConvertFromShades = new DarkUI.Controls.DarkButton();
             this.nudMove = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel5 = new DarkUI.Controls.DarkLabel();
@@ -62,31 +57,37 @@
             this.nudSphereX = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel8 = new DarkUI.Controls.DarkLabel();
             this.cbExtra = new DarkUI.Controls.DarkCheckBox();
-            this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkSectionPanel2 = new DarkUI.Controls.DarkSectionPanel();
             this.panelMain = new DarkUI.Controls.DarkPanel();
             this.topBar = new DarkUI.Controls.DarkToolStrip();
-            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
-            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
-            this.butTbWireframe = new System.Windows.Forms.ToolStripButton();
-            this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
             this.panelCenter = new DarkUI.Controls.DarkPanel();
             this.panelEditing = new DarkUI.Controls.DarkPanel();
             this.panelTexturinga = new DarkUI.Controls.DarkSectionPanel();
             this.panelTextureMap = new WadTool.Controls.PanelTextureMap();
             this.panelTexturingTools = new DarkUI.Controls.DarkPanel();
+            this.panelTree = new DarkUI.Controls.DarkPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.statusLabel = new DarkUI.Controls.DarkLabel();
+            this.butTbUndo = new System.Windows.Forms.ToolStripButton();
+            this.butTbRedo = new System.Windows.Forms.ToolStripButton();
+            this.butTbResetCamera = new System.Windows.Forms.ToolStripButton();
+            this.butTbWireframe = new System.Windows.Forms.ToolStripButton();
+            this.butTbAlpha = new System.Windows.Forms.ToolStripButton();
             this.butSearch = new DarkUI.Controls.DarkButton();
             this.butAllTextures = new DarkUI.Controls.DarkButton();
             this.butExportTexture = new DarkUI.Controls.DarkButton();
             this.butAddTexture = new DarkUI.Controls.DarkButton();
             this.butDeleteTexture = new DarkUI.Controls.DarkButton();
             this.comboCurrentTexture = new DarkUI.Controls.DarkComboBox();
-            this.panelTree = new DarkUI.Controls.DarkPanel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.statusLabel = new DarkUI.Controls.DarkLabel();
+            this.cbBlendMode = new DarkUI.Controls.DarkComboBox();
+            this.butDoubleSide = new DarkUI.Controls.DarkButton();
+            this.butFindVertex = new DarkUI.Controls.DarkButton();
+            this.butRemapVertex = new DarkUI.Controls.DarkButton();
+            this.butPreview = new DarkUI.Controls.DarkButton();
+            this.cbEditingMode = new DarkUI.Controls.DarkComboBox();
+            this.butTbBilinear = new System.Windows.Forms.ToolStripButton();
             this.panelEditingTools.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabFaceAttributes.SuspendLayout();
@@ -105,7 +106,6 @@
             this.darkSectionPanel2.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.topBar.SuspendLayout();
-            this.panelCenter.SuspendLayout();
             this.panelEditing.SuspendLayout();
             this.panelTexturinga.SuspendLayout();
             this.panelTexturingTools.SuspendLayout();
@@ -222,16 +222,6 @@
             this.cbTexture.Text = "Texture";
             this.toolTip.SetToolTip(this.cbTexture, "Apply textures to faces");
             // 
-            // cbBlendMode
-            // 
-            this.cbBlendMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbBlendMode.FormattingEnabled = true;
-            this.cbBlendMode.Location = new System.Drawing.Point(81, 3);
-            this.cbBlendMode.Name = "cbBlendMode";
-            this.cbBlendMode.Size = new System.Drawing.Size(203, 23);
-            this.cbBlendMode.TabIndex = 11;
-            // 
             // butApplyToAllFaces
             // 
             this.butApplyToAllFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -290,26 +280,13 @@
             this.cbSheen.Text = "Sheen:";
             this.toolTip.SetToolTip(this.cbSheen, "Apply sheen attribute to faces");
             // 
-            // butDoubleSide
-            // 
-            this.butDoubleSide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butDoubleSide.Checked = false;
-            this.butDoubleSide.Image = global::WadTool.Properties.Resources.texture_DoubleSided_1_16;
-            this.butDoubleSide.Location = new System.Drawing.Point(290, 3);
-            this.butDoubleSide.Name = "butDoubleSide";
-            this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
-            this.butDoubleSide.TabIndex = 12;
-            this.butDoubleSide.Tag = "";
-            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute.\r\nMay not work in legacy engines.");
-            this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
-            // 
             // tabVertexRemap
             // 
             this.tabVertexRemap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabVertexRemap.Controls.Add(this.butAutoFit);
             this.tabVertexRemap.Controls.Add(this.nudVertexNum);
-            this.tabVertexRemap.Controls.Add(this.butFindVertex);
             this.tabVertexRemap.Controls.Add(this.darkLabel1);
+            this.tabVertexRemap.Controls.Add(this.butFindVertex);
             this.tabVertexRemap.Controls.Add(this.butRemapVertex);
             this.tabVertexRemap.Location = new System.Drawing.Point(4, 4);
             this.tabVertexRemap.Name = "tabVertexRemap";
@@ -354,20 +331,6 @@
             this.toolTip.SetToolTip(this.nudVertexNum, "Vertex number to operate with");
             this.nudVertexNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.nudVertexNum_KeyDown);
             // 
-            // butFindVertex
-            // 
-            this.butFindVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butFindVertex.Checked = false;
-            this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butFindVertex.Location = new System.Drawing.Point(159, 3);
-            this.butFindVertex.Name = "butFindVertex";
-            this.butFindVertex.Size = new System.Drawing.Size(77, 23);
-            this.butFindVertex.TabIndex = 5;
-            this.butFindVertex.Text = "Jump to";
-            this.butFindVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butFindVertex, "Jump to specified vertex number");
-            this.butFindVertex.Click += new System.EventHandler(this.butFindVertex_Click);
-            // 
             // darkLabel1
             // 
             this.darkLabel1.AutoSize = true;
@@ -377,20 +340,6 @@
             this.darkLabel1.Size = new System.Drawing.Size(84, 13);
             this.darkLabel1.TabIndex = 1;
             this.darkLabel1.Text = "Vertex number:";
-            // 
-            // butRemapVertex
-            // 
-            this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butRemapVertex.Checked = false;
-            this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
-            this.butRemapVertex.Location = new System.Drawing.Point(240, 3);
-            this.butRemapVertex.Name = "butRemapVertex";
-            this.butRemapVertex.Size = new System.Drawing.Size(74, 23);
-            this.butRemapVertex.TabIndex = 3;
-            this.butRemapVertex.Text = "Remap";
-            this.butRemapVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butRemapVertex, "Remap selected vertex to specified vertex number");
-            this.butRemapVertex.Click += new System.EventHandler(this.butRemapVertex_Click);
             // 
             // tabVertexShadesAndNormals
             // 
@@ -495,22 +444,6 @@
             this.tabVertexEffects.Size = new System.Drawing.Size(316, 58);
             this.tabVertexEffects.TabIndex = 2;
             this.tabVertexEffects.Text = "Vertex effects";
-            // 
-            // butPreview
-            // 
-            this.butPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.butPreview.Checked = false;
-            this.butPreview.Image = global::WadTool.Properties.Resources.play_16;
-            this.butPreview.Location = new System.Drawing.Point(222, 3);
-            this.butPreview.Name = "butPreview";
-            this.butPreview.Size = new System.Drawing.Size(92, 23);
-            this.butPreview.TabIndex = 21;
-            this.butPreview.Tag = "";
-            this.butPreview.Text = "Preview";
-            this.butPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.toolTip.SetToolTip(this.butPreview, "Preview all effects");
-            this.butPreview.Click += new System.EventHandler(this.butPreview_Click);
             // 
             // butConvertFromShades
             // 
@@ -785,18 +718,6 @@
             this.toolTip.SetToolTip(this.cbExtra, "Show additional screen information");
             this.cbExtra.CheckedChanged += new System.EventHandler(this.cbVertexNumbers_CheckedChanged);
             // 
-            // cbEditingMode
-            // 
-            this.cbEditingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbEditingMode.FormattingEnabled = true;
-            this.cbEditingMode.Location = new System.Drawing.Point(45, 29);
-            this.cbEditingMode.Name = "cbEditingMode";
-            this.cbEditingMode.Size = new System.Drawing.Size(155, 23);
-            this.cbEditingMode.TabIndex = 9;
-            this.toolTip.SetToolTip(this.cbEditingMode, "Mesh editor operation mode");
-            this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
-            // 
             // darkLabel2
             // 
             this.darkLabel2.AutoSize = true;
@@ -843,39 +764,14 @@
             this.toolStripSeparator1,
             this.butTbResetCamera,
             this.butTbWireframe,
-            this.butTbAlpha});
+            this.butTbAlpha,
+            this.butTbBilinear});
             this.topBar.Location = new System.Drawing.Point(263, 0);
             this.topBar.Name = "topBar";
             this.topBar.Padding = new System.Windows.Forms.Padding(5, 0, 1, 0);
             this.topBar.Size = new System.Drawing.Size(380, 28);
             this.topBar.TabIndex = 59;
             this.topBar.Text = "darkToolStrip1";
-            // 
-            // butTbUndo
-            // 
-            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbUndo.Enabled = false;
-            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
-            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbUndo.Name = "butTbUndo";
-            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
-            this.butTbUndo.ToolTipText = "Undo (Ctrl+Z)";
-            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
-            // 
-            // butTbRedo
-            // 
-            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbRedo.Enabled = false;
-            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
-            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbRedo.Name = "butTbRedo";
-            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
-            this.butTbRedo.ToolTipText = "Redo (Ctrl+Y)";
-            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
             // 
             // toolStripSeparator1
             // 
@@ -884,43 +780,6 @@
             this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 28);
-            // 
-            // butTbResetCamera
-            // 
-            this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbResetCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbResetCamera.Image = global::WadTool.Properties.Resources.general_target_16;
-            this.butTbResetCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbResetCamera.Name = "butTbResetCamera";
-            this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
-            this.butTbResetCamera.ToolTipText = "Reset camera";
-            this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
-            // 
-            // butTbWireframe
-            // 
-            this.butTbWireframe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbWireframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbWireframe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbWireframe.Image = global::WadTool.Properties.Resources.wireframe_16;
-            this.butTbWireframe.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbWireframe.Name = "butTbWireframe";
-            this.butTbWireframe.Size = new System.Drawing.Size(23, 25);
-            this.butTbWireframe.Text = "toolStripButton1";
-            this.butTbWireframe.ToolTipText = "Draw in wireframe mode";
-            this.butTbWireframe.Click += new System.EventHandler(this.butTbWireframe_Click);
-            // 
-            // butTbAlpha
-            // 
-            this.butTbAlpha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
-            this.butTbAlpha.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.butTbAlpha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
-            this.butTbAlpha.Image = global::WadTool.Properties.Resources.actions_AlphaTest_16;
-            this.butTbAlpha.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.butTbAlpha.Name = "butTbAlpha";
-            this.butTbAlpha.Size = new System.Drawing.Size(23, 25);
-            this.butTbAlpha.ToolTipText = "Toggle transparency";
-            this.butTbAlpha.Click += new System.EventHandler(this.butTbAlpha_Click);
             // 
             // panelCenter
             // 
@@ -975,6 +834,90 @@
             this.panelTexturingTools.Name = "panelTexturingTools";
             this.panelTexturingTools.Size = new System.Drawing.Size(324, 30);
             this.panelTexturingTools.TabIndex = 1;
+            // 
+            // panelTree
+            // 
+            this.panelTree.Controls.Add(this.darkSectionPanel2);
+            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelTree.Location = new System.Drawing.Point(0, 0);
+            this.panelTree.Name = "panelTree";
+            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
+            this.panelTree.Size = new System.Drawing.Size(263, 561);
+            this.panelTree.TabIndex = 0;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.ForeColor = System.Drawing.Color.DarkGray;
+            this.statusLabel.Location = new System.Drawing.Point(3, 576);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(284, 13);
+            this.statusLabel.TabIndex = 57;
+            this.statusLabel.Text = "This label will contain useful info about current mesh.";
+            // 
+            // butTbUndo
+            // 
+            this.butTbUndo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbUndo.Enabled = false;
+            this.butTbUndo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbUndo.Image = global::WadTool.Properties.Resources.general_undo_16;
+            this.butTbUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbUndo.Name = "butTbUndo";
+            this.butTbUndo.Size = new System.Drawing.Size(23, 25);
+            this.butTbUndo.ToolTipText = "Undo (Ctrl+Z)";
+            this.butTbUndo.Click += new System.EventHandler(this.butTbUndo_Click);
+            // 
+            // butTbRedo
+            // 
+            this.butTbRedo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbRedo.Enabled = false;
+            this.butTbRedo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbRedo.Image = global::WadTool.Properties.Resources.general_redo_16;
+            this.butTbRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbRedo.Name = "butTbRedo";
+            this.butTbRedo.Size = new System.Drawing.Size(23, 25);
+            this.butTbRedo.ToolTipText = "Redo (Ctrl+Y)";
+            this.butTbRedo.Click += new System.EventHandler(this.butTbRedo_Click);
+            // 
+            // butTbResetCamera
+            // 
+            this.butTbResetCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbResetCamera.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbResetCamera.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbResetCamera.Image = global::WadTool.Properties.Resources.general_target_16;
+            this.butTbResetCamera.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbResetCamera.Name = "butTbResetCamera";
+            this.butTbResetCamera.Size = new System.Drawing.Size(23, 25);
+            this.butTbResetCamera.ToolTipText = "Reset camera";
+            this.butTbResetCamera.Click += new System.EventHandler(this.butTbResetCamera_Click);
+            // 
+            // butTbWireframe
+            // 
+            this.butTbWireframe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbWireframe.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbWireframe.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbWireframe.Image = global::WadTool.Properties.Resources.wireframe_16;
+            this.butTbWireframe.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbWireframe.Name = "butTbWireframe";
+            this.butTbWireframe.Size = new System.Drawing.Size(23, 25);
+            this.butTbWireframe.Text = "toolStripButton1";
+            this.butTbWireframe.ToolTipText = "Draw in wireframe mode";
+            this.butTbWireframe.Click += new System.EventHandler(this.butTbWireframe_Click);
+            // 
+            // butTbAlpha
+            // 
+            this.butTbAlpha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbAlpha.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbAlpha.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbAlpha.Image = global::WadTool.Properties.Resources.actions_AlphaTest_16;
+            this.butTbAlpha.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbAlpha.Name = "butTbAlpha";
+            this.butTbAlpha.Size = new System.Drawing.Size(23, 25);
+            this.butTbAlpha.ToolTipText = "Toggle transparency";
+            this.butTbAlpha.Click += new System.EventHandler(this.butTbAlpha_Click);
             // 
             // butSearch
             // 
@@ -1054,26 +997,96 @@
             this.comboCurrentTexture.TabIndex = 4;
             this.comboCurrentTexture.SelectedValueChanged += new System.EventHandler(this.comboCurrentTexture_SelectedValueChanged);
             // 
-            // panelTree
+            // cbBlendMode
             // 
-            this.panelTree.Controls.Add(this.darkSectionPanel2);
-            this.panelTree.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelTree.Location = new System.Drawing.Point(0, 0);
-            this.panelTree.Name = "panelTree";
-            this.panelTree.Padding = new System.Windows.Forms.Padding(0, 0, 4, 0);
-            this.panelTree.Size = new System.Drawing.Size(263, 561);
-            this.panelTree.TabIndex = 0;
+            this.cbBlendMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbBlendMode.FormattingEnabled = true;
+            this.cbBlendMode.Location = new System.Drawing.Point(81, 3);
+            this.cbBlendMode.Name = "cbBlendMode";
+            this.cbBlendMode.Size = new System.Drawing.Size(203, 23);
+            this.cbBlendMode.TabIndex = 11;
             // 
-            // statusLabel
+            // butDoubleSide
             // 
-            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.statusLabel.AutoSize = true;
-            this.statusLabel.ForeColor = System.Drawing.Color.DarkGray;
-            this.statusLabel.Location = new System.Drawing.Point(3, 576);
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(284, 13);
-            this.statusLabel.TabIndex = 57;
-            this.statusLabel.Text = "This label will contain useful info about current mesh.";
+            this.butDoubleSide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butDoubleSide.Checked = false;
+            this.butDoubleSide.Image = global::WadTool.Properties.Resources.texture_DoubleSided_1_16;
+            this.butDoubleSide.Location = new System.Drawing.Point(290, 3);
+            this.butDoubleSide.Name = "butDoubleSide";
+            this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
+            this.butDoubleSide.TabIndex = 12;
+            this.butDoubleSide.Tag = "";
+            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute.\r\nMay not work in legacy engines.");
+            this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
+            // 
+            // butFindVertex
+            // 
+            this.butFindVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butFindVertex.Checked = false;
+            this.butFindVertex.Image = global::WadTool.Properties.Resources.general_search_16;
+            this.butFindVertex.Location = new System.Drawing.Point(159, 3);
+            this.butFindVertex.Name = "butFindVertex";
+            this.butFindVertex.Size = new System.Drawing.Size(77, 23);
+            this.butFindVertex.TabIndex = 5;
+            this.butFindVertex.Text = "Jump to";
+            this.butFindVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butFindVertex, "Jump to specified vertex number");
+            this.butFindVertex.Click += new System.EventHandler(this.butFindVertex_Click);
+            // 
+            // butRemapVertex
+            // 
+            this.butRemapVertex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.butRemapVertex.Checked = false;
+            this.butRemapVertex.Image = global::WadTool.Properties.Resources.replace_16;
+            this.butRemapVertex.Location = new System.Drawing.Point(240, 3);
+            this.butRemapVertex.Name = "butRemapVertex";
+            this.butRemapVertex.Size = new System.Drawing.Size(74, 23);
+            this.butRemapVertex.TabIndex = 3;
+            this.butRemapVertex.Text = "Remap";
+            this.butRemapVertex.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butRemapVertex, "Remap selected vertex to specified vertex number");
+            this.butRemapVertex.Click += new System.EventHandler(this.butRemapVertex_Click);
+            // 
+            // butPreview
+            // 
+            this.butPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.butPreview.Checked = false;
+            this.butPreview.Image = global::WadTool.Properties.Resources.play_16;
+            this.butPreview.Location = new System.Drawing.Point(222, 3);
+            this.butPreview.Name = "butPreview";
+            this.butPreview.Size = new System.Drawing.Size(92, 23);
+            this.butPreview.TabIndex = 21;
+            this.butPreview.Tag = "";
+            this.butPreview.Text = "Preview";
+            this.butPreview.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.toolTip.SetToolTip(this.butPreview, "Preview all effects");
+            this.butPreview.Click += new System.EventHandler(this.butPreview_Click);
+            // 
+            // cbEditingMode
+            // 
+            this.cbEditingMode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbEditingMode.FormattingEnabled = true;
+            this.cbEditingMode.Location = new System.Drawing.Point(45, 29);
+            this.cbEditingMode.Name = "cbEditingMode";
+            this.cbEditingMode.Size = new System.Drawing.Size(155, 23);
+            this.cbEditingMode.TabIndex = 9;
+            this.toolTip.SetToolTip(this.cbEditingMode, "Mesh editor operation mode");
+            this.cbEditingMode.SelectedIndexChanged += new System.EventHandler(this.cbEditingMode_SelectedIndexChanged);
+            // 
+            // butTbBilinear
+            // 
+            this.butTbBilinear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbBilinear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbBilinear.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbBilinear.Image = global::WadTool.Properties.Resources.general_blur_16;
+            this.butTbBilinear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbBilinear.Name = "butTbBilinear";
+            this.butTbBilinear.Size = new System.Drawing.Size(23, 25);
+            this.butTbBilinear.ToolTipText = "Toggle bilinear filter";
+            this.butTbBilinear.Click += new System.EventHandler(this.butTbBilinear_Click);
             // 
             // FormMeshEditor
             // 
@@ -1118,7 +1131,6 @@
             this.panelMain.ResumeLayout(false);
             this.topBar.ResumeLayout(false);
             this.topBar.PerformLayout();
-            this.panelCenter.ResumeLayout(false);
             this.panelEditing.ResumeLayout(false);
             this.panelTexturinga.ResumeLayout(false);
             this.panelTexturingTools.ResumeLayout(false);
@@ -1201,5 +1213,6 @@
         private System.Windows.Forms.ToolStripButton butTbResetCamera;
         private System.Windows.Forms.ToolStripButton butTbWireframe;
         private System.Windows.Forms.ToolStripButton butTbAlpha;
+        private System.Windows.Forms.ToolStripButton butTbBilinear;
     }
 }

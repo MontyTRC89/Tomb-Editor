@@ -140,6 +140,23 @@ namespace WadTool.Controls
         private bool _alphaTest = false;
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool Bilinear
+        {
+            get { return _bilinear; }
+            set
+            {
+                if (_bilinear == value)
+                    return;
+
+                _wadRenderer.Dispose();
+                _wadRenderer = new WadRenderer(_device, false, value);
+                _bilinear = value;
+                Invalidate();
+            }
+        }
+        private bool _bilinear = false;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawExtraInfo
         {
             get { return _drawInformationForAllElements; }
@@ -614,7 +631,7 @@ namespace WadTool.Controls
             effect.Parameters["StaticLighting"].SetValue(showColors);
             effect.Parameters["ColoredVertices"].SetValue(_tool.DestinationWad.GameVersion == TRVersion.Game.TombEngine);
             effect.Parameters["Texture"].SetResource(_wadRenderer.Texture);
-            effect.Parameters["TextureSampler"].SetResource(_device.SamplerStates.PointClamp);
+            effect.Parameters["TextureSampler"].SetResource(_bilinear ? _device.SamplerStates.AnisotropicWrap : _device.SamplerStates.PointClamp);
             effect.Parameters["AlphaTest"].SetValue(!WireframeMode && AlphaTest);
             effect.Techniques[0].Passes[0].Apply();
 

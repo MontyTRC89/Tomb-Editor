@@ -1027,6 +1027,12 @@ namespace WadTool
             UpdateUI();
         }
 
+        private void butTbBilinear_Click(object sender, EventArgs e)
+        {
+            panelMesh.Bilinear = butTbBilinear.Checked = !butTbBilinear.Checked;
+            UpdateUI();
+        }
+
         private void butTbResetCamera_Click(object sender, EventArgs e)
         {
             panelMesh.ResetCamera();
