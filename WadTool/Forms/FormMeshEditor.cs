@@ -433,7 +433,7 @@ namespace WadTool
         private void UpdateStatusLabel()
         {
             var prompt = NoMesh() ? string.Empty : panelMesh.Mesh.VertexPositions.Count + " vertices, " + panelMesh.Mesh.Polys.Count + " faces, " +
-                                                   panelMesh.Mesh.Polys.GroupBy(p => p.Texture).Count() + " unique textures. ";
+                                                   panelMesh.Mesh.Polys.GroupBy(p => p.Texture.GetCanonicalTexture(p.Shape == WadPolygonShape.Triangle)).Count() + " unique textures. ";
 
             if (panelTextureMap.SelectedTexture != TextureArea.None)
             {
