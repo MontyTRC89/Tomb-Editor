@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -1036,7 +1037,7 @@ namespace WadTool
                 {
                     fileDialog.Filter = ImageC.SaveFileFileExtensions.GetFilter(true);
                     fileDialog.Title = "Choose a texture file name";
-                    fileDialog.FileName = panelTextureMap.VisibleTexture.ToString();
+                    fileDialog.FileName = Path.GetFileNameWithoutExtension(panelTextureMap.VisibleTexture.ToString());
                     fileDialog.AddExtension = true;
 
                     DialogResult dialogResult = fileDialog.ShowDialog(this);
