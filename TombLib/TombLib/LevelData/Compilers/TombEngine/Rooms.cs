@@ -499,43 +499,46 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                             // TODO: Implement double-sided prebaking!!!!
 
-                            if (poly.IsTriangle)
+                            foreach (bool doubleSided in new[] { false, true })
                             {
-                                if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
+                                if (doubleSided && !poly.Texture.DoubleSided)
+                                    break;
+
+                                int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } :
+                                                                  new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
+                                var key = poly;
+
+                                if (doubleSided)
                                 {
-                                    var result = _mergedStaticMeshTextureInfos[poly];
-                                    var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode, roomVertices);
-                                    roomPolygons.Add(tri);
+                                    Array.Reverse(indices);
+                                    texture.Mirror();
+                                    key.Index0 = indices[0]; key.Index1 = indices[1]; key.Index2 = indices[2];
+                                    if (!poly.IsTriangle) key.Index3 = indices[3];
+                                }
+
+                                if (_mergedStaticMeshTextureInfos.ContainsKey(key))
+                                {
+                                    var result = _mergedStaticMeshTextureInfos[key];
+                                    var face = poly.IsTriangle ? 
+                                        result.CreateTombEnginePolygon3(indices, (byte)texture.BlendMode, roomVertices) :
+                                        result.CreateTombEnginePolygon4(indices, (byte)texture.BlendMode, roomVertices);
+
+                                    roomPolygons.Add(face);
                                 }
                                 else
                                 {
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
-                                    var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode, roomVertices);
-                                    roomPolygons.Add(tri);
-                                    _mergedStaticMeshTextureInfos.Add(poly, result);
-                                    roomVertices[index0].Polygons.Add(new NormalHelper(tri));
-                                    roomVertices[index1].Polygons.Add(new NormalHelper(tri));
-                                    roomVertices[index2].Polygons.Add(new NormalHelper(tri));
-                                }
-                            }
-                            else
-                            {
-                                if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
-                                {
-                                    var result = _mergedStaticMeshTextureInfos[poly];
-                                    var quad = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)texture.BlendMode, roomVertices);
-                                    roomPolygons.Add(quad);
-                                }
-                                else
-                                {
-                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
-                                    var quad = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)texture.BlendMode, roomVertices);
-                                    roomPolygons.Add(quad);
-                                    _mergedStaticMeshTextureInfos.Add(poly, result);
-                                    roomVertices[index0].Polygons.Add(new NormalHelper(quad));
-                                    roomVertices[index1].Polygons.Add(new NormalHelper(quad));
-                                    roomVertices[index2].Polygons.Add(new NormalHelper(quad));
-                                    roomVertices[index3].Polygons.Add(new NormalHelper(quad));
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, poly.IsTriangle);
+                                    var face = poly.IsTriangle ? 
+                                        result.CreateTombEnginePolygon3(indices, (byte)texture.BlendMode, roomVertices) :
+                                        result.CreateTombEnginePolygon4(indices, (byte)texture.BlendMode, roomVertices);
+
+                                    roomPolygons.Add(face);
+                                    _mergedStaticMeshTextureInfos.Add(key, result);
+                                    roomVertices[index0].Polygons.Add(new NormalHelper(face));
+                                    roomVertices[index1].Polygons.Add(new NormalHelper(face));
+                                    roomVertices[index2].Polygons.Add(new NormalHelper(face));
+                                    if (doubleSided)
+                                        roomVertices[index3].Polygons.Add(new NormalHelper(face));
                                 }
                             }
                         }

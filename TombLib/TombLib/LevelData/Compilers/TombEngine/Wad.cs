@@ -106,18 +106,19 @@ namespace TombLib.LevelData.Compilers.TombEngine
                 var texture = poly.Texture;
                 FixWadTextureCoordinates(ref texture);
 
-                for (int p = 0; p < (poly.Texture.DoubleSided ? 2 : 1); p++)
+                foreach (bool doubleSided in new[] { false, true })
                 {
-                    var mirrored = p == 1;
+                    if (doubleSided && !texture.DoubleSided)
+                        break;
 
-                    if (mirrored) texture.Mirror();
+                    if (doubleSided) texture.Mirror();
                     var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
                     int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } : 
                                                       new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
 
-                    if (mirrored) Array.Reverse(indices);
+                    if (doubleSided) Array.Reverse(indices);
 
                     TombEnginePolygon newPoly;
                     if (poly.IsTriangle)
