@@ -3476,7 +3476,8 @@ namespace TombEditor.Controls
             var renderArgs = new RenderingDrawingRoom.RenderArgs
             {
                 RenderTarget = SwapChain,
-                StateBuffer = _renderingStateBuffer
+                StateBuffer = _renderingStateBuffer,
+                BilinearFilter = BilinearFilter
             };
 
             // Prepare sprite and text lists for collecting
@@ -3529,7 +3530,7 @@ namespace TombEditor.Controls
             // Draw enabled rooms
             ((TombLib.Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
             foreach (Room room in roomsToDraw.Where(r => !DisablePickingForHiddenRooms || !r.Properties.Hidden))
-                _renderingCachedRooms[room].Render(renderArgs, BilinearFilter);
+                _renderingCachedRooms[room].Render(renderArgs);
 
             // Determine if selection should be visible or not.
             var hiddenSelection = _editor.Mode == EditorMode.Lighting && _editor.HiddenSelection;
@@ -3595,7 +3596,7 @@ namespace TombEditor.Controls
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
                 _legacyDevice.SetDepthStencilState(_legacyDevice.DepthStencilStates.DepthRead);
                 foreach (Room room in hiddenRooms)
-                    _renderingCachedRooms[room].Render(renderArgs, BilinearFilter);
+                    _renderingCachedRooms[room].Render(renderArgs);
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
             }
 

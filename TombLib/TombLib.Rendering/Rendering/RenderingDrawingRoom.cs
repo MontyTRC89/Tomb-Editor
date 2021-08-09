@@ -23,10 +23,11 @@ namespace TombLib.Rendering
         {
             public RenderingSwapChain RenderTarget;
             public RenderingStateBuffer StateBuffer;
+            public bool BilinearFilter;
         }
 
         public abstract void Dispose();
 
-        public abstract void Render(RenderArgs arg, bool linearFilter);
+        public abstract void Render(RenderArgs arg);
 	}
 }
