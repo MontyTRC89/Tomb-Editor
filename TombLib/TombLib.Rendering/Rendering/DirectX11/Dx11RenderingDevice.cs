@@ -144,8 +144,8 @@ namespace TombLib.Rendering.DirectX11
                 });
                 SamplerRoundToNearest = new SamplerState(Device, new SamplerStateDescription
                 {
-                    AddressU = TextureAddressMode.Wrap,
-                    AddressV = TextureAddressMode.Wrap,
+                    AddressU = TextureAddressMode.Mirror,
+                    AddressV = TextureAddressMode.Mirror,
                     AddressW = TextureAddressMode.Wrap,
                     Filter = Filter.MinMagMipPoint,
                     MaximumAnisotropy = 4,
