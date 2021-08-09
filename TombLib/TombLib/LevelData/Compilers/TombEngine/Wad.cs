@@ -84,7 +84,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
             for (int j = 0; j < oldMesh.Polys.Count; j++)
             {
                 var poly = oldMesh.Polys[j];
-                TombEnginePolygon newPoly;
 
                 ushort lightingEffect = poly.Texture.BlendMode == BlendMode.Additive ? (ushort)1 : (ushort)0;
                 if (poly.ShineStrength > 0)
@@ -103,44 +102,43 @@ namespace TombLib.LevelData.Compilers.TombEngine
 
                 // Check if we should merge object and room textures in same texture tiles.
                 TextureDestination destination = isStatic ? TextureDestination.Static : TextureDestination.Moveable;
+                
+                var texture = poly.Texture;
+                FixWadTextureCoordinates(ref texture);
 
-                int index0 = poly.Index0;
-                int index1 = poly.Index1;
-                int index2 = poly.Index2;
-                int index3 = poly.Index3;
-
-                if (poly.Shape == WadPolygonShape.Quad)
+                for (int p = 0; p < (poly.Texture.DoubleSided ? 2 : 1); p++)
                 {
-                    FixWadTextureCoordinates(ref poly.Texture);
+                    var mirrored = p == 1;
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, destination, false, topmostAndUnpadded);
+                    if (mirrored) texture.Mirror();
+                    var result = _textureInfoManager.AddTexture(texture, destination, poly.IsTriangle, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newPoly = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, null);
+                    int[] indices = poly.IsTriangle ? new int[] { poly.Index0, poly.Index1, poly.Index2 } : 
+                                                      new int[] { poly.Index0, poly.Index1, poly.Index2, poly.Index3 };
+
+                    if (mirrored) Array.Reverse(indices);
+
+                    TombEnginePolygon newPoly;
+                    if (poly.IsTriangle)
+                        newPoly = result.CreateTombEnginePolygon3(indices, (byte)texture.BlendMode, null);
+                    else
+                        newPoly = result.CreateTombEnginePolygon4(indices, (byte)texture.BlendMode, null);
+
+                    newMesh.Polygons.Add(newPoly);
+
+                    newMesh.Vertices[indices[0]].Polygons.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[1]].Polygons.Add(new NormalHelper(newPoly));
+                    newMesh.Vertices[indices[2]].Polygons.Add(new NormalHelper(newPoly));
+                    if (poly.IsTriangle)
+                        newMesh.Vertices[indices[3]].Polygons.Add(new NormalHelper(newPoly));
+
+                    newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
+                    newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);
+                    newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[2]].Normal);
+                    if (poly.IsTriangle)
+                        newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[3]].Normal);
                 }
-                else
-                {
-                    FixWadTextureCoordinates(ref poly.Texture);
-
-                    var result = _textureInfoManager.AddTexture(poly.Texture, destination, true, topmostAndUnpadded);
-                    if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
-
-                    newPoly = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, null);
-                }
-
-                newMesh.Polygons.Add(newPoly);
-
-                newMesh.Vertices[index0].Polygons.Add(new NormalHelper(newPoly));
-                newMesh.Vertices[index1].Polygons.Add(new NormalHelper(newPoly));
-                newMesh.Vertices[index2].Polygons.Add(new NormalHelper(newPoly));
-                if (poly.Shape == WadPolygonShape.Quad)
-                    newMesh.Vertices[index3].Polygons.Add(new NormalHelper(newPoly));
-
-                newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[0]].Normal);
-                newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[1]].Normal);
-                newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[2]].Normal);
-                if (poly.Shape == WadPolygonShape.Quad)
-                    newPoly.Normals.Add(newMesh.Vertices[newPoly.Indices[3]].Normal);
             }
 
             _meshes.Add(newMesh);

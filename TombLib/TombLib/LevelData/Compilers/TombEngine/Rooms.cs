@@ -494,20 +494,23 @@ namespace TombLib.LevelData.Compilers.TombEngine
                             int index2 = (poly.Index2 + meshVertexBase);
                             int index3 = (poly.Index3 + meshVertexBase);
 
+                            var texture = poly.Texture;
+                            FixWadTextureCoordinates(ref texture);
+
+                            // TODO: Implement double-sided prebaking!!!!
+
                             if (poly.IsTriangle)
                             {
-
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
                                 {
                                     var result = _mergedStaticMeshTextureInfos[poly];
-                                    var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, roomVertices);
+                                    var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode, roomVertices);
                                     roomPolygons.Add(tri);
                                 }
                                 else
                                 {
-                                    FixWadTextureCoordinates(ref poly.Texture);
-                                    var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, true);
-                                    var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)poly.Texture.BlendMode, roomVertices);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, true);
+                                    var tri = result.CreateTombEnginePolygon3(new int[] { index0, index1, index2 }, (byte)texture.BlendMode, roomVertices);
                                     roomPolygons.Add(tri);
                                     _mergedStaticMeshTextureInfos.Add(poly, result);
                                     roomVertices[index0].Polygons.Add(new NormalHelper(tri));
@@ -520,14 +523,13 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (_mergedStaticMeshTextureInfos.ContainsKey(poly))
                                 {
                                     var result = _mergedStaticMeshTextureInfos[poly];
-                                    var quad = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, roomVertices);
+                                    var quad = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)texture.BlendMode, roomVertices);
                                     roomPolygons.Add(quad);
                                 }
                                 else
                                 {
-                                    FixWadTextureCoordinates(ref poly.Texture);
-                                    var result = _textureInfoManager.AddTexture(poly.Texture, TextureDestination.RoomOrAggressive, false);
-                                    var quad = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)poly.Texture.BlendMode, roomVertices);
+                                    var result = _textureInfoManager.AddTexture(texture, TextureDestination.RoomOrAggressive, false);
+                                    var quad = result.CreateTombEnginePolygon4(new int[] { index0, index1, index2, index3 }, (byte)texture.BlendMode, roomVertices);
                                     roomPolygons.Add(quad);
                                     _mergedStaticMeshTextureInfos.Add(poly, result);
                                     roomVertices[index0].Polygons.Add(new NormalHelper(quad));

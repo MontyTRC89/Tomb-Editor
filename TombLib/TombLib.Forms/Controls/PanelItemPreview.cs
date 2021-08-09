@@ -230,11 +230,6 @@ namespace TombLib.Controls
             ((Rendering.DirectX11.Dx11RenderingSwapChain)SwapChain).BindForce();
             ((Rendering.DirectX11.Dx11RenderingDevice)Device).ResetState();
 
-            if (DrawTransparency)
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-            else
-                _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
-
             Matrix4x4 viewProjection = Camera.GetViewProjectionMatrix(Width, Height);
             if (CurrentObject is WadMoveable)
             {
@@ -285,7 +280,19 @@ namespace TombLib.Controls
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
+                    {
+                        if (DrawTransparency && submesh.Value.Material.AdditiveBlending)
+                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
+                        else
+                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+
+                        if (submesh.Value.Material.DoubleSided)
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                        else
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
                         _legacyDevice.Draw(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    }
                 }
             }
             else if (CurrentObject is WadStatic)
@@ -314,7 +321,19 @@ namespace TombLib.Controls
                     effect.Techniques[0].Passes[0].Apply();
 
                     foreach (var submesh in mesh.Submeshes)
+                    {
+                        if (DrawTransparency && submesh.Value.Material.AdditiveBlending)
+                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Additive);
+                        else
+                            _legacyDevice.SetBlendState(_legacyDevice.BlendStates.Opaque);
+
+                        if (submesh.Value.Material.DoubleSided)
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullNone);
+                        else
+                            _legacyDevice.SetRasterizerState(_legacyDevice.RasterizerStates.CullBack);
+
                         _legacyDevice.DrawIndexed(PrimitiveType.TriangleList, submesh.Value.NumIndices, submesh.Value.BaseIndex);
+                    }
                 }
             }
             else if (CurrentObject is WadSpriteSequence)

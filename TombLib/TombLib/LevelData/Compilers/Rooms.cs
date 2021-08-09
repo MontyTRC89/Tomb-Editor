@@ -526,14 +526,17 @@ namespace TombLib.LevelData.Compilers
                         ushort index2 = (ushort)(poly.Index2 + meshVertexBase);
                         ushort index3 = (ushort)(poly.Index3 + meshVertexBase);
 
+                            // TODO: Add double-sided prebaking!!!!!!!
+
+                            var texture = poly.Texture;
+                            FixWadTextureCoordinates(ref texture);
+
                             if (poly.IsTriangle) {
-                                FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, true, true);
+                                var result = _textureInfoManager.AddTexture(texture, true, true);
                                 tr_face3 tri = result.CreateFace3(new ushort[] { index0, index1, index2 }, false, 0);
                                 roomTriangles.Add(tri);
                             } else {
-                                FixWadTextureCoordinates(ref poly.Texture);
-                                var result = _textureInfoManager.AddTexture(poly.Texture, true, false);
+                                var result = _textureInfoManager.AddTexture(texture, true, false);
                                 tr_face4 quad = result.CreateFace4(new ushort[] { index0, index1, index2, index3 }, false, 0);
                                 roomQuads.Add(quad);
                             }

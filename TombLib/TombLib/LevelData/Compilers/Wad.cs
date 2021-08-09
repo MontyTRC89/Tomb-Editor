@@ -149,9 +149,9 @@ namespace TombLib.LevelData.Compilers
             foreach (var poly in oldMesh.Polys)
             {
                 if (poly.Shape == WadPolygonShape.Quad)
-                    numQuads++;
+                    numQuads += (short)(poly.Texture.DoubleSided ? 2 : 1);
                 else
-                    numTriangles++;
+                    numTriangles += (short)(poly.Texture.DoubleSided ? 2 : 1);
             }
 
             newMesh.NumTexturedQuads = numQuads;
@@ -188,27 +188,30 @@ namespace TombLib.LevelData.Compilers
                 // Check if we should merge object and room textures in same texture tiles.
                 bool agressivePacking = _level.Settings.AgressiveTexturePacking;
 
-                if (poly.Shape == WadPolygonShape.Quad)
-                {
-                    FixWadTextureCoordinates(ref poly.Texture);
+                var texture = poly.Texture;
+                FixWadTextureCoordinates(ref poly.Texture);
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, false, topmostAndUnpadded);
+                for (int p = 0; p < (poly.Texture.DoubleSided ? 2 : 1); p++)
+                {
+                    var mirrored = p == 1;
+
+                    if (mirrored) texture.Mirror();
+                    var result = _textureInfoManager.AddTexture(texture, agressivePacking, poly.IsTriangle, topmostAndUnpadded);
                     if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
 
-                    newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 },
-                        poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 10 : 12;
-                }
-                else
-                {
-                    FixWadTextureCoordinates(ref poly.Texture);
+                    ushort[] indices = poly.IsTriangle ? new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 } :
+                                                         new ushort[] { (ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2, (ushort)poly.Index3 };
 
-                    var result = _textureInfoManager.AddTexture(poly.Texture, agressivePacking, true, topmostAndUnpadded);
-                    if (isOptics) result.Rotation = 0; // Very ugly hack for TR4-5 binocular/target optics!
+                    if (mirrored) Array.Reverse(indices);
 
-                    newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(new ushort[] {(ushort)poly.Index0, (ushort)poly.Index1, (ushort)poly.Index2 }, 
-                        poly.Texture.DoubleSided, lightingEffect);
-                    currentMeshSize += _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
+                    if (poly.IsTriangle)
+                        newMesh.TexturedTriangles[lastTriangle++] = result.CreateFace3(indices, poly.Texture.DoubleSided, lightingEffect);
+                    else
+                        newMesh.TexturedQuads[lastQuad++] = result.CreateFace4(indices, poly.Texture.DoubleSided, lightingEffect);
+
+                    var size = _level.Settings.GameVersion <= TRVersion.Game.TR3 ? 8 : 10;
+                    if (!poly.IsTriangle) size += 2;
+                    currentMeshSize += size;
                 }
             }
 
