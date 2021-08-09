@@ -19,6 +19,7 @@ using TombLib.LevelData.IO;
 using TombLib.GeometryIO.Importers;
 using TombLib.Wad.Catalog;
 using TombLib;
+using System.Threading;
 
 namespace WadTool
 {
@@ -1297,6 +1298,76 @@ namespace WadTool
                 Properties.Settings.Default.RecentProjects.RemoveRange(10, Properties.Settings.Default.RecentProjects.Count - 10);
 
             Properties.Settings.Default.Save();
+        }
+
+        public static void ExportMesh(WadMesh mesh, WadToolClass tool, IWin32Window owner)
+        {
+            using (var saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Title = "Export mesh";
+                saveFileDialog.InitialDirectory = PathC.GetDirectoryNameTry(tool.DestinationWad.FileName);
+                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.DefaultExt = "obj";
+                saveFileDialog.FileName = mesh.Name;
+
+                if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
+                    return;
+
+                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                {
+                    settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                    settingsDialog.SelectPreset("Normal scale");
+
+                    if (settingsDialog.ShowDialog(owner) != DialogResult.OK)
+                        return;
+
+                    BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt => "";
+                    BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
+                    new Thread(() =>
+                    {
+                        var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, mesh);
+                        if (resultModel != null)
+                        {
+                            if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                return;
+                        }
+                        else
+                            return;
+                    }).Start();
+                }
+            }
+        }
+
+        public static WadMesh ImportMesh(WadToolClass tool, IWin32Window owner)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Title = "Select a 3D file that you want to see imported";
+                dialog.InitialDirectory = PathC.GetDirectoryNameTry(tool.DestinationWad.FileName);
+                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
+
+                if (dialog.ShowDialog(owner) != DialogResult.OK)
+                    return null;
+
+                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                {
+                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
+                    if (form.ShowDialog(owner) != DialogResult.OK)
+                        return null;
+
+                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                    if (mesh == null)
+                    {
+                        DarkMessageBox.Show(owner, "Error while loading 3D model. Check that the file format \n" +
+                                            "is supported, meshes are textured and texture file is present.",
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
+
+                    return mesh;
+                }
+            }
         }
     }
 }

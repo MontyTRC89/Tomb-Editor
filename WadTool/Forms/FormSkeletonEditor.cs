@@ -397,32 +397,17 @@ namespace WadTool
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
                 return;
+
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+            var mesh = WadActions.ImportMesh(_tool, this);
 
-            using (FileDialog dialog = new OpenFileDialog())
+            if (mesh == null)
             {
-                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
-                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
-                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
-                    {
-                        ImportFailed();
-                        return;
-                    }
-
-                    ReplaceExistingBone(mesh, theNode);
-                }
+                ImportFailed();
+                return;
             }
+
+            ReplaceExistingBone(mesh, theNode);
         }
 
         private void ReplaceAllBonesFromFile()
@@ -577,39 +562,22 @@ namespace WadTool
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
                 return;
+
             var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
+            var mesh = WadActions.ImportMesh(_tool, this);
 
-            using (FileDialog dialog = new OpenFileDialog())
+            if (mesh == null)
             {
-                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
-                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
-                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
-                    {
-                        ImportFailed();
-                        return;
-                    }
-
-                    InsertNewBone(mesh, theNode);
-                }
+                ImportFailed();
+                return;
             }
+
+            InsertNewBone(mesh, theNode);
         }
 
         private void ImportFailed()
         {
-            DarkMessageBox.Show(this, "Error while loading 3D model. Check that the file format \n" +
-                                "is supported, meshes are textured and texture file is present.",
-                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            popup.ShowWarning(panelRendering, "No meshes were imported.");
         }
 
         private void SaveChanges()
@@ -781,52 +749,8 @@ namespace WadTool
         {
             if (treeSkeleton.SelectedNodes.Count == 0)
                 return;
-            var theNode = (WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag;
 
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Title = "Export mesh";
-                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
-                saveFileDialog.AddExtension = true;
-                saveFileDialog.DefaultExt = "mqo";
-                saveFileDialog.FileName = theNode.Bone.Mesh.Name;
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
-                    {
-                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
-                        settingsDialog.SelectPreset("Normal scale");
-
-                        if (settingsDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
-                            {
-                                return "";
-                            };
-
-                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                            new Thread(() =>
-                            {
-                                var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, theNode.Bone.Mesh);
-
-                                if (resultModel != null)
-                                {
-                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
-                                    {
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    string errorMessage = "";
-                                    return;
-                                }
-                            }).Start();
-                        }
-                    }
-                }
-            }
+            WadActions.ExportMesh(((WadMeshBoneNode)treeSkeleton.SelectedNodes[0].Tag).Bone.Mesh, _tool, this);
         }
 
         private void butSetToAll_Click(object sender, EventArgs e)

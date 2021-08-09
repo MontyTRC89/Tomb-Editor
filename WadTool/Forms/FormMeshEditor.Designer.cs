@@ -95,6 +95,9 @@
             this.panelTree = new DarkUI.Controls.DarkPanel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusLabel = new DarkUI.Controls.DarkLabel();
+            this.butTbImport = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.butTbExport = new System.Windows.Forms.ToolStripButton();
             this.panelEditingTools.SuspendLayout();
             this.tabsModes.SuspendLayout();
             this.tabFaceAttributes.SuspendLayout();
@@ -225,7 +228,7 @@
             this.cbTexture.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbTexture.Location = new System.Drawing.Point(7, 34);
             this.cbTexture.Name = "cbTexture";
-            this.cbTexture.Size = new System.Drawing.Size(62, 17);
+            this.cbTexture.Size = new System.Drawing.Size(63, 17);
             this.cbTexture.TabIndex = 15;
             this.cbTexture.Text = "Texture";
             this.toolTip.SetToolTip(this.cbTexture, "Apply textures to faces");
@@ -368,7 +371,7 @@
             this.darkLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel1.Location = new System.Drawing.Point(3, 6);
             this.darkLabel1.Name = "darkLabel1";
-            this.darkLabel1.Size = new System.Drawing.Size(84, 13);
+            this.darkLabel1.Size = new System.Drawing.Size(85, 13);
             this.darkLabel1.TabIndex = 1;
             this.darkLabel1.Text = "Vertex number:";
             // 
@@ -460,7 +463,7 @@
             this.darkLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.darkLabel7.Location = new System.Drawing.Point(3, 35);
             this.darkLabel7.Name = "darkLabel7";
-            this.darkLabel7.Size = new System.Drawing.Size(110, 13);
+            this.darkLabel7.Size = new System.Drawing.Size(111, 13);
             this.darkLabel7.TabIndex = 21;
             this.darkLabel7.Text = "Vertex shade (color):";
             // 
@@ -881,8 +884,11 @@
             this.topBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.butTbUndo,
             this.butTbRedo,
-            this.butTbResetCamera,
+            this.toolStripSeparator3,
+            this.butTbImport,
+            this.butTbExport,
             this.toolStripSeparator1,
+            this.butTbResetCamera,
             this.butTbAxis,
             this.butTbWireframe,
             this.butTbAlpha,
@@ -1180,11 +1186,43 @@
             this.statusLabel.TabIndex = 57;
             this.statusLabel.Text = "This label will contain useful info about current mesh.";
             // 
+            // butTbImport
+            // 
+            this.butTbImport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbImport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbImport.Image = global::WadTool.Properties.Resources.general_Import_16;
+            this.butTbImport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbImport.Name = "butTbImport";
+            this.butTbImport.Size = new System.Drawing.Size(23, 25);
+            this.butTbImport.ToolTipText = "Import mesh";
+            this.butTbImport.Click += new System.EventHandler(this.butTbImport_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.toolStripSeparator3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(0, 0, 2, 0);
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 28);
+            // 
+            // butTbExport
+            // 
+            this.butTbExport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
+            this.butTbExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.butTbExport.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
+            this.butTbExport.Image = global::WadTool.Properties.Resources.general_Export_16;
+            this.butTbExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.butTbExport.Name = "butTbExport";
+            this.butTbExport.Size = new System.Drawing.Size(23, 25);
+            this.butTbExport.ToolTipText = "Export mesh";
+            this.butTbExport.Click += new System.EventHandler(this.butTbExport_Click);
+            // 
             // FormMeshEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 601);
+            this.ClientSize = new System.Drawing.Size(984, 602);
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.btCancel);
@@ -1316,5 +1354,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton butTbMirrorTexture;
         private System.Windows.Forms.ToolStripButton butTbRotateTexture;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripButton butTbImport;
+        private System.Windows.Forms.ToolStripButton butTbExport;
     }
 }

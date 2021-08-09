@@ -428,6 +428,10 @@ namespace WadTool
             if (cbBlendMode.SelectedIndex == -1)
                 cbBlendMode.SelectedIndex = 0;
 
+            // Disable I/O buttons if no current mesh is selected
+            butTbExport.Enabled = !NoMesh();
+            butTbImport.Enabled = !NoMesh();
+
             // Update status label
             UpdateStatusLabel();
 
@@ -703,18 +707,17 @@ namespace WadTool
 
             var list = new List<Texture>(_userTextures);
 
+            if (!NoMesh())
+                foreach (var poly in panelMesh.Mesh.Polys)
+                    if (!list.Exists(t => t == poly.Texture.Texture))
+                        list.Add(poly.Texture.Texture);
+
             if (wholeWad)
             {
                 foreach (var mesh in _tool.DestinationWad.MeshesUnique)
                     foreach (var poly in mesh.Polys)
                         if (!list.Exists(t => t == poly.Texture.Texture))
                             list.Add(poly.Texture.Texture);
-            }
-            else
-            {
-                foreach (var poly in panelMesh.Mesh.Polys)
-                    if (!list.Exists(t => t == poly.Texture.Texture))
-                        list.Add(poly.Texture.Texture);
             }
 
             // If count is the same it means no changes were made in texture list
@@ -1185,6 +1188,25 @@ namespace WadTool
         private void lstMeshes_SelectedNodesChanged(object sender, EventArgs e)
         {
             ShowSelectedMesh();
+        }
+
+        private void butTbImport_Click(object sender, EventArgs e)
+        {
+            var mesh = WadActions.ImportMesh(_tool, this);
+
+            if (mesh != null)
+            {
+                _tool.UndoManager.PushMeshChanged(panelMesh);
+                panelMesh.Mesh = mesh;
+                GetSphereValues();
+                UpdateUI();
+                RepopulateTextureList(butAllTextures.Checked);
+            }
+        }
+
+        private void butTbExport_Click(object sender, EventArgs e)
+        {
+            WadActions.ExportMesh(panelMesh.Mesh, _tool, this);
         }
     }
 }

@@ -273,41 +273,22 @@ namespace WadTool
 
         private void butImportMeshFromFile_Click(object sender, EventArgs e)
         {
-            using (FileDialog dialog = new OpenFileDialog())
-            {
-                dialog.InitialDirectory = PathC.GetDirectoryNameTry(_tool.DestinationWad.FileName);
-                dialog.FileName = PathC.GetFileNameTry(_tool.DestinationWad.FileName);
-                dialog.Filter = BaseGeometryImporter.FileExtensions.GetFilter();
-                dialog.Title = "Select a 3D file that you want to see imported.";
-                if (dialog.ShowDialog(this) != DialogResult.OK)
-                    return;
+            var mesh = WadActions.ImportMesh(_tool, this);
 
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
-                {
-                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    if (form.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
-                    {
-                        DarkMessageBox.Show(this, "Error while loading 3D model. Check that the file format \n" +
-                                            "is supported, meshes are textured and texture file is present.",
-                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    _static.Mesh = mesh;
-                    _static.VisibilityBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
-                    _static.CollisionBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
-                    _static.Version = DataVersion.GetNext();
-                    _static.Mesh.CalculateNormals();
+            if (mesh == null)
+                return;
 
-                    panelRendering.Invalidate();
-                    UpdatePositionUI();
-                    UpdateCollisionBoxUI();
-                    UpdateVisibilityBoxUI();
-                    UpdateLightUI();
-                }
-            }
+            _static.Mesh = mesh;
+            _static.VisibilityBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+            _static.CollisionBox = _static.Mesh.CalculateBoundingBox(panelRendering.GizmoTransform);
+            _static.Version = DataVersion.GetNext();
+            _static.Mesh.CalculateNormals();
+
+            panelRendering.Invalidate();
+            UpdatePositionUI();
+            UpdateCollisionBoxUI();
+            UpdateVisibilityBoxUI();
+            UpdateLightUI();
         }
 
         private void nudVisBoxMinX_ValueChanged(object sender, EventArgs e)
@@ -584,50 +565,7 @@ namespace WadTool
 
         private void butExportMeshToFile_Click(object sender, EventArgs e)
         {
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Title = "Export mesh";
-                saveFileDialog.Filter = BaseGeometryExporter.FileExtensions.GetFilter(true);
-                saveFileDialog.AddExtension = true;
-                saveFileDialog.DefaultExt = "mqo";
-                saveFileDialog.FileName = _static.Mesh.Name;
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
-                    {
-                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
-                        settingsDialog.SelectPreset("Normal scale");
-
-                        if (settingsDialog.ShowDialog() == DialogResult.OK)
-                        {
-                            BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt =>
-                            {
-                                return "";
-                            };
-
-                            BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                            new Thread(() =>
-                            {
-                                var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, _static.Mesh);
-
-                                if (resultModel != null)
-                                {
-                                    if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
-                                    {
-                                        return;
-                                    }
-                                }
-                                else
-                                {
-                                    string errorMessage = "";
-                                    return;
-                                }
-                            }).Start();
-                        }
-                    }
-                }
-            }
+            WadActions.ExportMesh(_static.Mesh, _tool, this);
         }
 
         private void butEditMesh_Click(object sender, EventArgs e) => EditMesh();
