@@ -409,27 +409,6 @@ namespace WadTool.Controls
                 }
             }
 
-            /*
-            _wadRenderer.Dispose();
-            foreach (var submesh in node.Bone.Children.Select(bone => bone.Mesh))
-            for (int k = 0; k < submesh.Value.Indices.Count; k += 3)
-            {
-                var mesh = _wadRenderer.GetStatic(new WadStatic(new WadStaticId(0)) { Mesh = node.WadMesh });
-
-                Vector3 p1 = mesh.Vertices[submesh.Value.Indices[k]].Position;
-                Vector3 p2 = mesh.Vertices[submesh.Value.Indices[k + 1]].Position;
-                Vector3 p3 = mesh.Vertices[submesh.Value.Indices[k + 2]].Position;
-
-                float distance;
-                if (Collision.RayIntersectsTriangle(transformedRay, p1, p2, p3, out distance) && distance < minDistance)
-                {
-                    minDistance = distance;
-                    hit = true;
-                }
-            }*/
-            // TODO Avoid using the renderer for pickingData transforms need to be available in wad mesh without rendering.
-            int TODO_DoNodePicking;
-
             if (hit)
             {
                 nodeDistance = minDistance;

@@ -877,10 +877,7 @@ namespace WadTool
             var currentMove = (int)nudMove.Value;
 
             for (int i = 0; i < panelMesh.Mesh.VertexPositions.Count; i++)
-            {
-                panelMesh.Mesh.VertexAttributes[i].Glow = currentGlow;
-                panelMesh.Mesh.VertexAttributes[i].Move = currentMove;
-            }
+                panelMesh.Mesh.VertexAttributes[i] = new VertexAttributes() { Glow = currentGlow, Move = currentMove };
 
             panelMesh.Invalidate();
         }
@@ -1118,13 +1115,7 @@ namespace WadTool
             butAllTextures.Checked = !butAllTextures.Checked;
             RepopulateTextureList(butAllTextures.Checked);
         }
-
-        private void butSearch_Click(object sender, EventArgs e)
-        {
-            var searchPopUp = new PopUpSearch(comboCurrentTexture);
-            searchPopUp.Show(this);
-        }
-
+        
         private void butTbUndo_Click(object sender, EventArgs e)
         {
             _tool.UndoManager.Undo();

@@ -447,7 +447,6 @@ namespace TombLib.LevelData.Compilers.TombEngine
                                 if (!clearShades && wadStatic.Mesh.HasColors)
                                     shade = wadStatic.Mesh.VertexColors[j];
 
-                                // FIXME: Those parameters MUST BE VERTEX-BASED IN TOMB ENGINE!!!
                                 if (wadStatic.Mesh.HasAttributes)
                                 {
                                     if (wadStatic.Mesh.VertexAttributes[j].Move > 0)

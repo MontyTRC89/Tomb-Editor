@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using TombLib.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Wad;
@@ -81,12 +80,6 @@ namespace TombEditor.ToolWindows
             if (obj is Editor.ConfigurationChangedEvent ||
                 obj is Editor.InitEvent)
                 panelItem.AnimatePreview = _editor.Configuration.RenderingItem_Animate;
-        }
-
-        private void butSearch_Click(object sender, EventArgs e)
-        {
-            var searchPopUp = new PopUpSearch(comboItems, _editor.Level.Settings.GameVersion);
-            searchPopUp.Show(this);
         }
 
         private void comboItems_SelectedIndexChanged(object sender, EventArgs e)

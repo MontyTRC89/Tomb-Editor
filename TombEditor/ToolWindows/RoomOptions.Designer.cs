@@ -31,8 +31,8 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.numLightEffectStrength = new DarkUI.Controls.DarkNumericUpDown();
             this.comboPortalShade = new DarkUI.Controls.DarkComboBox();
-            this.butSearch = new DarkUI.Controls.DarkButton();
             this.comboLightEffect = new DarkUI.Controls.DarkComboBox();
+            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             this.darkLabel2 = new DarkUI.Controls.DarkLabel();
             this.darkLabel1 = new DarkUI.Controls.DarkLabel();
             this.butSelectPreviousRoom = new DarkUI.Controls.DarkButton();
@@ -44,13 +44,12 @@
             this.butRoomUp = new DarkUI.Controls.DarkButton();
             this.comboReverberation = new DarkUI.Controls.DarkComboBox();
             this.comboRoomType = new DarkUI.Controls.DarkComboBox();
-            this.comboRoom = new DarkUI.Controls.DarkComboBox();
+            this.comboRoom = new TombLib.Controls.DarkSearchableComboBox();
             this.butRoomDown = new DarkUI.Controls.DarkButton();
             this.butEditRoomName = new DarkUI.Controls.DarkButton();
             this.butCropRoom = new DarkUI.Controls.DarkButton();
             this.butSplitRoom = new DarkUI.Controls.DarkButton();
             this.butHidden = new DarkUI.Controls.DarkButton();
-            this.tbRoomTags = new TombLib.Controls.DarkAutocompleteTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.numLightEffectStrength)).BeginInit();
             this.SuspendLayout();
             // 
@@ -238,19 +237,6 @@
             this.toolTip.SetToolTip(this.comboPortalShade, "Smoothing on room edges");
             this.comboPortalShade.SelectedIndexChanged += new System.EventHandler(this.comboPortalShade_SelectedIndexChanged);
             // 
-            // butSearch
-            // 
-            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearch.Checked = false;
-            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(198, 28);
-            this.butSearch.Name = "butSearch";
-            this.butSearch.Selectable = false;
-            this.butSearch.Size = new System.Drawing.Size(24, 23);
-            this.butSearch.TabIndex = 1;
-            this.toolTip.SetToolTip(this.butSearch, "Search for rooms");
-            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
-            // 
             // comboLightEffect
             // 
             this.comboLightEffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -270,6 +256,19 @@
             this.comboLightEffect.TabIndex = 14;
             this.toolTip.SetToolTip(this.comboLightEffect, "Light / transform effect on room vertices");
             this.comboLightEffect.SelectedIndexChanged += new System.EventHandler(this.comboLightEffect_SelectedIndexChanged);
+            // 
+            // tbRoomTags
+            // 
+            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
+            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
+            this.tbRoomTags.Name = "tbRoomTags";
+            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
+            this.tbRoomTags.TabIndex = 2;
+            this.tbRoomTags.Tag = "SetRoomTags";
+            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
+            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
             // 
             // darkLabel2
             // 
@@ -418,12 +417,10 @@
             // 
             this.comboRoom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboRoom.DropDownHeight = 406;
             this.comboRoom.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboRoom.IntegralHeight = false;
             this.comboRoom.Location = new System.Drawing.Point(3, 28);
             this.comboRoom.Name = "comboRoom";
-            this.comboRoom.Size = new System.Drawing.Size(196, 23);
+            this.comboRoom.Size = new System.Drawing.Size(219, 23);
             this.comboRoom.TabIndex = 0;
             this.comboRoom.SelectedIndexChanged += new System.EventHandler(this.comboRoom_SelectedIndexChanged);
             // 
@@ -482,19 +479,6 @@
             this.butHidden.TabIndex = 26;
             this.butHidden.Tag = "HideRoom";
             // 
-            // tbRoomTags
-            // 
-            this.tbRoomTags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRoomTags.CharacterCasing = System.Windows.Forms.CharacterCasing.Lower;
-            this.tbRoomTags.Location = new System.Drawing.Point(39, 57);
-            this.tbRoomTags.Name = "tbRoomTags";
-            this.tbRoomTags.Size = new System.Drawing.Size(183, 22);
-            this.tbRoomTags.TabIndex = 2;
-            this.tbRoomTags.Tag = "SetRoomTags";
-            this.toolTip.SetToolTip(this.tbRoomTags, "Set room tags, separated by spaces");
-            this.tbRoomTags.TextChanged += new System.EventHandler(this.TbTags_TextChanged);
-            // 
             // RoomOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -507,7 +491,6 @@
             this.Controls.Add(this.darkLabel2);
             this.Controls.Add(this.tbRoomTags);
             this.Controls.Add(this.numLightEffectStrength);
-            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.butDeleteRoom);
             this.Controls.Add(this.butDublicateRoom);
             this.Controls.Add(this.butLocked);
@@ -560,7 +543,7 @@
         private DarkUI.Controls.DarkCheckBox cbFlagDamage;
         private DarkUI.Controls.DarkComboBox comboRoomType;
         private DarkUI.Controls.DarkLabel darkLabel15;
-        private DarkUI.Controls.DarkComboBox comboRoom;
+        private TombLib.Controls.DarkSearchableComboBox comboRoom;
         private DarkUI.Controls.DarkPanel panelRoomAmbientLight;
         private DarkUI.Controls.DarkLabel darkLabel3;
         private DarkUI.Controls.DarkButton butRoomDown;
@@ -572,7 +555,6 @@
         private DarkUI.Controls.DarkButton butLocked;
         private DarkUI.Controls.DarkButton butDublicateRoom;
         private DarkUI.Controls.DarkButton butDeleteRoom;
-        private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkNumericUpDown numLightEffectStrength;
         private TombLib.Controls.DarkAutocompleteTextBox tbRoomTags;
         private DarkUI.Controls.DarkLabel darkLabel2;

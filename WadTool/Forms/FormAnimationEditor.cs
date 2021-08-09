@@ -16,7 +16,6 @@ using TombLib.LevelData;
 using TombLib.Utils;
 using TombLib.Wad;
 using TombLib.Wad.Catalog;
-using TombLib.Wad.Tr4Wad;
 
 namespace WadTool
 {
@@ -89,10 +88,6 @@ namespace WadTool
             UpdateUIControls();
             UpdateReferenceLevelControls();
             PopulateComboStateID();
-
-            // Hacks for textbox...
-            tbStateId.AutoSize = false;
-            tbStateId.Height = butSearchStateID.Height;
 
             // Initialize playback
             _timerPlayAnimation = new Timer() { Interval = 30 };
@@ -2457,12 +2452,6 @@ namespace WadTool
                 UpdateStateChange(true);
         }
 
-        private void butSearchStateID_Click(object sender, EventArgs e)
-        {
-            var searchPopUp = new PopUpSearch(cmbStateID);
-            searchPopUp.Show(this);
-        }
-
         private void DeleteEveryNthFrameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (var form = new FormInputBox("Delete every nth frame", "Enter number", "2"))
@@ -2566,6 +2555,13 @@ namespace WadTool
         {
             if (e.RowIndex < 0) return;
             dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value = !(bool)dgvBoundingMeshList.Rows[e.RowIndex].Cells[0].Value;
+        }
+
+        private void FormAnimationEditor_Shown(object sender, EventArgs e)
+        {
+            // Hacks for textbox...
+            tbStateId.AutoSize = false;
+            tbStateId.Height = cmbStateID.Height;
         }
     }
 }

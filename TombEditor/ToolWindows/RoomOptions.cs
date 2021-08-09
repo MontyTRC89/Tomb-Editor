@@ -409,12 +409,6 @@ namespace TombEditor.ToolWindows
             _editor.RoomPropertiesChange(_editor.SelectedRoom);
         }
 
-        private void butSearch_Click(object sender, EventArgs e)
-        {
-            var searchPopUp = new PopUpSearch(comboRoom);
-            searchPopUp.Show(this);
-        }
-
         private void comboRoomType_SelectedIndexChanged(object sender, EventArgs e) => WriteRoomType();
 
         private void comboLightEffect_SelectedIndexChanged(object sender, EventArgs e)

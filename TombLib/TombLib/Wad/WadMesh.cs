@@ -12,10 +12,10 @@ using TombLib.Graphics;
 
 namespace TombLib.Wad
 {
-    public class VertexAttributes
+    public struct VertexAttributes
     {
-        public int Glow { get; set; } = 0;
-        public int Move { get; set; } = 0;
+        public int Glow;
+        public int Move;
     }
 
     public class WadMesh : ICloneable
@@ -47,6 +47,7 @@ namespace TombLib.Wad
             mesh.VertexPositions = new List<Vector3>(VertexPositions);
             mesh.VertexNormals = new List<Vector3>(VertexNormals);
             mesh.VertexColors = new List<Vector3>(VertexColors);
+            mesh.VertexAttributes = new List<VertexAttributes>(VertexAttributes);
             mesh.Polys = new List<WadPolygon>(Polys);
             return mesh;
         }

@@ -1198,7 +1198,7 @@ namespace TombEditor.Forms
                         cell.Value = parsedValue;
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
     }
 }

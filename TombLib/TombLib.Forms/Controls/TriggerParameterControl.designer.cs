@@ -33,8 +33,7 @@ namespace TombLib.Controls
             this.numericUpDown = new DarkUI.Controls.DarkNumericUpDown();
             this.butView = new DarkUI.Controls.DarkButton();
             this.butReset = new DarkUI.Controls.DarkButton();
-            this.butSearch = new DarkUI.Controls.DarkButton();
-            this.combo = new DarkUI.Controls.DarkComboBox();
+            this.combo = new TombLib.Controls.DarkSearchableComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -117,28 +116,14 @@ namespace TombLib.Controls
             this.butReset.Visible = false;
             this.butReset.Click += new System.EventHandler(this.butReset_Click);
             // 
-            // butSearch
-            // 
-            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearch.Checked = false;
-            this.butSearch.Image = global::TombLib.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(235, 0);
-            this.butSearch.Name = "butSearch";
-            this.butSearch.Size = new System.Drawing.Size(24, 23);
-            this.butSearch.TabIndex = 3;
-            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
-            // 
             // combo
             // 
             this.combo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.combo.DropDownHeight = 500;
             this.combo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.combo.FormattingEnabled = true;
-            this.combo.IntegralHeight = false;
             this.combo.Location = new System.Drawing.Point(0, 0);
             this.combo.Name = "combo";
-            this.combo.Size = new System.Drawing.Size(236, 23);
+            this.combo.Size = new System.Drawing.Size(259, 23);
             this.combo.TabIndex = 0;
             this.combo.TabStop = false;
             this.combo.Visible = false;
@@ -148,7 +133,6 @@ namespace TombLib.Controls
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.colorPreview);
             this.Controls.Add(this.label);
             this.Controls.Add(this.numericUpDown);
@@ -168,11 +152,10 @@ namespace TombLib.Controls
         #endregion
 
         private DarkUI.Controls.DarkButton butView;
-        private DarkUI.Controls.DarkComboBox combo;
+        private TombLib.Controls.DarkSearchableComboBox combo;
         private DarkUI.Controls.DarkLabel label;
         private DarkUI.Controls.DarkNumericUpDown numericUpDown;
         private DarkUI.Controls.DarkPanel colorPreview;
-        private DarkUI.Controls.DarkButton butSearch;
         private DarkUI.Controls.DarkButton butReset;
     }
 }

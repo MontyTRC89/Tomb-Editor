@@ -2096,7 +2096,8 @@ namespace TombEditor
 				Clipboard.SetText(sb.ToString());
 				args.Editor.SendMessage("Object statistics copied into clipboard!", PopupType.Info);
 			});
-			_commands = _commands.OrderBy(o => o.Type).ToList();
+
+            _commands = _commands.OrderBy(o => o.Type).ToList();
         }
     }
 }

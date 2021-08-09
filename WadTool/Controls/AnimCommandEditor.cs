@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Forms;
 using TombLib.Wad;
-using TombLib.Forms;
 using TombLib.Wad.Catalog;
 using System.ComponentModel;
 using DarkUI.Config;
@@ -275,12 +274,6 @@ namespace WadTool
             InvokeChanged();
         }
 
-        private void butSearchSounds_Click(object sender, EventArgs e)
-        {
-            var searchPopUp = new PopUpSearch(comboSound);
-            searchPopUp.Show(this);
-        }
-
         private void butPlaySound_Click(object sender, EventArgs e)
         {
             if (_editor.Tool.ReferenceLevel == null ||
@@ -290,7 +283,7 @@ namespace WadTool
             var soundInfo = _editor.Tool.ReferenceLevel.Settings.GlobalSoundMap.FirstOrDefault(soundInfo_ => soundInfo_.Id == (int)nudSoundId.Value);
             if (soundInfo != null)
                 try { WadSoundPlayer.PlaySoundInfo(_editor.Tool.ReferenceLevel, soundInfo); }
-                catch (Exception ex) { } // FIXME: do something!
+                catch (Exception) { } // FIXME: do something!
         }
 
         private void nudSoundId_ValueChanged(object sender, EventArgs e)

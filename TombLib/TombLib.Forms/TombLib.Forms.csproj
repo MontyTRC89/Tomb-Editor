@@ -110,6 +110,12 @@
     <Compile Include="Controls\DarkScrollBarC.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\DarkSearchableComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DarkSearchableComboBox.Designer.cs">
+      <DependentUpon>DarkSearchableComboBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DarkTabbedContainer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -206,6 +212,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\DarkDataGridViewControls.resx">
       <DependentUpon>DarkDataGridViewControls.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\DarkSearchableComboBox.resx">
+      <DependentUpon>DarkSearchableComboBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\SoundInfoEditor.resx">
       <DependentUpon>SoundInfoEditor.cs</DependentUpon>

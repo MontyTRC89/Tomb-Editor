@@ -5,7 +5,6 @@ using DarkUI.Forms;
 using TombLib.LevelData;
 using TombLib.Rendering;
 using TombLib.Wad.Catalog;
-using TombLib.Forms;
 
 namespace TombEditor.Forms
 {
@@ -88,12 +87,6 @@ namespace TombEditor.Forms
         {
             if (cmbSprites.SelectedIndex >= 0)
                 panelRenderingSprite.SpriteID = cmbSprites.SelectedIndex;
-        }
-
-        private void butSearch_Click(object sender, EventArgs e)
-        {
-            var searchPopUp = new PopUpSearch(cmbSprites, _editor.Level.Settings.GameVersion);
-            searchPopUp.Show(this);
         }
     }
 }

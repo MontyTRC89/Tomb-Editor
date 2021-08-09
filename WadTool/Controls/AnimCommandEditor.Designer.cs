@@ -53,10 +53,9 @@
             this.tabPlaySound = new System.Windows.Forms.TabPage();
             this.nudSoundId = new DarkUI.Controls.DarkNumericUpDown();
             this.butPlaySound = new DarkUI.Controls.DarkButton();
-            this.butSearchSounds = new DarkUI.Controls.DarkButton();
             this.darkLabel11 = new DarkUI.Controls.DarkLabel();
             this.darkLabel10 = new DarkUI.Controls.DarkLabel();
-            this.comboSound = new DarkUI.Controls.DarkComboBox();
+            this.comboSound = new TombLib.Controls.DarkSearchableComboBox();
             this.tbPlaySoundFrame = new DarkUI.Controls.DarkNumericUpDown();
             this.darkLabel9 = new DarkUI.Controls.DarkLabel();
             this.comboPlaySoundConditions = new DarkUI.Controls.DarkComboBox();
@@ -437,7 +436,6 @@
             this.tabPlaySound.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(63)))), ((int)(((byte)(65)))));
             this.tabPlaySound.Controls.Add(this.nudSoundId);
             this.tabPlaySound.Controls.Add(this.butPlaySound);
-            this.tabPlaySound.Controls.Add(this.butSearchSounds);
             this.tabPlaySound.Controls.Add(this.darkLabel11);
             this.tabPlaySound.Controls.Add(this.darkLabel10);
             this.tabPlaySound.Controls.Add(this.comboSound);
@@ -483,17 +481,6 @@
             this.butPlaySound.TabIndex = 104;
             this.butPlaySound.Click += new System.EventHandler(this.butPlaySound_Click);
             // 
-            // butSearchSounds
-            // 
-            this.butSearchSounds.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearchSounds.Checked = false;
-            this.butSearchSounds.Image = global::WadTool.Properties.Resources.general_search_16;
-            this.butSearchSounds.Location = new System.Drawing.Point(239, 53);
-            this.butSearchSounds.Name = "butSearchSounds";
-            this.butSearchSounds.Size = new System.Drawing.Size(23, 23);
-            this.butSearchSounds.TabIndex = 103;
-            this.butSearchSounds.Click += new System.EventHandler(this.butSearchSounds_Click);
-            // 
             // darkLabel11
             // 
             this.darkLabel11.AutoSize = true;
@@ -517,10 +504,9 @@
             // 
             this.comboSound.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboSound.FormattingEnabled = true;
             this.comboSound.Location = new System.Drawing.Point(53, 53);
             this.comboSound.Name = "comboSound";
-            this.comboSound.Size = new System.Drawing.Size(187, 23);
+            this.comboSound.Size = new System.Drawing.Size(209, 23);
             this.comboSound.TabIndex = 100;
             this.comboSound.SelectedIndexChanged += new System.EventHandler(this.comboSound_SelectedIndexChanged);
             // 
@@ -639,10 +625,9 @@
         private System.Windows.Forms.TabPage tabPlaySound;
         private DarkUI.Controls.DarkNumericUpDown nudSoundId;
         private DarkUI.Controls.DarkButton butPlaySound;
-        private DarkUI.Controls.DarkButton butSearchSounds;
         private DarkUI.Controls.DarkLabel darkLabel11;
         private DarkUI.Controls.DarkLabel darkLabel10;
-        private DarkUI.Controls.DarkComboBox comboSound;
+        private TombLib.Controls.DarkSearchableComboBox comboSound;
         private DarkUI.Controls.DarkNumericUpDown tbPlaySoundFrame;
         private DarkUI.Controls.DarkLabel darkLabel9;
         private DarkUI.Controls.DarkComboBox comboPlaySoundConditions;

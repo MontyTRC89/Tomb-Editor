@@ -31,8 +31,7 @@
             this.butCancel = new DarkUI.Controls.DarkButton();
             this.butOk = new DarkUI.Controls.DarkButton();
             this.panelRenderingSprite = new WadTool.Controls.PanelRenderingSprite();
-            this.cmbSprites = new DarkUI.Controls.DarkComboBox();
-            this.butSearch = new DarkUI.Controls.DarkButton();
+            this.cmbSprites = new TombLib.Controls.DarkSearchableComboBox();
             this.SuspendLayout();
             // 
             // butCancel
@@ -75,24 +74,11 @@
             // 
             this.cmbSprites.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbSprites.FormattingEnabled = true;
             this.cmbSprites.Location = new System.Drawing.Point(8, 11);
             this.cmbSprites.Name = "cmbSprites";
-            this.cmbSprites.Size = new System.Drawing.Size(296, 23);
+            this.cmbSprites.Size = new System.Drawing.Size(318, 23);
             this.cmbSprites.TabIndex = 10;
             this.cmbSprites.SelectedIndexChanged += new System.EventHandler(this.cmbSprites_SelectedIndexChanged);
-            // 
-            // butSearch
-            // 
-            this.butSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.butSearch.Checked = false;
-            this.butSearch.Image = global::TombEditor.Properties.Resources.general_search_16;
-            this.butSearch.Location = new System.Drawing.Point(303, 11);
-            this.butSearch.Name = "butSearch";
-            this.butSearch.Selectable = false;
-            this.butSearch.Size = new System.Drawing.Size(23, 23);
-            this.butSearch.TabIndex = 11;
-            this.butSearch.Click += new System.EventHandler(this.butSearch_Click);
             // 
             // FormSprite
             // 
@@ -101,7 +87,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.butCancel;
             this.ClientSize = new System.Drawing.Size(334, 332);
-            this.Controls.Add(this.butSearch);
             this.Controls.Add(this.cmbSprites);
             this.Controls.Add(this.panelRenderingSprite);
             this.Controls.Add(this.butCancel);
@@ -123,7 +108,6 @@
         private DarkUI.Controls.DarkButton butCancel;
         private DarkUI.Controls.DarkButton butOk;
         private WadTool.Controls.PanelRenderingSprite panelRenderingSprite;
-        private DarkUI.Controls.DarkComboBox cmbSprites;
-        private DarkUI.Controls.DarkButton butSearch;
+        private TombLib.Controls.DarkSearchableComboBox cmbSprites;
     }
 }

@@ -274,7 +274,7 @@ namespace WadTool
                 if (name == columnStateId.Name)
                     dgvStateChanges.Rows[e.RowIndex].Cells[0].Value = TrCatalog.GetStateName(_editor.Tool.DestinationWad.GameVersion, _editor.Moveable.Id.TypeId, (uint)parsedValue);
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
 
         private void btCancel_Click(object sender, EventArgs e)
