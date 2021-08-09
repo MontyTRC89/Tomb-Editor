@@ -950,7 +950,7 @@ namespace WadTool.Controls
             Invalidate();
         }
 
-        private void GetTransformedVertices()
+        private void TransformVertices()
         {
             if (_mesh == null || _previewMesh == null || _mesh.VertexPositions.Count == 0 || !_mesh.HasAttributes)
                 return;
@@ -987,7 +987,7 @@ namespace WadTool.Controls
 
         private void PreviewTimer_Tick(object sender, EventArgs e)
         {
-            GetTransformedVertices();
+            TransformVertices();
             Invalidate();
             _frameCount++;
         }

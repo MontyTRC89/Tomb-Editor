@@ -309,6 +309,12 @@ namespace WadTool
                 butTbRedo.Enabled = stackEvent.RedoPossible;
                 UpdateUI();
             }
+
+            if (obj is WadToolClass.MessageEvent)
+            {
+                var m = obj as WadToolClass.MessageEvent;
+                PopUpInfo.Show(popup, this, panelMesh, m.Message, m.Type);
+            }
         }
 
         private void ReadConfig()
@@ -1193,15 +1199,14 @@ namespace WadTool
         private void butTbImport_Click(object sender, EventArgs e)
         {
             var mesh = WadActions.ImportMesh(_tool, this);
+            if (mesh == null)
+                return;
 
-            if (mesh != null)
-            {
-                _tool.UndoManager.PushMeshChanged(panelMesh);
-                panelMesh.Mesh = mesh;
-                GetSphereValues();
-                UpdateUI();
-                RepopulateTextureList(butAllTextures.Checked);
-            }
+            _tool.UndoManager.PushMeshChanged(panelMesh);
+            panelMesh.Mesh = mesh;
+            GetSphereValues();
+            UpdateUI();
+            RepopulateTextureList(butAllTextures.Checked);
         }
 
         private void butTbExport_Click(object sender, EventArgs e)

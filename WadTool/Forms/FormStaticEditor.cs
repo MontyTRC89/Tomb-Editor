@@ -5,12 +5,10 @@ using System.Numerics;
 using System.Windows.Forms;
 using TombLib;
 using TombLib.Forms;
-using TombLib.GeometryIO;
 using TombLib.Graphics;
 using TombLib.Wad;
 using WadTool.Controls;
 using TombLib.Utils;
-using System.Threading;
 
 namespace WadTool
 {
@@ -21,6 +19,9 @@ namespace WadTool
         private readonly WadToolClass _tool;
         private readonly GraphicsDevice _device;
         private bool _doChangesInLighting = false;
+
+        // Info
+        private readonly PopUpInfo popup = new PopUpInfo();
 
         public FormStaticEditor(WadToolClass tool, DeviceManager deviceManager, Wad2 wad, WadStatic staticMesh)
         {
@@ -58,12 +59,19 @@ namespace WadTool
         {
             if (obj is WadToolClass.StaticSelectedLightChangedEvent)
                 UpdateLightUI();
-            else if (obj is WadToolClass.StaticLightsChangedEvent)
+
+            if (obj is WadToolClass.StaticLightsChangedEvent)
             {
                 UpdateLightsList();
                 UpdateLightUI();
                 _static.Version = DataVersion.GetNext();
                 panelRendering.Invalidate();
+            }
+
+            if (obj is WadToolClass.MessageEvent)
+            {
+                var m = obj as WadToolClass.MessageEvent;
+                PopUpInfo.Show(popup, this, panelRendering, m.Message, m.Type);
             }
         }
 
@@ -274,7 +282,6 @@ namespace WadTool
         private void butImportMeshFromFile_Click(object sender, EventArgs e)
         {
             var mesh = WadActions.ImportMesh(_tool, this);
-
             if (mesh == null)
                 return;
 

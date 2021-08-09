@@ -98,6 +98,12 @@ namespace WadTool
                             break;
                         }
             }
+
+            if (obj is WadToolClass.MessageEvent)
+            {
+                var m = obj as WadToolClass.MessageEvent;
+                PopUpInfo.Show(popup, this, panelRendering, m.Message, m.Type);
+            }
         }
 
         private List<DarkTreeNode> LoadSkeleton()
@@ -402,10 +408,7 @@ namespace WadTool
             var mesh = WadActions.ImportMesh(_tool, this);
 
             if (mesh == null)
-            {
-                ImportFailed();
                 return;
-            }
 
             ReplaceExistingBone(mesh, theNode);
         }
@@ -432,7 +435,7 @@ namespace WadTool
                     var meshes = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings, false);
                     if (meshes == null || meshes.Count == 0)
                     {
-                        ImportFailed();
+                        popup.ShowWarning(panelRendering, "No meshes were imported. Selected 3D file is broken or has no valid data.");
                         return;
                     }
 
@@ -567,17 +570,9 @@ namespace WadTool
             var mesh = WadActions.ImportMesh(_tool, this);
 
             if (mesh == null)
-            {
-                ImportFailed();
                 return;
-            }
 
             InsertNewBone(mesh, theNode);
-        }
-
-        private void ImportFailed()
-        {
-            popup.ShowWarning(panelRendering, "No meshes were imported.");
         }
 
         private void SaveChanges()

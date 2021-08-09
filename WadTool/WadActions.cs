@@ -1314,27 +1314,37 @@ namespace WadTool
                 if (saveFileDialog.ShowDialog(owner) != DialogResult.OK)
                     return;
 
-                using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
+                try
                 {
-                    settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
-                    settingsDialog.SelectPreset("Normal scale");
 
-                    if (settingsDialog.ShowDialog(owner) != DialogResult.OK)
-                        return;
-
-                    BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt => "";
-                    BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
-                    new Thread(() =>
+                    using (var settingsDialog = new GeometryIOSettingsDialog(new IOGeometrySettings() { Export = true }))
                     {
-                        var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, mesh);
-                        if (resultModel != null)
-                        {
-                            if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
-                                return;
-                        }
-                        else
+                        settingsDialog.AddPreset(IOSettingsPresets.RoomExportSettingsPresets);
+                        settingsDialog.SelectPreset("Normal scale");
+
+                        if (settingsDialog.ShowDialog(owner) != DialogResult.OK)
                             return;
-                    }).Start();
+
+                        BaseGeometryExporter.GetTextureDelegate getTextureCallback = txt => "";
+                        BaseGeometryExporter exporter = BaseGeometryExporter.CreateForFile(saveFileDialog.FileName, settingsDialog.Settings, getTextureCallback);
+                        new Thread(() =>
+                        {
+                            var resultModel = WadMesh.PrepareForExport(saveFileDialog.FileName, mesh);
+                            if (resultModel != null)
+                            {
+                                if (exporter.ExportToFile(resultModel, saveFileDialog.FileName))
+                                    return;
+                            }
+
+                            tool.SendMessage("Selected mesh is broken and can't be exported.\nPlease replace this mesh with another.");
+                            return;
+
+                        }).Start();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    tool.SendMessage("There was an error exporting 3D model.\nException: " + ex.Message, PopupType.Error);
                 }
             }
         }
@@ -1350,22 +1360,29 @@ namespace WadTool
                 if (dialog.ShowDialog(owner) != DialogResult.OK)
                     return null;
 
-                using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
+                try
                 {
-                    form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
-                    if (form.ShowDialog(owner) != DialogResult.OK)
-                        return null;
-
-                    var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
-                    if (mesh == null)
+                    using (var form = new GeometryIOSettingsDialog(new IOGeometrySettings()))
                     {
-                        DarkMessageBox.Show(owner, "Error while loading 3D model. Check that the file format \n" +
-                                            "is supported, meshes are textured and texture file is present.",
-                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return null;
-                    }
+                        form.AddPreset(IOSettingsPresets.GeometryImportSettingsPresets);
+                        if (form.ShowDialog(owner) != DialogResult.OK)
+                            return null;
 
-                    return mesh;
+                        var mesh = WadMesh.ImportFromExternalModel(dialog.FileName, form.Settings);
+                        if (mesh == null)
+                        {
+                            tool.SendMessage("Error loading 3D model. Check that the file format \n" +
+                                             "is supported, meshes are textured and texture file is present.", PopupType.Error);
+                            return null;
+                        }
+
+                        return mesh;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    tool.SendMessage("There was an error importing 3D model.\nException: " + ex.Message, PopupType.Error);
+                    return null;
                 }
             }
         }
