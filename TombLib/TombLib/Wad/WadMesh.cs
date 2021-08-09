@@ -233,7 +233,22 @@ namespace TombLib.Wad
                 });
             }
 
-            var pages = texturePieces.Count == 1 ? new List<WadTexture>() { texturePieces.First().Value.Texture } : Wad2.PackTexturesForExport(texturePieces);
+            // Only merge textures into pages if all of them are no more than 256px in dimensions,
+            // otherwise algorithm may fail.
+
+            // FIXME Monty: modify algorithm in a way that it looks into every poly's texture area zone
+            // for comparison, not just bluntly hash whole image. This way algorithm will never get
+            // to a point when incoming texture fragment is bigger than 256.
+
+            bool mergeIntoPages = m.Polys.All(p => p.Texture.Texture.Image.Size.X <= 256 &&
+                                                   p.Texture.Texture.Image.Size.Y <= 256);
+            List<WadTexture> pages;
+
+            if (mergeIntoPages)
+                pages = Wad2.PackTexturesForExport(texturePieces);
+            else
+                pages = tempTextures.Values.ToList();
+
             var name = string.IsNullOrEmpty(mesh.Name) ? "UntitledMesh" : mesh.Name;
 
             // Create the materials
@@ -267,22 +282,27 @@ namespace TombLib.Wad
                     mesh.Positions.Add(m.VertexPositions[p.Index3]);
                 }
 
-                mesh.Normals.Add(m.VertexNormals[p.Index0]);
-                mesh.Normals.Add(m.VertexNormals[p.Index1]);
-                mesh.Normals.Add(m.VertexNormals[p.Index2]);
-                if (p.Shape == WadPolygonShape.Quad)
+                if (m.HasNormals)
                 {
-                    mesh.Normals.Add(m.VertexNormals[p.Index3]);
+                    mesh.Normals.Add(m.VertexNormals[p.Index0]);
+                    mesh.Normals.Add(m.VertexNormals[p.Index1]);
+                    mesh.Normals.Add(m.VertexNormals[p.Index2]);
+                    if (p.Shape == WadPolygonShape.Quad)
+                    {
+                        mesh.Normals.Add(m.VertexNormals[p.Index3]);
+                    }
                 }
 
                 var texture = texturePieces[((WadTexture)p.Texture.Texture).Hash];
 
-                var offset = new Vector2
-                (
-                    Math.Max(0.0f, texture.Position.X),
-                    Math.Max(0.0f, texture.Position.Y)
-                );
-                var size = pages[texture.Atlas].Image.Size;
+                var offset = mergeIntoPages ?
+                    new Vector2
+                    (
+                        Math.Max(0.0f, texture.Position.X),
+                        Math.Max(0.0f, texture.Position.Y)
+                    ) : Vector2.Zero;
+
+                var size = mergeIntoPages ? pages[texture.Atlas].Image.Size : p.Texture.Texture.Image.Size;
 
                 mesh.UV.Add((p.Texture.TexCoord0 + offset) / size);
                 mesh.UV.Add((p.Texture.TexCoord1 + offset) / size);
@@ -292,7 +312,7 @@ namespace TombLib.Wad
                     mesh.UV.Add((p.Texture.TexCoord3 + offset) / size);
                 }
 
-                if (m.VertexColors.Count >= m.VertexPositions.Count)
+                if (m.HasColors)
                 {
                     mesh.Colors.Add(new Vector4(m.VertexColors[p.Index0], 1.0f));
                     mesh.Colors.Add(new Vector4(m.VertexColors[p.Index1], 1.0f));
@@ -315,11 +335,12 @@ namespace TombLib.Wad
 
                 var mat = model.Materials[0];
                 foreach (var mt in model.Materials)
-                    if (mt.Page == texture.Atlas)
-                        if (mt.AdditiveBlending == (p.Texture.BlendMode >= BlendMode.Additive))
-                            if (mt.DoubleSided == p.Texture.DoubleSided)
-                                if (mt.Shininess == 0)
-                                    mat = mt;
+                    if ((mergeIntoPages && mt.Page == texture.Atlas) ||
+                        (!mergeIntoPages && mt.Texture == p.Texture.Texture))
+                            if (mt.AdditiveBlending == (p.Texture.BlendMode >= BlendMode.Additive))
+                                if (mt.DoubleSided == p.Texture.DoubleSided)
+                                    if (mt.Shininess == 0)
+                                        mat = mt;
 
                 poly.Indices.Add(lastIndex + 0);
                 poly.Indices.Add(lastIndex + 1);
