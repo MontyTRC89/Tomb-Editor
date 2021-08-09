@@ -311,7 +311,7 @@
             this.butDoubleSide.Size = new System.Drawing.Size(24, 23);
             this.butDoubleSide.TabIndex = 12;
             this.butDoubleSide.Tag = "";
-            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute.\r\nMay not work in legacy engines.");
+            this.toolTip.SetToolTip(this.butDoubleSide, "Toggle double-sided attribute");
             this.butDoubleSide.Click += new System.EventHandler(this.butDoubleSide_Click);
             // 
             // tabVertexRemap
