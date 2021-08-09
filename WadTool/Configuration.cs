@@ -46,7 +46,7 @@ namespace WadTool
         public float RenderingItem_NavigationSpeedMouseRotate { get; set; } = 4.0f;
         public float RenderingItem_FieldOfView { get; set; } = 50.0f;
         public bool RenderingItem_ShowDebugInfo { get; set; } = false;
-        public bool RenderingItem_Antialias { get; set; } = false;
+        public bool RenderingItem_Antialias { get; set; } = true;
         public bool RenderingItem_Animate { get; set; } = true;
         public Vector4 RenderingItem_BackgroundColor { get; set; } = new Vector4(0.65f, 0.65f, 0.65f, 1.0f);
 
