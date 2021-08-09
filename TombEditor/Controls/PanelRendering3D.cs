@@ -3582,7 +3582,7 @@ namespace TombEditor.Controls
             if (depthSprites.Count > 0)
             {
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-                SwapChain.RenderSprites(_renderingTextures, true, false, depthSprites);
+                SwapChain.RenderSprites(_renderingTextures, BilinearFilter, false, depthSprites);
             }
 
             // Draw ghost block bodies
@@ -3614,7 +3614,7 @@ namespace TombEditor.Controls
             if (flatSprites.Count > 0)
             {
                 _legacyDevice.SetBlendState(_legacyDevice.BlendStates.AlphaBlend);
-                SwapChain.RenderSprites(_renderingTextures, true, true, flatSprites);
+                SwapChain.RenderSprites(_renderingTextures, BilinearFilter, true, flatSprites);
             }
 
             watch.Stop();
